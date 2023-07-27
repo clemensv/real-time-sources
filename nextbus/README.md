@@ -24,6 +24,7 @@ A package install will be available later.
 
 ## Usage
 
+```bash
 options:
   -h, --help            show this help message and exit
 
@@ -35,7 +36,7 @@ subcommands:
     vehicle-locations   get the vehicle locations for a route
     predictions         get the predictions for a stop
     route-config        get the configuration for a route
-
+```
 
 ### Agencies
 
