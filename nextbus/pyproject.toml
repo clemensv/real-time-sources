@@ -23,7 +23,8 @@ dependencies = [
 ]
 
 [project.scripts]
-nextbus = "nextbus.nextbus:main"
+nextbus-cli = "nextbus.nextbus:main"
 
 [tool.setuptools_scm]
-write_to = "nextbus/_version.py"
+write_to = "nextbus/nextbus/_version.py"
+root = ".."

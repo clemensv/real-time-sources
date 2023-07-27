@@ -1,6 +1,14 @@
 # Python and VSCode exclusions
-*.pyc
-.vscode/
-**/__pycache__/
+/dist
+/build
+/.eggs
+/gamedata_bridge.egg-info
+/.pytest_cache
+/.mypy_cache
+/.ipynb_checkpoints
+/dist 
+**/__pycache__
+/.vscode
+**/_version.py
 
 

@@ -10,6 +10,7 @@ from cloudevents.conversion import to_json
 
 NEXTBUS_BASE_URL = "https://retro.umoiq.com/service/publicXMLFeed"   
 backoff_time: float = 0
+poll_interval: float = 10
 
 def print_route_predictions(agency_tag, route_tag):
     # Make a request to the NextBus API to get the predictions for the specified route
@@ -334,7 +335,7 @@ def feed(feed_connection_string: str, feed_event_hub_name: str, reference_connec
                     poll_and_submit_messages(reference_producer_client, agency_tag)
                     last_messages_time = current_time
             last_vehicle_location_time = poll_and_submit_vehicle_locations(feed_producer_client, agency_tag, route, last_vehicle_location_time)
-            time.sleep(10)
+            time.sleep(poll_interval)
     except KeyboardInterrupt:
         print("Loop interrupted by user")
 
@@ -384,7 +385,9 @@ def main():
     feed_parser.add_argument("--reference-event-hub-name", help="the name of the Event Hub to submit reference data to", required=False)
     feed_parser.add_argument("--agency", help="the tag of the agency to poll vehicle locations for", required=False)
     feed_parser.add_argument("--route", help="the route to poll vehicle locations for, omit or '*' to poll all routes", required=False, default="*")
-    feed_parser.set_defaults(func=lambda args: feed(args.feed_connection_string, args.feed_event_hub_name, args.reference_connection_string, args.reference_event_hub_name, args.agency, args.route))
+    feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=10)
+    feed_parser.add_argument("--backoff-interval", help="the number of seconds to wait before retrying after an error", required=False, type=float, default=0)
+    feed_parser.set_defaults(func=lambda args: launch_feed(args))
 
     # Define the "vehicle-locations" command
     vehicle_locations_parser = subparsers.add_parser("vehicle-locations", help="get the vehicle locations for a route")
@@ -412,5 +415,12 @@ def main():
     else:
         parser.print_help()
 
+def launch_feed(args):
+    backoff_time = args.backoff_interval
+    poll_interval = args.poll_interval
+    feed(args.feed_connection_string, args.feed_event_hub_name, args.reference_connection_string, args.reference_event_hub_name, args.agency, args.route)
+
 if __name__ == "__main__":
     main()
+
+
