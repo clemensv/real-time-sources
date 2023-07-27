@@ -1,0 +1,29 @@
+[build-system]
+build-backend = "flit_scm:buildapi"
+requires = ["flit_scm"]
+
+[project]
+name = "nextbus"
+dynamic = ["version"]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com"}
+]
+description = "A trivial command line tool to invoke OpenAI's completion API"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "requests>=2.31.0",
+  "azure-eventhub>=5.11.3",
+  "cloudevents>=1.9.0"
+]
+
+[project.scripts]
+nextbus = "nextbus.nextbus:main"
+
+[tool.setuptools_scm]
+write_to = "nextbus/_version.py"

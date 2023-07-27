@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="body">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Error" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="shouldRetry" type="xs:string"/>
+              <xs:element name="content" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="agency" minOccurs="0">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element name="regionTitle" type="xs:string"/>
+                    <xs:element name="shortTitle" type="xs:string"/>
+                    <xs:element name="tag" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+        <xs:element name="vehicle" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" type="xs:string"/>
+              <xs:element name="routeTag" type="xs:string"/>
+              <xs:element name="dirTag" type="xs:string"/>
+              <xs:element name="lat" type="xs:float"/>
+              <xs:element name="lon" type="xs:float"/>
+              <xs:element name="secsSinceReport" type="xs:int"/>
+              <xs:element name="predictable" type="xs:boolean"/>
+              <xs:element name="heading" type="xs:int"/>
+              <xs:element name="speedKmHr" type="xs:float"/>
+              <xs:element name="leadingVehicleId" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="interval" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="routeTag" type="xs:string"/>
+              <xs:element name="startTime" type="xs:string"/>
+              <xs:element name="endTime" type="xs:string"/>
+              <xs:element name="headwaySecs" type="xs:int"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="route" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="tag" type="xs:string"/>
+              <xs:element name="title" type="xs:string"/>
+              <xs:element name="shortTitle" type="xs:string"/>
+              <xs:element name="color" type="xs:string"/>
+              <xs:element name="oppositeColor" type="xs:string"/>
+              <xs:element name="latMin" type="xs:float"/>
+              <xs:element name="latMax" type="xs:float"/>
+              <xs:element name="lonMin" type="xs:float"/>
+              <xs:element name="lonMax" type="xs:float"/>
+              <xs:element name="stop" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tag" type="xs:string"/>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element name="shortTitle" type="xs:string"/>
+                    <xs:element name="lat" type="xs:float"/>
+                    <xs:element name="lon" type="xs:float"/>
+                    <xs:element name="stopId" type="xs:string"/>
+                    <xs:element name="stopCode" type="xs:string"/>
+                    <xs:element name="distance" type="xs:float"/>
+                    <xs:element name="inCongestion" type="xs:boolean"/>
+                    <xs:element name="predictable" type="xs:boolean"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="predictions" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="agencyTitle" type="xs:string"/>
+              <xs:element name="routeTag" type="xs:string"/>
+              <xs:element name="routeTitle" type="xs:string"/>
+              <xs:element name="stopTag" type="xs:string"/>
+              <xs:element name="stopTitle" type="xs:string"/>
+              <xs:element name="dirTag" type="xs:string"/>
+              <xs:element name="prediction" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="seconds" type="xs:int"/>
+                    <xs:element name="minutes" type="xs:int"/>
+                    <xs:element name="isDeparture" type="xs:boolean"/>
+                    <xs:element name="affectedByLayover" type="xs:boolean"/>
+                    <xs:element name="branch" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="predictionsForMultiStops" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="agencyTitle" type="xs:string"/>
+              <xs:element name="routeTag" type="xs:string"/>
+              <xs:element name="routeTitle" type="xs:string"/>
+              <xs:element name="dirTag" type="xs:string"/>
+              <xs:element name="stop" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="tag" type="xs:string"/>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element name="shortTitle" type="xs:string"/>
+                    <xs:element name="lat" type="xs:float"/>
+                    <xs:element name="lon" type="xs:float"/>
+                    <xs:element name="prediction" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="seconds" type="xs:int"/>
+                          <xs:element name="minutes" type="xs:int"/>
+                          <xs:element name="isDeparture" type="xs:boolean"/>
+                          <xs:element name="affectedByLayover" type="xs:boolean"/>
+                          <xs:element name="branch" type="xs:string"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="schedule" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="routeTag" type="xs:string"/>
+              <xs:element name="routeTitle" type="xs:string"/>
+              <xs:element name="serviceClass" type="xs:string"/>
+              <xs:element name="scheduleClass" type="xs:string"/>
+              <xs:element name="direction" type="xs:string"/>
+              <xs:element name="stop" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="header" type="xs:string"/>
+                    <xs:element name="tr" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="block" type="xs:string"/>
+                          <xs:element name="stopTime" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="tripTag" type="xs:string"/>
+                                <xs:element name="epochTime" type="xs:long"/>
+                                <xs:element name="time" type="xs:string"/>
+                                <xs:element name="day" type="xs:string"/>
+                                <xs:element name="isDeparture" type="xs:boolean"/>
+                                <xs:element name="vehicle" type="xs:string"/>
+                                <xs:element name="blockID" type="xs:string"/>
+                                <xs:element name="blockTitle" type="xs:string"/>
+                                <xs:element name="inCongestion" type="xs:boolean"/>
+                                <xs:element name="lat" type="xs:float"/>
+                                <xs:element name="lon" type="xs:float"/>
+                                <xs:element name="secsSinceReport" type="xs:int"/>
+                                <xs:element name="predictable" type="xs:boolean"/>
+                                <xs:element name="heading" type="xs:int"/>
+                                <xs:element name="speedKmHr" type="xs:float"/>
+                                <xs:element name="leadingVehicleId" type="xs:string"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      <xs:element name="messages" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="agency" type="xs:string"/>
+              <xs:element name="route" type="xs:string"/>
+              <xs:element name="stop" type="xs:string"/>
+              <xs:element name="lastTime" type="xs:string"/>
+              <xs:element name="message" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="text" type="xs:string"/>
+                    <xs:element name="priority" type="xs:int"/>
+                    <xs:element name="startBoundary" type="xs:string"/>
+                    <xs:element name="endBoundary" type="xs:string"/>
+                    <xs:element name="affects" type="xs:string"/>
+                    <xs:element name="informedEntity" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="agency" type="xs:string"/>
+                          <xs:element name="route" type="xs:string"/>
+                          <xs:element name="stop" type="xs:string"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

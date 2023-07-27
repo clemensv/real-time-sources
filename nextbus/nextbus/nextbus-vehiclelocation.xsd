@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="body">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="vehicle">
+                    <xs:complexType>
+                        <xs:attribute name="id" type="xs:string" use="required"/>
+                        <xs:attribute name="routeTag" type="xs:string" use="required"/>
+                        <xs:attribute name="dirTag" type="xs:string" use="required"/>
+                        <xs:attribute name="lat" type="xs:decimal" use="required"/>
+                        <xs:attribute name="lon" type="xs:decimal" use="required"/>
+                        <xs:attribute name="secsSinceReport" type="xs:int" use="required"/>
+                        <xs:attribute name="predictable" type="xs:boolean" use="required"/>
+                        <xs:attribute name="heading" type="xs:int" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

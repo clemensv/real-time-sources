@@ -1,0 +1,6 @@
+# Python and VSCode exclusions
+*.pyc
+.vscode/
+**/__pycache__/
+
+

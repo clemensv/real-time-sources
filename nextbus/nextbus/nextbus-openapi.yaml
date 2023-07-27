@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: NextBus API
+  version: "1.24"
+  description: |
+    Public XML Feed for the NextBus API. Provides real-time transit information for various transit agencies.
+  contact:
+    name: NextBus Support
+    email: support@nextbus.com
+  license:
+    name: NextBus License Agreement
+    url: https://www.nextbus.com/legal/license-agreement/
+servers:
+  - url: "https://retro.umoiq.com"
+paths:
+  /service/publicXMLFeed:
+    get:
+      operationId: getPublicXMLFeed
+      summary: Send a command to the NextBus API
+      parameters:
+        - name: command
+          in: query
+          required: true
+          description: The command to send to the API
+          schema:
+            type: string
+            enum:
+              - agencyList
+              - routeList
+              - routeConfig
+              - vehicleLocations
+              - predictions
+              - predictionsForMultiStops
+              - schedule
+              - messages
+              - vehicleLocations
+              - vehicleLocations
+              - geoRegion
+              - geoPath
+              - geoArea
+              - stopsForLocation
+              - alerts
+        - name: a
+          in: query
+          description: The agency to retrieve data for
+          schema:
+            type: string
+        - name: r
+          in: query
+          description: The route to retrieve data for
+          schema:
+            type: string
+        - name: s
+          in: query
+          description: The stop to retrieve data for
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: The time to retrieve data for
+          schema:
+            type: string
+        - name: v
+          in: query
+          description: The vehicle to retrieve data for
+          schema:
+            type: string
+        - name: w
+          in: query
+          description: The window to retrieve data for
+          schema:
+            type: string
+        - name: x
+          in: query
+          description: The extra parameter to send with the command
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/xml:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+                  additionalProperties:
+                    type: object
+                    additionalProperties:
+                      type: string
+        '400':
+          description: Bad Request
+          content:
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  Error:
+                    type: object
+                    properties:
+                      shouldRetry:
+                        type: string
+                      content:
+                        type: string
+        '404':
+          description: Not Found
+          content:
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  Error:
+                    type: object
+                    properties:
+                      shouldRetry:
+                        type: string
+                      content:
+                        type: string
+        '500':
+          description: Internal Server Error
+          content:
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  Error:
+                    type: object
+                    properties:
+                      shouldRetry:
+                        type: string
+                      content:
+                        type: string
