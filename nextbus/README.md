@@ -139,10 +139,12 @@ Position feed and reference data:
 nextbus-cli feed --agency <agency> --route <route> --feed-connection-string <feed-connection-string> --feed-event-hub-name <feed-event-hub-name> --reference-connection-string <reference-connection-string> --reference-event-hub-name <reference-event-hub-name>
 ```
 
+### "Feed" Event Hub output
+
 The output into the "feed" Event Hub are CloudEvent messages with the `type` attribute 
 set to `nextbus.vehiclePosition`. The `subject` attribute is set to `{agency_tag}/{vehicle_id}`.
 
-## nextbus.vehiclePosition
+#### nextbus.vehiclePosition
 
 The `data`of the CloudEvent message is a JSON object with the following attributes:
 
@@ -156,6 +158,8 @@ The `data`of the CloudEvent message is a JSON object with the following attribut
 * `heading`: the vehicle heading in degrees
 * `speedKmHr`: the vehicle speed in km/h
 * `timestamp`: the timestamp of the vehicle location
+
+### "Reference" Event Hub output
 
 The output into the "reference" Event Hub are CloudEvent messages with the `type` attribute
 set to `nextbus.routeConfig`, `nextbus.schedule`, and `nextbus.messages`.
