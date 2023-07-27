@@ -38,14 +38,8 @@ def print_route_config(agency_tag, route_tag):
     # Parse the XML response and print the stops for the route
     root = ET.fromstring(response.content)
     for stop in root.findall("route/stop"):
-        print(f"Stop ID: {stop.get('stopId')}")
-        print(f"Stop Tag: {stop.get('tag')}")
-        print(f"Stop Title: {stop.get('title')}")
-        print(f"Stop Lat: {stop.get('lat')}")
-        print(f"Stop Lon: {stop.get('lon')}")
-        print(f"Stop Direction: {stop.get('dir')}")
-        print(f"Stop Sequence: {stop.get('stopSequence')}")
-
+        print(f"{stop.get('tag')}: {stop.get('title')}, ({stop.get('lat')},{stop.get('lon')}), https://geohack.toolforge.org/geohack.php?language=en&params={stop.get('lat')};{stop.get('lon')}")
+        
 def print_agencies():
     # Make a request to the NextBus API to get the list of agencies
     response = requests.get(NEXTBUS_BASE_URL, params={"command": "agencyList"})
@@ -351,17 +345,19 @@ def print_vehicle_locations(agency, route):
     # Parse the XML response and print the vehicle locations for the route
     root = ET.fromstring(response.content)
     for vehicle in root.findall("vehicle"):
-        print(f"{vehicle.get('id')}: ({vehicle.get('lat')}, {vehicle.get('lon')})")
+        print(f"{vehicle.get('id')}: ({vehicle.get('lat')},{vehicle.get('lon')}), heading {vehicle.get('heading')}°, {vehicle.get('speedKmHr')} km/h, https://geohack.toolforge.org/geohack.php?language=en&params={vehicle.get('lat')};{vehicle.get('lon')}")
 
-def print_predictions(agency_tag, stop_id):
+def print_predictions(agency_tag, stop_id, route_tag):
+ 
     # Make a request to the NextBus API to get the predictions for the specified stop
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "stopId": stop_id})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "s": stop_id, "r": route_tag})
     response.raise_for_status()
 
     # Parse the XML response and print the predictions for the stop
     root = ET.fromstring(response.content)
+    print(f"Predictions for stop {root.find('predictions').get('stopTitle')}")
     for prediction in root.findall("predictions/direction/prediction"):
-        print(f"{prediction.get('minutes')} minutes until arrival")
+        print(f"{prediction.get('minutes')} minutes ({prediction.get('seconds')} seconds), Vehicle {prediction.get('vehicle')}")
 
 def main():
     # Define the command-line arguments and subcommands
@@ -391,20 +387,21 @@ def main():
 
     # Define the "vehicle-locations" command
     vehicle_locations_parser = subparsers.add_parser("vehicle-locations", help="get the vehicle locations for a route")
-    vehicle_locations_parser.add_argument("--agency", help="the tag of the agency to get vehicle locations for")
-    vehicle_locations_parser.add_argument("--route", help="the route to get vehicle locations for")
+    vehicle_locations_parser.add_argument("--agency", help="the tag of the agency to get vehicle locations for", required=True)
+    vehicle_locations_parser.add_argument("--route", help="the route to get vehicle locations for", required=True)
     vehicle_locations_parser.set_defaults(func=lambda args: print_vehicle_locations(args.agency, args.route))
 
     # Define the "predictions" command
     predictions_parser = subparsers.add_parser("predictions", help="get the predictions for a stop")
-    predictions_parser.add_argument("--agency", help="the tag of the agency to get predictions for")
-    predictions_parser.add_argument("--stop-id", help="the ID of the stop to get predictions for")
-    predictions_parser.set_defaults(func=lambda args: print_predictions(args.agency_tag, args.stop_id))
+    predictions_parser.add_argument("--agency", help="the tag of the agency to get predictions for", required=True)
+    predictions_parser.add_argument("--stop-id", help="the ID of the stop to get predictions for", required=True)
+    predictions_parser.add_argument("--route", help="the tag of the route to get predictions for", required=True)
+    predictions_parser.set_defaults(func=lambda args: print_predictions(args.agency, args.stop_id, args.route))
 
     #define the "route-config" command
     route_config_parser = subparsers.add_parser("route-config", help="get the configuration for a route")
-    route_config_parser.add_argument("--agency", help="the tag of the agency to get the route configuration for")
-    route_config_parser.add_argument("--route", help="the route to get the configuration for")
+    route_config_parser.add_argument("--agency", help="the tag of the agency to get the route configuration for", required=True)
+    route_config_parser.add_argument("--route", help="the route to get the configuration for", required=True)
     route_config_parser.set_defaults(func=lambda args: print_route_config(args.agency, args.route))
 
     # Parse the command-line arguments and execute the selected command
