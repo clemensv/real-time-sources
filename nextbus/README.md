@@ -43,7 +43,7 @@ subcommands:
 This command returns the list of transit agencies that are supported by the Nextbus service.
 
 ```bash
-nextbus agencies
+nextbus-cli agencies
 ```
 
 ### Routes
@@ -54,7 +54,7 @@ the first value in every line from the `agencies` command to specify the agency,
 
 
 ```bash
-nextbus routes --agency <agency>
+nextbus-cli routes --agency <agency>
 ```
 
 ### Route Config
@@ -63,7 +63,7 @@ This command returns the configuration for a given route. You must specify the a
 and the route tag returned by the `agencies` and `routes` commands.
 
 ```bash
-nextbus route-config --agency <agency> --route <route>
+nextbus-cli route-config --agency <agency> --route <route>
 ```
 
 The output is a list of route stops, one per line. Each line contains the following information:
@@ -79,7 +79,7 @@ This command returns the vehicle locations for a given route. You must specify t
 and the route tag returned by the `agencies` and `routes` commands.
 
 ```bash
-nextbus vehicle-locations --agency <agency> --route <route>
+nextbus-cli vehicle-locations --agency <agency> --route <route>
 ```
 
 The output is a list of vehicle locations, one per line. Each line contains the following information:
@@ -96,7 +96,7 @@ This command returns the predictions for a given stop. You must specify the agen
 and the stop tag returned by the `agencies` and `route-config` commands.
 
 ```bash
-nextbus predictions --agency <agency> --stop <stop>
+nextbus-cli predictions --agency <agency> --stop <stop>
 ``` 
 
 The output is a list of predictions, one per line. Each line contains the following information:
@@ -117,32 +117,32 @@ instance or to a Microsoft Fabric Event Stream. The command requires the followi
     Event Hub instance. The connection string must include the `Send` policy. The Event Hub may be configured
     with a "Compaction" retention policy to only keep the latest version of each entity. (optional)
 * `--reference-event-hub-name`: the name of the Event Hub instance that receives the reference data (optional)
+* `--poll-interval`: the interval in seconds between polls of the Nextbus service. The default is 10 seconds. (optional)
+* `--backoff-interval`: the time in seconds to wait before retrying a failed request to the Nextbus service. The default is 0 seconds. (optional)
 
- event_detail = {
-            "agency": agency_tag,
-            "routeTag": vehicle.get("routeTag"),
-            "dirTag": vehicle.get("dirTag"),
-            "id": vehicle.get("id"),
-            "lat": vehicle.get("lat"),
-            "lon": vehicle.get("lon"),
-            "predictable": vehicle.get("predictable"),
-            "heading": vehicle.get("heading"),
-            "speedKmHr": vehicle.get("speedKmHr"),
-            "timestamp": last_report_time
-        }
-        last_report_time_iso = datetime.utcfromtimestamp(last_report_time).isoformat()
-            
-        event = CloudEvent({
-            "specversion": "1.0",
-            "type": "nextbus.vehiclePosition",
-            "source": "https://retro.umoiq.com/service/publicXMLFeed",
-            "subject": f"{agency_tag}/{vehicle.get('id')}",
-            "datacontenttype": "application/json",
-            "time": last_report_time_iso
-        })
+The connection information for the Event Hub instances can be found in the Azure portal. The connection string
+is available in the "Shared access policies" section of the Event Hub instance. The Event Hub name is the name
+of the Event Hub instance. The connection information for both "feed" and "reference" may be identical and 
+point to the same Event Hub.
+
+The feed command will run until interrupted with `Ctrl-C`. 
+
+Just the position feed:
+
+```bash
+nextbus-cli feed --agency <agency> --route <route> --feed-connection-string <feed-connection-string> --feed-event-hub-name <feed-event-hub-name>
+```
+
+Position feed and reference data:
+
+```bash
+nextbus-cli feed --agency <agency> --route <route> --feed-connection-string <feed-connection-string> --feed-event-hub-name <feed-event-hub-name> --reference-connection-string <reference-connection-string> --reference-event-hub-name <reference-event-hub-name>
+```
 
 The output into the "feed" Event Hub are CloudEvent messages with the `type` attribute 
 set to `nextbus.vehiclePosition`. The `subject` attribute is set to `{agency_tag}/{vehicle_id}`.
+
+## nextbus.vehiclePosition
 
 The `data`of the CloudEvent message is a JSON object with the following attributes:
 
@@ -183,8 +183,4 @@ The `data` of the CloudEvent message is a JSON object with the following attribu
 * `agency`: the agency tag
 * `routeTag`: the route tag
 * `messages`: the route messages as a JSON object
-
-
-
-
 
