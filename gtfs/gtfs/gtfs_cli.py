@@ -9,7 +9,6 @@ from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_json
 from math import radians, cos, sin, asin, sqrt
 
-backoff_time: float = 0
 poll_interval: float = 20
 vehicle_last_report_times = {}
 vehicle_last_positions = {}
@@ -178,7 +177,6 @@ def main():
         parser.print_help()
 
 def launch_feed(args):
-    backoff_time = args.backoff_interval
     poll_interval = args.poll_interval
     headers = None
     if args.header:
