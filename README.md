@@ -14,4 +14,10 @@ The [Nextbus](nextbus/README.md) tool is a command line tool that can be used to
 retrieve real time data from the [Nextbus](https://www.nextbus.com/) service. The
 tool can be used to retrieve data for a single agency or for multiple agencies.
 
+# GTFS Realtime
+
+The [GTFS Realtime](gtfs/README.md) tool is a command line tool that can be used to
+retrieve real time vehcile position data from a [GTFS Realtime](https://gtfs.org/reference/realtime/v2/) 
+service feed. An example is the [New York City MTA Bus Time](https://bustime.mta.info/wiki/Developers/Index)
+
 

@@ -1,0 +1,6 @@
+gtfs-realtime-bindings
+requests>=2.31.0
+azure-eventhub>=5.11.3
+cloudevents>=1.9.0
+flit>=3.8.0
+setuptools_scm>=7.1.0
