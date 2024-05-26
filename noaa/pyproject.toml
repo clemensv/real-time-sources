@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "noaa-data-poller"
+version = "0.1.0"
+description = "A Python program to poll NOAA data and send it to Kafka."
+authors = ["Your Name <your.email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "^2.25.1"
+confluent-kafka = "^1.7.0"
+cloudevents = "^1.2.0"
+
+[tool.poetry.dev-dependencies]
+unittest = "*"
+requests-mock = "^1.9.3"
+testcontainers = "^3.4.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
