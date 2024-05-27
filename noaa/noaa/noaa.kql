@@ -1,0 +1,994 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [WaterLevel] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [stddev]: real,
+   [outside_sigma_band]: bool,
+   [flat_tolerance_limit]: bool,
+   [rate_of_change_limit]: bool,
+   [max_min_expected_height]: bool,
+   [quality]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterLevel] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the water level measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the water level\\\"}\"}",
+   [stddev]: "{\"description\": \"{\\\"description\\\": \\\"Standard deviation of 1-second samples used to compute the water level height\\\"}\"}",
+   [outside_sigma_band]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).\\\"}\"}",
+   [flat_tolerance_limit]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
+   [rate_of_change_limit]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
+   [max_min_expected_height]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WaterLevel] ingestion json mapping "WaterLevel_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "stddev", "path": "$.stddev"},
+  {"column": "outside_sigma_band", "path": "$.outside_sigma_band"},
+  {"column": "flat_tolerance_limit", "path": "$.flat_tolerance_limit"},
+  {"column": "rate_of_change_limit", "path": "$.rate_of_change_limit"},
+  {"column": "max_min_expected_height", "path": "$.max_min_expected_height"},
+  {"column": "quality", "path": "$.quality"},
+]
+```
+
+
+.create-or-alter table [WaterLevel] ingestion json mapping "WaterLevel_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "stddev", "path": "$.data.stddev"},
+  {"column": "outside_sigma_band", "path": "$.data.outside_sigma_band"},
+  {"column": "flat_tolerance_limit", "path": "$.data.flat_tolerance_limit"},
+  {"column": "rate_of_change_limit", "path": "$.data.rate_of_change_limit"},
+  {"column": "max_min_expected_height", "path": "$.data.max_min_expected_height"},
+  {"column": "quality", "path": "$.data.quality"},
+]
+```
+
+
+.create materialized-view with (backfill=true) WaterLevelLatest on table WaterLevel {
+    WaterLevel | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterLevel] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterLevel') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['stddev'] = toreal(data.['stddev']),['outside_sigma_band'] = tobool(data.['outside_sigma_band']),['flat_tolerance_limit'] = tobool(data.['flat_tolerance_limit']),['rate_of_change_limit'] = tobool(data.['rate_of_change_limit']),['max_min_expected_height'] = tobool(data.['max_min_expected_height']),['quality'] = tostring(data.['quality']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Predictions] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Predictions] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the prediction\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the prediction\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Predictions] ingestion json mapping "Predictions_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+]
+```
+
+
+.create-or-alter table [Predictions] ingestion json mapping "Predictions_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+]
+```
+
+
+.create materialized-view with (backfill=true) PredictionsLatest on table Predictions {
+    Predictions | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Predictions] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Predictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AirPressure] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_pressure_exceeded]: bool,
+   [min_pressure_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [AirPressure] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the air pressure measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the air pressure\\\"}\"}",
+   [max_pressure_exceeded]: "{\"description\": \"Flag indicating if the maximum expected air pressure was exceeded\"}",
+   [min_pressure_exceeded]: "{\"description\": \"Flag indicating if the minimum expected air pressure was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AirPressure] ingestion json mapping "AirPressure_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_pressure_exceeded", "path": "$.max_pressure_exceeded"},
+  {"column": "min_pressure_exceeded", "path": "$.min_pressure_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+]
+```
+
+
+.create-or-alter table [AirPressure] ingestion json mapping "AirPressure_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_pressure_exceeded", "path": "$.data.max_pressure_exceeded"},
+  {"column": "min_pressure_exceeded", "path": "$.data.min_pressure_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+]
+```
+
+
+.create materialized-view with (backfill=true) AirPressureLatest on table AirPressure {
+    AirPressure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AirPressure] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirPressure') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_pressure_exceeded'] = tobool(data.['max_pressure_exceeded']),['min_pressure_exceeded'] = tobool(data.['min_pressure_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AirTemperature] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_temp_exceeded]: bool,
+   [min_temp_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [AirTemperature] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the air temperature measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the air temperature\\\"}\"}",
+   [max_temp_exceeded]: "{\"description\": \"Flag indicating if the maximum expected air temperature was exceeded\"}",
+   [min_temp_exceeded]: "{\"description\": \"Flag indicating if the minimum expected air temperature was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_temp_exceeded", "path": "$.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+]
+```
+
+
+.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_temp_exceeded", "path": "$.data.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.data.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+]
+```
+
+
+.create materialized-view with (backfill=true) AirTemperatureLatest on table AirTemperature {
+    AirTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AirTemperature] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WaterTemperature] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_temp_exceeded]: bool,
+   [min_temp_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterTemperature] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the water temperature measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the water temperature\\\"}\"}",
+   [max_temp_exceeded]: "{\"description\": \"Flag indicating if the maximum expected water temperature was exceeded\"}",
+   [min_temp_exceeded]: "{\"description\": \"Flag indicating if the minimum expected water temperature was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_temp_exceeded", "path": "$.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+]
+```
+
+
+.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_temp_exceeded", "path": "$.data.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.data.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+]
+```
+
+
+.create materialized-view with (backfill=true) WaterTemperatureLatest on table WaterTemperature {
+    WaterTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterTemperature] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Wind] (
+   [station_id]: string,
+   [timestamp]: string,
+   [speed]: real,
+   [direction_degrees]: string,
+   [direction_text]: string,
+   [gusts]: real,
+   [max_wind_speed_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Wind] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the wind measurement\\\"}\"}",
+   [speed]: "{\"description\": \"{\\\"description\\\": \\\"Wind speed\\\"}\"}",
+   [direction_degrees]: "{\"description\": \"{\\\"description\\\": \\\"Wind direction\\\"}\"}",
+   [direction_text]: "{\"description\": \"{\\\"description\\\": \\\"Direction - wind direction in text.\\\"}\"}",
+   [gusts]: "{\"description\": \"{\\\"description\\\": \\\"Wind gust speed\\\"}\"}",
+   [max_wind_speed_exceeded]: "{\"description\": \"Flag indicating if the maximum wind speed was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Wind] ingestion json mapping "Wind_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "speed", "path": "$.speed"},
+  {"column": "direction_degrees", "path": "$.direction_degrees"},
+  {"column": "direction_text", "path": "$.direction_text"},
+  {"column": "gusts", "path": "$.gusts"},
+  {"column": "max_wind_speed_exceeded", "path": "$.max_wind_speed_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+]
+```
+
+
+.create-or-alter table [Wind] ingestion json mapping "Wind_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "speed", "path": "$.data.speed"},
+  {"column": "direction_degrees", "path": "$.data.direction_degrees"},
+  {"column": "direction_text", "path": "$.data.direction_text"},
+  {"column": "gusts", "path": "$.data.gusts"},
+  {"column": "max_wind_speed_exceeded", "path": "$.data.max_wind_speed_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+]
+```
+
+
+.create materialized-view with (backfill=true) WindLatest on table Wind {
+    Wind | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Wind] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Wind') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = tostring(data.['direction_degrees']),['direction_text'] = tostring(data.['direction_text']),['gusts'] = toreal(data.['gusts']),['max_wind_speed_exceeded'] = tobool(data.['max_wind_speed_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Humidity] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: string,
+   [max_humidity_exceeded]: bool,
+   [min_humidity_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Humidity] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the humidity measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the humidity\\\"}\"}",
+   [max_humidity_exceeded]: "{\"description\": \"Flag indicating if the maximum expected humidity was exceeded\"}",
+   [min_humidity_exceeded]: "{\"description\": \"Flag indicating if the minimum expected humidity was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Humidity] ingestion json mapping "Humidity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_humidity_exceeded", "path": "$.max_humidity_exceeded"},
+  {"column": "min_humidity_exceeded", "path": "$.min_humidity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+]
+```
+
+
+.create-or-alter table [Humidity] ingestion json mapping "Humidity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_humidity_exceeded", "path": "$.data.max_humidity_exceeded"},
+  {"column": "min_humidity_exceeded", "path": "$.data.min_humidity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+]
+```
+
+
+.create materialized-view with (backfill=true) HumidityLatest on table Humidity {
+    Humidity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Humidity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Humidity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = tostring(data.['value']),['max_humidity_exceeded'] = tobool(data.['max_humidity_exceeded']),['min_humidity_exceeded'] = tobool(data.['min_humidity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Conductivity] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: string,
+   [max_conductivity_exceeded]: bool,
+   [min_conductivity_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Conductivity] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the conductivity measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the conductivity\\\"}\"}",
+   [max_conductivity_exceeded]: "{\"description\": \"Flag indicating if the maximum expected conductivity was exceeded\"}",
+   [min_conductivity_exceeded]: "{\"description\": \"Flag indicating if the minimum expected conductivity was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Conductivity] ingestion json mapping "Conductivity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_conductivity_exceeded", "path": "$.max_conductivity_exceeded"},
+  {"column": "min_conductivity_exceeded", "path": "$.min_conductivity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+]
+```
+
+
+.create-or-alter table [Conductivity] ingestion json mapping "Conductivity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_conductivity_exceeded", "path": "$.data.max_conductivity_exceeded"},
+  {"column": "min_conductivity_exceeded", "path": "$.data.min_conductivity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+]
+```
+
+
+.create materialized-view with (backfill=true) ConductivityLatest on table Conductivity {
+    Conductivity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Conductivity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Conductivity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = tostring(data.['value']),['max_conductivity_exceeded'] = tobool(data.['max_conductivity_exceeded']),['min_conductivity_exceeded'] = tobool(data.['min_conductivity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Salinity] (
+   [station_id]: string,
+   [timestamp]: string,
+   [salinity]: real,
+   [grams_per_kg]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Salinity] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the salinity measurement\\\"}\"}",
+   [salinity]: "{\"description\": \"{\\\"description\\\": \\\"Value of the salinity\\\"}\"}",
+   [grams_per_kg]: "{\"description\": \"{\\\"description\\\": \\\"Grams of salt per kilogram of water\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "salinity", "path": "$.salinity"},
+  {"column": "grams_per_kg", "path": "$.grams_per_kg"},
+]
+```
+
+
+.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "salinity", "path": "$.data.salinity"},
+  {"column": "grams_per_kg", "path": "$.data.grams_per_kg"},
+]
+```
+
+
+.create materialized-view with (backfill=true) SalinityLatest on table Salinity {
+    Salinity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Salinity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Salinity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['salinity'] = toreal(data.['salinity']),['grams_per_kg'] = toreal(data.['grams_per_kg']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Station] (
+   [tidal]: bool,
+   [greatlakes]: bool,
+   [shefcode]: string,
+   [details]: dynamic,
+   [sensors]: dynamic,
+   [floodlevels]: dynamic,
+   [datums]: dynamic,
+   [supersededdatums]: dynamic,
+   [harmonicConstituents]: dynamic,
+   [benchmarks]: dynamic,
+   [tidePredOffsets]: dynamic,
+   [ofsMapOffsets]: dynamic,
+   [state]: string,
+   [timezone]: string,
+   [timezonecorr]: int,
+   [observedst]: bool,
+   [stormsurge]: bool,
+   [nearby]: dynamic,
+   [forecast]: bool,
+   [outlook]: bool,
+   [HTFhistorical]: bool,
+   [nonNavigational]: bool,
+   [id]: string,
+   [name]: string,
+   [lat]: real,
+   [lng]: real,
+   [affiliations]: string,
+   [portscode]: string,
+   [products]: dynamic,
+   [disclaimers]: dynamic,
+   [notices]: dynamic,
+   [self]: string,
+   [expand]: string,
+   [tideType]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] column-docstrings (
+   [tidal]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station measures tidal data.\\\"}\"}",
+   [greatlakes]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station is located in the Great Lakes region.\\\"}\"}",
+   [shefcode]: "{\"description\": \"{\\\"description\\\": \\\"Standard Hydrologic Exchange Format code for the station.\\\"}\"}",
+   [state]: "{\"description\": \"{\\\"description\\\": \\\"State where the station is located.\\\"}\"}",
+   [timezone]: "{\"description\": \"{\\\"description\\\": \\\"Timezone of the station.\\\"}\"}",
+   [timezonecorr]: "{\"description\": \"{\\\"description\\\": \\\"Timezone correction in minutes for the station.\\\"}\"}",
+   [observedst]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station observes Daylight Saving Time.\\\"}\"}",
+   [stormsurge]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station measures storm surge data.\\\"}\"}",
+   [forecast]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station provides forecast data.\\\"}\"}",
+   [outlook]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station provides outlook data.\\\"}\"}",
+   [HTFhistorical]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station has historical High Tide Flooding data.\\\"}\"}",
+   [nonNavigational]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station is non-navigational.\\\"}\"}",
+   [id]: "{\"description\": \"{\\\"description\\\": \\\"Unique identifier for the station.\\\"}\"}",
+   [name]: "{\"description\": \"{\\\"description\\\": \\\"Name of the station.\\\"}\"}",
+   [lat]: "{\"description\": \"{\\\"description\\\": \\\"Latitude of the station.\\\"}\"}",
+   [lng]: "{\"description\": \"{\\\"description\\\": \\\"Longitude of the station.\\\"}\"}",
+   [affiliations]: "{\"description\": \"{\\\"description\\\": \\\"Affiliations of the station.\\\"}\"}",
+   [portscode]: "{\"description\": \"{\\\"description\\\": \\\"PORTS code for the station.\\\"}\"}",
+   [self]: "{\"description\": \"{\\\"description\\\": \\\"URL to the station's data.\\\"}\"}",
+   [expand]: "{\"description\": \"{\\\"description\\\": \\\"URL to expanded information about the station.\\\"}\"}",
+   [tideType]: "{\"description\": \"{\\\"description\\\": \\\"Type of tide measured by the station.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tidal", "path": "$.tidal"},
+  {"column": "greatlakes", "path": "$.greatlakes"},
+  {"column": "shefcode", "path": "$.shefcode"},
+  {"column": "details", "path": "$.details"},
+  {"column": "sensors", "path": "$.sensors"},
+  {"column": "floodlevels", "path": "$.floodlevels"},
+  {"column": "datums", "path": "$.datums"},
+  {"column": "supersededdatums", "path": "$.supersededdatums"},
+  {"column": "harmonicConstituents", "path": "$.harmonicConstituents"},
+  {"column": "benchmarks", "path": "$.benchmarks"},
+  {"column": "tidePredOffsets", "path": "$.tidePredOffsets"},
+  {"column": "ofsMapOffsets", "path": "$.ofsMapOffsets"},
+  {"column": "state", "path": "$.state"},
+  {"column": "timezone", "path": "$.timezone"},
+  {"column": "timezonecorr", "path": "$.timezonecorr"},
+  {"column": "observedst", "path": "$.observedst"},
+  {"column": "stormsurge", "path": "$.stormsurge"},
+  {"column": "nearby", "path": "$.nearby"},
+  {"column": "forecast", "path": "$.forecast"},
+  {"column": "outlook", "path": "$.outlook"},
+  {"column": "HTFhistorical", "path": "$.HTFhistorical"},
+  {"column": "nonNavigational", "path": "$.nonNavigational"},
+  {"column": "id", "path": "$.id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lng", "path": "$.lng"},
+  {"column": "affiliations", "path": "$.affiliations"},
+  {"column": "portscode", "path": "$.portscode"},
+  {"column": "products", "path": "$.products"},
+  {"column": "disclaimers", "path": "$.disclaimers"},
+  {"column": "notices", "path": "$.notices"},
+  {"column": "self", "path": "$.self"},
+  {"column": "expand", "path": "$.expand"},
+  {"column": "tideType", "path": "$.tideType"},
+]
+```
+
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tidal", "path": "$.data.tidal"},
+  {"column": "greatlakes", "path": "$.data.greatlakes"},
+  {"column": "shefcode", "path": "$.data.shefcode"},
+  {"column": "details", "path": "$.data.details"},
+  {"column": "sensors", "path": "$.data.sensors"},
+  {"column": "floodlevels", "path": "$.data.floodlevels"},
+  {"column": "datums", "path": "$.data.datums"},
+  {"column": "supersededdatums", "path": "$.data.supersededdatums"},
+  {"column": "harmonicConstituents", "path": "$.data.harmonicConstituents"},
+  {"column": "benchmarks", "path": "$.data.benchmarks"},
+  {"column": "tidePredOffsets", "path": "$.data.tidePredOffsets"},
+  {"column": "ofsMapOffsets", "path": "$.data.ofsMapOffsets"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "timezone", "path": "$.data.timezone"},
+  {"column": "timezonecorr", "path": "$.data.timezonecorr"},
+  {"column": "observedst", "path": "$.data.observedst"},
+  {"column": "stormsurge", "path": "$.data.stormsurge"},
+  {"column": "nearby", "path": "$.data.nearby"},
+  {"column": "forecast", "path": "$.data.forecast"},
+  {"column": "outlook", "path": "$.data.outlook"},
+  {"column": "HTFhistorical", "path": "$.data.HTFhistorical"},
+  {"column": "nonNavigational", "path": "$.data.nonNavigational"},
+  {"column": "id", "path": "$.data.id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lng", "path": "$.data.lng"},
+  {"column": "affiliations", "path": "$.data.affiliations"},
+  {"column": "portscode", "path": "$.data.portscode"},
+  {"column": "products", "path": "$.data.products"},
+  {"column": "disclaimers", "path": "$.data.disclaimers"},
+  {"column": "notices", "path": "$.data.notices"},
+  {"column": "self", "path": "$.data.self"},
+  {"column": "expand", "path": "$.data.expand"},
+  {"column": "tideType", "path": "$.data.tideType"},
+]
+```
+
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Station') | project['tidal'] = tobool(data.['tidal']),['greatlakes'] = tobool(data.['greatlakes']),['shefcode'] = tostring(data.['shefcode']),['details'] = todynamic(data.['details']),['sensors'] = todynamic(data.['sensors']),['floodlevels'] = todynamic(data.['floodlevels']),['datums'] = todynamic(data.['datums']),['supersededdatums'] = todynamic(data.['supersededdatums']),['harmonicConstituents'] = todynamic(data.['harmonicConstituents']),['benchmarks'] = todynamic(data.['benchmarks']),['tidePredOffsets'] = todynamic(data.['tidePredOffsets']),['ofsMapOffsets'] = todynamic(data.['ofsMapOffsets']),['state'] = tostring(data.['state']),['timezone'] = tostring(data.['timezone']),['timezonecorr'] = toint(data.['timezonecorr']),['observedst'] = tobool(data.['observedst']),['stormsurge'] = tobool(data.['stormsurge']),['nearby'] = todynamic(data.['nearby']),['forecast'] = tobool(data.['forecast']),['outlook'] = tobool(data.['outlook']),['HTFhistorical'] = tobool(data.['HTFhistorical']),['nonNavigational'] = tobool(data.['nonNavigational']),['id'] = tostring(data.['id']),['name'] = tostring(data.['name']),['lat'] = toreal(data.['lat']),['lng'] = toreal(data.['lng']),['affiliations'] = tostring(data.['affiliations']),['portscode'] = tostring(data.['portscode']),['products'] = todynamic(data.['products']),['disclaimers'] = todynamic(data.['disclaimers']),['notices'] = todynamic(data.['notices']),['self'] = tostring(data.['self']),['expand'] = tostring(data.['expand']),['tideType'] = tostring(data.['tideType']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Visibility] (
+   [timestamp]: string,
+   [value]: real,
+   [max_visibility_exceeded]: bool,
+   [min_visibility_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [station_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Visibility] column-docstrings (
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the visibility measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the visibility\\\"}\"}",
+   [max_visibility_exceeded]: "{\"description\": \"A flag that indicates whether the maximum expected visibility was exceeded\"}",
+   [min_visibility_exceeded]: "{\"description\": \"A flag that indicates whether the minimum expected visibility was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"A flag that indicates whether the rate of change tolerance limit was exceeded\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Visibility] ingestion json mapping "Visibility_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_visibility_exceeded", "path": "$.max_visibility_exceeded"},
+  {"column": "min_visibility_exceeded", "path": "$.min_visibility_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "station_id", "path": "$.station_id"},
+]
+```
+
+
+.create-or-alter table [Visibility] ingestion json mapping "Visibility_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_visibility_exceeded", "path": "$.data.max_visibility_exceeded"},
+  {"column": "min_visibility_exceeded", "path": "$.data.min_visibility_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "station_id", "path": "$.data.station_id"},
+]
+```
+
+
+.create materialized-view with (backfill=true) VisibilityLatest on table Visibility {
+    Visibility | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Visibility] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Visibility') | project['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_visibility_exceeded'] = tobool(data.['max_visibility_exceeded']),['min_visibility_exceeded'] = tobool(data.['min_visibility_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```

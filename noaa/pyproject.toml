@@ -20,6 +20,7 @@ dependencies = [
     "requests>=2.32.2",
     "confluent-kafka>=2.4.0",
     "cloudevents>=1.10.1",
+    "dataclasses_json>=0.6.6"
 ]
 
 [project.optional-dependencies]

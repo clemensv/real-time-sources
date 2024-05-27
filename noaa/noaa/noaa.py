@@ -8,12 +8,24 @@ import json
 import time
 import sys
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict
+from typing import Any, Dict, List, cast
 import uuid
+from noaa.noaa_producer.microsoft.opendata.us.noaa.airpressure import AirPressure
+from noaa.noaa_producer.microsoft.opendata.us.noaa.airtemperature import AirTemperature
+from noaa.noaa_producer.microsoft.opendata.us.noaa.conductivity import Conductivity
+from noaa.noaa_producer.microsoft.opendata.us.noaa.humidity import Humidity
+from noaa.noaa_producer.microsoft.opendata.us.noaa.predictions import Predictions
+from noaa.noaa_producer.microsoft.opendata.us.noaa.salinity import Salinity
+from noaa.noaa_producer.microsoft.opendata.us.noaa.station import Station
+from noaa.noaa_producer.microsoft.opendata.us.noaa.visibility import Visibility
+from noaa.noaa_producer.microsoft.opendata.us.noaa.waterlevel import WaterLevel
+from noaa.noaa_producer.microsoft.opendata.us.noaa.watertemperature import WaterTemperature
+from noaa.noaa_producer.microsoft.opendata.us.noaa.wind import Wind
+from noaa.noaa_producer.microsoft.opendata.us.noaa.qualitylevel import QualityLevel
+from numpy import NaN
 import requests
-from confluent_kafka import Producer
-from cloudevents.http import CloudEvent, to_structured
 import argparse
+from .noaa_producer.producer_client import MicrosoftOpendataUsNoaaEventProducer
 
 class NOAADataPoller:
     """
@@ -29,7 +41,6 @@ class NOAADataPoller:
         "wind": "product=wind",
         "air_pressure": "product=air_pressure",
         "water_temperature": "product=water_temperature",
-        "air_gap": "product=air_gap",
         "conductivity": "product=conductivity",
         "visibility": "product=visibility",
         "humidity": "product=humidity",
@@ -47,10 +58,10 @@ class NOAADataPoller:
         """
         self.kafka_topic = kafka_topic
         self.last_polled_file = last_polled_file
-        self.producer = Producer(kafka_config)
+        self.producer = MicrosoftOpendataUsNoaaEventProducer(kafka_config, kafka_topic)
         self.stations = self.fetch_all_stations()
         if station:
-            self.station = next((station for station in self.stations if station['id'] == station), None)
+            self.station = next((station for station in self.stations if station.id == station), None)
             if not self.station:
                 print(f"Station {station} not found.")
                 sys.exit(1)
@@ -58,7 +69,7 @@ class NOAADataPoller:
             self.station = None
         
 
-    def fetch_all_stations(self) -> list:
+    def fetch_all_stations(self) -> List[Station]:
         """
         Fetch all NOAA stations.
 
@@ -70,7 +81,7 @@ class NOAADataPoller:
             response = requests.get(url)
             response.raise_for_status()
             stations_data = response.json()
-            stations = stations_data.get('stations', [])
+            stations = Station.schema().load(stations_data.get('stations', []), many=True)
             return stations
         except requests.RequestException as err:
             print(f"Error fetching stations: {err}")
@@ -86,8 +97,8 @@ class NOAADataPoller:
         Returns:
             str: The datum value (either "MLLW" or "IGLD").
         """
-        station_info:Any = next((station for station in self.stations if station['id'] == station_id), {})
-        tide_type = station_info.get("tideType", "")
+        station_info:Station = next((station for station in self.stations if station.id == station_id), {})
+        tide_type = station_info.tideType
         return "IGLD" if tide_type == "Great Lakes" else "MLLW"
 
     def poll_noaa_api(self, product: str, station_id: str, last_polled_time: datetime) -> list:
@@ -135,45 +146,6 @@ class NOAADataPoller:
         """
         return ''.join([part.capitalize() for part in s.split('_')])
 
-    def create_cloud_event(self, data: dict, product: str, station: str, timestamp: datetime) -> tuple:
-        """
-        Create a CloudEvent from the data.
-
-        Args:
-            data (dict): The data to include in the event.
-            product (str): The product name.
-            station (str): The station ID.
-            timestamp (datetime): The timestamp of the event.
-
-        Returns:
-            tuple: Headers and body of the CloudEvent.
-        """
-        attributes = {
-            "type": f"Microsoft.OpenData.US.NOAA.{self.pascal(product)}",
-            "source": f"https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/{station}.json",
-            "subject": f"{station}",
-            "time": timestamp.isoformat(),
-            "id": str(uuid.uuid4()),
-            "datacontenttype": "application/json"
-        }
-        event = CloudEvent(attributes, data)
-        headers, body = to_structured(event)
-        return headers, body
-
-    def send_to_kafka(self, headers: Dict[str, str], body: bytes, key: bytes):
-        """
-        Send the CloudEvent to Kafka.
-
-        Args:
-            headers (Dict[str, str]): Headers of the CloudEvent.
-            body (bytes): Body of the CloudEvent.
-            key (bytes): Key for the Kafka message.
-        """
-        try:
-            self.producer.produce(topic=self.kafka_topic, key=key, value=body, headers=headers)
-        except Exception as err:
-            print(f"Error sending data to Kafka: {err}")
-
     def load_last_polled_times(self) -> Dict:
         """
         Load the last polled times from a file.
@@ -217,15 +189,14 @@ class NOAADataPoller:
         last_polled_times = self.load_last_polled_times()
 
         for station in self.stations:
-            headers, body = self.create_cloud_event(station, "station", station['id'], datetime.now(timezone.utc))
-            self.send_to_kafka(headers, body, key=station['id'].encode('utf-8'))
-        self.producer.flush()      
+            self.producer.send_microsoft_opendata_us_noaa_station(station, flush_producer=False)
+        self.producer.producer.flush()
 
         while True:
             for station in self.stations if not self.station else [self.station]:
-                station_id = station['id']
+                station_id = station.id
                 for product in self.PRODUCTS:
-                    print(f"Polling {product} data for station {station_id}: {station['name']}:", end='')
+                    print(f"Polling {product} data for station {station_id}: {station.name}:", end='')
                     last_polled_time = last_polled_times.get(product, {}).get(
                         station_id, datetime.now(timezone.utc) - timedelta(hours=24))
                     new_data_records = self.poll_noaa_api(product, station_id, last_polled_time)
@@ -235,26 +206,116 @@ class NOAADataPoller:
                     for record in new_data_records:
                         ts_parsed = datetime.strptime(record['t'], "%Y-%m-%d %H:%M")
                         timestamp = ts_parsed.replace(tzinfo=timezone.utc)
-                        record['t'] = timestamp.isoformat()
-                        record['station_id'] = station_id
-                        # if the 'v' field is present, convert it to a float
-                        if 'v' in record:
-                            record['v'] = float(record['v'])
-                        # if the 's' field is present, convert it to a float
-                        if 's' in record:
-                            record['s'] = float(record['s'])
+                        
+                        if product == "water_level":
+                            water_level = WaterLevel(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                stddev=float(record['s']) if 's' in record and record['s'] else NaN,
+                                outside_sigma_band=bool(record.get('f', '').split(',')[0] == '1'),
+                                flat_tolerance_limit=bool(record.get('f', '').split(',')[1] == '1'),
+                                rate_of_change_limit=bool(record.get('f', '').split(',')[2] == '1'),
+                                max_min_expected_height=bool(record.get('f', '').split(',')[3] == '1'),
+                                quality=QualityLevel.Preliminary if record.get('q', '') == 'p' else QualityLevel.Verified 
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_waterlevel(water_level, station_id, flush_producer=False)
+                        elif product == "predictions":
+                            prediction = Predictions(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_predictions(prediction, station_id, flush_producer=False)
+                        elif product == "air_temperature":
+                            air_temperature = AirTemperature(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                max_temp_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
+                                min_temp_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
+                                rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_airtemperature(air_temperature, station_id, flush_producer=False)
+                        elif product == "wind":
+                            wind = Wind(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                speed=float(record['s']) if 's' in record and record['s'] else NaN,
+                                direction_degrees=record['d'] if 'd' in record and record['d'] else NaN,
+                                direction_text=record['dr'] if 'dr' in record and record['dr'] else '',
+                                gusts=float(record['g']) if 'g' in record and record['g'] else NaN,
+                                max_wind_speed_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
+                                rate_of_change_exceeded=bool(record.get('f', '').split(',')[1] == '1')
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_wind(wind, station_id, flush_producer=False)
+                        elif product == "air_pressure":
+                            air_pressure = AirPressure(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                max_pressure_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
+                                min_pressure_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
+                                rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_airpressure(air_pressure, station_id, flush_producer=False)
+                        elif product == "water_temperature":
+                            water_temperature = WaterTemperature(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                max_temp_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
+                                min_temp_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
+                                rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_watertemperature(water_temperature, station_id, flush_producer=False)
+                        elif product == "conductivity":
+                            conductivity = Conductivity(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                max_conductivity_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
+                                min_conductivity_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
+                                rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_conductivity(conductivity, station_id, flush_producer=False)
+                        elif product == "visibility":
+                            visibility = Visibility(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                max_visibility_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
+                                min_visibility_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
+                                rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_visibility(visibility, station_id, flush_producer=False)
+                        elif product == "humidity":
+                            humidity = Humidity(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                max_humidity_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
+                                min_humidity_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
+                                rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_humidity(humidity, station_id, flush_producer=False)
+                        elif product == "salinity":
+                            salinity = Salinity(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                salinity=float(record['s']) if 's' in record and record['s'] else NaN,
+                                grams_per_kg=float(record['g']) if 'g' in record and record['g'] else NaN,
+                            )
+                            self.producer.send_microsoft_opendata_us_noaa_salinity(salinity, station_id, flush_producer=False)
+
                         if timestamp > max_timestamp:
                             max_timestamp = timestamp
-                        headers, body = self.create_cloud_event(record, product, station_id, timestamp)
-                        self.send_to_kafka(headers, body, key=station_id.encode('utf-8'))
-
+                    self.producer.producer.flush()
                     if new_data_records:
                         if product not in last_polled_times:
                             last_polled_times[product] = {}
                         last_polled_times[product][station_id] = max_timestamp
                         self.save_last_polled_times(last_polled_times)
-                # flush all the station data to Kafka
-                self.producer.flush()          
            
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -300,7 +361,7 @@ def main():
                         help="Password for SASL PLAIN authentication")
     parser.add_argument('--connection-string', type=str,
                         help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
-    parser.add_argument('--station', action='station', help='Station ID to poll data for. If not provided, data for all stations will be polled.')
+    parser.add_argument('--station', type=str, help='Station ID to poll data for. If not provided, data for all stations will be polled.')
 
     args = parser.parse_args()
 
