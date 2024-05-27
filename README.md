@@ -21,3 +21,8 @@ retrieve real time vehcile position data from a [GTFS Realtime](https://gtfs.org
 service feed. An example is the [New York City MTA Bus Time](https://bustime.mta.info/wiki/Developers/Index)
 
 
+## NOAA Data Poller
+
+The [NOAA Data Poller](noaa/README.md) tool is a command line tool that can be used to
+retrieve real time weather data from the [NOAA](https://www.noaa.gov/) service. The
+tool can be used to retrieve data for a single station or for multiple stations.

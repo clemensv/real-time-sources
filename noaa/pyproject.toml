@@ -1,0 +1,42 @@
+[build-system]
+build-backend = "flit_scm:buildapi"
+requires = ["flit_core>=3.2", "flit_scm", "wheel"]
+
+[project]
+name = "noaa"
+dynamic = ["version"]
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+description = "A project to fetch data from NOAA API"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.32.2",
+    "confluent-kafka>=2.4.0",
+    "cloudevents>=1.10.1",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.2.1",
+    "pytest-cov>=3.0",
+    "testcontainers>=4.5.0",
+    "requests-mock>=1.12.1",
+]
+
+[project.scripts]
+noaa = "noaa:main"
+
+[tool.setuptools_scm]
+root = ".."
+write_to = "noaa/_version.py"
+
+[project.urls]
+homepage = "https://github.com/yourusername/noaa"
+repository = "https://github.com/yourusername/noaa"
