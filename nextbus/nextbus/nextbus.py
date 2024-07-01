@@ -27,7 +27,7 @@ def print_route_predictions(agency_tag, route_tag):
         for prediction in direction.findall("prediction"):
             print(f"  {prediction.get('minutes')} minutes")
 
-def print_route_config(agency_tag, route_tag):
+def print_stops(agency_tag, route_tag):
     # Make a request to the NextBus API to get the configuration for the specified route
     response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag})
     if response.status_code == 404:
@@ -402,7 +402,7 @@ def main():
     route_config_parser = subparsers.add_parser("route-config", help="get the configuration for a route")
     route_config_parser.add_argument("--agency", help="the tag of the agency to get the route configuration for", required=True)
     route_config_parser.add_argument("--route", help="the route to get the configuration for", required=True)
-    route_config_parser.set_defaults(func=lambda args: print_route_config(args.agency, args.route))
+    route_config_parser.set_defaults(func=lambda args: print_stops(args.agency, args.route))
 
     # Parse the command-line arguments and execute the selected command
     args = parser.parse_args()
