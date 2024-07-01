@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "rssbridge-producer-kafka-producer"
+description = "rssbridge_producer_kafka_producer Apache Kafka consumer library"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+packages = [{include = "rssbridge_producer_kafka_producer", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "<4.0,>=3.11"
+rssbridge-producer-kafka-producer = { path = "../../../rssbridge_producer/rssbridge_producer_kafka_producer", develop = true }
+rssbridge-producer-data = { path = "../../../rssbridge_producer/rssbridge_producer_data", develop = true }
+confluent-kafka = ">=2.4.0"
+cloudevents = ">=1.10.1"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.2.2"
+flake8 = ">=7.1.0"
+pylint = ">=3.2.3"
+mypy = ">=1.10.0"
+testcontainers = ">=4.5.1"
+pytest-asyncio = ">=0.23.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
