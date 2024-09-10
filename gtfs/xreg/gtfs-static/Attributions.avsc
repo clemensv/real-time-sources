@@ -1,0 +1,103 @@
+{
+  "type": "record",
+  "name": "Attributions",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Provides information about the attributions.",
+  "fields": [
+    {
+      "name": "attributionId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies an attribution for the dataset."
+    },
+    {
+      "name": "agencyId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies the agency associated with the attribution."
+    },
+    {
+      "name": "routeId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies the route associated with the attribution."
+    },
+    {
+      "name": "tripId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies the trip associated with the attribution."
+    },
+    {
+      "name": "organizationName",
+      "type": "string",
+      "doc": "Name of the organization associated with the attribution."
+    },
+    {
+      "name": "isProducer",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null,
+      "doc": "Indicates if the organization is a producer."
+    },
+    {
+      "name": "isOperator",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null,
+      "doc": "Indicates if the organization is an operator."
+    },
+    {
+      "name": "isAuthority",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null,
+      "doc": "Indicates if the organization is an authority."
+    },
+    {
+      "name": "attributionUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the attribution."
+    },
+    {
+      "name": "attributionEmail",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Email address associated with the attribution."
+    },
+    {
+      "name": "attributionPhone",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Phone number associated with the attribution."
+    }
+  ]
+}

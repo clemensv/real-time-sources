@@ -17,17 +17,18 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "requests>=2.32.2",
-    "confluent-kafka>=2.4.0",
-    "cloudevents>=1.10.1",
-    "dataclasses_json>=0.6.6"
+    "requests>=2.32.3",
+    "confluent-kafka>=2.5.3",
+    "cloudevents>=1.11.0",
+    "dataclasses_json>=0.6.7",
+    "numpy>=2.1.1",
 ]
 
 [project.optional-dependencies]
 test = [
-    "pytest>=7.2.1",
-    "pytest-cov>=3.0",
-    "testcontainers>=4.5.0",
+    "pytest>=8.3.2",
+    "pytest-cov>=5.0.0",
+    "testcontainers>=4.8.1",
     "requests-mock>=1.12.1",
 ]
 
@@ -36,7 +37,7 @@ noaa = "noaa:main"
 
 [tool.setuptools_scm]
 root = ".."
-write_to = "noaa/_version.py"
+write_to = "noaa/noaa/_version.py"
 
 [project.urls]
 homepage = "https://github.com/yourusername/noaa"

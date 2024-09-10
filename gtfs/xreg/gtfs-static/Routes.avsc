@@ -1,0 +1,152 @@
+{
+  "type": "record",
+  "name": "Routes",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Identifies a route.",
+  "fields": [
+    {
+      "name": "routeId",
+      "type": "string",
+      "doc": "Identifies a route."
+    },
+    {
+      "name": "agencyId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Agency for the specified route."
+    },
+    {
+      "name": "routeShortName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Short name of a route."
+    },
+    {
+      "name": "routeLongName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Full name of a route."
+    },
+    {
+      "name": "routeDesc",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Description of a route that provides useful, quality information."
+    },
+    {
+      "name": "routeType",
+      "type": {
+        "type": "enum",
+        "name": "RouteType",
+        "namespace": "GeneralTransitFeedStatic",
+        "symbols": [
+          "TRAM",
+          "SUBWAY",
+          "RAIL",
+          "BUS",
+          "FERRY",
+          "CABLE_TRAM",
+          "AERIAL_LIFT",
+          "FUNICULAR",
+          "RESERVED_1",
+          "RESERVED_2",
+          "RESERVED_3",
+          "TROLLEYBUS",
+          "MONORAIL",
+          "OTHER"
+        ],
+        "doc": "Indicates the type of transportation used on a route. Symbols: TRAM - Tram, streetcar, light rail; SUBWAY - Subway, metro; RAIL - Intercity or long-distance travel; BUS - Short- and long-distance bus routes; FERRY - Boat service; CABLE_TRAM - Street-level rail cars with a cable running beneath the vehicle; AERIAL_LIFT - Cable transport with suspended cabins or chairs; FUNICULAR - Rail system designed for steep inclines; TROLLEYBUS - Electric buses with overhead wires; MONORAIL - Railway with a single rail or beam."
+      },
+      "doc": "Indicates the type of transportation used on a route."
+    },
+    {
+      "name": "routeUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the particular route."
+    },
+    {
+      "name": "routeColor",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Route color designation that matches public facing material."
+    },
+    {
+      "name": "routeTextColor",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Legible color to use for text drawn against a background of route_color."
+    },
+    {
+      "name": "routeSortOrder",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null,
+      "doc": "Orders the routes in a way which is ideal for presentation to customers."
+    },
+    {
+      "name": "continuousPickup",
+      "type": {
+        "type": "enum",
+        "name": "ContinuousPickup",
+        "namespace": "GeneralTransitFeedStatic",
+        "symbols": [
+          "CONTINUOUS_STOPPING",
+          "NO_CONTINUOUS_STOPPING",
+          "PHONE_AGENCY",
+          "COORDINATE_WITH_DRIVER"
+        ],
+        "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+      },
+      "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path."
+    },
+    {
+      "name": "continuousDropOff",
+      "type": {
+        "type": "enum",
+        "name": "ContinuousDropOff",
+        "namespace": "GeneralTransitFeedStatic",
+        "symbols": [
+          "CONTINUOUS_STOPPING",
+          "NO_CONTINUOUS_STOPPING",
+          "PHONE_AGENCY",
+          "COORDINATE_WITH_DRIVER"
+        ],
+        "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+      },
+      "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path."
+    },
+    {
+      "name": "networkId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies a group of routes."
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "type": "record",
+  "name": "Timeframes",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.",
+  "fields": [
+    {
+      "name": "timeframeGroupId",
+      "type": "string",
+      "doc": "Identifies a timeframe or set of timeframes."
+    },
+    {
+      "name": "startTime",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Defines the beginning of a timeframe."
+    },
+    {
+      "name": "endTime",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Defines the end of a timeframe."
+    },
+    {
+      "name": "serviceDates",
+      "type": [
+        {
+          "type": "record",
+          "name": "Calendar",
+          "fields": [
+            {
+              "name": "serviceId",
+              "type": "string",
+              "doc": "Identifies a set of dates when service is available for one or more routes."
+            },
+            {
+              "name": "monday",
+              "type": {
+                "type": "enum",
+                "name": "ServiceAvailability",
+                "namespace": "GeneralTransitFeedStatic",
+                "symbols": [
+                  "NO_SERVICE",
+                  "SERVICE_AVAILABLE"
+                ],
+                "doc": "Indicates whether the service operates on all Mondays in the date range specified. Symbols: NO_SERVICE - Service is not available; SERVICE_AVAILABLE - Service is available."
+              },
+              "doc": "Indicates whether the service operates on all Mondays in the date range specified."
+            },
+            {
+              "name": "tuesday",
+              "type": "GeneralTransitFeedStatic.ServiceAvailability",
+              "doc": "Indicates whether the service operates on all Tuesdays in the date range specified."
+            },
+            {
+              "name": "wednesday",
+              "type": "GeneralTransitFeedStatic.ServiceAvailability",
+              "doc": "Indicates whether the service operates on all Wednesdays in the date range specified."
+            },
+            {
+              "name": "thursday",
+              "type": "GeneralTransitFeedStatic.ServiceAvailability",
+              "doc": "Indicates whether the service operates on all Thursdays in the date range specified."
+            },
+            {
+              "name": "friday",
+              "type": "GeneralTransitFeedStatic.ServiceAvailability",
+              "doc": "Indicates whether the service operates on all Fridays in the date range specified."
+            },
+            {
+              "name": "saturday",
+              "type": "GeneralTransitFeedStatic.ServiceAvailability",
+              "doc": "Indicates whether the service operates on all Saturdays in the date range specified."
+            },
+            {
+              "name": "sunday",
+              "type": "GeneralTransitFeedStatic.ServiceAvailability",
+              "doc": "Indicates whether the service operates on all Sundays in the date range specified."
+            },
+            {
+              "name": "startDate",
+              "type": "string",
+              "doc": "Start service day for the service interval."
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "doc": "End service day for the service interval."
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "CalendarDates",
+          "fields": [
+            {
+              "name": "serviceId",
+              "type": "string",
+              "doc": "Identifies a set of dates when a service exception occurs for one or more routes."
+            },
+            {
+              "name": "date",
+              "type": "string",
+              "doc": "Date when service exception occurs."
+            },
+            {
+              "name": "exceptionType",
+              "type": {
+                "type": "enum",
+                "name": "ExceptionType",
+                "namespace": "GeneralTransitFeedStatic",
+                "symbols": [
+                  "SERVICE_ADDED",
+                  "SERVICE_REMOVED"
+                ],
+                "doc": "Indicates whether service is available on the date specified. Symbols: SERVICE_ADDED - Service has been added for the specified date; SERVICE_REMOVED - Service has been removed for the specified date."
+              },
+              "doc": "Indicates whether service is available on the date specified."
+            }
+          ]
+        }
+      ],
+      "doc": "Identifies a set of dates when service is available for one or more routes."
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "RouteNetworks",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines route networks.",
+  "fields": [
+    {
+      "name": "routeNetworkId",
+      "type": "string",
+      "doc": "Identifies a route network."
+    },
+    {
+      "name": "routeId",
+      "type": "string",
+      "doc": "Identifies a route."
+    },
+    {
+      "name": "networkId",
+      "type": "string",
+      "doc": "Identifies a network."
+    }
+  ]
+}

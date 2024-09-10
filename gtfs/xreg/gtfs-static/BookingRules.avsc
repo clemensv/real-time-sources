@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "BookingRules",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines booking rules.",
+  "fields": [
+    {
+      "name": "bookingRuleId",
+      "type": "string",
+      "doc": "Identifies a booking rule."
+    },
+    {
+      "name": "bookingRuleName",
+      "type": "string",
+      "doc": "Name of the booking rule."
+    },
+    {
+      "name": "bookingRuleDesc",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Description of the booking rule."
+    },
+    {
+      "name": "bookingRuleUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the booking rule."
+    }
+  ]
+}

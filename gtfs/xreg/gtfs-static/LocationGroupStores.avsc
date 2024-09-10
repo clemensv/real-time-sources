@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "LocationGroupStores",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines location group stores.",
+  "fields": [
+    {
+      "name": "locationGroupStoreId",
+      "type": "string",
+      "doc": "Identifies a location group store."
+    },
+    {
+      "name": "locationGroupId",
+      "type": "string",
+      "doc": "Identifies a location group."
+    },
+    {
+      "name": "storeId",
+      "type": "string",
+      "doc": "Identifies a store."
+    }
+  ]
+}

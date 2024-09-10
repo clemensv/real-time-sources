@@ -1,0 +1,226 @@
+{
+  "type": "record",
+  "name": "TripUpdate",
+  "namespace": "GeneralTransitFeed.TripUpdate",
+  "fields": [
+    {
+      "name": "trip",
+      "type": {
+        "type": "record",
+        "name": "TripDescriptor",
+        "namespace": "GeneralTransitFeed.TripUpdate",
+        "fields": [
+          {
+            "name": "trip_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "doc": "The trip_id from the GTFS feed that this selector refers to. For non frequency-based trips, this field is enough to uniquely identify the trip. For frequency-based trip, start_time and start_date might also be necessary."
+          },
+          {
+            "name": "route_id",
+            "type": [
+              "null",
+              "string"
+            ],
+            "doc": "The route_id from the GTFS that this selector refers to. The direction_id from the GTFS feed trips.txt file, indicating the"
+          },
+          {
+            "name": "direction_id",
+            "type": [
+              "null",
+              "int"
+            ],
+            "doc": "direction of travel for trips this selector refers to. This field is still experimental, and subject to change. It may be formally adopted in the future."
+          },
+          {
+            "name": "start_time",
+            "type": [
+              "null",
+              "string"
+            ],
+            "doc": "The initially scheduled start time of this trip instance. When the trip_id corresponds to a non-frequency-based trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id corresponds to a frequency-based trip, the start_time must be specified for trip updates and vehicle positions. If the trip corresponds to exact_times=1 GTFS record, then start_time must be some multiple (including zero) of headway_secs later than frequencies.txt start_time for the corresponding time period. If the trip corresponds to exact_times=0, then its start_time may be arbitrary, and is initially expected to be the first departure of the trip. Once established, the start_time of this frequency-based trip should be considered immutable, even if the first departure time changes -- that time change may instead be reflected in a StopTimeUpdate. Format and semantics of the field is same as that of GTFS/frequencies.txt/start_time, e.g., 11:15:35 or 25:15:35. The scheduled start date of this trip instance."
+          },
+          {
+            "name": "start_date",
+            "type": [
+              "null",
+              "string"
+            ],
+            "doc": "Must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where a vehicle that is one hour late is not considered to be related to schedule anymore. In YYYYMMDD format."
+          },
+          {
+            "name": "schedule_relationship",
+            "type": [
+              "null",
+              {
+                "name": "ScheduleRelationship",
+                "type": "enum",
+                "namespace": "GeneralTransitFeed.TripUpdate.TripDescriptor_types",
+                "symbols": [
+                  "SCHEDULED",
+                  "ADDED",
+                  "UNSCHEDULED",
+                  "CANCELED"
+                ],
+                "doc": "The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED."
+              }
+            ]
+          }
+        ],
+        "doc": "A descriptor that identifies an instance of a GTFS trip, or all instances of a trip along a route. - To specify a single trip instance, the trip_id (and if necessary,   start_time) is set. If route_id is also set, then it should be same as one   that the given trip corresponds to. - To specify all the trips along a given route, only the route_id should be   set. Note that if the trip_id is not known, then stop sequence ids in   TripUpdate are not sufficient, and stop_ids must be provided as well. In   addition, absolute arrival/departure times must be provided."
+      },
+      "doc": "The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule."
+    },
+    {
+      "name": "vehicle",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "VehicleDescriptor",
+          "namespace": "GeneralTransitFeed.TripUpdate",
+          "fields": [
+            {
+              "name": "id",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to"
+            },
+            {
+              "name": "label",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "help identify the correct vehicle."
+            },
+            {
+              "name": "license_plate",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "The license plate of the vehicle."
+            }
+          ],
+          "doc": "Identification information for the vehicle performing the trip."
+        }
+      ],
+      "doc": "Additional information on the vehicle that is serving this trip."
+    },
+    {
+      "name": "stop_time_update",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "StopTimeUpdate",
+          "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types",
+          "fields": [
+            {
+              "name": "stop_sequence",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "The update is linked to a specific stop either through stop_sequence or stop_id, so one of the fields below must necessarily be set. See the documentation in TripDescriptor for more information. Must be the same as in stop_times.txt in the corresponding GTFS feed."
+            },
+            {
+              "name": "stop_id",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "Must be the same as in stops.txt in the corresponding GTFS feed."
+            },
+            {
+              "name": "arrival",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "StopTimeEvent",
+                  "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types",
+                  "fields": [
+                    {
+                      "name": "delay",
+                      "type": [
+                        "null",
+                        "int"
+                      ],
+                      "doc": "Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time."
+                    },
+                    {
+                      "name": "time",
+                      "type": [
+                        "null",
+                        "long"
+                      ],
+                      "doc": "Event as absolute time. In Unix time (i.e., number of seconds since January 1st 1970 00:00:00 UTC). If uncertainty is omitted, it is interpreted as unknown."
+                    },
+                    {
+                      "name": "uncertainty",
+                      "type": [
+                        "null",
+                        "int"
+                      ],
+                      "doc": "If the prediction is unknown or too uncertain, the delay (or time) field should be empty. In such case, the uncertainty field is ignored. To specify a completely certain prediction, set its uncertainty to 0."
+                    }
+                  ],
+                  "doc": "Timing information for a single predicted event (either arrival or departure). Timing consists of delay and/or estimated time, and uncertainty. - delay should be used when the prediction is given relative to some   existing schedule in GTFS. - time should be given whether there is a predicted schedule or not. If   both time and delay are specified, time will take precedence   (although normally, time, if given for a scheduled trip, should be   equal to scheduled time in GTFS + delay). Uncertainty applies equally to both time and delay. The uncertainty roughly specifies the expected error in true delay (but note, we don't yet define its precise statistical meaning). It's possible for the uncertainty to be 0, for example for trains that are driven under computer timing control."
+                }
+              ]
+            },
+            {
+              "name": "departure",
+              "type": [
+                "null",
+                "GeneralTransitFeed.TripUpdate.TripUpdate_types.StopTimeEvent"
+              ]
+            },
+            {
+              "name": "schedule_relationship",
+              "type": [
+                "null",
+                {
+                  "name": "ScheduleRelationship",
+                  "type": "enum",
+                  "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types.StopTimeUpdate_types",
+                  "symbols": [
+                    "SCHEDULED",
+                    "SKIPPED",
+                    "NO_DATA"
+                  ],
+                  "doc": "The relation between this StopTime and the static schedule."
+                }
+              ]
+            }
+          ],
+          "doc": "Realtime update for arrival and/or departure events for a given stop on a trip. Updates can be supplied for both past and future events. The producer is allowed, although not required, to drop past events."
+        }
+      },
+      "doc": "Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX"
+    },
+    {
+      "name": "timestamp",
+      "type": [
+        "null",
+        "long"
+      ],
+      "doc": "time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip.  Delay should only be"
+    },
+    {
+      "name": "delay",
+      "type": [
+        "null",
+        "int"
+      ],
+      "doc": "specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future."
+    }
+  ],
+  "doc": "Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful."
+}

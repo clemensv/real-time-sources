@@ -1,0 +1,32 @@
+{
+  "type": "record",
+  "name": "Transfers",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines transfers.",
+  "fields": [
+    {
+      "name": "fromStopId",
+      "type": "string",
+      "doc": "Identifies a stop or station where a connection between routes begins."
+    },
+    {
+      "name": "toStopId",
+      "type": "string",
+      "doc": "Identifies a stop or station where a connection between routes ends."
+    },
+    {
+      "name": "transferType",
+      "type": "int",
+      "doc": "Type of connection for the specified (from_stop_id, to_stop_id) pair."
+    },
+    {
+      "name": "minTransferTime",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null,
+      "doc": "Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id)."
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "type": "record",
+  "name": "Stops",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.",
+  "fields": [
+    {
+      "name": "stopId",
+      "type": "string",
+      "doc": "Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area."
+    },
+    {
+      "name": "stopCode",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Short text or a number that identifies the location for riders."
+    },
+    {
+      "name": "stopName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Name of the location."
+    },
+    {
+      "name": "ttsStopName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Readable version of the stop_name."
+    },
+    {
+      "name": "stopDesc",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Description of the location that provides useful, quality information."
+    },
+    {
+      "name": "stopLat",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null,
+      "doc": "Latitude of the location."
+    },
+    {
+      "name": "stopLon",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null,
+      "doc": "Longitude of the location."
+    },
+    {
+      "name": "zoneId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies the fare zone for a stop."
+    },
+    {
+      "name": "stopUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the location."
+    },
+    {
+      "name": "locationType",
+      "type": {
+        "type": "enum",
+        "name": "LocationType",
+        "namespace": "GeneralTransitFeedStatic",
+        "symbols": [
+          "STOP",
+          "STATION",
+          "ENTRANCE_EXIT",
+          "GENERIC_NODE",
+          "BOARDING_AREA"
+        ],
+        "doc": "Location type. Symbols: STOP - Stop or platform; STATION - Physical structure or area that contains one or more platforms; ENTRANCE_EXIT - Location where passengers can enter or exit a station; GENERIC_NODE - Location within a station used to link pathways; BOARDING_AREA - Specific location on a platform where passengers can board and/or alight vehicles."
+      },
+      "doc": "Location type."
+    },
+    {
+      "name": "parentStation",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Defines hierarchy between the different locations."
+    },
+    {
+      "name": "stopTimezone",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Timezone of the location."
+    },
+    {
+      "name": "wheelchairBoarding",
+      "type": {
+        "type": "enum",
+        "name": "WheelchairBoarding",
+        "namespace": "GeneralTransitFeedStatic",
+        "symbols": [
+          "NO_INFO",
+          "SOME_VEHICLES",
+          "NOT_POSSIBLE"
+        ],
+        "doc": "Indicates whether wheelchair boardings are possible from the location. Symbols: NO_INFO - No accessibility information; SOME_VEHICLES - Some vehicles at this stop can be boarded by a rider in a wheelchair; NOT_POSSIBLE - Wheelchair boarding is not possible at this stop."
+      },
+      "doc": "Indicates whether wheelchair boardings are possible from the location."
+    },
+    {
+      "name": "levelId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Level of the location."
+    },
+    {
+      "name": "platformCode",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Platform identifier for a platform stop."
+    }
+  ]
+}

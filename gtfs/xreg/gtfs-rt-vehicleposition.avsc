@@ -1,0 +1,250 @@
+{
+  "type": "record",
+  "name": "VehiclePosition",
+  "namespace": "GeneralTransitFeed.VehiclePosition",
+  "fields": [
+    {
+      "name": "trip",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "TripDescriptor",
+          "namespace": "GeneralTransitFeed.VehiclePosition",
+          "fields": [
+            {
+              "name": "trip_id",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "The trip_id from the GTFS feed that this selector refers to. For non frequency-based trips, this field is enough to uniquely identify the trip. For frequency-based trip, start_time and start_date might also be necessary."
+            },
+            {
+              "name": "route_id",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "The route_id from the GTFS that this selector refers to. The direction_id from the GTFS feed trips.txt file, indicating the"
+            },
+            {
+              "name": "direction_id",
+              "type": [
+                "null",
+                "int"
+              ],
+              "doc": "direction of travel for trips this selector refers to. This field is still experimental, and subject to change. It may be formally adopted in the future."
+            },
+            {
+              "name": "start_time",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "The initially scheduled start time of this trip instance. When the trip_id corresponds to a non-frequency-based trip, this field should either be omitted or be equal to the value in the GTFS feed. When the trip_id corresponds to a frequency-based trip, the start_time must be specified for trip updates and vehicle positions. If the trip corresponds to exact_times=1 GTFS record, then start_time must be some multiple (including zero) of headway_secs later than frequencies.txt start_time for the corresponding time period. If the trip corresponds to exact_times=0, then its start_time may be arbitrary, and is initially expected to be the first departure of the trip. Once established, the start_time of this frequency-based trip should be considered immutable, even if the first departure time changes -- that time change may instead be reflected in a StopTimeUpdate. Format and semantics of the field is same as that of GTFS/frequencies.txt/start_time, e.g., 11:15:35 or 25:15:35. The scheduled start date of this trip instance."
+            },
+            {
+              "name": "start_date",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "Must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where a vehicle that is one hour late is not considered to be related to schedule anymore. In YYYYMMDD format."
+            },
+            {
+              "name": "schedule_relationship",
+              "type": [
+                "null",
+                {
+                  "name": "ScheduleRelationship",
+                  "type": "enum",
+                  "namespace": "GeneralTransitFeed.VehiclePosition.TripDescriptor_types",
+                  "symbols": [
+                    "SCHEDULED",
+                    "ADDED",
+                    "UNSCHEDULED",
+                    "CANCELED"
+                  ],
+                  "doc": "The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED."
+                }
+              ]
+            }
+          ],
+          "doc": "A descriptor that identifies an instance of a GTFS trip, or all instances of a trip along a route. - To specify a single trip instance, the trip_id (and if necessary,   start_time) is set. If route_id is also set, then it should be same as one   that the given trip corresponds to. - To specify all the trips along a given route, only the route_id should be   set. Note that if the trip_id is not known, then stop sequence ids in   TripUpdate are not sufficient, and stop_ids must be provided as well. In   addition, absolute arrival/departure times must be provided."
+        }
+      ],
+      "doc": "The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance."
+    },
+    {
+      "name": "vehicle",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "VehicleDescriptor",
+          "namespace": "GeneralTransitFeed.VehiclePosition",
+          "fields": [
+            {
+              "name": "id",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to"
+            },
+            {
+              "name": "label",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "help identify the correct vehicle."
+            },
+            {
+              "name": "license_plate",
+              "type": [
+                "null",
+                "string"
+              ],
+              "doc": "The license plate of the vehicle."
+            }
+          ],
+          "doc": "Identification information for the vehicle performing the trip."
+        }
+      ],
+      "doc": "Additional information on the vehicle that is serving this trip."
+    },
+    {
+      "name": "position",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Position",
+          "namespace": "GeneralTransitFeed.VehiclePosition",
+          "fields": [
+            {
+              "name": "latitude",
+              "type": "float",
+              "doc": "Degrees North, in the WGS-84 coordinate system."
+            },
+            {
+              "name": "longitude",
+              "type": "float",
+              "doc": "Degrees East, in the WGS-84 coordinate system."
+            },
+            {
+              "name": "bearing",
+              "type": [
+                "null",
+                "float"
+              ],
+              "doc": "Bearing, in degrees, clockwise from North, i.e., 0 is North and 90 is East. This can be the compass bearing, or the direction towards the next stop or intermediate location. This should not be direction deduced from the sequence of previous positions, which can be computed from previous data."
+            },
+            {
+              "name": "odometer",
+              "type": [
+                "null",
+                "double"
+              ],
+              "doc": "Odometer value, in meters."
+            },
+            {
+              "name": "speed",
+              "type": [
+                "null",
+                "float"
+              ],
+              "doc": "Momentary speed measured by the vehicle, in meters per second."
+            }
+          ],
+          "doc": "A position."
+        }
+      ],
+      "doc": "Current position of this vehicle. The stop sequence index of the current stop. The meaning of"
+    },
+    {
+      "name": "current_stop_sequence",
+      "type": [
+        "null",
+        "int"
+      ],
+      "doc": "current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in"
+    },
+    {
+      "name": "stop_id",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "the corresponding GTFS feed."
+    },
+    {
+      "name": "current_status",
+      "type": [
+        "null",
+        {
+          "name": "VehicleStopStatus",
+          "type": "enum",
+          "namespace": "GeneralTransitFeed.VehiclePosition.VehiclePosition_types",
+          "symbols": [
+            "INCOMING_AT",
+            "STOPPED_AT",
+            "IN_TRANSIT_TO"
+          ]
+        }
+      ],
+      "doc": "The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time"
+    },
+    {
+      "name": "timestamp",
+      "type": [
+        "null",
+        "long"
+      ],
+      "doc": "(i.e., number of seconds since January 1st 1970 00:00:00 UTC)."
+    },
+    {
+      "name": "congestion_level",
+      "type": [
+        "null",
+        {
+          "name": "CongestionLevel",
+          "type": "enum",
+          "namespace": "GeneralTransitFeed.VehiclePosition.VehiclePosition_types",
+          "symbols": [
+            "UNKNOWN_CONGESTION_LEVEL",
+            "RUNNING_SMOOTHLY",
+            "STOP_AND_GO",
+            "CONGESTION",
+            "SEVERE_CONGESTION"
+          ],
+          "doc": "Congestion level that is affecting this vehicle."
+        }
+      ]
+    },
+    {
+      "name": "occupancy_status",
+      "type": [
+        "null",
+        {
+          "name": "OccupancyStatus",
+          "type": "enum",
+          "namespace": "GeneralTransitFeed.VehiclePosition.VehiclePosition_types",
+          "symbols": [
+            "EMPTY",
+            "MANY_SEATS_AVAILABLE",
+            "FEW_SEATS_AVAILABLE",
+            "STANDING_ROOM_ONLY",
+            "CRUSHED_STANDING_ROOM_ONLY",
+            "FULL",
+            "NOT_ACCEPTING_PASSENGERS"
+          ],
+          "doc": "The degree of passenger occupancy of the vehicle. This field is still experimental, and subject to change. It may be formally adopted in the future."
+        }
+      ]
+    }
+  ],
+  "doc": "Realtime positioning information for a given vehicle."
+}

@@ -1,0 +1,37 @@
+{
+  "type": "record",
+  "name": "Shapes",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines shapes.",
+  "fields": [
+    {
+      "name": "shapeId",
+      "type": "string",
+      "doc": "Identifies a shape."
+    },
+    {
+      "name": "shapePtLat",
+      "type": "double",
+      "doc": "Latitude of a shape point."
+    },
+    {
+      "name": "shapePtLon",
+      "type": "double",
+      "doc": "Longitude of a shape point."
+    },
+    {
+      "name": "shapePtSequence",
+      "type": "int",
+      "doc": "Sequence in which the shape points connect to form the shape."
+    },
+    {
+      "name": "shapeDistTraveled",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null,
+      "doc": "Actual distance traveled along the shape from the first shape point to the specified shape point."
+    }
+  ]
+}

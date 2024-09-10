@@ -1,0 +1,37 @@
+{
+  "type": "record",
+  "name": "Frequencies",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines frequencies.",
+  "fields": [
+    {
+      "name": "tripId",
+      "type": "string",
+      "doc": "Identifies a trip."
+    },
+    {
+      "name": "startTime",
+      "type": "string",
+      "doc": "Time at which service begins with the specified frequency."
+    },
+    {
+      "name": "endTime",
+      "type": "string",
+      "doc": "Time at which service ends with the specified frequency."
+    },
+    {
+      "name": "headwaySecs",
+      "type": "int",
+      "doc": "Time between departures from the same stop (headway) for this trip, in seconds."
+    },
+    {
+      "name": "exactTimes",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null,
+      "doc": "When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled."
+    }
+  ]
+}

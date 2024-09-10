@@ -33,6 +33,7 @@ subcommands:
     
 ```
 
+
 ### Vehicle Locations
 
 This command returns the vehicle locations from the feed.
@@ -97,3 +98,11 @@ The `data`of the CloudEvent message is a JSON object with the following attribut
 * `speedKmHr`: the vehicle speed in km/h
 * `timestamp`: the timestamp of the vehicle location
 
+## Public GTFS Real time feeds with vehicle positions
+
+| Agency | URL | Documentation |
+|--------|-----|---------------|
+| New York City MTA Bus Time, US | http://gtfsrt.prod.obanyc.com/vehiclePositions?key={key} | https://bustime.mta.info/wiki/Developers/GTFSRt |
+| Catalunya FGC, ES |https://fgc.opendatasoft.com/explore/dataset/vehicle-positions-gtfs_realtime/files/d286964db2d107ecdb1344bf02f7b27b/download/ | https://data.europa.eu/data/datasets/https-analisi-transparenciacatalunya-cat-api-views-y6iv-pycv?locale=en |
+| Brest métropole, FR | https://www.data.gouv.fr/fr/datasets/r/d5d43e1e-af62-4811-8a4e-ca14ad4209c8 | https://data.europa.eu/data/datasets/55ffbe0888ee387348ccb97d?locale=en |
+| ALEOP (regional transport in Pays de la Loire), FR | https://www.data.gouv.fr/fr/datasets/r/b78c6d8a-3145-4deb-b68a-9b6fc9af7a89 | https://data.europa.eu/data/datasets/632b2c56696ec36c7f4811c8?locale=en |

@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "StopAreas",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines stop areas.",
+  "fields": [
+    {
+      "name": "stopAreaId",
+      "type": "string",
+      "doc": "Identifies a stop area."
+    },
+    {
+      "name": "stopId",
+      "type": "string",
+      "doc": "Identifies a stop."
+    },
+    {
+      "name": "areaId",
+      "type": "string",
+      "doc": "Identifies an area."
+    }
+  ]
+}

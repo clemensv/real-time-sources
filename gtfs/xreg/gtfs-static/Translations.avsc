@@ -1,0 +1,28 @@
+{
+  "type": "record",
+  "name": "Translations",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines translations.",
+  "fields": [
+    {
+      "name": "tableName",
+      "type": "string",
+      "doc": "Name of the table containing the field to be translated."
+    },
+    {
+      "name": "fieldName",
+      "type": "string",
+      "doc": "Name of the field to be translated."
+    },
+    {
+      "name": "language",
+      "type": "string",
+      "doc": "Language of the translation."
+    },
+    {
+      "name": "translation",
+      "type": "string",
+      "doc": "Translated value."
+    }
+  ]
+}

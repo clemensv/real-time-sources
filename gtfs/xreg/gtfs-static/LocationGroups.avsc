@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "LocationGroups",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines location groups.",
+  "fields": [
+    {
+      "name": "locationGroupId",
+      "type": "string",
+      "doc": "Identifies a location group."
+    },
+    {
+      "name": "locationGroupName",
+      "type": "string",
+      "doc": "Name of the location group."
+    },
+    {
+      "name": "locationGroupDesc",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Description of the location group."
+    },
+    {
+      "name": "locationGroupUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the location group."
+    }
+  ]
+}
