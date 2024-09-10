@@ -1,0 +1,234 @@
+{
+    "$schema": "http://xregistry.io/schemas/manifest.json",
+    "specversion": "0.5-wip",
+    "endpoints": {},
+    "messagegroups": {
+        "de.wsv.pegelonline": {
+            "id": "de.wsv.pegelonline",
+            "messages": {
+                "de.wsv.pegelonline.Station": {
+                    "id": "de.wsv.pegelonline.Station",
+                    "format": "CloudEvents/1.0",
+                    "binding": "None",
+                    "schemaformat": "Avro",
+                    "schemaurl": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.Station",
+                    "createdat": "2024-09-10T15:02:55.573631",
+                    "epoch": 0,
+                    "modifiedat": "2024-09-10T15:02:55.573631",
+                    "metadata": {
+                        "specversion": {
+                            "name": "specversion",
+                            "type": "string",
+                            "required": true,
+                            "value": "1.0",
+                            "description": "CloudEvents version"
+                        },
+                        "type": {
+                            "name": "type",
+                            "type": "string",
+                            "required": true,
+                            "value": "de.wsv.pegelonline.Station",
+                            "description": "Event type"
+                        },
+                        "source": {
+                            "name": "source",
+                            "type": "uritemplate",
+                            "required": true,
+                            "value": "{feedurl}",
+                            "description": "Source Feed URL"
+                        },
+                        "subject": {
+                            "name": "subject",
+                            "type": "uritemplate",
+                            "value": "{station_id}",
+                            "description": "Station"
+                        }
+                    }
+                },
+                "de.wsv.pegelonline.CurrentMeasurement": {
+                    "id": "de.wsv.pegelonline.CurrentMeasurement",
+                    "format": "CloudEvents/1.0",
+                    "binding": "None",
+                    "schemaformat": "Avro",
+                    "schemaurl": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.CurrentMeasurement",
+                    "createdat": "2024-09-10T15:02:58.776148",
+                    "epoch": 0,
+                    "modifiedat": "2024-09-10T15:02:58.776148",
+                    "metadata": {
+                        "specversion": {
+                            "name": "specversion",
+                            "type": "string",
+                            "required": true,
+                            "value": "1.0",
+                            "description": "CloudEvents version"
+                        },
+                        "type": {
+                            "name": "type",
+                            "type": "string",
+                            "required": true,
+                            "value": "de.wsv.pegelonline.CurrentMeasurement",
+                            "description": "Event type"
+                        },
+                        "source": {
+                            "name": "source",
+                            "type": "uritemplate",
+                            "required": true,
+                            "value": "{feedurl}",
+                            "description": "Source Feed URL"
+                        },
+                        "subject": {
+                            "name": "subject",
+                            "type": "uritemplate",
+                            "value": "{station_id}",
+                            "description": "Station"
+                        }
+                    }
+                }
+            },
+            "createdat": "2024-09-10T15:02:55.572645",
+            "epoch": 0,
+            "modifiedat": "2024-09-10T15:02:55.572645"
+        }
+    },
+    "schemagroups": {
+        "de.wsv.pegelonline": {
+            "id": "de.wsv.pegelonline",
+            "schemas": {
+                "de.wsv.pegelonline.Station": {
+                    "id": "de.wsv.pegelonline.Station",
+                    "format": "Avro",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro",
+                            "schema": {
+                                "type": "record",
+                                "name": "Station",
+                                "namespace": "de.wsv.pegelonline",
+                                "doc": "Schema representing a PEGELONLINE station with location and water body information.",
+                                "fields": [
+                                    {
+                                        "name": "uuid",
+                                        "type": "string",
+                                        "doc": "Unique immutable identifier of the station."
+                                    },
+                                    {
+                                        "name": "number",
+                                        "type": "string",
+                                        "doc": "Station number representing the unique code of the station."
+                                    },
+                                    {
+                                        "name": "shortname",
+                                        "type": "string",
+                                        "doc": "Short name of the station (maximum 40 characters)."
+                                    },
+                                    {
+                                        "name": "longname",
+                                        "type": "string",
+                                        "doc": "Full name of the station (maximum 255 characters)."
+                                    },
+                                    {
+                                        "name": "km",
+                                        "type": "double",
+                                        "doc": "River kilometer marking of the station location."
+                                    },
+                                    {
+                                        "name": "agency",
+                                        "type": "string",
+                                        "doc": "Waterways and Shipping Office responsible for the station."
+                                    },
+                                    {
+                                        "name": "longitude",
+                                        "type": "double",
+                                        "doc": "Longitude coordinate of the station in WGS84 decimal notation."
+                                    },
+                                    {
+                                        "name": "latitude",
+                                        "type": "double",
+                                        "doc": "Latitude coordinate of the station in WGS84 decimal notation."
+                                    },
+                                    {
+                                        "name": "water",
+                                        "type": {
+                                            "type": "record",
+                                            "name": "Water",
+                                            "doc": "Details of the water body associated with the station.",
+                                            "fields": [
+                                                {
+                                                    "name": "shortname",
+                                                    "type": "string",
+                                                    "doc": "Short name of the water body (maximum 40 characters)."
+                                                },
+                                                {
+                                                    "name": "longname",
+                                                    "type": "string",
+                                                    "doc": "Full name of the water body (maximum 255 characters)."
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "createdat": "2024-09-10T15:02:54.786444",
+                            "epoch": 0,
+                            "modifiedat": "2024-09-10T15:02:54.786444"
+                        }
+                    }
+                },
+                "de.wsv.pegelonline.CurrentMeasurement": {
+                    "id": "de.wsv.pegelonline.CurrentMeasurement",
+                    "format": "Avro",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro",
+                            "schema": {
+                                "type": "record",
+                                "name": "CurrentMeasurement",
+                                "namespace": "de.wsv.pegelonline",
+                                "doc": "Schema representing the current measurement for a PEGELONLINE station.",
+                                "fields": [
+                                    {
+                                        "name": "station_uuid",
+                                        "type": "string",
+                                        "doc": "Unique immutable identifier of the station."
+                                    },
+                                    {
+                                        "name": "timestamp",
+                                        "type": "string",
+                                        "doc": "Timestamp of the current measurement encoded in ISO_8601 format."
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "doc": "Current measured value as a decimal number in the unit defined by the station's timeseries."
+                                    },
+                                    {
+                                        "name": "stateMnwMhw",
+                                        "type": {
+                                            "type": "string",
+                                            "doc": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+                                        }
+                                    },
+                                    {
+                                        "name": "stateNswHsw",
+                                        "type": {
+                                            "type": "string",
+                                            "doc": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+                                        }
+                                    }
+                                ]
+                            },
+                            "createdat": "2024-09-10T15:02:57.965791",
+                            "epoch": 0,
+                            "modifiedat": "2024-09-10T15:02:57.965791"
+                        }
+                    }
+                }
+            },
+            "createdat": "2024-09-10T15:02:54.777478",
+            "epoch": 0,
+            "modifiedat": "2024-09-10T15:02:54.777478"
+        }
+    }
+}

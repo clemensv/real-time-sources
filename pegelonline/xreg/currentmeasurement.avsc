@@ -1,33 +1,37 @@
 {
-    "type": "record",
-    "name": "CurrentMeasurement",
-    "namespace": "de.wsv.pegelonline",
-    "doc": "Schema representing the current measurement for a PEGELONLINE station.",
-    "fields": [
-      {
-        "name": "timestamp",
+  "type": "record",
+  "name": "CurrentMeasurement",
+  "namespace": "de.wsv.pegelonline",
+  "doc": "Schema representing the current measurement for a PEGELONLINE station.",
+  "fields": [
+    {
+      "name": "station_uuid",
+      "type": "string",
+      "doc": "Unique immutable identifier of the station."
+    },
+    {
+      "name": "timestamp",
+      "type": "string",
+      "doc": "Timestamp of the current measurement encoded in ISO_8601 format."
+    },
+    {
+      "name": "value",
+      "type": "double",
+      "doc": "Current measured value as a decimal number in the unit defined by the station's timeseries."
+    },
+    {
+      "name": "stateMnwMhw",
+      "type": {
         "type": "string",
-        "doc": "Timestamp of the current measurement encoded in ISO_8601 format."
-      },
-      {
-        "name": "value",
-        "type": "double",
-        "doc": "Current measured value as a decimal number in the unit defined by the station's timeseries."
-      },
-      {
-        "name": "stateMnwMhw",
-        "type": {
-          "type": "string",
-          "doc": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
-        }
-      },
-      {
-        "name": "stateNswHsw",
-        "type": {
-          "type": "string",
-          "doc": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
-        }
+        "doc": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
       }
-    ]
-  }
-  
+    },
+    {
+      "name": "stateNswHsw",
+      "type": {
+        "type": "string",
+        "doc": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+      }
+    }
+  ]
+}
