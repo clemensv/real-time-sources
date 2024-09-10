@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "Areas",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines areas.",
+  "fields": [
+    {
+      "name": "areaId",
+      "type": "string",
+      "doc": "Identifies an area."
+    },
+    {
+      "name": "areaName",
+      "type": "string",
+      "doc": "Name of the area."
+    },
+    {
+      "name": "areaDesc",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Description of the area."
+    },
+    {
+      "name": "areaUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the area."
+    }
+  ]
+}

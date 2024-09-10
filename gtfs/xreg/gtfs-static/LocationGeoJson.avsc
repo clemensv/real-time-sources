@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "LocationGeoJson",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines location GeoJSON data.",
+  "fields": [
+    {
+      "name": "locationGeoJsonId",
+      "type": "string",
+      "doc": "Identifies a location GeoJSON."
+    },
+    {
+      "name": "locationGeoJsonType",
+      "type": "string",
+      "doc": "Type of the GeoJSON."
+    },
+    {
+      "name": "locationGeoJsonData",
+      "type": "string",
+      "doc": "GeoJSON data."
+    }
+  ]
+}

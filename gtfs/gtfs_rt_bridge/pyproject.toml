@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "vasters-gtfsrt-bridge"
+description = "GTFS-RT Bridge"
+authors = ["Clemens Vasters"]
+readme = "README.md"
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+packages = [{include = "gtfs_rt_bridge", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+gtfs_rt-producer-kafka-producer = "*"
+gtfs_rt-producer-data = "*"
+confluent-kafka = ">=2.4.0"
+cloudevents = ">=1.11.0"
+gtfs-realtime-bindings = ">=1.0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.2.2"
+flake8 = ">=7.1.0"
+pylint = ">=3.2.5"
+mypy = ">=1.10.1"
+testcontainers = ">=4.7.1"
+pytest-asyncio = ">=0.23.7"
+
+[tool.poetry.scripts]
+gtfs-bridge = "gtfs_rt_bridge.gtfs_cli:cli"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"

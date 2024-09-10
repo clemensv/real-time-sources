@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "FareProducts",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines fare products.",
+  "fields": [
+    {
+      "name": "fareProductId",
+      "type": "string",
+      "doc": "Identifies a fare product."
+    },
+    {
+      "name": "fareProductName",
+      "type": "string",
+      "doc": "Name of the fare product."
+    },
+    {
+      "name": "fareProductDesc",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Description of the fare product."
+    },
+    {
+      "name": "fareProductUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the fare product."
+    }
+  ]
+}

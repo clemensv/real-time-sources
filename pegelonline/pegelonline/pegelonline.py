@@ -1,29 +1,39 @@
+from typing import Any, List, Dict, Union
+import time
 import argparse
 import json
 import requests
-import time
+
+
 from cloudevents.http import to_structured
 from cloudevents.http.event import CloudEvent
 from azure.eventhub import EventHubProducerClient, EventData
 
-def list_stations():
-    stations = requests.get('https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json').json()
-    for station in stations:
-        print(f"{station['uuid']}: {station['shortname']}")
 
-def get_water_level(station):
-    measurements = requests.get(f'https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{station}/W/currentmeasurement.json').json()
-    for measurement in measurements:
-        print(json.dumps(measurement, indent=4))
+def list_stations() -> List[Dict[str, Any]]:
+    """List all available stations."""
+    stations = requests.get('https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json', timeout=10).json()
+    return stations
 
-def send_cloud_event(producer, event):
-    event_data_batch = producer.create_batch()
-    event_data_batch.add(EventData(event))
-    producer.send_batch(event_data_batch)
 
-def feed_stations(event_hub_connection_str, event_hub_name, polling_interval):
-    previous_readings = {}
-    producer = EventHubProducerClient.from_connection_string(conn_str=event_hub_connection_str, eventhub_name=event_hub_name)
+def get_water_level(station: str) -> List[Dict[str, Any]]:
+    """Get water level for the specified station."""
+    measurements = requests.get(
+        f'https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{station}/W/currentmeasurement.json', timeout=10).json()
+    return measurements
+
+
+def send_cloud_event(producer: EventHubProducerClient, event: Union[Dict[str, Any], CloudEvent]) -> None:
+    """Send CloudEvent to Event Hub."""
+    producer.send_event(EventData(event))
+
+
+def feed_stations(event_hub_connection_str: str, event_hub_name: str, polling_interval: int) -> None:
+    """Feed stations and send updates as CloudEvents."""
+    previous_readings: Dict[str, List[Dict[str, Any]]] = {}
+    producer = EventHubProducerClient.from_connection_string(conn_str=event_hub_connection_str)
+    if event_hub_name:
+        producer.eventhub_name = event_hub_name
     while True:
         stations = list_stations()
         for station in stations:
@@ -43,30 +53,57 @@ def feed_stations(event_hub_connection_str, event_hub_name, polling_interval):
         time.sleep(polling_interval)
     producer.close()
 
-def main():
+
+def main() -> None:
+    """
+    Interact with Pegel Online API to fetch water level data.
+    Usage:
+        python pegelonline.py list
+        python pegelonline.py station <shortname>
+        python pegelonline.py feed --event_hub_connection_str <connection_str> --event_hub_name <hub_name> [--polling_interval <interval>]
+    Options:
+        list                List all available stations
+        station <shortname>         Get water level for the specified station
+        feed                         Feed stations and send updates as CloudEvents
+    Arguments:
+        <shortname>                 Short name of the station
+    Options for 'feed' command:
+        --connection-strring   Event Hub connection string
+        --event-hub-name             Event Hub name
+        --polling-interval           Polling interval in seconds (default: 60)
+    """
     parser = argparse.ArgumentParser(description='Interact with Pegel Online API to fetch water level data.')
     subparsers = parser.add_subparsers(dest='command')
 
-    list_stations_parser = subparsers.add_parser('list-stations', help='List all available stations')
+    subparsers.add_parser('list', help='List all available stations')
 
-    station_parser = subparsers.add_parser('station', help='Get water level for the specified station')
+    station_parser = subparsers.add_parser('level', help='Get water level for the specified station')
     station_parser.add_argument('shortname', type=str, help='Short name of the station')
 
     feed_parser = subparsers.add_parser('feed', help='Feed stations and send updates as CloudEvents')
-    feed_parser.add_argument('--event_hub_connection_str', type=str, required=True, help='Event Hub connection string')
-    feed_parser.add_argument('--event_hub_name', type=str, required=True, help='Event Hub name')
-    feed_parser.add_argument('--polling_interval', type=int, default=60, help='Polling interval in seconds')
+    feed_parser.add_argument("-c", "--connection-string", type=str, required=True, help='Event Hub connection string')
+    feed_parser.add_argument("-e", "--eventhub-name", type=str, required=False, help='Event Hub name')
+    feed_parser.add_argument("-i", "--polling-interval", type=int, default=60, help='Polling interval in seconds')
 
     args = parser.parse_args()
 
-    if args.command == 'list-stations':
-        list_stations()
-    elif args.command == 'station':
-        get_water_level(args.shortname)
+    if args.command == 'list':
+        station_list = list_stations()
+        for station in station_list:
+            print(f"{station['uuid']}: {station['shortname']}")
+    elif args.command == 'level':
+        measurements = get_water_level(args.shortname)
+        print(json.dumps(measurements, indent=4))
     elif args.command == 'feed':
-        feed_stations(args.event_hub_connection_str, args.event_hub_name, args.polling_interval)
+        if not args.eventhub_name:
+            # test whether there is an EntityName in the connection string
+            if not "EntityPath=" in args.connection_string:
+                print("Error: Event Hub name is required")
+                return
+        feed_stations(args.connection_string, args.eventhub_name, args.polling_interval)
     else:
-        print("Please provide a valid command. Use --help for more information.")
+        parser.print_help()
+
 
 if __name__ == "__main__":
     main()

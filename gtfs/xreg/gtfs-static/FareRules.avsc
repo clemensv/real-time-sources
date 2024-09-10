@@ -1,0 +1,49 @@
+{
+  "type": "record",
+  "name": "FareRules",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines fare rules.",
+  "fields": [
+    {
+      "name": "fareId",
+      "type": "string",
+      "doc": "Identifies a fare class."
+    },
+    {
+      "name": "routeId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies a route associated with the fare."
+    },
+    {
+      "name": "originId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies the fare zone of the origin."
+    },
+    {
+      "name": "destinationId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies the fare zone of the destination."
+    },
+    {
+      "name": "containsId",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Identifies the fare zone that a rider will enter or leave."
+    }
+  ]
+}

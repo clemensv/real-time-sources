@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "name": "Levels",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines levels.",
+  "fields": [
+    {
+      "name": "levelId",
+      "type": "string",
+      "doc": "Identifies a level."
+    },
+    {
+      "name": "levelIndex",
+      "type": "double",
+      "doc": "Numeric index of the level that indicates relative position of the level in relation to other levels."
+    },
+    {
+      "name": "levelName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Name of the level."
+    }
+  ]
+}

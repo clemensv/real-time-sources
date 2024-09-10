@@ -1,0 +1,64 @@
+{
+  "type": "record",
+  "name": "Agency",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Information about the transit agencies.",
+  "fields": [
+    {
+      "name": "agencyId",
+      "type": "string",
+      "doc": "Identifies a transit brand which is often synonymous with a transit agency."
+    },
+    {
+      "name": "agencyName",
+      "type": "string",
+      "doc": "Full name of the transit agency."
+    },
+    {
+      "name": "agencyUrl",
+      "type": "string",
+      "doc": "URL of the transit agency."
+    },
+    {
+      "name": "agencyTimezone",
+      "type": "string",
+      "doc": "Timezone where the transit agency is located."
+    },
+    {
+      "name": "agencyLang",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Primary language used by this transit agency."
+    },
+    {
+      "name": "agencyPhone",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "A voice telephone number for the specified agency."
+    },
+    {
+      "name": "agencyFareUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online."
+    },
+    {
+      "name": "agencyEmail",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Email address actively monitored by the agency\u2019s customer service department."
+    }
+  ]
+}

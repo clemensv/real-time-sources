@@ -1,0 +1,36 @@
+{
+  "type": "record",
+  "name": "Networks",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Defines networks.",
+  "fields": [
+    {
+      "name": "networkId",
+      "type": "string",
+      "doc": "Identifies a network."
+    },
+    {
+      "name": "networkName",
+      "type": "string",
+      "doc": "Name of the network."
+    },
+    {
+      "name": "networkDesc",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Description of the network."
+    },
+    {
+      "name": "networkUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL of a web page about the network."
+    }
+  ]
+}

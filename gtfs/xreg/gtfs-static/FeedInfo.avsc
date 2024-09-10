@@ -1,0 +1,77 @@
+{
+  "type": "record",
+  "name": "FeedInfo",
+  "namespace": "GeneralTransitFeedStatic",
+  "doc": "Provides information about the GTFS feed itself.",
+  "fields": [
+    {
+      "name": "feedPublisherName",
+      "type": "string",
+      "doc": "Full name of the organization that publishes the feed."
+    },
+    {
+      "name": "feedPublisherUrl",
+      "type": "string",
+      "doc": "URL of the feed publishing organization's website."
+    },
+    {
+      "name": "feedLang",
+      "type": "string",
+      "doc": "Default language for the text in this feed."
+    },
+    {
+      "name": "defaultLang",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Specifies the language used when the data consumer doesn\u2019t know the language of the user."
+    },
+    {
+      "name": "feedStartDate",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "The start date for the dataset."
+    },
+    {
+      "name": "feedEndDate",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "The end date for the dataset."
+    },
+    {
+      "name": "feedVersion",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Version string that indicates the current version of their GTFS dataset."
+    },
+    {
+      "name": "feedContactEmail",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Email address for communication with the data publisher."
+    },
+    {
+      "name": "feedContactUrl",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "URL for a web page that allows a feed consumer to contact the data publisher."
+    }
+  ]
+}
