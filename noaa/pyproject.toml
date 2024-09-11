@@ -1,44 +1,26 @@
 [build-system]
-build-backend = "flit_scm:buildapi"
-requires = ["flit_core>=3.2", "flit_scm", "wheel"]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
+[tool.poetry]
 name = "noaa"
-dynamic = ["version"]
-authors = [
-    {name = "Clemens Vasters", email = "clemensv@microsoft.com"}
-]
+version = "0.1.0"
 description = "A project to fetch data from NOAA API"
-readme = "README.md"
-requires-python = ">=3.8"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
-dependencies = [
-    "requests>=2.32.3",
-    "confluent-kafka>=2.5.3",
-    "cloudevents>=1.11.0",
-    "dataclasses_json>=0.6.7",
-    "numpy>=2.1.1",
-]
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 
-[project.optional-dependencies]
-test = [
-    "pytest>=8.3.2",
-    "pytest-cov>=5.0.0",
-    "testcontainers>=4.8.1",
-    "requests-mock>=1.12.1",
-]
+[tool.poetry.dependencies]
+python = ">=3.8"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0"
+dataclasses_json = ">=0.6.7"
+numpy = ">=2.1.1"
 
-[project.scripts]
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.2"
+pytest-cov = ">=5.0.0"
+testcontainers = ">=4.8.1"
+requests-mock = ">=1.12.1"
+
+[build-system.scripts]
 noaa = "noaa:main"
-
-[tool.setuptools_scm]
-root = ".."
-write_to = "noaa/noaa/_version.py"
-
-[project.urls]
-homepage = "https://github.com/clemensv/real-time-sources"
-repository = "https://github.com/clemensv/real-time-sources"
