@@ -12,8 +12,27 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  find-dockerfiles:
     runs-on: ubuntu-latest
+    outputs:
+      dockerfiles: ${{ steps.get-dockerfiles.outputs.dockerfiles }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find all Dockerfiles
+        id: get-dockerfiles
+        run: |
+          DOCKERFILES=$(find . -name 'Dockerfile' -exec dirname {} \; | sed 's|^\./||')
+          DOCKERFILES_JSON=$(printf '%s\n' "${DOCKERFILES}" | jq -R -s -c 'split("\n") | map(select(. != ""))')
+          echo "dockerfiles=${DOCKERFILES_JSON}" >> $GITHUB_OUTPUT
+
+  build:
+    needs: find-dockerfiles
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dockerfile: ${{ fromJson(needs.find-dockerfiles.outputs.dockerfiles) }}
     permissions:
       contents: read
       packages: write
@@ -40,29 +59,30 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find all Dockerfiles
-        id: find_dockerfiles
-        run: |
-          DOCKERFILES=$(find . -name 'Dockerfile' -exec dirname {} \;)
-          echo "DOCKERFILES=${DOCKERFILES}" >> $GITHUB_ENV
-
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934
         with:
           images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.dockerfile }}:${{ github.sha }}-${{ matrix.dockerfile }}
 
-      - name: Build, Push, and Sign Docker Images
-        run: |
-          for dir in $DOCKERFILES; do
-            echo "Processing $dir"
-            docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-$dir -f $dir/Dockerfile $dir --push
-            cosign sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-$dir
-          done
-        if: github.event_name != 'pull_request'
+      - name: Build Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.dockerfile }}
+          file: ./${{ matrix.dockerfile }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.dockerfile }}:${{ github.sha }}
         env:
-          REGISTRY: ${{ env.REGISTRY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COSIGN_EXPERIMENTAL: 1
           DOCKER_CLI_EXPERIMENTAL: enabled
+        if: github.event_name != 'pull_request'
+
+      - name: Sign Docker Image
+        uses: sigstore/cosign-installer@v3
+        with:
+          args: "sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.dockerfile }}:${{ github.sha }}"
+        env:
+          COSIGN_EXPERIMENTAL: 1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name != 'pull_request'
