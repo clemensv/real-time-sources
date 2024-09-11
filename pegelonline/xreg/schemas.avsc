@@ -1,0 +1,107 @@
+[
+  {
+    "type": "record",
+    "name": "CurrentMeasurement",
+    "namespace": "de.wsv.pegelonline",
+    "doc": "Schema representing the current measurement for a PEGELONLINE station.",
+    "fields": [
+      {
+        "name": "station_uuid",
+        "type": "string",
+        "doc": "Unique immutable identifier of the station."
+      },
+      {
+        "name": "timestamp",
+        "type": "string",
+        "doc": "Timestamp of the current measurement encoded in ISO_8601 format."
+      },
+      {
+        "name": "value",
+        "type": "double",
+        "doc": "Current measured value as a decimal number in the unit defined by the station's timeseries."
+      },
+      {
+        "name": "stateMnwMhw",
+        "type": {
+          "type": "string",
+          "doc": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+        }
+      },
+      {
+        "name": "stateNswHsw",
+        "type": {
+          "type": "string",
+          "doc": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
+        }
+      }
+    ]
+  },
+  {
+    "type": "record",
+    "name": "Station",
+    "namespace": "de.wsv.pegelonline",
+    "doc": "Schema representing a PEGELONLINE station with location and water body information.",
+    "fields": [
+      {
+        "name": "uuid",
+        "type": "string",
+        "doc": "Unique immutable identifier of the station."
+      },
+      {
+        "name": "number",
+        "type": "string",
+        "doc": "Station number representing the unique code of the station."
+      },
+      {
+        "name": "shortname",
+        "type": "string",
+        "doc": "Short name of the station (maximum 40 characters)."
+      },
+      {
+        "name": "longname",
+        "type": "string",
+        "doc": "Full name of the station (maximum 255 characters)."
+      },
+      {
+        "name": "km",
+        "type": "double",
+        "doc": "River kilometer marking of the station location."
+      },
+      {
+        "name": "agency",
+        "type": "string",
+        "doc": "Waterways and Shipping Office responsible for the station."
+      },
+      {
+        "name": "longitude",
+        "type": "double",
+        "doc": "Longitude coordinate of the station in WGS84 decimal notation."
+      },
+      {
+        "name": "latitude",
+        "type": "double",
+        "doc": "Latitude coordinate of the station in WGS84 decimal notation."
+      },
+      {
+        "name": "water",
+        "type": {
+          "type": "record",
+          "name": "Water",
+          "doc": "Details of the water body associated with the station.",
+          "fields": [
+            {
+              "name": "shortname",
+              "type": "string",
+              "doc": "Short name of the water body (maximum 40 characters)."
+            },
+            {
+              "name": "longname",
+              "type": "string",
+              "doc": "Full name of the water body (maximum 255 characters)."
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

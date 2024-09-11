@@ -6,7 +6,7 @@ requires = ["flit_core>=3.2", "flit_scm", "wheel"]
 name = "noaa"
 dynamic = ["version"]
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Clemens Vasters", email = "clemensv@microsoft.com"}
 ]
 description = "A project to fetch data from NOAA API"
 readme = "README.md"
@@ -40,5 +40,5 @@ root = ".."
 write_to = "noaa/noaa/_version.py"
 
 [project.urls]
-homepage = "https://github.com/yourusername/noaa"
-repository = "https://github.com/yourusername/noaa"
+homepage = "https://github.com/clemensv/real-time-sources"
+repository = "https://github.com/clemensv/real-time-sources"

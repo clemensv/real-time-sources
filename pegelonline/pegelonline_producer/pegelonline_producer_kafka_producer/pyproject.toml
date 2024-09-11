@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pegelonline-producer-kafka-producer"
 description = "pegelonline_producer_kafka_producer Apache Kafka consumer library"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 readme = "README.md"
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
 packages = [{include = "pegelonline_producer_kafka_producer", from = "src"}]

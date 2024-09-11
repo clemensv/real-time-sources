@@ -1,0 +1,195 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [CurrentMeasurement] (
+   [station_uuid]: string,
+   [timestamp]: string,
+   [value]: real,
+   [stateMnwMhw]: string,
+   [stateNswHsw]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [CurrentMeasurement] docstring "{\"description\": \"Schema representing the current measurement for a PEGELONLINE station.\"}";
+
+.alter table [CurrentMeasurement] column-docstrings (
+   [station_uuid]: "{\"description\": \"Unique immutable identifier of the station.\"}",
+   [timestamp]: "{\"description\": \"Timestamp of the current measurement encoded in ISO_8601 format.\"}",
+   [value]: "{\"description\": \"Current measured value as a decimal number in the unit defined by the station's timeseries.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [CurrentMeasurement] ingestion json mapping "CurrentMeasurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_uuid", "path": "$.station_uuid"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "stateMnwMhw", "path": "$.stateMnwMhw"},
+  {"column": "stateNswHsw", "path": "$.stateNswHsw"},
+]
+```
+
+
+.create-or-alter table [CurrentMeasurement] ingestion json mapping "CurrentMeasurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_uuid", "path": "$.data.station_uuid"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "stateMnwMhw", "path": "$.data.stateMnwMhw"},
+  {"column": "stateNswHsw", "path": "$.data.stateNswHsw"},
+]
+```
+
+
+.create materialized-view with (backfill=true) CurrentMeasurementLatest on table CurrentMeasurement {
+    CurrentMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [CurrentMeasurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.wsv.pegelonline.CurrentMeasurement') | project['station_uuid'] = tostring(data.['station_uuid']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['stateMnwMhw'] = tostring(data.['stateMnwMhw']),['stateNswHsw'] = tostring(data.['stateNswHsw']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Station] (
+   [uuid]: string,
+   [number]: string,
+   [shortname]: string,
+   [longname]: string,
+   [km]: real,
+   [agency]: string,
+   [longitude]: real,
+   [latitude]: real,
+   [water]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Schema representing a PEGELONLINE station with location and water body information.\"}";
+
+.alter table [Station] column-docstrings (
+   [uuid]: "{\"description\": \"Unique immutable identifier of the station.\"}",
+   [number]: "{\"description\": \"Station number representing the unique code of the station.\"}",
+   [shortname]: "{\"description\": \"Short name of the station (maximum 40 characters).\"}",
+   [longname]: "{\"description\": \"Full name of the station (maximum 255 characters).\"}",
+   [km]: "{\"description\": \"River kilometer marking of the station location.\"}",
+   [agency]: "{\"description\": \"Waterways and Shipping Office responsible for the station.\"}",
+   [longitude]: "{\"description\": \"Longitude coordinate of the station in WGS84 decimal notation.\"}",
+   [latitude]: "{\"description\": \"Latitude coordinate of the station in WGS84 decimal notation.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uuid", "path": "$.uuid"},
+  {"column": "number", "path": "$.number"},
+  {"column": "shortname", "path": "$.shortname"},
+  {"column": "longname", "path": "$.longname"},
+  {"column": "km", "path": "$.km"},
+  {"column": "agency", "path": "$.agency"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "water", "path": "$.water"},
+]
+```
+
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uuid", "path": "$.data.uuid"},
+  {"column": "number", "path": "$.data.number"},
+  {"column": "shortname", "path": "$.data.shortname"},
+  {"column": "longname", "path": "$.data.longname"},
+  {"column": "km", "path": "$.data.km"},
+  {"column": "agency", "path": "$.data.agency"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "water", "path": "$.data.water"},
+]
+```
+
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.wsv.pegelonline.Station') | project['uuid'] = tostring(data.['uuid']),['number'] = tostring(data.['number']),['shortname'] = tostring(data.['shortname']),['longname'] = tostring(data.['longname']),['km'] = toreal(data.['km']),['agency'] = tostring(data.['agency']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['water'] = todynamic(data.['water']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
