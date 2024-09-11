@@ -1,8 +1,4 @@
 {
-  "variables": {
-    "fileShareName": "fileshare",
-    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
-  },
   "parameters": {
     "appName": {
       "defaultValue": "[resourceGroup().name]",

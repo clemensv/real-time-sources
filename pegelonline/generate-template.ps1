@@ -27,10 +27,6 @@ $templateParameters = @{
             }
         }
     }
-    "variables" = @{
-        "storageAccountName" = "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
-        "fileShareName" = "fileshare"
-    }
 }
 
 # Define resources in the ARM template
@@ -72,7 +68,6 @@ $armTemplate = @{
     "`$schema" = $templateParameters["`$schema"]
     "contentVersion" = $templateParameters["contentVersion"]
     "parameters" = $templateParameters["parameters"]
-    "variables" = $templateParameters["variables"]
     "resources" = $templateResources
 }
 
