@@ -1,63 +1,46 @@
 {
+  "variables": {
+    "fileShareName": "fileshare",
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
+  },
   "parameters": {
     "appName": {
-      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "maxLength": 64,
       "metadata": {
         "description": "The name of the container instance."
       },
-      "maxLength": 64,
-      "defaultValue": "[resourceGroup().name]"
+      "type": "string"
+    },
+    "connectionStringSecret": {
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      },
+      "type": "securestring"
     },
     "imageName": {
-      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-noaa:latest",
       "metadata": {
         "description": "The name of the container image."
       },
-      "defaultValue": "clemensv.azurecr.io/noaa-data-poller:latest"
-    },
-    "containerRegistryUsername": {
-      "type": "string",
-      "metadata": {
-        "description": "The username for the container registry."
-      },
-      "defaultValue": "pulltoken"
-    },
-    "connectionStringSecret": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
-      }
-    },
-    "containerRegistryPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The password for the container registry."
-      },
-      "defaultValue": ""
-    },
-    "containerRegistryServer": {
-      "type": "string",
-      "metadata": {
-        "description": "The server URL of the container registry."
-      }
+      "type": "string"
     }
   },
   "resources": [
     {
-      "location": "[resourceGroup().location]",
       "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "name": "[variables('storageAccountName')]",
       "properties": {
         "accessTier": "Hot"
       },
-      "apiVersion": "2021-04-01",
-      "name": "[variables('storageAccountName')]",
       "type": "Microsoft.Storage/storageAccounts",
-      "sku": {
-        "name": "Standard_LRS"
-      }
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01"
     },
     {
-      "location": "[resourceGroup().location]",
       "properties": {
         "protocolSettings": {
           "smb": {
@@ -65,91 +48,81 @@
           }
         }
       },
-      "apiVersion": "2021-04-01",
       "name": "[concat(variables('storageAccountName'), '/default/')]",
-      "type": "Microsoft.Storage/storageAccounts/fileServices",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-      ]
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01"
     },
     {
-      "location": "[resourceGroup().location]",
       "properties": {
         "shareQuota": 5120
       },
-      "apiVersion": "2021-04-01",
       "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
-      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-      ]
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01"
     },
     {
-      "location": "[resourceGroup().location]",
       "properties": {
         "containers": [
           {
+            "name": "[parameters('appName')]",
             "properties": {
               "resources": {
                 "requests": {
-                  "memoryInGB": 1,
-                  "cpu": 0.5
+                  "cpu": 0.5,
+                  "memoryInGB": 1
                 }
               },
               "image": "[parameters('imageName')]",
-              "environmentVariables": [
-                {
-                  "secureValue": "[parameters('connectionStringSecret')]",
-                  "name": "CONNECTION_STRING"
-                },
-                {
-                  "value": "/mnt/fileshare/noaa_last_polled.json",
-                  "name": "NOAA_LAST_POLLED_FILE"
-                }
-              ],
               "volumeMounts": [
                 {
-                  "mountPath": "/mnt/fileshare",
-                  "name": "azurefilevolume"
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_last_polled.json"
                 }
               ]
-            },
-            "name": "[parameters('appName')]"
-          }
-        ],
-        "osType": "Linux",
-        "volumes": [
-          {
-            "azureFile": {
-              "storageAccountName": "[variables('storageAccountName')]",
-              "shareName": "[variables('fileShareName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
-            },
-            "name": "azurefilevolume"
+            }
           }
         ],
         "restartPolicy": "Always",
-        "imageRegistryCredentials": [
+        "osType": "Linux",
+        "volumes": [
           {
-            "username": "[parameters('containerRegistryUsername')]",
-            "password": "[parameters('containerRegistryPassword')]",
-            "server": "[parameters('containerRegistryServer')]"
+            "name": "azurefilevolume",
+            "azureFile": {
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "shareName": "[variables('fileShareName')]"
+            }
           }
         ]
       },
-      "apiVersion": "2021-09-01",
       "name": "[parameters('appName')]",
-      "type": "Microsoft.ContainerInstance/containerGroups",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
-      ]
+      ],
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-09-01"
     }
   ],
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "variables": {
-    "fileShareName": "fileshare",
-    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
-  },
-  "contentVersion": "1.0.0.0"
+  "contentVersion": "1.0.0.0",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
 }

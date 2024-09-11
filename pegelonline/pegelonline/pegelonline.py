@@ -1,6 +1,6 @@
 """ Interact with the German WSV PegelOnline API to fetch water level data for rivers in Germany. """
 
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 from typing import Any, List, Dict
 import asyncio
@@ -130,7 +130,7 @@ class PegelOnlineAPI:
         while True:
             try:
                 count = 0
-                start_time = datetime.now(UTC)
+                start_time = datetime.now(timezone.utc)
                 measurements = self.get_water_levels()
                 for station_id, measurement in measurements.items():
                     if (station_id not in previous_readings) or (measurement['timestamp'] != previous_readings[station_id]['timestamp']):
@@ -155,9 +155,9 @@ class PegelOnlineAPI:
                         # pylint: enable=broad-except
                         previous_readings[station_id] = measurement
                 producer.flush()
-                end_time = datetime.now(UTC)
+                end_time = datetime.now(timezone.utc)
                 effective_polling_interval = max(0, polling_interval-(end_time - start_time).total_seconds())
-                logging.info("Sent %s current measurements in %s seconds. Now waiting until %s.", count, (end_time - start_time).total_seconds(), (datetime.now(UTC) + timedelta(seconds=effective_polling_interval)).isoformat())
+                logging.info("Sent %s current measurements in %s seconds. Now waiting until %s.", count, (end_time - start_time).total_seconds(), (datetime.now(timezone.utc) + timedelta(seconds=effective_polling_interval)).isoformat())
                 if effective_polling_interval > 0:
                     time.sleep(effective_polling_interval)
             except KeyboardInterrupt:

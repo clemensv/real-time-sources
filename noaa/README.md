@@ -59,6 +59,13 @@ The tool can also be configured using environment variables as an alternative to
 
 The tool logs progress and errors to the console. Ensure proper monitoring of logs for troubleshooting and maintenance.
 
+
+##  Deploying as a Container to Azure Container Instances
+
+The NOAA Data Poller can be deployed as a container to Azure Container Instances. 
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2real-time-sources%2Fmain%2Fnoaa%2F%2Fazure-template.json)
+
 ## Contributing
 
 Contributions are welcome. Please fork the repository and submit pull requests.
@@ -71,6 +78,3 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 For any questions or issues, please open an issue in the repository or contact the maintainer.
 
----
-
-This README provides a comprehensive guide to using and understanding the NOAA Data Poller tool. Ensure you have the necessary dependencies and proper Kafka configuration to successfully run the tool.

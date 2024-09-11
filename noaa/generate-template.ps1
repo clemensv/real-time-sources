@@ -21,29 +21,9 @@ $templateParameters = @{
         }
         "imageName" = @{
             "type" = "string"
-            "defaultValue" = "clemensv.azurecr.io/noaa-data-poller:latest"
+            "defaultValue" = "ghcr.io/clemensv/real-time-sources-noaa:latest"
             "metadata" = @{
                 "description" = "The name of the container image."
-            }
-        }
-        "containerRegistryServer" = @{
-            "type" = "string"
-            "metadata" = @{
-                "description" = "The server URL of the container registry."
-            }
-        }
-        "containerRegistryUsername" = @{
-            "type" = "string"
-            "defaultValue" = "pulltoken"
-            "metadata" = @{
-                "description" = "The username for the container registry."
-            }
-        }
-        "containerRegistryPassword" = @{
-            "type" = "securestring"
-            "defaultValue" = ""
-            "metadata" = @{
-                "description" = "The password for the container registry."
             }
         }
     }
@@ -102,13 +82,6 @@ $templateResources = @(
             "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
         )
         "properties" = @{
-            "imageRegistryCredentials" = @(
-                @{
-                    "server" = "[parameters('containerRegistryServer')]"
-                    "username" = "[parameters('containerRegistryUsername')]"
-                    "password" = "[parameters('containerRegistryPassword')]"
-                }
-            )
             "containers" = @(
                 @{
                     "name" = "[parameters('appName')]"

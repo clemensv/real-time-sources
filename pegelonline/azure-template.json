@@ -1,0 +1,63 @@
+{
+  "variables": {
+    "fileShareName": "fileshare",
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
+  },
+  "parameters": {
+    "appName": {
+      "defaultValue": "[resourceGroup().name]",
+      "maxLength": 64,
+      "metadata": {
+        "description": "The name of the container instance."
+      },
+      "type": "string"
+    },
+    "connectionStringSecret": {
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      },
+      "type": "securestring"
+    },
+    "imageName": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-pegelonline:latest",
+      "metadata": {
+        "description": "The name of the container image."
+      },
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "properties": {
+        "containers": [
+          {
+            "name": "[parameters('appName')]",
+            "properties": {
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1
+                }
+              },
+              "image": "[parameters('imageName')]",
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                }
+              ]
+            }
+          }
+        ],
+        "restartPolicy": "Always",
+        "osType": "Linux"
+      },
+      "apiVersion": "2021-09-01",
+      "name": "[parameters('appName')]",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "location": "[resourceGroup().location]"
+    }
+  ],
+  "contentVersion": "1.0.0.0",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+}
