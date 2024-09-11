@@ -64,7 +64,7 @@ The tool logs progress and errors to the console. Ensure proper monitoring of lo
 
 The NOAA Data Poller can be deployed as a container to Azure Container Instances. 
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2real-time-sources%2Fmain%2Fnoaa%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template.json)
 
 ## Contributing
 
