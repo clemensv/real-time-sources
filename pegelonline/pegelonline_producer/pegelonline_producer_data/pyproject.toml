@@ -2,7 +2,7 @@
 name = "pegelonline-producer-data"
 version = "0.1.0"
 description = "A package for handling Avro schema data"
-authors = ["Your Name"]
+authors = ["Clemens Vasters"]
 license = "MIT"
 packages = [ { include = "pegelonline_producer_data", from="src" } ]
 
