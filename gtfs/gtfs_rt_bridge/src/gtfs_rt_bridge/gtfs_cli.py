@@ -1506,6 +1506,8 @@ async def run_feed(args):
     if args.log_level:
         llevel = getattr(logging, args.log_level)
         logger.setLevel(llevel)
+    if not args.agency:
+        raise ValueError("No agency specified")
     if not args.gtfs_rt_urls and not args.mdb_source_id:
         raise ValueError("No GTFS URL or Mobility Database source ID specified")
     gtfs_rt_headers = None
@@ -1551,7 +1553,7 @@ async def main():
     feed_parser.add_argument("--gtfs-rt-urls", help="the URL(s) of the GTFS Realtime feed(s)", required=False, nargs="+", default=os.environ.get("GTFS_RT_URLS").split(",") if os.environ.get("GTFS_RT_URLS") else None)
     feed_parser.add_argument("--gtfs-urls", help="the URL(s) of the GTFS Schedule feed", nargs='+', required=False,default=os.environ.get("GTFS_URLS").split(",") if os.environ.get("GTFS_URLS") else None)
     feed_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Realtime feed", required=False, default=os.environ.get("MDB_SOURCE_ID"))
-    feed_parser.add_argument("-a", "--agency", help="the tag of the agency to get vehicle locations for", required=True, default=os.environ.get("AGENCY"))
+    feed_parser.add_argument("-a", "--agency", help="the tag of the agency to get vehicle locations for", required=False, default=os.environ.get("AGENCY"))
     feed_parser.add_argument('--gtfs-rt-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ("GTFS_RT_HEADERS")) if os.environ.get("GTFS_RT_HEADERS") else None)
     feed_parser.add_argument('--gtfs-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ("GTFS_HEADERS")) if os.environ.get("GTFS_HEADERS") else None)
     feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=20)
