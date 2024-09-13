@@ -1,14 +1,14 @@
 {
   "type": "record",
   "name": "TripUpdate",
-  "namespace": "GeneralTransitFeed.TripUpdate",
+  "namespace": "GeneralTransitFeedRealTime.Trip",
   "fields": [
     {
       "name": "trip",
       "type": {
         "type": "record",
         "name": "TripDescriptor",
-        "namespace": "GeneralTransitFeed.TripUpdate",
+        "namespace": "GeneralTransitFeedRealTime.Trip",
         "fields": [
           {
             "name": "trip_id",
@@ -57,7 +57,7 @@
               {
                 "name": "ScheduleRelationship",
                 "type": "enum",
-                "namespace": "GeneralTransitFeed.TripUpdate.TripDescriptor_types",
+                "namespace": "GeneralTransitFeedRealTime.Trip.TripDescriptor_types",
                 "symbols": [
                   "SCHEDULED",
                   "ADDED",
@@ -80,7 +80,7 @@
         {
           "type": "record",
           "name": "VehicleDescriptor",
-          "namespace": "GeneralTransitFeed.TripUpdate",
+          "namespace": "GeneralTransitFeedRealTime.Trip",
           "fields": [
             {
               "name": "id",
@@ -119,7 +119,7 @@
         "items": {
           "type": "record",
           "name": "StopTimeUpdate",
-          "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types",
+          "namespace": "GeneralTransitFeedRealTime.Trip.TripUpdate_types",
           "fields": [
             {
               "name": "stop_sequence",
@@ -144,7 +144,7 @@
                 {
                   "type": "record",
                   "name": "StopTimeEvent",
-                  "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types",
+                  "namespace": "GeneralTransitFeedRealTime.Trip.TripUpdate_types",
                   "fields": [
                     {
                       "name": "delay",
@@ -179,7 +179,7 @@
               "name": "departure",
               "type": [
                 "null",
-                "GeneralTransitFeed.TripUpdate.TripUpdate_types.StopTimeEvent"
+                "GeneralTransitFeedRealTime.Trip.TripUpdate_types.StopTimeEvent"
               ]
             },
             {
@@ -189,7 +189,7 @@
                 {
                   "name": "ScheduleRelationship",
                   "type": "enum",
-                  "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types.StopTimeUpdate_types",
+                  "namespace": "GeneralTransitFeedRealTime.Trip.TripUpdate_types.StopTimeUpdate_types",
                   "symbols": [
                     "SCHEDULED",
                     "SKIPPED",

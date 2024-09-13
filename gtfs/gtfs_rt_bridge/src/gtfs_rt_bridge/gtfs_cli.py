@@ -6,44 +6,44 @@ import glob
 import hashlib
 import io
 import os
+import re
 import shutil
 import subprocess
 import time
 import json
 import argparse
 import logging
-import dataclasses
-import dataclasses_json
-from typing import Any, Dict, List
-from datetime import UTC, datetime, timedelta
+from typing import Any, Dict, List, Tuple
+from datetime import datetime, timedelta, timezone
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
-from math import radians, cos, sin, asin, sqrt
 from enum import Enum
-from gtfs_rt_producer_data.generaltransitfeed.alert.alert import Alert
-from gtfs_rt_producer_data.generaltransitfeed.alert.alert_types.cause import Cause
-from gtfs_rt_producer_data.generaltransitfeed.alert.alert_types.effect import Effect
-from gtfs_rt_producer_data.generaltransitfeed.alert.entityselector import EntitySelector
-from gtfs_rt_producer_data.generaltransitfeed.alert.timerange import TimeRange
-from gtfs_rt_producer_data.generaltransitfeed.alert.translatedstring import TranslatedString
-from gtfs_rt_producer_data.generaltransitfeed.alert.translatedstring_types.translation import Translation
-from gtfs_rt_producer_data.generaltransitfeed.alert.tripdescriptor import TripDescriptor as AlertTripDescriptor
-from gtfs_rt_producer_data.generaltransitfeed.alert.tripdescriptor_types import ScheduleRelationship as AlertScheduleRelationship
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.position import Position
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.vehicledescriptor import VehicleDescriptor as PositionVehicleDescriptor
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.vehicleposition import VehiclePosition
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.vehicleposition_types.congestionlevel import CongestionLevel
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.vehicleposition_types.occupancystatus import OccupancyStatus
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.vehicleposition_types.vehiclestopstatus import VehicleStopStatus
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.tripdescriptor import TripDescriptor as PositionTripDescriptor
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.tripdescriptor_types.schedulerelationship import ScheduleRelationship as PositionScheduleRelationship
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate import TripUpdate
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate_types.stoptimeevent import StopTimeEvent
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate_types.stoptimeupdate import StopTimeUpdate
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripdescriptor import TripDescriptor as TripTripDescriptor
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripdescriptor_types.schedulerelationship import ScheduleRelationship as TripScheduleRelationship
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate_types.stoptimeupdate_types.schedulerelationship import ScheduleRelationship as StopTimeUpdateScheduleRelationship
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.vehicledescriptor import VehicleDescriptor as TripVehicleDescriptor
+import dataclasses
+import dataclasses_json
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert import Alert
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.cause import Cause
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.effect import Effect
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring_types.translation import Translation
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.tripdescriptor import TripDescriptor as AlertTripDescriptor
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.tripdescriptor_types import ScheduleRelationship as AlertScheduleRelationship
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor as PositionVehicleDescriptor
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition_types.congestionlevel import CongestionLevel
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition_types.occupancystatus import OccupancyStatus
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition_types.vehiclestopstatus import VehicleStopStatus
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor as PositionTripDescriptor
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor_types.schedulerelationship import ScheduleRelationship as PositionScheduleRelationship
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate import TripUpdate
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeevent import StopTimeEvent
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripdescriptor import TripDescriptor as TripTripDescriptor
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripdescriptor_types.schedulerelationship import ScheduleRelationship as TripScheduleRelationship
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate_types.schedulerelationship import ScheduleRelationship as StopTimeUpdateScheduleRelationship
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.vehicledescriptor import VehicleDescriptor as TripVehicleDescriptor
 from gtfs_rt_producer_data.generaltransitfeedstatic.bookingrules import BookingRules
 from gtfs_rt_producer_data.generaltransitfeedstatic.fareattributes import FareAttributes
 from gtfs_rt_producer_data.generaltransitfeedstatic.farelegrules import FareLegRules
@@ -98,7 +98,6 @@ import gtfs_rt_producer_data.generaltransitfeedstatic
 
 
 
-poll_interval: float = 20
 vehicle_last_report_times = {}
 vehicle_last_positions = {}
 
@@ -108,56 +107,44 @@ else:
     logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def calculate_speed(last_position, current_position, last_report_time, current_report_time) -> float:
-    """Calculate the speed between two positions"""
-    logger.info("Calculating speed...")
-    # Convert decimal degrees to radians
-    lon1, lat1, lon2, lat2 = map(radians, [last_position.longitude, last_position.latitude,
-                                 current_position.longitude, current_position.latitude])
-    # Haversine formula
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-    c = 2 * asin(sqrt(a))
-    km = 6371 * c
 
-    # Calculate speed in km/hr
-    time_diff = current_report_time - last_report_time
-    speed = km / (time_diff / 3600)
-    return speed
-
-
-def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, headers: dict) -> str:
+def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, gtfs_headers: List[List[str]], etag: str, cache_dir: str | None) -> Tuple[str, str]:
     """
     Fetches the latest schedule file from the schedule URL if the file does not exist in the cache.
     """
 
     if not gtfs_url:
-        schedule_url = get_gtfs_schedule_url(mdb_source_id)
-    else:
-        schedule_url = gtfs_url
+        gtfs_url = get_gtfs_url(mdb_source_id, cache_dir)
 
-    url_hash = hashlib.sha256(schedule_url.encode()).hexdigest()
-    cache_dir = os.path.join(os.path.expanduser("~"), ".gtfs_cli", "cache")
+    url_hash = hashlib.sha256(gtfs_url.encode()).hexdigest()
+    if not cache_dir:
+        cache_dir = os.path.join(os.path.expanduser("~"), ".gtfs_cli", "cache")
     os.makedirs(cache_dir, exist_ok=True)
     schedule_file_path = os.path.join(cache_dir, f"{url_hash}.json")
     if os.path.exists(schedule_file_path):
         # Check if the file is older than 24 hours
         file_modified_time = datetime.fromtimestamp(os.path.getmtime(schedule_file_path))
         if datetime.now() - file_modified_time < timedelta(hours=24):
-            return schedule_file_path
+            return None, schedule_file_path
 
     # Fetch the latest schedule file
-    if not headers:
-        headers = {}
+    request_headers: Dict[str, str] = {}
+    if gtfs_headers:
+        for header in gtfs_headers:
+            request_headers[header[0]] = header[1]
 
-    response = requests.get(schedule_url, headers={**headers,  "User-Agent": "gtfs-rt-cli/0.1"}, timeout=10)
+    if etag and os.path.exists(schedule_file_path):
+        request_headers["If-None-Match"] = etag
+    response = requests.get(gtfs_url, headers={**request_headers,  "User-Agent": "gtfs-rt-cli/0.1"}, timeout=10)
+    if response.status_code == 304:
+        return etag, schedule_file_path
+    etag = response.headers.get("ETag")
     response.raise_for_status()
     # write the binary file to the cache directory
 
     with open(schedule_file_path, "wb") as f:
         f.write(response.content)
-    return schedule_file_path
+    return etag, schedule_file_path
 
 
 def calculate_file_hashes(schedule_file_path: str):
@@ -173,9 +160,10 @@ def calculate_file_hashes(schedule_file_path: str):
     return hashes
 
 
-def read_file_hashes(schedule_file_path: str):
+def read_file_hashes(schedule_file_path: str, cache_dir: str | None) -> dict:
     """Reads the file hashes from the given file path"""
-    cache_dir = cache_dir = os.path.join(os.path.expanduser("~"), ".gtfs_cli", "cache")
+    if not cache_dir:
+        cache_dir = cache_dir = os.path.join(os.path.expanduser("~"), ".gtfs_cli", "cache")
     hashes_file_path = os.path.join(cache_dir, f"{os.path.basename(schedule_file_path)}.hashes.json")
     if not os.path.exists(hashes_file_path):
         return {}
@@ -183,9 +171,10 @@ def read_file_hashes(schedule_file_path: str):
         return json.load(f)
 
 
-def write_file_hashes(schedule_file_path: str, hashes: dict):
+def write_file_hashes(schedule_file_path: str, hashes: dict, cache_dir: str | None):
     """Writes the file hashes to the given file path"""
-    cache_dir = cache_dir = os.path.join(os.path.expanduser("~"), ".gtfs_cli", "cache")
+    if not cache_dir:
+        cache_dir = cache_dir = os.path.join(os.path.expanduser("~"), ".gtfs_cli", "cache")
     hashes_file_path = os.path.join(cache_dir, f"{os.path.basename(schedule_file_path)}.hashes.json")
     with open(hashes_file_path, 'w', encoding="utf-8") as f:
         json.dump(hashes, f)
@@ -206,69 +195,84 @@ hashes_vehicles: Dict[str, int] = {}
 hashes_trip: Dict[str, int] = {}
 hashes_alert: Dict[str, int] = {}
 
-async def poll_and_submit_realtime_feed(producer_client: GeneralTransitFeedRealTimeEventProducer, feed_url: str, headers: dict, agency_tag: str, route: str | None):
+async def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransitFeedRealTimeEventProducer, feed_url: str, gtfs_rt_headers: List[List[str]], route: str | None):
     """Polls vehicle locations and submits them to an Event Hub"""
 
+    # pylint: disable=global-variable-not-assigned
     global hashes_alert
     global hashes_trip
     global hashes_vehicles
+    # pylint: enable=global-variable-not-assigned
 
-    if not headers:
-        headers = {}
+    headers: Dict[str, str] = {}
+    if gtfs_rt_headers:
+        for header in gtfs_rt_headers:
+            headers[header[0]] = header[1]
 
-    # Make a request to the GTFS Realtime API to get the vehicle locations for the specified route
+    # Make a request to the GTFS Realtime API to get the feed data for the specified scope
     response = requests.get(feed_url, headers={**headers, "User-Agent": "gtfs-rt-cli/0.1"}, timeout=10)
     response.raise_for_status()
 
-    # Parse the Protocol Buffer message and submit each vehicle location to the Event Hub
+    # Parse the Protocol Buffer message and submit each feed info to the Event Hub
     try:
         # pylint: disable=no-member
         incoming_feed_message = gtfs_realtime_pb2.FeedMessage()
         # pylint: enable=no-member
         incoming_feed_message.ParseFromString(response.content)
     # pylint: disable=broad-except
-    except Exception as entity:
-        raise ValueError("Failed to parse the GTFS Realtime message") from entity
+    except Exception as exc:
+        logger.error("Failed to parse a GTFS Realtime message from %s with %s", feed_url, exc)
+        return
 
     for entity in incoming_feed_message.entity:
         if entity.vehicle and entity.vehicle.vehicle and entity.vehicle.vehicle.id:
             vehicle=map_vehicle_position(entity)
+            if route and route != '*' and vehicle.trip.route_id != route:
+                continue
             vph = map_vehicle_position(entity)
             vph.timestamp = 0
+            # pylint: disable=no-member
             vph_str = vph.to_json()
+            # pylint: enable=no-member
             hash_vph=hashlib.sha256(vph_str.encode()).hexdigest()
             if vehicle.vehicle.id in hashes_vehicles:
                 if hashes_vehicles[vehicle.vehicle.id] == hash_vph:
-                    logging.debug("Skipping vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
+                    logger.debug("Skipping vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
                     continue
-            logging.debug("Sending vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
-            await producer_client.send_general_transit_feed_real_time_vehicle_position(feed_url, agency_tag, vehicle, "application/json", flush_producer=False)
+            logger.debug("Sending vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
+            await producer_client.send_general_transit_feed_real_time_vehicle_vehicle_position(feed_url, agency_id, vehicle, "application/json", flush_producer=False)
             hashes_vehicles[vehicle.vehicle.id] = hash_vph
         elif entity.trip_update and entity.trip_update.trip and entity.trip_update.trip.trip_id:
             trip_update=map_trip_update(entity)
+            if route and route != '*' and trip_update.trip.route_id != route:
+                continue
             tuh = map_trip_update(entity)
             tuh.timestamp = 0
+            # pylint: disable=no-member
             tuh_str = tuh.to_json()
+            # pylint: enable=no-member
             hash_tuh=hashlib.sha256(tuh_str.encode()).hexdigest()
             if trip_update.trip.trip_id in hashes_trip:
                 if hashes_trip[trip_update.trip.trip_id] == hash_tuh:
-                    logging.debug("Skipping trip update: %s, %s", trip_update.trip.trip_id, entity.id)
+                    logger.debug("Skipping trip update: %s, %s", trip_update.trip.trip_id, entity.id)
                     continue
-            logging.debug("Sending trip update: %s, %s", trip_update.trip.trip_id, entity.id)
-            await producer_client.send_general_transit_feed_real_time_trip_update(feed_url, agency_tag, trip_update, "application/json", flush_producer=False)
+            logger.debug("Sending trip update: %s, %s", trip_update.trip.trip_id, entity.id)
+            await producer_client.send_general_transit_feed_real_time_trip_trip_update(feed_url, agency_id, trip_update, "application/json", flush_producer=False)
             hashes_trip[trip_update.trip.trip_id] = hash_tuh
         elif entity.alert and len(entity.alert.header_text.translation) > 0:
             alert=map_alert(entity)
             sah = map_alert(entity)
             sah.timestamp = 0
+            # pylint: disable=no-member
             sah_str = sah.to_json()
+            # pylint: enable=no-member
             hash_sah=hashlib.sha256(sah_str.encode()).hexdigest()
             if hash_sah in hashes_alert:
                 if hashes_alert[hash_sah] == hash_sah:
-                    logging.debug("Skipping alert: %s, %s", alert.header_text, entity.id)
+                    logger.debug("Skipping alert: %s, %s", alert.header_text, entity.id)
                     continue
-            logging.debug("Sending alert: %s, %s", alert.header_text, entity.id)
-            await producer_client.send_general_transit_feed_real_time_alert(feed_url, agency_tag, alert, "application/json", flush_producer=False)
+            logger.debug("Sending alert: %s, %s", alert.header_text, entity.id)
+            await producer_client.send_general_transit_feed_real_time_alert_alert(feed_url, agency_id, alert, "application/json", flush_producer=False)
             hashes_alert[hash_sah] = hash_sah
     producer_client.producer.flush()
 
@@ -672,332 +676,345 @@ def map_trips(rows: List[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], c
 async def send_agency_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Agency]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_agency(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_agency(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_areas_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Areas]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_areas(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_areas(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_attributions_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Attributions]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_attributions(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_attributions(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_booking_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[BookingRules]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_booking_rules(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_booking_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_fare_attributes_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareAttributes]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_attributes(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_attributes(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_fare_leg_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareLegRules]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_leg_rules(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_leg_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_fare_media_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareMedia]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_media(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_media(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_fare_products_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareProducts]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_products(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_products(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_fare_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareRules]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_rules(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
 
 async def send_fare_transfer_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareTransferRules]):
     tasks = []
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(feed_url, agency_id, entity, "application/json"))
+        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
     await asyncio.gather(*tasks)
 
+etags = {}
 
-async def fetch_and_process_schedule(reference_producer_client: GeneralTransitFeedStaticEventProducer, schedule_url: str, mdb_id: str, headers: dict, force_refresh: bool = False):
+async def fetch_and_process_schedule(agency_id: str, reference_producer_client: GeneralTransitFeedStaticEventProducer, gtfs_urls: List[str], headers: List[List[str]], force_refresh: bool = False, cache_dir: str | None = None):
     """Fetches the schedule file, calculates file hashes, and processes new/changed files"""
-    # Fetch the schedule file
-    schedule_file_path = fetch_schedule_file(schedule_url, None, headers)
-    # Calculate the file hashes
-    new_hashes = calculate_file_hashes(schedule_file_path)
-    # Read the existing file hashes
-    old_hashes = read_file_hashes(schedule_file_path)
 
-    last_report_time = time.time()
-    last_report_time_iso = datetime.fromtimestamp(last_report_time, UTC).isoformat()
+    # pylint: disable=global-variable-not-assigned
+    global etags
+    # pylint: enable
 
-    # Find new/changed files
-    changed_files = []
-    for file_name, new_hash in new_hashes.items():
-        if force_refresh or (file_name not in old_hashes or old_hashes[file_name] != new_hash):
-            changed_files.append(file_name)
+    for gtfs_url in gtfs_urls:
+        # Fetch the schedule file
 
-    agency_rows = read_schedule_file_contents(schedule_file_path, "agency.txt")
-    calendar_rows = read_schedule_file_contents(schedule_file_path, "calendar.txt")
-    calendar_dates_rows = read_schedule_file_contents(schedule_file_path, "calendar_dates.txt")
+        etag, schedule_file_path = fetch_schedule_file(gtfs_url, None, headers, etags.get(gtfs_url, None), cache_dir)
+        if etag == etags.get(gtfs_url, None):
+            continue
+        etags[gtfs_url] = etag
+        # Read the existing file hashes
+        old_hashes = read_file_hashes(schedule_file_path, cache_dir)
+        # Calculate the file hashes
+        new_hashes = calculate_file_hashes(schedule_file_path)
 
-    # Read the contents of new/changed files
-    send_count = 0
-    for file_name in changed_files:
-        # create eventdata batch
-        file_contents = read_schedule_file_contents(schedule_file_path, file_name)
-        file_base_name = os.path.basename(file_name).split(".")[0]
+        # Find new/changed files
+        changed_files = []
+        for file_name, new_hash in new_hashes.items():
+            if force_refresh or (file_name not in old_hashes or old_hashes[file_name] != new_hash):
+                changed_files.append(file_name)
 
-        if file_base_name == "agency":
-            entities = map_agency(file_contents)
-            logger.info("Processing %s agency entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_agency(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "areas":
-            entities = map_areas(file_contents)
-            logger.info("Processing %s areas entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_areas(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "attributions":
-            entities = map_attributions(file_contents)
-            logger.info("Processing %s attributions entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_attributions(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "booking_rules":
-            entities = map_booking_rules(file_contents)
-            logger.info("Processing %s booking_rules entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_booking_rules(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "fare_attributes":
-            entities = map_fare_attributes(file_contents)
-            logger.info("Processing %s fare_attributes entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_fare_attributes(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "fare_leg_rules":
-            entities = map_fare_leg_rules(file_contents)
-            logger.info("Processing %s fare_leg_rules entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_fare_leg_rules(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "fare_media":
-            entities = map_fare_media(file_contents)
-            logger.info("Processing %s fare_media entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_fare_media(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "fare_products":
-            entities = map_fare_products(file_contents)
-            logger.info("Processing %s fare_products entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_fare_products(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "fare_rules":
-            entities = map_fare_rules(file_contents)
-            logger.info("Processing %s fare_rules entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_fare_rules(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "fare_transfer_rules":
-            entities = map_fare_transfer_rules(file_contents)
-            logger.info("Processing %s fare_transfer_rules entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "feed_info":
-            entities = map_feed_info(file_contents)
-            logger.info("Processing %s feed_info entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_feed_info(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "frequencies":
-            entities = map_frequencies(file_contents)
-            logger.info("Processing %s frequencies entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_frequencies(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "levels":
-            entities = map_levels(file_contents)
-            logger.info("Processing %s levels entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_levels(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "location_groups":
-            entities = map_location_groups(file_contents)
-            logger.info("Processing %s location_groups entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_location_groups(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "location_group_stores":
-            entities = map_location_group_stores(file_contents)
-            logger.info("Processing %s location_group_stores entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_location_group_stores(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "networks":
-            entities = map_networks(file_contents)
-            logger.info("Processing %s networks entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_networks(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "pathways":
-            entities = map_pathways(file_contents)
-            logger.info("Processing %s pathways entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_pathways(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "route_networks":
-            entities = map_route_networks(file_contents)
-            logger.info("Processing %s route_networks entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_route_networks(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "routes":
-            entities = map_routes(file_contents)
-            logger.info("Processing %s routes entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_routes(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "shapes":
-            entities = map_shapes(file_contents)
-            logger.info("Processing %s shapes entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_shapes(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "stop_areas":
-            entities = map_stop_areas(file_contents)
-            logger.info("Processing %s stop_areas entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_stop_areas(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "stops":
-            entities = map_stops(file_contents)
-            logger.info("Processing %s stops entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_stops(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "stop_times":
-            entities = map_stop_times(file_contents)
-            logger.info("Processing %s stop_times entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_stop_times(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "timeframes":
-            entities = map_timeframes(file_contents, calendar_rows, calendar_dates_rows)
-            logger.info("Processing %s timeframes entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_timeframes(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "transfers":
-            entities = map_transfers(file_contents)
-            logger.info("Processing %s transfers entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_transfers(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "translations":
-            entities = map_translations(file_contents)
-            logger.info("Processing %s translations entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_translations(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        elif file_base_name == "trips":
-            entities = map_trips(file_contents, calendar_rows, calendar_dates_rows)
-            logger.info("Processing %s trips entities", len(entities))
-            for entity in entities:
-                await reference_producer_client.send_general_transit_feed_static_trips(schedule_url, mdb_id, entity, flush_producer=False)
-                send_count += 1
-                if send_count % 100 == 0:
-                    reference_producer_client.producer.flush()
-        reference_producer_client.producer.flush()
-    # Write the new file hashes
-    write_file_hashes(schedule_file_path, new_hashes)
+        agency_url = gtfs_url
+        agency_rows = read_schedule_file_contents(schedule_file_path, "agency.txt")
+        if agency_rows and len(agency_rows) > 0:
+            agency_url = agency_rows[0].get("agency_url")
+        calendar_rows = read_schedule_file_contents(schedule_file_path, "calendar.txt")
+        calendar_dates_rows = read_schedule_file_contents(schedule_file_path, "calendar_dates.txt")
+
+        # Read the contents of new/changed files
+        send_count = 0
+        for file_name in changed_files:
+            # create eventdata batch
+            file_contents = read_schedule_file_contents(schedule_file_path, file_name)
+            file_base_name = os.path.basename(file_name).split(".")[0]
+
+            if file_base_name == "agency":
+                entities = map_agency(file_contents)
+                logger.info("Processing %s agency entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_agency(agency_url, (entity.agencyId if entity.agencyId else agency_id), entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "areas":
+                entities = map_areas(file_contents)
+                logger.info("Processing %s areas entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_areas(agency_url, agency_id+"/"+entity.areaId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "attributions":
+                entities = map_attributions(file_contents)
+                logger.info("Processing %s attributions entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_attributions(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.attributionId+"/"+entity.routeId+"/"+entity.tripId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "booking_rules":
+                entities = map_booking_rules(file_contents)
+                logger.info("Processing %s booking_rules entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_booking_rules(agency_url, agency_id+"/"+entity.bookingRuleId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "fare_attributes":
+                entities = map_fare_attributes(file_contents)
+                logger.info("Processing %s fare_attributes entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_fare_attributes(agency_url, (entity.agencyId if entity.agencyId else agency_id) +"/"+entity.fareId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "fare_leg_rules":
+                entities = map_fare_leg_rules(file_contents)
+                logger.info("Processing %s fare_leg_rules entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_fare_leg_rules(agency_url, agency_id+"/"+entity.fareLegRuleId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "fare_media":
+                entities = map_fare_media(file_contents)
+                logger.info("Processing %s fare_media entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_fare_media(agency_url, agency_id+"/"+entity.fareMediaId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "fare_products":
+                entities = map_fare_products(file_contents)
+                logger.info("Processing %s fare_products entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_fare_products(agency_url, agency_id+"/"+entity.fareProductId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "fare_rules":
+                entities = map_fare_rules(file_contents)
+                logger.info("Processing %s fare_rules entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_fare_rules(agency_url, agency_id+"/"+entity.fareId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "fare_transfer_rules":
+                entities = map_fare_transfer_rules(file_contents)
+                logger.info("Processing %s fare_transfer_rules entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(agency_url, agency_id+"/"+entity.fareTransferRuleId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "feed_info":
+                entities = map_feed_info(file_contents)
+                logger.info("Processing %s feed_info entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_feed_info(agency_url, agency_id+"/"+entity.feedVersion, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "frequencies":
+                entities = map_frequencies(file_contents)
+                logger.info("Processing %s frequencies entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_frequencies(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "levels":
+                entities = map_levels(file_contents)
+                logger.info("Processing %s levels entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_levels(agency_url, agency_id+"/"+entity.levelId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "location_groups":
+                entities = map_location_groups(file_contents)
+                logger.info("Processing %s location_groups entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_location_groups(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "location_group_stores":
+                entities = map_location_group_stores(file_contents)
+                logger.info("Processing %s location_group_stores entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_location_group_stores(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "networks":
+                entities = map_networks(file_contents)
+                logger.info("Processing %s networks entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_networks(agency_url, agency_id+"/"+entity.networkId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "pathways":
+                entities = map_pathways(file_contents)
+                logger.info("Processing %s pathways entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_pathways(agency_url, agency_id+"/"+entity.pathwayId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "route_networks":
+                entities = map_route_networks(file_contents)
+                logger.info("Processing %s route_networks entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_route_networks(agency_url, agency_id+"/"+entity.routeNetworkId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "routes":
+                entities = map_routes(file_contents)
+                logger.info("Processing %s routes entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_routes(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.routeId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "shapes":
+                entities = map_shapes(file_contents)
+                logger.info("Processing %s shapes entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_shapes(agency_url, agency_id+"/"+entity.shapeId+"/"+str(entity.shapePtSequence), entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "stop_areas":
+                entities = map_stop_areas(file_contents)
+                logger.info("Processing %s stop_areas entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_stop_areas(agency_url, agency_id+"/"+entity.stopAreaId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "stops":
+                entities = map_stops(file_contents)
+                logger.info("Processing %s stops entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_stops(agency_url, agency_id+"/"+entity.stopId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "stop_times":
+                entities = map_stop_times(file_contents)
+                logger.info("Processing %s stop_times entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_stop_times(agency_url, agency_id+"/"+entity.stopId+"/"+entity.tripId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "timeframes":
+                entities = map_timeframes(file_contents, calendar_rows, calendar_dates_rows)
+                logger.info("Processing %s timeframes entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_timeframes(agency_url, agency_id+"/"+entity.timeframeGroupId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "transfers":
+                entities = map_transfers(file_contents)
+                logger.info("Processing %s transfers entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_transfers(agency_url, agency_id+"/"+entity.fromStopId+"/"+entity.toStopId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "translations":
+                entities = map_translations(file_contents)
+                logger.info("Processing %s translations entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_translations(agency_url, agency_id+"/"+entity.tableName+"/"+entity.fieldName, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            elif file_base_name == "trips":
+                entities = map_trips(file_contents, calendar_rows, calendar_dates_rows)
+                logger.info("Processing %s trips entities", len(entities))
+                for entity in entities:
+                    await reference_producer_client.send_general_transit_feed_static_trips(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
+                    send_count += 1
+                    if send_count % 100 == 0:
+                        reference_producer_client.producer.flush()
+            reference_producer_client.producer.flush()
+        # Write the new file hashes
+        write_file_hashes(schedule_file_path, new_hashes, cache_dir)
 
 
-async def feed_realtime_messages(kafka_bootstrap_servers: str, kafka_topic:str, sasl_username:str|None, sasl_password:str|None, gtfs_feed_urls: List[str], schedule_url: str, mdb_source_id: str, headers: dict, route: str | None, poll_interval: int = 30, cloudevents_mode: str = "structured"):
+async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_topic:str, sasl_username:str|None, sasl_password:str|None,
+                                 gtfs_rt_urls: List[str], gtfs_rt_headers: List[List[str]], gtfs_urls: List[str], gtfs_headers: List[List[str]],
+                                 mdb_source_id: str, route: str | None, poll_interval: int, cloudevents_mode: str, cache_dir: str | None):
     """Poll vehicle locations and submit to an Event Hub"""
-    if not gtfs_feed_urls and mdb_source_id:
-        gtfs_feed_urls = [get_gtfs_rt_url(mdb_source_id)]
-    if not gtfs_feed_urls:
+    if not gtfs_rt_urls and mdb_source_id:
+        gtfs_rt_urls = [get_gtfs_rt_url(mdb_source_id, cache_dir)]
+    if not gtfs_rt_urls:
         logger.info("No vehicle positions feed URL(s) specified")
-    if not schedule_url:
-        schedule_url = get_gtfs_schedule_url(mdb_source_id)
-    if not schedule_url:
+    if not gtfs_urls and mdb_source_id:
+        gtfs_urls = [get_gtfs_url(mdb_source_id, cache_dir)]
+    if not gtfs_urls:
         logger.info("No schedule URL specified")
 
     if not kafka_bootstrap_servers:
@@ -1019,7 +1036,8 @@ async def feed_realtime_messages(kafka_bootstrap_servers: str, kafka_topic:str, 
         "linger.ms": 100,
         "retries": 5,
         "retry.backoff.ms": 1000,
-        "batch.size": 512*1024
+        "batch.size": (1024*1024)-512,
+        "compression.type": "gzip"
     }
     producer: Producer = Producer(kafka_config)
     gtfs_rt_producer = GeneralTransitFeedRealTimeEventProducer(producer, kafka_topic,cloudevents_mode)
@@ -1028,33 +1046,40 @@ async def feed_realtime_messages(kafka_bootstrap_servers: str, kafka_topic:str, 
     last_schedule_run = None
     try:
         while True:
-            if schedule_url:
+            start_time = datetime.now(timezone.utc)
+            if gtfs_urls:
                 if last_schedule_run is None or datetime.now() - last_schedule_run > timedelta(hours=1):
                     last_schedule_run = datetime.now()
-                    logger.info("Fetching schedule from %s", schedule_url)
-                    await fetch_and_process_schedule(gtfs_static_producer, schedule_url, mdb_source_id, headers=headers, force_refresh=True)
-            if gtfs_feed_urls:
-                logger.info("Polling feed updates from %s", gtfs_feed_urls)
-                for gtfs_feed_url in gtfs_feed_urls:
-                    await poll_and_submit_realtime_feed(gtfs_rt_producer, gtfs_feed_url, headers, mdb_source_id, route)
+                    logger.info("Fetching schedule from %s", gtfs_urls)
+                    await fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=True, cache_dir=cache_dir)
+            if gtfs_rt_urls:
+                logger.info("Polling feed updates from %s", gtfs_rt_urls)
+                for gtfs_feed_url in gtfs_rt_urls:
+                    await poll_and_submit_realtime_feed(agency_id, gtfs_rt_producer, gtfs_feed_url, gtfs_rt_headers, route)
             logger.info("Sleeping for %s seconds. Press Ctrl+C to stop.", poll_interval)
-            time.sleep(poll_interval)
+            end_time = datetime.now(timezone.utc)
+            elapsed_time = end_time - start_time
+            if elapsed_time.total_seconds() < poll_interval:
+                logger.info("Sleeping for %s seconds", poll_interval - elapsed_time.total_seconds())
+                time.sleep(poll_interval - elapsed_time.total_seconds())
     except KeyboardInterrupt:
         logger.info("Loop interrupted by user")
 
     producer.flush()
-    producer.close()
 
 
-async def print_feed_items(feed_url: str, mdb_source_id: str, headers: dict, agency, route):
+async def print_feed_items(feed_url: str, mdb_source_id: str, gtfs_rt_headers: List[List[str]], cache_dir: str | None):
+    """Prints the GTFS Realtime feed items to the console"""
     if not feed_url and mdb_source_id:
-        feed_url = get_gtfs_rt_url(mdb_source_id)
+        feed_url = get_gtfs_rt_url(mdb_source_id, cache_dir)
 
     if not feed_url:
         raise ValueError("No GTFS Realtime URL specified")
 
-    if not headers:
-        headers = {}
+    headers: Dict[str, str] = {}
+    if gtfs_rt_headers:
+        for header in gtfs_rt_headers:
+            headers[header[0]] = header[1]
 
     # Make a request to the GTFS Realtime API to get the vehicle locations for the specified route
     response = requests.get(feed_url, headers={**headers, "User-Agent": "gtfs-rt-cli/0.1"}, timeout=10)
@@ -1177,10 +1202,7 @@ def map_alert(entity):
     return alert
     # pylint: enable=no-member
 
-def create_gtfs_sources_dir():
-    # Get the user's profile directory
-    gtfs_sources_dir = get_gtfs_sources_dir()
-
+def create_gtfs_sources_dir(cache_dir: str):
     # Check if Git is installed
     try:
         subprocess.run(["git", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -1189,7 +1211,7 @@ def create_gtfs_sources_dir():
         return
 
     # Clone the mobility-database-catalogs repository if it does not exist
-    mobility_database_catalogs_dir = get_mobility_database_dir()
+    mobility_database_catalogs_dir = get_mobility_database_dir(cache_dir)
     if not os.path.exists(mobility_database_catalogs_dir):
         try:
             subprocess.run(["git", "clone", "https://github.com/MobilityData/mobility-database-catalogs.git",
@@ -1209,13 +1231,16 @@ def create_gtfs_sources_dir():
         logger.info("Error pulling the mobility-database-catalogs repository: %s", e.stderr.decode().strip())
 
 
-def get_mobility_database_dir():
-    mobility_database_catalogs_dir = os.path.join(get_gtfs_sources_dir(), "mobility-database-catalogs")
+def get_mobility_database_dir(cache_dir: str):
+    mobility_database_catalogs_dir = os.path.join(get_gtfs_sources_dir(cache_dir), "mobility-database-catalogs")
     return mobility_database_catalogs_dir
 
 
-def get_gtfs_sources_dir():
-    profile_dir = os.path.expanduser("~")
+def get_gtfs_sources_dir(cache_dir: str):
+    if cache_dir:
+        profile_dir = cache_dir
+    else:
+        profile_dir = os.path.expanduser("~")
     gtfs_sources_dir = os.path.join(profile_dir, ".gtfs-sources")
 
     # Create the directory if it does not exist
@@ -1224,13 +1249,13 @@ def get_gtfs_sources_dir():
     return gtfs_sources_dir
 
 
-def get_gtfs_rt_url(mdb_source_id):
+def get_gtfs_rt_url(mdb_source_id, cache_dir: str):
     """
     Helper function to look up the GTFS-RT URL from the JSON files in the clone repository's catalogs/sources/gtfs/realtime directory.
     the mdb_source_id is appended to the filename of each JSON file, so filter the files by mdb_source_id.
     """
-    create_gtfs_sources_dir()
-    gtfs_rt_dir = os.path.join(get_mobility_database_dir(), "catalogs", "sources", "gtfs", "realtime")
+    create_gtfs_sources_dir(cache_dir)
+    gtfs_rt_dir = os.path.join(get_mobility_database_dir(cache_dir), "catalogs", "sources", "gtfs", "realtime")
     for filename in glob.glob(f"*-{mdb_source_id}.json", root_dir=gtfs_rt_dir):
         with open(os.path.join(gtfs_rt_dir, filename), "r", encoding='utf-8') as f:
             data = json.load(f)
@@ -1239,12 +1264,12 @@ def get_gtfs_rt_url(mdb_source_id):
     return None
 
 
-def get_gtfs_schedule_url(mdb_source_id):
+def get_gtfs_url(mdb_source_id, cache_dir: str):
     """
     Helper function to look up the GTFS schedule URL from the JSON files in the clone repository's catalogs/sources/gtfs/schedule directory.
     """
-    create_gtfs_sources_dir()
-    gtfs_schedule_dir = os.path.join(get_mobility_database_dir(), "catalogs", "sources", "gtfs", "schedule")
+    create_gtfs_sources_dir(cache_dir)
+    gtfs_schedule_dir = os.path.join(get_mobility_database_dir(cache_dir), "catalogs", "sources", "gtfs", "schedule")
     for filename in glob.glob(f"*-{mdb_source_id}.json", root_dir=gtfs_schedule_dir):
         # find the file that ends with -<mdb_source_id>.json
         with open(os.path.join(gtfs_schedule_dir, filename), "r", encoding='utf-8') as f:
@@ -1254,11 +1279,11 @@ def get_gtfs_schedule_url(mdb_source_id):
     return None
 
 
-async def run_print_agencies(_):
+async def run_print_agencies(args: Any):
     """
     Helper function to print the list of transit agencies in the Mobility Database.
     """
-    agencies = await read_agencies()
+    agencies = await read_agencies(args.cache_dir)
 
     print("[")
     agencies_values = list(agencies.values())
@@ -1276,14 +1301,19 @@ def remove_nulls(d):
 
 read_agencies_cache: Dict[str, Any] | None = None
 
-async def read_agencies():
+async def read_agencies(cache_dir: str):
+    """ Reads the list of transit agencies in the Mobility Database from the JSON files in the clone repository's catalogs/sources/gtfs directory. """
+    
+    # pylint: disable=global-variable-not-assigned    
     global read_agencies_cache
+    # pylint: enable=global-variable-not-assigned
+    
     if read_agencies_cache:
         return read_agencies_cache
 
-    create_gtfs_sources_dir()
-    gtfs_schedule_dir = os.path.join(get_mobility_database_dir(), "catalogs", "sources", "gtfs", "schedule")
-    gtfs_realtime_dir = os.path.join(get_mobility_database_dir(), "catalogs", "sources", "gtfs", "realtime")
+    create_gtfs_sources_dir(cache_dir)
+    gtfs_schedule_dir = os.path.join(get_mobility_database_dir(cache_dir), "catalogs", "sources", "gtfs", "schedule")
+    gtfs_realtime_dir = os.path.join(get_mobility_database_dir(cache_dir), "catalogs", "sources", "gtfs", "realtime")
     agencies:Dict[str, Any] = {}
     for filename in os.listdir(gtfs_schedule_dir):
         with open(os.path.join(gtfs_schedule_dir, filename), "r", encoding="utf-8") as f:
@@ -1350,11 +1380,11 @@ async def read_agencies():
     return agencies
 
 
-async def print_routes(gtfs_url: str, mdb_source_id: str, headers: dict):
+async def print_routes(gtfs_url: str, mdb_source_id: str, headers: dict, cache_dir: str | None):
     """
     Helper function to print the list of routes in the Mobility Database.
     """
-    schedule_file_path = fetch_schedule_file(gtfs_url, mdb_source_id, headers)
+    _, schedule_file_path = fetch_schedule_file(gtfs_url, mdb_source_id, headers, None, cache_dir)
 
     # the schedule file is a GTFS feed based on the Google Transit Feed Specification
     # we need to unzip the file into a temp directory and then parse the routes.txt file
@@ -1368,11 +1398,11 @@ async def print_routes(gtfs_url: str, mdb_source_id: str, headers: dict):
         logger.info("- %s: %s - %s", route.routeId, route.routeShortName, route.routeLongName)
 
 
-async def print_stops(gtfs_url: str, mdb_source_id: str, headers: dict, route_id: str = None):
+async def print_stops(gtfs_url: str, mdb_source_id: str, headers: dict, route_id: str | None, cache_dir: str | None):
     """
     Helper function to print the list of stops in the Mobility Database.
     """
-    schedule_file_path = fetch_schedule_file(gtfs_url, mdb_source_id, headers)
+    _, schedule_file_path = fetch_schedule_file(gtfs_url, mdb_source_id, headers, None, cache_dir)
     calendar_content = read_schedule_file_contents(schedule_file_path, "calendar.txt")
     calendar_dates_content = read_schedule_file_contents(schedule_file_path, "calendar_dates.txt")
     stop_data = map_stops(read_schedule_file_contents(schedule_file_path, "stops.txt"))
@@ -1402,11 +1432,11 @@ async def print_stops(gtfs_url: str, mdb_source_id: str, headers: dict, route_id
         # sort the stops_list by key
         for key in sorted(stops_list.keys()):
             stop = stops_list[key]
-            logger.info(f"- {key}: {stop.stopId}: {stop.stopName}, ({stop.stopLat},{stop.stopLon}), https://geohack.toolforge.org/geohack.php?language=en&params={stop.stopLat};{stop.stopLon}")
+            logger.info("- %s: %s: %s, (%s,%s), https://geohack.toolforge.org/geohack.php?language=en&params=%s;%s", key, stop.stopId, stop.stopName, stop.stopLat, stop.stopLon, stop.stopLat, stop.stopLon)
     else:
-        logger.info(f"Stops for {mdb_source_id}:")
+        logger.info("Stops for %s:", mdb_source_id)
         for stop in stop_data:
-            logger.info(f"- {stop.stopId}: {stop.stopName}, ({stop.stopLat},{stop.stopLon}), https://geohack.toolforge.org/geohack.php?language=en&params={stop.stopLat};{stop.stopLon}")
+            logger.info("- %s: %s, (%s,%s), https://geohack.toolforge.org/geohack.php?language=en&params=%s;%s", stop.stopId, stop.stopName, stop.stopLat, stop.stopLon, stop.stopLat, stop.stopLon)
 
 
 async def run_print_stops(args):
@@ -1421,7 +1451,7 @@ async def run_print_stops(args):
         headers = {k: v for k, v in args.header}
     if not args.gtfs_url and not args.mdb_source_id:
         raise ValueError("No GTFS URL or Mobility Database source ID specified")
-    await print_stops(args.gtfs_url, args.mdb_source_id, headers, args.route)
+    await print_stops(args.gtfs_url, args.mdb_source_id, headers, args.route, args.cache_dir)
 
 
 async def run_print_routes(args):
@@ -1436,7 +1466,7 @@ async def run_print_routes(args):
         raise ValueError("No GTFS URL or Mobility Database source ID specified")
     if args.header:
         headers = {k: v for k, v in args.header}
-    await print_routes(args.gtfs_url, args.mdb_source_id, headers)
+    await print_routes(args.gtfs_url, args.mdb_source_id, headers, args.cache_dir)
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -1473,12 +1503,17 @@ async def run_feed(args):
         args: The command-line arguments.
     """
 
-    if not args.gtfs_urls and not args.mdb_source_id:
+    if args.log_level:
+        llevel = getattr(logging, args.log_level)
+        logger.setLevel(llevel)
+    if not args.gtfs_rt_urls and not args.mdb_source_id:
         raise ValueError("No GTFS URL or Mobility Database source ID specified")
-    poll_interval = args.poll_interval
-    headers = None
-    if args.header:
-        headers = {k: v for k, v in args.header}
+    gtfs_rt_headers = None
+    gtfs_headers = None
+    if args.gtfs_rt_headers:
+        gtfs_rt_headers = [v.split("=", 1) for v in args.gtfs_rt_headers]
+    if args.gtfs_headers:
+        gtfs_headers = [v.split("=", 1) for v in args.gtfs_headers]
 
     if args.connection_string:
         config_params = parse_connection_string(args.connection_string)
@@ -1492,8 +1527,8 @@ async def run_feed(args):
         sasl_username = args.sasl_username
         sasl_password = args.sasl_password
 
-    await feed_realtime_messages(kafka_bootstrap_servers, kafka_topic, sasl_username, sasl_password,
-                           args.gtfs_urls, args.schedule_url, args.mdb_source_id, headers, args.route, args.poll_interval, args.cloudevents_mode)
+    await feed_realtime_messages(args.agency, kafka_bootstrap_servers, kafka_topic, sasl_username, sasl_password,
+                           args.gtfs_rt_urls, gtfs_rt_headers, args.gtfs_urls, gtfs_headers, args.mdb_source_id, args.route, args.poll_interval, args.cloudevents_mode, args.cache_dir)
 
 
 async def main():
@@ -1504,42 +1539,48 @@ async def main():
     parser = argparse.ArgumentParser(description="Real-time transit data bridge for the Mobility Database and GTFS")
     subparsers = parser.add_subparsers(title="subcommands", dest="subcommand")
 
+    split_pattern = r'''(?:(?<!\\)"[^"]*"|'[^']*'|[^\s"']+)+'''
     # Define the "feed" command
-    feed_parser = subparsers.add_parser("feed", help="poll vehicle locations and submit to a Kafka endpoint, Event Hub, or Fabric Event Stream custom endpoint")
-    feed_parser.add_argument('--kafka-bootstrap-servers', type=str, help="Comma separated list of Kafka bootstrap servers")
-    feed_parser.add_argument('--kafka-topic', type=str, help="Kafka topic to send messages to")
-    feed_parser.add_argument('--sasl-username', type=str, help="Username for SASL PLAIN authentication")
-    feed_parser.add_argument('--sasl-password', type=str, help="Password for SASL PLAIN authentication")
-    feed_parser.add_argument('-c', '--connection-string', dest="connection_string", type=str, help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
-    feed_parser.add_argument("-r", "--route", help="the route to poll vehicle locations for, omit or '*' to poll all routes", required=False, default="*")
-    feed_parser.add_argument("--gtfs-urls", help="the URL(s) of the GTFS Realtime feed(s)", required=False, default=None, nargs="+")
-    feed_parser.add_argument("--schedule-url", help="the URL of the GTFS Schedule feed", required=False, default=None)
-    feed_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Realtime feed", required=False, default=None)
-    feed_parser.add_argument('--header', action='append', nargs=2, help='HTTP header expressed as a pair of strings to send with the request to the GTFS Realtime feed, e.g. "API-Key abc')
+    feed_parser = subparsers.add_parser("feed", help="poll real-time feeds and submit to a Kafka endpoint, Event Hub, or Fabric Event Stream custom endpoint")
+    feed_parser.add_argument('--kafka-bootstrap-servers', type=str, help="Comma separated list of Kafka bootstrap servers", default=os.environ.get("KAFKA_BOOTSTRAP_SERVERS"))
+    feed_parser.add_argument('--kafka-topic', type=str, help="Kafka topic to send messages to", default=os.environ.get("KAFKA_TOPIC"))
+    feed_parser.add_argument('--sasl-username', type=str, help="Username for SASL PLAIN authentication", default=os.environ.get("SASL_USERNAME"))
+    feed_parser.add_argument('--sasl-password', type=str, help="Password for SASL PLAIN authentication", default=os.environ.get("SASL_PASSWORD"))
+    feed_parser.add_argument('-c', '--connection-string', dest="connection_string", type=str, help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string', default=os.environ.get("CONNECTION_STRING"))
+    feed_parser.add_argument("-r", "--route", help="the route to poll vehicle locations for, omit or '*' to poll all routes", required=False, default="*" if not os.environ.get("ROUTE") else os.environ.get("ROUTE"))
+    feed_parser.add_argument("--gtfs-rt-urls", help="the URL(s) of the GTFS Realtime feed(s)", required=False, nargs="+", default=os.environ.get("GTFS_RT_URLS").split(",") if os.environ.get("GTFS_RT_URLS") else None)
+    feed_parser.add_argument("--gtfs-urls", help="the URL(s) of the GTFS Schedule feed", nargs='+', required=False,default=os.environ.get("GTFS_URLS").split(",") if os.environ.get("GTFS_URLS") else None)
+    feed_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Realtime feed", required=False, default=os.environ.get("MDB_SOURCE_ID"))
+    feed_parser.add_argument("-a", "--agency", help="the tag of the agency to get vehicle locations for", required=True, default=os.environ.get("AGENCY"))
+    feed_parser.add_argument('--gtfs-rt-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ("GTFS_RT_HEADERS")) if os.environ.get("GTFS_RT_HEADERS") else None)
+    feed_parser.add_argument('--gtfs-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ("GTFS_HEADERS")) if os.environ.get("GTFS_HEADERS") else None)
     feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=20)
     feed_parser.add_argument("--cloudevents-mode", help="the CloudEvents mode to use for the Kafka producer", required=False, choices=["structured", "binary"], default="structured")
+    feed_parser.add_argument('--cache-dir', type=str, help="the directory to store the GTFS schedule files", required=False, default=os.environ.get("CACHE_DIR"))
+    feed_parser.add_argument('--log-level', type=str, help="the logging level", required=False, default=os.environ.get("LOG_LEVEL"), choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
     feed_parser.set_defaults(func=run_feed)
 
     # Define the "printfeed" command
-    vehicle_locations_parser = subparsers.add_parser("printfeed", help="Print the feed data for a route for a single request")
-    vehicle_locations_parser.add_argument("--agency", help="the tag of the agency to get vehicle locations for", required=False)
-    vehicle_locations_parser.add_argument("-r", "--route", help="the route to get vehicle locations for", required=False)
-    vehicle_locations_parser.add_argument("--gtfs-url", help="the URL of the GTFS Realtime feed", required=False)
-    vehicle_locations_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Realtime feed", required=False, default=None)
-    vehicle_locations_parser.add_argument('--header', action='append', nargs=2,
+    printfeed_parser = subparsers.add_parser("printfeed", help="Print the feed data for a route for a single request")
+    printfeed_parser.add_argument("--gtfs-rt-url", help="the URL of the GTFS Realtime feed", required=False)
+    printfeed_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Realtime feed", required=False, default=None)
+    printfeed_parser.add_argument('--header', action='append', nargs=2,
                                           help='HTTP header to send with the request to the GTFS Realtime feed')
+    printfeed_parser.add_argument('--cache-dir', type=str, help="the directory to store the GTFS schedule files", required=False, default=os.environ.get("CACHE_DIR"))
+
     async def cmd_print_feed_items(args):
-        if not args.gtfs_url and not args.mdb_source_id:
+        if not args.gtfs_rt_url and not args.mdb_source_id:
             raise ValueError("No GTFS URL or Mobility Database source ID specified")
         headers = {}
         if args.header:
             headers = {k: v for k, v in args.header}
-        await print_feed_items(args.gtfs_url, args.mdb_source_id, headers, args.agency, args.route)
+        await print_feed_items(args.gtfs_rt_url, args.mdb_source_id, headers, args.cache_dir)
 
-    vehicle_locations_parser.set_defaults(func=cmd_print_feed_items)
+    printfeed_parser.set_defaults(func=cmd_print_feed_items)
 
     # Define the "agencies" command that lists the agencies in the Mobility Database, using the schedule data
     agencies_parser = subparsers.add_parser("agencies", help="get the list of transit agencies")
+    agencies_parser.add_argument('--cache-dir', type=str, help="the directory to store the GTFS schedule files", required=False, default=os.environ.get("CACHE_DIR"))
     agencies_parser.set_defaults(func=run_print_agencies)
 
     route_parser = subparsers.add_parser("routes", help="get the list of routes for an agency")
@@ -1547,6 +1588,7 @@ async def main():
     route_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Schedule feed", required=False, default=None)
     route_parser.add_argument('--header', action='append', nargs=2,
                               help='HTTP header to send with the request to the GTFS Realtime feed')
+    route_parser.add_argument('--cache-dir', type=str, help="the directory to store the GTFS schedule files", required=False, default=os.environ.get("CACHE_DIR"))
     route_parser.set_defaults(func=run_print_routes)
 
     # Define the "stops" command that lists the stops for a route
@@ -1556,6 +1598,7 @@ async def main():
     stops_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Schedule feed", required=False, default=None)
     stops_parser.add_argument('--header', action='append', nargs=2,
                               help='HTTP header to send with the request to the GTFS Realtime feed')
+    stops_parser.add_argument('--cache-dir', type=str, help="the directory to store the GTFS schedule files", required=False, default=os.environ.get("CACHE_DIR"))
     stops_parser.set_defaults(func=run_print_stops)
 
     # Parse the command-line arguments and execute the selected command

@@ -1,4 +1,4 @@
-""" Alert dataclass. """
+""" EntitySelector dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -8,48 +8,38 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeed.alert.alert_types.cause import Cause
-from gtfs_rt_producer_data.generaltransitfeed.alert.translatedstring import TranslatedString
-from gtfs_rt_producer_data.generaltransitfeed.alert.entityselector import EntitySelector
-from gtfs_rt_producer_data.generaltransitfeed.alert.alert_types.effect import Effect
-from gtfs_rt_producer_data.generaltransitfeed.alert.timerange import TimeRange
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.tripdescriptor import TripDescriptor
 
 
 @dataclasses_json.dataclass_json
 @dataclasses.dataclass
-class Alert:
+class EntitySelector:
     """
-    An alert, indicating some sort of incident in the public transit network.
+    A selector for an entity in a GTFS feed.
     Attributes:
-        active_period (typing.List[TimeRange]): Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.
-        informed_entity (typing.List[EntitySelector]): Entities whose users we should notify of this alert.
-        cause (typing.Optional[Cause]): 
-        effect (typing.Optional[Effect]): 
-        url (typing.Optional[TranslatedString]): The URL which provides additional information about the alert.
-        header_text (typing.Optional[TranslatedString]): Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the
-        description_text (typing.Optional[TranslatedString]): description should add to the information of the header."""
+        agency_id (typing.Optional[str]): The values of the fields should correspond to the appropriate fields in the GTFS feed. At least one specifier must be given. If several are given, then the matching has to apply to all the given specifiers.
+        route_id (typing.Optional[str]): 
+        route_type (typing.Optional[int]): corresponds to route_type in GTFS.
+        trip (typing.Optional[TripDescriptor]): 
+        stop_id (typing.Optional[str]): """
     
-    active_period: typing.List[TimeRange]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="active_period"))
-    informed_entity: typing.List[EntitySelector]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="informed_entity"))
-    cause: typing.Optional[Cause]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cause"))
-    effect: typing.Optional[Effect]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="effect"))
-    url: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
-    header_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="header_text"))
-    description_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description_text"))    
+    agency_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency_id"))
+    route_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_id"))
+    route_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_type"))
+    trip: typing.Optional[TripDescriptor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip"))
+    stop_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_id"))    
     
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.active_period=self.active_period if isinstance(self.active_period, list) else [v if isinstance(v, TimeRange) else TimeRange.from_serializer_dict(v) if v else None for v in self.active_period] if self.active_period else None
-        self.informed_entity=self.informed_entity if isinstance(self.informed_entity, list) else [v if isinstance(v, EntitySelector) else EntitySelector.from_serializer_dict(v) if v else None for v in self.informed_entity] if self.informed_entity else None
-        self.cause=Cause(self.cause) if self.cause else None
-        self.effect=Effect(self.effect) if self.effect else None
-        self.url=self.url if isinstance(self.url, TranslatedString) else TranslatedString.from_serializer_dict(self.url) if self.url else None if self.url else None
-        self.header_text=self.header_text if isinstance(self.header_text, TranslatedString) else TranslatedString.from_serializer_dict(self.header_text) if self.header_text else None if self.header_text else None
-        self.description_text=self.description_text if isinstance(self.description_text, TranslatedString) else TranslatedString.from_serializer_dict(self.description_text) if self.description_text else None if self.description_text else None
+        self.agency_id=str(self.agency_id) if self.agency_id else None
+        self.route_id=str(self.route_id) if self.route_id else None
+        self.route_type=int(self.route_type) if self.route_type else None
+        self.trip=self.trip if isinstance(self.trip, TripDescriptor) else TripDescriptor.from_serializer_dict(self.trip) if self.trip else None if self.trip else None
+        self.stop_id=str(self.stop_id) if self.stop_id else None
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Alert':
+    def from_serializer_dict(cls, data: dict) -> 'EntitySelector':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -114,7 +104,7 @@ class Alert:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Alert']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['EntitySelector']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -148,7 +138,7 @@ class Alert:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Alert.from_serializer_dict(_record)
+                return EntitySelector.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 

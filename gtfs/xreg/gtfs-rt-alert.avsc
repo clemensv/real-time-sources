@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Alert",
-  "namespace": "GeneralTransitFeed.Alert",
+  "namespace": "GeneralTransitFeedRealTime.Alert",
   "fields": [
     {
       "name": "active_period",
@@ -10,7 +10,7 @@
         "items": {
           "type": "record",
           "name": "TimeRange",
-          "namespace": "GeneralTransitFeed.Alert",
+          "namespace": "GeneralTransitFeedRealTime.Alert",
           "fields": [
             {
               "name": "start",
@@ -41,7 +41,7 @@
         "items": {
           "type": "record",
           "name": "EntitySelector",
-          "namespace": "GeneralTransitFeed.Alert",
+          "namespace": "GeneralTransitFeedRealTime.Alert",
           "fields": [
             {
               "name": "agency_id",
@@ -73,7 +73,7 @@
                 {
                   "type": "record",
                   "name": "TripDescriptor",
-                  "namespace": "GeneralTransitFeed.Alert",
+                  "namespace": "GeneralTransitFeedRealTime.Alert",
                   "fields": [
                     {
                       "name": "trip_id",
@@ -122,7 +122,7 @@
                         {
                           "name": "ScheduleRelationship",
                           "type": "enum",
-                          "namespace": "GeneralTransitFeed.Alert.TripDescriptor_types",
+                          "namespace": "GeneralTransitFeedRealTime.Alert.TripDescriptor_types",
                           "symbols": [
                             "SCHEDULED",
                             "ADDED",
@@ -158,7 +158,7 @@
         {
           "name": "Cause",
           "type": "enum",
-          "namespace": "GeneralTransitFeed.Alert.Alert_types",
+          "namespace": "GeneralTransitFeedRealTime.Alert.Alert_types",
           "symbols": [
             "UNKNOWN_CAUSE",
             "OTHER_CAUSE",
@@ -184,7 +184,7 @@
         {
           "name": "Effect",
           "type": "enum",
-          "namespace": "GeneralTransitFeed.Alert.Alert_types",
+          "namespace": "GeneralTransitFeedRealTime.Alert.Alert_types",
           "symbols": [
             "NO_SERVICE",
             "REDUCED_SERVICE",
@@ -207,7 +207,7 @@
         {
           "type": "record",
           "name": "TranslatedString",
-          "namespace": "GeneralTransitFeed.Alert",
+          "namespace": "GeneralTransitFeedRealTime.Alert",
           "fields": [
             {
               "name": "translation",
@@ -216,7 +216,7 @@
                 "items": {
                   "type": "record",
                   "name": "Translation",
-                  "namespace": "GeneralTransitFeed.Alert.TranslatedString_types",
+                  "namespace": "GeneralTransitFeedRealTime.Alert.TranslatedString_types",
                   "fields": [
                     {
                       "name": "text",
@@ -246,7 +246,7 @@
       "name": "header_text",
       "type": [
         "null",
-        "GeneralTransitFeed.Alert.TranslatedString"
+        "GeneralTransitFeedRealTime.Alert.TranslatedString"
       ],
       "doc": "Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the"
     },
@@ -254,7 +254,7 @@
       "name": "description_text",
       "type": [
         "null",
-        "GeneralTransitFeed.Alert.TranslatedString"
+        "GeneralTransitFeedRealTime.Alert.TranslatedString"
       ],
       "doc": "description should add to the information of the header."
     }

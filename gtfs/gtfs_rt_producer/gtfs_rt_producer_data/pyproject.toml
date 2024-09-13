@@ -2,7 +2,7 @@
 name = "gtfs-rt-producer-data"
 version = "0.1.0"
 description = "A package for handling Avro schema data"
-authors = ["Clemens Vasters"]
+authors = ["Your Name"]
 license = "MIT"
 packages = [ { include = "gtfs_rt_producer_data", from="src" } ]
 

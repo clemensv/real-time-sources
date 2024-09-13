@@ -3,7 +3,7 @@
 
 This is the Gtfs_rt_producer Apache Kafka Consumer SDK for Python. It was
 generated from the xRegistry CLI tool based on message catalog definitions for
-"GeneralTransitFeed.RealTime", "GeneralTransitFeed.Static".
+"GeneralTransitFeedRealTime", "GeneralTransitFeedStatic".
 
 ## Quick Install
 
@@ -66,13 +66,14 @@ to process. The handler functions are called when a message of that type is
 received. Example:
 
 ```python
-async def handle_general_transit_feed_real_time_vehicle_position(record,
-cloud_event, general_transit_feed_real_time_vehicle_position_event_data):
-    """ Handles the GeneralTransitFeed.RealTime.VehiclePosition event """
-    print(f"GeneralTransitFeed.RealTime.VehiclePosition:
-{general_transit_feed_real_time_vehicle_position_event_data.asdict()}")
+async def handle_general_transit_feed_real_time_vehicle_vehicle_position(record,
+cloud_event,
+general_transit_feed_real_time_vehicle_vehicle_position_event_data):
+    """ Handles the GeneralTransitFeedRealTime.Vehicle.VehiclePosition event """
+    print(f"GeneralTransitFeedRealTime.Vehicle.VehiclePosition:
+{general_transit_feed_real_time_vehicle_vehicle_position_event_data.asdict()}")
     await some_processing_function(record, cloud_event,
-general_transit_feed_real_time_vehicle_position_event_data)
+general_transit_feed_real_time_vehicle_vehicle_position_event_data)
 ```
 
 The handler functions are then assigned to the event dispatcher for the message
@@ -83,7 +84,8 @@ function when a message is received. Example:
 general_transit_feed_real_time_dispatcher =
 GeneralTransitFeedRealTimeEventDispatcher()
 general_transit_feed_real_time_dispatcher.general_transit_feed_real_time_vehicle
-_position_async = general_transit_feed_real_time_vehicle_position_event
+_vehicle_position_async =
+general_transit_feed_real_time_vehicle_vehicle_position_event
 ```
 
 You can create an event processor and add the event dispatcher to it. The event

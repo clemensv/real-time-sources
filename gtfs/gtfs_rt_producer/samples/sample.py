@@ -37,9 +37,9 @@ from gtfs_rt_producer_kafka_producer.producer import GeneralTransitFeedStaticEve
 
 # imports for the data classes for each event
 
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.vehicleposition import VehiclePosition
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate import TripUpdate
-from gtfs_rt_producer_data.generaltransitfeed.alert.alert import Alert
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate import TripUpdate
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert import Alert
 from gtfs_rt_producer_data.generaltransitfeedstatic.agency import Agency
 from gtfs_rt_producer_data.generaltransitfeedstatic.areas import Areas
 from gtfs_rt_producer_data.generaltransitfeedstatic.attributions import Attributions
@@ -87,29 +87,29 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
         kafka_producer = KafkaProducer(json.loads(producer_config))
         general_transit_feed_real_time_event_producer = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- GeneralTransitFeed.RealTime.VehiclePosition ----
-    # TODO: Supply event data for the GeneralTransitFeed.RealTime.VehiclePosition event
+    # ---- GeneralTransitFeedRealTime.Vehicle.VehiclePosition ----
+    # TODO: Supply event data for the GeneralTransitFeedRealTime.Vehicle.VehiclePosition event
     _vehicle_position = VehiclePosition()
 
-    # sends the 'GeneralTransitFeed.RealTime.VehiclePosition' event to Kafka topic.
-    await general_transit_feed_real_time_event_producer.send_general_transit_feed_real_time_vehicle_position(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _vehicle_position)
-    print(f"Sent 'GeneralTransitFeed.RealTime.VehiclePosition' event: {_vehicle_position.to_json()}")
+    # sends the 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition' event to Kafka topic.
+    await general_transit_feed_real_time_event_producer.send_general_transit_feed_real_time_vehicle_vehicle_position(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _vehicle_position)
+    print(f"Sent 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition' event: {_vehicle_position.to_json()}")
 
-    # ---- GeneralTransitFeed.RealTime.TripUpdate ----
-    # TODO: Supply event data for the GeneralTransitFeed.RealTime.TripUpdate event
+    # ---- GeneralTransitFeedRealTime.Trip.TripUpdate ----
+    # TODO: Supply event data for the GeneralTransitFeedRealTime.Trip.TripUpdate event
     _trip_update = TripUpdate()
 
-    # sends the 'GeneralTransitFeed.RealTime.TripUpdate' event to Kafka topic.
-    await general_transit_feed_real_time_event_producer.send_general_transit_feed_real_time_trip_update(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _trip_update)
-    print(f"Sent 'GeneralTransitFeed.RealTime.TripUpdate' event: {_trip_update.to_json()}")
+    # sends the 'GeneralTransitFeedRealTime.Trip.TripUpdate' event to Kafka topic.
+    await general_transit_feed_real_time_event_producer.send_general_transit_feed_real_time_trip_trip_update(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _trip_update)
+    print(f"Sent 'GeneralTransitFeedRealTime.Trip.TripUpdate' event: {_trip_update.to_json()}")
 
-    # ---- GeneralTransitFeed.RealTime.Alert ----
-    # TODO: Supply event data for the GeneralTransitFeed.RealTime.Alert event
+    # ---- GeneralTransitFeedRealTime.Alert.Alert ----
+    # TODO: Supply event data for the GeneralTransitFeedRealTime.Alert.Alert event
     _alert = Alert()
 
-    # sends the 'GeneralTransitFeed.RealTime.Alert' event to Kafka topic.
-    await general_transit_feed_real_time_event_producer.send_general_transit_feed_real_time_alert(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _alert)
-    print(f"Sent 'GeneralTransitFeed.RealTime.Alert' event: {_alert.to_json()}")
+    # sends the 'GeneralTransitFeedRealTime.Alert.Alert' event to Kafka topic.
+    await general_transit_feed_real_time_event_producer.send_general_transit_feed_real_time_alert_alert(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _alert)
+    print(f"Sent 'GeneralTransitFeedRealTime.Alert.Alert' event: {_alert.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
@@ -119,29 +119,29 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
         kafka_producer = KafkaProducer(json.loads(producer_config))
         general_transit_feed_static_event_producer = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- GeneralTransitFeed.Static.Agency ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Agency event
+    # ---- GeneralTransitFeedStatic.Agency ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Agency event
     _agency = Agency()
 
-    # sends the 'GeneralTransitFeed.Static.Agency' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Agency' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_agency(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _agency)
-    print(f"Sent 'GeneralTransitFeed.Static.Agency' event: {_agency.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Agency' event: {_agency.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Areas ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Areas event
+    # ---- GeneralTransitFeedStatic.Areas ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Areas event
     _areas = Areas()
 
-    # sends the 'GeneralTransitFeed.Static.Areas' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Areas' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_areas(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _areas)
-    print(f"Sent 'GeneralTransitFeed.Static.Areas' event: {_areas.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Areas' event: {_areas.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Attributions ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Attributions event
+    # ---- GeneralTransitFeedStatic.Attributions ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Attributions event
     _attributions = Attributions()
 
-    # sends the 'GeneralTransitFeed.Static.Attributions' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Attributions' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_attributions(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _attributions)
-    print(f"Sent 'GeneralTransitFeed.Static.Attributions' event: {_attributions.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Attributions' event: {_attributions.to_json()}")
 
     # ---- GeneralTransitFeed.BookingRules ----
     # TODO: Supply event data for the GeneralTransitFeed.BookingRules event
@@ -151,197 +151,197 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     await general_transit_feed_static_event_producer.send_general_transit_feed_booking_rules(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _booking_rules)
     print(f"Sent 'GeneralTransitFeed.BookingRules' event: {_booking_rules.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.FareAttributes ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.FareAttributes event
+    # ---- GeneralTransitFeedStatic.FareAttributes ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.FareAttributes event
     _fare_attributes = FareAttributes()
 
-    # sends the 'GeneralTransitFeed.Static.FareAttributes' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.FareAttributes' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_fare_attributes(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _fare_attributes)
-    print(f"Sent 'GeneralTransitFeed.Static.FareAttributes' event: {_fare_attributes.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.FareAttributes' event: {_fare_attributes.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.FareLegRules ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.FareLegRules event
+    # ---- GeneralTransitFeedStatic.FareLegRules ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.FareLegRules event
     _fare_leg_rules = FareLegRules()
 
-    # sends the 'GeneralTransitFeed.Static.FareLegRules' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.FareLegRules' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_fare_leg_rules(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _fare_leg_rules)
-    print(f"Sent 'GeneralTransitFeed.Static.FareLegRules' event: {_fare_leg_rules.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.FareLegRules' event: {_fare_leg_rules.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.FareMedia ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.FareMedia event
+    # ---- GeneralTransitFeedStatic.FareMedia ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.FareMedia event
     _fare_media = FareMedia()
 
-    # sends the 'GeneralTransitFeed.Static.FareMedia' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.FareMedia' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_fare_media(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _fare_media)
-    print(f"Sent 'GeneralTransitFeed.Static.FareMedia' event: {_fare_media.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.FareMedia' event: {_fare_media.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.FareProducts ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.FareProducts event
+    # ---- GeneralTransitFeedStatic.FareProducts ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.FareProducts event
     _fare_products = FareProducts()
 
-    # sends the 'GeneralTransitFeed.Static.FareProducts' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.FareProducts' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_fare_products(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _fare_products)
-    print(f"Sent 'GeneralTransitFeed.Static.FareProducts' event: {_fare_products.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.FareProducts' event: {_fare_products.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.FareRules ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.FareRules event
+    # ---- GeneralTransitFeedStatic.FareRules ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.FareRules event
     _fare_rules = FareRules()
 
-    # sends the 'GeneralTransitFeed.Static.FareRules' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.FareRules' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_fare_rules(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _fare_rules)
-    print(f"Sent 'GeneralTransitFeed.Static.FareRules' event: {_fare_rules.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.FareRules' event: {_fare_rules.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.FareTransferRules ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.FareTransferRules event
+    # ---- GeneralTransitFeedStatic.FareTransferRules ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.FareTransferRules event
     _fare_transfer_rules = FareTransferRules()
 
-    # sends the 'GeneralTransitFeed.Static.FareTransferRules' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.FareTransferRules' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_fare_transfer_rules(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _fare_transfer_rules)
-    print(f"Sent 'GeneralTransitFeed.Static.FareTransferRules' event: {_fare_transfer_rules.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.FareTransferRules' event: {_fare_transfer_rules.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.FeedInfo ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.FeedInfo event
+    # ---- GeneralTransitFeedStatic.FeedInfo ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.FeedInfo event
     _feed_info = FeedInfo()
 
-    # sends the 'GeneralTransitFeed.Static.FeedInfo' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.FeedInfo' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_feed_info(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _feed_info)
-    print(f"Sent 'GeneralTransitFeed.Static.FeedInfo' event: {_feed_info.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.FeedInfo' event: {_feed_info.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Frequencies ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Frequencies event
+    # ---- GeneralTransitFeedStatic.Frequencies ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Frequencies event
     _frequencies = Frequencies()
 
-    # sends the 'GeneralTransitFeed.Static.Frequencies' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Frequencies' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_frequencies(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _frequencies)
-    print(f"Sent 'GeneralTransitFeed.Static.Frequencies' event: {_frequencies.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Frequencies' event: {_frequencies.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Levels ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Levels event
+    # ---- GeneralTransitFeedStatic.Levels ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Levels event
     _levels = Levels()
 
-    # sends the 'GeneralTransitFeed.Static.Levels' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Levels' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_levels(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _levels)
-    print(f"Sent 'GeneralTransitFeed.Static.Levels' event: {_levels.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Levels' event: {_levels.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.LocationGeoJson ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.LocationGeoJson event
+    # ---- GeneralTransitFeedStatic.LocationGeoJson ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.LocationGeoJson event
     _location_geo_json = LocationGeoJson()
 
-    # sends the 'GeneralTransitFeed.Static.LocationGeoJson' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.LocationGeoJson' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_location_geo_json(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _location_geo_json)
-    print(f"Sent 'GeneralTransitFeed.Static.LocationGeoJson' event: {_location_geo_json.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.LocationGeoJson' event: {_location_geo_json.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.LocationGroups ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.LocationGroups event
+    # ---- GeneralTransitFeedStatic.LocationGroups ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.LocationGroups event
     _location_groups = LocationGroups()
 
-    # sends the 'GeneralTransitFeed.Static.LocationGroups' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.LocationGroups' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_location_groups(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _location_groups)
-    print(f"Sent 'GeneralTransitFeed.Static.LocationGroups' event: {_location_groups.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.LocationGroups' event: {_location_groups.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.LocationGroupStores ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.LocationGroupStores event
+    # ---- GeneralTransitFeedStatic.LocationGroupStores ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.LocationGroupStores event
     _location_group_stores = LocationGroupStores()
 
-    # sends the 'GeneralTransitFeed.Static.LocationGroupStores' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.LocationGroupStores' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_location_group_stores(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _location_group_stores)
-    print(f"Sent 'GeneralTransitFeed.Static.LocationGroupStores' event: {_location_group_stores.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.LocationGroupStores' event: {_location_group_stores.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Networks ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Networks event
+    # ---- GeneralTransitFeedStatic.Networks ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Networks event
     _networks = Networks()
 
-    # sends the 'GeneralTransitFeed.Static.Networks' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Networks' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_networks(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _networks)
-    print(f"Sent 'GeneralTransitFeed.Static.Networks' event: {_networks.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Networks' event: {_networks.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Pathways ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Pathways event
+    # ---- GeneralTransitFeedStatic.Pathways ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Pathways event
     _pathways = Pathways()
 
-    # sends the 'GeneralTransitFeed.Static.Pathways' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Pathways' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_pathways(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _pathways)
-    print(f"Sent 'GeneralTransitFeed.Static.Pathways' event: {_pathways.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Pathways' event: {_pathways.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.RouteNetworks ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.RouteNetworks event
+    # ---- GeneralTransitFeedStatic.RouteNetworks ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.RouteNetworks event
     _route_networks = RouteNetworks()
 
-    # sends the 'GeneralTransitFeed.Static.RouteNetworks' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.RouteNetworks' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_route_networks(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _route_networks)
-    print(f"Sent 'GeneralTransitFeed.Static.RouteNetworks' event: {_route_networks.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.RouteNetworks' event: {_route_networks.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Routes ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Routes event
+    # ---- GeneralTransitFeedStatic.Routes ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Routes event
     _routes = Routes()
 
-    # sends the 'GeneralTransitFeed.Static.Routes' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Routes' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_routes(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _routes)
-    print(f"Sent 'GeneralTransitFeed.Static.Routes' event: {_routes.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Routes' event: {_routes.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Shapes ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Shapes event
+    # ---- GeneralTransitFeedStatic.Shapes ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Shapes event
     _shapes = Shapes()
 
-    # sends the 'GeneralTransitFeed.Static.Shapes' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Shapes' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_shapes(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _shapes)
-    print(f"Sent 'GeneralTransitFeed.Static.Shapes' event: {_shapes.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Shapes' event: {_shapes.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.StopAreas ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.StopAreas event
+    # ---- GeneralTransitFeedStatic.StopAreas ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.StopAreas event
     _stop_areas = StopAreas()
 
-    # sends the 'GeneralTransitFeed.Static.StopAreas' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.StopAreas' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_stop_areas(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _stop_areas)
-    print(f"Sent 'GeneralTransitFeed.Static.StopAreas' event: {_stop_areas.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.StopAreas' event: {_stop_areas.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Stops ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Stops event
+    # ---- GeneralTransitFeedStatic.Stops ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Stops event
     _stops = Stops()
 
-    # sends the 'GeneralTransitFeed.Static.Stops' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Stops' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_stops(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _stops)
-    print(f"Sent 'GeneralTransitFeed.Static.Stops' event: {_stops.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Stops' event: {_stops.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.StopTimes ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.StopTimes event
+    # ---- GeneralTransitFeedStatic.StopTimes ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.StopTimes event
     _stop_times = StopTimes()
 
-    # sends the 'GeneralTransitFeed.Static.StopTimes' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.StopTimes' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_stop_times(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _stop_times)
-    print(f"Sent 'GeneralTransitFeed.Static.StopTimes' event: {_stop_times.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.StopTimes' event: {_stop_times.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Timeframes ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Timeframes event
+    # ---- GeneralTransitFeedStatic.Timeframes ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Timeframes event
     _timeframes = Timeframes()
 
-    # sends the 'GeneralTransitFeed.Static.Timeframes' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Timeframes' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_timeframes(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _timeframes)
-    print(f"Sent 'GeneralTransitFeed.Static.Timeframes' event: {_timeframes.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Timeframes' event: {_timeframes.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Transfers ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Transfers event
+    # ---- GeneralTransitFeedStatic.Transfers ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Transfers event
     _transfers = Transfers()
 
-    # sends the 'GeneralTransitFeed.Static.Transfers' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Transfers' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_transfers(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _transfers)
-    print(f"Sent 'GeneralTransitFeed.Static.Transfers' event: {_transfers.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Transfers' event: {_transfers.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Translations ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Translations event
+    # ---- GeneralTransitFeedStatic.Translations ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Translations event
     _translations = Translations()
 
-    # sends the 'GeneralTransitFeed.Static.Translations' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Translations' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_translations(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _translations)
-    print(f"Sent 'GeneralTransitFeed.Static.Translations' event: {_translations.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Translations' event: {_translations.to_json()}")
 
-    # ---- GeneralTransitFeed.Static.Trips ----
-    # TODO: Supply event data for the GeneralTransitFeed.Static.Trips event
+    # ---- GeneralTransitFeedStatic.Trips ----
+    # TODO: Supply event data for the GeneralTransitFeedStatic.Trips event
     _trips = Trips()
 
-    # sends the 'GeneralTransitFeed.Static.Trips' event to Kafka topic.
+    # sends the 'GeneralTransitFeedStatic.Trips' event to Kafka topic.
     await general_transit_feed_static_event_producer.send_general_transit_feed_static_trips(_feedurl = 'TODO: replace me', _agencyid = 'TODO: replace me', data = _trips)
-    print(f"Sent 'GeneralTransitFeed.Static.Trips' event: {_trips.to_json()}")
+    print(f"Sent 'GeneralTransitFeedStatic.Trips' event: {_trips.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

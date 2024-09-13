@@ -8,8 +8,8 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairboarding import WheelchairBoarding
 from gtfs_rt_producer_data.generaltransitfeedstatic.locationtype import LocationType
+from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairboarding import WheelchairBoarding
 
 
 @dataclasses_json.dataclass_json

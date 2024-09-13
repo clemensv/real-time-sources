@@ -27,9 +27,9 @@ class Test_StopAreas(unittest.TestCase):
         Create instance of StopAreas for testing
         """
         instance = StopAreas(
-            stopAreaId='iorzmlikwwnbmmdjrmwm',
-            stopId='fhlkdfiudvabhybzzxih',
-            areaId='uitxkzotjljlmsgttmhk'
+            stopAreaId='dxbwobwfxlftpcfthprw',
+            stopId='tcdcjvuwuttdyuzsrxyy',
+            areaId='wwoffthztwuymahgwsxk'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_StopAreas(unittest.TestCase):
         """
         Test stopAreaId property
         """
-        test_value = 'iorzmlikwwnbmmdjrmwm'
+        test_value = 'dxbwobwfxlftpcfthprw'
         self.instance.stopAreaId = test_value
         self.assertEqual(self.instance.stopAreaId, test_value)
     
@@ -46,7 +46,7 @@ class Test_StopAreas(unittest.TestCase):
         """
         Test stopId property
         """
-        test_value = 'fhlkdfiudvabhybzzxih'
+        test_value = 'tcdcjvuwuttdyuzsrxyy'
         self.instance.stopId = test_value
         self.assertEqual(self.instance.stopId, test_value)
     
@@ -54,7 +54,7 @@ class Test_StopAreas(unittest.TestCase):
         """
         Test areaId property
         """
-        test_value = 'uitxkzotjljlmsgttmhk'
+        test_value = 'wwoffthztwuymahgwsxk'
         self.instance.areaId = test_value
         self.assertEqual(self.instance.areaId, test_value)
     

@@ -1,0 +1,2710 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [Agency] (
+   [agencyId]: string,
+   [agencyName]: string,
+   [agencyUrl]: string,
+   [agencyTimezone]: string,
+   [agencyLang]: string,
+   [agencyPhone]: string,
+   [agencyFareUrl]: string,
+   [agencyEmail]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Agency] docstring "{\"description\": \"Information about the transit agencies.\"}";
+
+.alter table [Agency] column-docstrings (
+   [agencyId]: "{\"description\": \"Identifies a transit brand which is often synonymous with a transit agency.\"}",
+   [agencyName]: "{\"description\": \"Full name of the transit agency.\"}",
+   [agencyUrl]: "{\"description\": \"URL of the transit agency.\"}",
+   [agencyTimezone]: "{\"description\": \"Timezone where the transit agency is located.\"}",
+   [agencyLang]: "{\"description\": \"Primary language used by this transit agency.\", \"schema\": [\"null\", \"string\"]}",
+   [agencyPhone]: "{\"description\": \"A voice telephone number for the specified agency.\", \"schema\": [\"null\", \"string\"]}",
+   [agencyFareUrl]: "{\"description\": \"URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.\", \"schema\": [\"null\", \"string\"]}",
+   [agencyEmail]: "{\"description\": \"Email address actively monitored by the agency\\u2019s customer service department.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Agency] ingestion json mapping "Agency_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agencyId", "path": "$.agencyId"},
+  {"column": "agencyName", "path": "$.agencyName"},
+  {"column": "agencyUrl", "path": "$.agencyUrl"},
+  {"column": "agencyTimezone", "path": "$.agencyTimezone"},
+  {"column": "agencyLang", "path": "$.agencyLang"},
+  {"column": "agencyPhone", "path": "$.agencyPhone"},
+  {"column": "agencyFareUrl", "path": "$.agencyFareUrl"},
+  {"column": "agencyEmail", "path": "$.agencyEmail"},
+]
+```
+
+
+.create-or-alter table [Agency] ingestion json mapping "Agency_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agencyId", "path": "$.data.agencyId"},
+  {"column": "agencyName", "path": "$.data.agencyName"},
+  {"column": "agencyUrl", "path": "$.data.agencyUrl"},
+  {"column": "agencyTimezone", "path": "$.data.agencyTimezone"},
+  {"column": "agencyLang", "path": "$.data.agencyLang"},
+  {"column": "agencyPhone", "path": "$.data.agencyPhone"},
+  {"column": "agencyFareUrl", "path": "$.data.agencyFareUrl"},
+  {"column": "agencyEmail", "path": "$.data.agencyEmail"},
+]
+```
+
+
+.drop materialized-view AgencyLatest ifexists;
+
+.create materialized-view with (backfill=true) AgencyLatest on table Agency {
+    Agency | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Agency] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Agency') | project['agencyId'] = tostring(data.['agencyId']),['agencyName'] = tostring(data.['agencyName']),['agencyUrl'] = tostring(data.['agencyUrl']),['agencyTimezone'] = tostring(data.['agencyTimezone']),['agencyLang'] = tostring(data.['agencyLang']),['agencyPhone'] = tostring(data.['agencyPhone']),['agencyFareUrl'] = tostring(data.['agencyFareUrl']),['agencyEmail'] = tostring(data.['agencyEmail']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Areas] (
+   [areaId]: string,
+   [areaName]: string,
+   [areaDesc]: string,
+   [areaUrl]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Areas] docstring "{\"description\": \"Defines areas.\"}";
+
+.alter table [Areas] column-docstrings (
+   [areaId]: "{\"description\": \"Identifies an area.\"}",
+   [areaName]: "{\"description\": \"Name of the area.\"}",
+   [areaDesc]: "{\"description\": \"Description of the area.\", \"schema\": [\"null\", \"string\"]}",
+   [areaUrl]: "{\"description\": \"URL of a web page about the area.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Areas] ingestion json mapping "Areas_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "areaId", "path": "$.areaId"},
+  {"column": "areaName", "path": "$.areaName"},
+  {"column": "areaDesc", "path": "$.areaDesc"},
+  {"column": "areaUrl", "path": "$.areaUrl"},
+]
+```
+
+
+.create-or-alter table [Areas] ingestion json mapping "Areas_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "areaId", "path": "$.data.areaId"},
+  {"column": "areaName", "path": "$.data.areaName"},
+  {"column": "areaDesc", "path": "$.data.areaDesc"},
+  {"column": "areaUrl", "path": "$.data.areaUrl"},
+]
+```
+
+
+.drop materialized-view AreasLatest ifexists;
+
+.create materialized-view with (backfill=true) AreasLatest on table Areas {
+    Areas | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Areas] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Areas') | project['areaId'] = tostring(data.['areaId']),['areaName'] = tostring(data.['areaName']),['areaDesc'] = tostring(data.['areaDesc']),['areaUrl'] = tostring(data.['areaUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Attributions] (
+   [attributionId]: string,
+   [agencyId]: string,
+   [routeId]: string,
+   [tripId]: string,
+   [organizationName]: string,
+   [isProducer]: int,
+   [isOperator]: int,
+   [isAuthority]: int,
+   [attributionUrl]: string,
+   [attributionEmail]: string,
+   [attributionPhone]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Attributions] docstring "{\"description\": \"Provides information about the attributions.\"}";
+
+.alter table [Attributions] column-docstrings (
+   [attributionId]: "{\"description\": \"Identifies an attribution for the dataset.\", \"schema\": [\"null\", \"string\"]}",
+   [agencyId]: "{\"description\": \"Identifies the agency associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [routeId]: "{\"description\": \"Identifies the route associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [tripId]: "{\"description\": \"Identifies the trip associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [organizationName]: "{\"description\": \"Name of the organization associated with the attribution.\"}",
+   [isProducer]: "{\"description\": \"Indicates if the organization is a producer.\", \"schema\": [\"null\", \"int\"]}",
+   [isOperator]: "{\"description\": \"Indicates if the organization is an operator.\", \"schema\": [\"null\", \"int\"]}",
+   [isAuthority]: "{\"description\": \"Indicates if the organization is an authority.\", \"schema\": [\"null\", \"int\"]}",
+   [attributionUrl]: "{\"description\": \"URL of a web page about the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [attributionEmail]: "{\"description\": \"Email address associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [attributionPhone]: "{\"description\": \"Phone number associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Attributions] ingestion json mapping "Attributions_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "attributionId", "path": "$.attributionId"},
+  {"column": "agencyId", "path": "$.agencyId"},
+  {"column": "routeId", "path": "$.routeId"},
+  {"column": "tripId", "path": "$.tripId"},
+  {"column": "organizationName", "path": "$.organizationName"},
+  {"column": "isProducer", "path": "$.isProducer"},
+  {"column": "isOperator", "path": "$.isOperator"},
+  {"column": "isAuthority", "path": "$.isAuthority"},
+  {"column": "attributionUrl", "path": "$.attributionUrl"},
+  {"column": "attributionEmail", "path": "$.attributionEmail"},
+  {"column": "attributionPhone", "path": "$.attributionPhone"},
+]
+```
+
+
+.create-or-alter table [Attributions] ingestion json mapping "Attributions_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "attributionId", "path": "$.data.attributionId"},
+  {"column": "agencyId", "path": "$.data.agencyId"},
+  {"column": "routeId", "path": "$.data.routeId"},
+  {"column": "tripId", "path": "$.data.tripId"},
+  {"column": "organizationName", "path": "$.data.organizationName"},
+  {"column": "isProducer", "path": "$.data.isProducer"},
+  {"column": "isOperator", "path": "$.data.isOperator"},
+  {"column": "isAuthority", "path": "$.data.isAuthority"},
+  {"column": "attributionUrl", "path": "$.data.attributionUrl"},
+  {"column": "attributionEmail", "path": "$.data.attributionEmail"},
+  {"column": "attributionPhone", "path": "$.data.attributionPhone"},
+]
+```
+
+
+.drop materialized-view AttributionsLatest ifexists;
+
+.create materialized-view with (backfill=true) AttributionsLatest on table Attributions {
+    Attributions | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Attributions] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Attributions') | project['attributionId'] = tostring(data.['attributionId']),['agencyId'] = tostring(data.['agencyId']),['routeId'] = tostring(data.['routeId']),['tripId'] = tostring(data.['tripId']),['organizationName'] = tostring(data.['organizationName']),['isProducer'] = toint(data.['isProducer']),['isOperator'] = toint(data.['isOperator']),['isAuthority'] = toint(data.['isAuthority']),['attributionUrl'] = tostring(data.['attributionUrl']),['attributionEmail'] = tostring(data.['attributionEmail']),['attributionPhone'] = tostring(data.['attributionPhone']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BookingRules] (
+   [bookingRuleId]: string,
+   [bookingRuleName]: string,
+   [bookingRuleDesc]: string,
+   [bookingRuleUrl]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BookingRules] docstring "{\"description\": \"Defines booking rules.\"}";
+
+.alter table [BookingRules] column-docstrings (
+   [bookingRuleId]: "{\"description\": \"Identifies a booking rule.\"}",
+   [bookingRuleName]: "{\"description\": \"Name of the booking rule.\"}",
+   [bookingRuleDesc]: "{\"description\": \"Description of the booking rule.\", \"schema\": [\"null\", \"string\"]}",
+   [bookingRuleUrl]: "{\"description\": \"URL of a web page about the booking rule.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BookingRules] ingestion json mapping "BookingRules_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "bookingRuleId", "path": "$.bookingRuleId"},
+  {"column": "bookingRuleName", "path": "$.bookingRuleName"},
+  {"column": "bookingRuleDesc", "path": "$.bookingRuleDesc"},
+  {"column": "bookingRuleUrl", "path": "$.bookingRuleUrl"},
+]
+```
+
+
+.create-or-alter table [BookingRules] ingestion json mapping "BookingRules_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "bookingRuleId", "path": "$.data.bookingRuleId"},
+  {"column": "bookingRuleName", "path": "$.data.bookingRuleName"},
+  {"column": "bookingRuleDesc", "path": "$.data.bookingRuleDesc"},
+  {"column": "bookingRuleUrl", "path": "$.data.bookingRuleUrl"},
+]
+```
+
+
+.drop materialized-view BookingRulesLatest ifexists;
+
+.create materialized-view with (backfill=true) BookingRulesLatest on table BookingRules {
+    BookingRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BookingRules] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.BookingRules') | project['bookingRuleId'] = tostring(data.['bookingRuleId']),['bookingRuleName'] = tostring(data.['bookingRuleName']),['bookingRuleDesc'] = tostring(data.['bookingRuleDesc']),['bookingRuleUrl'] = tostring(data.['bookingRuleUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FareAttributes] (
+   [fareId]: string,
+   [price]: real,
+   [currencyType]: string,
+   [paymentMethod]: int,
+   [transfers]: int,
+   [agencyId]: string,
+   [transferDuration]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FareAttributes] docstring "{\"description\": \"Defines fare attributes.\"}";
+
+.alter table [FareAttributes] column-docstrings (
+   [fareId]: "{\"description\": \"Identifies a fare class.\"}",
+   [price]: "{\"description\": \"Fare price, in the unit specified by currency_type.\"}",
+   [currencyType]: "{\"description\": \"Currency type used to pay the fare.\"}",
+   [paymentMethod]: "{\"description\": \"When 0, fare must be paid on board. When 1, fare must be paid before boarding.\"}",
+   [transfers]: "{\"description\": \"Specifies the number of transfers permitted on this fare.\", \"schema\": [\"null\", \"int\"]}",
+   [agencyId]: "{\"description\": \"Identifies the agency for the specified fare.\", \"schema\": [\"null\", \"string\"]}",
+   [transferDuration]: "{\"description\": \"Length of time in seconds before a transfer expires.\", \"schema\": [\"null\", \"long\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FareAttributes] ingestion json mapping "FareAttributes_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareId", "path": "$.fareId"},
+  {"column": "price", "path": "$.price"},
+  {"column": "currencyType", "path": "$.currencyType"},
+  {"column": "paymentMethod", "path": "$.paymentMethod"},
+  {"column": "transfers", "path": "$.transfers"},
+  {"column": "agencyId", "path": "$.agencyId"},
+  {"column": "transferDuration", "path": "$.transferDuration"},
+]
+```
+
+
+.create-or-alter table [FareAttributes] ingestion json mapping "FareAttributes_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareId", "path": "$.data.fareId"},
+  {"column": "price", "path": "$.data.price"},
+  {"column": "currencyType", "path": "$.data.currencyType"},
+  {"column": "paymentMethod", "path": "$.data.paymentMethod"},
+  {"column": "transfers", "path": "$.data.transfers"},
+  {"column": "agencyId", "path": "$.data.agencyId"},
+  {"column": "transferDuration", "path": "$.data.transferDuration"},
+]
+```
+
+
+.drop materialized-view FareAttributesLatest ifexists;
+
+.create materialized-view with (backfill=true) FareAttributesLatest on table FareAttributes {
+    FareAttributes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FareAttributes] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.FareAttributes') | project['fareId'] = tostring(data.['fareId']),['price'] = toreal(data.['price']),['currencyType'] = tostring(data.['currencyType']),['paymentMethod'] = toint(data.['paymentMethod']),['transfers'] = toint(data.['transfers']),['agencyId'] = tostring(data.['agencyId']),['transferDuration'] = tolong(data.['transferDuration']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FareLegRules] (
+   [fareLegRuleId]: string,
+   [fareProductId]: string,
+   [legGroupId]: string,
+   [networkId]: string,
+   [fromAreaId]: string,
+   [toAreaId]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FareLegRules] docstring "{\"description\": \"Defines fare leg rules.\"}";
+
+.alter table [FareLegRules] column-docstrings (
+   [fareLegRuleId]: "{\"description\": \"Identifies a fare leg rule.\"}",
+   [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
+   [legGroupId]: "{\"description\": \"Identifies a group of legs.\", \"schema\": [\"null\", \"string\"]}",
+   [networkId]: "{\"description\": \"Identifies a network.\", \"schema\": [\"null\", \"string\"]}",
+   [fromAreaId]: "{\"description\": \"Identifies the origin area.\", \"schema\": [\"null\", \"string\"]}",
+   [toAreaId]: "{\"description\": \"Identifies the destination area.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FareLegRules] ingestion json mapping "FareLegRules_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareLegRuleId", "path": "$.fareLegRuleId"},
+  {"column": "fareProductId", "path": "$.fareProductId"},
+  {"column": "legGroupId", "path": "$.legGroupId"},
+  {"column": "networkId", "path": "$.networkId"},
+  {"column": "fromAreaId", "path": "$.fromAreaId"},
+  {"column": "toAreaId", "path": "$.toAreaId"},
+]
+```
+
+
+.create-or-alter table [FareLegRules] ingestion json mapping "FareLegRules_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareLegRuleId", "path": "$.data.fareLegRuleId"},
+  {"column": "fareProductId", "path": "$.data.fareProductId"},
+  {"column": "legGroupId", "path": "$.data.legGroupId"},
+  {"column": "networkId", "path": "$.data.networkId"},
+  {"column": "fromAreaId", "path": "$.data.fromAreaId"},
+  {"column": "toAreaId", "path": "$.data.toAreaId"},
+]
+```
+
+
+.drop materialized-view FareLegRulesLatest ifexists;
+
+.create materialized-view with (backfill=true) FareLegRulesLatest on table FareLegRules {
+    FareLegRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FareLegRules] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.FareLegRules') | project['fareLegRuleId'] = tostring(data.['fareLegRuleId']),['fareProductId'] = tostring(data.['fareProductId']),['legGroupId'] = tostring(data.['legGroupId']),['networkId'] = tostring(data.['networkId']),['fromAreaId'] = tostring(data.['fromAreaId']),['toAreaId'] = tostring(data.['toAreaId']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FareMedia] (
+   [fareMediaId]: string,
+   [fareMediaName]: string,
+   [fareMediaDesc]: string,
+   [fareMediaUrl]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FareMedia] docstring "{\"description\": \"Defines fare media.\"}";
+
+.alter table [FareMedia] column-docstrings (
+   [fareMediaId]: "{\"description\": \"Identifies a fare media.\"}",
+   [fareMediaName]: "{\"description\": \"Name of the fare media.\"}",
+   [fareMediaDesc]: "{\"description\": \"Description of the fare media.\", \"schema\": [\"null\", \"string\"]}",
+   [fareMediaUrl]: "{\"description\": \"URL of a web page about the fare media.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FareMedia] ingestion json mapping "FareMedia_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareMediaId", "path": "$.fareMediaId"},
+  {"column": "fareMediaName", "path": "$.fareMediaName"},
+  {"column": "fareMediaDesc", "path": "$.fareMediaDesc"},
+  {"column": "fareMediaUrl", "path": "$.fareMediaUrl"},
+]
+```
+
+
+.create-or-alter table [FareMedia] ingestion json mapping "FareMedia_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareMediaId", "path": "$.data.fareMediaId"},
+  {"column": "fareMediaName", "path": "$.data.fareMediaName"},
+  {"column": "fareMediaDesc", "path": "$.data.fareMediaDesc"},
+  {"column": "fareMediaUrl", "path": "$.data.fareMediaUrl"},
+]
+```
+
+
+.drop materialized-view FareMediaLatest ifexists;
+
+.create materialized-view with (backfill=true) FareMediaLatest on table FareMedia {
+    FareMedia | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FareMedia] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.FareMedia') | project['fareMediaId'] = tostring(data.['fareMediaId']),['fareMediaName'] = tostring(data.['fareMediaName']),['fareMediaDesc'] = tostring(data.['fareMediaDesc']),['fareMediaUrl'] = tostring(data.['fareMediaUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FareProducts] (
+   [fareProductId]: string,
+   [fareProductName]: string,
+   [fareProductDesc]: string,
+   [fareProductUrl]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FareProducts] docstring "{\"description\": \"Defines fare products.\"}";
+
+.alter table [FareProducts] column-docstrings (
+   [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
+   [fareProductName]: "{\"description\": \"Name of the fare product.\"}",
+   [fareProductDesc]: "{\"description\": \"Description of the fare product.\", \"schema\": [\"null\", \"string\"]}",
+   [fareProductUrl]: "{\"description\": \"URL of a web page about the fare product.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FareProducts] ingestion json mapping "FareProducts_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareProductId", "path": "$.fareProductId"},
+  {"column": "fareProductName", "path": "$.fareProductName"},
+  {"column": "fareProductDesc", "path": "$.fareProductDesc"},
+  {"column": "fareProductUrl", "path": "$.fareProductUrl"},
+]
+```
+
+
+.create-or-alter table [FareProducts] ingestion json mapping "FareProducts_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareProductId", "path": "$.data.fareProductId"},
+  {"column": "fareProductName", "path": "$.data.fareProductName"},
+  {"column": "fareProductDesc", "path": "$.data.fareProductDesc"},
+  {"column": "fareProductUrl", "path": "$.data.fareProductUrl"},
+]
+```
+
+
+.drop materialized-view FareProductsLatest ifexists;
+
+.create materialized-view with (backfill=true) FareProductsLatest on table FareProducts {
+    FareProducts | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FareProducts] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.FareProducts') | project['fareProductId'] = tostring(data.['fareProductId']),['fareProductName'] = tostring(data.['fareProductName']),['fareProductDesc'] = tostring(data.['fareProductDesc']),['fareProductUrl'] = tostring(data.['fareProductUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FareRules] (
+   [fareId]: string,
+   [routeId]: string,
+   [originId]: string,
+   [destinationId]: string,
+   [containsId]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FareRules] docstring "{\"description\": \"Defines fare rules.\"}";
+
+.alter table [FareRules] column-docstrings (
+   [fareId]: "{\"description\": \"Identifies a fare class.\"}",
+   [routeId]: "{\"description\": \"Identifies a route associated with the fare.\", \"schema\": [\"null\", \"string\"]}",
+   [originId]: "{\"description\": \"Identifies the fare zone of the origin.\", \"schema\": [\"null\", \"string\"]}",
+   [destinationId]: "{\"description\": \"Identifies the fare zone of the destination.\", \"schema\": [\"null\", \"string\"]}",
+   [containsId]: "{\"description\": \"Identifies the fare zone that a rider will enter or leave.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FareRules] ingestion json mapping "FareRules_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareId", "path": "$.fareId"},
+  {"column": "routeId", "path": "$.routeId"},
+  {"column": "originId", "path": "$.originId"},
+  {"column": "destinationId", "path": "$.destinationId"},
+  {"column": "containsId", "path": "$.containsId"},
+]
+```
+
+
+.create-or-alter table [FareRules] ingestion json mapping "FareRules_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareId", "path": "$.data.fareId"},
+  {"column": "routeId", "path": "$.data.routeId"},
+  {"column": "originId", "path": "$.data.originId"},
+  {"column": "destinationId", "path": "$.data.destinationId"},
+  {"column": "containsId", "path": "$.data.containsId"},
+]
+```
+
+
+.drop materialized-view FareRulesLatest ifexists;
+
+.create materialized-view with (backfill=true) FareRulesLatest on table FareRules {
+    FareRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FareRules] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.FareRules') | project['fareId'] = tostring(data.['fareId']),['routeId'] = tostring(data.['routeId']),['originId'] = tostring(data.['originId']),['destinationId'] = tostring(data.['destinationId']),['containsId'] = tostring(data.['containsId']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FareTransferRules] (
+   [fareTransferRuleId]: string,
+   [fareProductId]: string,
+   [transferCount]: int,
+   [fromLegGroupId]: string,
+   [toLegGroupId]: string,
+   [duration]: long,
+   [durationType]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FareTransferRules] docstring "{\"description\": \"Defines fare transfer rules.\"}";
+
+.alter table [FareTransferRules] column-docstrings (
+   [fareTransferRuleId]: "{\"description\": \"Identifies a fare transfer rule.\"}",
+   [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
+   [transferCount]: "{\"description\": \"Number of transfers permitted.\", \"schema\": [\"null\", \"int\"]}",
+   [fromLegGroupId]: "{\"description\": \"Identifies the leg group from which the transfer starts.\", \"schema\": [\"null\", \"string\"]}",
+   [toLegGroupId]: "{\"description\": \"Identifies the leg group to which the transfer applies.\", \"schema\": [\"null\", \"string\"]}",
+   [duration]: "{\"description\": \"Length of time in seconds before a transfer expires.\", \"schema\": [\"null\", \"long\"]}",
+   [durationType]: "{\"description\": \"Type of duration for the transfer.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FareTransferRules] ingestion json mapping "FareTransferRules_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareTransferRuleId", "path": "$.fareTransferRuleId"},
+  {"column": "fareProductId", "path": "$.fareProductId"},
+  {"column": "transferCount", "path": "$.transferCount"},
+  {"column": "fromLegGroupId", "path": "$.fromLegGroupId"},
+  {"column": "toLegGroupId", "path": "$.toLegGroupId"},
+  {"column": "duration", "path": "$.duration"},
+  {"column": "durationType", "path": "$.durationType"},
+]
+```
+
+
+.create-or-alter table [FareTransferRules] ingestion json mapping "FareTransferRules_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fareTransferRuleId", "path": "$.data.fareTransferRuleId"},
+  {"column": "fareProductId", "path": "$.data.fareProductId"},
+  {"column": "transferCount", "path": "$.data.transferCount"},
+  {"column": "fromLegGroupId", "path": "$.data.fromLegGroupId"},
+  {"column": "toLegGroupId", "path": "$.data.toLegGroupId"},
+  {"column": "duration", "path": "$.data.duration"},
+  {"column": "durationType", "path": "$.data.durationType"},
+]
+```
+
+
+.drop materialized-view FareTransferRulesLatest ifexists;
+
+.create materialized-view with (backfill=true) FareTransferRulesLatest on table FareTransferRules {
+    FareTransferRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FareTransferRules] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.FareTransferRules') | project['fareTransferRuleId'] = tostring(data.['fareTransferRuleId']),['fareProductId'] = tostring(data.['fareProductId']),['transferCount'] = toint(data.['transferCount']),['fromLegGroupId'] = tostring(data.['fromLegGroupId']),['toLegGroupId'] = tostring(data.['toLegGroupId']),['duration'] = tolong(data.['duration']),['durationType'] = tostring(data.['durationType']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FeedInfo] (
+   [feedPublisherName]: string,
+   [feedPublisherUrl]: string,
+   [feedLang]: string,
+   [defaultLang]: string,
+   [feedStartDate]: string,
+   [feedEndDate]: string,
+   [feedVersion]: string,
+   [feedContactEmail]: string,
+   [feedContactUrl]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FeedInfo] docstring "{\"description\": \"Provides information about the GTFS feed itself.\"}";
+
+.alter table [FeedInfo] column-docstrings (
+   [feedPublisherName]: "{\"description\": \"Full name of the organization that publishes the feed.\"}",
+   [feedPublisherUrl]: "{\"description\": \"URL of the feed publishing organization's website.\"}",
+   [feedLang]: "{\"description\": \"Default language for the text in this feed.\"}",
+   [defaultLang]: "{\"description\": \"Specifies the language used when the data consumer doesn\\u2019t know the language of the user.\", \"schema\": [\"null\", \"string\"]}",
+   [feedStartDate]: "{\"description\": \"The start date for the dataset.\", \"schema\": [\"null\", \"string\"]}",
+   [feedEndDate]: "{\"description\": \"The end date for the dataset.\", \"schema\": [\"null\", \"string\"]}",
+   [feedVersion]: "{\"description\": \"Version string that indicates the current version of their GTFS dataset.\", \"schema\": [\"null\", \"string\"]}",
+   [feedContactEmail]: "{\"description\": \"Email address for communication with the data publisher.\", \"schema\": [\"null\", \"string\"]}",
+   [feedContactUrl]: "{\"description\": \"URL for a web page that allows a feed consumer to contact the data publisher.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FeedInfo] ingestion json mapping "FeedInfo_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "feedPublisherName", "path": "$.feedPublisherName"},
+  {"column": "feedPublisherUrl", "path": "$.feedPublisherUrl"},
+  {"column": "feedLang", "path": "$.feedLang"},
+  {"column": "defaultLang", "path": "$.defaultLang"},
+  {"column": "feedStartDate", "path": "$.feedStartDate"},
+  {"column": "feedEndDate", "path": "$.feedEndDate"},
+  {"column": "feedVersion", "path": "$.feedVersion"},
+  {"column": "feedContactEmail", "path": "$.feedContactEmail"},
+  {"column": "feedContactUrl", "path": "$.feedContactUrl"},
+]
+```
+
+
+.create-or-alter table [FeedInfo] ingestion json mapping "FeedInfo_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "feedPublisherName", "path": "$.data.feedPublisherName"},
+  {"column": "feedPublisherUrl", "path": "$.data.feedPublisherUrl"},
+  {"column": "feedLang", "path": "$.data.feedLang"},
+  {"column": "defaultLang", "path": "$.data.defaultLang"},
+  {"column": "feedStartDate", "path": "$.data.feedStartDate"},
+  {"column": "feedEndDate", "path": "$.data.feedEndDate"},
+  {"column": "feedVersion", "path": "$.data.feedVersion"},
+  {"column": "feedContactEmail", "path": "$.data.feedContactEmail"},
+  {"column": "feedContactUrl", "path": "$.data.feedContactUrl"},
+]
+```
+
+
+.drop materialized-view FeedInfoLatest ifexists;
+
+.create materialized-view with (backfill=true) FeedInfoLatest on table FeedInfo {
+    FeedInfo | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FeedInfo] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.FeedInfo') | project['feedPublisherName'] = tostring(data.['feedPublisherName']),['feedPublisherUrl'] = tostring(data.['feedPublisherUrl']),['feedLang'] = tostring(data.['feedLang']),['defaultLang'] = tostring(data.['defaultLang']),['feedStartDate'] = tostring(data.['feedStartDate']),['feedEndDate'] = tostring(data.['feedEndDate']),['feedVersion'] = tostring(data.['feedVersion']),['feedContactEmail'] = tostring(data.['feedContactEmail']),['feedContactUrl'] = tostring(data.['feedContactUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Frequencies] (
+   [tripId]: string,
+   [startTime]: string,
+   [endTime]: string,
+   [headwaySecs]: int,
+   [exactTimes]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Frequencies] docstring "{\"description\": \"Defines frequencies.\"}";
+
+.alter table [Frequencies] column-docstrings (
+   [tripId]: "{\"description\": \"Identifies a trip.\"}",
+   [startTime]: "{\"description\": \"Time at which service begins with the specified frequency.\"}",
+   [endTime]: "{\"description\": \"Time at which service ends with the specified frequency.\"}",
+   [headwaySecs]: "{\"description\": \"Time between departures from the same stop (headway) for this trip, in seconds.\"}",
+   [exactTimes]: "{\"description\": \"When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled.\", \"schema\": [\"null\", \"int\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Frequencies] ingestion json mapping "Frequencies_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tripId", "path": "$.tripId"},
+  {"column": "startTime", "path": "$.startTime"},
+  {"column": "endTime", "path": "$.endTime"},
+  {"column": "headwaySecs", "path": "$.headwaySecs"},
+  {"column": "exactTimes", "path": "$.exactTimes"},
+]
+```
+
+
+.create-or-alter table [Frequencies] ingestion json mapping "Frequencies_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tripId", "path": "$.data.tripId"},
+  {"column": "startTime", "path": "$.data.startTime"},
+  {"column": "endTime", "path": "$.data.endTime"},
+  {"column": "headwaySecs", "path": "$.data.headwaySecs"},
+  {"column": "exactTimes", "path": "$.data.exactTimes"},
+]
+```
+
+
+.drop materialized-view FrequenciesLatest ifexists;
+
+.create materialized-view with (backfill=true) FrequenciesLatest on table Frequencies {
+    Frequencies | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Frequencies] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Frequencies') | project['tripId'] = tostring(data.['tripId']),['startTime'] = tostring(data.['startTime']),['endTime'] = tostring(data.['endTime']),['headwaySecs'] = toint(data.['headwaySecs']),['exactTimes'] = toint(data.['exactTimes']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Levels] (
+   [levelId]: string,
+   [levelIndex]: real,
+   [levelName]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Levels] docstring "{\"description\": \"Defines levels.\"}";
+
+.alter table [Levels] column-docstrings (
+   [levelId]: "{\"description\": \"Identifies a level.\"}",
+   [levelIndex]: "{\"description\": \"Numeric index of the level that indicates relative position of the level in relation to other levels.\"}",
+   [levelName]: "{\"description\": \"Name of the level.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Levels] ingestion json mapping "Levels_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "levelId", "path": "$.levelId"},
+  {"column": "levelIndex", "path": "$.levelIndex"},
+  {"column": "levelName", "path": "$.levelName"},
+]
+```
+
+
+.create-or-alter table [Levels] ingestion json mapping "Levels_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "levelId", "path": "$.data.levelId"},
+  {"column": "levelIndex", "path": "$.data.levelIndex"},
+  {"column": "levelName", "path": "$.data.levelName"},
+]
+```
+
+
+.drop materialized-view LevelsLatest ifexists;
+
+.create materialized-view with (backfill=true) LevelsLatest on table Levels {
+    Levels | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Levels] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Levels') | project['levelId'] = tostring(data.['levelId']),['levelIndex'] = toreal(data.['levelIndex']),['levelName'] = tostring(data.['levelName']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LocationGeoJson] (
+   [locationGeoJsonId]: string,
+   [locationGeoJsonType]: string,
+   [locationGeoJsonData]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LocationGeoJson] docstring "{\"description\": \"Defines location GeoJSON data.\"}";
+
+.alter table [LocationGeoJson] column-docstrings (
+   [locationGeoJsonId]: "{\"description\": \"Identifies a location GeoJSON.\"}",
+   [locationGeoJsonType]: "{\"description\": \"Type of the GeoJSON.\"}",
+   [locationGeoJsonData]: "{\"description\": \"GeoJSON data.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LocationGeoJson] ingestion json mapping "LocationGeoJson_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locationGeoJsonId", "path": "$.locationGeoJsonId"},
+  {"column": "locationGeoJsonType", "path": "$.locationGeoJsonType"},
+  {"column": "locationGeoJsonData", "path": "$.locationGeoJsonData"},
+]
+```
+
+
+.create-or-alter table [LocationGeoJson] ingestion json mapping "LocationGeoJson_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locationGeoJsonId", "path": "$.data.locationGeoJsonId"},
+  {"column": "locationGeoJsonType", "path": "$.data.locationGeoJsonType"},
+  {"column": "locationGeoJsonData", "path": "$.data.locationGeoJsonData"},
+]
+```
+
+
+.drop materialized-view LocationGeoJsonLatest ifexists;
+
+.create materialized-view with (backfill=true) LocationGeoJsonLatest on table LocationGeoJson {
+    LocationGeoJson | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LocationGeoJson] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.LocationGeoJson') | project['locationGeoJsonId'] = tostring(data.['locationGeoJsonId']),['locationGeoJsonType'] = tostring(data.['locationGeoJsonType']),['locationGeoJsonData'] = tostring(data.['locationGeoJsonData']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LocationGroups] (
+   [locationGroupId]: string,
+   [locationGroupName]: string,
+   [locationGroupDesc]: string,
+   [locationGroupUrl]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LocationGroups] docstring "{\"description\": \"Defines location groups.\"}";
+
+.alter table [LocationGroups] column-docstrings (
+   [locationGroupId]: "{\"description\": \"Identifies a location group.\"}",
+   [locationGroupName]: "{\"description\": \"Name of the location group.\"}",
+   [locationGroupDesc]: "{\"description\": \"Description of the location group.\", \"schema\": [\"null\", \"string\"]}",
+   [locationGroupUrl]: "{\"description\": \"URL of a web page about the location group.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LocationGroups] ingestion json mapping "LocationGroups_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locationGroupId", "path": "$.locationGroupId"},
+  {"column": "locationGroupName", "path": "$.locationGroupName"},
+  {"column": "locationGroupDesc", "path": "$.locationGroupDesc"},
+  {"column": "locationGroupUrl", "path": "$.locationGroupUrl"},
+]
+```
+
+
+.create-or-alter table [LocationGroups] ingestion json mapping "LocationGroups_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locationGroupId", "path": "$.data.locationGroupId"},
+  {"column": "locationGroupName", "path": "$.data.locationGroupName"},
+  {"column": "locationGroupDesc", "path": "$.data.locationGroupDesc"},
+  {"column": "locationGroupUrl", "path": "$.data.locationGroupUrl"},
+]
+```
+
+
+.drop materialized-view LocationGroupsLatest ifexists;
+
+.create materialized-view with (backfill=true) LocationGroupsLatest on table LocationGroups {
+    LocationGroups | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LocationGroups] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.LocationGroups') | project['locationGroupId'] = tostring(data.['locationGroupId']),['locationGroupName'] = tostring(data.['locationGroupName']),['locationGroupDesc'] = tostring(data.['locationGroupDesc']),['locationGroupUrl'] = tostring(data.['locationGroupUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LocationGroupStores] (
+   [locationGroupStoreId]: string,
+   [locationGroupId]: string,
+   [storeId]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LocationGroupStores] docstring "{\"description\": \"Defines location group stores.\"}";
+
+.alter table [LocationGroupStores] column-docstrings (
+   [locationGroupStoreId]: "{\"description\": \"Identifies a location group store.\"}",
+   [locationGroupId]: "{\"description\": \"Identifies a location group.\"}",
+   [storeId]: "{\"description\": \"Identifies a store.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LocationGroupStores] ingestion json mapping "LocationGroupStores_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locationGroupStoreId", "path": "$.locationGroupStoreId"},
+  {"column": "locationGroupId", "path": "$.locationGroupId"},
+  {"column": "storeId", "path": "$.storeId"},
+]
+```
+
+
+.create-or-alter table [LocationGroupStores] ingestion json mapping "LocationGroupStores_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locationGroupStoreId", "path": "$.data.locationGroupStoreId"},
+  {"column": "locationGroupId", "path": "$.data.locationGroupId"},
+  {"column": "storeId", "path": "$.data.storeId"},
+]
+```
+
+
+.drop materialized-view LocationGroupStoresLatest ifexists;
+
+.create materialized-view with (backfill=true) LocationGroupStoresLatest on table LocationGroupStores {
+    LocationGroupStores | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LocationGroupStores] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.LocationGroupStores') | project['locationGroupStoreId'] = tostring(data.['locationGroupStoreId']),['locationGroupId'] = tostring(data.['locationGroupId']),['storeId'] = tostring(data.['storeId']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Networks] (
+   [networkId]: string,
+   [networkName]: string,
+   [networkDesc]: string,
+   [networkUrl]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Networks] docstring "{\"description\": \"Defines networks.\"}";
+
+.alter table [Networks] column-docstrings (
+   [networkId]: "{\"description\": \"Identifies a network.\"}",
+   [networkName]: "{\"description\": \"Name of the network.\"}",
+   [networkDesc]: "{\"description\": \"Description of the network.\", \"schema\": [\"null\", \"string\"]}",
+   [networkUrl]: "{\"description\": \"URL of a web page about the network.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Networks] ingestion json mapping "Networks_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "networkId", "path": "$.networkId"},
+  {"column": "networkName", "path": "$.networkName"},
+  {"column": "networkDesc", "path": "$.networkDesc"},
+  {"column": "networkUrl", "path": "$.networkUrl"},
+]
+```
+
+
+.create-or-alter table [Networks] ingestion json mapping "Networks_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "networkId", "path": "$.data.networkId"},
+  {"column": "networkName", "path": "$.data.networkName"},
+  {"column": "networkDesc", "path": "$.data.networkDesc"},
+  {"column": "networkUrl", "path": "$.data.networkUrl"},
+]
+```
+
+
+.drop materialized-view NetworksLatest ifexists;
+
+.create materialized-view with (backfill=true) NetworksLatest on table Networks {
+    Networks | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Networks] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Networks') | project['networkId'] = tostring(data.['networkId']),['networkName'] = tostring(data.['networkName']),['networkDesc'] = tostring(data.['networkDesc']),['networkUrl'] = tostring(data.['networkUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Pathways] (
+   [pathwayId]: string,
+   [fromStopId]: string,
+   [toStopId]: string,
+   [pathwayMode]: int,
+   [isBidirectional]: int,
+   [length]: real,
+   [traversalTime]: int,
+   [stairCount]: int,
+   [maxSlope]: real,
+   [minWidth]: real,
+   [signpostedAs]: string,
+   [reversedSignpostedAs]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Pathways] docstring "{\"description\": \"Defines pathways.\"}";
+
+.alter table [Pathways] column-docstrings (
+   [pathwayId]: "{\"description\": \"Identifies a pathway.\"}",
+   [fromStopId]: "{\"description\": \"Identifies a stop or station where the pathway begins.\"}",
+   [toStopId]: "{\"description\": \"Identifies a stop or station where the pathway ends.\"}",
+   [pathwayMode]: "{\"description\": \"Type of pathway between the specified (from_stop_id, to_stop_id) pair.\"}",
+   [isBidirectional]: "{\"description\": \"When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id).\"}",
+   [length]: "{\"description\": \"Length of the pathway, in meters.\", \"schema\": [\"null\", \"double\"]}",
+   [traversalTime]: "{\"description\": \"Average time, in seconds, needed to walk through the pathway.\", \"schema\": [\"null\", \"int\"]}",
+   [stairCount]: "{\"description\": \"Number of stairs of the pathway.\", \"schema\": [\"null\", \"int\"]}",
+   [maxSlope]: "{\"description\": \"Maximum slope of the pathway, in percent.\", \"schema\": [\"null\", \"double\"]}",
+   [minWidth]: "{\"description\": \"Minimum width of the pathway, in meters.\", \"schema\": [\"null\", \"double\"]}",
+   [signpostedAs]: "{\"description\": \"Signposting information for the pathway.\", \"schema\": [\"null\", \"string\"]}",
+   [reversedSignpostedAs]: "{\"description\": \"Reversed signposting information for the pathway.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Pathways] ingestion json mapping "Pathways_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "pathwayId", "path": "$.pathwayId"},
+  {"column": "fromStopId", "path": "$.fromStopId"},
+  {"column": "toStopId", "path": "$.toStopId"},
+  {"column": "pathwayMode", "path": "$.pathwayMode"},
+  {"column": "isBidirectional", "path": "$.isBidirectional"},
+  {"column": "length", "path": "$.length"},
+  {"column": "traversalTime", "path": "$.traversalTime"},
+  {"column": "stairCount", "path": "$.stairCount"},
+  {"column": "maxSlope", "path": "$.maxSlope"},
+  {"column": "minWidth", "path": "$.minWidth"},
+  {"column": "signpostedAs", "path": "$.signpostedAs"},
+  {"column": "reversedSignpostedAs", "path": "$.reversedSignpostedAs"},
+]
+```
+
+
+.create-or-alter table [Pathways] ingestion json mapping "Pathways_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "pathwayId", "path": "$.data.pathwayId"},
+  {"column": "fromStopId", "path": "$.data.fromStopId"},
+  {"column": "toStopId", "path": "$.data.toStopId"},
+  {"column": "pathwayMode", "path": "$.data.pathwayMode"},
+  {"column": "isBidirectional", "path": "$.data.isBidirectional"},
+  {"column": "length", "path": "$.data.length"},
+  {"column": "traversalTime", "path": "$.data.traversalTime"},
+  {"column": "stairCount", "path": "$.data.stairCount"},
+  {"column": "maxSlope", "path": "$.data.maxSlope"},
+  {"column": "minWidth", "path": "$.data.minWidth"},
+  {"column": "signpostedAs", "path": "$.data.signpostedAs"},
+  {"column": "reversedSignpostedAs", "path": "$.data.reversedSignpostedAs"},
+]
+```
+
+
+.drop materialized-view PathwaysLatest ifexists;
+
+.create materialized-view with (backfill=true) PathwaysLatest on table Pathways {
+    Pathways | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Pathways] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Pathways') | project['pathwayId'] = tostring(data.['pathwayId']),['fromStopId'] = tostring(data.['fromStopId']),['toStopId'] = tostring(data.['toStopId']),['pathwayMode'] = toint(data.['pathwayMode']),['isBidirectional'] = toint(data.['isBidirectional']),['length'] = toreal(data.['length']),['traversalTime'] = toint(data.['traversalTime']),['stairCount'] = toint(data.['stairCount']),['maxSlope'] = toreal(data.['maxSlope']),['minWidth'] = toreal(data.['minWidth']),['signpostedAs'] = tostring(data.['signpostedAs']),['reversedSignpostedAs'] = tostring(data.['reversedSignpostedAs']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [RouteNetworks] (
+   [routeNetworkId]: string,
+   [routeId]: string,
+   [networkId]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RouteNetworks] docstring "{\"description\": \"Defines route networks.\"}";
+
+.alter table [RouteNetworks] column-docstrings (
+   [routeNetworkId]: "{\"description\": \"Identifies a route network.\"}",
+   [routeId]: "{\"description\": \"Identifies a route.\"}",
+   [networkId]: "{\"description\": \"Identifies a network.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RouteNetworks] ingestion json mapping "RouteNetworks_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "routeNetworkId", "path": "$.routeNetworkId"},
+  {"column": "routeId", "path": "$.routeId"},
+  {"column": "networkId", "path": "$.networkId"},
+]
+```
+
+
+.create-or-alter table [RouteNetworks] ingestion json mapping "RouteNetworks_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "routeNetworkId", "path": "$.data.routeNetworkId"},
+  {"column": "routeId", "path": "$.data.routeId"},
+  {"column": "networkId", "path": "$.data.networkId"},
+]
+```
+
+
+.drop materialized-view RouteNetworksLatest ifexists;
+
+.create materialized-view with (backfill=true) RouteNetworksLatest on table RouteNetworks {
+    RouteNetworks | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RouteNetworks] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.RouteNetworks') | project['routeNetworkId'] = tostring(data.['routeNetworkId']),['routeId'] = tostring(data.['routeId']),['networkId'] = tostring(data.['networkId']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Routes] (
+   [routeId]: string,
+   [agencyId]: string,
+   [routeShortName]: string,
+   [routeLongName]: string,
+   [routeDesc]: string,
+   [routeType]: string,
+   [routeUrl]: string,
+   [routeColor]: string,
+   [routeTextColor]: string,
+   [routeSortOrder]: int,
+   [continuousPickup]: string,
+   [continuousDropOff]: string,
+   [networkId]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Routes] docstring "{\"description\": \"Identifies a route.\"}";
+
+.alter table [Routes] column-docstrings (
+   [routeId]: "{\"description\": \"Identifies a route.\"}",
+   [agencyId]: "{\"description\": \"Agency for the specified route.\", \"schema\": [\"null\", \"string\"]}",
+   [routeShortName]: "{\"description\": \"Short name of a route.\", \"schema\": [\"null\", \"string\"]}",
+   [routeLongName]: "{\"description\": \"Full name of a route.\", \"schema\": [\"null\", \"string\"]}",
+   [routeDesc]: "{\"description\": \"Description of a route that provides useful, quality information.\", \"schema\": [\"null\", \"string\"]}",
+   [routeType]: "{\"description\": \"Indicates the type of transportation used on a route.\", \"schema\": {\"type\": \"enum\", \"name\": \"RouteType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"TRAM\", \"SUBWAY\", \"RAIL\", \"BUS\", \"FERRY\", \"CABLE_TRAM\", \"AERIAL_LIFT\", \"FUNICULAR\", \"RESERVED_1\", \"RESERVED_2\", \"RESERVED_3\", \"TROLLEYBUS\", \"MONORAIL\", \"OTHER\"], \"doc\": \"Indicates the type of transportation used on a route. Symbols: TRAM - Tram, streetcar, light rail; SUBWAY - Subway, metro; RAIL - Intercity or long-distance travel; BUS - Short- and long-distance bus routes; FERRY - Boat service; CABLE_TRAM - Street-level rail cars with a cable running beneath the vehicle; AERIAL_LIFT - Cable transport with suspended cabins or chairs; FUNICULAR - Rail system designed for steep inclines; TROLLEYBUS - Electric buses with overhead wires; MONORAIL - Railway with a single rail or beam.\"}}",
+   [routeUrl]: "{\"description\": \"URL of a web page about the particular route.\", \"schema\": [\"null\", \"string\"]}",
+   [routeColor]: "{\"description\": \"Route color designation that matches public facing material.\", \"schema\": [\"null\", \"string\"]}",
+   [routeTextColor]: "{\"description\": \"Legible color to use for text drawn against a background of route_color.\", \"schema\": [\"null\", \"string\"]}",
+   [routeSortOrder]: "{\"description\": \"Orders the routes in a way which is ideal for presentation to customers.\", \"schema\": [\"null\", \"int\"]}",
+   [continuousPickup]: "{\"description\": \"Indicates that the rider can board the transit vehicle at any point along the vehicle\\u2019s travel path.\", \"schema\": {\"type\": \"enum\", \"name\": \"ContinuousPickup\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can board the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.\"}}",
+   [continuousDropOff]: "{\"description\": \"Indicates that the rider can alight from the transit vehicle at any point along the vehicle\\u2019s travel path.\", \"schema\": {\"type\": \"enum\", \"name\": \"ContinuousDropOff\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can alight from the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.\"}}",
+   [networkId]: "{\"description\": \"Identifies a group of routes.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Routes] ingestion json mapping "Routes_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "routeId", "path": "$.routeId"},
+  {"column": "agencyId", "path": "$.agencyId"},
+  {"column": "routeShortName", "path": "$.routeShortName"},
+  {"column": "routeLongName", "path": "$.routeLongName"},
+  {"column": "routeDesc", "path": "$.routeDesc"},
+  {"column": "routeType", "path": "$.routeType"},
+  {"column": "routeUrl", "path": "$.routeUrl"},
+  {"column": "routeColor", "path": "$.routeColor"},
+  {"column": "routeTextColor", "path": "$.routeTextColor"},
+  {"column": "routeSortOrder", "path": "$.routeSortOrder"},
+  {"column": "continuousPickup", "path": "$.continuousPickup"},
+  {"column": "continuousDropOff", "path": "$.continuousDropOff"},
+  {"column": "networkId", "path": "$.networkId"},
+]
+```
+
+
+.create-or-alter table [Routes] ingestion json mapping "Routes_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "routeId", "path": "$.data.routeId"},
+  {"column": "agencyId", "path": "$.data.agencyId"},
+  {"column": "routeShortName", "path": "$.data.routeShortName"},
+  {"column": "routeLongName", "path": "$.data.routeLongName"},
+  {"column": "routeDesc", "path": "$.data.routeDesc"},
+  {"column": "routeType", "path": "$.data.routeType"},
+  {"column": "routeUrl", "path": "$.data.routeUrl"},
+  {"column": "routeColor", "path": "$.data.routeColor"},
+  {"column": "routeTextColor", "path": "$.data.routeTextColor"},
+  {"column": "routeSortOrder", "path": "$.data.routeSortOrder"},
+  {"column": "continuousPickup", "path": "$.data.continuousPickup"},
+  {"column": "continuousDropOff", "path": "$.data.continuousDropOff"},
+  {"column": "networkId", "path": "$.data.networkId"},
+]
+```
+
+
+.drop materialized-view RoutesLatest ifexists;
+
+.create materialized-view with (backfill=true) RoutesLatest on table Routes {
+    Routes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Routes] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Routes') | project['routeId'] = tostring(data.['routeId']),['agencyId'] = tostring(data.['agencyId']),['routeShortName'] = tostring(data.['routeShortName']),['routeLongName'] = tostring(data.['routeLongName']),['routeDesc'] = tostring(data.['routeDesc']),['routeType'] = tostring(data.['routeType']),['routeUrl'] = tostring(data.['routeUrl']),['routeColor'] = tostring(data.['routeColor']),['routeTextColor'] = tostring(data.['routeTextColor']),['routeSortOrder'] = toint(data.['routeSortOrder']),['continuousPickup'] = tostring(data.['continuousPickup']),['continuousDropOff'] = tostring(data.['continuousDropOff']),['networkId'] = tostring(data.['networkId']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Shapes] (
+   [shapeId]: string,
+   [shapePtLat]: real,
+   [shapePtLon]: real,
+   [shapePtSequence]: int,
+   [shapeDistTraveled]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Shapes] docstring "{\"description\": \"Defines shapes.\"}";
+
+.alter table [Shapes] column-docstrings (
+   [shapeId]: "{\"description\": \"Identifies a shape.\"}",
+   [shapePtLat]: "{\"description\": \"Latitude of a shape point.\"}",
+   [shapePtLon]: "{\"description\": \"Longitude of a shape point.\"}",
+   [shapePtSequence]: "{\"description\": \"Sequence in which the shape points connect to form the shape.\"}",
+   [shapeDistTraveled]: "{\"description\": \"Actual distance traveled along the shape from the first shape point to the specified shape point.\", \"schema\": [\"null\", \"double\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Shapes] ingestion json mapping "Shapes_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "shapeId", "path": "$.shapeId"},
+  {"column": "shapePtLat", "path": "$.shapePtLat"},
+  {"column": "shapePtLon", "path": "$.shapePtLon"},
+  {"column": "shapePtSequence", "path": "$.shapePtSequence"},
+  {"column": "shapeDistTraveled", "path": "$.shapeDistTraveled"},
+]
+```
+
+
+.create-or-alter table [Shapes] ingestion json mapping "Shapes_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "shapeId", "path": "$.data.shapeId"},
+  {"column": "shapePtLat", "path": "$.data.shapePtLat"},
+  {"column": "shapePtLon", "path": "$.data.shapePtLon"},
+  {"column": "shapePtSequence", "path": "$.data.shapePtSequence"},
+  {"column": "shapeDistTraveled", "path": "$.data.shapeDistTraveled"},
+]
+```
+
+
+.drop materialized-view ShapesLatest ifexists;
+
+.create materialized-view with (backfill=true) ShapesLatest on table Shapes {
+    Shapes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Shapes] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Shapes') | project['shapeId'] = tostring(data.['shapeId']),['shapePtLat'] = toreal(data.['shapePtLat']),['shapePtLon'] = toreal(data.['shapePtLon']),['shapePtSequence'] = toint(data.['shapePtSequence']),['shapeDistTraveled'] = toreal(data.['shapeDistTraveled']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StopAreas] (
+   [stopAreaId]: string,
+   [stopId]: string,
+   [areaId]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [StopAreas] docstring "{\"description\": \"Defines stop areas.\"}";
+
+.alter table [StopAreas] column-docstrings (
+   [stopAreaId]: "{\"description\": \"Identifies a stop area.\"}",
+   [stopId]: "{\"description\": \"Identifies a stop.\"}",
+   [areaId]: "{\"description\": \"Identifies an area.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [StopAreas] ingestion json mapping "StopAreas_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "stopAreaId", "path": "$.stopAreaId"},
+  {"column": "stopId", "path": "$.stopId"},
+  {"column": "areaId", "path": "$.areaId"},
+]
+```
+
+
+.create-or-alter table [StopAreas] ingestion json mapping "StopAreas_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "stopAreaId", "path": "$.data.stopAreaId"},
+  {"column": "stopId", "path": "$.data.stopId"},
+  {"column": "areaId", "path": "$.data.areaId"},
+]
+```
+
+
+.drop materialized-view StopAreasLatest ifexists;
+
+.create materialized-view with (backfill=true) StopAreasLatest on table StopAreas {
+    StopAreas | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StopAreas] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.StopAreas') | project['stopAreaId'] = tostring(data.['stopAreaId']),['stopId'] = tostring(data.['stopId']),['areaId'] = tostring(data.['areaId']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Stops] (
+   [stopId]: string,
+   [stopCode]: string,
+   [stopName]: string,
+   [ttsStopName]: string,
+   [stopDesc]: string,
+   [stopLat]: real,
+   [stopLon]: real,
+   [zoneId]: string,
+   [stopUrl]: string,
+   [locationType]: string,
+   [parentStation]: string,
+   [stopTimezone]: string,
+   [wheelchairBoarding]: string,
+   [levelId]: string,
+   [platformCode]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Stops] docstring "{\"description\": \"Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.\"}";
+
+.alter table [Stops] column-docstrings (
+   [stopId]: "{\"description\": \"Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area.\"}",
+   [stopCode]: "{\"description\": \"Short text or a number that identifies the location for riders.\", \"schema\": [\"null\", \"string\"]}",
+   [stopName]: "{\"description\": \"Name of the location.\", \"schema\": [\"null\", \"string\"]}",
+   [ttsStopName]: "{\"description\": \"Readable version of the stop_name.\", \"schema\": [\"null\", \"string\"]}",
+   [stopDesc]: "{\"description\": \"Description of the location that provides useful, quality information.\", \"schema\": [\"null\", \"string\"]}",
+   [stopLat]: "{\"description\": \"Latitude of the location.\", \"schema\": [\"null\", \"double\"]}",
+   [stopLon]: "{\"description\": \"Longitude of the location.\", \"schema\": [\"null\", \"double\"]}",
+   [zoneId]: "{\"description\": \"Identifies the fare zone for a stop.\", \"schema\": [\"null\", \"string\"]}",
+   [stopUrl]: "{\"description\": \"URL of a web page about the location.\", \"schema\": [\"null\", \"string\"]}",
+   [locationType]: "{\"description\": \"Location type.\", \"schema\": {\"type\": \"enum\", \"name\": \"LocationType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"STOP\", \"STATION\", \"ENTRANCE_EXIT\", \"GENERIC_NODE\", \"BOARDING_AREA\"], \"doc\": \"Location type. Symbols: STOP - Stop or platform; STATION - Physical structure or area that contains one or more platforms; ENTRANCE_EXIT - Location where passengers can enter or exit a station; GENERIC_NODE - Location within a station used to link pathways; BOARDING_AREA - Specific location on a platform where passengers can board and/or alight vehicles.\"}}",
+   [parentStation]: "{\"description\": \"Defines hierarchy between the different locations.\", \"schema\": [\"null\", \"string\"]}",
+   [stopTimezone]: "{\"description\": \"Timezone of the location.\", \"schema\": [\"null\", \"string\"]}",
+   [wheelchairBoarding]: "{\"description\": \"Indicates whether wheelchair boardings are possible from the location.\", \"schema\": {\"type\": \"enum\", \"name\": \"WheelchairBoarding\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"NO_INFO\", \"SOME_VEHICLES\", \"NOT_POSSIBLE\"], \"doc\": \"Indicates whether wheelchair boardings are possible from the location. Symbols: NO_INFO - No accessibility information; SOME_VEHICLES - Some vehicles at this stop can be boarded by a rider in a wheelchair; NOT_POSSIBLE - Wheelchair boarding is not possible at this stop.\"}}",
+   [levelId]: "{\"description\": \"Level of the location.\", \"schema\": [\"null\", \"string\"]}",
+   [platformCode]: "{\"description\": \"Platform identifier for a platform stop.\", \"schema\": [\"null\", \"string\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Stops] ingestion json mapping "Stops_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "stopId", "path": "$.stopId"},
+  {"column": "stopCode", "path": "$.stopCode"},
+  {"column": "stopName", "path": "$.stopName"},
+  {"column": "ttsStopName", "path": "$.ttsStopName"},
+  {"column": "stopDesc", "path": "$.stopDesc"},
+  {"column": "stopLat", "path": "$.stopLat"},
+  {"column": "stopLon", "path": "$.stopLon"},
+  {"column": "zoneId", "path": "$.zoneId"},
+  {"column": "stopUrl", "path": "$.stopUrl"},
+  {"column": "locationType", "path": "$.locationType"},
+  {"column": "parentStation", "path": "$.parentStation"},
+  {"column": "stopTimezone", "path": "$.stopTimezone"},
+  {"column": "wheelchairBoarding", "path": "$.wheelchairBoarding"},
+  {"column": "levelId", "path": "$.levelId"},
+  {"column": "platformCode", "path": "$.platformCode"},
+]
+```
+
+
+.create-or-alter table [Stops] ingestion json mapping "Stops_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "stopId", "path": "$.data.stopId"},
+  {"column": "stopCode", "path": "$.data.stopCode"},
+  {"column": "stopName", "path": "$.data.stopName"},
+  {"column": "ttsStopName", "path": "$.data.ttsStopName"},
+  {"column": "stopDesc", "path": "$.data.stopDesc"},
+  {"column": "stopLat", "path": "$.data.stopLat"},
+  {"column": "stopLon", "path": "$.data.stopLon"},
+  {"column": "zoneId", "path": "$.data.zoneId"},
+  {"column": "stopUrl", "path": "$.data.stopUrl"},
+  {"column": "locationType", "path": "$.data.locationType"},
+  {"column": "parentStation", "path": "$.data.parentStation"},
+  {"column": "stopTimezone", "path": "$.data.stopTimezone"},
+  {"column": "wheelchairBoarding", "path": "$.data.wheelchairBoarding"},
+  {"column": "levelId", "path": "$.data.levelId"},
+  {"column": "platformCode", "path": "$.data.platformCode"},
+]
+```
+
+
+.drop materialized-view StopsLatest ifexists;
+
+.create materialized-view with (backfill=true) StopsLatest on table Stops {
+    Stops | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Stops] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Stops') | project['stopId'] = tostring(data.['stopId']),['stopCode'] = tostring(data.['stopCode']),['stopName'] = tostring(data.['stopName']),['ttsStopName'] = tostring(data.['ttsStopName']),['stopDesc'] = tostring(data.['stopDesc']),['stopLat'] = toreal(data.['stopLat']),['stopLon'] = toreal(data.['stopLon']),['zoneId'] = tostring(data.['zoneId']),['stopUrl'] = tostring(data.['stopUrl']),['locationType'] = tostring(data.['locationType']),['parentStation'] = tostring(data.['parentStation']),['stopTimezone'] = tostring(data.['stopTimezone']),['wheelchairBoarding'] = tostring(data.['wheelchairBoarding']),['levelId'] = tostring(data.['levelId']),['platformCode'] = tostring(data.['platformCode']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StopTimes] (
+   [tripId]: string,
+   [arrivalTime]: string,
+   [departureTime]: string,
+   [stopId]: string,
+   [stopSequence]: int,
+   [stopHeadsign]: string,
+   [pickupType]: string,
+   [dropOffType]: string,
+   [continuousPickup]: string,
+   [continuousDropOff]: string,
+   [shapeDistTraveled]: real,
+   [timepoint]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [StopTimes] docstring "{\"description\": \"Represents times that a vehicle arrives at and departs from individual stops for each trip.\"}";
+
+.alter table [StopTimes] column-docstrings (
+   [tripId]: "{\"description\": \"Identifies a trip.\"}",
+   [arrivalTime]: "{\"description\": \"Arrival time at the stop for a specific trip.\", \"schema\": [\"null\", \"string\"]}",
+   [departureTime]: "{\"description\": \"Departure time from the stop for a specific trip.\", \"schema\": [\"null\", \"string\"]}",
+   [stopId]: "{\"description\": \"Identifies the serviced stop.\", \"schema\": [\"null\", \"string\"]}",
+   [stopSequence]: "{\"description\": \"Order of stops for a particular trip.\"}",
+   [stopHeadsign]: "{\"description\": \"Text that appears on signage identifying the trip's destination to riders.\", \"schema\": [\"null\", \"string\"]}",
+   [pickupType]: "{\"description\": \"Indicates pickup method.\", \"schema\": {\"type\": \"enum\", \"name\": \"PickupType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"REGULAR\", \"NO_PICKUP\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates pickup method. Symbols: REGULAR - Regularly scheduled pickup; NO_PICKUP - No pickup available; PHONE_AGENCY - Must phone agency to arrange pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange pickup.\"}}",
+   [dropOffType]: "{\"description\": \"Indicates drop off method.\", \"schema\": {\"type\": \"enum\", \"name\": \"DropOffType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"REGULAR\", \"NO_DROP_OFF\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates drop off method. Symbols: REGULAR - Regularly scheduled drop off; NO_DROP_OFF - No drop off available; PHONE_AGENCY - Must phone agency to arrange drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange drop off.\"}}",
+   [continuousPickup]: "{\"description\": \"Indicates continuous stopping pickup.\", \"schema\": [\"null\", {\"type\": \"enum\", \"name\": \"ContinuousPickup\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can board the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.\"}]}",
+   [continuousDropOff]: "{\"description\": \"Indicates continuous stopping drop off.\", \"schema\": [\"null\", {\"type\": \"enum\", \"name\": \"ContinuousDropOff\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can alight from the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.\"}]}",
+   [shapeDistTraveled]: "{\"description\": \"Actual distance traveled along the shape from the first stop to the stop specified in this record.\", \"schema\": [\"null\", \"double\"]}",
+   [timepoint]: "{\"description\": \"Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times.\", \"schema\": {\"type\": \"enum\", \"name\": \"Timepoint\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"APPROXIMATE\", \"EXACT\"], \"doc\": \"Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times. Symbols: APPROXIMATE - Times are considered approximate; EXACT - Times are considered exact.\"}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [StopTimes] ingestion json mapping "StopTimes_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tripId", "path": "$.tripId"},
+  {"column": "arrivalTime", "path": "$.arrivalTime"},
+  {"column": "departureTime", "path": "$.departureTime"},
+  {"column": "stopId", "path": "$.stopId"},
+  {"column": "stopSequence", "path": "$.stopSequence"},
+  {"column": "stopHeadsign", "path": "$.stopHeadsign"},
+  {"column": "pickupType", "path": "$.pickupType"},
+  {"column": "dropOffType", "path": "$.dropOffType"},
+  {"column": "continuousPickup", "path": "$.continuousPickup"},
+  {"column": "continuousDropOff", "path": "$.continuousDropOff"},
+  {"column": "shapeDistTraveled", "path": "$.shapeDistTraveled"},
+  {"column": "timepoint", "path": "$.timepoint"},
+]
+```
+
+
+.create-or-alter table [StopTimes] ingestion json mapping "StopTimes_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tripId", "path": "$.data.tripId"},
+  {"column": "arrivalTime", "path": "$.data.arrivalTime"},
+  {"column": "departureTime", "path": "$.data.departureTime"},
+  {"column": "stopId", "path": "$.data.stopId"},
+  {"column": "stopSequence", "path": "$.data.stopSequence"},
+  {"column": "stopHeadsign", "path": "$.data.stopHeadsign"},
+  {"column": "pickupType", "path": "$.data.pickupType"},
+  {"column": "dropOffType", "path": "$.data.dropOffType"},
+  {"column": "continuousPickup", "path": "$.data.continuousPickup"},
+  {"column": "continuousDropOff", "path": "$.data.continuousDropOff"},
+  {"column": "shapeDistTraveled", "path": "$.data.shapeDistTraveled"},
+  {"column": "timepoint", "path": "$.data.timepoint"},
+]
+```
+
+
+.drop materialized-view StopTimesLatest ifexists;
+
+.create materialized-view with (backfill=true) StopTimesLatest on table StopTimes {
+    StopTimes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StopTimes] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.StopTimes') | project['tripId'] = tostring(data.['tripId']),['arrivalTime'] = tostring(data.['arrivalTime']),['departureTime'] = tostring(data.['departureTime']),['stopId'] = tostring(data.['stopId']),['stopSequence'] = toint(data.['stopSequence']),['stopHeadsign'] = tostring(data.['stopHeadsign']),['pickupType'] = tostring(data.['pickupType']),['dropOffType'] = tostring(data.['dropOffType']),['continuousPickup'] = tostring(data.['continuousPickup']),['continuousDropOff'] = tostring(data.['continuousDropOff']),['shapeDistTraveled'] = toreal(data.['shapeDistTraveled']),['timepoint'] = tostring(data.['timepoint']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Timeframes] (
+   [timeframeGroupId]: string,
+   [startTime]: string,
+   [endTime]: string,
+   [serviceDates]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Timeframes] docstring "{\"description\": \"Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.\"}";
+
+.alter table [Timeframes] column-docstrings (
+   [timeframeGroupId]: "{\"description\": \"Identifies a timeframe or set of timeframes.\"}",
+   [startTime]: "{\"description\": \"Defines the beginning of a timeframe.\", \"schema\": [\"null\", \"string\"]}",
+   [endTime]: "{\"description\": \"Defines the end of a timeframe.\", \"schema\": [\"null\", \"string\"]}",
+   [serviceDates]: "{\"description\": \"Identifies a set of dates when service is available for one or more routes.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Timeframes] ingestion json mapping "Timeframes_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timeframeGroupId", "path": "$.timeframeGroupId"},
+  {"column": "startTime", "path": "$.startTime"},
+  {"column": "endTime", "path": "$.endTime"},
+  {"column": "serviceDates", "path": "$.serviceDates"},
+]
+```
+
+
+.create-or-alter table [Timeframes] ingestion json mapping "Timeframes_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timeframeGroupId", "path": "$.data.timeframeGroupId"},
+  {"column": "startTime", "path": "$.data.startTime"},
+  {"column": "endTime", "path": "$.data.endTime"},
+  {"column": "serviceDates", "path": "$.data.serviceDates"},
+]
+```
+
+
+.drop materialized-view TimeframesLatest ifexists;
+
+.create materialized-view with (backfill=true) TimeframesLatest on table Timeframes {
+    Timeframes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Timeframes] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Timeframes') | project['timeframeGroupId'] = tostring(data.['timeframeGroupId']),['startTime'] = tostring(data.['startTime']),['endTime'] = tostring(data.['endTime']),['serviceDates'] = todynamic(data.['serviceDates']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Transfers] (
+   [fromStopId]: string,
+   [toStopId]: string,
+   [transferType]: int,
+   [minTransferTime]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Transfers] docstring "{\"description\": \"Defines transfers.\"}";
+
+.alter table [Transfers] column-docstrings (
+   [fromStopId]: "{\"description\": \"Identifies a stop or station where a connection between routes begins.\"}",
+   [toStopId]: "{\"description\": \"Identifies a stop or station where a connection between routes ends.\"}",
+   [transferType]: "{\"description\": \"Type of connection for the specified (from_stop_id, to_stop_id) pair.\"}",
+   [minTransferTime]: "{\"description\": \"Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id).\", \"schema\": [\"null\", \"int\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Transfers] ingestion json mapping "Transfers_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fromStopId", "path": "$.fromStopId"},
+  {"column": "toStopId", "path": "$.toStopId"},
+  {"column": "transferType", "path": "$.transferType"},
+  {"column": "minTransferTime", "path": "$.minTransferTime"},
+]
+```
+
+
+.create-or-alter table [Transfers] ingestion json mapping "Transfers_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "fromStopId", "path": "$.data.fromStopId"},
+  {"column": "toStopId", "path": "$.data.toStopId"},
+  {"column": "transferType", "path": "$.data.transferType"},
+  {"column": "minTransferTime", "path": "$.data.minTransferTime"},
+]
+```
+
+
+.drop materialized-view TransfersLatest ifexists;
+
+.create materialized-view with (backfill=true) TransfersLatest on table Transfers {
+    Transfers | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Transfers] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Transfers') | project['fromStopId'] = tostring(data.['fromStopId']),['toStopId'] = tostring(data.['toStopId']),['transferType'] = toint(data.['transferType']),['minTransferTime'] = toint(data.['minTransferTime']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Translations] (
+   [tableName]: string,
+   [fieldName]: string,
+   [language]: string,
+   [translation]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Translations] docstring "{\"description\": \"Defines translations.\"}";
+
+.alter table [Translations] column-docstrings (
+   [tableName]: "{\"description\": \"Name of the table containing the field to be translated.\"}",
+   [fieldName]: "{\"description\": \"Name of the field to be translated.\"}",
+   [language]: "{\"description\": \"Language of the translation.\"}",
+   [translation]: "{\"description\": \"Translated value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Translations] ingestion json mapping "Translations_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tableName", "path": "$.tableName"},
+  {"column": "fieldName", "path": "$.fieldName"},
+  {"column": "language", "path": "$.language"},
+  {"column": "translation", "path": "$.translation"},
+]
+```
+
+
+.create-or-alter table [Translations] ingestion json mapping "Translations_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tableName", "path": "$.data.tableName"},
+  {"column": "fieldName", "path": "$.data.fieldName"},
+  {"column": "language", "path": "$.data.language"},
+  {"column": "translation", "path": "$.data.translation"},
+]
+```
+
+
+.drop materialized-view TranslationsLatest ifexists;
+
+.create materialized-view with (backfill=true) TranslationsLatest on table Translations {
+    Translations | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Translations] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Translations') | project['tableName'] = tostring(data.['tableName']),['fieldName'] = tostring(data.['fieldName']),['language'] = tostring(data.['language']),['translation'] = tostring(data.['translation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Trips] (
+   [routeId]: string,
+   [serviceDates]: dynamic,
+   [serviceExceptions]: dynamic,
+   [tripId]: string,
+   [tripHeadsign]: string,
+   [tripShortName]: string,
+   [directionId]: string,
+   [blockId]: string,
+   [shapeId]: string,
+   [wheelchairAccessible]: string,
+   [bikesAllowed]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Trips] docstring "{\"description\": \"Identifies a trip.\"}";
+
+.alter table [Trips] column-docstrings (
+   [routeId]: "{\"description\": \"Identifies a route.\"}",
+   [tripId]: "{\"description\": \"Identifies a trip.\"}",
+   [tripHeadsign]: "{\"description\": \"Text that appears on signage identifying the trip's destination to riders.\", \"schema\": [\"null\", \"string\"]}",
+   [tripShortName]: "{\"description\": \"Public facing text used to identify the trip to riders.\", \"schema\": [\"null\", \"string\"]}",
+   [directionId]: "{\"description\": \"Indicates the direction of travel for a trip.\", \"schema\": {\"type\": \"enum\", \"name\": \"DirectionId\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"OUTBOUND\", \"INBOUND\"], \"doc\": \"Indicates the direction of travel for a trip. Symbols: OUTBOUND - Travel in one direction; INBOUND - Travel in the opposite direction.\"}}",
+   [blockId]: "{\"description\": \"Identifies the block to which the trip belongs.\", \"schema\": [\"null\", \"string\"]}",
+   [shapeId]: "{\"description\": \"Identifies a geospatial shape describing the vehicle travel path for a trip.\", \"schema\": [\"null\", \"string\"]}",
+   [wheelchairAccessible]: "{\"description\": \"Indicates wheelchair accessibility.\", \"schema\": {\"type\": \"enum\", \"name\": \"WheelchairAccessible\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"NO_INFO\", \"WHEELCHAIR_ACCESSIBLE\", \"NOT_WHEELCHAIR_ACCESSIBLE\"], \"doc\": \"Indicates wheelchair accessibility. Symbols: NO_INFO - No accessibility information for the trip; WHEELCHAIR_ACCESSIBLE - Vehicle can accommodate at least one rider in a wheelchair; NOT_WHEELCHAIR_ACCESSIBLE - No riders in wheelchairs can be accommodated on this trip.\"}}",
+   [bikesAllowed]: "{\"description\": \"Indicates whether bikes are allowed.\", \"schema\": {\"type\": \"enum\", \"name\": \"BikesAllowed\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"NO_INFO\", \"BICYCLE_ALLOWED\", \"BICYCLE_NOT_ALLOWED\"], \"doc\": \"Indicates whether bikes are allowed. Symbols: NO_INFO - No bike information for the trip; BICYCLE_ALLOWED - Vehicle can accommodate at least one bicycle; BICYCLE_NOT_ALLOWED - No bicycles are allowed on this trip.\"}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Trips] ingestion json mapping "Trips_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "routeId", "path": "$.routeId"},
+  {"column": "serviceDates", "path": "$.serviceDates"},
+  {"column": "serviceExceptions", "path": "$.serviceExceptions"},
+  {"column": "tripId", "path": "$.tripId"},
+  {"column": "tripHeadsign", "path": "$.tripHeadsign"},
+  {"column": "tripShortName", "path": "$.tripShortName"},
+  {"column": "directionId", "path": "$.directionId"},
+  {"column": "blockId", "path": "$.blockId"},
+  {"column": "shapeId", "path": "$.shapeId"},
+  {"column": "wheelchairAccessible", "path": "$.wheelchairAccessible"},
+  {"column": "bikesAllowed", "path": "$.bikesAllowed"},
+]
+```
+
+
+.create-or-alter table [Trips] ingestion json mapping "Trips_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "routeId", "path": "$.data.routeId"},
+  {"column": "serviceDates", "path": "$.data.serviceDates"},
+  {"column": "serviceExceptions", "path": "$.data.serviceExceptions"},
+  {"column": "tripId", "path": "$.data.tripId"},
+  {"column": "tripHeadsign", "path": "$.data.tripHeadsign"},
+  {"column": "tripShortName", "path": "$.data.tripShortName"},
+  {"column": "directionId", "path": "$.data.directionId"},
+  {"column": "blockId", "path": "$.data.blockId"},
+  {"column": "shapeId", "path": "$.data.shapeId"},
+  {"column": "wheelchairAccessible", "path": "$.data.wheelchairAccessible"},
+  {"column": "bikesAllowed", "path": "$.data.bikesAllowed"},
+]
+```
+
+
+.drop materialized-view TripsLatest ifexists;
+
+.create materialized-view with (backfill=true) TripsLatest on table Trips {
+    Trips | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Trips] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.Trips') | project['routeId'] = tostring(data.['routeId']),['serviceDates'] = todynamic(data.['serviceDates']),['serviceExceptions'] = todynamic(data.['serviceExceptions']),['tripId'] = tostring(data.['tripId']),['tripHeadsign'] = tostring(data.['tripHeadsign']),['tripShortName'] = tostring(data.['tripShortName']),['directionId'] = tostring(data.['directionId']),['blockId'] = tostring(data.['blockId']),['shapeId'] = tostring(data.['shapeId']),['wheelchairAccessible'] = tostring(data.['wheelchairAccessible']),['bikesAllowed'] = tostring(data.['bikesAllowed']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Alert] (
+   [active_period]: dynamic,
+   [informed_entity]: dynamic,
+   [cause]: string,
+   [effect]: string,
+   [url]: dynamic,
+   [header_text]: dynamic,
+   [description_text]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Alert] docstring "{\"description\": \"An alert, indicating some sort of incident in the public transit network.\"}";
+
+.alter table [Alert] column-docstrings (
+   [active_period]: "{\"description\": \"Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"TimeRange\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"start\", \"type\": [\"null\", \"long\"], \"doc\": \"Start time, in POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC). If missing, the interval starts at minus infinity.\"}, {\"name\": \"end\", \"type\": [\"null\", \"long\"], \"doc\": \"End time, in POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC). If missing, the interval ends at plus infinity.\"}], \"doc\": \"Low level data structures used above. A time interval. The interval is considered active at time 't' if 't' is greater than or equal to the start time and less than the end time.\"}}}",
+   [informed_entity]: "{\"description\": \"Entities whose users we should notify of this alert.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
+   [url]: "{\"description\": \"The URL which provides additional information about the alert.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TranslatedString\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"translation\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Translation\", \"namespace\": \"GeneralTransitFeedRealTime.Alert.TranslatedString_types\", \"fields\": [{\"name\": \"text\", \"type\": \"string\", \"doc\": \"A UTF-8 string containing the message.\"}, {\"name\": \"language\", \"type\": [\"null\", \"string\"], \"doc\": \"BCP-47 language code. Can be omitted if the language is unknown or if no i18n is done at all for the feed. At most one translation is allowed to have an unspecified language tag.\"}]}}, \"doc\": \"At least one translation must be provided.\"}]}]}",
+   [header_text]: "{\"description\": \"Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TranslatedString\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"translation\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Translation\", \"namespace\": \"GeneralTransitFeedRealTime.Alert.TranslatedString_types\", \"fields\": [{\"name\": \"text\", \"type\": \"string\", \"doc\": \"A UTF-8 string containing the message.\"}, {\"name\": \"language\", \"type\": [\"null\", \"string\"], \"doc\": \"BCP-47 language code. Can be omitted if the language is unknown or if no i18n is done at all for the feed. At most one translation is allowed to have an unspecified language tag.\"}]}}, \"doc\": \"At least one translation must be provided.\"}]}]}",
+   [description_text]: "{\"description\": \"description should add to the information of the header.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TranslatedString\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"translation\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Translation\", \"namespace\": \"GeneralTransitFeedRealTime.Alert.TranslatedString_types\", \"fields\": [{\"name\": \"text\", \"type\": \"string\", \"doc\": \"A UTF-8 string containing the message.\"}, {\"name\": \"language\", \"type\": [\"null\", \"string\"], \"doc\": \"BCP-47 language code. Can be omitted if the language is unknown or if no i18n is done at all for the feed. At most one translation is allowed to have an unspecified language tag.\"}]}}, \"doc\": \"At least one translation must be provided.\"}]}]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Alert] ingestion json mapping "Alert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "active_period", "path": "$.active_period"},
+  {"column": "informed_entity", "path": "$.informed_entity"},
+  {"column": "cause", "path": "$.cause"},
+  {"column": "effect", "path": "$.effect"},
+  {"column": "url", "path": "$.url"},
+  {"column": "header_text", "path": "$.header_text"},
+  {"column": "description_text", "path": "$.description_text"},
+]
+```
+
+
+.create-or-alter table [Alert] ingestion json mapping "Alert_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "active_period", "path": "$.data.active_period"},
+  {"column": "informed_entity", "path": "$.data.informed_entity"},
+  {"column": "cause", "path": "$.data.cause"},
+  {"column": "effect", "path": "$.data.effect"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "header_text", "path": "$.data.header_text"},
+  {"column": "description_text", "path": "$.data.description_text"},
+]
+```
+
+
+.drop materialized-view AlertLatest ifexists;
+
+.create materialized-view with (backfill=true) AlertLatest on table Alert {
+    Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Alert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Alert.Alert') | project['active_period'] = todynamic(data.['active_period']),['informed_entity'] = todynamic(data.['informed_entity']),['cause'] = tostring(data.['cause']),['effect'] = tostring(data.['effect']),['url'] = todynamic(data.['url']),['header_text'] = todynamic(data.['header_text']),['description_text'] = todynamic(data.['description_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FeedMessage] (
+   [header]: dynamic,
+   [entity]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FeedMessage] docstring "{\"description\": \"The contents of a feed message. A feed is a continuous stream of feed messages. Each message in the stream is obtained as a response to an appropriate HTTP GET request. A realtime feed is always defined with relation to an existing GTFS feed. All the entity ids are resolved with respect to the GTFS feed. Note that \\\"required\\\" and \\\"optional\\\" as stated in this file refer to Protocol Buffer cardinality, not semantic cardinality.  See reference.md at https:github.com/google/transit/tree/master/gtfs-realtime for field semantic cardinality.\"}";
+
+.alter table [FeedMessage] column-docstrings (
+   [header]: "{\"description\": \"Metadata about this feed and feed message.\", \"schema\": {\"type\": \"record\", \"name\": \"FeedHeader\", \"namespace\": \"GeneralTransitFeed\", \"fields\": [{\"name\": \"gtfs_realtime_version\", \"type\": \"string\"}, {\"name\": \"incrementality\", \"type\": [\"null\", {\"name\": \"Incrementality\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeed.FeedHeader_types\", \"symbols\": [\"FULL_DATASET\", \"DIFFERENTIAL\"]}]}, {\"name\": \"timestamp\", \"type\": [\"null\", \"long\"], \"doc\": \"This timestamp identifies the moment when the content of this feed has been created (in server time). In POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC).\"}]}}",
+   [entity]: "{\"description\": \"Contents of the feed.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FeedMessage] ingestion json mapping "FeedMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "header", "path": "$.header"},
+  {"column": "entity", "path": "$.entity"},
+]
+```
+
+
+.create-or-alter table [FeedMessage] ingestion json mapping "FeedMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "header", "path": "$.data.header"},
+  {"column": "entity", "path": "$.data.entity"},
+]
+```
+
+
+.drop materialized-view FeedMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) FeedMessageLatest on table FeedMessage {
+    FeedMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FeedMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeed.FeedMessage') | project['header'] = todynamic(data.['header']),['entity'] = todynamic(data.['entity']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TripUpdate] (
+   [trip]: dynamic,
+   [vehicle]: dynamic,
+   [stop_time_update]: dynamic,
+   [timestamp]: long,
+   [delay]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TripUpdate] docstring "{\"description\": \"Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop o...\"}";
+
+.alter table [TripUpdate] column-docstrings (
+   [trip]: "{\"description\": \"The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule.\", \"schema\": {\"type\": \"record\", \"name\": \"TripDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Trip\", \"fields\": [{\"name\": \"trip_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"route_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"direction_id\", \"type\": [\"null\", \"int\"]}, {\"name\": \"start_time\", \"type\": [\"null\", \"string\"]}, {\"name\": \"start_date\", \"type\": [\"null\", \"string\"]}, {\"name\": \"schedule_relationship\", \"type\": [\"null\", {\"name\": \"ScheduleRelationship\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Trip.TripDescriptor_types\", \"symbols\": [\"SCHEDULED\", \"ADDED\", \"UNSCHEDULED\", \"CANCELED\"]}]}]}}",
+   [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"VehicleDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Trip\", \"fields\": [{\"name\": \"id\", \"type\": [\"null\", \"string\"], \"doc\": \"Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to\"}, {\"name\": \"label\", \"type\": [\"null\", \"string\"], \"doc\": \"help identify the correct vehicle.\"}, {\"name\": \"license_plate\", \"type\": [\"null\", \"string\"], \"doc\": \"The license plate of the vehicle.\"}], \"doc\": \"Identification information for the vehicle performing the trip.\"}]}",
+   [stop_time_update]: "{\"description\": \"Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
+   [timestamp]: "{\"description\": \"time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip.  Delay should only be\", \"schema\": [\"null\", \"long\"]}",
+   [delay]: "{\"description\": \"specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.\", \"schema\": [\"null\", \"int\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.trip"},
+  {"column": "vehicle", "path": "$.vehicle"},
+  {"column": "stop_time_update", "path": "$.stop_time_update"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "delay", "path": "$.delay"},
+]
+```
+
+
+.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.data.trip"},
+  {"column": "vehicle", "path": "$.data.vehicle"},
+  {"column": "stop_time_update", "path": "$.data.stop_time_update"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "delay", "path": "$.data.delay"},
+]
+```
+
+
+.drop materialized-view TripUpdateLatest ifexists;
+
+.create materialized-view with (backfill=true) TripUpdateLatest on table TripUpdate {
+    TripUpdate | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TripUpdate] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Trip.TripUpdate') | project['trip'] = todynamic(data.['trip']),['vehicle'] = todynamic(data.['vehicle']),['stop_time_update'] = todynamic(data.['stop_time_update']),['timestamp'] = tolong(data.['timestamp']),['delay'] = toint(data.['delay']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [VehiclePosition] (
+   [trip]: dynamic,
+   [vehicle]: dynamic,
+   [position]: dynamic,
+   [current_stop_sequence]: int,
+   [stop_id]: string,
+   [current_status]: string,
+   [timestamp]: long,
+   [congestion_level]: string,
+   [occupancy_status]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VehiclePosition] docstring "{\"description\": \"Realtime positioning information for a given vehicle.\"}";
+
+.alter table [VehiclePosition] column-docstrings (
+   [trip]: "{\"description\": \"The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TripDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"trip_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"route_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"direction_id\", \"type\": [\"null\", \"int\"]}, {\"name\": \"start_time\", \"type\": [\"null\", \"string\"]}, {\"name\": \"start_date\", \"type\": [\"null\", \"string\"]}, {\"name\": \"schedule_relationship\", \"type\": [\"null\", {\"name\": \"ScheduleRelationship\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.TripDescriptor_types\", \"symbols\": [\"SCHEDULED\", \"ADDED\", \"UNSCHEDULED\", \"CANCELED\"]}]}]}]}",
+   [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"VehicleDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"id\", \"type\": [\"null\", \"string\"], \"doc\": \"Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to\"}, {\"name\": \"label\", \"type\": [\"null\", \"string\"], \"doc\": \"help identify the correct vehicle.\"}, {\"name\": \"license_plate\", \"type\": [\"null\", \"string\"], \"doc\": \"The license plate of the vehicle.\"}], \"doc\": \"Identification information for the vehicle performing the trip.\"}]}",
+   [position]: "{\"description\": \"Current position of this vehicle. The stop sequence index of the current stop. The meaning of\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"Position\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"latitude\", \"type\": \"float\"}, {\"name\": \"longitude\", \"type\": \"float\", \"doc\": \"Degrees East, in the WGS-84 coordinate system.\"}, {\"name\": \"bearing\", \"type\": [\"null\", \"float\"], \"doc\": \"Bearing, in degrees, clockwise from North, i.e., 0 is North and 90 is East. This can be the compass bearing, or the direction towards the next stop or intermediate location. This should not be direction deduced from the sequence of previous positions, which can be computed from previous data.\"}, {\"name\": \"odometer\", \"type\": [\"null\", \"double\"], \"doc\": \"Odometer value, in meters.\"}, {\"name\": \"speed\", \"type\": [\"null\", \"float\"], \"doc\": \"Momentary speed measured by the vehicle, in meters per second.\"}]}]}",
+   [current_stop_sequence]: "{\"description\": \"current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in\", \"schema\": [\"null\", \"int\"]}",
+   [stop_id]: "{\"description\": \"the corresponding GTFS feed.\", \"schema\": [\"null\", \"string\"]}",
+   [current_status]: "{\"description\": \"The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time\", \"schema\": [\"null\", {\"name\": \"VehicleStopStatus\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.VehiclePosition_types\", \"symbols\": [\"INCOMING_AT\", \"STOPPED_AT\", \"IN_TRANSIT_TO\"]}]}",
+   [timestamp]: "{\"description\": \"(i.e., number of seconds since January 1st 1970 00:00:00 UTC).\", \"schema\": [\"null\", \"long\"]}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.trip"},
+  {"column": "vehicle", "path": "$.vehicle"},
+  {"column": "position", "path": "$.position"},
+  {"column": "current_stop_sequence", "path": "$.current_stop_sequence"},
+  {"column": "stop_id", "path": "$.stop_id"},
+  {"column": "current_status", "path": "$.current_status"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "congestion_level", "path": "$.congestion_level"},
+  {"column": "occupancy_status", "path": "$.occupancy_status"},
+]
+```
+
+
+.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.data.trip"},
+  {"column": "vehicle", "path": "$.data.vehicle"},
+  {"column": "position", "path": "$.data.position"},
+  {"column": "current_stop_sequence", "path": "$.data.current_stop_sequence"},
+  {"column": "stop_id", "path": "$.data.stop_id"},
+  {"column": "current_status", "path": "$.data.current_status"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "congestion_level", "path": "$.data.congestion_level"},
+  {"column": "occupancy_status", "path": "$.data.occupancy_status"},
+]
+```
+
+
+.drop materialized-view VehiclePositionLatest ifexists;
+
+.create materialized-view with (backfill=true) VehiclePositionLatest on table VehiclePosition {
+    VehiclePosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [VehiclePosition] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition') | project['trip'] = todynamic(data.['trip']),['vehicle'] = todynamic(data.['vehicle']),['position'] = todynamic(data.['position']),['current_stop_sequence'] = toint(data.['current_stop_sequence']),['stop_id'] = tostring(data.['stop_id']),['current_status'] = tostring(data.['current_status']),['timestamp'] = tolong(data.['timestamp']),['congestion_level'] = tostring(data.['congestion_level']),['occupancy_status'] = tostring(data.['occupancy_status']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "gtfs-rt-producer-kafka-producer"
 description = "gtfs_rt_producer_kafka_producer Apache Kafka consumer library"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
 packages = [{include = "gtfs_rt_producer_kafka_producer", from = "src"}]

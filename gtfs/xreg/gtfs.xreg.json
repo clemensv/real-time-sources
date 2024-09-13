@@ -3,18 +3,18 @@
     "specversion": "0.5-wip",
     "endpoints": {},
     "messagegroups": {
-        "GeneralTransitFeed.RealTime": {
-            "id": "GeneralTransitFeed.RealTime",
+        "GeneralTransitFeedRealTime": {
+            "id": "GeneralTransitFeedRealTime",
             "messages": {
-                "GeneralTransitFeed.RealTime.VehiclePosition": {
-                    "id": "GeneralTransitFeed.RealTime.VehiclePosition",
+                "GeneralTransitFeedRealTime.Vehicle.VehiclePosition": {
+                    "id": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.RealTime/schemas/GeneralTransitFeed.RealTime.VehiclePosition",
-                    "createdat": "2024-09-10T08:30:52.164371",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedRealTime/schemas/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
+                    "createdat": "2024-09-12T10:23:58.626267",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:30:52.164371",
+                    "modifiedat": "2024-09-12T10:23:58.626267",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -27,7 +27,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.RealTime.VehiclePosition",
+                            "value": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
                             "description": "Event type"
                         },
                         "source": {
@@ -45,15 +45,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.RealTime.TripUpdate": {
-                    "id": "GeneralTransitFeed.RealTime.TripUpdate",
+                "GeneralTransitFeedRealTime.Trip.TripUpdate": {
+                    "id": "GeneralTransitFeedRealTime.Trip.TripUpdate",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.RealTime/schemas/GeneralTransitFeed.RealTime.TripUpdate",
-                    "createdat": "2024-09-10T08:30:55.674281",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedRealTime/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate",
+                    "createdat": "2024-09-12T10:24:01.831620",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:30:55.674281",
+                    "modifiedat": "2024-09-12T10:24:01.831620",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -66,7 +66,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.RealTime.TripUpdate",
+                            "value": "GeneralTransitFeedRealTime.Trip.TripUpdate",
                             "description": "Event type"
                         },
                         "source": {
@@ -84,15 +84,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.RealTime.Alert": {
-                    "id": "GeneralTransitFeed.RealTime.Alert",
+                "GeneralTransitFeedRealTime.Alert.Alert": {
+                    "id": "GeneralTransitFeedRealTime.Alert.Alert",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.RealTime/schemas/GeneralTransitFeed.RealTime.Alert",
-                    "createdat": "2024-09-10T08:30:59.171010",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedRealTime/schemas/GeneralTransitFeedRealTime.Alert.Alert",
+                    "createdat": "2024-09-12T10:24:04.930373",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:30:59.171010",
+                    "modifiedat": "2024-09-12T10:24:04.930373",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -105,7 +105,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.RealTime.Alert",
+                            "value": "GeneralTransitFeedRealTime.Alert.Alert",
                             "description": "Event type"
                         },
                         "source": {
@@ -124,22 +124,22 @@
                     }
                 }
             },
-            "createdat": "2024-09-10T08:30:52.162373",
+            "createdat": "2024-09-12T10:23:58.624265",
             "epoch": 0,
-            "modifiedat": "2024-09-10T08:30:52.162373"
+            "modifiedat": "2024-09-12T10:23:58.624265"
         },
-        "GeneralTransitFeed.Static": {
-            "id": "GeneralTransitFeed.Static",
+        "GeneralTransitFeedStatic": {
+            "id": "GeneralTransitFeedStatic",
             "messages": {
-                "GeneralTransitFeed.Static.Agency": {
-                    "id": "GeneralTransitFeed.Static.Agency",
+                "GeneralTransitFeedStatic.Agency": {
+                    "id": "GeneralTransitFeedStatic.Agency",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Agency",
-                    "createdat": "2024-09-10T08:31:02.669359",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Agency",
+                    "createdat": "2024-09-12T10:24:08.104373",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:02.669359",
+                    "modifiedat": "2024-09-12T10:24:08.104373",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -152,7 +152,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Agency",
+                            "value": "GeneralTransitFeedStatic.Agency",
                             "description": "Event type"
                         },
                         "source": {
@@ -170,15 +170,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Areas": {
-                    "id": "GeneralTransitFeed.Static.Areas",
+                "GeneralTransitFeedStatic.Areas": {
+                    "id": "GeneralTransitFeedStatic.Areas",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Areas",
-                    "createdat": "2024-09-10T08:31:06.137926",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Areas",
+                    "createdat": "2024-09-12T10:24:11.296090",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:06.137926",
+                    "modifiedat": "2024-09-12T10:24:11.296090",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -191,7 +191,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Areas",
+                            "value": "GeneralTransitFeedStatic.Areas",
                             "description": "Event type"
                         },
                         "source": {
@@ -209,15 +209,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Attributions": {
-                    "id": "GeneralTransitFeed.Static.Attributions",
+                "GeneralTransitFeedStatic.Attributions": {
+                    "id": "GeneralTransitFeedStatic.Attributions",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Attributions",
-                    "createdat": "2024-09-10T08:31:09.682523",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Attributions",
+                    "createdat": "2024-09-12T10:24:14.476709",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:09.682523",
+                    "modifiedat": "2024-09-12T10:24:14.476709",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -230,7 +230,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Attributions",
+                            "value": "GeneralTransitFeedStatic.Attributions",
                             "description": "Event type"
                         },
                         "source": {
@@ -253,10 +253,10 @@
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.BookingRules",
-                    "createdat": "2024-09-10T08:31:13.197547",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeed.BookingRules",
+                    "createdat": "2024-09-12T10:24:17.651048",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:13.197547",
+                    "modifiedat": "2024-09-12T10:24:17.651048",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -287,15 +287,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareAttributes": {
-                    "id": "GeneralTransitFeed.Static.FareAttributes",
+                "GeneralTransitFeedStatic.FareAttributes": {
+                    "id": "GeneralTransitFeedStatic.FareAttributes",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.FareAttributes",
-                    "createdat": "2024-09-10T08:31:16.713868",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareAttributes",
+                    "createdat": "2024-09-12T10:24:20.834331",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:16.713868",
+                    "modifiedat": "2024-09-12T10:24:20.834331",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -308,7 +308,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.FareAttributes",
+                            "value": "GeneralTransitFeedStatic.FareAttributes",
                             "description": "Event type"
                         },
                         "source": {
@@ -326,15 +326,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareLegRules": {
-                    "id": "GeneralTransitFeed.Static.FareLegRules",
+                "GeneralTransitFeedStatic.FareLegRules": {
+                    "id": "GeneralTransitFeedStatic.FareLegRules",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.FareLegRules",
-                    "createdat": "2024-09-10T08:31:20.216447",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareLegRules",
+                    "createdat": "2024-09-12T10:24:24.010296",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:20.216447",
+                    "modifiedat": "2024-09-12T10:24:24.010296",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -347,7 +347,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.FareLegRules",
+                            "value": "GeneralTransitFeedStatic.FareLegRules",
                             "description": "Event type"
                         },
                         "source": {
@@ -365,15 +365,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareMedia": {
-                    "id": "GeneralTransitFeed.Static.FareMedia",
+                "GeneralTransitFeedStatic.FareMedia": {
+                    "id": "GeneralTransitFeedStatic.FareMedia",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.FareMedia",
-                    "createdat": "2024-09-10T08:31:23.684258",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareMedia",
+                    "createdat": "2024-09-12T10:24:27.213376",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:23.684258",
+                    "modifiedat": "2024-09-12T10:24:27.213376",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -386,7 +386,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.FareMedia",
+                            "value": "GeneralTransitFeedStatic.FareMedia",
                             "description": "Event type"
                         },
                         "source": {
@@ -404,15 +404,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareProducts": {
-                    "id": "GeneralTransitFeed.Static.FareProducts",
+                "GeneralTransitFeedStatic.FareProducts": {
+                    "id": "GeneralTransitFeedStatic.FareProducts",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.FareProducts",
-                    "createdat": "2024-09-10T08:31:27.154990",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareProducts",
+                    "createdat": "2024-09-12T10:24:30.510138",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:27.154990",
+                    "modifiedat": "2024-09-12T10:24:30.510138",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -425,7 +425,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.FareProducts",
+                            "value": "GeneralTransitFeedStatic.FareProducts",
                             "description": "Event type"
                         },
                         "source": {
@@ -443,15 +443,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareRules": {
-                    "id": "GeneralTransitFeed.Static.FareRules",
+                "GeneralTransitFeedStatic.FareRules": {
+                    "id": "GeneralTransitFeedStatic.FareRules",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.FareRules",
-                    "createdat": "2024-09-10T08:31:30.612491",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareRules",
+                    "createdat": "2024-09-12T10:24:33.727885",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:30.612491",
+                    "modifiedat": "2024-09-12T10:24:33.727885",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -464,7 +464,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.FareRules",
+                            "value": "GeneralTransitFeedStatic.FareRules",
                             "description": "Event type"
                         },
                         "source": {
@@ -482,15 +482,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareTransferRules": {
-                    "id": "GeneralTransitFeed.Static.FareTransferRules",
+                "GeneralTransitFeedStatic.FareTransferRules": {
+                    "id": "GeneralTransitFeedStatic.FareTransferRules",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.FareTransferRules",
-                    "createdat": "2024-09-10T08:31:34.134340",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareTransferRules",
+                    "createdat": "2024-09-12T10:24:36.930398",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:34.134340",
+                    "modifiedat": "2024-09-12T10:24:36.930398",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -503,7 +503,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.FareTransferRules",
+                            "value": "GeneralTransitFeedStatic.FareTransferRules",
                             "description": "Event type"
                         },
                         "source": {
@@ -521,15 +521,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FeedInfo": {
-                    "id": "GeneralTransitFeed.Static.FeedInfo",
+                "GeneralTransitFeedStatic.FeedInfo": {
+                    "id": "GeneralTransitFeedStatic.FeedInfo",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.FeedInfo",
-                    "createdat": "2024-09-10T08:31:37.670655",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FeedInfo",
+                    "createdat": "2024-09-12T10:24:40.133075",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:37.670655",
+                    "modifiedat": "2024-09-12T10:24:40.133075",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -542,7 +542,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.FeedInfo",
+                            "value": "GeneralTransitFeedStatic.FeedInfo",
                             "description": "Event type"
                         },
                         "source": {
@@ -560,15 +560,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Frequencies": {
-                    "id": "GeneralTransitFeed.Static.Frequencies",
+                "GeneralTransitFeedStatic.Frequencies": {
+                    "id": "GeneralTransitFeedStatic.Frequencies",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Frequencies",
-                    "createdat": "2024-09-10T08:31:41.191826",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Frequencies",
+                    "createdat": "2024-09-12T10:24:43.306716",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:41.191826",
+                    "modifiedat": "2024-09-12T10:24:43.306716",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -581,7 +581,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Frequencies",
+                            "value": "GeneralTransitFeedStatic.Frequencies",
                             "description": "Event type"
                         },
                         "source": {
@@ -599,15 +599,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Levels": {
-                    "id": "GeneralTransitFeed.Static.Levels",
+                "GeneralTransitFeedStatic.Levels": {
+                    "id": "GeneralTransitFeedStatic.Levels",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Levels",
-                    "createdat": "2024-09-10T08:31:44.735336",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Levels",
+                    "createdat": "2024-09-12T10:24:46.496274",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:44.735336",
+                    "modifiedat": "2024-09-12T10:24:46.496274",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -620,7 +620,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Levels",
+                            "value": "GeneralTransitFeedStatic.Levels",
                             "description": "Event type"
                         },
                         "source": {
@@ -638,15 +638,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.LocationGeoJson": {
-                    "id": "GeneralTransitFeed.Static.LocationGeoJson",
+                "GeneralTransitFeedStatic.LocationGeoJson": {
+                    "id": "GeneralTransitFeedStatic.LocationGeoJson",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.LocationGeoJson",
-                    "createdat": "2024-09-10T08:31:48.255117",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.LocationGeoJson",
+                    "createdat": "2024-09-12T10:24:49.715508",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:48.255117",
+                    "modifiedat": "2024-09-12T10:24:49.715508",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -659,7 +659,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.LocationGeoJson",
+                            "value": "GeneralTransitFeedStatic.LocationGeoJson",
                             "description": "Event type"
                         },
                         "source": {
@@ -677,15 +677,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.LocationGroups": {
-                    "id": "GeneralTransitFeed.Static.LocationGroups",
+                "GeneralTransitFeedStatic.LocationGroups": {
+                    "id": "GeneralTransitFeedStatic.LocationGroups",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.LocationGroups",
-                    "createdat": "2024-09-10T08:31:51.794295",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.LocationGroups",
+                    "createdat": "2024-09-12T10:24:52.948656",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:51.794295",
+                    "modifiedat": "2024-09-12T10:24:52.948656",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -698,7 +698,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.LocationGroups",
+                            "value": "GeneralTransitFeedStatic.LocationGroups",
                             "description": "Event type"
                         },
                         "source": {
@@ -716,15 +716,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.LocationGroupStores": {
-                    "id": "GeneralTransitFeed.Static.LocationGroupStores",
+                "GeneralTransitFeedStatic.LocationGroupStores": {
+                    "id": "GeneralTransitFeedStatic.LocationGroupStores",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.LocationGroupStores",
-                    "createdat": "2024-09-10T08:31:55.304806",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.LocationGroupStores",
+                    "createdat": "2024-09-12T10:24:56.195984",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:55.304806",
+                    "modifiedat": "2024-09-12T10:24:56.195984",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -737,7 +737,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.LocationGroupStores",
+                            "value": "GeneralTransitFeedStatic.LocationGroupStores",
                             "description": "Event type"
                         },
                         "source": {
@@ -755,15 +755,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Networks": {
-                    "id": "GeneralTransitFeed.Static.Networks",
+                "GeneralTransitFeedStatic.Networks": {
+                    "id": "GeneralTransitFeedStatic.Networks",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Networks",
-                    "createdat": "2024-09-10T08:31:59.038133",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Networks",
+                    "createdat": "2024-09-12T10:24:59.478502",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:31:59.038133",
+                    "modifiedat": "2024-09-12T10:24:59.478502",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -776,7 +776,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Networks",
+                            "value": "GeneralTransitFeedStatic.Networks",
                             "description": "Event type"
                         },
                         "source": {
@@ -794,15 +794,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Pathways": {
-                    "id": "GeneralTransitFeed.Static.Pathways",
+                "GeneralTransitFeedStatic.Pathways": {
+                    "id": "GeneralTransitFeedStatic.Pathways",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Pathways",
-                    "createdat": "2024-09-10T08:32:02.616363",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Pathways",
+                    "createdat": "2024-09-12T10:25:02.650224",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:02.616363",
+                    "modifiedat": "2024-09-12T10:25:02.650224",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -815,7 +815,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Pathways",
+                            "value": "GeneralTransitFeedStatic.Pathways",
                             "description": "Event type"
                         },
                         "source": {
@@ -833,15 +833,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.RouteNetworks": {
-                    "id": "GeneralTransitFeed.Static.RouteNetworks",
+                "GeneralTransitFeedStatic.RouteNetworks": {
+                    "id": "GeneralTransitFeedStatic.RouteNetworks",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.RouteNetworks",
-                    "createdat": "2024-09-10T08:32:06.166747",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.RouteNetworks",
+                    "createdat": "2024-09-12T10:25:06.368446",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:06.166747",
+                    "modifiedat": "2024-09-12T10:25:06.368446",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -854,7 +854,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.RouteNetworks",
+                            "value": "GeneralTransitFeedStatic.RouteNetworks",
                             "description": "Event type"
                         },
                         "source": {
@@ -872,15 +872,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Routes": {
-                    "id": "GeneralTransitFeed.Static.Routes",
+                "GeneralTransitFeedStatic.Routes": {
+                    "id": "GeneralTransitFeedStatic.Routes",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Routes",
-                    "createdat": "2024-09-10T08:32:09.714525",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Routes",
+                    "createdat": "2024-09-12T10:25:09.651640",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:09.714525",
+                    "modifiedat": "2024-09-12T10:25:09.651640",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -893,7 +893,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Routes",
+                            "value": "GeneralTransitFeedStatic.Routes",
                             "description": "Event type"
                         },
                         "source": {
@@ -911,15 +911,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Shapes": {
-                    "id": "GeneralTransitFeed.Static.Shapes",
+                "GeneralTransitFeedStatic.Shapes": {
+                    "id": "GeneralTransitFeedStatic.Shapes",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Shapes",
-                    "createdat": "2024-09-10T08:32:13.324874",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Shapes",
+                    "createdat": "2024-09-12T10:25:12.854513",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:13.324874",
+                    "modifiedat": "2024-09-12T10:25:12.854513",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -932,7 +932,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Shapes",
+                            "value": "GeneralTransitFeedStatic.Shapes",
                             "description": "Event type"
                         },
                         "source": {
@@ -950,15 +950,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.StopAreas": {
-                    "id": "GeneralTransitFeed.Static.StopAreas",
+                "GeneralTransitFeedStatic.StopAreas": {
+                    "id": "GeneralTransitFeedStatic.StopAreas",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.StopAreas",
-                    "createdat": "2024-09-10T08:32:16.954853",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.StopAreas",
+                    "createdat": "2024-09-12T10:25:16.075385",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:16.954853",
+                    "modifiedat": "2024-09-12T10:25:16.075385",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -971,7 +971,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.StopAreas",
+                            "value": "GeneralTransitFeedStatic.StopAreas",
                             "description": "Event type"
                         },
                         "source": {
@@ -989,15 +989,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Stops": {
-                    "id": "GeneralTransitFeed.Static.Stops",
+                "GeneralTransitFeedStatic.Stops": {
+                    "id": "GeneralTransitFeedStatic.Stops",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Stops",
-                    "createdat": "2024-09-10T08:32:20.538851",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Stops",
+                    "createdat": "2024-09-12T10:25:19.300766",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:20.538851",
+                    "modifiedat": "2024-09-12T10:25:19.300766",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1010,7 +1010,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Stops",
+                            "value": "GeneralTransitFeedStatic.Stops",
                             "description": "Event type"
                         },
                         "source": {
@@ -1028,15 +1028,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.StopTimes": {
-                    "id": "GeneralTransitFeed.Static.StopTimes",
+                "GeneralTransitFeedStatic.StopTimes": {
+                    "id": "GeneralTransitFeedStatic.StopTimes",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.StopTimes",
-                    "createdat": "2024-09-10T08:32:24.346561",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.StopTimes",
+                    "createdat": "2024-09-12T10:25:22.495635",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:24.346561",
+                    "modifiedat": "2024-09-12T10:25:22.495635",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1049,7 +1049,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.StopTimes",
+                            "value": "GeneralTransitFeedStatic.StopTimes",
                             "description": "Event type"
                         },
                         "source": {
@@ -1067,15 +1067,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Timeframes": {
-                    "id": "GeneralTransitFeed.Static.Timeframes",
+                "GeneralTransitFeedStatic.Timeframes": {
+                    "id": "GeneralTransitFeedStatic.Timeframes",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Timeframes",
-                    "createdat": "2024-09-10T08:32:27.923908",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Timeframes",
+                    "createdat": "2024-09-12T10:25:25.745286",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:27.923908",
+                    "modifiedat": "2024-09-12T10:25:25.745286",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1088,7 +1088,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Timeframes",
+                            "value": "GeneralTransitFeedStatic.Timeframes",
                             "description": "Event type"
                         },
                         "source": {
@@ -1106,15 +1106,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Transfers": {
-                    "id": "GeneralTransitFeed.Static.Transfers",
+                "GeneralTransitFeedStatic.Transfers": {
+                    "id": "GeneralTransitFeedStatic.Transfers",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Transfers",
-                    "createdat": "2024-09-10T08:32:31.503389",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Transfers",
+                    "createdat": "2024-09-12T10:25:28.979471",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:31.503389",
+                    "modifiedat": "2024-09-12T10:25:28.979471",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1127,7 +1127,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Transfers",
+                            "value": "GeneralTransitFeedStatic.Transfers",
                             "description": "Event type"
                         },
                         "source": {
@@ -1145,15 +1145,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Translations": {
-                    "id": "GeneralTransitFeed.Static.Translations",
+                "GeneralTransitFeedStatic.Translations": {
+                    "id": "GeneralTransitFeedStatic.Translations",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Translations",
-                    "createdat": "2024-09-10T08:32:35.161621",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Translations",
+                    "createdat": "2024-09-12T10:25:32.173488",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:35.161621",
+                    "modifiedat": "2024-09-12T10:25:32.173488",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1166,7 +1166,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Translations",
+                            "value": "GeneralTransitFeedStatic.Translations",
                             "description": "Event type"
                         },
                         "source": {
@@ -1184,15 +1184,15 @@
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Trips": {
-                    "id": "GeneralTransitFeed.Static.Trips",
+                "GeneralTransitFeedStatic.Trips": {
+                    "id": "GeneralTransitFeedStatic.Trips",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/GeneralTransitFeed.Static/schemas/GeneralTransitFeed.Static.Trips",
-                    "createdat": "2024-09-10T08:32:38.715960",
+                    "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Trips",
+                    "createdat": "2024-09-12T10:25:35.386511",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T08:32:38.715960",
+                    "modifiedat": "2024-09-12T10:25:35.386511",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1205,7 +1205,7 @@
                             "name": "type",
                             "type": "string",
                             "required": true,
-                            "value": "GeneralTransitFeed.Static.Trips",
+                            "value": "GeneralTransitFeedStatic.Trips",
                             "description": "Event type"
                         },
                         "source": {
@@ -1224,17 +1224,17 @@
                     }
                 }
             },
-            "createdat": "2024-09-10T08:31:02.665363",
+            "createdat": "2024-09-12T10:24:08.104373",
             "epoch": 0,
-            "modifiedat": "2024-09-10T08:31:02.665363"
+            "modifiedat": "2024-09-12T10:24:08.104373"
         }
     },
     "schemagroups": {
-        "GeneralTransitFeed.RealTime": {
-            "id": "GeneralTransitFeed.RealTime",
+        "GeneralTransitFeedRealTime": {
+            "id": "GeneralTransitFeedRealTime",
             "schemas": {
-                "GeneralTransitFeed.RealTime.VehiclePosition": {
-                    "id": "GeneralTransitFeed.RealTime.VehiclePosition",
+                "GeneralTransitFeedRealTime.Vehicle.VehiclePosition": {
+                    "id": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -1243,7 +1243,7 @@
                             "schema": {
                                 "type": "record",
                                 "name": "VehiclePosition",
-                                "namespace": "GeneralTransitFeed.VehiclePosition",
+                                "namespace": "GeneralTransitFeedRealTime.Vehicle",
                                 "fields": [
                                     {
                                         "name": "trip",
@@ -1252,7 +1252,7 @@
                                             {
                                                 "type": "record",
                                                 "name": "TripDescriptor",
-                                                "namespace": "GeneralTransitFeed.VehiclePosition",
+                                                "namespace": "GeneralTransitFeedRealTime.Vehicle",
                                                 "fields": [
                                                     {
                                                         "name": "trip_id",
@@ -1301,7 +1301,7 @@
                                                             {
                                                                 "name": "ScheduleRelationship",
                                                                 "type": "enum",
-                                                                "namespace": "GeneralTransitFeed.VehiclePosition.TripDescriptor_types",
+                                                                "namespace": "GeneralTransitFeedRealTime.Vehicle.TripDescriptor_types",
                                                                 "symbols": [
                                                                     "SCHEDULED",
                                                                     "ADDED",
@@ -1325,7 +1325,7 @@
                                             {
                                                 "type": "record",
                                                 "name": "VehicleDescriptor",
-                                                "namespace": "GeneralTransitFeed.VehiclePosition",
+                                                "namespace": "GeneralTransitFeedRealTime.Vehicle",
                                                 "fields": [
                                                     {
                                                         "name": "id",
@@ -1364,7 +1364,7 @@
                                             {
                                                 "type": "record",
                                                 "name": "Position",
-                                                "namespace": "GeneralTransitFeed.VehiclePosition",
+                                                "namespace": "GeneralTransitFeedRealTime.Vehicle",
                                                 "fields": [
                                                     {
                                                         "name": "latitude",
@@ -1429,7 +1429,7 @@
                                             {
                                                 "name": "VehicleStopStatus",
                                                 "type": "enum",
-                                                "namespace": "GeneralTransitFeed.VehiclePosition.VehiclePosition_types",
+                                                "namespace": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition_types",
                                                 "symbols": [
                                                     "INCOMING_AT",
                                                     "STOPPED_AT",
@@ -1454,7 +1454,7 @@
                                             {
                                                 "name": "CongestionLevel",
                                                 "type": "enum",
-                                                "namespace": "GeneralTransitFeed.VehiclePosition.VehiclePosition_types",
+                                                "namespace": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition_types",
                                                 "symbols": [
                                                     "UNKNOWN_CONGESTION_LEVEL",
                                                     "RUNNING_SMOOTHLY",
@@ -1473,7 +1473,7 @@
                                             {
                                                 "name": "OccupancyStatus",
                                                 "type": "enum",
-                                                "namespace": "GeneralTransitFeed.VehiclePosition.VehiclePosition_types",
+                                                "namespace": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition_types",
                                                 "symbols": [
                                                     "EMPTY",
                                                     "MANY_SEATS_AVAILABLE",
@@ -1490,14 +1490,14 @@
                                 ],
                                 "doc": "Realtime positioning information for a given vehicle."
                             },
-                            "createdat": "2024-09-10T08:30:51.241531",
+                            "createdat": "2024-09-12T10:23:57.805345",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:30:51.241531"
+                            "modifiedat": "2024-09-12T10:23:57.805345"
                         }
                     }
                 },
-                "GeneralTransitFeed.RealTime.TripUpdate": {
-                    "id": "GeneralTransitFeed.RealTime.TripUpdate",
+                "GeneralTransitFeedRealTime.Trip.TripUpdate": {
+                    "id": "GeneralTransitFeedRealTime.Trip.TripUpdate",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -1506,14 +1506,14 @@
                             "schema": {
                                 "type": "record",
                                 "name": "TripUpdate",
-                                "namespace": "GeneralTransitFeed.TripUpdate",
+                                "namespace": "GeneralTransitFeedRealTime.Trip",
                                 "fields": [
                                     {
                                         "name": "trip",
                                         "type": {
                                             "type": "record",
                                             "name": "TripDescriptor",
-                                            "namespace": "GeneralTransitFeed.TripUpdate",
+                                            "namespace": "GeneralTransitFeedRealTime.Trip",
                                             "fields": [
                                                 {
                                                     "name": "trip_id",
@@ -1562,7 +1562,7 @@
                                                         {
                                                             "name": "ScheduleRelationship",
                                                             "type": "enum",
-                                                            "namespace": "GeneralTransitFeed.TripUpdate.TripDescriptor_types",
+                                                            "namespace": "GeneralTransitFeedRealTime.Trip.TripDescriptor_types",
                                                             "symbols": [
                                                                 "SCHEDULED",
                                                                 "ADDED",
@@ -1585,7 +1585,7 @@
                                             {
                                                 "type": "record",
                                                 "name": "VehicleDescriptor",
-                                                "namespace": "GeneralTransitFeed.TripUpdate",
+                                                "namespace": "GeneralTransitFeedRealTime.Trip",
                                                 "fields": [
                                                     {
                                                         "name": "id",
@@ -1624,7 +1624,7 @@
                                             "items": {
                                                 "type": "record",
                                                 "name": "StopTimeUpdate",
-                                                "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types",
+                                                "namespace": "GeneralTransitFeedRealTime.Trip.TripUpdate_types",
                                                 "fields": [
                                                     {
                                                         "name": "stop_sequence",
@@ -1649,7 +1649,7 @@
                                                             {
                                                                 "type": "record",
                                                                 "name": "StopTimeEvent",
-                                                                "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types",
+                                                                "namespace": "GeneralTransitFeedRealTime.Trip.TripUpdate_types",
                                                                 "fields": [
                                                                     {
                                                                         "name": "delay",
@@ -1684,7 +1684,7 @@
                                                         "name": "departure",
                                                         "type": [
                                                             "null",
-                                                            "GeneralTransitFeed.TripUpdate.TripUpdate_types.StopTimeEvent"
+                                                            "GeneralTransitFeedRealTime.Trip.TripUpdate_types.StopTimeEvent"
                                                         ]
                                                     },
                                                     {
@@ -1694,7 +1694,7 @@
                                                             {
                                                                 "name": "ScheduleRelationship",
                                                                 "type": "enum",
-                                                                "namespace": "GeneralTransitFeed.TripUpdate.TripUpdate_types.StopTimeUpdate_types",
+                                                                "namespace": "GeneralTransitFeedRealTime.Trip.TripUpdate_types.StopTimeUpdate_types",
                                                                 "symbols": [
                                                                     "SCHEDULED",
                                                                     "SKIPPED",
@@ -1729,14 +1729,14 @@
                                 ],
                                 "doc": "Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful."
                             },
-                            "createdat": "2024-09-10T08:30:54.799587",
+                            "createdat": "2024-09-12T10:24:01.044307",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:30:54.799587"
+                            "modifiedat": "2024-09-12T10:24:01.044307"
                         }
                     }
                 },
-                "GeneralTransitFeed.RealTime.Alert": {
-                    "id": "GeneralTransitFeed.RealTime.Alert",
+                "GeneralTransitFeedRealTime.Alert.Alert": {
+                    "id": "GeneralTransitFeedRealTime.Alert.Alert",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -1745,7 +1745,7 @@
                             "schema": {
                                 "type": "record",
                                 "name": "Alert",
-                                "namespace": "GeneralTransitFeed.Alert",
+                                "namespace": "GeneralTransitFeedRealTime.Alert",
                                 "fields": [
                                     {
                                         "name": "active_period",
@@ -1754,7 +1754,7 @@
                                             "items": {
                                                 "type": "record",
                                                 "name": "TimeRange",
-                                                "namespace": "GeneralTransitFeed.Alert",
+                                                "namespace": "GeneralTransitFeedRealTime.Alert",
                                                 "fields": [
                                                     {
                                                         "name": "start",
@@ -1785,7 +1785,7 @@
                                             "items": {
                                                 "type": "record",
                                                 "name": "EntitySelector",
-                                                "namespace": "GeneralTransitFeed.Alert",
+                                                "namespace": "GeneralTransitFeedRealTime.Alert",
                                                 "fields": [
                                                     {
                                                         "name": "agency_id",
@@ -1817,7 +1817,7 @@
                                                             {
                                                                 "type": "record",
                                                                 "name": "TripDescriptor",
-                                                                "namespace": "GeneralTransitFeed.Alert",
+                                                                "namespace": "GeneralTransitFeedRealTime.Alert",
                                                                 "fields": [
                                                                     {
                                                                         "name": "trip_id",
@@ -1866,7 +1866,7 @@
                                                                             {
                                                                                 "name": "ScheduleRelationship",
                                                                                 "type": "enum",
-                                                                                "namespace": "GeneralTransitFeed.Alert.TripDescriptor_types",
+                                                                                "namespace": "GeneralTransitFeedRealTime.Alert.TripDescriptor_types",
                                                                                 "symbols": [
                                                                                     "SCHEDULED",
                                                                                     "ADDED",
@@ -1902,7 +1902,7 @@
                                             {
                                                 "name": "Cause",
                                                 "type": "enum",
-                                                "namespace": "GeneralTransitFeed.Alert.Alert_types",
+                                                "namespace": "GeneralTransitFeedRealTime.Alert.Alert_types",
                                                 "symbols": [
                                                     "UNKNOWN_CAUSE",
                                                     "OTHER_CAUSE",
@@ -1928,7 +1928,7 @@
                                             {
                                                 "name": "Effect",
                                                 "type": "enum",
-                                                "namespace": "GeneralTransitFeed.Alert.Alert_types",
+                                                "namespace": "GeneralTransitFeedRealTime.Alert.Alert_types",
                                                 "symbols": [
                                                     "NO_SERVICE",
                                                     "REDUCED_SERVICE",
@@ -1951,7 +1951,7 @@
                                             {
                                                 "type": "record",
                                                 "name": "TranslatedString",
-                                                "namespace": "GeneralTransitFeed.Alert",
+                                                "namespace": "GeneralTransitFeedRealTime.Alert",
                                                 "fields": [
                                                     {
                                                         "name": "translation",
@@ -1960,7 +1960,7 @@
                                                             "items": {
                                                                 "type": "record",
                                                                 "name": "Translation",
-                                                                "namespace": "GeneralTransitFeed.Alert.TranslatedString_types",
+                                                                "namespace": "GeneralTransitFeedRealTime.Alert.TranslatedString_types",
                                                                 "fields": [
                                                                     {
                                                                         "name": "text",
@@ -1990,7 +1990,7 @@
                                         "name": "header_text",
                                         "type": [
                                             "null",
-                                            "GeneralTransitFeed.Alert.TranslatedString"
+                                            "GeneralTransitFeedRealTime.Alert.TranslatedString"
                                         ],
                                         "doc": "Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the"
                                     },
@@ -1998,29 +1998,29 @@
                                         "name": "description_text",
                                         "type": [
                                             "null",
-                                            "GeneralTransitFeed.Alert.TranslatedString"
+                                            "GeneralTransitFeedRealTime.Alert.TranslatedString"
                                         ],
                                         "doc": "description should add to the information of the header."
                                     }
                                 ],
                                 "doc": "An alert, indicating some sort of incident in the public transit network."
                             },
-                            "createdat": "2024-09-10T08:30:58.291769",
+                            "createdat": "2024-09-12T10:24:04.168425",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:30:58.291769"
+                            "modifiedat": "2024-09-12T10:24:04.168425"
                         }
                     }
                 }
             },
-            "createdat": "2024-09-10T08:30:51.240026",
+            "createdat": "2024-09-12T10:23:57.804345",
             "epoch": 0,
-            "modifiedat": "2024-09-10T08:30:51.240026"
+            "modifiedat": "2024-09-12T10:23:57.804345"
         },
-        "GeneralTransitFeed.Static": {
-            "id": "GeneralTransitFeed.Static",
+        "GeneralTransitFeedStatic": {
+            "id": "GeneralTransitFeedStatic",
             "schemas": {
-                "GeneralTransitFeed.Static.Agency": {
-                    "id": "GeneralTransitFeed.Static.Agency",
+                "GeneralTransitFeedStatic.Agency": {
+                    "id": "GeneralTransitFeedStatic.Agency",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2090,14 +2090,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:01.805833",
+                            "createdat": "2024-09-12T10:24:07.346369",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:01.805833"
+                            "modifiedat": "2024-09-12T10:24:07.346369"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Areas": {
-                    "id": "GeneralTransitFeed.Static.Areas",
+                "GeneralTransitFeedStatic.Areas": {
+                    "id": "GeneralTransitFeedStatic.Areas",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2139,14 +2139,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:05.295033",
+                            "createdat": "2024-09-12T10:24:10.510780",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:05.295033"
+                            "modifiedat": "2024-09-12T10:24:10.510780"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Attributions": {
-                    "id": "GeneralTransitFeed.Static.Attributions",
+                "GeneralTransitFeedStatic.Attributions": {
+                    "id": "GeneralTransitFeedStatic.Attributions",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2255,9 +2255,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:08.818338",
+                            "createdat": "2024-09-12T10:24:13.670503",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:08.818338"
+                            "modifiedat": "2024-09-12T10:24:13.670503"
                         }
                     }
                 },
@@ -2304,14 +2304,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:12.294782",
+                            "createdat": "2024-09-12T10:24:16.857147",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:12.294782"
+                            "modifiedat": "2024-09-12T10:24:16.857147"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareAttributes": {
-                    "id": "GeneralTransitFeed.Static.FareAttributes",
+                "GeneralTransitFeedStatic.FareAttributes": {
+                    "id": "GeneralTransitFeedStatic.FareAttributes",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2372,14 +2372,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:15.822949",
+                            "createdat": "2024-09-12T10:24:20.056789",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:15.822949"
+                            "modifiedat": "2024-09-12T10:24:20.056789"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareLegRules": {
-                    "id": "GeneralTransitFeed.Static.FareLegRules",
+                "GeneralTransitFeedStatic.FareLegRules": {
+                    "id": "GeneralTransitFeedStatic.FareLegRules",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2439,14 +2439,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:19.332052",
+                            "createdat": "2024-09-12T10:24:23.233465",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:19.332052"
+                            "modifiedat": "2024-09-12T10:24:23.233465"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareMedia": {
-                    "id": "GeneralTransitFeed.Static.FareMedia",
+                "GeneralTransitFeedStatic.FareMedia": {
+                    "id": "GeneralTransitFeedStatic.FareMedia",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2488,14 +2488,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:22.844245",
+                            "createdat": "2024-09-12T10:24:26.406832",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:22.844245"
+                            "modifiedat": "2024-09-12T10:24:26.406832"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareProducts": {
-                    "id": "GeneralTransitFeed.Static.FareProducts",
+                "GeneralTransitFeedStatic.FareProducts": {
+                    "id": "GeneralTransitFeedStatic.FareProducts",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2537,14 +2537,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:26.305645",
+                            "createdat": "2024-09-12T10:24:29.615502",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:26.305645"
+                            "modifiedat": "2024-09-12T10:24:29.615502"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareRules": {
-                    "id": "GeneralTransitFeed.Static.FareRules",
+                "GeneralTransitFeedStatic.FareRules": {
+                    "id": "GeneralTransitFeedStatic.FareRules",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2599,14 +2599,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:29.758424",
+                            "createdat": "2024-09-12T10:24:32.915374",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:29.758424"
+                            "modifiedat": "2024-09-12T10:24:32.915374"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FareTransferRules": {
-                    "id": "GeneralTransitFeed.Static.FareTransferRules",
+                "GeneralTransitFeedStatic.FareTransferRules": {
+                    "id": "GeneralTransitFeedStatic.FareTransferRules",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2675,14 +2675,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:33.236424",
+                            "createdat": "2024-09-12T10:24:36.133858",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:33.236424"
+                            "modifiedat": "2024-09-12T10:24:36.133858"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.FeedInfo": {
-                    "id": "GeneralTransitFeed.Static.FeedInfo",
+                "GeneralTransitFeedStatic.FeedInfo": {
+                    "id": "GeneralTransitFeedStatic.FeedInfo",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2765,14 +2765,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:36.764546",
+                            "createdat": "2024-09-12T10:24:39.337024",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:36.764546"
+                            "modifiedat": "2024-09-12T10:24:39.337024"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Frequencies": {
-                    "id": "GeneralTransitFeed.Static.Frequencies",
+                "GeneralTransitFeedStatic.Frequencies": {
+                    "id": "GeneralTransitFeedStatic.Frequencies",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2815,14 +2815,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:40.295988",
+                            "createdat": "2024-09-12T10:24:42.522233",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:40.295988"
+                            "modifiedat": "2024-09-12T10:24:42.522233"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Levels": {
-                    "id": "GeneralTransitFeed.Static.Levels",
+                "GeneralTransitFeedStatic.Levels": {
+                    "id": "GeneralTransitFeedStatic.Levels",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2855,14 +2855,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:43.837334",
+                            "createdat": "2024-09-12T10:24:45.711117",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:43.837334"
+                            "modifiedat": "2024-09-12T10:24:45.711117"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.LocationGeoJson": {
-                    "id": "GeneralTransitFeed.Static.LocationGeoJson",
+                "GeneralTransitFeedStatic.LocationGeoJson": {
+                    "id": "GeneralTransitFeedStatic.LocationGeoJson",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2891,14 +2891,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:47.379553",
+                            "createdat": "2024-09-12T10:24:48.914499",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:47.379553"
+                            "modifiedat": "2024-09-12T10:24:48.914499"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.LocationGroups": {
-                    "id": "GeneralTransitFeed.Static.LocationGroups",
+                "GeneralTransitFeedStatic.LocationGroups": {
+                    "id": "GeneralTransitFeedStatic.LocationGroups",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2940,14 +2940,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:50.892186",
+                            "createdat": "2024-09-12T10:24:52.136346",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:50.892186"
+                            "modifiedat": "2024-09-12T10:24:52.136346"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.LocationGroupStores": {
-                    "id": "GeneralTransitFeed.Static.LocationGroupStores",
+                "GeneralTransitFeedStatic.LocationGroupStores": {
+                    "id": "GeneralTransitFeedStatic.LocationGroupStores",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -2976,14 +2976,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:54.429979",
+                            "createdat": "2024-09-12T10:24:55.401115",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:54.429979"
+                            "modifiedat": "2024-09-12T10:24:55.401115"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Networks": {
-                    "id": "GeneralTransitFeed.Static.Networks",
+                "GeneralTransitFeedStatic.Networks": {
+                    "id": "GeneralTransitFeedStatic.Networks",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3025,14 +3025,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:31:58.149099",
+                            "createdat": "2024-09-12T10:24:58.653098",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:31:58.149099"
+                            "modifiedat": "2024-09-12T10:24:58.653098"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Pathways": {
-                    "id": "GeneralTransitFeed.Static.Pathways",
+                "GeneralTransitFeedStatic.Pathways": {
+                    "id": "GeneralTransitFeedStatic.Pathways",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3134,14 +3134,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:01.734993",
+                            "createdat": "2024-09-12T10:25:01.899773",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:01.734993"
+                            "modifiedat": "2024-09-12T10:25:01.899773"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.RouteNetworks": {
-                    "id": "GeneralTransitFeed.Static.RouteNetworks",
+                "GeneralTransitFeedStatic.RouteNetworks": {
+                    "id": "GeneralTransitFeedStatic.RouteNetworks",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3170,14 +3170,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:05.290538",
+                            "createdat": "2024-09-12T10:25:05.590977",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:05.290538"
+                            "modifiedat": "2024-09-12T10:25:05.590977"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Routes": {
-                    "id": "GeneralTransitFeed.Static.Routes",
+                "GeneralTransitFeedStatic.Routes": {
+                    "id": "GeneralTransitFeedStatic.Routes",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3335,14 +3335,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:08.826284",
+                            "createdat": "2024-09-12T10:25:08.808819",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:08.826284"
+                            "modifiedat": "2024-09-12T10:25:08.808819"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Shapes": {
-                    "id": "GeneralTransitFeed.Static.Shapes",
+                "GeneralTransitFeedStatic.Shapes": {
+                    "id": "GeneralTransitFeedStatic.Shapes",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3385,14 +3385,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:12.405119",
+                            "createdat": "2024-09-12T10:25:12.086800",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:12.405119"
+                            "modifiedat": "2024-09-12T10:25:12.086800"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.StopAreas": {
-                    "id": "GeneralTransitFeed.Static.StopAreas",
+                "GeneralTransitFeedStatic.StopAreas": {
+                    "id": "GeneralTransitFeedStatic.StopAreas",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3421,14 +3421,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:16.029148",
+                            "createdat": "2024-09-12T10:25:15.308658",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:16.029148"
+                            "modifiedat": "2024-09-12T10:25:15.308658"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Stops": {
-                    "id": "GeneralTransitFeed.Static.Stops",
+                "GeneralTransitFeedStatic.Stops": {
+                    "id": "GeneralTransitFeedStatic.Stops",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3587,14 +3587,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:19.645148",
+                            "createdat": "2024-09-12T10:25:18.492340",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:19.645148"
+                            "modifiedat": "2024-09-12T10:25:18.492340"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.StopTimes": {
-                    "id": "GeneralTransitFeed.Static.StopTimes",
+                "GeneralTransitFeedStatic.StopTimes": {
+                    "id": "GeneralTransitFeedStatic.StopTimes",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3749,14 +3749,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:23.417151",
+                            "createdat": "2024-09-12T10:25:21.696808",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:23.417151"
+                            "modifiedat": "2024-09-12T10:25:21.696808"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Timeframes": {
-                    "id": "GeneralTransitFeed.Static.Timeframes",
+                "GeneralTransitFeedStatic.Timeframes": {
+                    "id": "GeneralTransitFeedStatic.Timeframes",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3894,14 +3894,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:27.061649",
+                            "createdat": "2024-09-12T10:25:24.932047",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:27.061649"
+                            "modifiedat": "2024-09-12T10:25:24.932047"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Transfers": {
-                    "id": "GeneralTransitFeed.Static.Transfers",
+                "GeneralTransitFeedStatic.Transfers": {
+                    "id": "GeneralTransitFeedStatic.Transfers",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3939,14 +3939,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:30.619350",
+                            "createdat": "2024-09-12T10:25:28.183196",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:30.619350"
+                            "modifiedat": "2024-09-12T10:25:28.183196"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Translations": {
-                    "id": "GeneralTransitFeed.Static.Translations",
+                "GeneralTransitFeedStatic.Translations": {
+                    "id": "GeneralTransitFeedStatic.Translations",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -3980,14 +3980,14 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:34.285516",
+                            "createdat": "2024-09-12T10:25:31.383232",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:34.285516"
+                            "modifiedat": "2024-09-12T10:25:31.383232"
                         }
                     }
                 },
-                "GeneralTransitFeed.Static.Trips": {
-                    "id": "GeneralTransitFeed.Static.Trips",
+                "GeneralTransitFeedStatic.Trips": {
+                    "id": "GeneralTransitFeedStatic.Trips",
                     "format": "Avro",
                     "versions": {
                         "1": {
@@ -4196,16 +4196,16 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T08:32:37.837771",
+                            "createdat": "2024-09-12T10:25:34.603026",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T08:32:37.837771"
+                            "modifiedat": "2024-09-12T10:25:34.603026"
                         }
                     }
                 }
             },
-            "createdat": "2024-09-10T08:31:01.793616",
+            "createdat": "2024-09-12T10:24:07.334126",
             "epoch": 0,
-            "modifiedat": "2024-09-10T08:31:01.793616"
+            "modifiedat": "2024-09-12T10:24:07.334126"
         }
     }
 }

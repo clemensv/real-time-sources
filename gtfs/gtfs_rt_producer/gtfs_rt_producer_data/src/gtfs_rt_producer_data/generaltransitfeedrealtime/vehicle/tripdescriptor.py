@@ -8,7 +8,7 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.tripdescriptor_types.schedulerelationship import ScheduleRelationship
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor_types.schedulerelationship import ScheduleRelationship
 
 
 @dataclasses_json.dataclass_json

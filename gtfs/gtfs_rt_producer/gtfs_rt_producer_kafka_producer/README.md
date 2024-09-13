@@ -27,7 +27,7 @@ solution for event-driven applications.
 
 ### GeneralTransitFeedRealTimeEventDispatcher
 
-`GeneralTransitFeedRealTimeEventDispatcher` handles events for the GeneralTransitFeed.RealTime message group.
+`GeneralTransitFeedRealTimeEventDispatcher` handles events for the GeneralTransitFeedRealTime message group.
 
 #### Methods:
 
@@ -68,26 +68,26 @@ Args:
 The GeneralTransitFeedRealTimeEventDispatcher defines the following event handler hooks.
 
 
-##### `general_transit_feed_real_time_vehicle_position_async`
+##### `general_transit_feed_real_time_vehicle_vehicle_position_async`
 
 ```python
-general_transit_feed_real_time_vehicle_position_async:  Callable[[ConsumerRecord, CloudEvent, VehiclePosition],
+general_transit_feed_real_time_vehicle_vehicle_position_async:  Callable[[ConsumerRecord, CloudEvent, VehiclePosition],
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.RealTime.VehiclePosition`:
+Asynchronous handler hook for `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
 - `record`: The Kafka record.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `gtfs_rt_producer_data.generaltransitfeed.vehicleposition.VehiclePosition`.
+- `data`: The event data of type `gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.VehiclePosition`.
 
 Example:
 
 ```python
-async def general_transit_feed_real_time_vehicle_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-VehiclePosition) -> None:
+async def general_transit_feed_real_time_vehicle_vehicle_position_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: VehiclePosition) -> None:
     # Process the event data
     await some_processing_function(record, cloud_event, data)
 ```
@@ -96,29 +96,30 @@ The handler function is then assigned to the event dispatcher for the message gr
 for calling the appropriate handler function when a message is received. Example:
 
 ```python
-general_transit_feed_real_time_dispatcher.general_transit_feed_real_time_vehicle_position_async =
-general_transit_feed_real_time_vehicle_position_event
+general_transit_feed_real_time_dispatcher.general_transit_feed_real_time_vehicle_vehicle_position_async =
+general_transit_feed_real_time_vehicle_vehicle_position_event
 ```
 
 
-##### `general_transit_feed_real_time_trip_update_async`
+##### `general_transit_feed_real_time_trip_trip_update_async`
 
 ```python
-general_transit_feed_real_time_trip_update_async:  Callable[[ConsumerRecord, CloudEvent, TripUpdate], Awaitable[None]]
+general_transit_feed_real_time_trip_trip_update_async:  Callable[[ConsumerRecord, CloudEvent, TripUpdate],
+Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.RealTime.TripUpdate`:
+Asynchronous handler hook for `GeneralTransitFeedRealTime.Trip.TripUpdate`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
 - `record`: The Kafka record.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `gtfs_rt_producer_data.generaltransitfeed.tripupdate.TripUpdate`.
+- `data`: The event data of type `gtfs_rt_producer_data.generaltransitfeedrealtime.trip.TripUpdate`.
 
 Example:
 
 ```python
-async def general_transit_feed_real_time_trip_update_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+async def general_transit_feed_real_time_trip_trip_update_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
 TripUpdate) -> None:
     # Process the event data
     await some_processing_function(record, cloud_event, data)
@@ -128,30 +129,30 @@ The handler function is then assigned to the event dispatcher for the message gr
 for calling the appropriate handler function when a message is received. Example:
 
 ```python
-general_transit_feed_real_time_dispatcher.general_transit_feed_real_time_trip_update_async =
-general_transit_feed_real_time_trip_update_event
+general_transit_feed_real_time_dispatcher.general_transit_feed_real_time_trip_trip_update_async =
+general_transit_feed_real_time_trip_trip_update_event
 ```
 
 
-##### `general_transit_feed_real_time_alert_async`
+##### `general_transit_feed_real_time_alert_alert_async`
 
 ```python
-general_transit_feed_real_time_alert_async:  Callable[[ConsumerRecord, CloudEvent, Alert], Awaitable[None]]
+general_transit_feed_real_time_alert_alert_async:  Callable[[ConsumerRecord, CloudEvent, Alert], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.RealTime.Alert`:
+Asynchronous handler hook for `GeneralTransitFeedRealTime.Alert.Alert`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
 - `record`: The Kafka record.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `gtfs_rt_producer_data.generaltransitfeed.alert.Alert`.
+- `data`: The event data of type `gtfs_rt_producer_data.generaltransitfeedrealtime.alert.Alert`.
 
 Example:
 
 ```python
-async def general_transit_feed_real_time_alert_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Alert) ->
-None:
+async def general_transit_feed_real_time_alert_alert_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Alert)
+-> None:
     # Process the event data
     await some_processing_function(record, cloud_event, data)
 ```
@@ -160,8 +161,8 @@ The handler function is then assigned to the event dispatcher for the message gr
 for calling the appropriate handler function when a message is received. Example:
 
 ```python
-general_transit_feed_real_time_dispatcher.general_transit_feed_real_time_alert_async =
-general_transit_feed_real_time_alert_event
+general_transit_feed_real_time_dispatcher.general_transit_feed_real_time_alert_alert_async =
+general_transit_feed_real_time_alert_alert_event
 ```
 
 
@@ -169,7 +170,7 @@ general_transit_feed_real_time_alert_event
 
 ### GeneralTransitFeedStaticEventDispatcher
 
-`GeneralTransitFeedStaticEventDispatcher` handles events for the GeneralTransitFeed.Static message group.
+`GeneralTransitFeedStaticEventDispatcher` handles events for the GeneralTransitFeedStatic message group.
 
 #### Methods:
 
@@ -216,7 +217,7 @@ The GeneralTransitFeedStaticEventDispatcher defines the following event handler 
 general_transit_feed_static_agency_async:  Callable[[ConsumerRecord, CloudEvent, Agency], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Agency`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Agency`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -248,7 +249,7 @@ general_transit_feed_static_agency_event
 general_transit_feed_static_areas_async:  Callable[[ConsumerRecord, CloudEvent, Areas], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Areas`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Areas`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -278,7 +279,7 @@ general_transit_feed_static_dispatcher.general_transit_feed_static_areas_async =
 general_transit_feed_static_attributions_async:  Callable[[ConsumerRecord, CloudEvent, Attributions], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Attributions`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Attributions`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -343,7 +344,7 @@ general_transit_feed_static_fare_attributes_async:  Callable[[ConsumerRecord, Cl
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.FareAttributes`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.FareAttributes`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -375,7 +376,7 @@ general_transit_feed_static_fare_attributes_event
 general_transit_feed_static_fare_leg_rules_async:  Callable[[ConsumerRecord, CloudEvent, FareLegRules], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.FareLegRules`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.FareLegRules`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -407,7 +408,7 @@ general_transit_feed_static_fare_leg_rules_event
 general_transit_feed_static_fare_media_async:  Callable[[ConsumerRecord, CloudEvent, FareMedia], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.FareMedia`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.FareMedia`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -439,7 +440,7 @@ general_transit_feed_static_fare_media_event
 general_transit_feed_static_fare_products_async:  Callable[[ConsumerRecord, CloudEvent, FareProducts], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.FareProducts`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.FareProducts`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -471,7 +472,7 @@ general_transit_feed_static_fare_products_event
 general_transit_feed_static_fare_rules_async:  Callable[[ConsumerRecord, CloudEvent, FareRules], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.FareRules`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.FareRules`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -504,7 +505,7 @@ general_transit_feed_static_fare_transfer_rules_async:  Callable[[ConsumerRecord
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.FareTransferRules`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.FareTransferRules`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -536,7 +537,7 @@ general_transit_feed_static_fare_transfer_rules_event
 general_transit_feed_static_feed_info_async:  Callable[[ConsumerRecord, CloudEvent, FeedInfo], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.FeedInfo`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.FeedInfo`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -568,7 +569,7 @@ general_transit_feed_static_feed_info_event
 general_transit_feed_static_frequencies_async:  Callable[[ConsumerRecord, CloudEvent, Frequencies], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Frequencies`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Frequencies`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -600,7 +601,7 @@ general_transit_feed_static_frequencies_event
 general_transit_feed_static_levels_async:  Callable[[ConsumerRecord, CloudEvent, Levels], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Levels`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Levels`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -633,7 +634,7 @@ general_transit_feed_static_location_geo_json_async:  Callable[[ConsumerRecord, 
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.LocationGeoJson`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.LocationGeoJson`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -666,7 +667,7 @@ general_transit_feed_static_location_groups_async:  Callable[[ConsumerRecord, Cl
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.LocationGroups`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.LocationGroups`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -699,7 +700,7 @@ general_transit_feed_static_location_group_stores_async:  Callable[[ConsumerReco
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.LocationGroupStores`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.LocationGroupStores`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -731,7 +732,7 @@ general_transit_feed_static_location_group_stores_event
 general_transit_feed_static_networks_async:  Callable[[ConsumerRecord, CloudEvent, Networks], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Networks`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Networks`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -763,7 +764,7 @@ general_transit_feed_static_networks_event
 general_transit_feed_static_pathways_async:  Callable[[ConsumerRecord, CloudEvent, Pathways], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Pathways`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Pathways`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -796,7 +797,7 @@ general_transit_feed_static_route_networks_async:  Callable[[ConsumerRecord, Clo
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.RouteNetworks`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.RouteNetworks`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -828,7 +829,7 @@ general_transit_feed_static_route_networks_event
 general_transit_feed_static_routes_async:  Callable[[ConsumerRecord, CloudEvent, Routes], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Routes`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Routes`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -860,7 +861,7 @@ general_transit_feed_static_routes_event
 general_transit_feed_static_shapes_async:  Callable[[ConsumerRecord, CloudEvent, Shapes], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Shapes`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Shapes`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -892,7 +893,7 @@ general_transit_feed_static_shapes_event
 general_transit_feed_static_stop_areas_async:  Callable[[ConsumerRecord, CloudEvent, StopAreas], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.StopAreas`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.StopAreas`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -924,7 +925,7 @@ general_transit_feed_static_stop_areas_event
 general_transit_feed_static_stops_async:  Callable[[ConsumerRecord, CloudEvent, Stops], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Stops`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Stops`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -954,7 +955,7 @@ general_transit_feed_static_dispatcher.general_transit_feed_static_stops_async =
 general_transit_feed_static_stop_times_async:  Callable[[ConsumerRecord, CloudEvent, StopTimes], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.StopTimes`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.StopTimes`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -986,7 +987,7 @@ general_transit_feed_static_stop_times_event
 general_transit_feed_static_timeframes_async:  Callable[[ConsumerRecord, CloudEvent, Timeframes], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Timeframes`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Timeframes`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -1018,7 +1019,7 @@ general_transit_feed_static_timeframes_event
 general_transit_feed_static_transfers_async:  Callable[[ConsumerRecord, CloudEvent, Transfers], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Transfers`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Transfers`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -1050,7 +1051,7 @@ general_transit_feed_static_transfers_event
 general_transit_feed_static_translations_async:  Callable[[ConsumerRecord, CloudEvent, Translations], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Translations`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Translations`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -1082,7 +1083,7 @@ general_transit_feed_static_translations_event
 general_transit_feed_static_trips_async:  Callable[[ConsumerRecord, CloudEvent, Trips], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `GeneralTransitFeed.Static.Trips`:
+Asynchronous handler hook for `GeneralTransitFeedStatic.Trips`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 

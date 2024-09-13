@@ -1,4 +1,4 @@
-""" EntitySelector dataclass. """
+""" TranslatedString dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -8,38 +8,26 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeed.alert.tripdescriptor import TripDescriptor
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring_types.translation import Translation
 
 
 @dataclasses_json.dataclass_json
 @dataclasses.dataclass
-class EntitySelector:
+class TranslatedString:
     """
-    A selector for an entity in a GTFS feed.
+    An internationalized message containing per-language versions of a snippet of text or a URL. One of the strings from a message will be picked up. The resolution proceeds as follows: 1. If the UI language matches the language code of a translation,    the first matching translation is picked. 2. If a default UI language (e.g., English) matches the language code of a    translation, the first matching translation is picked. 3. If some translation has an unspecified language code, that translation is    picked.
     Attributes:
-        agency_id (typing.Optional[str]): The values of the fields should correspond to the appropriate fields in the GTFS feed. At least one specifier must be given. If several are given, then the matching has to apply to all the given specifiers.
-        route_id (typing.Optional[str]): 
-        route_type (typing.Optional[int]): corresponds to route_type in GTFS.
-        trip (typing.Optional[TripDescriptor]): 
-        stop_id (typing.Optional[str]): """
+        translation (typing.List[Translation]): At least one translation must be provided."""
     
-    agency_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency_id"))
-    route_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_id"))
-    route_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_type"))
-    trip: typing.Optional[TripDescriptor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip"))
-    stop_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_id"))    
+    translation: typing.List[Translation]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="translation"))    
     
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.agency_id=str(self.agency_id) if self.agency_id else None
-        self.route_id=str(self.route_id) if self.route_id else None
-        self.route_type=int(self.route_type) if self.route_type else None
-        self.trip=self.trip if isinstance(self.trip, TripDescriptor) else TripDescriptor.from_serializer_dict(self.trip) if self.trip else None if self.trip else None
-        self.stop_id=str(self.stop_id) if self.stop_id else None
+        self.translation=self.translation if isinstance(self.translation, list) else [v if isinstance(v, Translation) else Translation.from_serializer_dict(v) if v else None for v in self.translation] if self.translation else None
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'EntitySelector':
+    def from_serializer_dict(cls, data: dict) -> 'TranslatedString':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -104,7 +92,7 @@ class EntitySelector:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['EntitySelector']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['TranslatedString']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -138,7 +126,7 @@ class EntitySelector:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return EntitySelector.from_serializer_dict(_record)
+                return TranslatedString.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 
