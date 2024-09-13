@@ -1,5 +1,7 @@
 from enum import Enum
 
+_OccupancyStatus_members = []
+
 class OccupancyStatus(Enum):
     """
     The degree of passenger occupancy of the vehicle. This field is still experimental, and subject to change. It may be formally adopted in the future.
@@ -12,8 +14,6 @@ class OccupancyStatus(Enum):
     FULL = 'FULL'
     NOT_ACCEPTING_PASSENGERS = 'NOT_ACCEPTING_PASSENGERS'
 
-    __member_list = []
-
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'OccupancyStatus':
         """
@@ -25,12 +25,16 @@ class OccupancyStatus(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _OccupancyStatus_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _OccupancyStatus_members:
+            _OccupancyStatus_members = list(cls)
+        if 0 <= int(ordinal) < len(_OccupancyStatus_members):
+            return _OccupancyStatus_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -45,6 +49,12 @@ class OccupancyStatus(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _OccupancyStatus_members
+        # pylint: enable=global-statement
+
+        if not _OccupancyStatus_members:
+            _OccupancyStatus_members = list(cls)
+        return _OccupancyStatus_members.index(member)
+
+_OccupancyStatus_members = list(OccupancyStatus)

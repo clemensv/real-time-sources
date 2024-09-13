@@ -1,13 +1,13 @@
 from enum import Enum
 
+_Timepoint_members = []
+
 class Timepoint(Enum):
     """
     Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times. Symbols: APPROXIMATE - Times are considered approximate; EXACT - Times are considered exact.
     """
     APPROXIMATE = 'APPROXIMATE'
     EXACT = 'EXACT'
-
-    __member_list = []
 
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'Timepoint':
@@ -20,12 +20,16 @@ class Timepoint(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _Timepoint_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _Timepoint_members:
+            _Timepoint_members = list(cls)
+        if 0 <= int(ordinal) < len(_Timepoint_members):
+            return _Timepoint_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -40,6 +44,12 @@ class Timepoint(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _Timepoint_members
+        # pylint: enable=global-statement
+
+        if not _Timepoint_members:
+            _Timepoint_members = list(cls)
+        return _Timepoint_members.index(member)
+
+_Timepoint_members = list(Timepoint)

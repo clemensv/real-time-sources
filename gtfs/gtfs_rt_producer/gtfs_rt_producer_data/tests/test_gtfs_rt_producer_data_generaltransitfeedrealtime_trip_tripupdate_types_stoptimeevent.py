@@ -27,9 +27,9 @@ class Test_StopTimeEvent(unittest.TestCase):
         Create instance of StopTimeEvent for testing
         """
         instance = StopTimeEvent(
-            delay=int(60),
-            time=int(42),
-            uncertainty=int(89)
+            delay=int(10),
+            time=int(100),
+            uncertainty=int(23)
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_StopTimeEvent(unittest.TestCase):
         """
         Test delay property
         """
-        test_value = int(60)
+        test_value = int(10)
         self.instance.delay = test_value
         self.assertEqual(self.instance.delay, test_value)
     
@@ -46,7 +46,7 @@ class Test_StopTimeEvent(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(42)
+        test_value = int(100)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -54,7 +54,7 @@ class Test_StopTimeEvent(unittest.TestCase):
         """
         Test uncertainty property
         """
-        test_value = int(89)
+        test_value = int(23)
         self.instance.uncertainty = test_value
         self.assertEqual(self.instance.uncertainty, test_value)
     

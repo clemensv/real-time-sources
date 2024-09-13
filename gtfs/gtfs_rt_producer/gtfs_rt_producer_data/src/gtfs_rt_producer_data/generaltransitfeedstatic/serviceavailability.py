@@ -1,13 +1,13 @@
 from enum import Enum
 
+_ServiceAvailability_members = []
+
 class ServiceAvailability(Enum):
     """
     Indicates whether the service operates on all Mondays in the date range specified. Symbols: NO_SERVICE - Service is not available; SERVICE_AVAILABLE - Service is available.
     """
     NO_SERVICE = 'NO_SERVICE'
     SERVICE_AVAILABLE = 'SERVICE_AVAILABLE'
-
-    __member_list = []
 
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'ServiceAvailability':
@@ -20,12 +20,16 @@ class ServiceAvailability(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _ServiceAvailability_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _ServiceAvailability_members:
+            _ServiceAvailability_members = list(cls)
+        if 0 <= int(ordinal) < len(_ServiceAvailability_members):
+            return _ServiceAvailability_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -40,6 +44,12 @@ class ServiceAvailability(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _ServiceAvailability_members
+        # pylint: enable=global-statement
+
+        if not _ServiceAvailability_members:
+            _ServiceAvailability_members = list(cls)
+        return _ServiceAvailability_members.index(member)
+
+_ServiceAvailability_members = list(ServiceAvailability)

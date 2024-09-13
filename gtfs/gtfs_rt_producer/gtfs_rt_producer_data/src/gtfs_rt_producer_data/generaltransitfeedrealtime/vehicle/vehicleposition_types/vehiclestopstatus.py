@@ -1,5 +1,7 @@
 from enum import Enum
 
+_VehicleStopStatus_members = []
+
 class VehicleStopStatus(Enum):
     """
     A VehicleStopStatus enum.
@@ -7,8 +9,6 @@ class VehicleStopStatus(Enum):
     INCOMING_AT = 'INCOMING_AT'
     STOPPED_AT = 'STOPPED_AT'
     IN_TRANSIT_TO = 'IN_TRANSIT_TO'
-
-    __member_list = []
 
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'VehicleStopStatus':
@@ -21,12 +21,16 @@ class VehicleStopStatus(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _VehicleStopStatus_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _VehicleStopStatus_members:
+            _VehicleStopStatus_members = list(cls)
+        if 0 <= int(ordinal) < len(_VehicleStopStatus_members):
+            return _VehicleStopStatus_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -41,6 +45,12 @@ class VehicleStopStatus(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _VehicleStopStatus_members
+        # pylint: enable=global-statement
+
+        if not _VehicleStopStatus_members:
+            _VehicleStopStatus_members = list(cls)
+        return _VehicleStopStatus_members.index(member)
+
+_VehicleStopStatus_members = list(VehicleStopStatus)

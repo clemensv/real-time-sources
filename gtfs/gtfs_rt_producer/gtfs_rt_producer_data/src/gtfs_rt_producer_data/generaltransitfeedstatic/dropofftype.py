@@ -1,5 +1,7 @@
 from enum import Enum
 
+_DropOffType_members = []
+
 class DropOffType(Enum):
     """
     Indicates drop off method. Symbols: REGULAR - Regularly scheduled drop off; NO_DROP_OFF - No drop off available; PHONE_AGENCY - Must phone agency to arrange drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange drop off.
@@ -8,8 +10,6 @@ class DropOffType(Enum):
     NO_DROP_OFF = 'NO_DROP_OFF'
     PHONE_AGENCY = 'PHONE_AGENCY'
     COORDINATE_WITH_DRIVER = 'COORDINATE_WITH_DRIVER'
-
-    __member_list = []
 
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'DropOffType':
@@ -22,12 +22,16 @@ class DropOffType(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _DropOffType_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _DropOffType_members:
+            _DropOffType_members = list(cls)
+        if 0 <= int(ordinal) < len(_DropOffType_members):
+            return _DropOffType_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -42,6 +46,12 @@ class DropOffType(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _DropOffType_members
+        # pylint: enable=global-statement
+
+        if not _DropOffType_members:
+            _DropOffType_members = list(cls)
+        return _DropOffType_members.index(member)
+
+_DropOffType_members = list(DropOffType)

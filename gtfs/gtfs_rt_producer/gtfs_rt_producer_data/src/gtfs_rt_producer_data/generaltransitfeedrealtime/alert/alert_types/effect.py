@@ -1,5 +1,7 @@
 from enum import Enum
 
+_Effect_members = []
+
 class Effect(Enum):
     """
     What is the effect of this problem on the affected entity.
@@ -14,8 +16,6 @@ class Effect(Enum):
     UNKNOWN_EFFECT = 'UNKNOWN_EFFECT'
     STOP_MOVED = 'STOP_MOVED'
 
-    __member_list = []
-
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'Effect':
         """
@@ -27,12 +27,16 @@ class Effect(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _Effect_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _Effect_members:
+            _Effect_members = list(cls)
+        if 0 <= int(ordinal) < len(_Effect_members):
+            return _Effect_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -47,6 +51,12 @@ class Effect(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _Effect_members
+        # pylint: enable=global-statement
+
+        if not _Effect_members:
+            _Effect_members = list(cls)
+        return _Effect_members.index(member)
+
+_Effect_members = list(Effect)
