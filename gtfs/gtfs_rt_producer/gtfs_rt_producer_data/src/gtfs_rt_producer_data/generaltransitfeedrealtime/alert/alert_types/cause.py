@@ -1,5 +1,7 @@
 from enum import Enum
 
+_Cause_members = []
+
 class Cause(Enum):
     """
     Cause of this alert.
@@ -17,8 +19,6 @@ class Cause(Enum):
     POLICE_ACTIVITY = 'POLICE_ACTIVITY'
     MEDICAL_EMERGENCY = 'MEDICAL_EMERGENCY'
 
-    __member_list = []
-
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'Cause':
         """
@@ -30,12 +30,16 @@ class Cause(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _Cause_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _Cause_members:
+            _Cause_members = list(cls)
+        if 0 <= int(ordinal) < len(_Cause_members):
+            return _Cause_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -50,6 +54,12 @@ class Cause(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _Cause_members
+        # pylint: enable=global-statement
+
+        if not _Cause_members:
+            _Cause_members = list(cls)
+        return _Cause_members.index(member)
+
+_Cause_members = list(Cause)

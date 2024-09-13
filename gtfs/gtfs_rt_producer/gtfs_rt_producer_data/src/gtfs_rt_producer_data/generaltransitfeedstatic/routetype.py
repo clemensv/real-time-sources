@@ -1,5 +1,7 @@
 from enum import Enum
 
+_RouteType_members = []
+
 class RouteType(Enum):
     """
     Indicates the type of transportation used on a route. Symbols: TRAM - Tram, streetcar, light rail; SUBWAY - Subway, metro; RAIL - Intercity or long-distance travel; BUS - Short- and long-distance bus routes; FERRY - Boat service; CABLE_TRAM - Street-level rail cars with a cable running beneath the vehicle; AERIAL_LIFT - Cable transport with suspended cabins or chairs; FUNICULAR - Rail system designed for steep inclines; TROLLEYBUS - Electric buses with overhead wires; MONORAIL - Railway with a single rail or beam.
@@ -19,8 +21,6 @@ class RouteType(Enum):
     MONORAIL = 'MONORAIL'
     OTHER = 'OTHER'
 
-    __member_list = []
-
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'RouteType':
         """
@@ -32,12 +32,16 @@ class RouteType(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _RouteType_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _RouteType_members:
+            _RouteType_members = list(cls)
+        if 0 <= int(ordinal) < len(_RouteType_members):
+            return _RouteType_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -52,6 +56,12 @@ class RouteType(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _RouteType_members
+        # pylint: enable=global-statement
+
+        if not _RouteType_members:
+            _RouteType_members = list(cls)
+        return _RouteType_members.index(member)
+
+_RouteType_members = list(RouteType)

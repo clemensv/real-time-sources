@@ -1,5 +1,7 @@
 from enum import Enum
 
+_WheelchairBoarding_members = []
+
 class WheelchairBoarding(Enum):
     """
     Indicates whether wheelchair boardings are possible from the location. Symbols: NO_INFO - No accessibility information; SOME_VEHICLES - Some vehicles at this stop can be boarded by a rider in a wheelchair; NOT_POSSIBLE - Wheelchair boarding is not possible at this stop.
@@ -7,8 +9,6 @@ class WheelchairBoarding(Enum):
     NO_INFO = 'NO_INFO'
     SOME_VEHICLES = 'SOME_VEHICLES'
     NOT_POSSIBLE = 'NOT_POSSIBLE'
-
-    __member_list = []
 
     @classmethod
     def from_ordinal(cls, ordinal: int|str) -> 'WheelchairBoarding':
@@ -21,12 +21,16 @@ class WheelchairBoarding(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
+        # pylint: disable=global-statement
+        global _WheelchairBoarding_members
+        # pylint: enable=global-statement
+
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        if 0 <= int(ordinal) < len(cls.__member_list):
-            return cls.__member_list[int(ordinal)]
+        if not _WheelchairBoarding_members:
+            _WheelchairBoarding_members = list(cls)
+        if 0 <= int(ordinal) < len(_WheelchairBoarding_members):
+            return _WheelchairBoarding_members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -41,6 +45,12 @@ class WheelchairBoarding(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        if not cls.__member_list:
-            cls.__member_list = list(cls)
-        return cls.__member_list.index(member)
+        # pylint: disable=global-statement
+        global _WheelchairBoarding_members
+        # pylint: enable=global-statement
+
+        if not _WheelchairBoarding_members:
+            _WheelchairBoarding_members = list(cls)
+        return _WheelchairBoarding_members.index(member)
+
+_WheelchairBoarding_members = list(WheelchairBoarding)

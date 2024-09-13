@@ -27,8 +27,8 @@ class Test_TimeRange(unittest.TestCase):
         Create instance of TimeRange for testing
         """
         instance = TimeRange(
-            start=int(45),
-            end=int(81)
+            start=int(94),
+            end=int(96)
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_TimeRange(unittest.TestCase):
         """
         Test start property
         """
-        test_value = int(45)
+        test_value = int(94)
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -45,7 +45,7 @@ class Test_TimeRange(unittest.TestCase):
         """
         Test end property
         """
-        test_value = int(81)
+        test_value = int(96)
         self.instance.end = test_value
         self.assertEqual(self.instance.end, test_value)
     
