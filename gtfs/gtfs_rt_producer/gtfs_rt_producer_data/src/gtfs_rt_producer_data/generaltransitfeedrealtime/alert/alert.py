@@ -1,4 +1,4 @@
-""" StopTimeUpdate dataclass. """
+""" Alert dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -8,39 +8,48 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate_types.stoptimeevent import StopTimeEvent
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate_types.stoptimeupdate_types.schedulerelationship import ScheduleRelationship
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.effect import Effect
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.cause import Cause
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 
 
 @dataclasses_json.dataclass_json
 @dataclasses.dataclass
-class StopTimeUpdate:
+class Alert:
     """
-    Realtime update for arrival and/or departure events for a given stop on a trip. Updates can be supplied for both past and future events. The producer is allowed, although not required, to drop past events.
+    An alert, indicating some sort of incident in the public transit network.
     Attributes:
-        stop_sequence (typing.Optional[int]): The update is linked to a specific stop either through stop_sequence or stop_id, so one of the fields below must necessarily be set. See the documentation in TripDescriptor for more information. Must be the same as in stop_times.txt in the corresponding GTFS feed.
-        stop_id (typing.Optional[str]): Must be the same as in stops.txt in the corresponding GTFS feed.
-        arrival (typing.Optional[StopTimeEvent]): 
-        departure (typing.Optional[StopTimeEvent]): 
-        schedule_relationship (typing.Optional[ScheduleRelationship]): """
+        active_period (typing.List[TimeRange]): Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.
+        informed_entity (typing.List[EntitySelector]): Entities whose users we should notify of this alert.
+        cause (typing.Optional[Cause]): 
+        effect (typing.Optional[Effect]): 
+        url (typing.Optional[TranslatedString]): The URL which provides additional information about the alert.
+        header_text (typing.Optional[TranslatedString]): Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the
+        description_text (typing.Optional[TranslatedString]): description should add to the information of the header."""
     
-    stop_sequence: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_sequence"))
-    stop_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_id"))
-    arrival: typing.Optional[StopTimeEvent]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="arrival"))
-    departure: typing.Optional[StopTimeEvent]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departure"))
-    schedule_relationship: typing.Optional[ScheduleRelationship]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="schedule_relationship"))    
+    active_period: typing.List[TimeRange]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="active_period"))
+    informed_entity: typing.List[EntitySelector]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="informed_entity"))
+    cause: typing.Optional[Cause]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cause"))
+    effect: typing.Optional[Effect]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="effect"))
+    url: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
+    header_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="header_text"))
+    description_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description_text"))    
     
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.stop_sequence=int(self.stop_sequence) if self.stop_sequence else None
-        self.stop_id=str(self.stop_id) if self.stop_id else None
-        self.arrival=self.arrival if isinstance(self.arrival, StopTimeEvent) else StopTimeEvent.from_serializer_dict(self.arrival) if self.arrival else None if self.arrival else None
-        self.departure=self.departure if isinstance(self.departure, StopTimeEvent) else StopTimeEvent.from_serializer_dict(self.departure) if self.departure else None if self.departure else None
-        self.schedule_relationship=ScheduleRelationship(self.schedule_relationship) if self.schedule_relationship else None
+        self.active_period=self.active_period if isinstance(self.active_period, list) else [v if isinstance(v, TimeRange) else TimeRange.from_serializer_dict(v) if v else None for v in self.active_period] if self.active_period else None
+        self.informed_entity=self.informed_entity if isinstance(self.informed_entity, list) else [v if isinstance(v, EntitySelector) else EntitySelector.from_serializer_dict(v) if v else None for v in self.informed_entity] if self.informed_entity else None
+        self.cause=Cause(self.cause) if self.cause else None
+        self.effect=Effect(self.effect) if self.effect else None
+        self.url=self.url if isinstance(self.url, TranslatedString) else TranslatedString.from_serializer_dict(self.url) if self.url else None if self.url else None
+        self.header_text=self.header_text if isinstance(self.header_text, TranslatedString) else TranslatedString.from_serializer_dict(self.header_text) if self.header_text else None if self.header_text else None
+        self.description_text=self.description_text if isinstance(self.description_text, TranslatedString) else TranslatedString.from_serializer_dict(self.description_text) if self.description_text else None if self.description_text else None
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'StopTimeUpdate':
+    def from_serializer_dict(cls, data: dict) -> 'Alert':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -105,7 +114,7 @@ class StopTimeUpdate:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['StopTimeUpdate']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Alert']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -139,7 +148,7 @@ class StopTimeUpdate:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return StopTimeUpdate.from_serializer_dict(_record)
+                return Alert.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 

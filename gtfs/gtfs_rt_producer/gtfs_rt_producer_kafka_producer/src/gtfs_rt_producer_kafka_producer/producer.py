@@ -7,9 +7,9 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
-from gtfs_rt_producer_data.generaltransitfeed.vehicleposition.vehicleposition import VehiclePosition
-from gtfs_rt_producer_data.generaltransitfeed.tripupdate.tripupdate import TripUpdate
-from gtfs_rt_producer_data.generaltransitfeed.alert.alert import Alert
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
+from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate import TripUpdate
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert import Alert
 from gtfs_rt_producer_data.generaltransitfeedstatic.agency import Agency
 from gtfs_rt_producer_data.generaltransitfeedstatic.areas import Areas
 from gtfs_rt_producer_data.generaltransitfeedstatic.attributions import Attributions
@@ -67,9 +67,9 @@ class GeneralTransitFeedRealTimeEventProducer:
         else:
             return f'{str(x.get("type"))}:{str(x.get("source"))}{("-"+str(x.get("subject"))) if x.get("subject") else ""}'
 
-    async def send_general_transit_feed_real_time_vehicle_position(self,_feedurl : str, _agencyid : str, data: VehiclePosition, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, VehiclePosition], str]=None) -> None:
+    async def send_general_transit_feed_real_time_vehicle_vehicle_position(self,_feedurl : str, _agencyid : str, data: VehiclePosition, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, VehiclePosition], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.RealTime.VehiclePosition' event to the Kafka topic
+        Sends the 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -82,7 +82,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.RealTime.VehiclePosition",
+             "type":"GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -149,9 +149,9 @@ class GeneralTransitFeedRealTimeEventProducer:
         return cls(Producer(config), topic_name, content_mode)
 
 
-    async def send_general_transit_feed_real_time_trip_update(self,_feedurl : str, _agencyid : str, data: TripUpdate, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TripUpdate], str]=None) -> None:
+    async def send_general_transit_feed_real_time_trip_trip_update(self,_feedurl : str, _agencyid : str, data: TripUpdate, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TripUpdate], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.RealTime.TripUpdate' event to the Kafka topic
+        Sends the 'GeneralTransitFeedRealTime.Trip.TripUpdate' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -164,7 +164,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.RealTime.TripUpdate",
+             "type":"GeneralTransitFeedRealTime.Trip.TripUpdate",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -231,9 +231,9 @@ class GeneralTransitFeedRealTimeEventProducer:
         return cls(Producer(config), topic_name, content_mode)
 
 
-    async def send_general_transit_feed_real_time_alert(self,_feedurl : str, _agencyid : str, data: Alert, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Alert], str]=None) -> None:
+    async def send_general_transit_feed_real_time_alert_alert(self,_feedurl : str, _agencyid : str, data: Alert, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Alert], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.RealTime.Alert' event to the Kafka topic
+        Sends the 'GeneralTransitFeedRealTime.Alert.Alert' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -246,7 +246,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.RealTime.Alert",
+             "type":"GeneralTransitFeedRealTime.Alert.Alert",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -344,7 +344,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_agency(self,_feedurl : str, _agencyid : str, data: Agency, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Agency], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Agency' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Agency' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -357,7 +357,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Agency",
+             "type":"GeneralTransitFeedStatic.Agency",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -426,7 +426,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_areas(self,_feedurl : str, _agencyid : str, data: Areas, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Areas], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Areas' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Areas' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -439,7 +439,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Areas",
+             "type":"GeneralTransitFeedStatic.Areas",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -508,7 +508,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_attributions(self,_feedurl : str, _agencyid : str, data: Attributions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attributions], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Attributions' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Attributions' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -521,7 +521,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Attributions",
+             "type":"GeneralTransitFeedStatic.Attributions",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -672,7 +672,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_fare_attributes(self,_feedurl : str, _agencyid : str, data: FareAttributes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareAttributes], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.FareAttributes' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.FareAttributes' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -685,7 +685,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.FareAttributes",
+             "type":"GeneralTransitFeedStatic.FareAttributes",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -754,7 +754,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_fare_leg_rules(self,_feedurl : str, _agencyid : str, data: FareLegRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareLegRules], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.FareLegRules' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.FareLegRules' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -767,7 +767,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.FareLegRules",
+             "type":"GeneralTransitFeedStatic.FareLegRules",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -836,7 +836,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_fare_media(self,_feedurl : str, _agencyid : str, data: FareMedia, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareMedia], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.FareMedia' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.FareMedia' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -849,7 +849,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.FareMedia",
+             "type":"GeneralTransitFeedStatic.FareMedia",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -918,7 +918,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_fare_products(self,_feedurl : str, _agencyid : str, data: FareProducts, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareProducts], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.FareProducts' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.FareProducts' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -931,7 +931,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.FareProducts",
+             "type":"GeneralTransitFeedStatic.FareProducts",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1000,7 +1000,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_fare_rules(self,_feedurl : str, _agencyid : str, data: FareRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareRules], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.FareRules' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.FareRules' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1013,7 +1013,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.FareRules",
+             "type":"GeneralTransitFeedStatic.FareRules",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1082,7 +1082,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_fare_transfer_rules(self,_feedurl : str, _agencyid : str, data: FareTransferRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareTransferRules], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.FareTransferRules' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.FareTransferRules' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1095,7 +1095,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.FareTransferRules",
+             "type":"GeneralTransitFeedStatic.FareTransferRules",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1164,7 +1164,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_feed_info(self,_feedurl : str, _agencyid : str, data: FeedInfo, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FeedInfo], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.FeedInfo' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.FeedInfo' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1177,7 +1177,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.FeedInfo",
+             "type":"GeneralTransitFeedStatic.FeedInfo",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1246,7 +1246,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_frequencies(self,_feedurl : str, _agencyid : str, data: Frequencies, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Frequencies], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Frequencies' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Frequencies' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1259,7 +1259,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Frequencies",
+             "type":"GeneralTransitFeedStatic.Frequencies",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1328,7 +1328,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_levels(self,_feedurl : str, _agencyid : str, data: Levels, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Levels], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Levels' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Levels' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1341,7 +1341,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Levels",
+             "type":"GeneralTransitFeedStatic.Levels",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1410,7 +1410,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_location_geo_json(self,_feedurl : str, _agencyid : str, data: LocationGeoJson, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGeoJson], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.LocationGeoJson' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.LocationGeoJson' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1423,7 +1423,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.LocationGeoJson",
+             "type":"GeneralTransitFeedStatic.LocationGeoJson",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1492,7 +1492,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_location_groups(self,_feedurl : str, _agencyid : str, data: LocationGroups, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroups], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.LocationGroups' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.LocationGroups' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1505,7 +1505,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.LocationGroups",
+             "type":"GeneralTransitFeedStatic.LocationGroups",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1574,7 +1574,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_location_group_stores(self,_feedurl : str, _agencyid : str, data: LocationGroupStores, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroupStores], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.LocationGroupStores' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.LocationGroupStores' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1587,7 +1587,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.LocationGroupStores",
+             "type":"GeneralTransitFeedStatic.LocationGroupStores",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1656,7 +1656,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_networks(self,_feedurl : str, _agencyid : str, data: Networks, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Networks], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Networks' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Networks' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1669,7 +1669,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Networks",
+             "type":"GeneralTransitFeedStatic.Networks",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1738,7 +1738,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_pathways(self,_feedurl : str, _agencyid : str, data: Pathways, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Pathways], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Pathways' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Pathways' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1751,7 +1751,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Pathways",
+             "type":"GeneralTransitFeedStatic.Pathways",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1820,7 +1820,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_route_networks(self,_feedurl : str, _agencyid : str, data: RouteNetworks, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RouteNetworks], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.RouteNetworks' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.RouteNetworks' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1833,7 +1833,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.RouteNetworks",
+             "type":"GeneralTransitFeedStatic.RouteNetworks",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1902,7 +1902,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_routes(self,_feedurl : str, _agencyid : str, data: Routes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Routes], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Routes' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Routes' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1915,7 +1915,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Routes",
+             "type":"GeneralTransitFeedStatic.Routes",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -1984,7 +1984,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_shapes(self,_feedurl : str, _agencyid : str, data: Shapes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Shapes], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Shapes' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Shapes' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -1997,7 +1997,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Shapes",
+             "type":"GeneralTransitFeedStatic.Shapes",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -2066,7 +2066,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_stop_areas(self,_feedurl : str, _agencyid : str, data: StopAreas, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopAreas], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.StopAreas' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.StopAreas' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -2079,7 +2079,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.StopAreas",
+             "type":"GeneralTransitFeedStatic.StopAreas",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -2148,7 +2148,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_stops(self,_feedurl : str, _agencyid : str, data: Stops, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Stops], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Stops' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Stops' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -2161,7 +2161,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Stops",
+             "type":"GeneralTransitFeedStatic.Stops",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -2230,7 +2230,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_stop_times(self,_feedurl : str, _agencyid : str, data: StopTimes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopTimes], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.StopTimes' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.StopTimes' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -2243,7 +2243,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.StopTimes",
+             "type":"GeneralTransitFeedStatic.StopTimes",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -2312,7 +2312,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_timeframes(self,_feedurl : str, _agencyid : str, data: Timeframes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Timeframes], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Timeframes' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Timeframes' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -2325,7 +2325,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Timeframes",
+             "type":"GeneralTransitFeedStatic.Timeframes",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -2394,7 +2394,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_transfers(self,_feedurl : str, _agencyid : str, data: Transfers, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Transfers], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Transfers' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Transfers' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -2407,7 +2407,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Transfers",
+             "type":"GeneralTransitFeedStatic.Transfers",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -2476,7 +2476,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_translations(self,_feedurl : str, _agencyid : str, data: Translations, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Translations], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Translations' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Translations' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -2489,7 +2489,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Translations",
+             "type":"GeneralTransitFeedStatic.Translations",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
@@ -2558,7 +2558,7 @@ class GeneralTransitFeedStaticEventProducer:
 
     async def send_general_transit_feed_static_trips(self,_feedurl : str, _agencyid : str, data: Trips, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Trips], str]=None) -> None:
         """
-        Sends the 'GeneralTransitFeed.Static.Trips' event to the Kafka topic
+        Sends the 'GeneralTransitFeedStatic.Trips' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
@@ -2571,7 +2571,7 @@ class GeneralTransitFeedStaticEventProducer:
         """
         attributes = {
              "specversion":"1.0",
-             "type":"GeneralTransitFeed.Static.Trips",
+             "type":"GeneralTransitFeedStatic.Trips",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }

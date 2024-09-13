@@ -4,7 +4,7 @@ RSS Bridge
 
 import argparse
 import asyncio
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta, timezone
 import json
 import logging
 import os
@@ -351,7 +351,7 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
         if state.get(feed_url) and not isinstance(state[feed_url], dict):
             state[feed_url] = {}
         next_check_time = state.get(feed_url, {}).get("next_check_time")
-        if next_check_time and datetime.now(UTC) < datetime.fromisoformat(next_check_time).astimezone(UTC):
+        if next_check_time and datetime.now(timezone.utc) < datetime.fromisoformat(next_check_time).astimezone(timezone.utc):
             print(f"Backoff until {next_check_time} for {feed_url}")
             return
 
@@ -367,8 +367,8 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
         if response.status_code == 304:
             state[feed_url] = {
                 **state.get(feed_url, {}),
-                "last_checked": datetime.now(UTC).isoformat(),
-                "next_check_time": (datetime.now(UTC) + timedelta(minutes=1)).isoformat()
+                "last_checked": datetime.now(timezone.utc).isoformat(),
+                "next_check_time": (datetime.now(timezone.utc) + timedelta(minutes=1)).isoformat()
             }
             return
 
@@ -378,7 +378,7 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
 
         new_items = []
         last_checked = state.get(feed_url, {}).get("last_checked", 0)
-        last_checked_datetime = datetime.fromisoformat(last_checked).astimezone(UTC) if isinstance(
+        last_checked_datetime = datetime.fromisoformat(last_checked).astimezone(timezone.utc) if isinstance(
             last_checked, str) else datetime.fromtimestamp(last_checked)
 
         for entry in feed.entries:
@@ -404,21 +404,21 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
         expires_datetime = None
         if expires:
             try:
-                expires_datetime = datetime.strptime(expires, '%a, %d %b %Y %H:%M:%S %Z').astimezone(UTC)
+                expires_datetime = datetime.strptime(expires, '%a, %d %b %Y %H:%M:%S %Z').astimezone(timezone.utc)
             except ValueError:
                 pass
 
         next_check_time = min([
-            datetime.now(UTC) + timedelta(seconds=max_age) if max_age else datetime.now(UTC) + timedelta(minutes=1),
-            expires_datetime if expires_datetime else datetime.now(UTC) + timedelta(minutes=1)
+            datetime.now(timezone.utc) + timedelta(seconds=max_age) if max_age else datetime.now(timezone.utc) + timedelta(minutes=1),
+            expires_datetime if expires_datetime else datetime.now(timezone.utc) + timedelta(minutes=1)
         ])
-        if next_check_time < datetime.now(UTC):
-            next_check_time = datetime.now(UTC) + timedelta(minutes=1)
-        if next_check_time > datetime.now(UTC) + timedelta(hours=12):
-            next_check_time = datetime.now(UTC) + timedelta(hours=12)
+        if next_check_time < datetime.now(timezone.utc):
+            next_check_time = datetime.now(timezone.utc) + timedelta(minutes=1)
+        if next_check_time > datetime.now(timezone.utc) + timedelta(hours=12):
+            next_check_time = datetime.now(timezone.utc) + timedelta(hours=12)
 
         state[feed_url] = {
-            "last_checked": datetime.now(UTC).isoformat(),
+            "last_checked": datetime.now(timezone.utc).isoformat(),
             "skip": False,
             "actual_url": actual_url,
             "etag": response.headers.get('ETag'),
@@ -436,7 +436,7 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
             if e.response.status_code == 429:  # Too many requests
                 if not 'feed_url' in state:
                     state[feed_url] = {}
-                state[feed_url]["next_check_time"] = (datetime.now(UTC) + timedelta(minutes=5)).isoformat()
+                state[feed_url]["next_check_time"] = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
                 print(f"Backoff set for {feed_url} due to 429 response")
             elif e.response.status_code == 404 or e.response.status_code == 403:
                 if not 'feed_url' in state:
@@ -462,7 +462,7 @@ async def poll_feeds(feed_urls: List[str], state, producer_instance: MicrosoftOp
         save_state(state)
         next_poll = min([
             (datetime.fromisoformat(state.get(feed_url, {}).get("next_check_time", datetime.now(
-                UTC).isoformat())).astimezone(UTC)-datetime.now(UTC)).total_seconds()
+                UTC).isoformat())).astimezone(timezone.utc)-datetime.now(timezone.utc)).total_seconds()
             for feed_url in feed_urls if not state.get(feed_url, {}).get("skip", False)
         ])
         print(f"Next poll in {next_poll} seconds")

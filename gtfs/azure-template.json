@@ -1,0 +1,161 @@
+{
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "gtfs_urls": {
+      "type": "string",
+      "maxLength": 2048,
+      "metadata": {
+        "description": "Comma-separated list of GTFS URLs."
+      }
+    },
+    "appName": {
+      "type": "string",
+      "maxLength": 64,
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "The name of the container instance."
+      }
+    },
+    "agencyId": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "The GTFS agency identifier."
+      }
+    },
+    "connectionStringSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-gtfs:latest",
+      "metadata": {
+        "description": "The name of the container image."
+      }
+    },
+    "gtfs_rt_urls": {
+      "type": "string",
+      "maxLength": 2048,
+      "metadata": {
+        "description": "Comma-separated list of GTFS-RT URLs."
+      }
+    }
+  },
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "resources": [
+    {
+      "properties": {
+        "accessTier": "Hot"
+      },
+      "name": "[variables('storageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "apiVersion": "2021-04-01",
+      "kind": "StorageV2",
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      },
+      "name": "[concat(variables('storageAccountName'), '/default/')]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices"
+    },
+    {
+      "properties": {
+        "shareQuota": 5120
+      },
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares"
+    },
+    {
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "volumes": [
+          {
+            "azureFile": {
+              "storageAccountName": "[variables('storageAccountName')]",
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            },
+            "name": "azurefilevolume"
+          }
+        ],
+        "containers": [
+          {
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "volumeMounts": [
+                {
+                  "mountPath": "/mnt/fileshare",
+                  "name": "azurefilevolume"
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "value": "/mnt/fileshare/cache",
+                  "name": "CACHE_DIR"
+                },
+                {
+                  "value": "[parameters('gtfs_urls')]",
+                  "name": "GTFS_URLS"
+                },
+                {
+                  "value": "[parameters('gtfs_rt_urls')]",
+                  "name": "GTFS_RT_URLS"
+                },
+                {
+                  "value": "[parameters('agencyId')]",
+                  "name": "AGENCY"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 0.5
+                }
+              }
+            },
+            "name": "[parameters('appName')]"
+          }
+        ]
+      },
+      "name": "[parameters('appName')]",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-09-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+      ],
+      "type": "Microsoft.ContainerInstance/containerGroups"
+    }
+  ],
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
+    "fileShareName": "fileshare"
+  }
+}

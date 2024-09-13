@@ -19,9 +19,9 @@ from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from gtfs_rt_producer_kafka_producer.producer import GeneralTransitFeedRealTimeEventProducer
-from test_gtfs_rt_producer_data_generaltransitfeed_vehicleposition_vehicleposition import Test_VehiclePosition
-from test_gtfs_rt_producer_data_generaltransitfeed_tripupdate_tripupdate import Test_TripUpdate
-from test_gtfs_rt_producer_data_generaltransitfeed_alert_alert import Test_Alert
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicleposition import Test_VehiclePosition
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate import Test_TripUpdate
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_alert import Test_Alert
 from gtfs_rt_producer_kafka_producer.producer import GeneralTransitFeedStaticEventProducer
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_agency import Test_Agency
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_areas import Test_Areas
@@ -84,8 +84,8 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
     return ce
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_realtime_generaltransitfeedrealtimevehicleposition(kafka_emulator):
-    """Test the GeneralTransitFeedRealTimeVehiclePosition event from the GeneralTransitFeed.RealTime message group"""
+async def test_generaltransitfeedrealtime_generaltransitfeedrealtimevehiclevehicleposition(kafka_emulator):
+    """Test the GeneralTransitFeedRealTimeVehicleVehiclePosition event from the GeneralTransitFeedRealTime message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -104,20 +104,20 @@ async def test_generaltransitfeed_realtime_generaltransitfeedrealtimevehicleposi
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.RealTime.VehiclePosition":
+            if cloudevent['type'] == "GeneralTransitFeedRealTime.Vehicle.VehiclePosition":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_VehiclePosition.create_instance()
-    await producer_instance.send_general_transit_feed_real_time_vehicle_position(_feedurl = 'test', _agencyid = 'test', data = event_data)
+    await producer_instance.send_general_transit_feed_real_time_vehicle_vehicle_position(_feedurl = 'test', _agencyid = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_realtime_generaltransitfeedrealtimetripupdate(kafka_emulator):
-    """Test the GeneralTransitFeedRealTimeTripUpdate event from the GeneralTransitFeed.RealTime message group"""
+async def test_generaltransitfeedrealtime_generaltransitfeedrealtimetriptripupdate(kafka_emulator):
+    """Test the GeneralTransitFeedRealTimeTripTripUpdate event from the GeneralTransitFeedRealTime message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -136,20 +136,20 @@ async def test_generaltransitfeed_realtime_generaltransitfeedrealtimetripupdate(
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.RealTime.TripUpdate":
+            if cloudevent['type'] == "GeneralTransitFeedRealTime.Trip.TripUpdate":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_TripUpdate.create_instance()
-    await producer_instance.send_general_transit_feed_real_time_trip_update(_feedurl = 'test', _agencyid = 'test', data = event_data)
+    await producer_instance.send_general_transit_feed_real_time_trip_trip_update(_feedurl = 'test', _agencyid = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_realtime_generaltransitfeedrealtimealert(kafka_emulator):
-    """Test the GeneralTransitFeedRealTimeAlert event from the GeneralTransitFeed.RealTime message group"""
+async def test_generaltransitfeedrealtime_generaltransitfeedrealtimealertalert(kafka_emulator):
+    """Test the GeneralTransitFeedRealTimeAlertAlert event from the GeneralTransitFeedRealTime message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -168,20 +168,20 @@ async def test_generaltransitfeed_realtime_generaltransitfeedrealtimealert(kafka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.RealTime.Alert":
+            if cloudevent['type'] == "GeneralTransitFeedRealTime.Alert.Alert":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_Alert.create_instance()
-    await producer_instance.send_general_transit_feed_real_time_alert(_feedurl = 'test', _agencyid = 'test', data = event_data)
+    await producer_instance.send_general_transit_feed_real_time_alert_alert(_feedurl = 'test', _agencyid = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticagency(kafka_emulator):
-    """Test the GeneralTransitFeedStaticAgency event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticagency(kafka_emulator):
+    """Test the GeneralTransitFeedStaticAgency event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -200,7 +200,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticagency(kafka_em
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Agency":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Agency":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -212,8 +212,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticagency(kafka_em
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticareas(kafka_emulator):
-    """Test the GeneralTransitFeedStaticAreas event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticareas(kafka_emulator):
+    """Test the GeneralTransitFeedStaticAreas event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -232,7 +232,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticareas(kafka_emu
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Areas":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Areas":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -244,8 +244,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticareas(kafka_emu
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticattributions(kafka_emulator):
-    """Test the GeneralTransitFeedStaticAttributions event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticattributions(kafka_emulator):
+    """Test the GeneralTransitFeedStaticAttributions event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -264,7 +264,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticattributions(ka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Attributions":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Attributions":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -276,8 +276,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticattributions(ka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedbookingrules(kafka_emulator):
-    """Test the GeneralTransitFeedBookingRules event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedbookingrules(kafka_emulator):
+    """Test the GeneralTransitFeedBookingRules event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -308,8 +308,8 @@ async def test_generaltransitfeed_static_generaltransitfeedbookingrules(kafka_em
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfareattributes(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFareAttributes event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfareattributes(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFareAttributes event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -328,7 +328,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfareattributes(
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.FareAttributes":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.FareAttributes":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -340,8 +340,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfareattributes(
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfarelegrules(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFareLegRules event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfarelegrules(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFareLegRules event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -360,7 +360,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfarelegrules(ka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.FareLegRules":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.FareLegRules":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -372,8 +372,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfarelegrules(ka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfaremedia(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFareMedia event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfaremedia(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFareMedia event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -392,7 +392,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfaremedia(kafka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.FareMedia":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.FareMedia":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -404,8 +404,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfaremedia(kafka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfareproducts(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFareProducts event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfareproducts(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFareProducts event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -424,7 +424,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfareproducts(ka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.FareProducts":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.FareProducts":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -436,8 +436,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfareproducts(ka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfarerules(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFareRules event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfarerules(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFareRules event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -456,7 +456,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfarerules(kafka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.FareRules":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.FareRules":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -468,8 +468,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfarerules(kafka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfaretransferrules(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFareTransferRules event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfaretransferrules(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFareTransferRules event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -488,7 +488,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfaretransferrul
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.FareTransferRules":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.FareTransferRules":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -500,8 +500,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfaretransferrul
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfeedinfo(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFeedInfo event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfeedinfo(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFeedInfo event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -520,7 +520,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfeedinfo(kafka_
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.FeedInfo":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.FeedInfo":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -532,8 +532,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfeedinfo(kafka_
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticfrequencies(kafka_emulator):
-    """Test the GeneralTransitFeedStaticFrequencies event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticfrequencies(kafka_emulator):
+    """Test the GeneralTransitFeedStaticFrequencies event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -552,7 +552,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfrequencies(kaf
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Frequencies":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Frequencies":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -564,8 +564,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticfrequencies(kaf
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticlevels(kafka_emulator):
-    """Test the GeneralTransitFeedStaticLevels event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticlevels(kafka_emulator):
+    """Test the GeneralTransitFeedStaticLevels event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -584,7 +584,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlevels(kafka_em
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Levels":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Levels":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -596,8 +596,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlevels(kafka_em
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgeojson(kafka_emulator):
-    """Test the GeneralTransitFeedStaticLocationGeoJson event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgeojson(kafka_emulator):
+    """Test the GeneralTransitFeedStaticLocationGeoJson event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -616,7 +616,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgeojson
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.LocationGeoJson":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.LocationGeoJson":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -628,8 +628,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgeojson
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgroups(kafka_emulator):
-    """Test the GeneralTransitFeedStaticLocationGroups event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroups(kafka_emulator):
+    """Test the GeneralTransitFeedStaticLocationGroups event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -648,7 +648,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgroups(
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.LocationGroups":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.LocationGroups":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -660,8 +660,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgroups(
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgroupstores(kafka_emulator):
-    """Test the GeneralTransitFeedStaticLocationGroupStores event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroupstores(kafka_emulator):
+    """Test the GeneralTransitFeedStaticLocationGroupStores event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -680,7 +680,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgroupst
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.LocationGroupStores":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.LocationGroupStores":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -692,8 +692,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticlocationgroupst
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticnetworks(kafka_emulator):
-    """Test the GeneralTransitFeedStaticNetworks event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticnetworks(kafka_emulator):
+    """Test the GeneralTransitFeedStaticNetworks event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -712,7 +712,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticnetworks(kafka_
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Networks":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Networks":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -724,8 +724,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticnetworks(kafka_
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticpathways(kafka_emulator):
-    """Test the GeneralTransitFeedStaticPathways event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticpathways(kafka_emulator):
+    """Test the GeneralTransitFeedStaticPathways event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -744,7 +744,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticpathways(kafka_
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Pathways":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Pathways":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -756,8 +756,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticpathways(kafka_
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticroutenetworks(kafka_emulator):
-    """Test the GeneralTransitFeedStaticRouteNetworks event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticroutenetworks(kafka_emulator):
+    """Test the GeneralTransitFeedStaticRouteNetworks event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -776,7 +776,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticroutenetworks(k
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.RouteNetworks":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.RouteNetworks":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -788,8 +788,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticroutenetworks(k
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticroutes(kafka_emulator):
-    """Test the GeneralTransitFeedStaticRoutes event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticroutes(kafka_emulator):
+    """Test the GeneralTransitFeedStaticRoutes event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -808,7 +808,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticroutes(kafka_em
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Routes":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Routes":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -820,8 +820,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticroutes(kafka_em
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticshapes(kafka_emulator):
-    """Test the GeneralTransitFeedStaticShapes event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticshapes(kafka_emulator):
+    """Test the GeneralTransitFeedStaticShapes event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -840,7 +840,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticshapes(kafka_em
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Shapes":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Shapes":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -852,8 +852,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticshapes(kafka_em
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticstopareas(kafka_emulator):
-    """Test the GeneralTransitFeedStaticStopAreas event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticstopareas(kafka_emulator):
+    """Test the GeneralTransitFeedStaticStopAreas event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -872,7 +872,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticstopareas(kafka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.StopAreas":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.StopAreas":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -884,8 +884,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticstopareas(kafka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticstops(kafka_emulator):
-    """Test the GeneralTransitFeedStaticStops event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticstops(kafka_emulator):
+    """Test the GeneralTransitFeedStaticStops event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -904,7 +904,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticstops(kafka_emu
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Stops":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Stops":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -916,8 +916,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticstops(kafka_emu
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstaticstoptimes(kafka_emulator):
-    """Test the GeneralTransitFeedStaticStopTimes event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstaticstoptimes(kafka_emulator):
+    """Test the GeneralTransitFeedStaticStopTimes event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -936,7 +936,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticstoptimes(kafka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.StopTimes":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.StopTimes":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -948,8 +948,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstaticstoptimes(kafka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstatictimeframes(kafka_emulator):
-    """Test the GeneralTransitFeedStaticTimeframes event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstatictimeframes(kafka_emulator):
+    """Test the GeneralTransitFeedStaticTimeframes event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -968,7 +968,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstatictimeframes(kafk
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Timeframes":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Timeframes":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -980,8 +980,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstatictimeframes(kafk
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstatictransfers(kafka_emulator):
-    """Test the GeneralTransitFeedStaticTransfers event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstatictransfers(kafka_emulator):
+    """Test the GeneralTransitFeedStaticTransfers event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -1000,7 +1000,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstatictransfers(kafka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Transfers":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Transfers":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1012,8 +1012,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstatictransfers(kafka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstatictranslations(kafka_emulator):
-    """Test the GeneralTransitFeedStaticTranslations event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstatictranslations(kafka_emulator):
+    """Test the GeneralTransitFeedStaticTranslations event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -1032,7 +1032,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstatictranslations(ka
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Translations":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Translations":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1044,8 +1044,8 @@ async def test_generaltransitfeed_static_generaltransitfeedstatictranslations(ka
     consumer.close()
 
 @pytest.mark.asyncio
-async def test_generaltransitfeed_static_generaltransitfeedstatictrips(kafka_emulator):
-    """Test the GeneralTransitFeedStaticTrips event from the GeneralTransitFeed.Static message group"""
+async def test_generaltransitfeedstatic_generaltransitfeedstatictrips(kafka_emulator):
+    """Test the GeneralTransitFeedStaticTrips event from the GeneralTransitFeedStatic message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -1064,7 +1064,7 @@ async def test_generaltransitfeed_static_generaltransitfeedstatictrips(kafka_emu
             if msg is None:
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "GeneralTransitFeed.Static.Trips":
+            if cloudevent['type'] == "GeneralTransitFeedStatic.Trips":
                 return True
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

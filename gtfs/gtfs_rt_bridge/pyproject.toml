@@ -10,17 +10,18 @@ packages = [{include = "gtfs_rt_bridge", from = "src"}]
 python = "<4.0,>=3.10"
 gtfs_rt-producer-kafka-producer = "*"
 gtfs_rt-producer-data = "*"
-confluent-kafka = ">=2.4.0"
+confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
 gtfs-realtime-bindings = ">=1.0.0"
+requests = ">=2.32.3"
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.2.2"
-flake8 = ">=7.1.0"
-pylint = ">=3.2.5"
-mypy = ">=1.10.1"
-testcontainers = ">=4.7.1"
-pytest-asyncio = ">=0.23.7"
+pytest = ">=8.3.3"
+flake8 = ">=7.1.1"
+pylint = ">=3.2.7"
+mypy = ">=1.11.2"
+testcontainers = ">=4.8.1"
+pytest-asyncio = ">=0.24.0"
 
 [tool.poetry.scripts]
 gtfs-bridge = "gtfs_rt_bridge.gtfs_cli:cli"
