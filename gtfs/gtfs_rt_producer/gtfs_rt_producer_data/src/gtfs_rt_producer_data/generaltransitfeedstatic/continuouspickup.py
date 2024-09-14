@@ -1,5 +1,4 @@
 from enum import Enum
-
 _ContinuousPickup_members = []
 
 class ContinuousPickup(Enum):
@@ -49,9 +48,8 @@ class ContinuousPickup(Enum):
         # pylint: disable=global-statement
         global _ContinuousPickup_members
         # pylint: enable=global-statement
-
+        
         if not _ContinuousPickup_members:
             _ContinuousPickup_members = list(cls)
         return _ContinuousPickup_members.index(member)
-
 _ContinuousPickup_members = list(ContinuousPickup)

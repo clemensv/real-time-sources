@@ -1,5 +1,4 @@
 from enum import Enum
-
 _DropOffType_members = []
 
 class DropOffType(Enum):
@@ -49,9 +48,8 @@ class DropOffType(Enum):
         # pylint: disable=global-statement
         global _DropOffType_members
         # pylint: enable=global-statement
-
+        
         if not _DropOffType_members:
             _DropOffType_members = list(cls)
         return _DropOffType_members.index(member)
-
 _DropOffType_members = list(DropOffType)

@@ -1,7 +1,5 @@
 from enum import Enum
 
-_CongestionLevel_members = []
-
 class CongestionLevel(Enum):
     """
     Congestion level that is affecting this vehicle.
@@ -23,18 +21,25 @@ class CongestionLevel(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _CongestionLevel_members
-        # pylint: enable=global-statement
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not _CongestionLevel_members:
-            _CongestionLevel_members = list(cls)
-        if 0 <= int(ordinal) < len(_CongestionLevel_members):
-            return _CongestionLevel_members[ordinal]
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
+        if isinstance(ordinal, int):
+            if ordinal == 0:
+                return CongestionLevel.UNKNOWN_CONGESTION_LEVEL
+            elif ordinal == 1:
+                return CongestionLevel.RUNNING_SMOOTHLY
+            elif ordinal == 2:
+                return CongestionLevel.STOP_AND_GO
+            elif ordinal == 3:
+                return CongestionLevel.CONGESTION
+            elif ordinal == 4:
+                return CongestionLevel.SEVERE_CONGESTION
+            raise ValueError("Ordinal not found in enum")
         else:
-            raise IndexError("Ordinal out of range for enum")
+            raise ValueError("Ordinal must be an integer or a string representation of an integer")
 
     @classmethod
     def to_ordinal(cls, member: 'CongestionLevel') -> int:
@@ -47,12 +52,15 @@ class CongestionLevel(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _CongestionLevel_members
-        # pylint: enable=global-statement
-
-        if not _CongestionLevel_members:
-            _CongestionLevel_members = list(cls)
-        return _CongestionLevel_members.index(member)
-
-_CongestionLevel_members = list(CongestionLevel)
+        
+        if member == CongestionLevel.UNKNOWN_CONGESTION_LEVEL:
+            return 0
+        if member == CongestionLevel.RUNNING_SMOOTHLY:
+            return 1
+        if member == CongestionLevel.STOP_AND_GO:
+            return 2
+        if member == CongestionLevel.CONGESTION:
+            return 3
+        if member == CongestionLevel.SEVERE_CONGESTION:
+            return 4
+        raise ValueError("Member not found in enum")

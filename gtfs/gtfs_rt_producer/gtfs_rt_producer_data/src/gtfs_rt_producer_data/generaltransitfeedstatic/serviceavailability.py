@@ -1,5 +1,4 @@
 from enum import Enum
-
 _ServiceAvailability_members = []
 
 class ServiceAvailability(Enum):
@@ -47,9 +46,8 @@ class ServiceAvailability(Enum):
         # pylint: disable=global-statement
         global _ServiceAvailability_members
         # pylint: enable=global-statement
-
+        
         if not _ServiceAvailability_members:
             _ServiceAvailability_members = list(cls)
         return _ServiceAvailability_members.index(member)
-
 _ServiceAvailability_members = list(ServiceAvailability)

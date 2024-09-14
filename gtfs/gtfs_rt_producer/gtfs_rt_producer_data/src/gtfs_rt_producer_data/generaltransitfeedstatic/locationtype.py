@@ -1,5 +1,4 @@
 from enum import Enum
-
 _LocationType_members = []
 
 class LocationType(Enum):
@@ -50,9 +49,8 @@ class LocationType(Enum):
         # pylint: disable=global-statement
         global _LocationType_members
         # pylint: enable=global-statement
-
+        
         if not _LocationType_members:
             _LocationType_members = list(cls)
         return _LocationType_members.index(member)
-
 _LocationType_members = list(LocationType)

@@ -1,7 +1,5 @@
 from enum import Enum
 
-_Cause_members = []
-
 class Cause(Enum):
     """
     Cause of this alert.
@@ -30,18 +28,39 @@ class Cause(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _Cause_members
-        # pylint: enable=global-statement
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not _Cause_members:
-            _Cause_members = list(cls)
-        if 0 <= int(ordinal) < len(_Cause_members):
-            return _Cause_members[ordinal]
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
+        if isinstance(ordinal, int):
+            if ordinal == 1:
+                return Cause.UNKNOWN_CAUSE
+            elif ordinal == 2:
+                return Cause.OTHER_CAUSE
+            elif ordinal == 3:
+                return Cause.TECHNICAL_PROBLEM
+            elif ordinal == 4:
+                return Cause.STRIKE
+            elif ordinal == 5:
+                return Cause.DEMONSTRATION
+            elif ordinal == 6:
+                return Cause.ACCIDENT
+            elif ordinal == 7:
+                return Cause.HOLIDAY
+            elif ordinal == 8:
+                return Cause.WEATHER
+            elif ordinal == 9:
+                return Cause.MAINTENANCE
+            elif ordinal == 10:
+                return Cause.CONSTRUCTION
+            elif ordinal == 11:
+                return Cause.POLICE_ACTIVITY
+            elif ordinal == 12:
+                return Cause.MEDICAL_EMERGENCY
+            raise ValueError("Ordinal not found in enum")
         else:
-            raise IndexError("Ordinal out of range for enum")
+            raise ValueError("Ordinal must be an integer or a string representation of an integer")
 
     @classmethod
     def to_ordinal(cls, member: 'Cause') -> int:
@@ -54,12 +73,29 @@ class Cause(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _Cause_members
-        # pylint: enable=global-statement
-
-        if not _Cause_members:
-            _Cause_members = list(cls)
-        return _Cause_members.index(member)
-
-_Cause_members = list(Cause)
+        
+        if member == Cause.UNKNOWN_CAUSE:
+            return 1
+        if member == Cause.OTHER_CAUSE:
+            return 2
+        if member == Cause.TECHNICAL_PROBLEM:
+            return 3
+        if member == Cause.STRIKE:
+            return 4
+        if member == Cause.DEMONSTRATION:
+            return 5
+        if member == Cause.ACCIDENT:
+            return 6
+        if member == Cause.HOLIDAY:
+            return 7
+        if member == Cause.WEATHER:
+            return 8
+        if member == Cause.MAINTENANCE:
+            return 9
+        if member == Cause.CONSTRUCTION:
+            return 10
+        if member == Cause.POLICE_ACTIVITY:
+            return 11
+        if member == Cause.MEDICAL_EMERGENCY:
+            return 12
+        raise ValueError("Member not found in enum")

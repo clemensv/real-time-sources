@@ -1,5 +1,4 @@
 from enum import Enum
-
 _ExceptionType_members = []
 
 class ExceptionType(Enum):
@@ -47,9 +46,8 @@ class ExceptionType(Enum):
         # pylint: disable=global-statement
         global _ExceptionType_members
         # pylint: enable=global-statement
-
+        
         if not _ExceptionType_members:
             _ExceptionType_members = list(cls)
         return _ExceptionType_members.index(member)
-
 _ExceptionType_members = list(ExceptionType)

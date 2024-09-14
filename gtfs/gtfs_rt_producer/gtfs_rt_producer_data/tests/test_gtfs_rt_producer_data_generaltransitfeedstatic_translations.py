@@ -27,10 +27,10 @@ class Test_Translations(unittest.TestCase):
         Create instance of Translations for testing
         """
         instance = Translations(
-            tableName='tmwesyajazetqiisqxrh',
-            fieldName='sfzzxwikdvmtbctpcuab',
-            language='gkkpwtczsraauqhbegbo',
-            translation='zlxwlyrsbmmzewusjabs'
+            tableName='qimsjmumlyruestuhath',
+            fieldName='kuamvdtnkadvmdfejhlr',
+            language='vfxrapezruzpbvcvykuh',
+            translation='ofxgakrkvogepgqvlyar'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test tableName property
         """
-        test_value = 'tmwesyajazetqiisqxrh'
+        test_value = 'qimsjmumlyruestuhath'
         self.instance.tableName = test_value
         self.assertEqual(self.instance.tableName, test_value)
     
@@ -47,7 +47,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test fieldName property
         """
-        test_value = 'sfzzxwikdvmtbctpcuab'
+        test_value = 'kuamvdtnkadvmdfejhlr'
         self.instance.fieldName = test_value
         self.assertEqual(self.instance.fieldName, test_value)
     
@@ -55,7 +55,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'gkkpwtczsraauqhbegbo'
+        test_value = 'vfxrapezruzpbvcvykuh'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -63,7 +63,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test translation property
         """
-        test_value = 'zlxwlyrsbmmzewusjabs'
+        test_value = 'ofxgakrkvogepgqvlyar'
         self.instance.translation = test_value
         self.assertEqual(self.instance.translation, test_value)
     

@@ -66,6 +66,12 @@
                     "UNSCHEDULED",
                     "CANCELED"
                   ],
+                  "ordinals": {
+                    "SCHEDULED": 0,
+                    "ADDED": 1,
+                    "UNSCHEDULED": 2,
+                    "CANCELED": 3
+                  },
                   "doc": "The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED."
                 }
               ]
@@ -192,7 +198,12 @@
             "INCOMING_AT",
             "STOPPED_AT",
             "IN_TRANSIT_TO"
-          ]
+          ],
+          "ordinals": {
+            "INCOMING_AT": 0,
+            "STOPPED_AT": 1,
+            "IN_TRANSIT_TO": 2
+          }
         }
       ],
       "doc": "The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time"
@@ -220,6 +231,13 @@
             "CONGESTION",
             "SEVERE_CONGESTION"
           ],
+          "ordinals": {
+            "UNKNOWN_CONGESTION_LEVEL": 0,
+            "RUNNING_SMOOTHLY": 1,
+            "STOP_AND_GO": 2,
+            "CONGESTION": 3,
+            "SEVERE_CONGESTION": 4
+          },
           "doc": "Congestion level that is affecting this vehicle."
         }
       ]
@@ -241,6 +259,15 @@
             "FULL",
             "NOT_ACCEPTING_PASSENGERS"
           ],
+          "ordinals": {
+            "EMPTY": 0,
+            "MANY_SEATS_AVAILABLE": 1,
+            "FEW_SEATS_AVAILABLE": 2,
+            "STANDING_ROOM_ONLY": 3,
+            "CRUSHED_STANDING_ROOM_ONLY": 4,
+            "FULL": 5,
+            "NOT_ACCEPTING_PASSENGERS": 6
+          },
           "doc": "The degree of passenger occupancy of the vehicle. This field is still experimental, and subject to change. It may be formally adopted in the future."
         }
       ]

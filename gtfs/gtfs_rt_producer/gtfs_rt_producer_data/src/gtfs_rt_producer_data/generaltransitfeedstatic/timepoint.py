@@ -1,5 +1,4 @@
 from enum import Enum
-
 _Timepoint_members = []
 
 class Timepoint(Enum):
@@ -47,9 +46,8 @@ class Timepoint(Enum):
         # pylint: disable=global-statement
         global _Timepoint_members
         # pylint: enable=global-statement
-
+        
         if not _Timepoint_members:
             _Timepoint_members = list(cls)
         return _Timepoint_members.index(member)
-
 _Timepoint_members = list(Timepoint)

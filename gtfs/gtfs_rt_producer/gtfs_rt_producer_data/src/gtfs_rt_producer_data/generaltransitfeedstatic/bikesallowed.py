@@ -1,5 +1,4 @@
 from enum import Enum
-
 _BikesAllowed_members = []
 
 class BikesAllowed(Enum):
@@ -48,9 +47,8 @@ class BikesAllowed(Enum):
         # pylint: disable=global-statement
         global _BikesAllowed_members
         # pylint: enable=global-statement
-
+        
         if not _BikesAllowed_members:
             _BikesAllowed_members = list(cls)
         return _BikesAllowed_members.index(member)
-
 _BikesAllowed_members = list(BikesAllowed)

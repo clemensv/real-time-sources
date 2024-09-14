@@ -12,9 +12,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedRealTime/schemas/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
-                    "createdat": "2024-09-13T12:59:22.725357",
+                    "createdat": "2024-09-14T17:25:59.763774",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:22.725357",
+                    "modifiedat": "2024-09-14T17:25:59.763774",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -51,9 +51,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedRealTime/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate",
-                    "createdat": "2024-09-13T12:59:25.927775",
+                    "createdat": "2024-09-14T17:26:02.949801",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:25.927775",
+                    "modifiedat": "2024-09-14T17:26:02.949801",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -90,9 +90,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedRealTime/schemas/GeneralTransitFeedRealTime.Alert.Alert",
-                    "createdat": "2024-09-13T12:59:29.099678",
+                    "createdat": "2024-09-14T17:26:06.165066",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:29.099678",
+                    "modifiedat": "2024-09-14T17:26:06.165066",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -124,9 +124,9 @@
                     }
                 }
             },
-            "createdat": "2024-09-13T12:59:22.725357",
+            "createdat": "2024-09-14T17:25:59.761757",
             "epoch": 0,
-            "modifiedat": "2024-09-13T12:59:22.725357"
+            "modifiedat": "2024-09-14T17:25:59.761757"
         },
         "GeneralTransitFeedStatic": {
             "id": "GeneralTransitFeedStatic",
@@ -137,9 +137,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Agency",
-                    "createdat": "2024-09-13T12:59:32.280368",
+                    "createdat": "2024-09-14T17:26:09.382764",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:32.280368",
+                    "modifiedat": "2024-09-14T17:26:09.382764",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -176,9 +176,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Areas",
-                    "createdat": "2024-09-13T12:59:35.467906",
+                    "createdat": "2024-09-14T17:26:12.558311",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:35.467906",
+                    "modifiedat": "2024-09-14T17:26:12.558311",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -215,9 +215,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Attributions",
-                    "createdat": "2024-09-13T12:59:38.655427",
+                    "createdat": "2024-09-14T17:26:15.738714",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:38.655427",
+                    "modifiedat": "2024-09-14T17:26:15.738714",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -254,9 +254,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeed.BookingRules",
-                    "createdat": "2024-09-13T12:59:41.780280",
+                    "createdat": "2024-09-14T17:26:18.974333",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:41.780280",
+                    "modifiedat": "2024-09-14T17:26:18.974333",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -293,9 +293,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareAttributes",
-                    "createdat": "2024-09-13T12:59:45.043405",
+                    "createdat": "2024-09-14T17:26:22.216773",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:45.043405",
+                    "modifiedat": "2024-09-14T17:26:22.216773",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -332,9 +332,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareLegRules",
-                    "createdat": "2024-09-13T12:59:48.259544",
+                    "createdat": "2024-09-14T17:26:25.409808",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:48.259544",
+                    "modifiedat": "2024-09-14T17:26:25.409808",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -371,9 +371,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareMedia",
-                    "createdat": "2024-09-13T12:59:51.427168",
+                    "createdat": "2024-09-14T17:26:28.618776",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:51.427168",
+                    "modifiedat": "2024-09-14T17:26:28.618776",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -410,9 +410,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareProducts",
-                    "createdat": "2024-09-13T12:59:54.581844",
+                    "createdat": "2024-09-14T17:26:31.847840",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:54.581844",
+                    "modifiedat": "2024-09-14T17:26:31.847840",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -449,9 +449,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareRules",
-                    "createdat": "2024-09-13T12:59:57.749246",
+                    "createdat": "2024-09-14T17:26:35.058234",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T12:59:57.749246",
+                    "modifiedat": "2024-09-14T17:26:35.058234",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -488,9 +488,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FareTransferRules",
-                    "createdat": "2024-09-13T13:00:00.923763",
+                    "createdat": "2024-09-14T17:26:38.269031",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:00.923763",
+                    "modifiedat": "2024-09-14T17:26:38.269031",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -527,9 +527,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.FeedInfo",
-                    "createdat": "2024-09-13T13:00:04.155126",
+                    "createdat": "2024-09-14T17:26:41.487237",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:04.155126",
+                    "modifiedat": "2024-09-14T17:26:41.487237",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -566,9 +566,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Frequencies",
-                    "createdat": "2024-09-13T13:00:07.353050",
+                    "createdat": "2024-09-14T17:26:44.702153",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:07.353050",
+                    "modifiedat": "2024-09-14T17:26:44.702153",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -605,9 +605,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Levels",
-                    "createdat": "2024-09-13T13:00:10.498990",
+                    "createdat": "2024-09-14T17:26:47.935151",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:10.498990",
+                    "modifiedat": "2024-09-14T17:26:47.935151",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -644,9 +644,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.LocationGeoJson",
-                    "createdat": "2024-09-13T13:00:13.644720",
+                    "createdat": "2024-09-14T17:26:51.157366",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:13.644720",
+                    "modifiedat": "2024-09-14T17:26:51.157366",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -683,9 +683,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.LocationGroups",
-                    "createdat": "2024-09-13T13:00:16.799157",
+                    "createdat": "2024-09-14T17:26:54.390757",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:16.799157",
+                    "modifiedat": "2024-09-14T17:26:54.390757",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -722,9 +722,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.LocationGroupStores",
-                    "createdat": "2024-09-13T13:00:20.020288",
+                    "createdat": "2024-09-14T17:26:57.753519",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:20.020288",
+                    "modifiedat": "2024-09-14T17:26:57.753519",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -761,9 +761,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Networks",
-                    "createdat": "2024-09-13T13:00:23.193324",
+                    "createdat": "2024-09-14T17:27:01.220960",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:23.193324",
+                    "modifiedat": "2024-09-14T17:27:01.220960",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -800,9 +800,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Pathways",
-                    "createdat": "2024-09-13T13:00:26.347962",
+                    "createdat": "2024-09-14T17:27:04.464807",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:26.347962",
+                    "modifiedat": "2024-09-14T17:27:04.464807",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -839,9 +839,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.RouteNetworks",
-                    "createdat": "2024-09-13T13:00:29.521079",
+                    "createdat": "2024-09-14T17:27:07.820034",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:29.521079",
+                    "modifiedat": "2024-09-14T17:27:07.820034",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -878,9 +878,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Routes",
-                    "createdat": "2024-09-13T13:00:32.770023",
+                    "createdat": "2024-09-14T17:27:11.094250",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:32.770023",
+                    "modifiedat": "2024-09-14T17:27:11.094250",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -917,9 +917,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Shapes",
-                    "createdat": "2024-09-13T13:00:35.972630",
+                    "createdat": "2024-09-14T17:27:14.341484",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:35.972630",
+                    "modifiedat": "2024-09-14T17:27:14.341484",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -956,9 +956,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.StopAreas",
-                    "createdat": "2024-09-13T13:00:39.151580",
+                    "createdat": "2024-09-14T17:27:17.589550",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:39.151580",
+                    "modifiedat": "2024-09-14T17:27:17.589550",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -995,9 +995,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Stops",
-                    "createdat": "2024-09-13T13:00:42.339596",
+                    "createdat": "2024-09-14T17:27:20.859065",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:42.339596",
+                    "modifiedat": "2024-09-14T17:27:20.859065",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1034,9 +1034,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.StopTimes",
-                    "createdat": "2024-09-13T13:00:45.541871",
+                    "createdat": "2024-09-14T17:27:24.110576",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:45.541871",
+                    "modifiedat": "2024-09-14T17:27:24.110576",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1073,9 +1073,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Timeframes",
-                    "createdat": "2024-09-13T13:00:48.711993",
+                    "createdat": "2024-09-14T17:27:27.359062",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:48.711993",
+                    "modifiedat": "2024-09-14T17:27:27.359062",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1112,9 +1112,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Transfers",
-                    "createdat": "2024-09-13T13:00:51.886362",
+                    "createdat": "2024-09-14T17:27:30.580463",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:51.886362",
+                    "modifiedat": "2024-09-14T17:27:30.580463",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1151,9 +1151,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Translations",
-                    "createdat": "2024-09-13T13:00:55.064145",
+                    "createdat": "2024-09-14T17:27:33.859223",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:55.064145",
+                    "modifiedat": "2024-09-14T17:27:33.859223",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1190,9 +1190,9 @@
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/GeneralTransitFeedStatic/schemas/GeneralTransitFeedStatic.Trips",
-                    "createdat": "2024-09-13T13:00:58.297669",
+                    "createdat": "2024-09-14T17:27:37.107754",
                     "epoch": 0,
-                    "modifiedat": "2024-09-13T13:00:58.297669",
+                    "modifiedat": "2024-09-14T17:27:37.107754",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -1224,9 +1224,9 @@
                     }
                 }
             },
-            "createdat": "2024-09-13T12:59:32.264658",
+            "createdat": "2024-09-14T17:26:09.379195",
             "epoch": 0,
-            "modifiedat": "2024-09-13T12:59:32.264658"
+            "modifiedat": "2024-09-14T17:26:09.379195"
         }
     },
     "schemagroups": {
@@ -1308,6 +1308,12 @@
                                                                     "UNSCHEDULED",
                                                                     "CANCELED"
                                                                 ],
+                                                                "ordinals": {
+                                                                    "SCHEDULED": 0,
+                                                                    "ADDED": 1,
+                                                                    "UNSCHEDULED": 2,
+                                                                    "CANCELED": 3
+                                                                },
                                                                 "doc": "The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED."
                                                             }
                                                         ]
@@ -1434,7 +1440,12 @@
                                                     "INCOMING_AT",
                                                     "STOPPED_AT",
                                                     "IN_TRANSIT_TO"
-                                                ]
+                                                ],
+                                                "ordinals": {
+                                                    "INCOMING_AT": 0,
+                                                    "STOPPED_AT": 1,
+                                                    "IN_TRANSIT_TO": 2
+                                                }
                                             }
                                         ],
                                         "doc": "The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time"
@@ -1462,6 +1473,13 @@
                                                     "CONGESTION",
                                                     "SEVERE_CONGESTION"
                                                 ],
+                                                "ordinals": {
+                                                    "UNKNOWN_CONGESTION_LEVEL": 0,
+                                                    "RUNNING_SMOOTHLY": 1,
+                                                    "STOP_AND_GO": 2,
+                                                    "CONGESTION": 3,
+                                                    "SEVERE_CONGESTION": 4
+                                                },
                                                 "doc": "Congestion level that is affecting this vehicle."
                                             }
                                         ]
@@ -1483,6 +1501,15 @@
                                                     "FULL",
                                                     "NOT_ACCEPTING_PASSENGERS"
                                                 ],
+                                                "ordinals": {
+                                                    "EMPTY": 0,
+                                                    "MANY_SEATS_AVAILABLE": 1,
+                                                    "FEW_SEATS_AVAILABLE": 2,
+                                                    "STANDING_ROOM_ONLY": 3,
+                                                    "CRUSHED_STANDING_ROOM_ONLY": 4,
+                                                    "FULL": 5,
+                                                    "NOT_ACCEPTING_PASSENGERS": 6
+                                                },
                                                 "doc": "The degree of passenger occupancy of the vehicle. This field is still experimental, and subject to change. It may be formally adopted in the future."
                                             }
                                         ]
@@ -1490,9 +1517,9 @@
                                 ],
                                 "doc": "Realtime positioning information for a given vehicle."
                             },
-                            "createdat": "2024-09-13T12:59:21.936927",
+                            "createdat": "2024-09-14T17:25:58.948159",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:21.936927"
+                            "modifiedat": "2024-09-14T17:25:58.948159"
                         }
                     }
                 },
@@ -1569,6 +1596,12 @@
                                                                 "UNSCHEDULED",
                                                                 "CANCELED"
                                                             ],
+                                                            "ordinals": {
+                                                                "SCHEDULED": 0,
+                                                                "ADDED": 1,
+                                                                "UNSCHEDULED": 2,
+                                                                "CANCELED": 3
+                                                            },
                                                             "doc": "The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED."
                                                         }
                                                     ]
@@ -1700,6 +1733,11 @@
                                                                     "SKIPPED",
                                                                     "NO_DATA"
                                                                 ],
+                                                                "ordinals": {
+                                                                    "SCHEDULED": 0,
+                                                                    "SKIPPED": 1,
+                                                                    "NO_DATA": 2
+                                                                },
                                                                 "doc": "The relation between this StopTime and the static schedule."
                                                             }
                                                         ]
@@ -1729,9 +1767,9 @@
                                 ],
                                 "doc": "Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop of the trip. If the time of that is in the past, the client will conclude from that that the whole trip is in the past (it is possible, although inconsequential, to also provide updates for preceding stops). This option is most relevant for a trip that has completed ahead of schedule, but according to the schedule, the trip is still proceeding at the current time. Removing the updates for this trip could make the client assume that the trip is still proceeding. Note that the feed provider is allowed, but not required, to purge past updates - this is one case where this would be practically useful."
                             },
-                            "createdat": "2024-09-13T12:59:25.157530",
+                            "createdat": "2024-09-14T17:26:02.169119",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:25.157530"
+                            "modifiedat": "2024-09-14T17:26:02.169119"
                         }
                     }
                 },
@@ -1873,6 +1911,12 @@
                                                                                     "UNSCHEDULED",
                                                                                     "CANCELED"
                                                                                 ],
+                                                                                "ordinals": {
+                                                                                    "SCHEDULED": 0,
+                                                                                    "ADDED": 1,
+                                                                                    "UNSCHEDULED": 2,
+                                                                                    "CANCELED": 3
+                                                                                },
                                                                                 "doc": "The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED."
                                                                             }
                                                                         ]
@@ -1917,6 +1961,20 @@
                                                     "POLICE_ACTIVITY",
                                                     "MEDICAL_EMERGENCY"
                                                 ],
+                                                "ordinals": {
+                                                    "UNKNOWN_CAUSE": 1,
+                                                    "OTHER_CAUSE": 2,
+                                                    "TECHNICAL_PROBLEM": 3,
+                                                    "STRIKE": 4,
+                                                    "DEMONSTRATION": 5,
+                                                    "ACCIDENT": 6,
+                                                    "HOLIDAY": 7,
+                                                    "WEATHER": 8,
+                                                    "MAINTENANCE": 9,
+                                                    "CONSTRUCTION": 10,
+                                                    "POLICE_ACTIVITY": 11,
+                                                    "MEDICAL_EMERGENCY": 12
+                                                },
                                                 "doc": "Cause of this alert."
                                             }
                                         ]
@@ -1940,6 +1998,17 @@
                                                     "UNKNOWN_EFFECT",
                                                     "STOP_MOVED"
                                                 ],
+                                                "ordinals": {
+                                                    "NO_SERVICE": 1,
+                                                    "REDUCED_SERVICE": 2,
+                                                    "SIGNIFICANT_DELAYS": 3,
+                                                    "DETOUR": 4,
+                                                    "ADDITIONAL_SERVICE": 5,
+                                                    "MODIFIED_SERVICE": 6,
+                                                    "OTHER_EFFECT": 7,
+                                                    "UNKNOWN_EFFECT": 8,
+                                                    "STOP_MOVED": 9
+                                                },
                                                 "doc": "What is the effect of this problem on the affected entity."
                                             }
                                         ]
@@ -2005,16 +2074,16 @@
                                 ],
                                 "doc": "An alert, indicating some sort of incident in the public transit network."
                             },
-                            "createdat": "2024-09-13T12:59:28.310651",
+                            "createdat": "2024-09-14T17:26:05.369245",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:28.310651"
+                            "modifiedat": "2024-09-14T17:26:05.369245"
                         }
                     }
                 }
             },
-            "createdat": "2024-09-13T12:59:21.936927",
+            "createdat": "2024-09-14T17:25:58.945865",
             "epoch": 0,
-            "modifiedat": "2024-09-13T12:59:21.936927"
+            "modifiedat": "2024-09-14T17:25:58.945865"
         },
         "GeneralTransitFeedStatic": {
             "id": "GeneralTransitFeedStatic",
@@ -2090,9 +2159,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:31.453998",
+                            "createdat": "2024-09-14T17:26:08.559406",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:31.453998"
+                            "modifiedat": "2024-09-14T17:26:08.559406"
                         }
                     }
                 },
@@ -2139,9 +2208,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:34.656797",
+                            "createdat": "2024-09-14T17:26:11.763878",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:34.656797"
+                            "modifiedat": "2024-09-14T17:26:11.763878"
                         }
                     }
                 },
@@ -2255,9 +2324,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:37.873949",
+                            "createdat": "2024-09-14T17:26:14.953184",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:37.873949"
+                            "modifiedat": "2024-09-14T17:26:14.953184"
                         }
                     }
                 },
@@ -2304,9 +2373,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:40.965892",
+                            "createdat": "2024-09-14T17:26:18.147583",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:40.965892"
+                            "modifiedat": "2024-09-14T17:26:18.147583"
                         }
                     }
                 },
@@ -2372,9 +2441,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:44.217704",
+                            "createdat": "2024-09-14T17:26:21.409151",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:44.217704"
+                            "modifiedat": "2024-09-14T17:26:21.409151"
                         }
                     }
                 },
@@ -2439,9 +2508,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:47.470522",
+                            "createdat": "2024-09-14T17:26:24.610502",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:47.470522"
+                            "modifiedat": "2024-09-14T17:26:24.610502"
                         }
                     }
                 },
@@ -2488,9 +2557,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:50.627856",
+                            "createdat": "2024-09-14T17:26:27.826594",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:50.627856"
+                            "modifiedat": "2024-09-14T17:26:27.826594"
                         }
                     }
                 },
@@ -2537,9 +2606,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:53.794128",
+                            "createdat": "2024-09-14T17:26:31.037239",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:53.794128"
+                            "modifiedat": "2024-09-14T17:26:31.037239"
                         }
                     }
                 },
@@ -2599,9 +2668,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T12:59:56.972055",
+                            "createdat": "2024-09-14T17:26:34.244589",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T12:59:56.972055"
+                            "modifiedat": "2024-09-14T17:26:34.244589"
                         }
                     }
                 },
@@ -2675,9 +2744,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:00.143907",
+                            "createdat": "2024-09-14T17:26:37.494394",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:00.143907"
+                            "modifiedat": "2024-09-14T17:26:37.494394"
                         }
                     }
                 },
@@ -2765,9 +2834,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:03.359372",
+                            "createdat": "2024-09-14T17:26:40.678401",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:03.359372"
+                            "modifiedat": "2024-09-14T17:26:40.678401"
                         }
                     }
                 },
@@ -2815,9 +2884,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:06.546089",
+                            "createdat": "2024-09-14T17:26:43.919176",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:06.546089"
+                            "modifiedat": "2024-09-14T17:26:43.919176"
                         }
                     }
                 },
@@ -2855,9 +2924,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:09.686480",
+                            "createdat": "2024-09-14T17:26:47.115980",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:09.686480"
+                            "modifiedat": "2024-09-14T17:26:47.115980"
                         }
                     }
                 },
@@ -2891,9 +2960,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:12.877061",
+                            "createdat": "2024-09-14T17:26:50.343007",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:12.877061"
+                            "modifiedat": "2024-09-14T17:26:50.343007"
                         }
                     }
                 },
@@ -2940,9 +3009,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:16.036568",
+                            "createdat": "2024-09-14T17:26:53.601274",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:16.036568"
+                            "modifiedat": "2024-09-14T17:26:53.601274"
                         }
                     }
                 },
@@ -2976,9 +3045,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:19.220644",
+                            "createdat": "2024-09-14T17:26:56.860445",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:19.220644"
+                            "modifiedat": "2024-09-14T17:26:56.860445"
                         }
                     }
                 },
@@ -3025,9 +3094,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:22.393856",
+                            "createdat": "2024-09-14T17:27:00.372286",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:22.393856"
+                            "modifiedat": "2024-09-14T17:27:00.372286"
                         }
                     }
                 },
@@ -3134,9 +3203,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:25.563813",
+                            "createdat": "2024-09-14T17:27:03.647955",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:25.563813"
+                            "modifiedat": "2024-09-14T17:27:03.647955"
                         }
                     }
                 },
@@ -3170,9 +3239,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:28.751388",
+                            "createdat": "2024-09-14T17:27:06.987584",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:28.751388"
+                            "modifiedat": "2024-09-14T17:27:06.987584"
                         }
                     }
                 },
@@ -3335,9 +3404,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:31.955431",
+                            "createdat": "2024-09-14T17:27:10.285963",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:31.955431"
+                            "modifiedat": "2024-09-14T17:27:10.285963"
                         }
                     }
                 },
@@ -3385,9 +3454,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:35.159912",
+                            "createdat": "2024-09-14T17:27:13.546343",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:35.159912"
+                            "modifiedat": "2024-09-14T17:27:13.546343"
                         }
                     }
                 },
@@ -3421,9 +3490,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:38.359599",
+                            "createdat": "2024-09-14T17:27:16.775761",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:38.359599"
+                            "modifiedat": "2024-09-14T17:27:16.775761"
                         }
                     }
                 },
@@ -3587,9 +3656,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:41.561594",
+                            "createdat": "2024-09-14T17:27:20.022956",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:41.561594"
+                            "modifiedat": "2024-09-14T17:27:20.022956"
                         }
                     }
                 },
@@ -3749,9 +3818,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:44.765717",
+                            "createdat": "2024-09-14T17:27:23.323407",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:44.765717"
+                            "modifiedat": "2024-09-14T17:27:23.323407"
                         }
                     }
                 },
@@ -3894,9 +3963,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:47.905307",
+                            "createdat": "2024-09-14T17:27:26.523741",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:47.905307"
+                            "modifiedat": "2024-09-14T17:27:26.523741"
                         }
                     }
                 },
@@ -3939,9 +4008,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:51.082408",
+                            "createdat": "2024-09-14T17:27:29.804138",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:51.082408"
+                            "modifiedat": "2024-09-14T17:27:29.804138"
                         }
                     }
                 },
@@ -3980,9 +4049,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:54.286111",
+                            "createdat": "2024-09-14T17:27:33.045372",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:54.286111"
+                            "modifiedat": "2024-09-14T17:27:33.045372"
                         }
                     }
                 },
@@ -4196,16 +4265,16 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-13T13:00:57.504942",
+                            "createdat": "2024-09-14T17:27:36.304067",
                             "epoch": 0,
-                            "modifiedat": "2024-09-13T13:00:57.504942"
+                            "modifiedat": "2024-09-14T17:27:36.304067"
                         }
                     }
                 }
             },
-            "createdat": "2024-09-13T12:59:31.453998",
+            "createdat": "2024-09-14T17:26:08.555641",
             "epoch": 0,
-            "modifiedat": "2024-09-13T12:59:31.453998"
+            "modifiedat": "2024-09-14T17:26:08.555641"
         }
     }
 }

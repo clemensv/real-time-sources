@@ -32,9 +32,9 @@ class Test_TripUpdate(unittest.TestCase):
         instance = TripUpdate(
             trip=Test_TripDescriptor.create_instance(),
             vehicle=Test_VehicleDescriptor.create_instance(),
-            stop_time_update=[Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance()],
-            timestamp=int(32),
-            delay=int(88)
+            stop_time_update=[Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance()],
+            timestamp=int(61),
+            delay=int(40)
         )
         return instance
 
@@ -59,7 +59,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test stop_time_update property
         """
-        test_value = [Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance()]
+        test_value = [Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance()]
         self.instance.stop_time_update = test_value
         self.assertEqual(self.instance.stop_time_update, test_value)
     
@@ -67,7 +67,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(32)
+        test_value = int(61)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -75,7 +75,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test delay property
         """
-        test_value = int(88)
+        test_value = int(40)
         self.instance.delay = test_value
         self.assertEqual(self.instance.delay, test_value)
     
