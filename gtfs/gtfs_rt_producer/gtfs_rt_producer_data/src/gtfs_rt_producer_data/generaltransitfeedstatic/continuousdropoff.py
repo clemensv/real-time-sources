@@ -1,5 +1,4 @@
 from enum import Enum
-
 _ContinuousDropOff_members = []
 
 class ContinuousDropOff(Enum):
@@ -49,9 +48,8 @@ class ContinuousDropOff(Enum):
         # pylint: disable=global-statement
         global _ContinuousDropOff_members
         # pylint: enable=global-statement
-
+        
         if not _ContinuousDropOff_members:
             _ContinuousDropOff_members = list(cls)
         return _ContinuousDropOff_members.index(member)
-
 _ContinuousDropOff_members = list(ContinuousDropOff)

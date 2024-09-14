@@ -1508,7 +1508,7 @@ async def run_feed(args):
         logger.setLevel(llevel)
     if not args.agency:
         raise ValueError("No agency specified")
-    if not args.gtfs_rt_urls and not args.mdb_source_id:
+    if not args.gtfs_urls and not args.gtfs_rt_urls and not args.mdb_source_id:
         raise ValueError("No GTFS URL or Mobility Database source ID specified")
     gtfs_rt_headers = None
     gtfs_headers = None

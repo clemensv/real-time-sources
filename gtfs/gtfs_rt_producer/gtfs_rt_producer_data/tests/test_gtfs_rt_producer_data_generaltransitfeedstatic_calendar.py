@@ -28,7 +28,7 @@ class Test_Calendar(unittest.TestCase):
         Create instance of Calendar for testing
         """
         instance = Calendar(
-            serviceId='pqqgxzcxnlfyjwfawqwx',
+            serviceId='mvondncvhbrzsiwwyusg',
             monday=Test_ServiceAvailability.create_instance(),
             tuesday=Test_ServiceAvailability.create_instance(),
             wednesday=Test_ServiceAvailability.create_instance(),
@@ -36,8 +36,8 @@ class Test_Calendar(unittest.TestCase):
             friday=Test_ServiceAvailability.create_instance(),
             saturday=Test_ServiceAvailability.create_instance(),
             sunday=Test_ServiceAvailability.create_instance(),
-            startDate='nufqjhqnpstzjzpewlld',
-            endDate='tetpyqijegnyjbvolmee'
+            startDate='ucfhinlhykbonylxkmmg',
+            endDate='dqnzmhyopanpffzbfhmn'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test serviceId property
         """
-        test_value = 'pqqgxzcxnlfyjwfawqwx'
+        test_value = 'mvondncvhbrzsiwwyusg'
         self.instance.serviceId = test_value
         self.assertEqual(self.instance.serviceId, test_value)
     
@@ -110,7 +110,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test startDate property
         """
-        test_value = 'nufqjhqnpstzjzpewlld'
+        test_value = 'ucfhinlhykbonylxkmmg'
         self.instance.startDate = test_value
         self.assertEqual(self.instance.startDate, test_value)
     
@@ -118,7 +118,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test endDate property
         """
-        test_value = 'tetpyqijegnyjbvolmee'
+        test_value = 'dqnzmhyopanpffzbfhmn'
         self.instance.endDate = test_value
         self.assertEqual(self.instance.endDate, test_value)
     

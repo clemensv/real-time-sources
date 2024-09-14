@@ -8,10 +8,10 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.effect import Effect
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.effect import Effect
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.cause import Cause
 
 

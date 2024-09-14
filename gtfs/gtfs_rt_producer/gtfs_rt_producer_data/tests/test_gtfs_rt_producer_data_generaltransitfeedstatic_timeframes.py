@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.timeframes import Timeframes
-from test_gtfs_rt_producer_data_generaltransitfeedstatic_calendar import Test_Calendar
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_calendardates import Test_CalendarDates
+from test_gtfs_rt_producer_data_generaltransitfeedstatic_calendar import Test_Calendar
 
 class Test_Timeframes(unittest.TestCase):
     """
@@ -29,9 +29,9 @@ class Test_Timeframes(unittest.TestCase):
         Create instance of Timeframes for testing
         """
         instance = Timeframes(
-            timeframeGroupId='zlnicpvoshketwhttxvp',
-            startTime='wzvtvuagduvmlifbeird',
-            endTime='wmydkwzoabgenuecjoxj',
+            timeframeGroupId='qzzhwpqtvyiildawayho',
+            startTime='knycnnufdhgeqqwidphw',
+            endTime='kkbtdxwpgucfwfaapmla',
             serviceDates=Test_Calendar.create_instance()
         )
         return instance
@@ -41,7 +41,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test timeframeGroupId property
         """
-        test_value = 'zlnicpvoshketwhttxvp'
+        test_value = 'qzzhwpqtvyiildawayho'
         self.instance.timeframeGroupId = test_value
         self.assertEqual(self.instance.timeframeGroupId, test_value)
     
@@ -49,7 +49,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'wzvtvuagduvmlifbeird'
+        test_value = 'knycnnufdhgeqqwidphw'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -57,7 +57,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'wmydkwzoabgenuecjoxj'
+        test_value = 'kkbtdxwpgucfwfaapmla'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     

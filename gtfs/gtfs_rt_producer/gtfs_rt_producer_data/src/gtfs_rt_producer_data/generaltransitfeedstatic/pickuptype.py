@@ -1,5 +1,4 @@
 from enum import Enum
-
 _PickupType_members = []
 
 class PickupType(Enum):
@@ -49,9 +48,8 @@ class PickupType(Enum):
         # pylint: disable=global-statement
         global _PickupType_members
         # pylint: enable=global-statement
-
+        
         if not _PickupType_members:
             _PickupType_members = list(cls)
         return _PickupType_members.index(member)
-
 _PickupType_members = list(PickupType)

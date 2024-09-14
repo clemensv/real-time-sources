@@ -1,5 +1,4 @@
 from enum import Enum
-
 _WheelchairBoarding_members = []
 
 class WheelchairBoarding(Enum):
@@ -48,9 +47,8 @@ class WheelchairBoarding(Enum):
         # pylint: disable=global-statement
         global _WheelchairBoarding_members
         # pylint: enable=global-statement
-
+        
         if not _WheelchairBoarding_members:
             _WheelchairBoarding_members = list(cls)
         return _WheelchairBoarding_members.index(member)
-
 _WheelchairBoarding_members = list(WheelchairBoarding)

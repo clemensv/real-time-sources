@@ -1,7 +1,5 @@
 from enum import Enum
 
-_VehicleStopStatus_members = []
-
 class VehicleStopStatus(Enum):
     """
     A VehicleStopStatus enum.
@@ -21,18 +19,21 @@ class VehicleStopStatus(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _VehicleStopStatus_members
-        # pylint: enable=global-statement
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not _VehicleStopStatus_members:
-            _VehicleStopStatus_members = list(cls)
-        if 0 <= int(ordinal) < len(_VehicleStopStatus_members):
-            return _VehicleStopStatus_members[ordinal]
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
+        if isinstance(ordinal, int):
+            if ordinal == 0:
+                return VehicleStopStatus.INCOMING_AT
+            elif ordinal == 1:
+                return VehicleStopStatus.STOPPED_AT
+            elif ordinal == 2:
+                return VehicleStopStatus.IN_TRANSIT_TO
+            raise ValueError("Ordinal not found in enum")
         else:
-            raise IndexError("Ordinal out of range for enum")
+            raise ValueError("Ordinal must be an integer or a string representation of an integer")
 
     @classmethod
     def to_ordinal(cls, member: 'VehicleStopStatus') -> int:
@@ -45,12 +46,11 @@ class VehicleStopStatus(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _VehicleStopStatus_members
-        # pylint: enable=global-statement
-
-        if not _VehicleStopStatus_members:
-            _VehicleStopStatus_members = list(cls)
-        return _VehicleStopStatus_members.index(member)
-
-_VehicleStopStatus_members = list(VehicleStopStatus)
+        
+        if member == VehicleStopStatus.INCOMING_AT:
+            return 0
+        if member == VehicleStopStatus.STOPPED_AT:
+            return 1
+        if member == VehicleStopStatus.IN_TRANSIT_TO:
+            return 2
+        raise ValueError("Member not found in enum")

@@ -1,7 +1,5 @@
 from enum import Enum
 
-_ScheduleRelationship_members = []
-
 class ScheduleRelationship(Enum):
     """
     The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED.
@@ -22,18 +20,23 @@ class ScheduleRelationship(Enum):
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _ScheduleRelationship_members
-        # pylint: enable=global-statement
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
-        if not _ScheduleRelationship_members:
-            _ScheduleRelationship_members = list(cls)
-        if 0 <= int(ordinal) < len(_ScheduleRelationship_members):
-            return _ScheduleRelationship_members[ordinal]
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
+        if isinstance(ordinal, int):
+            if ordinal == 0:
+                return ScheduleRelationship.SCHEDULED
+            elif ordinal == 1:
+                return ScheduleRelationship.ADDED
+            elif ordinal == 2:
+                return ScheduleRelationship.UNSCHEDULED
+            elif ordinal == 3:
+                return ScheduleRelationship.CANCELED
+            raise ValueError("Ordinal not found in enum")
         else:
-            raise IndexError("Ordinal out of range for enum")
+            raise ValueError("Ordinal must be an integer or a string representation of an integer")
 
     @classmethod
     def to_ordinal(cls, member: 'ScheduleRelationship') -> int:
@@ -46,12 +49,13 @@ class ScheduleRelationship(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _ScheduleRelationship_members
-        # pylint: enable=global-statement
-
-        if not _ScheduleRelationship_members:
-            _ScheduleRelationship_members = list(cls)
-        return _ScheduleRelationship_members.index(member)
-
-_ScheduleRelationship_members = list(ScheduleRelationship)
+        
+        if member == ScheduleRelationship.SCHEDULED:
+            return 0
+        if member == ScheduleRelationship.ADDED:
+            return 1
+        if member == ScheduleRelationship.UNSCHEDULED:
+            return 2
+        if member == ScheduleRelationship.CANCELED:
+            return 3
+        raise ValueError("Member not found in enum")

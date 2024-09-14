@@ -1,5 +1,4 @@
 from enum import Enum
-
 _RouteType_members = []
 
 class RouteType(Enum):
@@ -59,9 +58,8 @@ class RouteType(Enum):
         # pylint: disable=global-statement
         global _RouteType_members
         # pylint: enable=global-statement
-
+        
         if not _RouteType_members:
             _RouteType_members = list(cls)
         return _RouteType_members.index(member)
-
 _RouteType_members = list(RouteType)

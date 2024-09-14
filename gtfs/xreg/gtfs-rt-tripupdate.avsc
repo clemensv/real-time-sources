@@ -64,6 +64,12 @@
                   "UNSCHEDULED",
                   "CANCELED"
                 ],
+                "ordinals": {
+                  "SCHEDULED": 0,
+                  "ADDED": 1,
+                  "UNSCHEDULED": 2,
+                  "CANCELED": 3
+                },
                 "doc": "The relation between this trip and the static schedule. If a trip is done in accordance with temporary schedule, not reflected in GTFS, then it shouldn't be marked as SCHEDULED, but likely as ADDED."
               }
             ]
@@ -195,6 +201,11 @@
                     "SKIPPED",
                     "NO_DATA"
                   ],
+                  "ordinals": {
+                    "SCHEDULED": 0,
+                    "SKIPPED": 1,
+                    "NO_DATA": 2
+                  },
                   "doc": "The relation between this StopTime and the static schedule."
                 }
               ]

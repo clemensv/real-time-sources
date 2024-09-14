@@ -1,5 +1,4 @@
 from enum import Enum
-
 _DirectionId_members = []
 
 class DirectionId(Enum):
@@ -47,9 +46,8 @@ class DirectionId(Enum):
         # pylint: disable=global-statement
         global _DirectionId_members
         # pylint: enable=global-statement
-
+        
         if not _DirectionId_members:
             _DirectionId_members = list(cls)
         return _DirectionId_members.index(member)
-
 _DirectionId_members = list(DirectionId)
