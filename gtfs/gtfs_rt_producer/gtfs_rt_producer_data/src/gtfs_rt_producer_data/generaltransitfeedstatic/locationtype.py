@@ -28,6 +28,8 @@ class LocationType(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _LocationType_members:
             _LocationType_members = list(cls)
         if 0 <= int(ordinal) < len(_LocationType_members):
