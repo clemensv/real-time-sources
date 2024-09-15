@@ -27,6 +27,8 @@ class DropOffType(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _DropOffType_members:
             _DropOffType_members = list(cls)
         if 0 <= int(ordinal) < len(_DropOffType_members):

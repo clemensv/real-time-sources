@@ -103,7 +103,7 @@
 
 .drop materialized-view AgencyLatest ifexists;
 
-.create materialized-view with (backfill=true) AgencyLatest on table Agency {
+.create materialized-view AgencyLatest on table Agency {
     Agency | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -178,7 +178,7 @@
 
 .drop materialized-view AreasLatest ifexists;
 
-.create materialized-view with (backfill=true) AreasLatest on table Areas {
+.create materialized-view AreasLatest on table Areas {
     Areas | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -281,7 +281,7 @@
 
 .drop materialized-view AttributionsLatest ifexists;
 
-.create materialized-view with (backfill=true) AttributionsLatest on table Attributions {
+.create materialized-view AttributionsLatest on table Attributions {
     Attributions | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -356,7 +356,7 @@
 
 .drop materialized-view BookingRulesLatest ifexists;
 
-.create materialized-view with (backfill=true) BookingRulesLatest on table BookingRules {
+.create materialized-view BookingRulesLatest on table BookingRules {
     BookingRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -443,7 +443,7 @@
 
 .drop materialized-view FareAttributesLatest ifexists;
 
-.create materialized-view with (backfill=true) FareAttributesLatest on table FareAttributes {
+.create materialized-view FareAttributesLatest on table FareAttributes {
     FareAttributes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -526,7 +526,7 @@
 
 .drop materialized-view FareLegRulesLatest ifexists;
 
-.create materialized-view with (backfill=true) FareLegRulesLatest on table FareLegRules {
+.create materialized-view FareLegRulesLatest on table FareLegRules {
     FareLegRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -601,7 +601,7 @@
 
 .drop materialized-view FareMediaLatest ifexists;
 
-.create materialized-view with (backfill=true) FareMediaLatest on table FareMedia {
+.create materialized-view FareMediaLatest on table FareMedia {
     FareMedia | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -676,7 +676,7 @@
 
 .drop materialized-view FareProductsLatest ifexists;
 
-.create materialized-view with (backfill=true) FareProductsLatest on table FareProducts {
+.create materialized-view FareProductsLatest on table FareProducts {
     FareProducts | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -755,7 +755,7 @@
 
 .drop materialized-view FareRulesLatest ifexists;
 
-.create materialized-view with (backfill=true) FareRulesLatest on table FareRules {
+.create materialized-view FareRulesLatest on table FareRules {
     FareRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -842,7 +842,7 @@
 
 .drop materialized-view FareTransferRulesLatest ifexists;
 
-.create materialized-view with (backfill=true) FareTransferRulesLatest on table FareTransferRules {
+.create materialized-view FareTransferRulesLatest on table FareTransferRules {
     FareTransferRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -937,7 +937,7 @@
 
 .drop materialized-view FeedInfoLatest ifexists;
 
-.create materialized-view with (backfill=true) FeedInfoLatest on table FeedInfo {
+.create materialized-view FeedInfoLatest on table FeedInfo {
     FeedInfo | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1016,7 +1016,7 @@
 
 .drop materialized-view FrequenciesLatest ifexists;
 
-.create materialized-view with (backfill=true) FrequenciesLatest on table Frequencies {
+.create materialized-view FrequenciesLatest on table Frequencies {
     Frequencies | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1087,7 +1087,7 @@
 
 .drop materialized-view LevelsLatest ifexists;
 
-.create materialized-view with (backfill=true) LevelsLatest on table Levels {
+.create materialized-view LevelsLatest on table Levels {
     Levels | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1158,7 +1158,7 @@
 
 .drop materialized-view LocationGeoJsonLatest ifexists;
 
-.create materialized-view with (backfill=true) LocationGeoJsonLatest on table LocationGeoJson {
+.create materialized-view LocationGeoJsonLatest on table LocationGeoJson {
     LocationGeoJson | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1233,7 +1233,7 @@
 
 .drop materialized-view LocationGroupsLatest ifexists;
 
-.create materialized-view with (backfill=true) LocationGroupsLatest on table LocationGroups {
+.create materialized-view LocationGroupsLatest on table LocationGroups {
     LocationGroups | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1304,7 +1304,7 @@
 
 .drop materialized-view LocationGroupStoresLatest ifexists;
 
-.create materialized-view with (backfill=true) LocationGroupStoresLatest on table LocationGroupStores {
+.create materialized-view LocationGroupStoresLatest on table LocationGroupStores {
     LocationGroupStores | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1379,7 +1379,7 @@
 
 .drop materialized-view NetworksLatest ifexists;
 
-.create materialized-view with (backfill=true) NetworksLatest on table Networks {
+.create materialized-view NetworksLatest on table Networks {
     Networks | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1486,7 +1486,7 @@
 
 .drop materialized-view PathwaysLatest ifexists;
 
-.create materialized-view with (backfill=true) PathwaysLatest on table Pathways {
+.create materialized-view PathwaysLatest on table Pathways {
     Pathways | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1557,7 +1557,7 @@
 
 .drop materialized-view RouteNetworksLatest ifexists;
 
-.create materialized-view with (backfill=true) RouteNetworksLatest on table RouteNetworks {
+.create materialized-view RouteNetworksLatest on table RouteNetworks {
     RouteNetworks | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1668,7 +1668,7 @@
 
 .drop materialized-view RoutesLatest ifexists;
 
-.create materialized-view with (backfill=true) RoutesLatest on table Routes {
+.create materialized-view RoutesLatest on table Routes {
     Routes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1747,7 +1747,7 @@
 
 .drop materialized-view ShapesLatest ifexists;
 
-.create materialized-view with (backfill=true) ShapesLatest on table Shapes {
+.create materialized-view ShapesLatest on table Shapes {
     Shapes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1818,7 +1818,7 @@
 
 .drop materialized-view StopAreasLatest ifexists;
 
-.create materialized-view with (backfill=true) StopAreasLatest on table StopAreas {
+.create materialized-view StopAreasLatest on table StopAreas {
     StopAreas | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1937,7 +1937,7 @@
 
 .drop materialized-view StopsLatest ifexists;
 
-.create materialized-view with (backfill=true) StopsLatest on table Stops {
+.create materialized-view StopsLatest on table Stops {
     Stops | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2044,7 +2044,7 @@
 
 .drop materialized-view StopTimesLatest ifexists;
 
-.create materialized-view with (backfill=true) StopTimesLatest on table StopTimes {
+.create materialized-view StopTimesLatest on table StopTimes {
     StopTimes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2119,7 +2119,7 @@
 
 .drop materialized-view TimeframesLatest ifexists;
 
-.create materialized-view with (backfill=true) TimeframesLatest on table Timeframes {
+.create materialized-view TimeframesLatest on table Timeframes {
     Timeframes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2194,7 +2194,7 @@
 
 .drop materialized-view TransfersLatest ifexists;
 
-.create materialized-view with (backfill=true) TransfersLatest on table Transfers {
+.create materialized-view TransfersLatest on table Transfers {
     Transfers | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2269,7 +2269,7 @@
 
 .drop materialized-view TranslationsLatest ifexists;
 
-.create materialized-view with (backfill=true) TranslationsLatest on table Translations {
+.create materialized-view TranslationsLatest on table Translations {
     Translations | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2370,7 +2370,7 @@
 
 .drop materialized-view TripsLatest ifexists;
 
-.create materialized-view with (backfill=true) TripsLatest on table Trips {
+.create materialized-view TripsLatest on table Trips {
     Trips | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2455,7 +2455,7 @@
 
 .drop materialized-view AlertLatest ifexists;
 
-.create materialized-view with (backfill=true) AlertLatest on table Alert {
+.create materialized-view AlertLatest on table Alert {
     Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2522,7 +2522,7 @@
 
 .drop materialized-view FeedMessageLatest ifexists;
 
-.create materialized-view with (backfill=true) FeedMessageLatest on table FeedMessage {
+.create materialized-view FeedMessageLatest on table FeedMessage {
     FeedMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2601,7 +2601,7 @@
 
 .drop materialized-view TripUpdateLatest ifexists;
 
-.create materialized-view with (backfill=true) TripUpdateLatest on table TripUpdate {
+.create materialized-view TripUpdateLatest on table TripUpdate {
     TripUpdate | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2694,7 +2694,7 @@
 
 .drop materialized-view VehiclePositionLatest ifexists;
 
-.create materialized-view with (backfill=true) VehiclePositionLatest on table VehiclePosition {
+.create materialized-view VehiclePositionLatest on table VehiclePosition {
     VehiclePosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 

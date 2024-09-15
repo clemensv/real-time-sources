@@ -14,7 +14,7 @@ ENV SASL_PASSWORD=""
 # Comma separated list of GTFS RT URLs
 ENV GTFS_RT_URLS="https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-jz,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-si,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/lirr%2Fgtfs-lirr,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/mnr%2Fgtfs-mnr,https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fall-alerts"
 # Comma separated list of GTFS URLs
-ENV GTFS_URLS=" http://web.mta.info/developers/files/google_transit_supplemented.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_bx.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_b.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_m.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_q.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_si.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_busco.zip"
+ENV GTFS_URLS="http://web.mta.info/developers/files/google_transit_supplemented.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_bx.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_b.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_m.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_q.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_si.zip,https://rrgtfsfeeds.s3.amazonaws.com/gtfs_busco.zip"
 # Route filter
 ENV ROUTE=""
 # HTTP headers to pass to the GTFS-RT endpoint

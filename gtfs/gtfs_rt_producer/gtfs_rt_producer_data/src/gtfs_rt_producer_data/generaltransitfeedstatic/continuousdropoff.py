@@ -27,6 +27,8 @@ class ContinuousDropOff(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _ContinuousDropOff_members:
             _ContinuousDropOff_members = list(cls)
         if 0 <= int(ordinal) < len(_ContinuousDropOff_members):

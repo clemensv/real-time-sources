@@ -37,6 +37,8 @@ class RouteType(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _RouteType_members:
             _RouteType_members = list(cls)
         if 0 <= int(ordinal) < len(_RouteType_members):

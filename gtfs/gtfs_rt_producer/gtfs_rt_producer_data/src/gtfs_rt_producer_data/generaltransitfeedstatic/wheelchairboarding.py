@@ -26,6 +26,8 @@ class WheelchairBoarding(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _WheelchairBoarding_members:
             _WheelchairBoarding_members = list(cls)
         if 0 <= int(ordinal) < len(_WheelchairBoarding_members):

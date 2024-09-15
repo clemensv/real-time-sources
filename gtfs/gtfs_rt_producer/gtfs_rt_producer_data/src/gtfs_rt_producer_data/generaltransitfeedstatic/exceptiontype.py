@@ -25,6 +25,8 @@ class ExceptionType(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _ExceptionType_members:
             _ExceptionType_members = list(cls)
         if 0 <= int(ordinal) < len(_ExceptionType_members):

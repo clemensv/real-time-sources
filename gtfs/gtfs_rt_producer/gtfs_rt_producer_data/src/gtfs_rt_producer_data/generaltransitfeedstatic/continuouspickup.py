@@ -27,6 +27,8 @@ class ContinuousPickup(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _ContinuousPickup_members:
             _ContinuousPickup_members = list(cls)
         if 0 <= int(ordinal) < len(_ContinuousPickup_members):

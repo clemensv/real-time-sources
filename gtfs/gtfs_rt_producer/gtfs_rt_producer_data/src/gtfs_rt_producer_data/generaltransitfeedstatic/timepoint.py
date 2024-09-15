@@ -25,6 +25,8 @@ class Timepoint(Enum):
 
         if ordinal is None:
             raise ValueError("ordinal must not be None")
+        if isinstance(ordinal, str) and ordinal.isdigit():
+            ordinal = int(ordinal)
         if not _Timepoint_members:
             _Timepoint_members = list(cls)
         if 0 <= int(ordinal) < len(_Timepoint_members):

@@ -27,9 +27,9 @@ class Test_Transfers(unittest.TestCase):
         Create instance of Transfers for testing
         """
         instance = Transfers(
-            fromStopId='ixsdzpnusatmxcdxjhli',
-            toStopId='hvggqdbpywohebxumeer',
-            transferType=int(2),
+            fromStopId='erxflrjofhxrdkrrmchc',
+            toStopId='tmmekkjhkpyhpddyfeua',
+            transferType=int(93),
             minTransferTime=int(2)
         )
         return instance
@@ -39,7 +39,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test fromStopId property
         """
-        test_value = 'ixsdzpnusatmxcdxjhli'
+        test_value = 'erxflrjofhxrdkrrmchc'
         self.instance.fromStopId = test_value
         self.assertEqual(self.instance.fromStopId, test_value)
     
@@ -47,7 +47,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test toStopId property
         """
-        test_value = 'hvggqdbpywohebxumeer'
+        test_value = 'tmmekkjhkpyhpddyfeua'
         self.instance.toStopId = test_value
         self.assertEqual(self.instance.toStopId, test_value)
     
@@ -55,7 +55,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test transferType property
         """
-        test_value = int(2)
+        test_value = int(93)
         self.instance.transferType = test_value
         self.assertEqual(self.instance.transferType, test_value)
     
