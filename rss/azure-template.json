@@ -1,0 +1,67 @@
+{
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "apiVersion": "2021-09-01",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "properties": {
+        "restartPolicy": "Always",
+        "osType": "Linux",
+        "containers": [
+          {
+            "properties": {
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1
+                }
+              },
+              "image": "[parameters('imageName')]",
+              "environmentVariables": [
+                {
+                  "secureValue": "[parameters('connectionStringSecret')]",
+                  "name": "CONNECTION_STRING"
+                }
+              ]
+            },
+            "name": "[parameters('appName')]"
+          }
+        ],
+        "diagnostics": "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), null, json('{\r\n    \"logAnalytics\": {\r\n        \"workspaceId\": \"[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '2015-11-01-preview').customerId]\",\r\n        \"workspaceKey\": \"[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '2020-08-01').primarySharedKey]\",\r\n        \"metadata\": {}}}  '))]"
+      },
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('appName')]"
+    }
+  ],
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "parameters": {
+    "appName": {
+      "maxLength": 64,
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container instance."
+      },
+      "defaultValue": "[resourceGroup().name]"
+    },
+    "connectionStringSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container image."
+      },
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-rss:latest"
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Log Analytics workspace. Leave empty to skip log analytics configuration."
+      },
+      "defaultValue": ""
+    }
+  }
+}

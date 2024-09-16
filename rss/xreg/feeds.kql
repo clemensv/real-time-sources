@@ -1,0 +1,125 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [FeedItem] (
+   [author]: dynamic,
+   [publisher]: dynamic,
+   [summary]: dynamic,
+   [title]: dynamic,
+   [source]: dynamic,
+   [content]: dynamic,
+   [enclosures]: dynamic,
+   [published]: datetime,
+   [updated]: datetime,
+   [created]: datetime,
+   [expired]: datetime,
+   [id]: string,
+   [license]: string,
+   [comments]: string,
+   [contributors]: dynamic,
+   [links]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [FeedItem] ingestion json mapping "FeedItem_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "author", "path": "$.author"},
+  {"column": "publisher", "path": "$.publisher"},
+  {"column": "summary", "path": "$.summary"},
+  {"column": "title", "path": "$.title"},
+  {"column": "source", "path": "$.source"},
+  {"column": "content", "path": "$.content"},
+  {"column": "enclosures", "path": "$.enclosures"},
+  {"column": "published", "path": "$.published"},
+  {"column": "updated", "path": "$.updated"},
+  {"column": "created", "path": "$.created"},
+  {"column": "expired", "path": "$.expired"},
+  {"column": "id", "path": "$.id"},
+  {"column": "license", "path": "$.license"},
+  {"column": "comments", "path": "$.comments"},
+  {"column": "contributors", "path": "$.contributors"},
+  {"column": "links", "path": "$.links"},
+]
+```
+
+
+.create-or-alter table [FeedItem] ingestion json mapping "FeedItem_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "author", "path": "$.data.author"},
+  {"column": "publisher", "path": "$.data.publisher"},
+  {"column": "summary", "path": "$.data.summary"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "source", "path": "$.data.source"},
+  {"column": "content", "path": "$.data.content"},
+  {"column": "enclosures", "path": "$.data.enclosures"},
+  {"column": "published", "path": "$.data.published"},
+  {"column": "updated", "path": "$.data.updated"},
+  {"column": "created", "path": "$.data.created"},
+  {"column": "expired", "path": "$.data.expired"},
+  {"column": "id", "path": "$.data.id"},
+  {"column": "license", "path": "$.data.license"},
+  {"column": "comments", "path": "$.data.comments"},
+  {"column": "contributors", "path": "$.data.contributors"},
+  {"column": "links", "path": "$.data.links"},
+]
+```
+
+
+.drop materialized-view FeedItemLatest ifexists;
+
+.create materialized-view with (backfill=true) FeedItemLatest on table FeedItem {
+    FeedItem | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FeedItem] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.RssFeeds.FeedItem') | project['author'] = todynamic(data.['author']),['publisher'] = todynamic(data.['publisher']),['summary'] = todynamic(data.['summary']),['title'] = todynamic(data.['title']),['source'] = todynamic(data.['source']),['content'] = todynamic(data.['content']),['enclosures'] = todynamic(data.['enclosures']),['published'] = todatetime(data.['published']),['updated'] = todatetime(data.['updated']),['created'] = todatetime(data.['created']),['expired'] = todatetime(data.['expired']),['id'] = tostring(data.['id']),['license'] = tostring(data.['license']),['comments'] = tostring(data.['comments']),['contributors'] = todynamic(data.['contributors']),['links'] = todynamic(data.['links']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```

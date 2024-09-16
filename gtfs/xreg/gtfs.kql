@@ -103,7 +103,7 @@
 
 .drop materialized-view AgencyLatest ifexists;
 
-.create materialized-view AgencyLatest on table Agency {
+.create materialized-view with (backfill=true) AgencyLatest on table Agency {
     Agency | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -178,7 +178,7 @@
 
 .drop materialized-view AreasLatest ifexists;
 
-.create materialized-view AreasLatest on table Areas {
+.create materialized-view with (backfill=true) AreasLatest on table Areas {
     Areas | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -281,7 +281,7 @@
 
 .drop materialized-view AttributionsLatest ifexists;
 
-.create materialized-view AttributionsLatest on table Attributions {
+.create materialized-view with (backfill=true) AttributionsLatest on table Attributions {
     Attributions | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -356,7 +356,7 @@
 
 .drop materialized-view BookingRulesLatest ifexists;
 
-.create materialized-view BookingRulesLatest on table BookingRules {
+.create materialized-view with (backfill=true) BookingRulesLatest on table BookingRules {
     BookingRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -443,7 +443,7 @@
 
 .drop materialized-view FareAttributesLatest ifexists;
 
-.create materialized-view FareAttributesLatest on table FareAttributes {
+.create materialized-view with (backfill=true) FareAttributesLatest on table FareAttributes {
     FareAttributes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -526,7 +526,7 @@
 
 .drop materialized-view FareLegRulesLatest ifexists;
 
-.create materialized-view FareLegRulesLatest on table FareLegRules {
+.create materialized-view with (backfill=true) FareLegRulesLatest on table FareLegRules {
     FareLegRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -601,7 +601,7 @@
 
 .drop materialized-view FareMediaLatest ifexists;
 
-.create materialized-view FareMediaLatest on table FareMedia {
+.create materialized-view with (backfill=true) FareMediaLatest on table FareMedia {
     FareMedia | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -676,7 +676,7 @@
 
 .drop materialized-view FareProductsLatest ifexists;
 
-.create materialized-view FareProductsLatest on table FareProducts {
+.create materialized-view with (backfill=true) FareProductsLatest on table FareProducts {
     FareProducts | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -755,7 +755,7 @@
 
 .drop materialized-view FareRulesLatest ifexists;
 
-.create materialized-view FareRulesLatest on table FareRules {
+.create materialized-view with (backfill=true) FareRulesLatest on table FareRules {
     FareRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -842,7 +842,7 @@
 
 .drop materialized-view FareTransferRulesLatest ifexists;
 
-.create materialized-view FareTransferRulesLatest on table FareTransferRules {
+.create materialized-view with (backfill=true) FareTransferRulesLatest on table FareTransferRules {
     FareTransferRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -937,7 +937,7 @@
 
 .drop materialized-view FeedInfoLatest ifexists;
 
-.create materialized-view FeedInfoLatest on table FeedInfo {
+.create materialized-view with (backfill=true) FeedInfoLatest on table FeedInfo {
     FeedInfo | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1016,7 +1016,7 @@
 
 .drop materialized-view FrequenciesLatest ifexists;
 
-.create materialized-view FrequenciesLatest on table Frequencies {
+.create materialized-view with (backfill=true) FrequenciesLatest on table Frequencies {
     Frequencies | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1087,7 +1087,7 @@
 
 .drop materialized-view LevelsLatest ifexists;
 
-.create materialized-view LevelsLatest on table Levels {
+.create materialized-view with (backfill=true) LevelsLatest on table Levels {
     Levels | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1158,7 +1158,7 @@
 
 .drop materialized-view LocationGeoJsonLatest ifexists;
 
-.create materialized-view LocationGeoJsonLatest on table LocationGeoJson {
+.create materialized-view with (backfill=true) LocationGeoJsonLatest on table LocationGeoJson {
     LocationGeoJson | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1233,7 +1233,7 @@
 
 .drop materialized-view LocationGroupsLatest ifexists;
 
-.create materialized-view LocationGroupsLatest on table LocationGroups {
+.create materialized-view with (backfill=true) LocationGroupsLatest on table LocationGroups {
     LocationGroups | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1304,7 +1304,7 @@
 
 .drop materialized-view LocationGroupStoresLatest ifexists;
 
-.create materialized-view LocationGroupStoresLatest on table LocationGroupStores {
+.create materialized-view with (backfill=true) LocationGroupStoresLatest on table LocationGroupStores {
     LocationGroupStores | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1379,7 +1379,7 @@
 
 .drop materialized-view NetworksLatest ifexists;
 
-.create materialized-view NetworksLatest on table Networks {
+.create materialized-view with (backfill=true) NetworksLatest on table Networks {
     Networks | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1486,7 +1486,7 @@
 
 .drop materialized-view PathwaysLatest ifexists;
 
-.create materialized-view PathwaysLatest on table Pathways {
+.create materialized-view with (backfill=true) PathwaysLatest on table Pathways {
     Pathways | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1557,7 +1557,7 @@
 
 .drop materialized-view RouteNetworksLatest ifexists;
 
-.create materialized-view RouteNetworksLatest on table RouteNetworks {
+.create materialized-view with (backfill=true) RouteNetworksLatest on table RouteNetworks {
     RouteNetworks | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1668,7 +1668,7 @@
 
 .drop materialized-view RoutesLatest ifexists;
 
-.create materialized-view RoutesLatest on table Routes {
+.create materialized-view with (backfill=true) RoutesLatest on table Routes {
     Routes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1747,7 +1747,7 @@
 
 .drop materialized-view ShapesLatest ifexists;
 
-.create materialized-view ShapesLatest on table Shapes {
+.create materialized-view with (backfill=true) ShapesLatest on table Shapes {
     Shapes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1818,7 +1818,7 @@
 
 .drop materialized-view StopAreasLatest ifexists;
 
-.create materialized-view StopAreasLatest on table StopAreas {
+.create materialized-view with (backfill=true) StopAreasLatest on table StopAreas {
     StopAreas | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -1937,7 +1937,7 @@
 
 .drop materialized-view StopsLatest ifexists;
 
-.create materialized-view StopsLatest on table Stops {
+.create materialized-view with (backfill=true) StopsLatest on table Stops {
     Stops | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2044,7 +2044,7 @@
 
 .drop materialized-view StopTimesLatest ifexists;
 
-.create materialized-view StopTimesLatest on table StopTimes {
+.create materialized-view with (backfill=true) StopTimesLatest on table StopTimes {
     StopTimes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2119,7 +2119,7 @@
 
 .drop materialized-view TimeframesLatest ifexists;
 
-.create materialized-view TimeframesLatest on table Timeframes {
+.create materialized-view with (backfill=true) TimeframesLatest on table Timeframes {
     Timeframes | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2194,7 +2194,7 @@
 
 .drop materialized-view TransfersLatest ifexists;
 
-.create materialized-view TransfersLatest on table Transfers {
+.create materialized-view with (backfill=true) TransfersLatest on table Transfers {
     Transfers | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2269,7 +2269,7 @@
 
 .drop materialized-view TranslationsLatest ifexists;
 
-.create materialized-view TranslationsLatest on table Translations {
+.create materialized-view with (backfill=true) TranslationsLatest on table Translations {
     Translations | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2370,7 +2370,7 @@
 
 .drop materialized-view TripsLatest ifexists;
 
-.create materialized-view TripsLatest on table Trips {
+.create materialized-view with (backfill=true) TripsLatest on table Trips {
     Trips | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2455,7 +2455,7 @@
 
 .drop materialized-view AlertLatest ifexists;
 
-.create materialized-view AlertLatest on table Alert {
+.create materialized-view with (backfill=true) AlertLatest on table Alert {
     Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2522,7 +2522,7 @@
 
 .drop materialized-view FeedMessageLatest ifexists;
 
-.create materialized-view FeedMessageLatest on table FeedMessage {
+.create materialized-view with (backfill=true) FeedMessageLatest on table FeedMessage {
     FeedMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2553,7 +2553,7 @@
 .alter table [TripUpdate] docstring "{\"description\": \"Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop o...\"}";
 
 .alter table [TripUpdate] column-docstrings (
-   [trip]: "{\"description\": \"The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule.\", \"schema\": {\"type\": \"record\", \"name\": \"TripDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Trip\", \"fields\": [{\"name\": \"trip_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"route_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"direction_id\", \"type\": [\"null\", \"int\"]}, {\"name\": \"start_time\", \"type\": [\"null\", \"string\"]}, {\"name\": \"start_date\", \"type\": [\"null\", \"string\"]}, {\"name\": \"schedule_relationship\", \"type\": [\"null\", {\"name\": \"ScheduleRelationship\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Trip.TripDescriptor_types\", \"symbols\": [\"SCHEDULED\", \"ADDED\", \"UNSCHEDULED\", \"CANCELED\"]}]}]}}",
+   [trip]: "{\"description\": \"The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
    [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"VehicleDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Trip\", \"fields\": [{\"name\": \"id\", \"type\": [\"null\", \"string\"], \"doc\": \"Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to\"}, {\"name\": \"label\", \"type\": [\"null\", \"string\"], \"doc\": \"help identify the correct vehicle.\"}, {\"name\": \"license_plate\", \"type\": [\"null\", \"string\"], \"doc\": \"The license plate of the vehicle.\"}], \"doc\": \"Identification information for the vehicle performing the trip.\"}]}",
    [stop_time_update]: "{\"description\": \"Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
    [timestamp]: "{\"description\": \"time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip.  Delay should only be\", \"schema\": [\"null\", \"long\"]}",
@@ -2601,7 +2601,7 @@
 
 .drop materialized-view TripUpdateLatest ifexists;
 
-.create materialized-view TripUpdateLatest on table TripUpdate {
+.create materialized-view with (backfill=true) TripUpdateLatest on table TripUpdate {
     TripUpdate | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2636,12 +2636,12 @@
 .alter table [VehiclePosition] docstring "{\"description\": \"Realtime positioning information for a given vehicle.\"}";
 
 .alter table [VehiclePosition] column-docstrings (
-   [trip]: "{\"description\": \"The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TripDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"trip_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"route_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"direction_id\", \"type\": [\"null\", \"int\"]}, {\"name\": \"start_time\", \"type\": [\"null\", \"string\"]}, {\"name\": \"start_date\", \"type\": [\"null\", \"string\"]}, {\"name\": \"schedule_relationship\", \"type\": [\"null\", {\"name\": \"ScheduleRelationship\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.TripDescriptor_types\", \"symbols\": [\"SCHEDULED\", \"ADDED\", \"UNSCHEDULED\", \"CANCELED\"]}]}]}]}",
+   [trip]: "{\"description\": \"The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TripDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"trip_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"route_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"direction_id\", \"type\": [\"null\", \"int\"]}, {\"name\": \"start_time\", \"type\": [\"null\", \"string\"]}, {\"name\": \"start_date\", \"type\": [\"null\", \"string\"]}, {\"name\": \"schedule_relationship\", \"type\": [\"null\", {\"name\": \"ScheduleRelationship\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.TripDescriptor_types\", \"symbols\": [\"SCHEDULED\", \"ADDED\", \"UNSCHEDULED\", \"CANCELED\"], \"ordinals\": {\"SCHEDULED\": 0, \"ADDED\": 1, \"UNSCHEDULED\": 2, \"CANCELED\": 3}}]}]}]}",
    [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"VehicleDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"id\", \"type\": [\"null\", \"string\"], \"doc\": \"Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to\"}, {\"name\": \"label\", \"type\": [\"null\", \"string\"], \"doc\": \"help identify the correct vehicle.\"}, {\"name\": \"license_plate\", \"type\": [\"null\", \"string\"], \"doc\": \"The license plate of the vehicle.\"}], \"doc\": \"Identification information for the vehicle performing the trip.\"}]}",
    [position]: "{\"description\": \"Current position of this vehicle. The stop sequence index of the current stop. The meaning of\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"Position\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"latitude\", \"type\": \"float\"}, {\"name\": \"longitude\", \"type\": \"float\", \"doc\": \"Degrees East, in the WGS-84 coordinate system.\"}, {\"name\": \"bearing\", \"type\": [\"null\", \"float\"], \"doc\": \"Bearing, in degrees, clockwise from North, i.e., 0 is North and 90 is East. This can be the compass bearing, or the direction towards the next stop or intermediate location. This should not be direction deduced from the sequence of previous positions, which can be computed from previous data.\"}, {\"name\": \"odometer\", \"type\": [\"null\", \"double\"], \"doc\": \"Odometer value, in meters.\"}, {\"name\": \"speed\", \"type\": [\"null\", \"float\"], \"doc\": \"Momentary speed measured by the vehicle, in meters per second.\"}]}]}",
    [current_stop_sequence]: "{\"description\": \"current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in\", \"schema\": [\"null\", \"int\"]}",
    [stop_id]: "{\"description\": \"the corresponding GTFS feed.\", \"schema\": [\"null\", \"string\"]}",
-   [current_status]: "{\"description\": \"The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time\", \"schema\": [\"null\", {\"name\": \"VehicleStopStatus\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.VehiclePosition_types\", \"symbols\": [\"INCOMING_AT\", \"STOPPED_AT\", \"IN_TRANSIT_TO\"]}]}",
+   [current_status]: "{\"description\": \"The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time\", \"schema\": [\"null\", {\"name\": \"VehicleStopStatus\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.VehiclePosition_types\", \"symbols\": [\"INCOMING_AT\", \"STOPPED_AT\", \"IN_TRANSIT_TO\"], \"ordinals\": {\"INCOMING_AT\": 0, \"STOPPED_AT\": 1, \"IN_TRANSIT_TO\": 2}}]}",
    [timestamp]: "{\"description\": \"(i.e., number of seconds since January 1st 1970 00:00:00 UTC).\", \"schema\": [\"null\", \"long\"]}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
@@ -2694,7 +2694,7 @@
 
 .drop materialized-view VehiclePositionLatest ifexists;
 
-.create materialized-view VehiclePositionLatest on table VehiclePosition {
+.create materialized-view with (backfill=true) VehiclePositionLatest on table VehiclePosition {
     VehiclePosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
@@ -2708,3 +2708,135 @@
   "PropagateIngestionProperties": true,
 }]
 ```
+
+.create table VehiclePositionsFlat (
+    trip_id:string,
+    route_id:string,
+    direction_id:int,
+    start_time:string,
+    start_date:string,
+    schedule_relationship:string,
+    vehicle_id:string,
+    vehicle_label:string,
+    vehicle_license_plate:string,
+    latitude:real,
+    longitude:real,
+    bearing:real,
+    odometer:real,
+    speed:real,
+    current_stop_sequence:int,
+    stop_id:string,
+    current_status:string,
+    timestamp:datetime,
+    congestion_level:string,
+    occupancy_status:string,
+    ___type:string,
+    ___source:string,
+    ___id:string,
+    ___time:datetime,
+    ___subject:string
+
+.alter table VehiclePositionsFlat policy update
+`
+[
+  {
+    "IsEnabled": true,
+    "Source": "VehiclePosition",
+    "Query": "VehiclePosition | extend trip_id = tostring(trip.trip_id), route_id = tostring(trip.route_id), direction_id = toint(trip.direction_id), start_time = tostring(trip.start_time), start_date = tostring(trip.start_date), schedule_relationship = tostring(trip.schedule_relationship), vehicle_id = tostring(vehicle.id), vehicle_label = tostring(vehicle.label), vehicle_license_plate = tostring(vehicle.license_plate), latitude = todouble(position.latitude), longitude = todouble(position.longitude), bearing = todouble(position.bearing), odometer = todouble(position.odometer), speed = todouble(position.speed) | extend timestamp = unixtime_seconds_todatetime(timestamp) | project trip_id, route_id, direction_id, start_time, start_date, schedule_relationship, vehicle_id, vehicle_label, vehicle_license_plate, latitude, longitude, bearing, odometer, speed, current_stop_sequence, stop_id, current_status, timestamp, congestion_level, occupancy_status, ___type, ___source, ___id, ___time, ___subject",
+    "IsTransactional": true,
+    "PropagateIngestionProperties": true
+  }
+]
+`
+
+.create-merge table TripUpdateFlattened (
+    trip_id: string,
+    route_id: string,
+    direction_id: int,
+    trip_start_time: string,
+    trip_start_date: string,
+    trip_schedule_relationship: string,
+    vehicle_id: string,
+    vehicle_label: string,
+    vehicle_license_plate: string,
+    timestamp: long,
+    delay: int,
+    stop_sequence: int,
+    stop_id: string,
+    arrival_delay: int,
+    arrival_time: datetime,
+    arrival_uncertainty: int,
+    departure_delay: int,
+    departure_time: datetime,
+    departure_uncertainty: int,
+    stop_schedule_relationship: string,
+    ___type: string,
+    ___source: string,
+    ___id: string,
+    ___time: datetime,
+    ___subject: string
+);
+
+.create-or-alter function with (skipvalidation = "true") TripUpdateFlattenFunction() {
+    TripUpdate
+    | where isnotempty(stop_time_update)
+    | mv-expand stop_time_update
+    | extend
+        stop_sequence = toint(stop_time_update.stop_sequence),
+        stop_id = tostring(stop_time_update.stop_id),
+        arrival = stop_time_update.arrival,
+        departure = stop_time_update.departure,
+        stop_schedule_relationship = tostring(stop_time_update.schedule_relationship)
+    | extend
+        arrival_delay = toint(arrival.delay),
+        arrival_time = unixtime_seconds_todatetime(arrival.time),
+        arrival_uncertainty = toint(arrival.uncertainty),
+        departure_delay = toint(departure.delay),
+        departure_time = unixtime_seconds_todatetime(departure.time),
+        departure_uncertainty = toint(departure.uncertainty)
+    | extend
+        trip_id = tostring(trip.trip_id),
+        route_id = tostring(trip.route_id),
+        direction_id = toint(trip.direction_id),
+        trip_start_time = tostring(trip.start_time),
+        trip_start_date = tostring(trip.start_date),
+        trip_schedule_relationship = tostring(trip.schedule_relationship)
+    | extend
+        vehicle_id = tostring(vehicle.id),
+        vehicle_label = tostring(vehicle.label),
+        vehicle_license_plate = tostring(vehicle.license_plate)
+    | project
+        trip_id,
+        route_id,
+        direction_id,
+        trip_start_time,
+        trip_start_date,
+        trip_schedule_relationship,
+        vehicle_id,
+        vehicle_label,
+        vehicle_license_plate,
+        timestamp,
+        delay,
+        stop_sequence,
+        stop_id,
+        arrival_delay,
+        arrival_time,
+        arrival_uncertainty,
+        departure_delay,
+        departure_time,
+        departure_uncertainty,
+        stop_schedule_relationship,
+        ___type,
+        ___source,
+        ___id,
+        ___time,
+        ___subject
+}
+
+.alter table TripUpdateFlattened policy update @'[{
+    "IsEnabled": true,
+    "Source": "TripUpdate",
+    "Query": "TripUpdateFlattenFunction()",
+    "IsTransactional": false,
+    "PropagateIngestionProperties": false
+}]'
