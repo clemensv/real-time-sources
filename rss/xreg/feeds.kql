@@ -35,10 +35,10 @@
    [source]: dynamic,
    [content]: dynamic,
    [enclosures]: dynamic,
-   [published]: datetime,
-   [updated]: datetime,
-   [created]: datetime,
-   [expired]: datetime,
+   [published]: long,
+   [updated]: long,
+   [created]: long,
+   [expired]: long,
    [id]: string,
    [license]: string,
    [comments]: string,
@@ -118,7 +118,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.RssFeeds.FeedItem') | project['author'] = todynamic(data.['author']),['publisher'] = todynamic(data.['publisher']),['summary'] = todynamic(data.['summary']),['title'] = todynamic(data.['title']),['source'] = todynamic(data.['source']),['content'] = todynamic(data.['content']),['enclosures'] = todynamic(data.['enclosures']),['published'] = todatetime(data.['published']),['updated'] = todatetime(data.['updated']),['created'] = todatetime(data.['created']),['expired'] = todatetime(data.['expired']),['id'] = tostring(data.['id']),['license'] = tostring(data.['license']),['comments'] = tostring(data.['comments']),['contributors'] = todynamic(data.['contributors']),['links'] = todynamic(data.['links']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.RssFeeds.FeedItem') | project['author'] = todynamic(data.['author']),['publisher'] = todynamic(data.['publisher']),['summary'] = todynamic(data.['summary']),['title'] = todynamic(data.['title']),['source'] = todynamic(data.['source']),['content'] = todynamic(data.['content']),['enclosures'] = todynamic(data.['enclosures']),['published'] = tolong(data.['published']),['updated'] = tolong(data.['updated']),['created'] = tolong(data.['created']),['expired'] = tolong(data.['expired']),['id'] = tostring(data.['id']),['license'] = tostring(data.['license']),['comments'] = tostring(data.['comments']),['contributors'] = todynamic(data.['contributors']),['links'] = todynamic(data.['links']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
