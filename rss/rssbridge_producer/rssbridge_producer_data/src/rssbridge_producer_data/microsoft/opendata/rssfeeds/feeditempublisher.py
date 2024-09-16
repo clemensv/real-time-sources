@@ -8,8 +8,6 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-import avro.schema
-import avro.io
 
 
 @dataclasses_json.dataclass_json
@@ -26,15 +24,12 @@ class FeedItemPublisher:
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))
     email: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="email"))    
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"FeedItemPublisher\", \"namespace\": \"Microsoft.OpenData.RssFeeds\", \"fields\": [{\"name\": \"name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"href\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"email\", \"type\": [\"null\", \"string\"], \"default\": null}]}"
-    )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.name=str(self.name)
-        self.href=str(self.href)
-        self.email=str(self.email)
+        self.name=str(self.name) if self.name else None
+        self.href=str(self.href) if self.href else None
+        self.email=str(self.email) if self.email else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FeedItemPublisher':
@@ -78,8 +73,6 @@ class FeedItemPublisher:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -89,12 +82,6 @@ class FeedItemPublisher:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        if content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if content_type == 'application/json':
             result = self.to_json()
 
@@ -118,10 +105,6 @@ class FeedItemPublisher:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -144,18 +127,6 @@ class FeedItemPublisher:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        if content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return FeedItemPublisher.from_serializer_dict(_record)
         if content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data

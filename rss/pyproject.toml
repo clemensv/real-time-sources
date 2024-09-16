@@ -1,24 +1,29 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
-name = "rssbridge-producer-kafka-producer"
-description = "rssbridge_producer_kafka_producer Apache Kafka consumer library"
+name = "rssbridge"
+version = "0.1.0"
+description = "A project to fetch data from RSS feeds and publish them as CloudEvents"
 authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-readme = "README.md"
-version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
-packages = [{include = "rssbridge_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "<4.0,>=3.10"
+python = ">=3.8"
+requests = ">=2.32.3"
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
+dataclasses = ">=0.6"
+dataclasses_json = ">=0.6.7"
+feedparser = ">=6.0.11"
+listparser = ">=0.20"
+BeautifulSoup4 = ">=4.12.3"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"
-flake8 = ">=7.1.1"
-pylint = ">=3.2.7"
-mypy = ">=1.11.2"
+pytest-cov = ">=5.0.0"
 testcontainers = ">=4.8.1"
-pytest-asyncio = ">=0.24.0"
+requests-mock = ">=1.12.1"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[build-system.scripts]
+rssbridge = "rssbridge:main"

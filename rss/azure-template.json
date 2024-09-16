@@ -21,13 +21,26 @@
                 {
                   "secureValue": "[parameters('connectionStringSecret')]",
                   "name": "CONNECTION_STRING"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "FEED_URLS",
+                  "value": "[parameters('feedUrls')]"
                 }
               ]
             },
             "name": "[parameters('appName')]"
           }
         ],
-        "diagnostics": "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), null, json('{\r\n    \"logAnalytics\": {\r\n        \"workspaceId\": \"[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '2015-11-01-preview').customerId]\",\r\n        \"workspaceKey\": \"[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '2020-08-01').primarySharedKey]\",\r\n        \"metadata\": {}}}  '))]"
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]"
+          }
+        }
       },
       "location": "[resourceGroup().location]",
       "name": "[parameters('appName')]"
@@ -35,6 +48,33 @@
   ],
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "parameters": {
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Id of the Log Analytics workspace. Leave empty to skip log analytics configuration."
+      },
+      "defaultValue": ""
+    },
+    "logAnalyticsWorkspaceKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The key of the Log Analytics workspace. Leave empty to skip log analytics configuration."
+      },
+      "defaultValue": ""
+    },
+    "connectionStringSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      }
+    },
+    "feedUrls": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated list of feed URLs (RSS or OPML)"
+      },
+      "defaultValue": ""
+    },
     "appName": {
       "maxLength": 64,
       "type": "string",
@@ -43,25 +83,12 @@
       },
       "defaultValue": "[resourceGroup().name]"
     },
-    "connectionStringSecret": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
-      }
-    },
     "imageName": {
       "type": "string",
       "metadata": {
         "description": "The name of the container image."
       },
       "defaultValue": "ghcr.io/clemensv/real-time-sources-rss:latest"
-    },
-    "logAnalyticsWorkspaceName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Log Analytics workspace. Leave empty to skip log analytics configuration."
-      },
-      "defaultValue": ""
     }
   }
 }
