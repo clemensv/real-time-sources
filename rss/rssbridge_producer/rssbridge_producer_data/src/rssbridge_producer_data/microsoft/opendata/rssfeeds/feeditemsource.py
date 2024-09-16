@@ -8,11 +8,9 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-import avro.schema
-import avro.io
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
 from datetime import datetime
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 
 
 @dataclasses_json.dataclass_json
@@ -47,24 +45,21 @@ class FeedItemSource:
     title: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
     updated: typing.Optional[datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))    
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"FeedItemSource\", \"namespace\": \"Microsoft.OpenData.RssFeeds\", \"fields\": [{\"name\": \"author\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"author_detail\", \"type\": [\"null\", {\"type\": \"record\", \"name\": \"FeedItemAuthor\", \"namespace\": \"Microsoft.OpenData.RssFeeds\", \"fields\": [{\"name\": \"name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"href\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"email\", \"type\": [\"null\", \"string\"], \"default\": null}]}], \"default\": null}, {\"name\": \"contributors\", \"type\": [\"null\", {\"type\": \"array\", \"items\": \"Microsoft.OpenData.RssFeeds.FeedItemAuthor\"}], \"default\": null}, {\"name\": \"icon\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"id\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"link\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"links\", \"type\": [\"null\", {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Link\", \"namespace\": \"Microsoft.OpenData.RssFeeds\", \"fields\": [{\"name\": \"rel\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"href\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"type\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"title\", \"type\": [\"null\", \"string\"], \"default\": null}]}}], \"default\": null}, {\"name\": \"logo\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"rights\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"subtitle\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"title\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"updated\", \"type\": [\"null\", {\"type\": \"long\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}]}"
-    )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.author=str(self.author)
-        self.author_detail=self.author_detail if isinstance(self.author_detail, FeedItemAuthor) else FeedItemAuthor.from_serializer_dict(self.author_detail) if self.author_detail else None
-        self.contributors=self.contributors if isinstance(self.contributors, list) else [v if isinstance(v, FeedItemAuthor) else FeedItemAuthor.from_serializer_dict(v) if v else None for v in self.contributors] if self.contributors else None
-        self.icon=str(self.icon)
-        self.id=str(self.id)
-        self.link=str(self.link)
-        self.links=self.links if isinstance(self.links, list) else [v if isinstance(v, Link) else Link.from_serializer_dict(v) if v else None for v in self.links] if self.links else None
-        self.logo=str(self.logo)
-        self.rights=str(self.rights)
-        self.subtitle=str(self.subtitle)
-        self.title=str(self.title)
-        self.updated=self.updated
+        self.author=str(self.author) if self.author else None
+        self.author_detail=self.author_detail if isinstance(self.author_detail, FeedItemAuthor) else FeedItemAuthor.from_serializer_dict(self.author_detail) if self.author_detail else None if self.author_detail else None
+        self.contributors=self.contributors if isinstance(self.contributors, list) else [v if isinstance(v, FeedItemAuthor) else FeedItemAuthor.from_serializer_dict(v) if v else None for v in self.contributors] if self.contributors else None if self.contributors else None
+        self.icon=str(self.icon) if self.icon else None
+        self.id=str(self.id) if self.id else None
+        self.link=str(self.link) if self.link else None
+        self.links=self.links if isinstance(self.links, list) else [v if isinstance(v, Link) else Link.from_serializer_dict(v) if v else None for v in self.links] if self.links else None if self.links else None
+        self.logo=str(self.logo) if self.logo else None
+        self.rights=str(self.rights) if self.rights else None
+        self.subtitle=str(self.subtitle) if self.subtitle else None
+        self.title=str(self.title) if self.title else None
+        self.updated=self.updated if self.updated else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FeedItemSource':
@@ -108,8 +103,6 @@ class FeedItemSource:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -119,12 +112,6 @@ class FeedItemSource:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        if content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if content_type == 'application/json':
             result = self.to_json()
 
@@ -148,10 +135,6 @@ class FeedItemSource:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -174,18 +157,6 @@ class FeedItemSource:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        if content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return FeedItemSource.from_serializer_dict(_record)
         if content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data

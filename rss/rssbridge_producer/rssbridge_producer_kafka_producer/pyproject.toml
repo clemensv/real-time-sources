@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "rssbridge-producer-kafka-producer"
 description = "rssbridge_producer_kafka_producer Apache Kafka consumer library"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
 packages = [{include = "rssbridge_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "<4.0,>=3.11"
-rssbridge-producer-data = { path = "../rssbridge_producer_data", develop = true }
+python = "<4.0,>=3.10"
+rssbridge-producer-data = "*"
 confluent-kafka = ">=2.4.0"
 cloudevents = ">=1.10.1"
 

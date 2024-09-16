@@ -2,12 +2,12 @@
 name = "rssbridge-producer-data"
 version = "0.1.0"
 description = "A package for handling Avro schema data"
-authors = ["Clemens Vasters"]
+authors = ["Your Name"]
 license = "MIT"
 packages = [ { include = "rssbridge_producer_data", from="src" } ]
 
 [tool.poetry.dependencies]
-python = "<4.0,>=3.11"
+python = "<4.0,>=3.10"
 dataclasses-json = "^0.6.7"
 
 [tool.poetry.dev-dependencies]

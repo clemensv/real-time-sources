@@ -90,15 +90,12 @@ $templateResources = @(
             "osType"        = "Linux"
             "restartPolicy" = "Always"
             # Conditional diagnostics section using here-string
-            "diagnostics"   = "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), null, json('"+
-@"
-{
-    "logAnalytics": {
-        "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
-        "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]"
-    }
-}
-"@+"'))]"
+            "diagnostics"   = @{
+                "logAnalytics" = @{
+                    "workspaceId" = "[parameters('logAnalyticsWorkspaceId')]"
+                    "workspaceKey" = "[parameters('logAnalyticsWorkspaceKey')]"
+                }
+            }
         }
     }
 )

@@ -9,15 +9,15 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemsource_feeditemsource import Test_FeedItemSource
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemcontent_feeditemcontent import Test_FeedItemContent
-from test_datetime_datetime import Test_datetime
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemtitle_feeditemtitle import Test_FeedItemTitle
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemauthor_feeditemauthor import Test_FeedItemAuthor
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_link_link import Test_Link
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemsummary_feeditemsummary import Test_FeedItemSummary
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemenclosure_feeditemenclosure import Test_FeedItemEnclosure
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditempublisher_feeditempublisher import Test_FeedItemPublisher
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemsummary import Test_FeedItemSummary
+from test_datetime import Test_datetime
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemenclosure import Test_FeedItemEnclosure
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemsource import Test_FeedItemSource
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemauthor import Test_FeedItemAuthor
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditempublisher import Test_FeedItemPublisher
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemcontent import Test_FeedItemContent
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemtitle import Test_FeedItemTitle
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_link import Test_Link
 
 class Test_FeedItem(unittest.TestCase):
     """
@@ -41,16 +41,16 @@ class Test_FeedItem(unittest.TestCase):
             summary=Test_FeedItemSummary.create_instance(),
             title=Test_FeedItemTitle.create_instance(),
             source=Test_FeedItemSource.create_instance(),
-            content=[Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance()],
-            enclosures=[Test_FeedItemEnclosure.create_instance()],
+            content=[Test_FeedItemContent.create_instance()],
+            enclosures=[Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance()],
             published=datetime.datetime.now(),
             updated=datetime.datetime.now(),
             created=datetime.datetime.now(),
             expired=datetime.datetime.now(),
-            id='kpilvytwknmaurlrxsmf',
-            license='lfaxkutimoyozjgiuleo',
-            comments='zhhyqforptxrlkrgcnbf',
-            contributors=[Test_FeedItemAuthor.create_instance()],
+            id='glqavnshvkebuswvdjvj',
+            license='cgolawsmqkffvaceqdwd',
+            comments='skeocovegojbcdomvoga',
+            contributors=[Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()],
             links=[Test_Link.create_instance()]
         )
         return instance
@@ -100,7 +100,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test content property
         """
-        test_value = [Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance()]
+        test_value = [Test_FeedItemContent.create_instance()]
         self.instance.content = test_value
         self.assertEqual(self.instance.content, test_value)
     
@@ -108,7 +108,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test enclosures property
         """
-        test_value = [Test_FeedItemEnclosure.create_instance()]
+        test_value = [Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance()]
         self.instance.enclosures = test_value
         self.assertEqual(self.instance.enclosures, test_value)
     
@@ -148,7 +148,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'kpilvytwknmaurlrxsmf'
+        test_value = 'glqavnshvkebuswvdjvj'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -156,7 +156,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test license property
         """
-        test_value = 'lfaxkutimoyozjgiuleo'
+        test_value = 'cgolawsmqkffvaceqdwd'
         self.instance.license = test_value
         self.assertEqual(self.instance.license, test_value)
     
@@ -164,7 +164,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'zhhyqforptxrlkrgcnbf'
+        test_value = 'skeocovegojbcdomvoga'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     
@@ -172,7 +172,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test contributors property
         """
-        test_value = [Test_FeedItemAuthor.create_instance()]
+        test_value = [Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()]
         self.instance.contributors = test_value
         self.assertEqual(self.instance.contributors, test_value)
     
@@ -184,12 +184,3 @@ class Test_FeedItem(unittest.TestCase):
         self.instance.links = test_value
         self.assertEqual(self.instance.links, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = FeedItem.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
