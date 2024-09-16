@@ -1,28 +1,63 @@
 # Real Time Sources
 
-This repo contains tools to help you get started with real time data sources using
-Azure Event Hubs and Microsoft Fabric Event Streams.
+Learning how to build event streaming solutions with Microsoft Azure Event Hubs,
+Microsoft Fabric Event Streams, and any Apache Kafka compatible server and
+service is more interesting when you have real time data sources to work with.
 
-Please read the [LICENSE](LICENSE.md) for details on the rights granted to you for
-use of the software in this repo and also for the data sources accessible through the tools.
-This software does not grant to you any rights to the data sources. You must check with
-the data source provider for the terms of use of the data.
+* [GTFS Realtime - Public transport data](gtfs/README.md)
+* [NOAA Tides ands Currents -  Water level and current data](noaa/README.md)
+* [RSS Feeds - News and blog posts](rss/README.md)
+* [Pegelonline - Water level and current data](pegelonline/README.md)
 
-## Nextbus
+This repo contains command line tools, written in Python, that can be used to
+retrieve real-time streaming data and related reference data from various APIs,
+and then routing the data to Apache Kafka compatible endpoints.
 
-The [Nextbus](nextbus/README.md) tool is a command line tool that can be used to
-retrieve real time data from the [Nextbus](https://www.nextbus.com/) service. The
-tool can be used to retrieve data for a single agency or for multiple agencies.
+For each tool, there is a corresponding, pre-built (Docker-) container image
+that you can pull and use instantly from this repo's container registry. There
+are also pre-built templates for easily deploying the containers as an Azure
+Container Instance (ACI), either feeding data into an Azure Event Hub or an
+Fabric Event Stream custom endpoint. The container images will work with any
+Apache Kafka compatible server or service, as long as you provide required
+information. The supported authentication scheme for the Kafka endpoint is
+SASL/PLAIN.
 
-## GTFS Realtime
+Details about the tools and the data sources are provided in the respective
+README files.
 
-The [GTFS Realtime](gtfs/README.md) tool is a command line tool that can be used to
-retrieve real time vehcile position data from a [GTFS Realtime](https://gtfs.org/reference/realtime/v2/) 
-service feed. An example is the [New York City MTA Bus Time](https://bustime.mta.info/wiki/Developers/Index)
+## GTFS Realtime - Public transport data
 
+The [GTFS Realtime Bridge](gtfs/README.md) is a command line tool that retrieves
+to retrieve schedules, real-time vehicle position, real-time trip updates (live
+predictions of arrivals/departures), and alerts from practically any GTFS and
+GTFS-RT service. Over 1000 public transport agencies worldwide publish their
+data in GTFS format, and many of them also provide real-time data in GTFS-RT
+format. 
 
-## NOAA Data Poller
+In terms of sheer data volume, the feeds related to the New York City
+Metropolitan Transportation Authority (MTA) will produce over 50 Gigabytes of
+data each day.
 
-The [NOAA Data Poller](noaa/README.md) tool is a command line tool that can be used to
-retrieve real time weather data from the [NOAA](https://www.noaa.gov/) service. The
-tool can be used to retrieve data for a single station or for multiple stations.
+## NOAA Tides ands Currents -  Water level and current data
+
+The [NOAA data poller](noaa/README.md) is a command line tool that can be used
+to retrieve real-time water level and current data from NOAA's National Ocean
+Service (NOS) Tides and Currents API. The data is available for over 3000
+stations in the United States and its territories. The NOAA data is updated
+every 6 minutes, and the data volume is relatively low.
+
+## RSS Feeds - News and blog posts
+
+The [RSS feed poller](rss/README.md) is a command line tool that can be used to
+retrieve real-time news and blog posts from any RSS feed. The tool can be
+configured with a list of RSS feed URLs or OPML files, and it will poll the
+feeds at a configurable interval. The RSS client will only forward new items
+from the feeds.
+
+## Pegelonline - Water level and current data
+
+The [Pegelonline data poller](pegelonline/README.md) is a command line tool that
+can be used to retrieve real-time water level and current data from the German
+Federal Waterways and Shipping Administration (WSV) Pegelonline API. The data is
+available for over 3000 stations in Germany. The Pegelonline data is updated
+every 15 minutes, and the data volume is relatively low.
