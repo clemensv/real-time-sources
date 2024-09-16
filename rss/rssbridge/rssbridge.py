@@ -10,7 +10,7 @@ import logging
 import os
 import sys
 import time
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 from urllib.parse import urlparse, urljoin
 from dataclasses import dataclass, asdict
 from bs4 import BeautifulSoup
@@ -19,7 +19,6 @@ import feedparser
 import listparser
 from confluent_kafka import Producer
 import requests
-import sched
 import xml.etree.ElementTree as ET
 
 from requests import RequestException
@@ -170,15 +169,15 @@ def add_feed(url: str):
         if 'text/html' in content_type:
             extracted_urls = extract_feed_urls_from_webpage(url)
             if not extracted_urls:
-                print(f"No feeds found at {url}")
+                logging.debug(f"No feeds found at {url}")
             else:
                 feed_urls.extend(extracted_urls)
-                print(f"Added feed(s) from {url}: {extracted_urls}")
+                logging.debug(f"Added feed(s) from {url}: {extracted_urls}")
         elif 'application/rss+xml' in content_type or 'application/atom+xml' in content_type or 'application/xml' in content_type or 'text/xml' in content_type:
             feed_urls.append(url)
-            print(f"Added feed {url}")
+            logging.debug(f"Added feed {url}")
         else:
-            print(f"Unsupported content type {content_type} at {url}")
+            logging.debug(f"Unsupported content type {content_type} at {url}")
 
     save_feedstore(list(set(feed_urls)))
 
@@ -352,12 +351,12 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
             state[feed_url] = {}
         next_check_time = state.get(feed_url, {}).get("next_check_time")
         if next_check_time and datetime.now(timezone.utc) < datetime.fromisoformat(next_check_time).astimezone(timezone.utc):
-            print(f"Backoff until {next_check_time} for {feed_url}")
+            logging.debug(f"Backoff until {next_check_time} for {feed_url}")
             return
 
         # Handle skip
         if state.get(feed_url, {}).get("skip", False):
-            print(f"Skipping {feed_url}")
+            logging.debug(f"Skipping {feed_url}")
             return
 
         # Fetch the feed with ETag
@@ -379,11 +378,11 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
         new_items = []
         last_checked = state.get(feed_url, {}).get("last_checked", 0)
         last_checked_datetime = datetime.fromisoformat(last_checked).astimezone(timezone.utc) if isinstance(
-            last_checked, str) else datetime.fromtimestamp(last_checked)
+            last_checked, str) else datetime.fromtimestamp(last_checked, tz=timezone.utc)
 
         for entry in feed.entries:
             if 'published_parsed' in entry and entry.published_parsed:  # won't handle entries without pub date
-                pub_date = datetime(*entry.published_parsed[:6], tzinfo=UTC)
+                pub_date = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
                 if pub_date > last_checked_datetime:
                     item = feeditem_from_feedparser_entry(entry)
                     try:
@@ -408,10 +407,11 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
             except ValueError:
                 pass
 
+        # next check time is the minimum of the max age, expires, or 12 hours from now, plus 5 seconds to align multiple fgeeds
         next_check_time = min([
             datetime.now(timezone.utc) + timedelta(seconds=max_age) if max_age else datetime.now(timezone.utc) + timedelta(minutes=1),
             expires_datetime if expires_datetime else datetime.now(timezone.utc) + timedelta(minutes=1)
-        ])
+        ]) + timedelta(seconds=5)
         if next_check_time < datetime.now(timezone.utc):
             next_check_time = datetime.now(timezone.utc) + timedelta(minutes=1)
         if next_check_time > datetime.now(timezone.utc) + timedelta(hours=12):
@@ -437,14 +437,14 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
                 if not 'feed_url' in state:
                     state[feed_url] = {}
                 state[feed_url]["next_check_time"] = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
-                print(f"Backoff set for {feed_url} due to 429 response")
+                logging.debug(f"Backoff set for {feed_url} due to 429 response")
             elif e.response.status_code == 404 or e.response.status_code == 403:
                 if not 'feed_url' in state:
                     state[feed_url] = {}
                 state[feed_url]["skip"] = True
-                print(f"Skipping {feed_url} due to 404/403 response")
+                logging.debug(f"Skipping {feed_url} due to 404/403 response")
         else:
-            print(f"Error processing feed {feed_url}: {e}")
+            logging.debug(f"Error processing feed {feed_url}: {e}")
 
 
 async def poll_feeds(feed_urls: List[str], state, producer_instance: MicrosoftOpenDataRssFeedsEventProducer):
@@ -461,11 +461,10 @@ async def poll_feeds(feed_urls: List[str], state, producer_instance: MicrosoftOp
             await process_feed(feed_url, state, producer_instance)
         save_state(state)
         next_poll = min([
-            (datetime.fromisoformat(state.get(feed_url, {}).get("next_check_time", datetime.now(
-                UTC).isoformat())).astimezone(timezone.utc)-datetime.now(timezone.utc)).total_seconds()
+            (datetime.fromisoformat(state.get(feed_url, {}).get("next_check_time", datetime.now(timezone.utc).isoformat())).astimezone(timezone.utc)-datetime.now(timezone.utc)).total_seconds()
             for feed_url in feed_urls if not state.get(feed_url, {}).get("skip", False)
         ])
-        print(f"Next poll in {next_poll} seconds")
+        logging.debug(f"Next poll in {next_poll} seconds")
         await asyncio.sleep(next_poll)
 
 
@@ -504,13 +503,14 @@ async def main():
     # Subparser for "process" command
     process_parser = subparsers.add_parser("process", help="Process feeds")
     process_parser.add_argument('--kafka-bootstrap-servers', type=str,
-                                help="Comma separated list of Kafka bootstrap servers")
-    process_parser.add_argument('--kafka-topic', type=str, help="Kafka topic to send messages to")
-    process_parser.add_argument('--sasl-username', type=str, help="Username for SASL PLAIN authentication")
-    process_parser.add_argument('--sasl-password', type=str, help="Password for SASL PLAIN authentication")
+                                help="Comma separated list of Kafka bootstrap servers", default=os.environ.get('KAFKA_BOOTSTRAP_SERVERS') if os.environ.get('KAFKA_BOOTSTRAP_SERVERS') else None)
+    process_parser.add_argument('--kafka-topic', type=str, help="Kafka topic to send messages to", default=os.environ.get('KAFKA_TOPIC') if os.environ.get('KAFKA_TOPIC') else None)
+    process_parser.add_argument('--sasl-username', type=str, help="Username for SASL PLAIN authentication", default=os.environ.get('SASL_USERNAME') if os.environ.get('SASL_USERNAME') else None)
+    process_parser.add_argument('--sasl-password', type=str, help="Password for SASL PLAIN authentication", default=os.environ.get('SASL_PASSWORD') if os.environ.get('SASL_PASSWORD') else None)
     process_parser.add_argument('-c', '--connection-string', type=str,
-                                help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
-    process_parser.add_argument("urls", metavar="URL", type=str, nargs="*", help="URLs of RSS/Atom or OPML files")
+                                help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string', default=os.environ.get('CONNECTION_STRING') if os.environ.get('CONNECTION_STRING') else None)
+    process_parser.add_argument('-l', '--log-level', type=str, help='Log level', default='INFO')
+    process_parser.add_argument("urls", metavar="URL", type=str, nargs="*", help="URLs of RSS/Atom or OPML files", default=os.environ.get('FEED_URLS').split(',') if os.environ.get('FEED_URLS') else None)
     # Subparser for "add" command
     add_parser = subparsers.add_parser("add", help="Add feeds to the feed store")
     add_parser.add_argument("urls", metavar="URL", type=str, nargs="+", help="URLs of RSS/Atom or OPML files to add")
@@ -518,9 +518,14 @@ async def main():
     remove_parser = subparsers.add_parser("remove", help="Remove feeds from the feed store")
     remove_parser.add_argument("urls", metavar="URL", type=str, nargs="+", help="URLs of RSS/Atom files to remove")
 
+    subparsers.add_parser("show", help="Show feeds in the feed store")
+
+
     args = parser.parse_args()
 
     if args.command == "process":
+        if args.log_level:
+            logging.getLogger().setLevel(args.log_level)
         if args.connection_string:
             config_params = parse_connection_string(args.connection_string)
             kafka_bootstrap_servers = config_params.get('bootstrap.servers')
@@ -535,13 +540,13 @@ async def main():
 
         # Check if required parameters are provided
         if not kafka_bootstrap_servers:
-            print("Error: Kafka bootstrap servers must be provided either through the command line or connection string.")
+            logging.debug("Error: Kafka bootstrap servers must be provided either through the command line or connection string.")
             sys.exit(1)
         if not kafka_topic:
-            print("Error: Kafka topic must be provided either through the command line or connection string.")
+            logging.debug("Error: Kafka topic must be provided either through the command line or connection string.")
             sys.exit(1)
         if not sasl_username or not sasl_password:
-            print("Error: SASL username and password must be provided either through the command line or connection string.")
+            logging.debug("Error: SASL username and password must be provided either through the command line or connection string.")
             sys.exit(1)
 
         kafka_config = {
@@ -553,7 +558,7 @@ async def main():
         }
 
         kafka_producer = Producer(kafka_config)
-        producer_instance = MicrosoftOpenDataRssFeedsEventProducer(kafka_producer, kafka_topic, 'binary')
+        producer_instance = MicrosoftOpenDataRssFeedsEventProducer(kafka_producer, kafka_topic, 'structured')
 
         state = load_state()
         feed_urls = load_feedstore()
@@ -573,6 +578,10 @@ async def main():
     elif args.command == "remove":
         for url in args.urls:
             remove_feed(url)
+    elif args.command == "show":
+        feed_urls = load_feedstore()
+        for url in feed_urls:
+            logging.debug(url)
     else:
         parser.print_help()
 

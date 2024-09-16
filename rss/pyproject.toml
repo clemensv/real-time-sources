@@ -8,13 +8,11 @@ packages = [{include = "rssbridge_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-rssbridge-producer-kafka-producer = { path = "../../../rssbridge_producer/rssbridge_producer_kafka_producer", develop = true }
-rssbridge-producer-data = { path = "../../../rssbridge_producer/rssbridge_producer_data", develop = true }
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.2"
+pytest = ">=8.3.3"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.11.2"

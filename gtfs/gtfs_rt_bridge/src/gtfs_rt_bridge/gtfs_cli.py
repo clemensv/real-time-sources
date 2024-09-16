@@ -622,38 +622,51 @@ def map_translations(rows: List[Dict[str, Any]]) -> List[Translations]:
     ) for row in rows]
 
 
-def map_trips(rows: List[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> List[Trips]:
+def map_trips(trip_rows: List[Dict[str, Any]], calendar_rows: List[Dict[str, Any]], calendar_dates_rows: List[Dict[str, Any]]) -> List[Trips]:
     """Maps the rows from the trips.txt file to a list of Trips objects"""
     trips = []
-    for row in rows:
+
+    # we do some indexing here because the combinations of the files can be enormous
+    calendar_rows_by_service: Dict[str, List[Dict[str, Any]]] = {}
+    for calendar_row in calendar_rows:
+        service_id = calendar_row.get("service_id")
+        if service_id not in calendar_rows_by_service:
+            calendar_rows_by_service[service_id] = []
+        calendar_rows_by_service[service_id].append(calendar_row)
+    calendar_dates_rows_by_service: Dict[str, List[Dict[str, Any]]] = {}
+    for calendar_dates_row in calendar_dates_rows:
+        service_id = calendar_dates_row.get("service_id")
+        if service_id not in calendar_dates_rows_by_service:
+            calendar_dates_rows_by_service[service_id] = []
+        calendar_dates_rows_by_service[service_id].append(calendar_dates_row)
+
+    for row in trip_rows:
         calendar_dates = []
         calendars = []
-        for calendar_row in calendar_rows:
-            if calendar_row.get("service_id") == row.get("service_id"):
-                calendars.append(
-                    Calendar(
-                        serviceId=calendar_row.get("service_id"),
-                        monday=ServiceAvailability.from_ordinal(calendar_row.get("monday")) if calendar_row.get("monday") else ServiceAvailability.NO_SERVICE,
-                        tuesday=ServiceAvailability.from_ordinal(calendar_row.get("tuesday")) if calendar_row.get("tuesday") else ServiceAvailability.NO_SERVICE,
-                        wednesday=ServiceAvailability.from_ordinal(calendar_row.get("wednesday")) if calendar_row.get("wednesday") else ServiceAvailability.NO_SERVICE,
-                        thursday=ServiceAvailability.from_ordinal(calendar_row.get("thursday")) if calendar_row.get("thursday") else ServiceAvailability.NO_SERVICE,
-                        friday=ServiceAvailability.from_ordinal(calendar_row.get("friday")) if calendar_row.get("friday") else ServiceAvailability.NO_SERVICE,
-                        saturday=ServiceAvailability.from_ordinal(calendar_row.get("saturday")) if calendar_row.get("saturday") else ServiceAvailability.NO_SERVICE,
-                        sunday=ServiceAvailability.from_ordinal(calendar_row.get("sunday")) if calendar_row.get("sunday") else ServiceAvailability.NO_SERVICE,
-                        startDate=calendar_row.get("start_date"),
-                        endDate=calendar_row.get("end_date")
-                    )
+        for calendar_row in calendar_rows_by_service.get(row.get("service_id"), []):
+            calendars.append(
+                Calendar(
+                    serviceId=calendar_row.get("service_id"),
+                    monday=ServiceAvailability.from_ordinal(calendar_row.get("monday")) if calendar_row.get("monday") else ServiceAvailability.NO_SERVICE,
+                    tuesday=ServiceAvailability.from_ordinal(calendar_row.get("tuesday")) if calendar_row.get("tuesday") else ServiceAvailability.NO_SERVICE,
+                    wednesday=ServiceAvailability.from_ordinal(calendar_row.get("wednesday")) if calendar_row.get("wednesday") else ServiceAvailability.NO_SERVICE,
+                    thursday=ServiceAvailability.from_ordinal(calendar_row.get("thursday")) if calendar_row.get("thursday") else ServiceAvailability.NO_SERVICE,
+                    friday=ServiceAvailability.from_ordinal(calendar_row.get("friday")) if calendar_row.get("friday") else ServiceAvailability.NO_SERVICE,
+                    saturday=ServiceAvailability.from_ordinal(calendar_row.get("saturday")) if calendar_row.get("saturday") else ServiceAvailability.NO_SERVICE,
+                    sunday=ServiceAvailability.from_ordinal(calendar_row.get("sunday")) if calendar_row.get("sunday") else ServiceAvailability.NO_SERVICE,
+                    startDate=calendar_row.get("start_date"),
+                    endDate=calendar_row.get("end_date")
                 )
+            )
 
-        for calendar_dates_row in calendar_dates_rows:
-            if calendar_dates_row.get("service_id") == row.get("service_id"):
-                calendar_dates.append(
-                    CalendarDates(
-                        serviceId=calendar_dates_row.get("service_id"),
-                        date=calendar_dates_row.get("date"),
-                        exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type")) < 2 else ExceptionType.SERVICE_REMOVED
-                    )
+        for calendar_dates_row in calendar_dates_rows_by_service.get(row.get("service_id"), []):
+            calendar_dates.append(
+                CalendarDates(
+                    serviceId=calendar_dates_row.get("service_id"),
+                    date=calendar_dates_row.get("date"),
+                    exceptionType=ExceptionType.from_ordinal(calendar_dates_row.get("exception_type")) if calendar_dates_row.get("exception_type") and int(calendar_dates_row.get("exception_type")) < 2 else ExceptionType.SERVICE_REMOVED
                 )
+            )
 
         trips.append(
             Trips(
@@ -755,7 +768,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
         # Fetch the schedule file
 
         etag, schedule_file_path = fetch_schedule_file(gtfs_url, None, headers, etags.get(gtfs_url, None), cache_dir)
-        if etag == etags.get(gtfs_url, None):
+        if not force_refresh and etag == etags.get(gtfs_url, None):
             continue
         etags[gtfs_url] = etag
         # Read the existing file hashes
@@ -1006,7 +1019,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
 
 async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_topic:str, sasl_username:str|None, sasl_password:str|None,
                                  gtfs_rt_urls: List[str], gtfs_rt_headers: List[List[str]], gtfs_urls: List[str], gtfs_headers: List[List[str]],
-                                 mdb_source_id: str, route: str | None, poll_interval: int, cloudevents_mode: str, cache_dir: str | None):
+                                 mdb_source_id: str, route: str | None, poll_interval: int, cloudevents_mode: str, cache_dir: str | None, force_schedule_refresh: bool):
     """Poll vehicle locations and submit to an Event Hub"""
     if not gtfs_rt_urls and mdb_source_id:
         gtfs_rt_urls = [get_gtfs_rt_url(mdb_source_id, cache_dir)]
@@ -1048,10 +1061,11 @@ async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, k
         while True:
             start_time = datetime.now(timezone.utc)
             if gtfs_urls:
-                if last_schedule_run is None or datetime.now() - last_schedule_run > timedelta(hours=1):
+                if force_schedule_refresh or (last_schedule_run is None or datetime.now() - last_schedule_run > timedelta(hours=1)):
                     last_schedule_run = datetime.now()
                     logger.info("Fetching schedule from %s", gtfs_urls)
-                    await fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=True, cache_dir=cache_dir)
+                    await fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_schedule_refresh, cache_dir=cache_dir)
+                    force_schedule_refresh = False
             if gtfs_rt_urls:
                 logger.info("Polling feed updates from %s", gtfs_rt_urls)
                 for gtfs_feed_url in gtfs_rt_urls:
@@ -1303,11 +1317,11 @@ read_agencies_cache: Dict[str, Any] | None = None
 
 async def read_agencies(cache_dir: str):
     """ Reads the list of transit agencies in the Mobility Database from the JSON files in the clone repository's catalogs/sources/gtfs directory. """
-    
-    # pylint: disable=global-variable-not-assigned    
+
+    # pylint: disable=global-variable-not-assigned
     global read_agencies_cache
     # pylint: enable=global-variable-not-assigned
-    
+
     if read_agencies_cache:
         return read_agencies_cache
 
@@ -1530,7 +1544,7 @@ async def run_feed(args):
         sasl_password = args.sasl_password
 
     await feed_realtime_messages(args.agency, kafka_bootstrap_servers, kafka_topic, sasl_username, sasl_password,
-                           args.gtfs_rt_urls, gtfs_rt_headers, args.gtfs_urls, gtfs_headers, args.mdb_source_id, args.route, args.poll_interval, args.cloudevents_mode, args.cache_dir)
+                           args.gtfs_rt_urls, gtfs_rt_headers, args.gtfs_urls, gtfs_headers, args.mdb_source_id, args.route, args.poll_interval, args.cloudevents_mode, args.cache_dir, args.force_schedule_refresh)
 
 
 async def main():
@@ -1554,12 +1568,13 @@ async def main():
     feed_parser.add_argument("--gtfs-urls", help="the URL(s) of the GTFS Schedule feed", nargs='+', required=False,default=os.environ.get("GTFS_URLS").split(",") if os.environ.get("GTFS_URLS") else None)
     feed_parser.add_argument("-m", "--mdb-source-id", help="the Mobility Database source ID of the GTFS Realtime feed", required=False, default=os.environ.get("MDB_SOURCE_ID"))
     feed_parser.add_argument("-a", "--agency", help="the tag of the agency to get vehicle locations for", required=False, default=os.environ.get("AGENCY"))
-    feed_parser.add_argument('--gtfs-rt-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ("GTFS_RT_HEADERS")) if os.environ.get("GTFS_RT_HEADERS") else None)
-    feed_parser.add_argument('--gtfs-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ("GTFS_HEADERS")) if os.environ.get("GTFS_HEADERS") else None)
-    feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=20)
+    feed_parser.add_argument('--gtfs-rt-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ.get("GTFS_RT_HEADERS")) if os.environ.get("GTFS_RT_HEADERS") else None)
+    feed_parser.add_argument('--gtfs-headers', action='append', nargs='*', help='HTTP header(s) expressed as "key=value", e.g. "API-Key=abc', default=re.findall(split_pattern, os.environ.get("GTFS_HEADERS")) if os.environ.get("GTFS_HEADERS") else None)
+    feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=float(os.environ.get("POLL_INTERVAL")) if os.environ.get("POLL_INTERVAL") else 20)
     feed_parser.add_argument("--cloudevents-mode", help="the CloudEvents mode to use for the Kafka producer", required=False, choices=["structured", "binary"], default="structured")
     feed_parser.add_argument('--cache-dir', type=str, help="the directory to store the GTFS schedule files", required=False, default=os.environ.get("CACHE_DIR"))
     feed_parser.add_argument('--log-level', type=str, help="the logging level", required=False, default=os.environ.get("LOG_LEVEL"), choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+    feed_parser.add_argument('--force-schedule-refresh', action='store_true', help="force a refresh of the GTFS schedule data", required=False, default=False)
     feed_parser.set_defaults(func=run_feed)
 
     # Define the "printfeed" command
