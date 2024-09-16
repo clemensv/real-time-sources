@@ -285,8 +285,15 @@ def feeditem_from_feedparser_entry(entry) -> FeedItem:
             )
         return None
 
-    def parse_date(parsed_date):
-        return datetime(*parsed_date[:6]) if parsed_date else None
+    def parse_date(parsed_date_value) -> datetime|None:
+        if isinstance(parsed_date_value, time.struct_time):
+            st: time.struct_time = parsed_date_value
+            return datetime(st.tm_year, st.tm_mon, st.tm_mday, st.tm_hour, st.tm_min, st.tm_sec, tzinfo=timezone.utc)
+        if isinstance(parsed_date_value, datetime):
+            return parsed_date_value.astimezone(timezone.utc)
+        if isinstance(parsed_date_value,str):
+            return datetime.fromisoformat(parsed_date_value).astimezone(timezone.utc)
+        return None
 
     return FeedItem(
         author=parse_author_detail(entry.get('author_detail')),
