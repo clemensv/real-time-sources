@@ -12,34 +12,25 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 
 ### Message: de.wsv.pegelonline.Station
 
-**ID**: de.wsv.pegelonline.Station
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-10T15:02:55.573631
-**Modified At**: 2024-09-10T15:02:55.573631
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `de.wsv.pegelonline.Station`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-10T15:02:55.573631`         |
+| **Modified At** | `2024-09-10T15:02:55.573631`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `de.wsv.pegelonline.Station`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Station
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{station_id}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `de.wsv.pegelonline.Station` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Station | `uritemplate` | `False` | `{station_id}` |
 
 #### Schema:
 
@@ -71,34 +62,25 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 | `longname` | *string* | Full name of the water body (maximum 255 characters). |
 ### Message: de.wsv.pegelonline.CurrentMeasurement
 
-**ID**: de.wsv.pegelonline.CurrentMeasurement
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-10T15:02:58.776148
-**Modified At**: 2024-09-10T15:02:58.776148
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `de.wsv.pegelonline.CurrentMeasurement`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-10T15:02:58.776148`         |
+| **Modified At** | `2024-09-10T15:02:58.776148`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `de.wsv.pegelonline.CurrentMeasurement`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Station
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{station_id}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `de.wsv.pegelonline.CurrentMeasurement` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Station | `uritemplate` | `False` | `{station_id}` |
 
 #### Schema:
 

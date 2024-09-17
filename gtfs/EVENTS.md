@@ -42,34 +42,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 
 ### Message: GeneralTransitFeedRealTime.Vehicle.VehiclePosition
 
-**ID**: GeneralTransitFeedRealTime.Vehicle.VehiclePosition
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:33:53.276277
-**Modified At**: 2024-09-14T19:33:53.276277
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:33:53.276277`         |
+| **Modified At** | `2024-09-14T19:33:53.276277`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedRealTime.Vehicle.VehiclePosition` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -184,34 +175,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `CANCELED` | 3 |  |
 ### Message: GeneralTransitFeedRealTime.Trip.TripUpdate
 
-**ID**: GeneralTransitFeedRealTime.Trip.TripUpdate
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:33:56.509005
-**Modified At**: 2024-09-14T19:33:56.509005
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedRealTime.Trip.TripUpdate`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:33:56.509005`         |
+| **Modified At** | `2024-09-14T19:33:56.509005`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedRealTime.Trip.TripUpdate`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedRealTime.Trip.TripUpdate` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -268,34 +250,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `CANCELED` | 3 |  |
 ### Message: GeneralTransitFeedRealTime.Alert.Alert
 
-**ID**: GeneralTransitFeedRealTime.Alert.Alert
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:33:59.755279
-**Modified At**: 2024-09-14T19:33:59.755279
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedRealTime.Alert.Alert`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:33:59.755279`         |
+| **Modified At** | `2024-09-14T19:33:59.755279`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedRealTime.Alert.Alert`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedRealTime.Alert.Alert` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -365,34 +338,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 
 ### Message: GeneralTransitFeedStatic.Agency
 
-**ID**: GeneralTransitFeedStatic.Agency
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:02.945459
-**Modified At**: 2024-09-14T19:34:02.945459
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Agency`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:02.945459`         |
+| **Modified At** | `2024-09-14T19:34:02.945459`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Agency`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Agency` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -412,34 +376,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `agencyEmail` | *string* (optional) | Email address actively monitored by the agency’s customer service department. |
 ### Message: GeneralTransitFeedStatic.Areas
 
-**ID**: GeneralTransitFeedStatic.Areas
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:06.109457
-**Modified At**: 2024-09-14T19:34:06.109457
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Areas`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:06.109457`         |
+| **Modified At** | `2024-09-14T19:34:06.109457`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Areas`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Areas` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -455,34 +410,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `areaUrl` | *string* (optional) | URL of a web page about the area. |
 ### Message: GeneralTransitFeedStatic.Attributions
 
-**ID**: GeneralTransitFeedStatic.Attributions
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:09.322877
-**Modified At**: 2024-09-14T19:34:09.322877
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Attributions`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:09.322877`         |
+| **Modified At** | `2024-09-14T19:34:09.322877`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Attributions`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Attributions` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -505,34 +451,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `attributionPhone` | *string* (optional) | Phone number associated with the attribution. |
 ### Message: GeneralTransitFeed.BookingRules
 
-**ID**: GeneralTransitFeed.BookingRules
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:12.495400
-**Modified At**: 2024-09-14T19:34:12.495400
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeed.BookingRules`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:12.495400`         |
+| **Modified At** | `2024-09-14T19:34:12.495400`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeed.BookingRules`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeed.BookingRules` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -548,34 +485,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `bookingRuleUrl` | *string* (optional) | URL of a web page about the booking rule. |
 ### Message: GeneralTransitFeedStatic.FareAttributes
 
-**ID**: GeneralTransitFeedStatic.FareAttributes
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:15.660243
-**Modified At**: 2024-09-14T19:34:15.660243
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.FareAttributes`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:15.660243`         |
+| **Modified At** | `2024-09-14T19:34:15.660243`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.FareAttributes`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareAttributes` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -594,34 +522,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `transferDuration` | *long* (optional) | Length of time in seconds before a transfer expires. |
 ### Message: GeneralTransitFeedStatic.FareLegRules
 
-**ID**: GeneralTransitFeedStatic.FareLegRules
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:18.859990
-**Modified At**: 2024-09-14T19:34:18.859990
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.FareLegRules`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:18.859990`         |
+| **Modified At** | `2024-09-14T19:34:18.859990`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.FareLegRules`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareLegRules` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -639,34 +558,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `toAreaId` | *string* (optional) | Identifies the destination area. |
 ### Message: GeneralTransitFeedStatic.FareMedia
 
-**ID**: GeneralTransitFeedStatic.FareMedia
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:22.043899
-**Modified At**: 2024-09-14T19:34:22.043899
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.FareMedia`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:22.043899`         |
+| **Modified At** | `2024-09-14T19:34:22.043899`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.FareMedia`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareMedia` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -682,34 +592,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `fareMediaUrl` | *string* (optional) | URL of a web page about the fare media. |
 ### Message: GeneralTransitFeedStatic.FareProducts
 
-**ID**: GeneralTransitFeedStatic.FareProducts
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:25.251924
-**Modified At**: 2024-09-14T19:34:25.251924
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.FareProducts`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:25.251924`         |
+| **Modified At** | `2024-09-14T19:34:25.251924`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.FareProducts`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareProducts` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -725,34 +626,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `fareProductUrl` | *string* (optional) | URL of a web page about the fare product. |
 ### Message: GeneralTransitFeedStatic.FareRules
 
-**ID**: GeneralTransitFeedStatic.FareRules
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:28.382751
-**Modified At**: 2024-09-14T19:34:28.382751
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.FareRules`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:28.382751`         |
+| **Modified At** | `2024-09-14T19:34:28.382751`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.FareRules`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareRules` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -769,34 +661,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `containsId` | *string* (optional) | Identifies the fare zone that a rider will enter or leave. |
 ### Message: GeneralTransitFeedStatic.FareTransferRules
 
-**ID**: GeneralTransitFeedStatic.FareTransferRules
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:31.594438
-**Modified At**: 2024-09-14T19:34:31.594438
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.FareTransferRules`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:31.594438`         |
+| **Modified At** | `2024-09-14T19:34:31.594438`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.FareTransferRules`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FareTransferRules` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -815,34 +698,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `durationType` | *string* (optional) | Type of duration for the transfer. |
 ### Message: GeneralTransitFeedStatic.FeedInfo
 
-**ID**: GeneralTransitFeedStatic.FeedInfo
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:34.800372
-**Modified At**: 2024-09-14T19:34:34.800372
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.FeedInfo`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:34.800372`         |
+| **Modified At** | `2024-09-14T19:34:34.800372`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.FeedInfo`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.FeedInfo` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -863,34 +737,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `feedContactUrl` | *string* (optional) | URL for a web page that allows a feed consumer to contact the data publisher. |
 ### Message: GeneralTransitFeedStatic.Frequencies
 
-**ID**: GeneralTransitFeedStatic.Frequencies
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:37.975904
-**Modified At**: 2024-09-14T19:34:37.975904
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Frequencies`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:37.975904`         |
+| **Modified At** | `2024-09-14T19:34:37.975904`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Frequencies`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Frequencies` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -907,34 +772,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `exactTimes` | *int* (optional) | When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled. |
 ### Message: GeneralTransitFeedStatic.Levels
 
-**ID**: GeneralTransitFeedStatic.Levels
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:41.164118
-**Modified At**: 2024-09-14T19:34:41.164118
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Levels`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:41.164118`         |
+| **Modified At** | `2024-09-14T19:34:41.164118`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Levels`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Levels` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -949,34 +805,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `levelName` | *string* (optional) | Name of the level. |
 ### Message: GeneralTransitFeedStatic.LocationGeoJson
 
-**ID**: GeneralTransitFeedStatic.LocationGeoJson
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:44.385665
-**Modified At**: 2024-09-14T19:34:44.385665
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.LocationGeoJson`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:44.385665`         |
+| **Modified At** | `2024-09-14T19:34:44.385665`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.LocationGeoJson`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.LocationGeoJson` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -991,34 +838,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `locationGeoJsonData` | *string* | GeoJSON data. |
 ### Message: GeneralTransitFeedStatic.LocationGroups
 
-**ID**: GeneralTransitFeedStatic.LocationGroups
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:47.584486
-**Modified At**: 2024-09-14T19:34:47.584486
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.LocationGroups`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:47.584486`         |
+| **Modified At** | `2024-09-14T19:34:47.584486`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.LocationGroups`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.LocationGroups` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1034,34 +872,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `locationGroupUrl` | *string* (optional) | URL of a web page about the location group. |
 ### Message: GeneralTransitFeedStatic.LocationGroupStores
 
-**ID**: GeneralTransitFeedStatic.LocationGroupStores
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:50.772270
-**Modified At**: 2024-09-14T19:34:50.772270
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.LocationGroupStores`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:50.772270`         |
+| **Modified At** | `2024-09-14T19:34:50.772270`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.LocationGroupStores`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.LocationGroupStores` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1076,34 +905,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `storeId` | *string* | Identifies a store. |
 ### Message: GeneralTransitFeedStatic.Networks
 
-**ID**: GeneralTransitFeedStatic.Networks
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:53.975672
-**Modified At**: 2024-09-14T19:34:53.975672
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Networks`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:53.975672`         |
+| **Modified At** | `2024-09-14T19:34:53.975672`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Networks`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Networks` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1119,34 +939,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `networkUrl` | *string* (optional) | URL of a web page about the network. |
 ### Message: GeneralTransitFeedStatic.Pathways
 
-**ID**: GeneralTransitFeedStatic.Pathways
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:34:57.277576
-**Modified At**: 2024-09-14T19:34:57.277576
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Pathways`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:34:57.277576`         |
+| **Modified At** | `2024-09-14T19:34:57.277576`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Pathways`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Pathways` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1170,34 +981,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `reversedSignpostedAs` | *string* (optional) | Reversed signposting information for the pathway. |
 ### Message: GeneralTransitFeedStatic.RouteNetworks
 
-**ID**: GeneralTransitFeedStatic.RouteNetworks
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:00.516165
-**Modified At**: 2024-09-14T19:35:00.516165
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.RouteNetworks`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:00.516165`         |
+| **Modified At** | `2024-09-14T19:35:00.516165`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.RouteNetworks`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.RouteNetworks` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1212,34 +1014,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `networkId` | *string* | Identifies a network. |
 ### Message: GeneralTransitFeedStatic.Routes
 
-**ID**: GeneralTransitFeedStatic.Routes
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:03.739840
-**Modified At**: 2024-09-14T19:35:03.739840
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Routes`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:03.739840`         |
+| **Modified At** | `2024-09-14T19:35:03.739840`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Routes`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Routes` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1313,34 +1106,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `COORDINATE_WITH_DRIVER` | 3 |  |
 ### Message: GeneralTransitFeedStatic.Shapes
 
-**ID**: GeneralTransitFeedStatic.Shapes
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:06.980418
-**Modified At**: 2024-09-14T19:35:06.980418
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Shapes`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:06.980418`         |
+| **Modified At** | `2024-09-14T19:35:06.980418`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Shapes`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Shapes` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1357,34 +1141,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `shapeDistTraveled` | *double* (optional) | Actual distance traveled along the shape from the first shape point to the specified shape point. |
 ### Message: GeneralTransitFeedStatic.StopAreas
 
-**ID**: GeneralTransitFeedStatic.StopAreas
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:10.194179
-**Modified At**: 2024-09-14T19:35:10.194179
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.StopAreas`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:10.194179`         |
+| **Modified At** | `2024-09-14T19:35:10.194179`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.StopAreas`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.StopAreas` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1399,34 +1174,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `areaId` | *string* | Identifies an area. |
 ### Message: GeneralTransitFeedStatic.Stops
 
-**ID**: GeneralTransitFeedStatic.Stops
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:13.431326
-**Modified At**: 2024-09-14T19:35:13.431326
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Stops`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:13.431326`         |
+| **Modified At** | `2024-09-14T19:35:13.431326`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Stops`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Stops` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1479,34 +1245,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `NOT_POSSIBLE` | 2 |  |
 ### Message: GeneralTransitFeedStatic.StopTimes
 
-**ID**: GeneralTransitFeedStatic.StopTimes
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:16.641750
-**Modified At**: 2024-09-14T19:35:16.641750
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.StopTimes`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:16.641750`         |
+| **Modified At** | `2024-09-14T19:35:16.641750`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.StopTimes`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.StopTimes` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1593,34 +1350,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `EXACT` | 1 |  |
 ### Message: GeneralTransitFeedStatic.Timeframes
 
-**ID**: GeneralTransitFeedStatic.Timeframes
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:19.852768
-**Modified At**: 2024-09-14T19:35:19.852768
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Timeframes`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:19.852768`         |
+| **Modified At** | `2024-09-14T19:35:19.852768`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Timeframes`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Timeframes` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1685,34 +1433,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `SERVICE_REMOVED` | 1 |  |
 ### Message: GeneralTransitFeedStatic.Transfers
 
-**ID**: GeneralTransitFeedStatic.Transfers
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:23.095140
-**Modified At**: 2024-09-14T19:35:23.095140
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Transfers`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:23.095140`         |
+| **Modified At** | `2024-09-14T19:35:23.095140`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Transfers`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Transfers` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1728,34 +1467,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `minTransferTime` | *int* (optional) | Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id). |
 ### Message: GeneralTransitFeedStatic.Translations
 
-**ID**: GeneralTransitFeedStatic.Translations
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:26.333256
-**Modified At**: 2024-09-14T19:35:26.333256
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Translations`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:26.333256`         |
+| **Modified At** | `2024-09-14T19:35:26.333256`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Translations`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Translations` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
@@ -1771,34 +1501,25 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `translation` | *string* | Translated value. |
 ### Message: GeneralTransitFeedStatic.Trips
 
-**ID**: GeneralTransitFeedStatic.Trips
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro
-**Created At**: 2024-09-14T19:35:29.580497
-**Modified At**: 2024-09-14T19:35:29.580497
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `GeneralTransitFeedStatic.Trips`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro`    |
+| **Created At**  | `2024-09-14T19:35:29.580497`         |
+| **Modified At** | `2024-09-14T19:35:29.580497`        |
 
-- **specversion**: CloudEvents version
-  - Type: *string*
-  - Required: *True*
-  - Value: `1.0`
+#### CloudEvents Attributes:
 
-- **type**: Event type
-  - Type: *string*
-  - Required: *True*
-  - Value: `GeneralTransitFeedStatic.Trips`
-
-- **source**: Source Feed URL
-  - Type: *uritemplate*
-  - Required: *True*
-  - Value: `{feedurl}`
-
-- **subject**: Provider name
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{agencyid}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `specversion` | CloudEvents version | `string` | `True` | `1.0` |
+| `type` | Event type | `string` | `True` | `GeneralTransitFeedStatic.Trips` |
+| `source` | Source Feed URL | `uritemplate` | `True` | `{feedurl}` |
+| `subject` | Provider name | `uritemplate` | `False` | `{agencyid}` |
 
 #### Schema:
 
