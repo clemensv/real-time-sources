@@ -1,2 +1,2 @@
-# WSV Pegelonline API bridge to Kafka
+# WSV Pegelonline API bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 

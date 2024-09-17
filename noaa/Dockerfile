@@ -1,6 +1,12 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
+LABEL org.opencontainers.image.source = "https://github.com/clemensv/real-time-sources/tree/main/noaa"
+LABEL org.opencontainers.image.title = "NOAA Tides and Currents API bridge to Kafka endpoints"
+LABEL org.opencontainers.image.description = "This container is a bridge between the NOAA Tides and Currents API  and Kafka endpoints. It fetches data from NOAA endpoints and forwards them to the configured Kafka endpoints."
+LABEL org.opencontainers.image.documentation = "https://github.com/clemensv/real-time-sources/blob/main/noaa/CONTAINER.md"
+LABEL org.opencontainers.image.license = "MIT"
+
 # Set the working directory in the container
 WORKDIR /app
 
