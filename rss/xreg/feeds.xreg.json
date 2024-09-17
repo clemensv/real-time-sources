@@ -45,6 +45,7 @@
                                 "type": "record",
                                 "name": "FeedItem",
                                 "namespace": "Microsoft.OpenData.RssFeeds",
+                                "doc": "Represents an item in an RSS feed, containing metadata such as the author, title, and content.",
                                 "fields": [
                                     {
                                         "name": "author",
@@ -54,6 +55,7 @@
                                                 "type": "record",
                                                 "name": "FeedItemAuthor",
                                                 "namespace": "Microsoft.OpenData.RssFeeds",
+                                                "doc": "Contains information about the author of the feed item.",
                                                 "fields": [
                                                     {
                                                         "name": "name",
@@ -61,7 +63,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The full name of the author."
                                                     },
                                                     {
                                                         "name": "href",
@@ -69,7 +72,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A URL associated with the author, such as a personal website or profile."
                                                     },
                                                     {
                                                         "name": "email",
@@ -77,12 +81,14 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The author's email address."
                                                     }
                                                 ]
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "Information about the feed item's author."
                                     },
                                     {
                                         "name": "publisher",
@@ -92,6 +98,7 @@
                                                 "type": "record",
                                                 "name": "FeedItemPublisher",
                                                 "namespace": "Microsoft.OpenData.RssFeeds",
+                                                "doc": "Contains information about the publisher of the feed item.",
                                                 "fields": [
                                                     {
                                                         "name": "name",
@@ -99,7 +106,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The name of the publisher."
                                                     },
                                                     {
                                                         "name": "href",
@@ -107,7 +115,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A URL associated with the publisher."
                                                     },
                                                     {
                                                         "name": "email",
@@ -115,12 +124,14 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The publisher's email address."
                                                     }
                                                 ]
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "Information about the feed item's publisher."
                                     },
                                     {
                                         "name": "summary",
@@ -130,6 +141,7 @@
                                                 "type": "record",
                                                 "name": "FeedItemSummary",
                                                 "namespace": "Microsoft.OpenData.RssFeeds",
+                                                "doc": "A brief summary or abstract of the feed item.",
                                                 "fields": [
                                                     {
                                                         "name": "value",
@@ -137,7 +149,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The text content of the summary."
                                                     },
                                                     {
                                                         "name": "type",
@@ -145,7 +158,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The content type of the summary, such as 'text/plain' or 'text/html'."
                                                     },
                                                     {
                                                         "name": "language",
@@ -153,7 +167,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The language of the summary content."
                                                     },
                                                     {
                                                         "name": "base",
@@ -161,12 +176,14 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The base URI for resolving relative URIs within the summary."
                                                     }
                                                 ]
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "A short summary of the feed item."
                                     },
                                     {
                                         "name": "title",
@@ -176,6 +193,7 @@
                                                 "type": "record",
                                                 "name": "FeedItemTitle",
                                                 "namespace": "Microsoft.OpenData.RssFeeds",
+                                                "doc": "The title of the feed item.",
                                                 "fields": [
                                                     {
                                                         "name": "value",
@@ -183,7 +201,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The text content of the title."
                                                     },
                                                     {
                                                         "name": "type",
@@ -191,7 +210,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The content type of the title."
                                                     },
                                                     {
                                                         "name": "language",
@@ -199,7 +219,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The language of the title."
                                                     },
                                                     {
                                                         "name": "base",
@@ -207,12 +228,14 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The base URI for resolving relative URIs within the title."
                                                     }
                                                 ]
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "The feed item's title."
                                     },
                                     {
                                         "name": "source",
@@ -222,6 +245,7 @@
                                                 "type": "record",
                                                 "name": "FeedItemSource",
                                                 "namespace": "Microsoft.OpenData.RssFeeds",
+                                                "doc": "Metadata about the original source feed, useful if the item was republished from another feed.",
                                                 "fields": [
                                                     {
                                                         "name": "author",
@@ -229,7 +253,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The name of the original author."
                                                     },
                                                     {
                                                         "name": "author_detail",
@@ -237,7 +262,8 @@
                                                             "null",
                                                             "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "Detailed information about the original author."
                                                     },
                                                     {
                                                         "name": "contributors",
@@ -248,7 +274,8 @@
                                                                 "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
                                                             }
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A list of contributors to the source feed."
                                                     },
                                                     {
                                                         "name": "icon",
@@ -256,7 +283,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "An icon image associated with the source feed."
                                                     },
                                                     {
                                                         "name": "id",
@@ -264,7 +292,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A unique identifier for the source feed."
                                                     },
                                                     {
                                                         "name": "link",
@@ -272,7 +301,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A link to the source feed."
                                                     },
                                                     {
                                                         "name": "links",
@@ -284,6 +314,7 @@
                                                                     "type": "record",
                                                                     "name": "Link",
                                                                     "namespace": "Microsoft.OpenData.RssFeeds",
+                                                                    "doc": "Represents a hyperlink associated with the feed or feed item.",
                                                                     "fields": [
                                                                         {
                                                                             "name": "rel",
@@ -291,7 +322,8 @@
                                                                                 "null",
                                                                                 "string"
                                                                             ],
-                                                                            "default": null
+                                                                            "default": null,
+                                                                            "doc": "The relationship type of the link, such as 'alternate' or 'self'."
                                                                         },
                                                                         {
                                                                             "name": "href",
@@ -299,7 +331,8 @@
                                                                                 "null",
                                                                                 "string"
                                                                             ],
-                                                                            "default": null
+                                                                            "default": null,
+                                                                            "doc": "The URL of the link."
                                                                         },
                                                                         {
                                                                             "name": "type",
@@ -307,7 +340,8 @@
                                                                                 "null",
                                                                                 "string"
                                                                             ],
-                                                                            "default": null
+                                                                            "default": null,
+                                                                            "doc": "The MIME type of the linked resource."
                                                                         },
                                                                         {
                                                                             "name": "title",
@@ -315,13 +349,15 @@
                                                                                 "null",
                                                                                 "string"
                                                                             ],
-                                                                            "default": null
+                                                                            "default": null,
+                                                                            "doc": "The title or description of the link."
                                                                         }
                                                                     ]
                                                                 }
                                                             }
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A collection of links related to the source feed."
                                                     },
                                                     {
                                                         "name": "logo",
@@ -329,7 +365,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A logo image associated with the source feed."
                                                     },
                                                     {
                                                         "name": "rights",
@@ -337,7 +374,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "Rights information for the source feed, such as copyright notices."
                                                     },
                                                     {
                                                         "name": "subtitle",
@@ -345,7 +383,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "A secondary title or tagline for the source feed."
                                                     },
                                                     {
                                                         "name": "title",
@@ -353,7 +392,8 @@
                                                             "null",
                                                             "string"
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The title of the source feed."
                                                     },
                                                     {
                                                         "name": "updated",
@@ -364,12 +404,14 @@
                                                                 "logicalType": "timestamp-millis"
                                                             }
                                                         ],
-                                                        "default": null
+                                                        "default": null,
+                                                        "doc": "The last updated timestamp of the source feed."
                                                     }
                                                 ]
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "Information about the source feed of the item."
                                     },
                                     {
                                         "name": "content",
@@ -381,6 +423,7 @@
                                                     "type": "record",
                                                     "name": "FeedItemContent",
                                                     "namespace": "Microsoft.OpenData.RssFeeds",
+                                                    "doc": "Represents the main content of the feed item.",
                                                     "fields": [
                                                         {
                                                             "name": "value",
@@ -388,7 +431,8 @@
                                                                 "null",
                                                                 "string"
                                                             ],
-                                                            "default": null
+                                                            "default": null,
+                                                            "doc": "The actual content of the feed item."
                                                         },
                                                         {
                                                             "name": "type",
@@ -396,7 +440,8 @@
                                                                 "null",
                                                                 "string"
                                                             ],
-                                                            "default": null
+                                                            "default": null,
+                                                            "doc": "The content type, such as 'text/html' or 'text/plain'."
                                                         },
                                                         {
                                                             "name": "language",
@@ -404,7 +449,8 @@
                                                                 "null",
                                                                 "string"
                                                             ],
-                                                            "default": null
+                                                            "default": null,
+                                                            "doc": "The language of the content."
                                                         },
                                                         {
                                                             "name": "base",
@@ -412,13 +458,15 @@
                                                                 "null",
                                                                 "string"
                                                             ],
-                                                            "default": null
+                                                            "default": null,
+                                                            "doc": "The base URI for resolving relative URIs within the content."
                                                         }
                                                     ]
                                                 }
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "The content of the feed item, potentially including multiple formats."
                                     },
                                     {
                                         "name": "enclosures",
@@ -430,6 +478,7 @@
                                                     "type": "record",
                                                     "name": "FeedItemEnclosure",
                                                     "namespace": "Microsoft.OpenData.RssFeeds",
+                                                    "doc": "Represents media content attached to the feed item, such as audio or video files.",
                                                     "fields": [
                                                         {
                                                             "name": "href",
@@ -437,7 +486,8 @@
                                                                 "null",
                                                                 "string"
                                                             ],
-                                                            "default": null
+                                                            "default": null,
+                                                            "doc": "The URL of the enclosure."
                                                         },
                                                         {
                                                             "name": "length",
@@ -445,7 +495,8 @@
                                                                 "null",
                                                                 "long"
                                                             ],
-                                                            "default": null
+                                                            "default": null,
+                                                            "doc": "The size of the enclosure in bytes."
                                                         },
                                                         {
                                                             "name": "type",
@@ -453,13 +504,15 @@
                                                                 "null",
                                                                 "string"
                                                             ],
-                                                            "default": null
+                                                            "default": null,
+                                                            "doc": "The MIME type of the enclosure content."
                                                         }
                                                     ]
                                                 }
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "Media attachments associated with the feed item."
                                     },
                                     {
                                         "name": "published",
@@ -470,7 +523,8 @@
                                                 "logicalType": "timestamp-millis"
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "The publication date and time of the feed item."
                                     },
                                     {
                                         "name": "updated",
@@ -481,7 +535,8 @@
                                                 "logicalType": "timestamp-millis"
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "The last updated date and time of the feed item."
                                     },
                                     {
                                         "name": "created",
@@ -492,7 +547,8 @@
                                                 "logicalType": "timestamp-millis"
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "The creation date and time of the feed item."
                                     },
                                     {
                                         "name": "expired",
@@ -503,7 +559,8 @@
                                                 "logicalType": "timestamp-millis"
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "The expiration date and time of the feed item."
                                     },
                                     {
                                         "name": "id",
@@ -511,7 +568,8 @@
                                             "null",
                                             "string"
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "A unique identifier for the feed item."
                                     },
                                     {
                                         "name": "license",
@@ -519,7 +577,8 @@
                                             "null",
                                             "string"
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "License information for the feed item."
                                     },
                                     {
                                         "name": "comments",
@@ -527,7 +586,8 @@
                                             "null",
                                             "string"
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "A link to comments or feedback related to the feed item."
                                     },
                                     {
                                         "name": "contributors",
@@ -538,7 +598,8 @@
                                                 "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "A list of individuals who contributed to the feed item."
                                     },
                                     {
                                         "name": "links",
@@ -549,7 +610,8 @@
                                                 "items": "Microsoft.OpenData.RssFeeds.Link"
                                             }
                                         ],
-                                        "default": null
+                                        "default": null,
+                                        "doc": "A collection of links related to the feed item."
                                     }
                                 ]
                             }

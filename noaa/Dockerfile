@@ -16,9 +16,6 @@ COPY . /app
 # Install the required Python packages
 RUN pip install .
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
-
 # Define environment variables (default values)
 ENV NOAA_LAST_POLLED_FILE="/mnt/fileshare/noaa_last_polled.json"
 ENV CONNECTION_STRING=""
