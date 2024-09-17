@@ -14,7 +14,8 @@ cloud storage service like Azure Blob Storage or AWS S3 and provide the URL
 including an access token.
 
 An example OPML file is part of the repository and can be found at
-[world_news.opml](opml/world_news.opml).
+[world_news.opml](opml/world_news.opml). If you want to reference it, you need
+to use the ["raw" URL](https://raw.githubusercontent.com/clemensv/real-time-sources/main/rss/opml/world_news.opml)
 
 ## Functionality
 
