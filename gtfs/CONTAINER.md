@@ -162,3 +162,13 @@ Schedule file cache directory. The client caches GTFS schedule files in this
 directory and keeps track of the last modification time of the files. This
 assures that data is not acquired and sent to the Kafka broker if the schedule
 files have not changed since the last fetch.
+
+
+## Deploying into Azure Container Instances
+
+You can deploy the RSS/Atom bridge as a container directly to Azure Container
+Instances providing the information explained above. Just click the button below and go.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template.json)
+
+
