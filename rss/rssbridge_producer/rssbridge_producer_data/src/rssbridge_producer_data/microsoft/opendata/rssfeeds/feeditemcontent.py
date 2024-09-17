@@ -24,7 +24,7 @@ class FeedItemContent:
     value: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
     language: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="language"))
-    base: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="base"))    
+    base: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="base"))
     
 
     def __post_init__(self):

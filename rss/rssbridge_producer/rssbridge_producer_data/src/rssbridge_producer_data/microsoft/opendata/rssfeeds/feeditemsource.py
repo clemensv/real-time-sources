@@ -8,9 +8,10 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
+from marshmallow import fields
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
-from datetime import datetime
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+import datetime
 
 
 @dataclasses_json.dataclass_json
@@ -30,7 +31,7 @@ class FeedItemSource:
         rights (typing.Optional[str]): 
         subtitle (typing.Optional[str]): 
         title (typing.Optional[str]): 
-        updated (typing.Optional[datetime]): """
+        updated (typing.Optional[datetime.datetime]): """
     
     author: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="author"))
     author_detail: typing.Optional[FeedItemAuthor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="author_detail"))
@@ -43,7 +44,7 @@ class FeedItemSource:
     rights: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rights"))
     subtitle: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="subtitle"))
     title: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
-    updated: typing.Optional[datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))    
+    updated: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated", encoder=lambda d: datetime.datetime.isoformat(d) if d else None, decoder=lambda d:datetime.datetime.fromisoformat(d) if d else None, mm_field=fields.DateTime(format='iso')))
     
 
     def __post_init__(self):
