@@ -120,6 +120,13 @@ The file path where the bridge stores the state of processed entries. This helps
 in resuming data fetching without duplication after restarts. Default is
 `/mnt/state/rssbridge_state.json`.
 
+## Deploying into Azure Container Instances
+
+You can deploy the RSS/Atom bridge as a container directly to Azure Container
+Instances providing the information explained above. Just click the button below and go.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template.json)
+
 ## Additional Information
 
 - **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/rss)
