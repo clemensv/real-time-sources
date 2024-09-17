@@ -9,6 +9,8 @@ This document describes the events that are emitted by the RSS API Bridge.
 
 ## Message Group: Microsoft.OpenData.RssFeeds
 
+---
+
 ### Message: Microsoft.OpenData.RssFeeds.FeedItem
 
 *A new item has been added to the RSS feed.*

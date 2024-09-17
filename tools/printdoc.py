@@ -32,6 +32,7 @@ def generate_documentation(data, title, description):
             msg_anchor = generate_anchor(f"Message: {msg_name}")
             msg_heading = f"### Message: {msg_name}\n"
             toc.append(f"  - [{msg_name}](#{msg_anchor})")
+            output_lines.append("---\n")
             output_lines.append(msg_heading)
             output_lines.extend(process_message(msg, schemagroups))
 
