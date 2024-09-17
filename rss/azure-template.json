@@ -1,5 +1,9 @@
 {
   "contentVersion": "1.0.0.0",
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
+    "fileShareName": "fileshare"
+  },
   "resources": [
     {
       "location": "[resourceGroup().location]",
@@ -86,7 +90,7 @@
                 {
                   "name": "FEED_URLS",
                   "value": "[parameters('feedUrls')]"
-                }
+                },
                 {
                   "name": "STATE_DIR",
                   "value": "/mnt/fileshare/state"
@@ -113,15 +117,13 @@
       "type": "string",
       "metadata": {
         "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
-      },
-      "nullable": false
+      }
     },
     "logAnalyticsWorkspaceKey": {
       "type": "securestring",
       "metadata": {
         "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
-      },
-      "nullable": false
+      }
     },
     "connectionStringSecret": {
       "type": "securestring",
@@ -142,7 +144,7 @@
       "metadata": {
         "description": "The name of the container instance."
       },
-      "defaultValue": "[if(resourceGroup().name, resourceGroup().name, 'rss-bridge')]"
+      "defaultValue": "[if(empty(resourceGroup().name), 'rss-bridge', resourceGroup().name)]"
     },
     "imageName": {
       "type": "string",
