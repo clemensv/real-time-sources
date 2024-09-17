@@ -3,48 +3,53 @@
         <title>World News Selection</title>
     </head>
     <body>
-        <outline text="World News" title="World News">
-            <outline text="NPR News" title="NPR News" type="rss"
-                xmlUrl="https://www.npr.org/rss/rss.php?id=1002"
-                htmlUrl="https://www.npr.org/templates/story/story.php?storyId=1001" />
-            <outline text="FT | World News" title="FT | World News" type="rss"
-                xmlUrl="https://www.ft.com/rss/world" htmlUrl="http://www.ft.com/world" />
-            <outline text="Yahoo News - Top Stories" title="Yahoo News - Top Stories" type="rss"
-                xmlUrl="https://rss.news.yahoo.com/rss/topstories"
-                htmlUrl="https://news.yahoo.com/topstories/" />
-            <outline text="NBC News Top Stories" title="NBC News Top Stories" type="rss"
-                xmlUrl="https://feeds.nbcnews.com/nbcnews/public/news"
-                htmlUrl="https://www.nbcnews.com/" />
-            <outline text="The Telegraph - Telegraph online, Daily Telegraph, Sunday Telegraph"
-                title="The Telegraph - Telegraph online, Daily Telegraph, Sunday Telegraph"
-                type="rss" xmlUrl="https://www.telegraph.co.uk/rss"
-                htmlUrl="https://www.telegraph.co.uk/" />
-            <outline text="ABC News: Top Stories" title="ABC News: Top Stories" type="rss"
-                xmlUrl="https://feeds.abcnews.com/abcnews/topstories"
-                htmlUrl="https://abcnews.go.com/" />
-            <outline text="AL JAZEERA ENGLISH (AJE)" title="AL JAZEERA ENGLISH (AJE)" type="rss"
-                xmlUrl="https://www.aljazeera.com/Services/Rss/?PostingId=2007731105943979989"
-                htmlUrl="https://www.aljazeera.com/default.html" />
-            <outline text="Independent" title="Independent" type="rss"
-                xmlUrl="https://www.independent.co.uk/rss"
-                htmlUrl="https://www.independent.co.uk/news/?service=Rss" />
-            <outline text="Washington Post: Breaking News, World, US, DC News &amp; Analysis"
-                title="Washington Post: Breaking News, World, US, DC News &amp; Analysis" type="rss"
-                xmlUrl="https://feeds.washingtonpost.com/rss/world"
-                htmlUrl="https://www.washingtonpost.com/?wprss=rss_homepage" />
-            <outline text="World news | The Guardian" title="World news | The Guardian" type="rss"
-                xmlUrl="https://feeds.guardian.co.uk/theguardian/world/rss"
-                htmlUrl="https://www.theguardian.com/world" />
-            <outline text="TIME" title="TIME" type="rss" xmlUrl="https://time.com/feed/"
-                htmlUrl="http://time.com/" />
-            <outline text="WSJ: World News" title="WSJ: World News" type="rss"
-                xmlUrl="https://feeds.a.dj.com/rss/RSSWorldNews.xml"
-                htmlUrl="http://online.wsj.com/page/2_0006.html" />
-            <outline text="The New York Times" title="The New York Times" type="rss"
-                xmlUrl="https://www.nytimes.com/services/xml/rss/nyt/HomePage.xml"
-                htmlUrl="https://www.nytimes.com/pages/index.html?partner=rss&amp;emc=rss" />
-            <outline text="BBC News" title="BBC News" type="rss"
-                xmlUrl="https://feeds.bbci.co.uk/news/rss.xml" htmlUrl="https://www.bbc.com" />
-        </outline>
+        <outline text="NPR News" title="NPR News" type="rss"
+            xmlUrl="https://www.npr.org/rss/rss.php?id=1002"
+            htmlUrl="https://www.npr.org/templates/story/story.php?storyId=1001" />
+        <outline text="FT | World News" title="FT | World News" type="rss"
+            xmlUrl="https://www.ft.com/rss/world" htmlUrl="http://www.ft.com/world" />
+        <outline text="Yahoo News - Top Stories" title="Yahoo News - Top Stories" type="rss"
+            xmlUrl="https://rss.news.yahoo.com/rss/topstories"
+            htmlUrl="https://news.yahoo.com/topstories/" />
+        <outline text="NBC News Top Stories" title="NBC News Top Stories" type="rss"
+            xmlUrl="https://feeds.nbcnews.com/nbcnews/public/news"
+            htmlUrl="https://www.nbcnews.com/" />
+        <outline text="The Telegraph - Telegraph online, Daily Telegraph, Sunday Telegraph"
+            title="The Telegraph - Telegraph online, Daily Telegraph, Sunday Telegraph"
+            type="rss" xmlUrl="https://www.telegraph.co.uk/rss"
+            htmlUrl="https://www.telegraph.co.uk/" />
+        <outline text="ABC News: Top Stories" title="ABC News: Top Stories" type="rss"
+            xmlUrl="https://feeds.abcnews.com/abcnews/topstories"
+            htmlUrl="https://abcnews.go.com/" />
+        <outline text="AL JAZEERA ENGLISH (AJE)" title="AL JAZEERA ENGLISH (AJE)" type="rss"
+            xmlUrl="https://www.aljazeera.com/Services/Rss/?PostingId=2007731105943979989"
+            htmlUrl="https://www.aljazeera.com/default.html" />
+        <outline text="Independent" title="Independent" type="rss"
+            xmlUrl="https://www.independent.co.uk/rss"
+            htmlUrl="https://www.independent.co.uk/news/?service=Rss" />
+        <outline text="Washington Post: Breaking News, World, US, DC News &amp; Analysis"
+            title="Washington Post: Breaking News, World, US, DC News &amp; Analysis" type="rss"
+            xmlUrl="https://feeds.washingtonpost.com/rss/world"
+            htmlUrl="https://www.washingtonpost.com/?wprss=rss_homepage" />
+        <outline text="World news | The Guardian" title="World news | The Guardian" type="rss"
+            xmlUrl="https://feeds.guardian.co.uk/theguardian/world/rss"
+            htmlUrl="https://www.theguardian.com/world" />
+        <outline text="TIME" title="TIME" type="rss" xmlUrl="https://time.com/feed/"
+            htmlUrl="http://time.com/" />
+        <outline text="WSJ: World News" title="WSJ: World News" type="rss"
+            xmlUrl="https://feeds.a.dj.com/rss/RSSWorldNews.xml"
+            htmlUrl="http://online.wsj.com/page/2_0006.html" />
+        <outline text="The New York Times" title="The New York Times" type="rss"
+            xmlUrl="https://www.nytimes.com/services/xml/rss/nyt/HomePage.xml"
+            htmlUrl="https://www.nytimes.com/pages/index.html?partner=rss&amp;emc=rss" />
+        <outline text="BBC News" title="BBC News" type="rss"
+            xmlUrl="https://feeds.bbci.co.uk/news/rss.xml" htmlUrl="https://www.bbc.com" />
+        <outline text="Spiegel auf BlueSky" title="Spiegel auf BlueSky" type="rss"
+            xmlUrl="https://bsky.app/profile/did:plc:6xofcnvvojjnmggqx43zghwh/rss" />
+        <outline text="The Globe and Mail on BlueSky" title="The Globe and Mail on BlueSky"
+            type="rss"
+            xmlUrl="https://bsky.app/profile/did:plc:y3xrmnwvkvsq4tqcsgwch4na/rss" />
+        <outline text="Table Briefings on BlueSky" title="Table Briefings on BlueSky" type="rss"
+            xmlUrl="https://bsky.app/profile/did:plc:7xtnsgkroq5ibqj4xgoytvlm/rss" />
     </body>
 </opml>
