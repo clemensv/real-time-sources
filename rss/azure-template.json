@@ -2,10 +2,61 @@
   "contentVersion": "1.0.0.0",
   "resources": [
     {
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot"
+      },
+      "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS"
+      }
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      },
+      "name": "[concat(variables('storageAccountName'), '/default/')]",
+      "type": "Microsoft.Storage/storageAccounts/fileServices"
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 5120
+      },
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares"
+    },
+    {
       "apiVersion": "2021-09-01",
       "type": "Microsoft.ContainerInstance/containerGroups",
       "properties": {
         "restartPolicy": "Always",
+        "volumes": [
+          {
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            },
+            "name": "azurefilevolume"
+          }
+        ],
         "osType": "Linux",
         "containers": [
           {
@@ -16,6 +67,12 @@
                   "memoryInGB": 1
                 }
               },
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ],
               "image": "[parameters('imageName')]",
               "environmentVariables": [
                 {
@@ -29,6 +86,10 @@
                 {
                   "name": "FEED_URLS",
                   "value": "[parameters('feedUrls')]"
+                }
+                {
+                  "name": "STATE_DIR",
+                  "value": "/mnt/fileshare/state"
                 }
               ]
             },
@@ -51,21 +112,21 @@
     "logAnalyticsWorkspaceId": {
       "type": "string",
       "metadata": {
-        "description": "The Id of the Log Analytics workspace. Leave empty to skip log analytics configuration."
+        "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
       },
-      "defaultValue": ""
+      "nullable": false
     },
     "logAnalyticsWorkspaceKey": {
       "type": "securestring",
       "metadata": {
-        "description": "The key of the Log Analytics workspace. Leave empty to skip log analytics configuration."
+        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
       },
-      "defaultValue": ""
+      "nullable": false
     },
     "connectionStringSecret": {
       "type": "securestring",
       "metadata": {
-        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+        "description": "The Microsoft Fabric Event Stream custom input endpoint or Azure Event Hubs connection string."
       }
     },
     "feedUrls": {
@@ -81,7 +142,7 @@
       "metadata": {
         "description": "The name of the container instance."
       },
-      "defaultValue": "[resourceGroup().name]"
+      "defaultValue": "[if(resourceGroup().name, resourceGroup().name, 'rss-bridge')]"
     },
     "imageName": {
       "type": "string",

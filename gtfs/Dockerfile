@@ -11,9 +11,7 @@ COPY . /app
 RUN apt-get update && apt-get install -y git
 
 # Install the required Python packages
-RUN pip install gtfs_rt_producer/gtfs_rt_producer_data
-RUN pip install gtfs_rt_producer/gtfs_rt_producer_kafka_producer
-RUN pip install gtfs_rt_bridge/.
+RUN pip install .
 
 # Define environment variables (default values)
 

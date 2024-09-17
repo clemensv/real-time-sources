@@ -10,6 +10,8 @@ authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 
 
 [tool.poetry.dependencies]
+rssbridge_producer_data = {path = "rssbridge_producer/rssbridge_producer_data"}
+rssbridge_producer_kafka_producer = {path = "rssbridge_producer/rssbridge_producer_kafka_producer"}
 python = ">=3.8"
 requests = ">=2.32.3"
 confluent-kafka = ">=2.5.3"

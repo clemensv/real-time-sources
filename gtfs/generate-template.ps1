@@ -110,8 +110,8 @@ $templateResources = @(
                         "image" = "[parameters('imageName')]"
                         "resources" = @{
                             "requests" = @{
-                                "cpu" = 0.5
-                                "memoryInGB" = 1
+                                "cpu" = 1
+                                "memoryInGB" = 2
                             }
                         }
                         "environmentVariables" = @(

@@ -8,8 +8,6 @@ WORKDIR /app
 COPY . /app
 
 # Install the required Python packages
-RUN pip install pegelonline_producer/pegelonline_producer_data
-RUN pip install pegelonline_producer/pegelonline_producer_kafka_producer
 RUN pip install .
 
 # Define environment variables (default values)

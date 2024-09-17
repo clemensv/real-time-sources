@@ -12,18 +12,14 @@ import sys
 import time
 from typing import Dict, List, Optional
 from urllib.parse import urlparse, urljoin
-from dataclasses import dataclass, asdict
+import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
-from dataclasses_json import dataclass_json
 import feedparser
 import listparser
 from confluent_kafka import Producer
 import requests
-import xml.etree.ElementTree as ET
 
 from requests import RequestException
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../rssbridge_producer")))
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
@@ -32,9 +28,9 @@ from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import Fe
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
-from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsEventProducer
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsEventProducer
 
 # Logging configuration
 if sys.gettrace() is not None:
@@ -526,6 +522,11 @@ async def main():
     """
     Main function to handle argparse commands.
     """
+        
+    global USER_DIR
+    global STATE_FILE
+    global FEEDSTORE_FILE
+
     parser = argparse.ArgumentParser(description="RSS/Atom Feed Poller")
     subparsers = parser.add_subparsers(dest="command")
     # Subparser for "process" command
@@ -539,18 +540,27 @@ async def main():
                                 help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string', default=os.environ.get('CONNECTION_STRING') if os.environ.get('CONNECTION_STRING') else None)
     process_parser.add_argument('-l', '--log-level', type=str, help='Log level', default='INFO')
     process_parser.add_argument("urls", metavar="URL", type=str, nargs="*", help="URLs of RSS/Atom or OPML files", default=os.environ.get('FEED_URLS').split(',') if os.environ.get('FEED_URLS') else None)
+    process_parser.add_argument('--state-dir', type=str, help="Directory to store state", default=os.environ.get('STATE_DIR') if os.environ.get('STATE_DIR') else USER_DIR)
     # Subparser for "add" command
     add_parser = subparsers.add_parser("add", help="Add feeds to the feed store")
     add_parser.add_argument("urls", metavar="URL", type=str, nargs="+", help="URLs of RSS/Atom or OPML files to add")
+    add_parser.add_argument('--state-dir', type=str, help="Directory to store state", default=os.environ.get('STATE_DIR') if os.environ.get('STATE_DIR') else USER_DIR)
     # Subparser for "remove" command
     remove_parser = subparsers.add_parser("remove", help="Remove feeds from the feed store")
     remove_parser.add_argument("urls", metavar="URL", type=str, nargs="+", help="URLs of RSS/Atom files to remove")
+    remove_parser.add_argument('--state-dir', type=str, help="Directory to store state", default=os.environ.get('STATE_DIR') if os.environ.get('STATE_DIR') else USER_DIR)
 
-    subparsers.add_parser("show", help="Show feeds in the feed store")
-
+    show_parser = subparsers.add_parser("show", help="Show feeds in the feed store")
+    show_parser.add_argument('--state-dir', type=str, help="Directory to store state", default=os.environ.get('STATE_DIR') if os.environ.get('STATE_DIR') else USER_DIR)
 
     args = parser.parse_args()
 
+    if 'state_dir' in args and args.state_dir:
+        USER_DIR = args.state_dir
+        STATE_FILE = os.path.join(USER_DIR, ".rss-grabber.json")
+        FEEDSTORE_FILE = os.path.join(USER_DIR, ".rss-grabber-feedstore.xml")
+        if not os.path.exists(USER_DIR):
+            os.makedirs(USER_DIR)
     if args.command == "process":
         if args.log_level:
             logging.getLogger().setLevel(args.log_level)
