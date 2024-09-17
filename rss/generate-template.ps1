@@ -8,7 +8,7 @@ $templateParameters = @{
         "connectionStringSecret" = @{
             "type"     = "securestring"
             "metadata" = @{
-                "description" = "The Microsoft Fabric Event Stream custom input endpoint connection string."
+                "description" = "The Microsoft Fabric Event Stream custom input endpoint or Azure Event Hubs connection string."
             }
         }
         "feedUrls" = @{
@@ -20,7 +20,7 @@ $templateParameters = @{
         }
         "appName" = @{
             "type"        = "string"
-            "defaultValue" = "[resourceGroup().name]"
+            "defaultValue" = "[if(resourceGroup().name, resourceGroup().name, 'rss-bridge')]"
             "metadata"    = @{
                 "description" = "The name of the container instance."
             }
@@ -33,26 +33,66 @@ $templateParameters = @{
                 "description" = "The name of the container image."
             }
         }
-        # New parameter for Log Analytics workspace name
         "logAnalyticsWorkspaceId" = @{
             "type"        = "string"
-            "defaultValue" = ""
+            "nullable"    = $false
             "metadata"    = @{
-                "description" = "The Id of the Log Analytics workspace. Leave empty to skip log analytics configuration."
+                "description" = "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
             }
         }
         "logAnalyticsWorkspaceKey" = @{
             "type"        = "securestring"
-            "defaultValue" = ""
+            "nullable"    = $false
             "metadata"    = @{
-                "description" = "The key of the Log Analytics workspace. Leave empty to skip log analytics configuration."
+                "description" = "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
             }
         }
+    }
+    "variables" = @{
+        "storageAccountName" = "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
+        "fileShareName" = "fileshare"
     }
 }
 
 # Define resources in the ARM template
 $templateResources = @(
+    @{
+        "type" = "Microsoft.Storage/storageAccounts"
+        "apiVersion" = "2021-04-01"
+        "name" = "[variables('storageAccountName')]"
+        "location" = "[resourceGroup().location]"
+        "sku" = @{
+            "name" = "Standard_LRS"
+        }
+        "kind" = "StorageV2"
+        "properties" = @{
+            "accessTier" = "Hot"
+        }
+    }
+    @{
+        "type" = "Microsoft.Storage/storageAccounts/fileServices"
+        "apiVersion" = "2021-04-01"
+        "name" = "[concat(variables('storageAccountName'), '/default/')]"
+        "location" = "[resourceGroup().location]"
+        "dependsOn" = @("[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]")
+        "properties" = @{
+            "protocolSettings" = @{
+                "smb" = @{
+                    "enabled" = $true
+                }
+            }
+        }
+    }
+    @{
+        "type" = "Microsoft.Storage/storageAccounts/fileServices/shares"
+        "apiVersion" = "2021-04-01"
+        "name" = "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]"
+        "location" = "[resourceGroup().location]"
+        "dependsOn" = @("[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]")
+        "properties" = @{
+            "shareQuota" = 5120
+        }
+    }
     @{
         "type"       = "Microsoft.ContainerInstance/containerGroups"
         "apiVersion" = "2021-09-01"
@@ -84,12 +124,27 @@ $templateResources = @(
                                 "value" = "[parameters('feedUrls')]"
                             }
                         )
+                        "volumeMounts" = @(
+                            @{
+                                "name" = "azurefilevolume"
+                                "mountPath" = "/mnt/fileshare"
+                            }
+                        )
                     }
                 }
             )
             "osType"        = "Linux"
             "restartPolicy" = "Always"
-            # Conditional diagnostics section using here-string
+            "volumes" = @(
+                @{
+                    "name" = "azurefilevolume"
+                    "azureFile" = @{
+                        "shareName" = "[variables('fileShareName')]"
+                        "storageAccountName" = "[variables('storageAccountName')]"
+                        "storageAccountKey" = "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+                    }
+                }
+            )
             "diagnostics"   = @{
                 "logAnalytics" = @{
                     "workspaceId" = "[parameters('logAnalyticsWorkspaceId')]"

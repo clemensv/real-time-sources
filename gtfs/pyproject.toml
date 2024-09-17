@@ -4,12 +4,12 @@ description = "GTFS-RT Bridge"
 authors = ["Clemens Vasters"]
 readme = "README.md"
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
-packages = [{include = "gtfs_rt_bridge", from = "src"}]
+packages = [{include = "gtfs_rt_bridge", from = "gtfs_rt_bridge/src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-gtfs_rt-producer-kafka-producer = "*"
-gtfs_rt-producer-data = "*"
+gtfs-rt-producer-data = {path = "gtfs_rt_producer/gtfs_rt_producer_data"}
+gtfs-rt-producer-kafka-producer = {path = "gtfs_rt_producer/gtfs_rt_producer_kafka_producer"}
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
 gtfs-realtime-bindings = ">=1.0.0"

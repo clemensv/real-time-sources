@@ -28,10 +28,10 @@ class Test_Link(unittest.TestCase):
         Create instance of Link for testing
         """
         instance = Link(
-            rel='xbqlsxrztszwvcugktgv',
-            href='ovpjeeseofklydrgtpdy',
-            type='ypzmznjwjoeuyocdcdew',
-            title='rdmmulapkuollvuszhjg'
+            rel='bnbnowhtkujcmhaljqac',
+            href='extyfscjamakbledyoub',
+            type='jqhhoquzsssvrsrwbjan',
+            title='ntkjchyygqjjuptyypfw'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Link(unittest.TestCase):
         """
         Test rel property
         """
-        test_value = 'xbqlsxrztszwvcugktgv'
+        test_value = 'bnbnowhtkujcmhaljqac'
         self.instance.rel = test_value
         self.assertEqual(self.instance.rel, test_value)
     
@@ -48,7 +48,7 @@ class Test_Link(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'ovpjeeseofklydrgtpdy'
+        test_value = 'extyfscjamakbledyoub'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -56,7 +56,7 @@ class Test_Link(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'ypzmznjwjoeuyocdcdew'
+        test_value = 'jqhhoquzsssvrsrwbjan'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -64,7 +64,7 @@ class Test_Link(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'rdmmulapkuollvuszhjg'
+        test_value = 'ntkjchyygqjjuptyypfw'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     

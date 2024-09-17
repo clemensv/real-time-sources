@@ -9,12 +9,13 @@ description = "A project to fetch data from NOAA API"
 authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 
 [tool.poetry.dependencies]
+
 python = ">=3.8"
 requests = ">=2.32.3"
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
 dataclasses_json = ">=0.6.7"
-numpy = ">=2.1.1"
+
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.2"

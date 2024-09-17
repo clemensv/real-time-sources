@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Install the required Python packages
-RUN pip install --no-cache-dir requests confluent-kafka cloudevents dataclasses_json numpy
+RUN pip install .
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
