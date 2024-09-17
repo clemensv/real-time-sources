@@ -10,6 +10,8 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 
 ## Message Group: de.wsv.pegelonline
 
+---
+
 ### Message: de.wsv.pegelonline.Station
 
 *A PEGELONLINE station with location and water body information.*
@@ -51,6 +53,8 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 |----------------|----------|-----------------|
 | `shortname` | *string* | Short name of the water body (maximum 40 characters). |
 | `longname` | *string* | Full name of the water body (maximum 255 characters). |
+---
+
 ### Message: de.wsv.pegelonline.CurrentMeasurement
 
 *The current measurement for a PEGELONLINE station.*

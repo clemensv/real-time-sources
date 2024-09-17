@@ -19,6 +19,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 
 ## Message Group: Microsoft.OpenData.US.NOAA
 
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.WaterLevel
 
 #### CloudEvents Attributes:
@@ -53,6 +55,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 |------------|-------------|-----------------|
 | `Preliminary` | 0 |  |
 | `Verified` | 1 |  |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.Predictions
 
 #### CloudEvents Attributes:
@@ -70,6 +74,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `station_id` | *string* | {"description": "7 character station ID, or a currents station ID."} |
 | `timestamp` | *string* | {"description": "Timestamp of the prediction"} |
 | `value` | *double* | {"description": "Value of the prediction"} |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.AirPressure
 
 #### CloudEvents Attributes:
@@ -90,6 +96,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `max_pressure_exceeded` | *boolean* | Flag indicating if the maximum expected air pressure was exceeded |
 | `min_pressure_exceeded` | *boolean* | Flag indicating if the minimum expected air pressure was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.AirTemperature
 
 #### CloudEvents Attributes:
@@ -110,6 +118,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `max_temp_exceeded` | *boolean* | Flag indicating if the maximum expected air temperature was exceeded |
 | `min_temp_exceeded` | *boolean* | Flag indicating if the minimum expected air temperature was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.WaterTemperature
 
 #### CloudEvents Attributes:
@@ -130,6 +140,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `max_temp_exceeded` | *boolean* | Flag indicating if the maximum expected water temperature was exceeded |
 | `min_temp_exceeded` | *boolean* | Flag indicating if the minimum expected water temperature was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.Wind
 
 #### CloudEvents Attributes:
@@ -152,6 +164,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `gusts` | *double* | {"description": "Wind gust speed"} |
 | `max_wind_speed_exceeded` | *boolean* | Flag indicating if the maximum wind speed was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.Humidity
 
 #### CloudEvents Attributes:
@@ -172,6 +186,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `max_humidity_exceeded` | *boolean* | Flag indicating if the maximum expected humidity was exceeded |
 | `min_humidity_exceeded` | *boolean* | Flag indicating if the minimum expected humidity was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.Conductivity
 
 #### CloudEvents Attributes:
@@ -192,6 +208,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `max_conductivity_exceeded` | *boolean* | Flag indicating if the maximum expected conductivity was exceeded |
 | `min_conductivity_exceeded` | *boolean* | Flag indicating if the minimum expected conductivity was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.Salinity
 
 #### CloudEvents Attributes:
@@ -210,6 +228,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `timestamp` | *string* | {"description": "Timestamp of the salinity measurement"} |
 | `salinity` | *double* | {"description": "Value of the salinity"} |
 | `grams_per_kg` | *double* | {"description": "Grams of salt per kilogram of water"} |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.Station
 
 #### CloudEvents Attributes:
@@ -362,6 +382,8 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | **Field Name** | **Type** | **Description** |
 |----------------|----------|-----------------|
 | `self` | *string* |  |
+---
+
 ### Message: Microsoft.OpenData.US.NOAA.Visibility
 
 #### CloudEvents Attributes:
