@@ -2,56 +2,171 @@
 
 This document describes the events that are emitted by the GTFS API Bridge.
 
-- [GeneralTransitFeedRealTime](#message-group-generaltransitfeedrealtime)
-  - [GeneralTransitFeedRealTime.Vehicle.VehiclePosition](#message-generaltransitfeedrealtimevehiclevehicleposition)
-  - [GeneralTransitFeedRealTime.Trip.TripUpdate](#message-generaltransitfeedrealtimetriptripupdate)
-  - [GeneralTransitFeedRealTime.Alert.Alert](#message-generaltransitfeedrealtimealertalert)
-- [GeneralTransitFeedStatic](#message-group-generaltransitfeedstatic)
-  - [GeneralTransitFeedStatic.Agency](#message-generaltransitfeedstaticagency)
-  - [GeneralTransitFeedStatic.Areas](#message-generaltransitfeedstaticareas)
-  - [GeneralTransitFeedStatic.Attributions](#message-generaltransitfeedstaticattributions)
-  - [GeneralTransitFeed.BookingRules](#message-generaltransitfeedbookingrules)
-  - [GeneralTransitFeedStatic.FareAttributes](#message-generaltransitfeedstaticfareattributes)
-  - [GeneralTransitFeedStatic.FareLegRules](#message-generaltransitfeedstaticfarelegrules)
-  - [GeneralTransitFeedStatic.FareMedia](#message-generaltransitfeedstaticfaremedia)
-  - [GeneralTransitFeedStatic.FareProducts](#message-generaltransitfeedstaticfareproducts)
-  - [GeneralTransitFeedStatic.FareRules](#message-generaltransitfeedstaticfarerules)
-  - [GeneralTransitFeedStatic.FareTransferRules](#message-generaltransitfeedstaticfaretransferrules)
-  - [GeneralTransitFeedStatic.FeedInfo](#message-generaltransitfeedstaticfeedinfo)
-  - [GeneralTransitFeedStatic.Frequencies](#message-generaltransitfeedstaticfrequencies)
-  - [GeneralTransitFeedStatic.Levels](#message-generaltransitfeedstaticlevels)
-  - [GeneralTransitFeedStatic.LocationGeoJson](#message-generaltransitfeedstaticlocationgeojson)
-  - [GeneralTransitFeedStatic.LocationGroups](#message-generaltransitfeedstaticlocationgroups)
-  - [GeneralTransitFeedStatic.LocationGroupStores](#message-generaltransitfeedstaticlocationgroupstores)
-  - [GeneralTransitFeedStatic.Networks](#message-generaltransitfeedstaticnetworks)
-  - [GeneralTransitFeedStatic.Pathways](#message-generaltransitfeedstaticpathways)
-  - [GeneralTransitFeedStatic.RouteNetworks](#message-generaltransitfeedstaticroutenetworks)
-  - [GeneralTransitFeedStatic.Routes](#message-generaltransitfeedstaticroutes)
-  - [GeneralTransitFeedStatic.Shapes](#message-generaltransitfeedstaticshapes)
-  - [GeneralTransitFeedStatic.StopAreas](#message-generaltransitfeedstaticstopareas)
-  - [GeneralTransitFeedStatic.Stops](#message-generaltransitfeedstaticstops)
-  - [GeneralTransitFeedStatic.StopTimes](#message-generaltransitfeedstaticstoptimes)
-  - [GeneralTransitFeedStatic.Timeframes](#message-generaltransitfeedstatictimeframes)
-  - [GeneralTransitFeedStatic.Transfers](#message-generaltransitfeedstatictransfers)
-  - [GeneralTransitFeedStatic.Translations](#message-generaltransitfeedstatictranslations)
-  - [GeneralTransitFeedStatic.Trips](#message-generaltransitfeedstatictrips)
+- [GTFS API Bridge Events](#gtfs-api-bridge-events)
+  - [Message Group: GeneralTransitFeedRealTime](#message-group-generaltransitfeedrealtime)
+    - [Message: GeneralTransitFeedRealTime.Vehicle.VehiclePosition](#message-generaltransitfeedrealtimevehiclevehicleposition)
+      - [CloudEvents Attributes:](#cloudevents-attributes)
+      - [Schema:](#schema)
+        - [Record: VehiclePosition](#record-vehicleposition)
+        - [Record: TripDescriptor](#record-tripdescriptor)
+        - [Record: VehicleDescriptor](#record-vehicledescriptor)
+        - [Record: Position](#record-position)
+        - [Enum: VehicleStopStatus](#enum-vehiclestopstatus)
+        - [Enum: CongestionLevel](#enum-congestionlevel)
+        - [Enum: OccupancyStatus](#enum-occupancystatus)
+        - [Enum: ScheduleRelationship](#enum-schedulerelationship)
+    - [Message: GeneralTransitFeedRealTime.Trip.TripUpdate](#message-generaltransitfeedrealtimetriptripupdate)
+      - [CloudEvents Attributes:](#cloudevents-attributes-1)
+      - [Schema:](#schema-1)
+        - [Record: TripUpdate](#record-tripupdate)
+        - [Record: TripDescriptor](#record-tripdescriptor-1)
+        - [Record: VehicleDescriptor](#record-vehicledescriptor-1)
+        - [Enum: ScheduleRelationship](#enum-schedulerelationship-1)
+    - [Message: GeneralTransitFeedRealTime.Alert.Alert](#message-generaltransitfeedrealtimealertalert)
+      - [CloudEvents Attributes:](#cloudevents-attributes-2)
+      - [Schema:](#schema-2)
+        - [Record: Alert](#record-alert)
+        - [Record: TranslatedString](#record-translatedstring)
+        - [Enum: Cause](#enum-cause)
+        - [Enum: Effect](#enum-effect)
+  - [Message Group: GeneralTransitFeedStatic](#message-group-generaltransitfeedstatic)
+    - [Message: GeneralTransitFeedStatic.Agency](#message-generaltransitfeedstaticagency)
+      - [CloudEvents Attributes:](#cloudevents-attributes-3)
+      - [Schema:](#schema-3)
+        - [Record: Agency](#record-agency)
+    - [Message: GeneralTransitFeedStatic.Areas](#message-generaltransitfeedstaticareas)
+      - [CloudEvents Attributes:](#cloudevents-attributes-4)
+      - [Schema:](#schema-4)
+        - [Record: Areas](#record-areas)
+    - [Message: GeneralTransitFeedStatic.Attributions](#message-generaltransitfeedstaticattributions)
+      - [CloudEvents Attributes:](#cloudevents-attributes-5)
+      - [Schema:](#schema-5)
+        - [Record: Attributions](#record-attributions)
+    - [Message: GeneralTransitFeed.BookingRules](#message-generaltransitfeedbookingrules)
+      - [CloudEvents Attributes:](#cloudevents-attributes-6)
+      - [Schema:](#schema-6)
+        - [Record: BookingRules](#record-bookingrules)
+    - [Message: GeneralTransitFeedStatic.FareAttributes](#message-generaltransitfeedstaticfareattributes)
+      - [CloudEvents Attributes:](#cloudevents-attributes-7)
+      - [Schema:](#schema-7)
+        - [Record: FareAttributes](#record-fareattributes)
+    - [Message: GeneralTransitFeedStatic.FareLegRules](#message-generaltransitfeedstaticfarelegrules)
+      - [CloudEvents Attributes:](#cloudevents-attributes-8)
+      - [Schema:](#schema-8)
+        - [Record: FareLegRules](#record-farelegrules)
+    - [Message: GeneralTransitFeedStatic.FareMedia](#message-generaltransitfeedstaticfaremedia)
+      - [CloudEvents Attributes:](#cloudevents-attributes-9)
+      - [Schema:](#schema-9)
+        - [Record: FareMedia](#record-faremedia)
+    - [Message: GeneralTransitFeedStatic.FareProducts](#message-generaltransitfeedstaticfareproducts)
+      - [CloudEvents Attributes:](#cloudevents-attributes-10)
+      - [Schema:](#schema-10)
+        - [Record: FareProducts](#record-fareproducts)
+    - [Message: GeneralTransitFeedStatic.FareRules](#message-generaltransitfeedstaticfarerules)
+      - [CloudEvents Attributes:](#cloudevents-attributes-11)
+      - [Schema:](#schema-11)
+        - [Record: FareRules](#record-farerules)
+    - [Message: GeneralTransitFeedStatic.FareTransferRules](#message-generaltransitfeedstaticfaretransferrules)
+      - [CloudEvents Attributes:](#cloudevents-attributes-12)
+      - [Schema:](#schema-12)
+        - [Record: FareTransferRules](#record-faretransferrules)
+    - [Message: GeneralTransitFeedStatic.FeedInfo](#message-generaltransitfeedstaticfeedinfo)
+      - [CloudEvents Attributes:](#cloudevents-attributes-13)
+      - [Schema:](#schema-13)
+        - [Record: FeedInfo](#record-feedinfo)
+    - [Message: GeneralTransitFeedStatic.Frequencies](#message-generaltransitfeedstaticfrequencies)
+      - [CloudEvents Attributes:](#cloudevents-attributes-14)
+      - [Schema:](#schema-14)
+        - [Record: Frequencies](#record-frequencies)
+    - [Message: GeneralTransitFeedStatic.Levels](#message-generaltransitfeedstaticlevels)
+      - [CloudEvents Attributes:](#cloudevents-attributes-15)
+      - [Schema:](#schema-15)
+        - [Record: Levels](#record-levels)
+    - [Message: GeneralTransitFeedStatic.LocationGeoJson](#message-generaltransitfeedstaticlocationgeojson)
+      - [CloudEvents Attributes:](#cloudevents-attributes-16)
+      - [Schema:](#schema-16)
+        - [Record: LocationGeoJson](#record-locationgeojson)
+    - [Message: GeneralTransitFeedStatic.LocationGroups](#message-generaltransitfeedstaticlocationgroups)
+      - [CloudEvents Attributes:](#cloudevents-attributes-17)
+      - [Schema:](#schema-17)
+        - [Record: LocationGroups](#record-locationgroups)
+    - [Message: GeneralTransitFeedStatic.LocationGroupStores](#message-generaltransitfeedstaticlocationgroupstores)
+      - [CloudEvents Attributes:](#cloudevents-attributes-18)
+      - [Schema:](#schema-18)
+        - [Record: LocationGroupStores](#record-locationgroupstores)
+    - [Message: GeneralTransitFeedStatic.Networks](#message-generaltransitfeedstaticnetworks)
+      - [CloudEvents Attributes:](#cloudevents-attributes-19)
+      - [Schema:](#schema-19)
+        - [Record: Networks](#record-networks)
+    - [Message: GeneralTransitFeedStatic.Pathways](#message-generaltransitfeedstaticpathways)
+      - [CloudEvents Attributes:](#cloudevents-attributes-20)
+      - [Schema:](#schema-20)
+        - [Record: Pathways](#record-pathways)
+    - [Message: GeneralTransitFeedStatic.RouteNetworks](#message-generaltransitfeedstaticroutenetworks)
+      - [CloudEvents Attributes:](#cloudevents-attributes-21)
+      - [Schema:](#schema-21)
+        - [Record: RouteNetworks](#record-routenetworks)
+    - [Message: GeneralTransitFeedStatic.Routes](#message-generaltransitfeedstaticroutes)
+      - [CloudEvents Attributes:](#cloudevents-attributes-22)
+      - [Schema:](#schema-22)
+        - [Record: Routes](#record-routes)
+        - [Enum: RouteType](#enum-routetype)
+        - [Enum: ContinuousPickup](#enum-continuouspickup)
+        - [Enum: ContinuousDropOff](#enum-continuousdropoff)
+    - [Message: GeneralTransitFeedStatic.Shapes](#message-generaltransitfeedstaticshapes)
+      - [CloudEvents Attributes:](#cloudevents-attributes-23)
+      - [Schema:](#schema-23)
+        - [Record: Shapes](#record-shapes)
+    - [Message: GeneralTransitFeedStatic.StopAreas](#message-generaltransitfeedstaticstopareas)
+      - [CloudEvents Attributes:](#cloudevents-attributes-24)
+      - [Schema:](#schema-24)
+        - [Record: StopAreas](#record-stopareas)
+    - [Message: GeneralTransitFeedStatic.Stops](#message-generaltransitfeedstaticstops)
+      - [CloudEvents Attributes:](#cloudevents-attributes-25)
+      - [Schema:](#schema-25)
+        - [Record: Stops](#record-stops)
+        - [Enum: LocationType](#enum-locationtype)
+        - [Enum: WheelchairBoarding](#enum-wheelchairboarding)
+    - [Message: GeneralTransitFeedStatic.StopTimes](#message-generaltransitfeedstaticstoptimes)
+      - [CloudEvents Attributes:](#cloudevents-attributes-26)
+      - [Schema:](#schema-26)
+        - [Record: StopTimes](#record-stoptimes)
+        - [Enum: PickupType](#enum-pickuptype)
+        - [Enum: DropOffType](#enum-dropofftype)
+        - [Enum: ContinuousPickup](#enum-continuouspickup-1)
+        - [Enum: ContinuousDropOff](#enum-continuousdropoff-1)
+        - [Enum: Timepoint](#enum-timepoint)
+    - [Message: GeneralTransitFeedStatic.Timeframes](#message-generaltransitfeedstatictimeframes)
+      - [CloudEvents Attributes:](#cloudevents-attributes-27)
+      - [Schema:](#schema-27)
+        - [Record: Timeframes](#record-timeframes)
+        - [Record: Calendar](#record-calendar)
+        - [Record: CalendarDates](#record-calendardates)
+        - [Enum: ServiceAvailability](#enum-serviceavailability)
+        - [Enum: ExceptionType](#enum-exceptiontype)
+    - [Message: GeneralTransitFeedStatic.Transfers](#message-generaltransitfeedstatictransfers)
+      - [CloudEvents Attributes:](#cloudevents-attributes-28)
+      - [Schema:](#schema-28)
+        - [Record: Transfers](#record-transfers)
+    - [Message: GeneralTransitFeedStatic.Translations](#message-generaltransitfeedstatictranslations)
+      - [CloudEvents Attributes:](#cloudevents-attributes-29)
+      - [Schema:](#schema-29)
+        - [Record: Translations](#record-translations)
+    - [Message: GeneralTransitFeedStatic.Trips](#message-generaltransitfeedstatictrips)
+      - [CloudEvents Attributes:](#cloudevents-attributes-30)
+      - [Schema:](#schema-30)
+        - [Record: Trips](#record-trips)
+        - [Record: Calendar](#record-calendar-1)
+        - [Enum: DirectionId](#enum-directionid)
+        - [Enum: WheelchairAccessible](#enum-wheelchairaccessible)
+        - [Enum: BikesAllowed](#enum-bikesallowed)
+        - [Enum: ServiceAvailability](#enum-serviceavailability-1)
 
 ---
 
 ## Message Group: GeneralTransitFeedRealTime
 
 ### Message: GeneralTransitFeedRealTime.Vehicle.VehiclePosition
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:33:53.276277`         |
-| **Modified At** | `2024-09-14T19:33:53.276277`        |
 
 #### CloudEvents Attributes:
 
@@ -175,17 +290,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `CANCELED` | 3 |  |
 ### Message: GeneralTransitFeedRealTime.Trip.TripUpdate
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedRealTime.Trip.TripUpdate`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:33:56.509005`         |
-| **Modified At** | `2024-09-14T19:33:56.509005`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -249,17 +353,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `UNSCHEDULED` | 2 |  |
 | `CANCELED` | 3 |  |
 ### Message: GeneralTransitFeedRealTime.Alert.Alert
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedRealTime.Alert.Alert`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:33:59.755279`         |
-| **Modified At** | `2024-09-14T19:33:59.755279`        |
 
 #### CloudEvents Attributes:
 
@@ -338,17 +431,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 
 ### Message: GeneralTransitFeedStatic.Agency
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Agency`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:02.945459`         |
-| **Modified At** | `2024-09-14T19:34:02.945459`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -373,19 +455,8 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `agencyLang` | *string* (optional) | Primary language used by this transit agency. |
 | `agencyPhone` | *string* (optional) | A voice telephone number for the specified agency. |
 | `agencyFareUrl` | *string* (optional) | URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online. |
-| `agencyEmail` | *string* (optional) | Email address actively monitored by the agency’s customer service department. |
+| `agencyEmail` | *string* (optional) | Email address actively monitored by the agencyï¿½s customer service department. |
 ### Message: GeneralTransitFeedStatic.Areas
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Areas`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:06.109457`         |
-| **Modified At** | `2024-09-14T19:34:06.109457`        |
 
 #### CloudEvents Attributes:
 
@@ -409,17 +480,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `areaDesc` | *string* (optional) | Description of the area. |
 | `areaUrl` | *string* (optional) | URL of a web page about the area. |
 ### Message: GeneralTransitFeedStatic.Attributions
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Attributions`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:09.322877`         |
-| **Modified At** | `2024-09-14T19:34:09.322877`        |
 
 #### CloudEvents Attributes:
 
@@ -451,17 +511,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `attributionPhone` | *string* (optional) | Phone number associated with the attribution. |
 ### Message: GeneralTransitFeed.BookingRules
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeed.BookingRules`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:12.495400`         |
-| **Modified At** | `2024-09-14T19:34:12.495400`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -484,17 +533,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `bookingRuleDesc` | *string* (optional) | Description of the booking rule. |
 | `bookingRuleUrl` | *string* (optional) | URL of a web page about the booking rule. |
 ### Message: GeneralTransitFeedStatic.FareAttributes
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.FareAttributes`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:15.660243`         |
-| **Modified At** | `2024-09-14T19:34:15.660243`        |
 
 #### CloudEvents Attributes:
 
@@ -522,17 +560,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `transferDuration` | *long* (optional) | Length of time in seconds before a transfer expires. |
 ### Message: GeneralTransitFeedStatic.FareLegRules
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.FareLegRules`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:18.859990`         |
-| **Modified At** | `2024-09-14T19:34:18.859990`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -558,17 +585,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `toAreaId` | *string* (optional) | Identifies the destination area. |
 ### Message: GeneralTransitFeedStatic.FareMedia
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.FareMedia`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:22.043899`         |
-| **Modified At** | `2024-09-14T19:34:22.043899`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -591,17 +607,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `fareMediaDesc` | *string* (optional) | Description of the fare media. |
 | `fareMediaUrl` | *string* (optional) | URL of a web page about the fare media. |
 ### Message: GeneralTransitFeedStatic.FareProducts
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.FareProducts`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:25.251924`         |
-| **Modified At** | `2024-09-14T19:34:25.251924`        |
 
 #### CloudEvents Attributes:
 
@@ -626,17 +631,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `fareProductUrl` | *string* (optional) | URL of a web page about the fare product. |
 ### Message: GeneralTransitFeedStatic.FareRules
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.FareRules`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:28.382751`         |
-| **Modified At** | `2024-09-14T19:34:28.382751`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -660,17 +654,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `destinationId` | *string* (optional) | Identifies the fare zone of the destination. |
 | `containsId` | *string* (optional) | Identifies the fare zone that a rider will enter or leave. |
 ### Message: GeneralTransitFeedStatic.FareTransferRules
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.FareTransferRules`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:31.594438`         |
-| **Modified At** | `2024-09-14T19:34:31.594438`        |
 
 #### CloudEvents Attributes:
 
@@ -698,17 +681,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `durationType` | *string* (optional) | Type of duration for the transfer. |
 ### Message: GeneralTransitFeedStatic.FeedInfo
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.FeedInfo`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:34.800372`         |
-| **Modified At** | `2024-09-14T19:34:34.800372`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -729,24 +701,13 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `feedPublisherName` | *string* | Full name of the organization that publishes the feed. |
 | `feedPublisherUrl` | *string* | URL of the feed publishing organization's website. |
 | `feedLang` | *string* | Default language for the text in this feed. |
-| `defaultLang` | *string* (optional) | Specifies the language used when the data consumer doesn’t know the language of the user. |
+| `defaultLang` | *string* (optional) | Specifies the language used when the data consumer doesnï¿½t know the language of the user. |
 | `feedStartDate` | *string* (optional) | The start date for the dataset. |
 | `feedEndDate` | *string* (optional) | The end date for the dataset. |
 | `feedVersion` | *string* (optional) | Version string that indicates the current version of their GTFS dataset. |
 | `feedContactEmail` | *string* (optional) | Email address for communication with the data publisher. |
 | `feedContactUrl` | *string* (optional) | URL for a web page that allows a feed consumer to contact the data publisher. |
 ### Message: GeneralTransitFeedStatic.Frequencies
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Frequencies`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:37.975904`         |
-| **Modified At** | `2024-09-14T19:34:37.975904`        |
 
 #### CloudEvents Attributes:
 
@@ -772,17 +733,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `exactTimes` | *int* (optional) | When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled. |
 ### Message: GeneralTransitFeedStatic.Levels
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Levels`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:41.164118`         |
-| **Modified At** | `2024-09-14T19:34:41.164118`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -805,17 +755,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `levelName` | *string* (optional) | Name of the level. |
 ### Message: GeneralTransitFeedStatic.LocationGeoJson
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.LocationGeoJson`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:44.385665`         |
-| **Modified At** | `2024-09-14T19:34:44.385665`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -837,17 +776,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `locationGeoJsonType` | *string* | Type of the GeoJSON. |
 | `locationGeoJsonData` | *string* | GeoJSON data. |
 ### Message: GeneralTransitFeedStatic.LocationGroups
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.LocationGroups`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:47.584486`         |
-| **Modified At** | `2024-09-14T19:34:47.584486`        |
 
 #### CloudEvents Attributes:
 
@@ -872,17 +800,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `locationGroupUrl` | *string* (optional) | URL of a web page about the location group. |
 ### Message: GeneralTransitFeedStatic.LocationGroupStores
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.LocationGroupStores`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:50.772270`         |
-| **Modified At** | `2024-09-14T19:34:50.772270`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -904,17 +821,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `locationGroupId` | *string* | Identifies a location group. |
 | `storeId` | *string* | Identifies a store. |
 ### Message: GeneralTransitFeedStatic.Networks
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Networks`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:53.975672`         |
-| **Modified At** | `2024-09-14T19:34:53.975672`        |
 
 #### CloudEvents Attributes:
 
@@ -938,17 +844,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `networkDesc` | *string* (optional) | Description of the network. |
 | `networkUrl` | *string* (optional) | URL of a web page about the network. |
 ### Message: GeneralTransitFeedStatic.Pathways
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Pathways`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:34:57.277576`         |
-| **Modified At** | `2024-09-14T19:34:57.277576`        |
 
 #### CloudEvents Attributes:
 
@@ -981,17 +876,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `reversedSignpostedAs` | *string* (optional) | Reversed signposting information for the pathway. |
 ### Message: GeneralTransitFeedStatic.RouteNetworks
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.RouteNetworks`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:00.516165`         |
-| **Modified At** | `2024-09-14T19:35:00.516165`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -1013,17 +897,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `routeId` | *string* | Identifies a route. |
 | `networkId` | *string* | Identifies a network. |
 ### Message: GeneralTransitFeedStatic.Routes
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Routes`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:03.739840`         |
-| **Modified At** | `2024-09-14T19:35:03.739840`        |
 
 #### CloudEvents Attributes:
 
@@ -1052,8 +925,8 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `routeColor` | *string* (optional) | Route color designation that matches public facing material. |
 | `routeTextColor` | *string* (optional) | Legible color to use for text drawn against a background of route_color. |
 | `routeSortOrder` | *int* (optional) | Orders the routes in a way which is ideal for presentation to customers. |
-| `continuousPickup` | [Enum ContinuousPickup](#enum-continuouspickup) | Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. |
-| `continuousDropOff` | [Enum ContinuousDropOff](#enum-continuousdropoff) | Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. |
+| `continuousPickup` | [Enum ContinuousPickup](#enum-continuouspickup) | Indicates that the rider can board the transit vehicle at any point along the vehicleï¿½s travel path. |
+| `continuousDropOff` | [Enum ContinuousDropOff](#enum-continuousdropoff) | Indicates that the rider can alight from the transit vehicle at any point along the vehicleï¿½s travel path. |
 | `networkId` | *string* (optional) | Identifies a group of routes. |
 
 ---
@@ -1083,7 +956,7 @@ This document describes the events that are emitted by the GTFS API Bridge.
 
 ##### Enum: ContinuousPickup
 
-*Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.*
+*Indicates that the rider can board the transit vehicle at any point along the vehicleï¿½s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.*
 
 | **Symbol** | **Ordinal** | **Description** |
 |------------|-------------|-----------------|
@@ -1096,7 +969,7 @@ This document describes the events that are emitted by the GTFS API Bridge.
 
 ##### Enum: ContinuousDropOff
 
-*Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.*
+*Indicates that the rider can alight from the transit vehicle at any point along the vehicleï¿½s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.*
 
 | **Symbol** | **Ordinal** | **Description** |
 |------------|-------------|-----------------|
@@ -1105,17 +978,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `PHONE_AGENCY` | 2 |  |
 | `COORDINATE_WITH_DRIVER` | 3 |  |
 ### Message: GeneralTransitFeedStatic.Shapes
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Shapes`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:06.980418`         |
-| **Modified At** | `2024-09-14T19:35:06.980418`        |
 
 #### CloudEvents Attributes:
 
@@ -1141,17 +1003,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `shapeDistTraveled` | *double* (optional) | Actual distance traveled along the shape from the first shape point to the specified shape point. |
 ### Message: GeneralTransitFeedStatic.StopAreas
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.StopAreas`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:10.194179`         |
-| **Modified At** | `2024-09-14T19:35:10.194179`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -1173,17 +1024,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `stopId` | *string* | Identifies a stop. |
 | `areaId` | *string* | Identifies an area. |
 ### Message: GeneralTransitFeedStatic.Stops
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Stops`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:13.431326`         |
-| **Modified At** | `2024-09-14T19:35:13.431326`        |
 
 #### CloudEvents Attributes:
 
@@ -1245,17 +1085,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `NOT_POSSIBLE` | 2 |  |
 ### Message: GeneralTransitFeedStatic.StopTimes
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.StopTimes`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:16.641750`         |
-| **Modified At** | `2024-09-14T19:35:16.641750`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -1316,7 +1145,7 @@ This document describes the events that are emitted by the GTFS API Bridge.
 
 ##### Enum: ContinuousPickup
 
-*Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.*
+*Indicates that the rider can board the transit vehicle at any point along the vehicleï¿½s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.*
 
 | **Symbol** | **Ordinal** | **Description** |
 |------------|-------------|-----------------|
@@ -1329,7 +1158,7 @@ This document describes the events that are emitted by the GTFS API Bridge.
 
 ##### Enum: ContinuousDropOff
 
-*Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.*
+*Indicates that the rider can alight from the transit vehicle at any point along the vehicleï¿½s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.*
 
 | **Symbol** | **Ordinal** | **Description** |
 |------------|-------------|-----------------|
@@ -1349,17 +1178,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `APPROXIMATE` | 0 |  |
 | `EXACT` | 1 |  |
 ### Message: GeneralTransitFeedStatic.Timeframes
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Timeframes`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:19.852768`         |
-| **Modified At** | `2024-09-14T19:35:19.852768`        |
 
 #### CloudEvents Attributes:
 
@@ -1433,17 +1251,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `SERVICE_REMOVED` | 1 |  |
 ### Message: GeneralTransitFeedStatic.Transfers
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Transfers`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:23.095140`         |
-| **Modified At** | `2024-09-14T19:35:23.095140`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -1467,17 +1274,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `minTransferTime` | *int* (optional) | Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id). |
 ### Message: GeneralTransitFeedStatic.Translations
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Translations`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:26.333256`         |
-| **Modified At** | `2024-09-14T19:35:26.333256`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -1500,17 +1296,6 @@ This document describes the events that are emitted by the GTFS API Bridge.
 | `language` | *string* | Language of the translation. |
 | `translation` | *string* | Translated value. |
 ### Message: GeneralTransitFeedStatic.Trips
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `GeneralTransitFeedStatic.Trips`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-14T19:35:29.580497`         |
-| **Modified At** | `2024-09-14T19:35:29.580497`        |
 
 #### CloudEvents Attributes:
 

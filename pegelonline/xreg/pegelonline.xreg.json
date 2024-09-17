@@ -8,6 +8,7 @@
             "messages": {
                 "de.wsv.pegelonline.Station": {
                     "id": "de.wsv.pegelonline.Station",
+                    "description": "A PEGELONLINE station with location and water body information.",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
@@ -47,6 +48,7 @@
                 },
                 "de.wsv.pegelonline.CurrentMeasurement": {
                     "id": "de.wsv.pegelonline.CurrentMeasurement",
+                    "description": "The current measurement for a PEGELONLINE station.",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",

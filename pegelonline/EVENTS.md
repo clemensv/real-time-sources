@@ -12,16 +12,7 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 
 ### Message: de.wsv.pegelonline.Station
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `de.wsv.pegelonline.Station`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-10T15:02:55.573631`         |
-| **Modified At** | `2024-09-10T15:02:55.573631`        |
+*A PEGELONLINE station with location and water body information.*
 
 #### CloudEvents Attributes:
 
@@ -62,16 +53,7 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 | `longname` | *string* | Full name of the water body (maximum 255 characters). |
 ### Message: de.wsv.pegelonline.CurrentMeasurement
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `de.wsv.pegelonline.CurrentMeasurement`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro`    |
-| **Created At**  | `2024-09-10T15:02:58.776148`         |
-| **Modified At** | `2024-09-10T15:02:58.776148`        |
+*The current measurement for a PEGELONLINE station.*
 
 #### CloudEvents Attributes:
 
