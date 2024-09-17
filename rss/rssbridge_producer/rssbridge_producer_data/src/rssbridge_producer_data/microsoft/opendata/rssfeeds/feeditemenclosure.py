@@ -22,7 +22,7 @@ class FeedItemEnclosure:
     
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))
     length: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="length"))
-    type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))    
+    type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
     
 
     def __post_init__(self):

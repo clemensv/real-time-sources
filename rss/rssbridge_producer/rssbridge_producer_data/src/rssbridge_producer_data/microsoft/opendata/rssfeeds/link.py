@@ -24,7 +24,7 @@ class Link:
     rel: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rel"))
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
-    title: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))    
+    title: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
     
 
     def __post_init__(self):

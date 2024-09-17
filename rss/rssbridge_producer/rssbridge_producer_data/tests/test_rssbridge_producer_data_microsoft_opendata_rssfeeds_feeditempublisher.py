@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 
+
 class Test_FeedItemPublisher(unittest.TestCase):
     """
     Test case for FeedItemPublisher
@@ -27,9 +28,9 @@ class Test_FeedItemPublisher(unittest.TestCase):
         Create instance of FeedItemPublisher for testing
         """
         instance = FeedItemPublisher(
-            name='xvezhljxgksvarttvfvk',
-            href='vmkyrmesbmvzhsrkheno',
-            email='rczbsgteymunvlviuhen'
+            name='gnrjlaapyiclmexioyjx',
+            href='uetjqvwcblypurwseknq',
+            email='pvpxbzjxaomigrhayxjh'
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_FeedItemPublisher(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'xvezhljxgksvarttvfvk'
+        test_value = 'gnrjlaapyiclmexioyjx'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -46,7 +47,7 @@ class Test_FeedItemPublisher(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'vmkyrmesbmvzhsrkheno'
+        test_value = 'uetjqvwcblypurwseknq'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -54,7 +55,7 @@ class Test_FeedItemPublisher(unittest.TestCase):
         """
         Test email property
         """
-        test_value = 'rczbsgteymunvlviuhen'
+        test_value = 'pvpxbzjxaomigrhayxjh'
         self.instance.email = test_value
         self.assertEqual(self.instance.email, test_value)
     

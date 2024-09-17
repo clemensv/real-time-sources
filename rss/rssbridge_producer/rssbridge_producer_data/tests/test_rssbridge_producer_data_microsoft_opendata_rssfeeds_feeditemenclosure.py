@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
 
+
 class Test_FeedItemEnclosure(unittest.TestCase):
     """
     Test case for FeedItemEnclosure
@@ -27,9 +28,9 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         Create instance of FeedItemEnclosure for testing
         """
         instance = FeedItemEnclosure(
-            href='vytearzegzmpedqwmlxo',
-            length=int(98),
-            type='gdypsigsrramvjcaixdh'
+            href='svctgxfdbayofxslirot',
+            length=int(44),
+            type='vfbgalfdqyixvffplanc'
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'vytearzegzmpedqwmlxo'
+        test_value = 'svctgxfdbayofxslirot'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -46,7 +47,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test length property
         """
-        test_value = int(98)
+        test_value = int(44)
         self.instance.length = test_value
         self.assertEqual(self.instance.length, test_value)
     
@@ -54,7 +55,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'gdypsigsrramvjcaixdh'
+        test_value = 'vfbgalfdqyixvffplanc'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     

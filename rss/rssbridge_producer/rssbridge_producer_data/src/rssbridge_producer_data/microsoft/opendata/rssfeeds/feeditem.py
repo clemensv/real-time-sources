@@ -8,15 +8,16 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
-from datetime import datetime
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
+from marshmallow import fields
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
+import datetime
 
 
 @dataclasses_json.dataclass_json
@@ -25,23 +26,23 @@ class FeedItem:
     """
     A FeedItem record.
     Attributes:
-        author (typing.Optional[FeedItemAuthor]): 
-        publisher (typing.Optional[FeedItemPublisher]): 
-        summary (typing.Optional[FeedItemSummary]): 
-        title (typing.Optional[FeedItemTitle]): 
-        source (typing.Optional[FeedItemSource]): 
-        content (typing.Optional[typing.List[FeedItemContent]]): 
-        enclosures (typing.Optional[typing.List[FeedItemEnclosure]]): 
-        published (typing.Optional[datetime]): 
-        updated (typing.Optional[datetime]): 
-        created (typing.Optional[datetime]): 
-        expired (typing.Optional[datetime]): 
-        id (typing.Optional[str]): 
-        license (typing.Optional[str]): 
-        comments (typing.Optional[str]): 
-        contributors (typing.Optional[typing.List[FeedItemAuthor]]): 
+        author (typing.Optional[FeedItemAuthor]):
+        publisher (typing.Optional[FeedItemPublisher]):
+        summary (typing.Optional[FeedItemSummary]):
+        title (typing.Optional[FeedItemTitle]):
+        source (typing.Optional[FeedItemSource]):
+        content (typing.Optional[typing.List[FeedItemContent]]):
+        enclosures (typing.Optional[typing.List[FeedItemEnclosure]]):
+        published (typing.Optional[datetime.datetime]):
+        updated (typing.Optional[datetime.datetime]):
+        created (typing.Optional[datetime.datetime]):
+        expired (typing.Optional[datetime.datetime]):
+        id (typing.Optional[str]):
+        license (typing.Optional[str]):
+        comments (typing.Optional[str]):
+        contributors (typing.Optional[typing.List[FeedItemAuthor]]):
         links (typing.Optional[typing.List[Link]]): """
-    
+
     author: typing.Optional[FeedItemAuthor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="author"))
     publisher: typing.Optional[FeedItemPublisher]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="publisher"))
     summary: typing.Optional[FeedItemSummary]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="summary"))
@@ -49,16 +50,16 @@ class FeedItem:
     source: typing.Optional[FeedItemSource]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source"))
     content: typing.Optional[typing.List[FeedItemContent]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="content"))
     enclosures: typing.Optional[typing.List[FeedItemEnclosure]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="enclosures"))
-    published: typing.Optional[datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="published"))
-    updated: typing.Optional[datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))
-    created: typing.Optional[datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created"))
-    expired: typing.Optional[datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expired"))
+    published: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="published", encoder=lambda d: datetime.datetime.isoformat(d) if d else None, decoder=lambda d:datetime.datetime.fromisoformat(d) if d else None, mm_field=fields.DateTime(format='iso')))
+    updated: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated", encoder=lambda d: datetime.datetime.isoformat(d) if d else None, decoder=lambda d:datetime.datetime.fromisoformat(d) if d else None, mm_field=fields.DateTime(format='iso')))
+    created: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created", encoder=lambda d: datetime.datetime.isoformat(d) if d else None, decoder=lambda d:datetime.datetime.fromisoformat(d) if d else None, mm_field=fields.DateTime(format='iso')))
+    expired: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expired", encoder=lambda d: datetime.datetime.isoformat(d) if d else None, decoder=lambda d:datetime.datetime.fromisoformat(d) if d else None, mm_field=fields.DateTime(format='iso')))
     id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="id"))
     license: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="license"))
     comments: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="comments"))
     contributors: typing.Optional[typing.List[FeedItemAuthor]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="contributors"))
-    links: typing.Optional[typing.List[Link]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="links"))    
-    
+    links: typing.Optional[typing.List[Link]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="links"))
+
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
@@ -83,10 +84,10 @@ class FeedItem:
     def from_serializer_dict(cls, data: dict) -> 'FeedItem':
         """
         Converts a dictionary to a dataclass instance.
-        
+
         Args:
             data: The dictionary to convert to a dataclass.
-        
+
         Returns:
             The dataclass representation of the dictionary.
         """
@@ -105,7 +106,7 @@ class FeedItem:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v,enum.Enum):
                 return v.value
@@ -117,7 +118,7 @@ class FeedItem:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-        
+
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -126,7 +127,7 @@ class FeedItem:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.        
+            The byte array representation of the dataclass.
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
@@ -148,10 +149,10 @@ class FeedItem:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['FeedItem']:
         """
         Converts the data to a dataclass based on the content type string.
-        
+
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to. 
+            content_type_string: The content type string to convert the data to.
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:

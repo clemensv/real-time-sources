@@ -23,6 +23,8 @@ import xml.etree.ElementTree as ET
 
 from requests import RequestException
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../rssbridge_producer")))
+
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
@@ -32,6 +34,7 @@ from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher impor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
 from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsEventProducer
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
 
 # Logging configuration
 if sys.gettrace() is not None:
@@ -195,7 +198,7 @@ def remove_feed(url: str):
     save_feedstore(feed_urls)
 
 
-def feeditem_from_feedparser_entry(entry) -> FeedItem:
+def feeditem_from_feedparser_entry(feed, entry) -> FeedItem:
     """
     Create a FeedItem instance from a feedparser entry.
 
@@ -295,12 +298,12 @@ def feeditem_from_feedparser_entry(entry) -> FeedItem:
             return datetime.fromisoformat(parsed_date_value).astimezone(timezone.utc)
         return None
 
-    return FeedItem(
+    feed_item = FeedItem(
         author=parse_author_detail(entry.get('author_detail')),
         publisher=parse_publisher_detail(entry.get('publisher_detail')),
         summary=parse_summary_detail(entry.get('summary_detail')),
         title=parse_title_detail(entry.get('title_detail')),
-        source=parse_source_detail(entry.get('source')),
+        source=None,
         content=parse_content_detail(entry.get('content')),
         enclosures=parse_enclosure_detail(entry.get('enclosures')),
         published=parse_date(entry.get('published_parsed')),
@@ -313,6 +316,24 @@ def feeditem_from_feedparser_entry(entry) -> FeedItem:
         contributors=[parse_author_detail(contrib) for contrib in entry.get('contributors', [])],
         links=entry.get('links')
     )
+    if not feed_item.source:
+        feed_item.source = FeedItemSource(
+            author=entry.get('author'),
+            author_detail=parse_author_detail(entry.get('author_detail')),
+            contributors=[parse_author_detail(contrib) for contrib in entry.get('contributors', [])],
+            icon=feed.feed.get('image').get('href') if feed.feed.get('image') else None,
+            id=entry.get('id'),
+            link=feed.feed.get('link'),
+            links=[],
+            logo=feed.feed.get('image').get('href') if feed.feed.get('image') else None,
+            rights=feed.feed.get('rights'),
+            subtitle=feed.feed.get('subtitle'),
+            title=feed.feed.get('title'),
+            updated=parse_date(feed.feed.get('updated_parsed'))
+        )
+    for link in feed.feed.get('links'):
+        feed_item.source.links.append(Link(title=link.get('title'), href=link.get('href'), rel=link.get('rel'), type=link.get('type'))) 
+    return feed_item
 
 
 def fetch_feed(url: str, etag: Optional[str] = None) -> requests.Response:
@@ -391,7 +412,7 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
             if 'published_parsed' in entry and entry.published_parsed:  # won't handle entries without pub date
                 pub_date = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
                 if pub_date > last_checked_datetime:
-                    item = feeditem_from_feedparser_entry(entry)
+                    item: FeedItem = feeditem_from_feedparser_entry(feed, entry)
                     try:
                         new_items.append(item)
                     except Exception as e:

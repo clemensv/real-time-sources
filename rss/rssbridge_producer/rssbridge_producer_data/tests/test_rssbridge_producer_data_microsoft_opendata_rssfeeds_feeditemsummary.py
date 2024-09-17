@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
 
+
 class Test_FeedItemSummary(unittest.TestCase):
     """
     Test case for FeedItemSummary
@@ -27,10 +28,10 @@ class Test_FeedItemSummary(unittest.TestCase):
         Create instance of FeedItemSummary for testing
         """
         instance = FeedItemSummary(
-            value='vseahgrhkjmpwbcjyoxm',
-            type='itecrmfwdtoixjpshesk',
-            language='oglgsukjuimnuecpgjem',
-            base='yahmmjehyljaqcnqaxhk'
+            value='tgbqwuiexxphvyylmkqv',
+            type='xxxithktctdakdmwqlam',
+            language='opakqicxsvvnidniivhn',
+            base='obudicyinijpitrksmbr'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_FeedItemSummary(unittest.TestCase):
         """
         Test value property
         """
-        test_value = 'vseahgrhkjmpwbcjyoxm'
+        test_value = 'tgbqwuiexxphvyylmkqv'
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -47,7 +48,7 @@ class Test_FeedItemSummary(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'itecrmfwdtoixjpshesk'
+        test_value = 'xxxithktctdakdmwqlam'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -55,7 +56,7 @@ class Test_FeedItemSummary(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'oglgsukjuimnuecpgjem'
+        test_value = 'opakqicxsvvnidniivhn'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -63,7 +64,7 @@ class Test_FeedItemSummary(unittest.TestCase):
         """
         Test base property
         """
-        test_value = 'yahmmjehyljaqcnqaxhk'
+        test_value = 'obudicyinijpitrksmbr'
         self.instance.base = test_value
         self.assertEqual(self.instance.base, test_value)
     

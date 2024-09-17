@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
 
+
 class Test_Link(unittest.TestCase):
     """
     Test case for Link
@@ -27,10 +28,10 @@ class Test_Link(unittest.TestCase):
         Create instance of Link for testing
         """
         instance = Link(
-            rel='wdqmqyoebwezhlxstltr',
-            href='scbluwfqflxgcmmlzjkq',
-            type='xqewyajxyxszvriiagdx',
-            title='mlxzdpayqdfnhgzavssf'
+            rel='xbqlsxrztszwvcugktgv',
+            href='ovpjeeseofklydrgtpdy',
+            type='ypzmznjwjoeuyocdcdew',
+            title='rdmmulapkuollvuszhjg'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_Link(unittest.TestCase):
         """
         Test rel property
         """
-        test_value = 'wdqmqyoebwezhlxstltr'
+        test_value = 'xbqlsxrztszwvcugktgv'
         self.instance.rel = test_value
         self.assertEqual(self.instance.rel, test_value)
     
@@ -47,7 +48,7 @@ class Test_Link(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'scbluwfqflxgcmmlzjkq'
+        test_value = 'ovpjeeseofklydrgtpdy'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -55,7 +56,7 @@ class Test_Link(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'xqewyajxyxszvriiagdx'
+        test_value = 'ypzmznjwjoeuyocdcdew'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -63,7 +64,7 @@ class Test_Link(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'mlxzdpayqdfnhgzavssf'
+        test_value = 'rdmmulapkuollvuszhjg'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     

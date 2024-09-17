@@ -9,15 +9,16 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemsummary import Test_FeedItemSummary
-from test_datetime import Test_datetime
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemenclosure import Test_FeedItemEnclosure
 from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemsource import Test_FeedItemSource
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemsummary import Test_FeedItemSummary
 from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemauthor import Test_FeedItemAuthor
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditempublisher import Test_FeedItemPublisher
 from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemcontent import Test_FeedItemContent
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemtitle import Test_FeedItemTitle
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditempublisher import Test_FeedItemPublisher
 from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_link import Test_Link
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemtitle import Test_FeedItemTitle
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemenclosure import Test_FeedItemEnclosure
+import datetime
+
 
 class Test_FeedItem(unittest.TestCase):
     """
@@ -41,17 +42,17 @@ class Test_FeedItem(unittest.TestCase):
             summary=Test_FeedItemSummary.create_instance(),
             title=Test_FeedItemTitle.create_instance(),
             source=Test_FeedItemSource.create_instance(),
-            content=[Test_FeedItemContent.create_instance()],
-            enclosures=[Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance()],
-            published=datetime.datetime.now(),
-            updated=datetime.datetime.now(),
-            created=datetime.datetime.now(),
-            expired=datetime.datetime.now(),
-            id='glqavnshvkebuswvdjvj',
-            license='cgolawsmqkffvaceqdwd',
-            comments='skeocovegojbcdomvoga',
-            contributors=[Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()],
-            links=[Test_Link.create_instance()]
+            content=[Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance()],
+            enclosures=[Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance()],
+            published=datetime.datetime.now(datetime.timezone.utc),
+            updated=datetime.datetime.now(datetime.timezone.utc),
+            created=datetime.datetime.now(datetime.timezone.utc),
+            expired=datetime.datetime.now(datetime.timezone.utc),
+            id='dgcoivnoxrdqljakbmxf',
+            license='sokifbvazmblvrhhtcnf',
+            comments='fkafjdzqqmchuxihefbd',
+            contributors=[Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()],
+            links=[Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance()]
         )
         return instance
 
@@ -100,7 +101,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test content property
         """
-        test_value = [Test_FeedItemContent.create_instance()]
+        test_value = [Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance(), Test_FeedItemContent.create_instance()]
         self.instance.content = test_value
         self.assertEqual(self.instance.content, test_value)
     
@@ -108,7 +109,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test enclosures property
         """
-        test_value = [Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance()]
+        test_value = [Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance(), Test_FeedItemEnclosure.create_instance()]
         self.instance.enclosures = test_value
         self.assertEqual(self.instance.enclosures, test_value)
     
@@ -116,7 +117,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test published property
         """
-        test_value = datetime.datetime.now()
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.published = test_value
         self.assertEqual(self.instance.published, test_value)
     
@@ -124,7 +125,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test updated property
         """
-        test_value = datetime.datetime.now()
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.updated = test_value
         self.assertEqual(self.instance.updated, test_value)
     
@@ -132,7 +133,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test created property
         """
-        test_value = datetime.datetime.now()
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.created = test_value
         self.assertEqual(self.instance.created, test_value)
     
@@ -140,7 +141,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test expired property
         """
-        test_value = datetime.datetime.now()
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.expired = test_value
         self.assertEqual(self.instance.expired, test_value)
     
@@ -148,7 +149,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'glqavnshvkebuswvdjvj'
+        test_value = 'dgcoivnoxrdqljakbmxf'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -156,7 +157,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test license property
         """
-        test_value = 'cgolawsmqkffvaceqdwd'
+        test_value = 'sokifbvazmblvrhhtcnf'
         self.instance.license = test_value
         self.assertEqual(self.instance.license, test_value)
     
@@ -164,7 +165,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'skeocovegojbcdomvoga'
+        test_value = 'fkafjdzqqmchuxihefbd'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     
@@ -172,7 +173,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test contributors property
         """
-        test_value = [Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()]
+        test_value = [Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()]
         self.instance.contributors = test_value
         self.assertEqual(self.instance.contributors, test_value)
     
@@ -180,7 +181,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test links property
         """
-        test_value = [Test_Link.create_instance()]
+        test_value = [Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance()]
         self.instance.links = test_value
         self.assertEqual(self.instance.links, test_value)
     
