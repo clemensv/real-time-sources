@@ -20,7 +20,7 @@ $templateParameters = @{
         }
         "appName" = @{
             "type"        = "string"
-            "defaultValue" = "[if(resourceGroup().name, resourceGroup().name, 'rss-bridge')]"
+            "defaultValue" = "[if(empty(resourceGroup().name), 'rss-bridge', resourceGroup().name)]"
             "metadata"    = @{
                 "description" = "The name of the container instance."
             }
@@ -35,14 +35,12 @@ $templateParameters = @{
         }
         "logAnalyticsWorkspaceId" = @{
             "type"        = "string"
-            "nullable"    = $false
             "metadata"    = @{
                 "description" = "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
             }
         }
         "logAnalyticsWorkspaceKey" = @{
             "type"        = "securestring"
-            "nullable"    = $false
             "metadata"    = @{
                 "description" = "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
             }
@@ -122,6 +120,10 @@ $templateResources = @(
                             @{
                                 "name"  = "FEED_URLS"
                                 "value" = "[parameters('feedUrls')]"
+                            },
+                            @{
+                                "name"  = "STATE_DIR"
+                                "value" = "/mnt/fileshare/state"
                             }
                         )
                         "volumeMounts" = @(
@@ -160,6 +162,7 @@ $armTemplate = @{
     "`$schema"       = $templateParameters["`$schema"]
     "contentVersion" = $templateParameters["contentVersion"]
     "parameters"     = $templateParameters["parameters"]
+    "variables"      = $templateParameters["variables"]
     "resources"      = $templateResources
 }
 

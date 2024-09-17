@@ -4,6 +4,7 @@
 $templateParameters = @{
     "`$schema" = "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
     "contentVersion" = "1.0.0.0"
+    "languageVersion" = "2.0"
     "parameters" = @{
         "connectionStringSecret" = @{
             "type" = "securestring"
@@ -45,6 +46,18 @@ $templateParameters = @{
             "defaultValue" = "ghcr.io/clemensv/real-time-sources-gtfs:latest"
             "metadata" = @{
                 "description" = "The name of the container image."
+            }
+        }
+        "logAnalyticsWorkspaceId" = @{
+            "type"        = "string"
+            "metadata"    = @{
+                "description" = "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+            }
+        }
+        "logAnalyticsWorkspaceKey" = @{
+            "type"        = "securestring"
+            "metadata"    = @{
+                "description" = "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
             }
         }
     }
@@ -157,6 +170,12 @@ $templateResources = @(
                     }
                 }
             )
+            "diagnostics"   = @{
+                "logAnalytics" = @{
+                    "workspaceId" = "[parameters('logAnalyticsWorkspaceId')]"
+                    "workspaceKey" = "[parameters('logAnalyticsWorkspaceKey')]"
+                }
+            }
         }
     }
 )

@@ -26,6 +26,18 @@ $templateParameters = @{
                 "description" = "The name of the container image."
             }
         }
+        "logAnalyticsWorkspaceId" = @{
+            "type"        = "string"
+            "metadata"    = @{
+                "description" = "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+            }
+        }
+        "logAnalyticsWorkspaceKey" = @{
+            "type"        = "securestring"
+            "metadata"    = @{
+                "description" = "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+            }
+        }
     }
 }
 
@@ -59,6 +71,12 @@ $templateResources = @(
             )
             "osType" = "Linux"
             "restartPolicy" = "Always"
+            "diagnostics"   = @{
+                "logAnalytics" = @{
+                    "workspaceId" = "[parameters('logAnalyticsWorkspaceId')]"
+                    "workspaceKey" = "[parameters('logAnalyticsWorkspaceKey')]"
+                }
+            }
         }
     }
 )
