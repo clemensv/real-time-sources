@@ -21,17 +21,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 
 ### Message: Microsoft.OpenData.US.NOAA.WaterLevel
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.WaterLevel`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -66,17 +55,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `Verified` | 1 |  |
 ### Message: Microsoft.OpenData.US.NOAA.Predictions
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.Predictions`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -93,17 +71,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `timestamp` | *string* | {"description": "Timestamp of the prediction"} |
 | `value` | *double* | {"description": "Value of the prediction"} |
 ### Message: Microsoft.OpenData.US.NOAA.AirPressure
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.AirPressure`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
 
 #### CloudEvents Attributes:
 
@@ -125,17 +92,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
 ### Message: Microsoft.OpenData.US.NOAA.AirTemperature
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.AirTemperature`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -156,17 +112,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
 ### Message: Microsoft.OpenData.US.NOAA.WaterTemperature
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.WaterTemperature`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -186,17 +131,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `min_temp_exceeded` | *boolean* | Flag indicating if the minimum expected water temperature was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
 ### Message: Microsoft.OpenData.US.NOAA.Wind
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.Wind`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
 
 #### CloudEvents Attributes:
 
@@ -220,17 +154,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
 ### Message: Microsoft.OpenData.US.NOAA.Humidity
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.Humidity`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -250,17 +173,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `min_humidity_exceeded` | *boolean* | Flag indicating if the minimum expected humidity was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
 ### Message: Microsoft.OpenData.US.NOAA.Conductivity
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.Conductivity`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
 
 #### CloudEvents Attributes:
 
@@ -282,17 +194,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
 ### Message: Microsoft.OpenData.US.NOAA.Salinity
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.Salinity`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -310,17 +211,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 | `salinity` | *double* | {"description": "Value of the salinity"} |
 | `grams_per_kg` | *double* | {"description": "Grams of salt per kilogram of water"} |
 ### Message: Microsoft.OpenData.US.NOAA.Station
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.Station`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
 
 #### CloudEvents Attributes:
 
@@ -473,17 +363,6 @@ This document describes the events that are emitted by the NOAA API Bridge.
 |----------------|----------|-----------------|
 | `self` | *string* |  |
 ### Message: Microsoft.OpenData.US.NOAA.Visibility
-
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.US.NOAA.Visibility`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
 
 #### CloudEvents Attributes:
 

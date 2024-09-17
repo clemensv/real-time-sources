@@ -11,16 +11,7 @@ This document describes the events that are emitted by the RSS API Bridge.
 
 ### Message: Microsoft.OpenData.RssFeeds.FeedItem
 
-#### EventProperties:
-
-| **Property**    | **Value**                        |
-|-----------------|----------------------------------|
-| **ID**          | `Microsoft.OpenData.RssFeeds.FeedItem`                |
-| **Format**      | `CloudEvents/1.0`            |
-| **Binding**     | `None`           |
-| **Schema Format** | `Avro/1.11.3`    |
-| **Created At**  | `None`         |
-| **Modified At** | `None`        |
+*A new item has been added to the RSS feed.*
 
 #### CloudEvents Attributes:
 

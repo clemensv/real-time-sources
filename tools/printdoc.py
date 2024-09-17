@@ -50,17 +50,8 @@ def generate_documentation(data, title, description):
 def process_message(msg, schemagroups):
     lines = []
 
-    # EventProperties Table (formerly Event Metadata)
-    lines.append("#### EventProperties:\n")
-    lines.append("| **Property**    | **Value**                        |")
-    lines.append("|-----------------|----------------------------------|")
-    lines.append(f"| **ID**          | `{msg.get('id')}`                |")
-    lines.append(f"| **Format**      | `{msg.get('format')}`            |")
-    lines.append(f"| **Binding**     | `{msg.get('binding')}`           |")
-    lines.append(f"| **Schema Format** | `{msg.get('schemaformat')}`    |")
-    lines.append(f"| **Created At**  | `{msg.get('createdat')}`         |")
-    lines.append(f"| **Modified At** | `{msg.get('modifiedat')}`        |")
-    lines.append("")
+    if msg.get('description'):
+        lines.append(f"*{msg.get('description')}*\n")
 
     # CloudEvents Attributes Table (formerly Event Properties)
     lines.append("#### CloudEvents Attributes:\n")
