@@ -1,6 +1,12 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
+LABEL org.opencontainers.image.source = "https://github.com/clemensv/real-time-sources/tree/main/gtfs"
+LABEL org.opencontainers.image.title = "GTFS and GTFS-RT API bridge to Kafka endpoints"
+LABEL org.opencontainers.image.description = "This container is a bridge between GTFS and GTFS-RT API and Kafka endpoints. It fetches data from GTFS/GTFS-RT endpoints and forwards them to the configured Kafka endpoint."
+LABEL org.opencontainers.image.documentation = "https://github.com/clemensv/real-time-sources/blob/main/gtfs/CONTAINER.md"
+LABEL org.opencontainers.image.license = "MIT"
+
 # Set the working directory in the container
 WORKDIR /app
 
