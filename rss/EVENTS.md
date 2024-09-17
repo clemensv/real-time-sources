@@ -11,29 +11,24 @@ This document describes the events that are emitted by the RSS API Bridge.
 
 ### Message: Microsoft.OpenData.RssFeeds.FeedItem
 
-**ID**: Microsoft.OpenData.RssFeeds.FeedItem
-**Format**: CloudEvents/1.0
-**Binding**: None
-**Schema Format**: Avro/1.11.3
-**Created At**: None
-**Modified At**: None
+#### EventProperties:
 
-#### Metadata:
+| **Property**    | **Value**                        |
+|-----------------|----------------------------------|
+| **ID**          | `Microsoft.OpenData.RssFeeds.FeedItem`                |
+| **Format**      | `CloudEvents/1.0`            |
+| **Binding**     | `None`           |
+| **Schema Format** | `Avro/1.11.3`    |
+| **Created At**  | `None`         |
+| **Modified At** | `None`        |
 
-- **type**: None
-  - Type: *None*
-  - Required: *False*
-  - Value: `Microsoft.OpenData.RssFeeds.FeedItem`
+#### CloudEvents Attributes:
 
-- **source**: None
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{sourceurl}`
-
-- **subject**: None
-  - Type: *uritemplate*
-  - Required: *False*
-  - Value: `{item_id}`
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `Microsoft.OpenData.RssFeeds.FeedItem` |
+| `source` |  | `uritemplate` | `False` | `{sourceurl}` |
+| `subject` |  | `uritemplate` | `False` | `{item_id}` |
 
 #### Schema:
 

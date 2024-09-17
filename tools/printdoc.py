@@ -49,19 +49,31 @@ def generate_documentation(data, title, description):
 
 def process_message(msg, schemagroups):
     lines = []
-    lines.append(f"**ID**: {msg.get('id')}")
-    lines.append(f"**Format**: {msg.get('format')}")
-    lines.append(f"**Binding**: {msg.get('binding')}")
-    lines.append(f"**Schema Format**: {msg.get('schemaformat')}")
-    lines.append(f"**Created At**: {msg.get('createdat')}")
-    lines.append(f"**Modified At**: {msg.get('modifiedat')}\n")
-    lines.append("#### Metadata:\n")
+
+    # EventProperties Table (formerly Event Metadata)
+    lines.append("#### EventProperties:\n")
+    lines.append("| **Property**    | **Value**                        |")
+    lines.append("|-----------------|----------------------------------|")
+    lines.append(f"| **ID**          | `{msg.get('id')}`                |")
+    lines.append(f"| **Format**      | `{msg.get('format')}`            |")
+    lines.append(f"| **Binding**     | `{msg.get('binding')}`           |")
+    lines.append(f"| **Schema Format** | `{msg.get('schemaformat')}`    |")
+    lines.append(f"| **Created At**  | `{msg.get('createdat')}`         |")
+    lines.append(f"| **Modified At** | `{msg.get('modifiedat')}`        |")
+    lines.append("")
+
+    # CloudEvents Attributes Table (formerly Event Properties)
+    lines.append("#### CloudEvents Attributes:\n")
+    lines.append("| **Name**    | **Description** | **Type**     | **Required** | **Value** |")
+    lines.append("|-------------|-----------------|--------------|--------------|-----------|")
     metadata = msg.get('metadata', {})
     for md_name, md in metadata.items():
-        lines.append(f"- **{md_name}**: {md.get('description')}")
-        lines.append(f"  - Type: *{md.get('type')}*")
-        lines.append(f"  - Required: *{md.get('required', False)}*")
-        lines.append(f"  - Value: `{md.get('value')}`\n")
+        description = md.get('description', '')
+        md_type = md.get('type', '')
+        required = md.get('required', False)
+        value = md.get('value', '')
+        lines.append(f"| `{md_name}` | {description} | `{md_type}` | `{required}` | `{value}` |")
+    lines.append("")
 
     # Resolve the schema
     schemaurl = msg.get('schemaurl')
@@ -74,7 +86,7 @@ def process_message(msg, schemagroups):
     return lines
 
 def resolve_schema(schemaurl, schemagroups):
-    # schemaurl is of the form "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.Station"
+    # schemaurl is of the form "#/schemagroups/group_name/schemas/schema_name"
     if not schemaurl.startswith("#/"):
         return None
     path = schemaurl[2:].split('/')
