@@ -257,7 +257,17 @@ data to the table schema, filtered by `type`. For example:
 
 ```sql
 SELECT
-    data.*,
+    data.routeId as routeId,
+    data.serviceDates as serviceDates,
+    data.serviceExceptions as serviceExceptions,
+    data.tripId as tripId,
+    data.tripHeadsign as tripHeadsign,
+    data.tripShortName as tripShortName,
+    data.directionId as directionId,
+    data.blockId as blockId,
+    data.shapeId as shapeId,
+    data.wheelchairAccessible as wheelchairAccessible,
+    data.bikesAllowed as bikesAllowed,
     type as ___type,
     source as ___source,
     id as ___id,
