@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.fareproducts import FareProducts
 
+
 class Test_FareProducts(unittest.TestCase):
     """
     Test case for FareProducts
@@ -27,10 +28,10 @@ class Test_FareProducts(unittest.TestCase):
         Create instance of FareProducts for testing
         """
         instance = FareProducts(
-            fareProductId='oprpyrrjregyzzjaeoec',
-            fareProductName='julwywixcyiymxxanbut',
-            fareProductDesc='kedhverjwpqxtcmtggpa',
-            fareProductUrl='xtunmzodhyeghaxfrlma'
+            fareProductId='nqaxnelvwngnwrdppzdf',
+            fareProductName='wczckotrsjsfkkfwprrj',
+            fareProductDesc='xoafhfsimofdturgmwst',
+            fareProductUrl='nvjpmwtaipfniifeiros'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductId property
         """
-        test_value = 'oprpyrrjregyzzjaeoec'
+        test_value = 'nqaxnelvwngnwrdppzdf'
         self.instance.fareProductId = test_value
         self.assertEqual(self.instance.fareProductId, test_value)
     
@@ -47,7 +48,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductName property
         """
-        test_value = 'julwywixcyiymxxanbut'
+        test_value = 'wczckotrsjsfkkfwprrj'
         self.instance.fareProductName = test_value
         self.assertEqual(self.instance.fareProductName, test_value)
     
@@ -55,7 +56,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductDesc property
         """
-        test_value = 'kedhverjwpqxtcmtggpa'
+        test_value = 'xoafhfsimofdturgmwst'
         self.instance.fareProductDesc = test_value
         self.assertEqual(self.instance.fareProductDesc, test_value)
     
@@ -63,7 +64,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductUrl property
         """
-        test_value = 'xtunmzodhyeghaxfrlma'
+        test_value = 'nvjpmwtaipfniifeiros'
         self.instance.fareProductUrl = test_value
         self.assertEqual(self.instance.fareProductUrl, test_value)
     

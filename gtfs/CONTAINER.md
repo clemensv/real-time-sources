@@ -32,6 +32,12 @@ Use as base image in Dockerfile:
 FROM ghcr.io/clemensv/real-time-sources-gtfs:latest
 ```
 
+## Database Schemas and handling
+
+If you want to build a full data pipeline with all events ingested into
+database, the integration with Fabric Eventhouse and Azure Data Explorer is
+described in [DATABASE.md](../DATABASE.md).
+
 ## Using the container image
 
 The container image defines a single command that starts the bridge. The bridge

@@ -9,11 +9,12 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert import Alert
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_entityselector import Test_EntitySelector
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_alert_types_cause import Test_Cause
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_alert_types_effect import Test_Effect
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_timerange import Test_TimeRange
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_alert_types_cause import Test_Cause
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_entityselector import Test_EntitySelector
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_translatedstring import Test_TranslatedString
+
 
 class Test_Alert(unittest.TestCase):
     """
@@ -32,8 +33,8 @@ class Test_Alert(unittest.TestCase):
         Create instance of Alert for testing
         """
         instance = Alert(
-            active_period=[Test_TimeRange.create_instance(), Test_TimeRange.create_instance(), Test_TimeRange.create_instance(), Test_TimeRange.create_instance(), Test_TimeRange.create_instance()],
-            informed_entity=[Test_EntitySelector.create_instance()],
+            active_period=[Test_TimeRange.create_instance(), Test_TimeRange.create_instance()],
+            informed_entity=[Test_EntitySelector.create_instance(), Test_EntitySelector.create_instance()],
             cause=Test_Cause.create_instance(),
             effect=Test_Effect.create_instance(),
             url=Test_TranslatedString.create_instance(),
@@ -47,7 +48,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test active_period property
         """
-        test_value = [Test_TimeRange.create_instance(), Test_TimeRange.create_instance(), Test_TimeRange.create_instance(), Test_TimeRange.create_instance(), Test_TimeRange.create_instance()]
+        test_value = [Test_TimeRange.create_instance(), Test_TimeRange.create_instance()]
         self.instance.active_period = test_value
         self.assertEqual(self.instance.active_period, test_value)
     
@@ -55,7 +56,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test informed_entity property
         """
-        test_value = [Test_EntitySelector.create_instance()]
+        test_value = [Test_EntitySelector.create_instance(), Test_EntitySelector.create_instance()]
         self.instance.informed_entity = test_value
         self.assertEqual(self.instance.informed_entity, test_value)
     

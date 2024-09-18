@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.translations import Translations
 
+
 class Test_Translations(unittest.TestCase):
     """
     Test case for Translations
@@ -27,10 +28,10 @@ class Test_Translations(unittest.TestCase):
         Create instance of Translations for testing
         """
         instance = Translations(
-            tableName='yknftywydzfsgkhkrjcr',
-            fieldName='mzzclrhafrklvvmeennl',
-            language='nmnhnxujktjszazvlyoe',
-            translation='tmsstuwwhniszwpvpzkq'
+            tableName='aanhizixqqpcfjufuqom',
+            fieldName='qwtvuaxuexmjiacvuhma',
+            language='hrtvteidgzibhlqybpgq',
+            translation='kcjmaskfeydtyoqxdwzk'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test tableName property
         """
-        test_value = 'yknftywydzfsgkhkrjcr'
+        test_value = 'aanhizixqqpcfjufuqom'
         self.instance.tableName = test_value
         self.assertEqual(self.instance.tableName, test_value)
     
@@ -47,7 +48,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test fieldName property
         """
-        test_value = 'mzzclrhafrklvvmeennl'
+        test_value = 'qwtvuaxuexmjiacvuhma'
         self.instance.fieldName = test_value
         self.assertEqual(self.instance.fieldName, test_value)
     
@@ -55,7 +56,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'nmnhnxujktjszazvlyoe'
+        test_value = 'hrtvteidgzibhlqybpgq'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -63,7 +64,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test translation property
         """
-        test_value = 'tmsstuwwhniszwpvpzkq'
+        test_value = 'kcjmaskfeydtyoqxdwzk'
         self.instance.translation = test_value
         self.assertEqual(self.instance.translation, test_value)
     

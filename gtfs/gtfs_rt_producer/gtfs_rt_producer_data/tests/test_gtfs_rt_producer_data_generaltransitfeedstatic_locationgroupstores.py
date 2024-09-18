@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.locationgroupstores import LocationGroupStores
 
+
 class Test_LocationGroupStores(unittest.TestCase):
     """
     Test case for LocationGroupStores
@@ -27,9 +28,9 @@ class Test_LocationGroupStores(unittest.TestCase):
         Create instance of LocationGroupStores for testing
         """
         instance = LocationGroupStores(
-            locationGroupStoreId='xdsoytqjpyrvlysfncgu',
-            locationGroupId='ysswxsogpbiuisitrygp',
-            storeId='tlvtelpsorhrskowlwkp'
+            locationGroupStoreId='ahntjblcukfxrjrwtudc',
+            locationGroupId='mdkkfhjapxnxfmnxclsb',
+            storeId='lovkanhdbhokunqkcbzu'
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test locationGroupStoreId property
         """
-        test_value = 'xdsoytqjpyrvlysfncgu'
+        test_value = 'ahntjblcukfxrjrwtudc'
         self.instance.locationGroupStoreId = test_value
         self.assertEqual(self.instance.locationGroupStoreId, test_value)
     
@@ -46,7 +47,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test locationGroupId property
         """
-        test_value = 'ysswxsogpbiuisitrygp'
+        test_value = 'mdkkfhjapxnxfmnxclsb'
         self.instance.locationGroupId = test_value
         self.assertEqual(self.instance.locationGroupId, test_value)
     
@@ -54,7 +55,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test storeId property
         """
-        test_value = 'tlvtelpsorhrskowlwkp'
+        test_value = 'lovkanhdbhokunqkcbzu'
         self.instance.storeId = test_value
         self.assertEqual(self.instance.storeId, test_value)
     

@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.farerules import FareRules
 
+
 class Test_FareRules(unittest.TestCase):
     """
     Test case for FareRules
@@ -27,11 +28,11 @@ class Test_FareRules(unittest.TestCase):
         Create instance of FareRules for testing
         """
         instance = FareRules(
-            fareId='ttkrfcngztnpkxukaemh',
-            routeId='bpowcvruzanlviqweohl',
-            originId='qodupbavlffdtmkoytjr',
-            destinationId='semjqkpjulfpqzqmxxwh',
-            containsId='svlgjcyssrxkejenxdaz'
+            fareId='ttnqkqtjxbwsdobtskrl',
+            routeId='wulhsirwheytcyfufogc',
+            originId='leycyycmxousiycleakd',
+            destinationId='fqfhyeaimpugrgedfvbf',
+            containsId='ariogpzbaycafgiqojcw'
         )
         return instance
 
@@ -40,7 +41,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test fareId property
         """
-        test_value = 'ttkrfcngztnpkxukaemh'
+        test_value = 'ttnqkqtjxbwsdobtskrl'
         self.instance.fareId = test_value
         self.assertEqual(self.instance.fareId, test_value)
     
@@ -48,7 +49,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'bpowcvruzanlviqweohl'
+        test_value = 'wulhsirwheytcyfufogc'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -56,7 +57,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test originId property
         """
-        test_value = 'qodupbavlffdtmkoytjr'
+        test_value = 'leycyycmxousiycleakd'
         self.instance.originId = test_value
         self.assertEqual(self.instance.originId, test_value)
     
@@ -64,7 +65,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test destinationId property
         """
-        test_value = 'semjqkpjulfpqzqmxxwh'
+        test_value = 'fqfhyeaimpugrgedfvbf'
         self.instance.destinationId = test_value
         self.assertEqual(self.instance.destinationId, test_value)
     
@@ -72,7 +73,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test containsId property
         """
-        test_value = 'svlgjcyssrxkejenxdaz'
+        test_value = 'ariogpzbaycafgiqojcw'
         self.instance.containsId = test_value
         self.assertEqual(self.instance.containsId, test_value)
     

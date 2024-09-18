@@ -89,7 +89,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -98,55 +98,6 @@ class GeneralTransitFeedRealTimeEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedRealTimeEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_real_time_trip_trip_update(self,_feedurl : str, _agencyid : str, data: TripUpdate, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TripUpdate], str]=None) -> None:
@@ -171,7 +122,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -180,55 +131,6 @@ class GeneralTransitFeedRealTimeEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedRealTimeEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_real_time_alert_alert(self,_feedurl : str, _agencyid : str, data: Alert, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Alert], str]=None) -> None:
@@ -253,7 +155,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -262,6 +164,7 @@ class GeneralTransitFeedRealTimeEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
+
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -364,7 +267,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -373,55 +276,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_areas(self,_feedurl : str, _agencyid : str, data: Areas, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Areas], str]=None) -> None:
@@ -446,7 +300,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -455,55 +309,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_attributions(self,_feedurl : str, _agencyid : str, data: Attributions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attributions], str]=None) -> None:
@@ -528,7 +333,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -537,55 +342,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_booking_rules(self,_feedurl : str, _agencyid : str, data: BookingRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BookingRules], str]=None) -> None:
@@ -610,7 +366,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -619,55 +375,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_fare_attributes(self,_feedurl : str, _agencyid : str, data: FareAttributes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareAttributes], str]=None) -> None:
@@ -692,7 +399,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -701,55 +408,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_fare_leg_rules(self,_feedurl : str, _agencyid : str, data: FareLegRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareLegRules], str]=None) -> None:
@@ -774,7 +432,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -783,55 +441,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_fare_media(self,_feedurl : str, _agencyid : str, data: FareMedia, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareMedia], str]=None) -> None:
@@ -856,7 +465,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -865,55 +474,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_fare_products(self,_feedurl : str, _agencyid : str, data: FareProducts, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareProducts], str]=None) -> None:
@@ -938,7 +498,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -947,55 +507,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_fare_rules(self,_feedurl : str, _agencyid : str, data: FareRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareRules], str]=None) -> None:
@@ -1020,7 +531,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1029,55 +540,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_fare_transfer_rules(self,_feedurl : str, _agencyid : str, data: FareTransferRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareTransferRules], str]=None) -> None:
@@ -1102,7 +564,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1111,55 +573,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_feed_info(self,_feedurl : str, _agencyid : str, data: FeedInfo, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FeedInfo], str]=None) -> None:
@@ -1184,7 +597,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1193,55 +606,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_frequencies(self,_feedurl : str, _agencyid : str, data: Frequencies, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Frequencies], str]=None) -> None:
@@ -1266,7 +630,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1275,55 +639,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_levels(self,_feedurl : str, _agencyid : str, data: Levels, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Levels], str]=None) -> None:
@@ -1348,7 +663,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1357,55 +672,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_location_geo_json(self,_feedurl : str, _agencyid : str, data: LocationGeoJson, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGeoJson], str]=None) -> None:
@@ -1430,7 +696,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1439,55 +705,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_location_groups(self,_feedurl : str, _agencyid : str, data: LocationGroups, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroups], str]=None) -> None:
@@ -1512,7 +729,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1521,55 +738,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_location_group_stores(self,_feedurl : str, _agencyid : str, data: LocationGroupStores, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroupStores], str]=None) -> None:
@@ -1594,7 +762,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1603,55 +771,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_networks(self,_feedurl : str, _agencyid : str, data: Networks, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Networks], str]=None) -> None:
@@ -1676,7 +795,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1685,55 +804,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_pathways(self,_feedurl : str, _agencyid : str, data: Pathways, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Pathways], str]=None) -> None:
@@ -1758,7 +828,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1767,55 +837,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_route_networks(self,_feedurl : str, _agencyid : str, data: RouteNetworks, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RouteNetworks], str]=None) -> None:
@@ -1840,7 +861,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1849,55 +870,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_routes(self,_feedurl : str, _agencyid : str, data: Routes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Routes], str]=None) -> None:
@@ -1922,7 +894,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -1931,55 +903,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_shapes(self,_feedurl : str, _agencyid : str, data: Shapes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Shapes], str]=None) -> None:
@@ -2004,7 +927,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2013,55 +936,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_stop_areas(self,_feedurl : str, _agencyid : str, data: StopAreas, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopAreas], str]=None) -> None:
@@ -2086,7 +960,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2095,55 +969,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_stops(self,_feedurl : str, _agencyid : str, data: Stops, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Stops], str]=None) -> None:
@@ -2168,7 +993,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2177,55 +1002,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_stop_times(self,_feedurl : str, _agencyid : str, data: StopTimes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopTimes], str]=None) -> None:
@@ -2250,7 +1026,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2259,55 +1035,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_timeframes(self,_feedurl : str, _agencyid : str, data: Timeframes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Timeframes], str]=None) -> None:
@@ -2332,7 +1059,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2341,55 +1068,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_transfers(self,_feedurl : str, _agencyid : str, data: Transfers, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Transfers], str]=None) -> None:
@@ -2414,7 +1092,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2423,55 +1101,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_translations(self,_feedurl : str, _agencyid : str, data: Translations, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Translations], str]=None) -> None:
@@ -2496,7 +1125,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2505,55 +1134,6 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'GeneralTransitFeedStaticEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
 
 
     async def send_general_transit_feed_static_trips(self,_feedurl : str, _agencyid : str, data: Trips, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Trips], str]=None) -> None:
@@ -2578,7 +1158,7 @@ class GeneralTransitFeedStaticEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: x.to_json(), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
@@ -2587,6 +1167,7 @@ class GeneralTransitFeedStaticEventProducer:
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
+
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:

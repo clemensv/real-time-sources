@@ -10,6 +10,12 @@ The National Oceanic and Atmospheric Administration (NOAA) Tides and Currents AP
 
 The bridge retrieves data from the NOAA Tides and Currents API and writes it to a Kafka topic as [CloudEvents](https://cloudevents.io/) in a JSON format, which is documented in [EVENTS.md](EVENTS.md).
 
+## Database Schemas and handling
+
+If you want to build a full data pipeline with all events ingested into
+database, the integration with Fabric Eventhouse and Azure Data Explorer is
+described in [DATABASE.md](../DATABASE.md).
+
 ## Installing the Container Image
 
 Pull the container image from the GitHub Container Registry:

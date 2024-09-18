@@ -11,6 +11,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_tripdescriptor import Test_TripDescriptor
 
+
 class Test_EntitySelector(unittest.TestCase):
     """
     Test case for EntitySelector
@@ -28,11 +29,11 @@ class Test_EntitySelector(unittest.TestCase):
         Create instance of EntitySelector for testing
         """
         instance = EntitySelector(
-            agency_id='lszsmxfbnhhvccyoqfjm',
-            route_id='tfefgldayootbvenduxj',
-            route_type=int(30),
+            agency_id='gxcnksmgblqlynmibyyf',
+            route_id='pjhgaszrnyggundlzldl',
+            route_type=int(81),
             trip=Test_TripDescriptor.create_instance(),
-            stop_id='kisllbnvcmtutgojincv'
+            stop_id='ivuadfbbmpwgjzbxoavh'
         )
         return instance
 
@@ -41,7 +42,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'lszsmxfbnhhvccyoqfjm'
+        test_value = 'gxcnksmgblqlynmibyyf'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -49,7 +50,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'tfefgldayootbvenduxj'
+        test_value = 'pjhgaszrnyggundlzldl'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -57,7 +58,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test route_type property
         """
-        test_value = int(30)
+        test_value = int(81)
         self.instance.route_type = test_value
         self.assertEqual(self.instance.route_type, test_value)
     
@@ -73,7 +74,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'kisllbnvcmtutgojincv'
+        test_value = 'ivuadfbbmpwgjzbxoavh'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     

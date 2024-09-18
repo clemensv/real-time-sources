@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.feedinfo import FeedInfo
 
+
 class Test_FeedInfo(unittest.TestCase):
     """
     Test case for FeedInfo
@@ -27,15 +28,15 @@ class Test_FeedInfo(unittest.TestCase):
         Create instance of FeedInfo for testing
         """
         instance = FeedInfo(
-            feedPublisherName='rgmpzecaqjtfoxcxnxxg',
-            feedPublisherUrl='mzzwhabkkvxbocwkickx',
-            feedLang='vsepzxlmktvdbetgekvh',
-            defaultLang='etwmytxjvkpfgxqpotpq',
-            feedStartDate='luwljtamyyptkqydgdsg',
-            feedEndDate='enphujpyyqszgtjyiipl',
-            feedVersion='dlyrjbursyhapiycwzps',
-            feedContactEmail='hmnrqbclbvzodpblnzbe',
-            feedContactUrl='ztjyhmnupgcrnkprtkkg'
+            feedPublisherName='idfpqzinuppjmyfkivks',
+            feedPublisherUrl='wvhrqycyhfwasikjxvrk',
+            feedLang='zuzglwchokaashigmsbl',
+            defaultLang='jztfwdwuqnhnmgaxyahs',
+            feedStartDate='cyhkdfbvnpqrefnxzkym',
+            feedEndDate='fqfamvdjrnxjkpxzegcb',
+            feedVersion='nptxmhhqqxnipizfuuhz',
+            feedContactEmail='yferfhyrftuubefaebbq',
+            feedContactUrl='aolzmqzcuptaartrdkrh'
         )
         return instance
 
@@ -44,7 +45,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedPublisherName property
         """
-        test_value = 'rgmpzecaqjtfoxcxnxxg'
+        test_value = 'idfpqzinuppjmyfkivks'
         self.instance.feedPublisherName = test_value
         self.assertEqual(self.instance.feedPublisherName, test_value)
     
@@ -52,7 +53,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedPublisherUrl property
         """
-        test_value = 'mzzwhabkkvxbocwkickx'
+        test_value = 'wvhrqycyhfwasikjxvrk'
         self.instance.feedPublisherUrl = test_value
         self.assertEqual(self.instance.feedPublisherUrl, test_value)
     
@@ -60,7 +61,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedLang property
         """
-        test_value = 'vsepzxlmktvdbetgekvh'
+        test_value = 'zuzglwchokaashigmsbl'
         self.instance.feedLang = test_value
         self.assertEqual(self.instance.feedLang, test_value)
     
@@ -68,7 +69,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test defaultLang property
         """
-        test_value = 'etwmytxjvkpfgxqpotpq'
+        test_value = 'jztfwdwuqnhnmgaxyahs'
         self.instance.defaultLang = test_value
         self.assertEqual(self.instance.defaultLang, test_value)
     
@@ -76,7 +77,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedStartDate property
         """
-        test_value = 'luwljtamyyptkqydgdsg'
+        test_value = 'cyhkdfbvnpqrefnxzkym'
         self.instance.feedStartDate = test_value
         self.assertEqual(self.instance.feedStartDate, test_value)
     
@@ -84,7 +85,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedEndDate property
         """
-        test_value = 'enphujpyyqszgtjyiipl'
+        test_value = 'fqfamvdjrnxjkpxzegcb'
         self.instance.feedEndDate = test_value
         self.assertEqual(self.instance.feedEndDate, test_value)
     
@@ -92,7 +93,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedVersion property
         """
-        test_value = 'dlyrjbursyhapiycwzps'
+        test_value = 'nptxmhhqqxnipizfuuhz'
         self.instance.feedVersion = test_value
         self.assertEqual(self.instance.feedVersion, test_value)
     
@@ -100,7 +101,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedContactEmail property
         """
-        test_value = 'hmnrqbclbvzodpblnzbe'
+        test_value = 'yferfhyrftuubefaebbq'
         self.instance.feedContactEmail = test_value
         self.assertEqual(self.instance.feedContactEmail, test_value)
     
@@ -108,7 +109,7 @@ class Test_FeedInfo(unittest.TestCase):
         """
         Test feedContactUrl property
         """
-        test_value = 'ztjyhmnupgcrnkprtkkg'
+        test_value = 'aolzmqzcuptaartrdkrh'
         self.instance.feedContactUrl = test_value
         self.assertEqual(self.instance.feedContactUrl, test_value)
     

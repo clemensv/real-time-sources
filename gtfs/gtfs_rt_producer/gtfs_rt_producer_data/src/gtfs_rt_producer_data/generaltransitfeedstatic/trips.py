@@ -8,11 +8,11 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
-from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairaccessible import WheelchairAccessible
+from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from gtfs_rt_producer_data.generaltransitfeedstatic.directionid import DirectionId
 from gtfs_rt_producer_data.generaltransitfeedstatic.bikesallowed import BikesAllowed
+from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
 @dataclasses_json.dataclass_json
@@ -43,7 +43,7 @@ class Trips:
     blockId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="blockId"))
     shapeId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeId"))
     wheelchairAccessible: WheelchairAccessible=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wheelchairAccessible"))
-    bikesAllowed: BikesAllowed=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bikesAllowed"))    
+    bikesAllowed: BikesAllowed=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bikesAllowed"))
     
 
     def __post_init__(self):
@@ -113,7 +113,9 @@ class Trips:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

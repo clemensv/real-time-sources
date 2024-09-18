@@ -2789,10 +2789,10 @@
         stop_schedule_relationship = tostring(stop_time_update.schedule_relationship)
     | extend
         arrival_delay = toint(arrival.delay),
-        arrival_time = unixtime_seconds_todatetime(arrival.time),
+        arrival_time = unixtime_seconds_todatetime(toint(arrival.['time'])),
         arrival_uncertainty = toint(arrival.uncertainty),
         departure_delay = toint(departure.delay),
-        departure_time = unixtime_seconds_todatetime(departure.time),
+        departure_time = unixtime_seconds_todatetime(toint(departure.['time'])),
         departure_uncertainty = toint(departure.uncertainty)
     | extend
         trip_id = tostring(trip.trip_id),

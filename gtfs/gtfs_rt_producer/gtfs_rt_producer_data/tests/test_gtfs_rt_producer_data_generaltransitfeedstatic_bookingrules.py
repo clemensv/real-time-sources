@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.bookingrules import BookingRules
 
+
 class Test_BookingRules(unittest.TestCase):
     """
     Test case for BookingRules
@@ -27,10 +28,10 @@ class Test_BookingRules(unittest.TestCase):
         Create instance of BookingRules for testing
         """
         instance = BookingRules(
-            bookingRuleId='voaymqakzvuiyeydoneb',
-            bookingRuleName='ytmnvmzmruyvzlsyezia',
-            bookingRuleDesc='fhvqosoxywtxphunncys',
-            bookingRuleUrl='swxcvgjdsdxkrdumktbj'
+            bookingRuleId='cweemwipqlfcdndyrhtm',
+            bookingRuleName='lgstdiptegarzvlaibtr',
+            bookingRuleDesc='ndnhusmbnhsfwyjtlutr',
+            bookingRuleUrl='noivxplxphhffkswhrsu'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleId property
         """
-        test_value = 'voaymqakzvuiyeydoneb'
+        test_value = 'cweemwipqlfcdndyrhtm'
         self.instance.bookingRuleId = test_value
         self.assertEqual(self.instance.bookingRuleId, test_value)
     
@@ -47,7 +48,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleName property
         """
-        test_value = 'ytmnvmzmruyvzlsyezia'
+        test_value = 'lgstdiptegarzvlaibtr'
         self.instance.bookingRuleName = test_value
         self.assertEqual(self.instance.bookingRuleName, test_value)
     
@@ -55,7 +56,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleDesc property
         """
-        test_value = 'fhvqosoxywtxphunncys'
+        test_value = 'ndnhusmbnhsfwyjtlutr'
         self.instance.bookingRuleDesc = test_value
         self.assertEqual(self.instance.bookingRuleDesc, test_value)
     
@@ -63,7 +64,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleUrl property
         """
-        test_value = 'swxcvgjdsdxkrdumktbj'
+        test_value = 'noivxplxphhffkswhrsu'
         self.instance.bookingRuleUrl = test_value
         self.assertEqual(self.instance.bookingRuleUrl, test_value)
     

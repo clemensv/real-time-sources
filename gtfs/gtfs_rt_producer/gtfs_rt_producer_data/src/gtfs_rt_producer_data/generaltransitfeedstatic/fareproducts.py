@@ -24,7 +24,7 @@ class FareProducts:
     fareProductId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductId"))
     fareProductName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductName"))
     fareProductDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductDesc"))
-    fareProductUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductUrl"))    
+    fareProductUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fareProductUrl"))
     
 
     def __post_init__(self):
@@ -86,7 +86,9 @@ class FareProducts:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

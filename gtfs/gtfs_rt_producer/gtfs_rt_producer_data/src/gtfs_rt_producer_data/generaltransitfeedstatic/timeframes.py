@@ -26,7 +26,7 @@ class Timeframes:
     timeframeGroupId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeframeGroupId"))
     startTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="startTime"))
     endTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endTime"))
-    serviceDates: typing.Union[Calendar, CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))    
+    serviceDates: typing.Union[Calendar, CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
     
 
     def __post_init__(self):
@@ -88,7 +88,9 @@ class Timeframes:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

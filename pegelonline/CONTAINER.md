@@ -21,6 +21,12 @@ in a JSON format documented in [EVENTS.md](EVENTS.md). You can configure the
 bridge to handle multiple stations by supplying their identifiers in the
 configuration.
 
+## Database Schemas and handling
+
+If you want to build a full data pipeline with all events ingested into
+database, the integration with Fabric Eventhouse and Azure Data Explorer is
+described in [DATABASE.md](../DATABASE.md).
+
 ## Installing the Container Image
 
 Pull the container image from the GitHub Container Registry:

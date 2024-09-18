@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.stopareas import StopAreas
 
+
 class Test_StopAreas(unittest.TestCase):
     """
     Test case for StopAreas
@@ -27,9 +28,9 @@ class Test_StopAreas(unittest.TestCase):
         Create instance of StopAreas for testing
         """
         instance = StopAreas(
-            stopAreaId='xruuibulaibglmyypdls',
-            stopId='chikveynmseelbnknvol',
-            areaId='wyuzjkoghnqgkvlscnnc'
+            stopAreaId='hvvicnkgoicsxotvjbpj',
+            stopId='lthsuooeclhrcjijjshc',
+            areaId='glzsrbvmdvpyglleeskh'
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_StopAreas(unittest.TestCase):
         """
         Test stopAreaId property
         """
-        test_value = 'xruuibulaibglmyypdls'
+        test_value = 'hvvicnkgoicsxotvjbpj'
         self.instance.stopAreaId = test_value
         self.assertEqual(self.instance.stopAreaId, test_value)
     
@@ -46,7 +47,7 @@ class Test_StopAreas(unittest.TestCase):
         """
         Test stopId property
         """
-        test_value = 'chikveynmseelbnknvol'
+        test_value = 'lthsuooeclhrcjijjshc'
         self.instance.stopId = test_value
         self.assertEqual(self.instance.stopId, test_value)
     
@@ -54,7 +55,7 @@ class Test_StopAreas(unittest.TestCase):
         """
         Test areaId property
         """
-        test_value = 'wyuzjkoghnqgkvlscnnc'
+        test_value = 'glzsrbvmdvpyglleeskh'
         self.instance.areaId = test_value
         self.assertEqual(self.instance.areaId, test_value)
     

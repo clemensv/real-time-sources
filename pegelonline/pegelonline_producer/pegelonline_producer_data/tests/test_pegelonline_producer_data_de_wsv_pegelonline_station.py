@@ -11,6 +11,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 from pegelonline_producer_data.de.wsv.pegelonline.station import Station
 from test_pegelonline_producer_data_de_wsv_pegelonline_water import Test_Water
 
+
 class Test_Station(unittest.TestCase):
     """
     Test case for Station
@@ -28,14 +29,14 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            uuid='dndwfdvhvhoaojulmqgy',
-            number='opexliaohznjiyllpinj',
-            shortname='oivbxhufrhkpzaagltqy',
-            longname='xgfgpogecrlqeatwdndl',
-            km=float(32.02403314849423),
-            agency='ymzrvqlmhluvwxwqcymg',
-            longitude=float(40.99463405832166),
-            latitude=float(80.06704490885124),
+            uuid='ygciorrlaoltnvqlkqog',
+            number='aqiqdzfgqbgivqgnrfhs',
+            shortname='yoqkvmwiherlqorzygqq',
+            longname='vkdwfqyyytjjpnkrrfiv',
+            km=float(8.379605816258096),
+            agency='zcaurpgpxmmtzjjjxzpi',
+            longitude=float(75.01678132618342),
+            latitude=float(0.051411525612299336),
             water=Test_Water.create_instance()
         )
         return instance
@@ -45,7 +46,7 @@ class Test_Station(unittest.TestCase):
         """
         Test uuid property
         """
-        test_value = 'dndwfdvhvhoaojulmqgy'
+        test_value = 'ygciorrlaoltnvqlkqog'
         self.instance.uuid = test_value
         self.assertEqual(self.instance.uuid, test_value)
     
@@ -53,7 +54,7 @@ class Test_Station(unittest.TestCase):
         """
         Test number property
         """
-        test_value = 'opexliaohznjiyllpinj'
+        test_value = 'aqiqdzfgqbgivqgnrfhs'
         self.instance.number = test_value
         self.assertEqual(self.instance.number, test_value)
     
@@ -61,7 +62,7 @@ class Test_Station(unittest.TestCase):
         """
         Test shortname property
         """
-        test_value = 'oivbxhufrhkpzaagltqy'
+        test_value = 'yoqkvmwiherlqorzygqq'
         self.instance.shortname = test_value
         self.assertEqual(self.instance.shortname, test_value)
     
@@ -69,7 +70,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longname property
         """
-        test_value = 'xgfgpogecrlqeatwdndl'
+        test_value = 'vkdwfqyyytjjpnkrrfiv'
         self.instance.longname = test_value
         self.assertEqual(self.instance.longname, test_value)
     
@@ -77,7 +78,7 @@ class Test_Station(unittest.TestCase):
         """
         Test km property
         """
-        test_value = float(32.02403314849423)
+        test_value = float(8.379605816258096)
         self.instance.km = test_value
         self.assertEqual(self.instance.km, test_value)
     
@@ -85,7 +86,7 @@ class Test_Station(unittest.TestCase):
         """
         Test agency property
         """
-        test_value = 'ymzrvqlmhluvwxwqcymg'
+        test_value = 'zcaurpgpxmmtzjjjxzpi'
         self.instance.agency = test_value
         self.assertEqual(self.instance.agency, test_value)
     
@@ -93,7 +94,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(40.99463405832166)
+        test_value = float(75.01678132618342)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -101,7 +102,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(80.06704490885124)
+        test_value = float(0.051411525612299336)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     

@@ -11,6 +11,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_exceptiontype import Test_ExceptionType
 
+
 class Test_CalendarDates(unittest.TestCase):
     """
     Test case for CalendarDates
@@ -28,8 +29,8 @@ class Test_CalendarDates(unittest.TestCase):
         Create instance of CalendarDates for testing
         """
         instance = CalendarDates(
-            serviceId='yvyupissrvwcfabsidcw',
-            date='esdqlpjgsbnblqmerxuj',
+            serviceId='bksyabmbnaiyfrzvuftq',
+            date='hbxpizhzrauiiijoyiww',
             exceptionType=Test_ExceptionType.create_instance()
         )
         return instance
@@ -39,7 +40,7 @@ class Test_CalendarDates(unittest.TestCase):
         """
         Test serviceId property
         """
-        test_value = 'yvyupissrvwcfabsidcw'
+        test_value = 'bksyabmbnaiyfrzvuftq'
         self.instance.serviceId = test_value
         self.assertEqual(self.instance.serviceId, test_value)
     
@@ -47,7 +48,7 @@ class Test_CalendarDates(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'esdqlpjgsbnblqmerxuj'
+        test_value = 'hbxpizhzrauiiijoyiww'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     

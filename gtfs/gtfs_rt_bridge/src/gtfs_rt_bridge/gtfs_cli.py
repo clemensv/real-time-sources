@@ -107,7 +107,6 @@ else:
     logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, gtfs_headers: List[List[str]], etag: str, cache_dir: str | None) -> Tuple[str, str]:
     """
     Fetches the latest schedule file from the schedule URL if the file does not exist in the cache.
@@ -1049,10 +1048,9 @@ async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, k
         "linger.ms": 100,
         "retries": 5,
         "retry.backoff.ms": 1000,
-        "batch.size": (1024*1024)-512,
-        "compression.type": "gzip"
+        "batch.size": (1024*1024)-512
     }
-    producer: Producer = Producer(kafka_config)
+    producer: Producer = Producer(kafka_config, logger=logger)
     gtfs_rt_producer = GeneralTransitFeedRealTimeEventProducer(producer, kafka_topic,cloudevents_mode)
     gtfs_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)
 

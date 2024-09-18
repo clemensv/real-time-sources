@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from pegelonline_producer_data.de.wsv.pegelonline.water import Water
 
+
 class Test_Water(unittest.TestCase):
     """
     Test case for Water
@@ -27,8 +28,8 @@ class Test_Water(unittest.TestCase):
         Create instance of Water for testing
         """
         instance = Water(
-            shortname='nsuwwpjcxzslkxpnyffk',
-            longname='zpmjrthehltzjkjjgybf'
+            shortname='uqypljtnvpnnjkfqwhlw',
+            longname='epfbzebxvmqavbchvxpt'
         )
         return instance
 
@@ -37,7 +38,7 @@ class Test_Water(unittest.TestCase):
         """
         Test shortname property
         """
-        test_value = 'nsuwwpjcxzslkxpnyffk'
+        test_value = 'uqypljtnvpnnjkfqwhlw'
         self.instance.shortname = test_value
         self.assertEqual(self.instance.shortname, test_value)
     
@@ -45,7 +46,7 @@ class Test_Water(unittest.TestCase):
         """
         Test longname property
         """
-        test_value = 'zpmjrthehltzjkjjgybf'
+        test_value = 'epfbzebxvmqavbchvxpt'
         self.instance.longname = test_value
         self.assertEqual(self.instance.longname, test_value)
     

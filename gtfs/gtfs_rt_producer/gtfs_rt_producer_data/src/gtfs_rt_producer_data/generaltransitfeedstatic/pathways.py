@@ -40,7 +40,7 @@ class Pathways:
     maxSlope: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="maxSlope"))
     minWidth: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="minWidth"))
     signpostedAs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="signpostedAs"))
-    reversedSignpostedAs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="reversedSignpostedAs"))    
+    reversedSignpostedAs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="reversedSignpostedAs"))
     
 
     def __post_init__(self):
@@ -110,7 +110,9 @@ class Pathways:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.levels import Levels
 
+
 class Test_Levels(unittest.TestCase):
     """
     Test case for Levels
@@ -27,9 +28,9 @@ class Test_Levels(unittest.TestCase):
         Create instance of Levels for testing
         """
         instance = Levels(
-            levelId='khuikpzjukkqkhugtemu',
-            levelIndex=float(41.047808343759684),
-            levelName='aqxmkrdwousvjlcwkqvd'
+            levelId='adepwwutlzffliyzedzq',
+            levelIndex=float(32.29515479984838),
+            levelName='uvajkqgxstpohcdyihli'
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelId property
         """
-        test_value = 'khuikpzjukkqkhugtemu'
+        test_value = 'adepwwutlzffliyzedzq'
         self.instance.levelId = test_value
         self.assertEqual(self.instance.levelId, test_value)
     
@@ -46,7 +47,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelIndex property
         """
-        test_value = float(41.047808343759684)
+        test_value = float(32.29515479984838)
         self.instance.levelIndex = test_value
         self.assertEqual(self.instance.levelIndex, test_value)
     
@@ -54,7 +55,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelName property
         """
-        test_value = 'aqxmkrdwousvjlcwkqvd'
+        test_value = 'uvajkqgxstpohcdyihli'
         self.instance.levelName = test_value
         self.assertEqual(self.instance.levelName, test_value)
     

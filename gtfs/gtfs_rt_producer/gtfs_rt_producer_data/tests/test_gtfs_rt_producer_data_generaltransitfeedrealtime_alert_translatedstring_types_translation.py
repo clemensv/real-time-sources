@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring_types.translation import Translation
 
+
 class Test_Translation(unittest.TestCase):
     """
     Test case for Translation
@@ -27,8 +28,8 @@ class Test_Translation(unittest.TestCase):
         Create instance of Translation for testing
         """
         instance = Translation(
-            text='rmeprxytceqskgixpcho',
-            language='vqlrutmqpsdpoxltxqfp'
+            text='fyaudzmlmrtsxjpufzel',
+            language='dtszasjvkliuszcfwkzi'
         )
         return instance
 
@@ -37,7 +38,7 @@ class Test_Translation(unittest.TestCase):
         """
         Test text property
         """
-        test_value = 'rmeprxytceqskgixpcho'
+        test_value = 'fyaudzmlmrtsxjpufzel'
         self.instance.text = test_value
         self.assertEqual(self.instance.text, test_value)
     
@@ -45,7 +46,7 @@ class Test_Translation(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'vqlrutmqpsdpoxltxqfp'
+        test_value = 'dtszasjvkliuszcfwkzi'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     

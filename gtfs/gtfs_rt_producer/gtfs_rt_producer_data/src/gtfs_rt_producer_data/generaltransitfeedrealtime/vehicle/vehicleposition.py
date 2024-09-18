@@ -9,10 +9,10 @@ import dataclasses
 import dataclasses_json
 import json
 from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition_types.congestionlevel import CongestionLevel
+from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
 from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition_types.occupancystatus import OccupancyStatus
 from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition_types.vehiclestopstatus import VehicleStopStatus
-from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 
 
@@ -40,7 +40,7 @@ class VehiclePosition:
     current_status: typing.Optional[VehicleStopStatus]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="current_status"))
     timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     congestion_level: typing.Optional[CongestionLevel]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="congestion_level"))
-    occupancy_status: typing.Optional[OccupancyStatus]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="occupancy_status"))    
+    occupancy_status: typing.Optional[OccupancyStatus]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="occupancy_status"))
     
 
     def __post_init__(self):
@@ -107,7 +107,9 @@ class VehiclePosition:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

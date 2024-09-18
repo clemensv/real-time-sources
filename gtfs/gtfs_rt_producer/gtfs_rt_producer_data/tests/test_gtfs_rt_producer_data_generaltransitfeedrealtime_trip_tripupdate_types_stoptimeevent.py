@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeevent import StopTimeEvent
 
+
 class Test_StopTimeEvent(unittest.TestCase):
     """
     Test case for StopTimeEvent
@@ -27,9 +28,9 @@ class Test_StopTimeEvent(unittest.TestCase):
         Create instance of StopTimeEvent for testing
         """
         instance = StopTimeEvent(
-            delay=int(77),
-            time=int(73),
-            uncertainty=int(91)
+            delay=int(50),
+            time=int(44),
+            uncertainty=int(4)
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_StopTimeEvent(unittest.TestCase):
         """
         Test delay property
         """
-        test_value = int(77)
+        test_value = int(50)
         self.instance.delay = test_value
         self.assertEqual(self.instance.delay, test_value)
     
@@ -46,7 +47,7 @@ class Test_StopTimeEvent(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(73)
+        test_value = int(44)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -54,7 +55,7 @@ class Test_StopTimeEvent(unittest.TestCase):
         """
         Test uncertainty property
         """
-        test_value = int(91)
+        test_value = int(4)
         self.instance.uncertainty = test_value
         self.assertEqual(self.instance.uncertainty, test_value)
     

@@ -8,14 +8,13 @@
             "messages": {
                 "de.wsv.pegelonline.Station": {
                     "id": "de.wsv.pegelonline.Station",
-                    "description": "A PEGELONLINE station with location and water body information.",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.Station",
-                    "createdat": "2024-09-10T15:02:55.573631",
+                    "createdat": "2024-09-18T14:22:31.895724",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T15:02:55.573631",
+                    "modifiedat": "2024-09-18T14:22:31.895724",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -48,14 +47,13 @@
                 },
                 "de.wsv.pegelonline.CurrentMeasurement": {
                     "id": "de.wsv.pegelonline.CurrentMeasurement",
-                    "description": "The current measurement for a PEGELONLINE station.",
                     "format": "CloudEvents/1.0",
                     "binding": "None",
                     "schemaformat": "Avro",
                     "schemaurl": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.CurrentMeasurement",
-                    "createdat": "2024-09-10T15:02:58.776148",
+                    "createdat": "2024-09-18T14:22:35.100298",
                     "epoch": 0,
-                    "modifiedat": "2024-09-10T15:02:58.776148",
+                    "modifiedat": "2024-09-18T14:22:35.100298",
                     "metadata": {
                         "specversion": {
                             "name": "specversion",
@@ -87,9 +85,9 @@
                     }
                 }
             },
-            "createdat": "2024-09-10T15:02:55.572645",
+            "createdat": "2024-09-18T14:22:31.895724",
             "epoch": 0,
-            "modifiedat": "2024-09-10T15:02:55.572645"
+            "modifiedat": "2024-09-18T14:22:31.895724"
         }
     },
     "schemagroups": {
@@ -171,9 +169,9 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T15:02:54.786444",
+                            "createdat": "2024-09-18T14:22:31.131859",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T15:02:54.786444"
+                            "modifiedat": "2024-09-18T14:22:31.131859"
                         }
                     }
                 },
@@ -221,16 +219,16 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-10T15:02:57.965791",
+                            "createdat": "2024-09-18T14:22:34.289227",
                             "epoch": 0,
-                            "modifiedat": "2024-09-10T15:02:57.965791"
+                            "modifiedat": "2024-09-18T14:22:34.289227"
                         }
                     }
                 }
             },
-            "createdat": "2024-09-10T15:02:54.777478",
+            "createdat": "2024-09-18T14:22:31.116771",
             "epoch": 0,
-            "modifiedat": "2024-09-10T15:02:54.777478"
+            "modifiedat": "2024-09-18T14:22:31.116771"
         }
     }
 }
