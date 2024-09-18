@@ -1,6 +1,7 @@
 $scriptDir = Split-Path -Parent $PSCommandPath
-$inputFile = Join-Path $scriptDir "feeds.xreg.json"
-$outputFile = Join-Path $scriptDir "schemas.avsc"
+$inputFile = Join-Path $scriptDir "../xreg/feeds.xreg.json"
+$outputFile = Join-Path $scriptDir "../xreg/schemas.avsc"
+$kqlFile = Join-Path $scriptDir "feeds.kql"
 
 # Load the JSON content
 $jsonContent = Get-Content $inputFile -Raw | ConvertFrom-Json
@@ -21,5 +22,5 @@ foreach ($schemagroup in $jsonContent.schemagroups.psobject.Properties.value) {
 
 # Output the merged array to the output file
 $mergedArray | ConvertTo-Json -Depth 30 | Out-File $outputFile -Encoding UTF8
-avrotize a2k $outputFile --emit-cloudevents-dispatch --emit-cloudevents-columns > feeds.kql
+avrotize a2k $outputFile --emit-cloudevents-dispatch --emit-cloudevents-columns > $kqlFile
 

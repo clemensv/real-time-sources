@@ -22,7 +22,7 @@ class StopTimeEvent:
     
     delay: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="delay"))
     time: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
-    uncertainty: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uncertainty"))    
+    uncertainty: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uncertainty"))
     
 
     def __post_init__(self):
@@ -83,7 +83,9 @@ class StopTimeEvent:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

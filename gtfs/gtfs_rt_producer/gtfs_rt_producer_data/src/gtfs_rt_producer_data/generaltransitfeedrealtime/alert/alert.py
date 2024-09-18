@@ -8,10 +8,10 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.cause import Cause
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.effect import Effect
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert_types.cause import Cause
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 
 
@@ -35,7 +35,7 @@ class Alert:
     effect: typing.Optional[Effect]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="effect"))
     url: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
     header_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="header_text"))
-    description_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description_text"))    
+    description_text: typing.Optional[TranslatedString]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description_text"))
     
 
     def __post_init__(self):
@@ -100,7 +100,9 @@ class Alert:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

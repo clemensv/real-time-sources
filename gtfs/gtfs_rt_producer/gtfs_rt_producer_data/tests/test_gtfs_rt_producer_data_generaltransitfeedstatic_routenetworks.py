@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.routenetworks import RouteNetworks
 
+
 class Test_RouteNetworks(unittest.TestCase):
     """
     Test case for RouteNetworks
@@ -27,9 +28,9 @@ class Test_RouteNetworks(unittest.TestCase):
         Create instance of RouteNetworks for testing
         """
         instance = RouteNetworks(
-            routeNetworkId='tfxlwmwjisqmpqrwjhny',
-            routeId='sguuqhxupbwtfvyvnvfu',
-            networkId='erkydgrinqnyoyrqkdvt'
+            routeNetworkId='lbpbmrsqzamoplzztbak',
+            routeId='dkisralwzfmaqhfoupqx',
+            networkId='vvcbnmrxhahzrfzmaeet'
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test routeNetworkId property
         """
-        test_value = 'tfxlwmwjisqmpqrwjhny'
+        test_value = 'lbpbmrsqzamoplzztbak'
         self.instance.routeNetworkId = test_value
         self.assertEqual(self.instance.routeNetworkId, test_value)
     
@@ -46,7 +47,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'sguuqhxupbwtfvyvnvfu'
+        test_value = 'dkisralwzfmaqhfoupqx'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -54,7 +55,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'erkydgrinqnyoyrqkdvt'
+        test_value = 'vvcbnmrxhahzrfzmaeet'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     

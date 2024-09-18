@@ -20,7 +20,7 @@ class Translation:
         language (typing.Optional[str]): BCP-47 language code. Can be omitted if the language is unknown or if no i18n is done at all for the feed. At most one translation is allowed to have an unspecified language tag."""
     
     text: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="text"))
-    language: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="language"))    
+    language: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="language"))
     
 
     def __post_init__(self):
@@ -80,7 +80,9 @@ class Translation:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.networks import Networks
 
+
 class Test_Networks(unittest.TestCase):
     """
     Test case for Networks
@@ -27,10 +28,10 @@ class Test_Networks(unittest.TestCase):
         Create instance of Networks for testing
         """
         instance = Networks(
-            networkId='xnurkeurwhpeddoyugnk',
-            networkName='yexhdoojtyoiauwncgyq',
-            networkDesc='hglhgjwifhscbspgdtsw',
-            networkUrl='ukgbkvcxujynuxhudwnb'
+            networkId='veikseoaoxpovbdxsimj',
+            networkName='mmwznvmrswmnevmaijrd',
+            networkDesc='aawsvkpkvuyytwximukt',
+            networkUrl='lrsafplqzskbjxtcyisi'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'xnurkeurwhpeddoyugnk'
+        test_value = 'veikseoaoxpovbdxsimj'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     
@@ -47,7 +48,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkName property
         """
-        test_value = 'yexhdoojtyoiauwncgyq'
+        test_value = 'mmwznvmrswmnevmaijrd'
         self.instance.networkName = test_value
         self.assertEqual(self.instance.networkName, test_value)
     
@@ -55,7 +56,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkDesc property
         """
-        test_value = 'hglhgjwifhscbspgdtsw'
+        test_value = 'aawsvkpkvuyytwximukt'
         self.instance.networkDesc = test_value
         self.assertEqual(self.instance.networkDesc, test_value)
     
@@ -63,7 +64,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkUrl property
         """
-        test_value = 'ukgbkvcxujynuxhudwnb'
+        test_value = 'lrsafplqzskbjxtcyisi'
         self.instance.networkUrl = test_value
         self.assertEqual(self.instance.networkUrl, test_value)
     

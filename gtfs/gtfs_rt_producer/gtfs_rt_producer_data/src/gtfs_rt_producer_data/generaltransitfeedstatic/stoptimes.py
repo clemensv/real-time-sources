@@ -8,9 +8,9 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedstatic.continuousdropoff import ContinuousDropOff
 from gtfs_rt_producer_data.generaltransitfeedstatic.timepoint import Timepoint
 from gtfs_rt_producer_data.generaltransitfeedstatic.pickuptype import PickupType
+from gtfs_rt_producer_data.generaltransitfeedstatic.continuousdropoff import ContinuousDropOff
 from gtfs_rt_producer_data.generaltransitfeedstatic.dropofftype import DropOffType
 from gtfs_rt_producer_data.generaltransitfeedstatic.continuouspickup import ContinuousPickup
 
@@ -45,7 +45,7 @@ class StopTimes:
     continuousPickup: typing.Optional[ContinuousPickup]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousPickup"))
     continuousDropOff: typing.Optional[ContinuousDropOff]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousDropOff"))
     shapeDistTraveled: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shapeDistTraveled"))
-    timepoint: Timepoint=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timepoint"))    
+    timepoint: Timepoint=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timepoint"))
     
 
     def __post_init__(self):
@@ -115,7 +115,9 @@ class StopTimes:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

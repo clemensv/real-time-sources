@@ -30,7 +30,7 @@ class FareAttributes:
     paymentMethod: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="paymentMethod"))
     transfers: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transfers"))
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
-    transferDuration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferDuration"))    
+    transferDuration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferDuration"))
     
 
     def __post_init__(self):
@@ -95,7 +95,9 @@ class FareAttributes:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

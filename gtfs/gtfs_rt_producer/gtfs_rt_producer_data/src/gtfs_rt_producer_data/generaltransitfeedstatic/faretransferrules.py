@@ -30,7 +30,7 @@ class FareTransferRules:
     fromLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromLegGroupId"))
     toLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toLegGroupId"))
     duration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration"))
-    durationType: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="durationType"))    
+    durationType: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="durationType"))
     
 
     def __post_init__(self):
@@ -95,7 +95,9 @@ class FareTransferRules:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

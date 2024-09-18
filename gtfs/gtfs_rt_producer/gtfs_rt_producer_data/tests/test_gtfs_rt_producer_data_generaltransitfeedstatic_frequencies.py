@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.frequencies import Frequencies
 
+
 class Test_Frequencies(unittest.TestCase):
     """
     Test case for Frequencies
@@ -27,11 +28,11 @@ class Test_Frequencies(unittest.TestCase):
         Create instance of Frequencies for testing
         """
         instance = Frequencies(
-            tripId='gjwwztawlakcvtocfeuj',
-            startTime='qhtgrdwnmgalkeukpnmb',
-            endTime='kdznwysjddwjmqalgach',
-            headwaySecs=int(86),
-            exactTimes=int(49)
+            tripId='fjxtdzfttriezvoqfmew',
+            startTime='mmzcybolqguwsxjhuley',
+            endTime='pfumxgixdnkereykdcye',
+            headwaySecs=int(1),
+            exactTimes=int(35)
         )
         return instance
 
@@ -40,7 +41,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'gjwwztawlakcvtocfeuj'
+        test_value = 'fjxtdzfttriezvoqfmew'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -48,7 +49,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'qhtgrdwnmgalkeukpnmb'
+        test_value = 'mmzcybolqguwsxjhuley'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -56,7 +57,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'kdznwysjddwjmqalgach'
+        test_value = 'pfumxgixdnkereykdcye'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     
@@ -64,7 +65,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test headwaySecs property
         """
-        test_value = int(86)
+        test_value = int(1)
         self.instance.headwaySecs = test_value
         self.assertEqual(self.instance.headwaySecs, test_value)
     
@@ -72,7 +73,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test exactTimes property
         """
-        test_value = int(49)
+        test_value = int(35)
         self.instance.exactTimes = test_value
         self.assertEqual(self.instance.exactTimes, test_value)
     

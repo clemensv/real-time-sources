@@ -11,6 +11,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_serviceavailability import Test_ServiceAvailability
 
+
 class Test_Calendar(unittest.TestCase):
     """
     Test case for Calendar
@@ -28,7 +29,7 @@ class Test_Calendar(unittest.TestCase):
         Create instance of Calendar for testing
         """
         instance = Calendar(
-            serviceId='czyphiynzkpwlrdsgldm',
+            serviceId='rqflmkgyhljkdwmhwdsh',
             monday=Test_ServiceAvailability.create_instance(),
             tuesday=Test_ServiceAvailability.create_instance(),
             wednesday=Test_ServiceAvailability.create_instance(),
@@ -36,8 +37,8 @@ class Test_Calendar(unittest.TestCase):
             friday=Test_ServiceAvailability.create_instance(),
             saturday=Test_ServiceAvailability.create_instance(),
             sunday=Test_ServiceAvailability.create_instance(),
-            startDate='pwtkdkuiofwefjjejwcc',
-            endDate='wzuxxvltzzmtbfjqmeaf'
+            startDate='xxrjdcicjstmanvblymi',
+            endDate='fnyyuphjxgnburumytxm'
         )
         return instance
 
@@ -46,7 +47,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test serviceId property
         """
-        test_value = 'czyphiynzkpwlrdsgldm'
+        test_value = 'rqflmkgyhljkdwmhwdsh'
         self.instance.serviceId = test_value
         self.assertEqual(self.instance.serviceId, test_value)
     
@@ -110,7 +111,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test startDate property
         """
-        test_value = 'pwtkdkuiofwefjjejwcc'
+        test_value = 'xxrjdcicjstmanvblymi'
         self.instance.startDate = test_value
         self.assertEqual(self.instance.startDate, test_value)
     
@@ -118,7 +119,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test endDate property
         """
-        test_value = 'wzuxxvltzzmtbfjqmeaf'
+        test_value = 'fnyyuphjxgnburumytxm'
         self.instance.endDate = test_value
         self.assertEqual(self.instance.endDate, test_value)
     

@@ -20,7 +20,7 @@ class Water:
         longname (str): Full name of the water body (maximum 255 characters)."""
     
     shortname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
-    longname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))    
+    longname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
     
 
     def __post_init__(self):
@@ -80,7 +80,9 @@ class Water:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

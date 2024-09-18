@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.transfers import Transfers
 
+
 class Test_Transfers(unittest.TestCase):
     """
     Test case for Transfers
@@ -27,10 +28,10 @@ class Test_Transfers(unittest.TestCase):
         Create instance of Transfers for testing
         """
         instance = Transfers(
-            fromStopId='erxflrjofhxrdkrrmchc',
-            toStopId='tmmekkjhkpyhpddyfeua',
-            transferType=int(93),
-            minTransferTime=int(2)
+            fromStopId='zpvffixxsukcbbapkwaq',
+            toStopId='xkipwgtdzfkrvuctncdk',
+            transferType=int(98),
+            minTransferTime=int(77)
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test fromStopId property
         """
-        test_value = 'erxflrjofhxrdkrrmchc'
+        test_value = 'zpvffixxsukcbbapkwaq'
         self.instance.fromStopId = test_value
         self.assertEqual(self.instance.fromStopId, test_value)
     
@@ -47,7 +48,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test toStopId property
         """
-        test_value = 'tmmekkjhkpyhpddyfeua'
+        test_value = 'xkipwgtdzfkrvuctncdk'
         self.instance.toStopId = test_value
         self.assertEqual(self.instance.toStopId, test_value)
     
@@ -55,7 +56,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test transferType property
         """
-        test_value = int(93)
+        test_value = int(98)
         self.instance.transferType = test_value
         self.assertEqual(self.instance.transferType, test_value)
     
@@ -63,7 +64,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test minTransferTime property
         """
-        test_value = int(2)
+        test_value = int(77)
         self.instance.minTransferTime = test_value
         self.assertEqual(self.instance.minTransferTime, test_value)
     

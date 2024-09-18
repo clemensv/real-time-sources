@@ -1,6 +1,6 @@
 $scriptPath = Split-Path -Parent $PSCommandPath
-$jsonFiles = Get-ChildItem -Path "$scriptPath/gtfs-static" -Filter "*.avsc" | Select-Object -ExpandProperty FullName
-$gtfsRtFiles = Get-ChildItem -Path "$scriptPath" -Filter "gtfs-rt-*.avsc" | Select-Object -ExpandProperty FullName
+$jsonFiles = Get-ChildItem -Path "$scriptPath/../xreg/gtfs-static" -Filter "*.avsc" | Select-Object -ExpandProperty FullName
+$gtfsRtFiles = Get-ChildItem -Path "$scriptPath/../xreg/" -Filter "gtfs-rt-*.avsc" | Select-Object -ExpandProperty FullName
 $jsonFiles += $gtfsRtFiles
 $outputFile = ".schemas.avsc"
 

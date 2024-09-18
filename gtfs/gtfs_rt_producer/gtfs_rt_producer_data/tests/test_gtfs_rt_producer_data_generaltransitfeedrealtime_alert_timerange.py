@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 
+
 class Test_TimeRange(unittest.TestCase):
     """
     Test case for TimeRange
@@ -27,8 +28,8 @@ class Test_TimeRange(unittest.TestCase):
         Create instance of TimeRange for testing
         """
         instance = TimeRange(
-            start=int(66),
-            end=int(89)
+            start=int(39),
+            end=int(4)
         )
         return instance
 
@@ -37,7 +38,7 @@ class Test_TimeRange(unittest.TestCase):
         """
         Test start property
         """
-        test_value = int(66)
+        test_value = int(39)
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -45,7 +46,7 @@ class Test_TimeRange(unittest.TestCase):
         """
         Test end property
         """
-        test_value = int(89)
+        test_value = int(4)
         self.instance.end = test_value
         self.assertEqual(self.instance.end, test_value)
     

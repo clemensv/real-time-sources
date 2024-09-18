@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.locationgroups import LocationGroups
 
+
 class Test_LocationGroups(unittest.TestCase):
     """
     Test case for LocationGroups
@@ -27,10 +28,10 @@ class Test_LocationGroups(unittest.TestCase):
         Create instance of LocationGroups for testing
         """
         instance = LocationGroups(
-            locationGroupId='qyxeifbgyeukduqrumdg',
-            locationGroupName='btnwpvwlrbszisfiuals',
-            locationGroupDesc='ggwvrbpdguicauubqwcy',
-            locationGroupUrl='tbupmeyrjhnszlvgxjgu'
+            locationGroupId='uloebyrrwpxmcjldyhwd',
+            locationGroupName='dvrnopuzoaczdpncjatn',
+            locationGroupDesc='cqpqnvsnylvpmghokjfj',
+            locationGroupUrl='gczugwjrvtentfmhsond'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupId property
         """
-        test_value = 'qyxeifbgyeukduqrumdg'
+        test_value = 'uloebyrrwpxmcjldyhwd'
         self.instance.locationGroupId = test_value
         self.assertEqual(self.instance.locationGroupId, test_value)
     
@@ -47,7 +48,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupName property
         """
-        test_value = 'btnwpvwlrbszisfiuals'
+        test_value = 'dvrnopuzoaczdpncjatn'
         self.instance.locationGroupName = test_value
         self.assertEqual(self.instance.locationGroupName, test_value)
     
@@ -55,7 +56,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupDesc property
         """
-        test_value = 'ggwvrbpdguicauubqwcy'
+        test_value = 'cqpqnvsnylvpmghokjfj'
         self.instance.locationGroupDesc = test_value
         self.assertEqual(self.instance.locationGroupDesc, test_value)
     
@@ -63,7 +64,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupUrl property
         """
-        test_value = 'tbupmeyrjhnszlvgxjgu'
+        test_value = 'gczugwjrvtentfmhsond'
         self.instance.locationGroupUrl = test_value
         self.assertEqual(self.instance.locationGroupUrl, test_value)
     

@@ -8,8 +8,8 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedstatic.routetype import RouteType
 from gtfs_rt_producer_data.generaltransitfeedstatic.continuousdropoff import ContinuousDropOff
+from gtfs_rt_producer_data.generaltransitfeedstatic.routetype import RouteType
 from gtfs_rt_producer_data.generaltransitfeedstatic.continuouspickup import ContinuousPickup
 
 
@@ -45,7 +45,7 @@ class Routes:
     routeSortOrder: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="routeSortOrder"))
     continuousPickup: ContinuousPickup=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousPickup"))
     continuousDropOff: ContinuousDropOff=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="continuousDropOff"))
-    networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))    
+    networkId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkId"))
     
 
     def __post_init__(self):
@@ -116,7 +116,9 @@ class Routes:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
+            #pylint: disable=no-member
             result = self.to_json()
+            #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:

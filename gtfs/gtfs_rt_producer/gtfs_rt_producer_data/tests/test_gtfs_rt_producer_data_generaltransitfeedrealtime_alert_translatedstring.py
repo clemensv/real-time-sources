@@ -11,6 +11,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_alert_translatedstring_types_translation import Test_Translation
 
+
 class Test_TranslatedString(unittest.TestCase):
     """
     Test case for TranslatedString
@@ -28,7 +29,7 @@ class Test_TranslatedString(unittest.TestCase):
         Create instance of TranslatedString for testing
         """
         instance = TranslatedString(
-            translation=[Test_Translation.create_instance()]
+            translation=[Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance()]
         )
         return instance
 
@@ -37,7 +38,7 @@ class Test_TranslatedString(unittest.TestCase):
         """
         Test translation property
         """
-        test_value = [Test_Translation.create_instance()]
+        test_value = [Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance()]
         self.instance.translation = test_value
         self.assertEqual(self.instance.translation, test_value)
     

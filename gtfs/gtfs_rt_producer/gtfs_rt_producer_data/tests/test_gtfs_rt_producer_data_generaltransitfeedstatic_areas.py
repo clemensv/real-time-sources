@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.areas import Areas
 
+
 class Test_Areas(unittest.TestCase):
     """
     Test case for Areas
@@ -27,10 +28,10 @@ class Test_Areas(unittest.TestCase):
         Create instance of Areas for testing
         """
         instance = Areas(
-            areaId='vyjdvufplupeyguygkqr',
-            areaName='fqcppadxpulxkukvwark',
-            areaDesc='tdncnceliydnpajvhffo',
-            areaUrl='nsulfjbpbdahhneiucqh'
+            areaId='nvurooowwymloithehrg',
+            areaName='kfnkbhcowrazdtpkgldo',
+            areaDesc='jolqlthepdnfuidtfaee',
+            areaUrl='eatgptubkpcgscefipaf'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaId property
         """
-        test_value = 'vyjdvufplupeyguygkqr'
+        test_value = 'nvurooowwymloithehrg'
         self.instance.areaId = test_value
         self.assertEqual(self.instance.areaId, test_value)
     
@@ -47,7 +48,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaName property
         """
-        test_value = 'fqcppadxpulxkukvwark'
+        test_value = 'kfnkbhcowrazdtpkgldo'
         self.instance.areaName = test_value
         self.assertEqual(self.instance.areaName, test_value)
     
@@ -55,7 +56,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaDesc property
         """
-        test_value = 'tdncnceliydnpajvhffo'
+        test_value = 'jolqlthepdnfuidtfaee'
         self.instance.areaDesc = test_value
         self.assertEqual(self.instance.areaDesc, test_value)
     
@@ -63,7 +64,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaUrl property
         """
-        test_value = 'nsulfjbpbdahhneiucqh'
+        test_value = 'eatgptubkpcgscefipaf'
         self.instance.areaUrl = test_value
         self.assertEqual(self.instance.areaUrl, test_value)
     

@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.locationgeojson import LocationGeoJson
 
+
 class Test_LocationGeoJson(unittest.TestCase):
     """
     Test case for LocationGeoJson
@@ -27,9 +28,9 @@ class Test_LocationGeoJson(unittest.TestCase):
         Create instance of LocationGeoJson for testing
         """
         instance = LocationGeoJson(
-            locationGeoJsonId='pgmgsuvknfusdqwtssys',
-            locationGeoJsonType='wqajyiaiytfcioyxsbgp',
-            locationGeoJsonData='uopwefqzjuwqeijyppvj'
+            locationGeoJsonId='icwpipfnjxctujnacjnl',
+            locationGeoJsonType='aihywqwwmiujbepezyeo',
+            locationGeoJsonData='hlkiwmzmeshjdcklbtua'
         )
         return instance
 
@@ -38,7 +39,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonId property
         """
-        test_value = 'pgmgsuvknfusdqwtssys'
+        test_value = 'icwpipfnjxctujnacjnl'
         self.instance.locationGeoJsonId = test_value
         self.assertEqual(self.instance.locationGeoJsonId, test_value)
     
@@ -46,7 +47,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonType property
         """
-        test_value = 'wqajyiaiytfcioyxsbgp'
+        test_value = 'aihywqwwmiujbepezyeo'
         self.instance.locationGeoJsonType = test_value
         self.assertEqual(self.instance.locationGeoJsonType, test_value)
     
@@ -54,7 +55,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonData property
         """
-        test_value = 'uopwefqzjuwqeijyppvj'
+        test_value = 'hlkiwmzmeshjdcklbtua'
         self.instance.locationGeoJsonData = test_value
         self.assertEqual(self.instance.locationGeoJsonData, test_value)
     
