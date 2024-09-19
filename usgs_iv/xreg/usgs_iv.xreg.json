@@ -1,0 +1,403 @@
+{
+    "messagegroups": {
+        "USGS.InstantaneousValues": {
+            "id": "USGS.InstantaneousValues",
+            "messages": {
+                "USGS.InstantaneousValues.Streamflow": {
+                    "id": "USGS.InstantaneousValues.Streamflow",
+                    "name": "Streamflow",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.Streamflow"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Streamflow"
+                },
+                "USGS.InstantaneousValues.GageHeight": {
+                    "id": "USGS.InstantaneousValues.GageHeight",
+                    "name": "GageHeight",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.GageHeight"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GageHeight"
+                },
+                "USGS.InstantaneousValues.WaterTemperature": {
+                    "id": "USGS.InstantaneousValues.WaterTemperature",
+                    "name": "WaterTemperature",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.WaterTemperature"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterTemperature"
+                },
+                "USGS.InstantaneousValues.DissolvedOxygen": {
+                    "id": "USGS.InstantaneousValues.DissolvedOxygen",
+                    "name": "DissolvedOxygen",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.DissolvedOxygen"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.DissolvedOxygen"
+                },
+                "USGS.InstantaneousValues.pH": {
+                    "id": "USGS.InstantaneousValues.pH",
+                    "name": "pH",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.pH"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.pH"
+                },
+                "USGS.InstantaneousValues.SpecificConductance": {
+                    "id": "USGS.InstantaneousValues.SpecificConductance",
+                    "name": "SpecificConductance",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.SpecificConductance"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.SpecificConductance"
+                },
+                "USGS.InstantaneousValues.Turbidity": {
+                    "id": "USGS.InstantaneousValues.Turbidity",
+                    "name": "Turbidity",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.Turbidity"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Turbidity"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "USGS.InstantaneousValues": {
+            "id": "USGS.InstantaneousValues",
+            "schemas": {
+                "USGS.InstantaneousValues.Streamflow": {
+                    "id": "USGS.InstantaneousValues.Streamflow",
+                    "name": "Streamflow",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Streamflow",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "cubic feet per second",
+                                        "doc": "{\"description\": \"Discharge value.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.GageHeight": {
+                    "id": "USGS.InstantaneousValues.GageHeight",
+                    "name": "GageHeight",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "GageHeight",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "feet",
+                                        "doc": "{\"description\": \"Gage height value.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.WaterTemperature": {
+                    "id": "USGS.InstantaneousValues.WaterTemperature",
+                    "name": "WaterTemperature",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WaterTemperature",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "degrees Celsius",
+                                        "doc": "{\"description\": \"Water temperature value.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.DissolvedOxygen": {
+                    "id": "USGS.InstantaneousValues.DissolvedOxygen",
+                    "name": "DissolvedOxygen",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "DissolvedOxygen",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "milligrams per liter",
+                                        "doc": "{\"description\": \"Dissolved oxygen value.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.pH": {
+                    "id": "USGS.InstantaneousValues.pH",
+                    "name": "pH",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "pH",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "standard units",
+                                        "doc": "{\"description\": \"pH value.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.SpecificConductance": {
+                    "id": "USGS.InstantaneousValues.SpecificConductance",
+                    "name": "SpecificConductance",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "SpecificConductance",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "microsiemens per centimeter at 25 degrees Celsius",
+                                        "doc": "{\"description\": \"Specific conductance value.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.Turbidity": {
+                    "id": "USGS.InstantaneousValues.Turbidity",
+                    "name": "Turbidity",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Turbidity",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "Nephelometric Turbidity Units",
+                                        "doc": "{\"description\": \"Turbidity value.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
