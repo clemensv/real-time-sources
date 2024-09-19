@@ -1,5 +1,5 @@
 # __init.py__
-from . import pegelonline
+from .pegelonline import main
 
 if __name__ == "__main__":
-    pegelonline.main()
+    main()

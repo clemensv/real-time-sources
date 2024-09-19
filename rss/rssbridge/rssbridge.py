@@ -518,7 +518,7 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
     return config_dict
 
 
-async def main():
+async def run():
     """
     Main function to handle argparse commands.
     """
@@ -623,5 +623,8 @@ async def main():
     else:
         parser.print_help()
 
+def main():
+    asyncio.run(run())
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

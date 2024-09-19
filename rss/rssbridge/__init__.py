@@ -1,5 +1,5 @@
 # __init.py__
-from . import rssbridge
+from .rssbridge import  main
 
 if __name__ == "__main__":
-    rssbridge.main()
+    main()

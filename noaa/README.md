@@ -1,80 +1,105 @@
-# NOAA Data Poller
+# NOAA Data Poller Usage Guide
 
-The NOAA Data Poller is a tool designed to periodically fetch data from NOAA (National Oceanic and Atmospheric Administration) and send it to a specified Apache Kafka topic using SASL PLAIN authentication.
+## Overview
 
-## Features
+**NOAA Data Poller** is a tool designed to interact with the NOAA (National Oceanic and Atmospheric Administration) API to fetch real-time environmental data from various NOAA stations. The tool can retrieve data such as water levels, air temperature, wind, and predictions, and send this data to a Kafka topic using SASL PLAIN authentication, making it suitable for integration with systems like Microsoft Event Hubs or Microsoft Fabric Event Streams.
 
-- Polls various NOAA data products including water level, air temperature, wind, air pressure, water temperature, and more.
-- Sends the data to a Kafka topic in the form of CloudEvents.
-- Uses SASL PLAIN authentication for Kafka communication.
-- Stores the last polled times for each station and product to avoid duplicate data fetching.
-
-## Requirements
-
-- Python 3.8+
+## Key Features:
+- **NOAA Data Polling**: Retrieve data for various NOAA products, including water levels, predictions, air temperature, wind, and more.
+- **Station Support**: Poll data for all NOAA stations or specify a single station.
+- **Kafka Integration**: Send NOAA data to a Kafka topic using SASL PLAIN authentication.
 
 ## Installation
 
-Install the required Python packages using pip:
+The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
 
-```sh
-pip install requests confluent_kafka cloudevents
+### Installation Steps
+
+Once Python is installed, you can install the tool from the command line as follows:
+
+```bash
+pip install git+https://github.com/clemensv/real-time-sources#subdirectory=noaa
 ```
 
-## Usage
+If you clone the repository, you can install the tool as follows:
 
-The NOAA Data Poller can be run from the command line. Below are the available command-line arguments:
-
-```sh
-python noaa_data_poller.py --last-polled-file LAST_POLLED_FILE --kafka-bootstrap-servers KAFKA_BOOTSTRAP_SERVERS --kafka-topic KAFKA_TOPIC --sasl-username SASL_USERNAME --sasl-password SASL_PASSWORD --connection-string CONNECTION_STRING
+```bash
+git clone https://github.com/clemensv/real-time-sources.git
+cd real-time-sources/noaa
+pip install .
 ```
 
-### Arguments
+For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
 
-- `--last-polled-file`: File to store the last polled times for each station and product. Default is `~/.noaa_last_polled.json`.
+## How to Use
+
+After installation, the tool can be run using the `noaa` command. It supports several arguments for configuring the polling process and sending data to Kafka.
+
+The events sent to Kafka are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+
+### Command-Line Arguments
+
+- `--last-polled-file`: Path to the file where the last polled times for each station and product are stored. Defaults to `~/.noaa_last_polled.json`.
 - `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: Kafka topic to send messages to.
+- `--kafka-topic`: The Kafka topic to send messages to.
 - `--sasl-username`: Username for SASL PLAIN authentication.
 - `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Azure Event Hubs or Microsoft Fabric Event Streams connection string.
+- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
+- `--station`: (Optional) Station ID to poll data for. If not provided, data for all stations will be polled.
 
-### Example
+### Example Usage
 
-```sh
-python noaa_data_poller.py --last-polled-file ~/.noaa_last_polled.json --kafka-bootstrap-servers your.kafka.server:9093 --kafka-topic noaa-data --sasl-username your_username --sasl-password your_password
+#### Poll All Stations and Send Data to Kafka
+```bash
+noaa --connection-string "<your_connection_string>"
 ```
 
-## Environment Variables
+#### Poll a Specific Station and Send Data to Kafka
+```bash
+noaa --connection-string "<your_connection_string>" --station "<station_id>"
+```
 
-The tool can also be configured using environment variables as an alternative to command-line arguments.
+#### Using Kafka Parameters Directly
+If you do not want to use a connection string, you can provide the Kafka parameters directly:
 
-- `NOAA_LAST_POLLED_FILE`
-- `KAFKA_BOOTSTRAP_SERVERS`
-- `KAFKA_TOPIC`
-- `SASL_USERNAME`
-- `SASL_PASSWORD`
-- `CONNECTION_STRING`
+```bash
+noaa --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
+```
 
-## Logging and Error Handling
+### Connection String for Microsoft Event Hubs or Fabric Event Streams
 
-The tool logs progress and errors to the console. Ensure proper monitoring of logs for troubleshooting and maintenance.
+The tool supports providing a **connection string** for Microsoft Event Hubs or Microsoft Fabric Event Streams. This connection string simplifies the configuration by consolidating the Kafka bootstrap server, topic, username, and password.
 
+#### Format:
+```
+Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
+```
 
-##  Deploying as a Container to Azure Container Instances
+When provided, the connection string is parsed to extract the following details:
+- **Bootstrap Servers**: Derived from the `Endpoint` value.
+- **Kafka Topic**: Derived from the `EntityPath` value.
+- **SASL Username and Password**: The username is set to `'$ConnectionString'`, and the password is the entire connection string.
 
-The NOAA Data Poller can be deployed as a container to Azure Container Instances. 
+### Environment Variables
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template.json)
+The tool also supports the following environment variables to avoid passing them via the command line:
+- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
+- `NOAA_LAST_POLLED_FILE`: File to store the last polled times for each station and product.
 
-## Contributing
+## NOAA Products Supported
 
-Contributions are welcome. Please fork the repository and submit pull requests.
+The following NOAA products are supported by the tool:
+- **Water Level**: `water_level`
+- **Predictions**: `predictions`
+- **Air Temperature**: `air_temperature`
+- **Wind**: `wind`
+- **Air Pressure**: `air_pressure`
+- **Water Temperature**: `water_temperature`
+- **Conductivity**: `conductivity`
+- **Visibility**: `visibility`
+- **Humidity**: `humidity`
+- **Salinity**: `salinity`
 
-## License
+## Data Management
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Contact
-
-For any questions or issues, please open an issue in the repository or contact the maintainer.
-
+The tool polls NOAA data periodically and saves the last polled time in a file. This ensures that the tool only fetches new data in subsequent polling cycles.
