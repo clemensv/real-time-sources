@@ -65,3 +65,10 @@ can be used to retrieve real-time water level and current data from the German
 Federal Waterways and Shipping Administration (WSV) Pegelonline API. The data is
 available for over 3000 stations in Germany. The Pegelonline data is updated
 every 15 minutes, and the data volume is relatively low.
+
+### Nextbus - Public transport data
+
+The [Nextbus tool](nextbus/README.md) is a command line tool that can be used to
+retrieve real-time data from the [Nextbus](https://www.nextbus.com/) service and
+feed that data into Azure Event Hubs and Microsft Fabric Event Streams. The tool
+can also be used to query the Nextbus service interactively.

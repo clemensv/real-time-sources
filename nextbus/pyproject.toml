@@ -7,6 +7,7 @@ name = "nextbus"
 version = "0.1.0"
 description = "A project to fetch data from NextBus API"
 authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -14,5 +15,5 @@ requests = "^2.31.0"
 azure-eventhub = "^5.11.3"
 cloudevents = "^1.9.0"
 
-[build-system.scripts]
-nextbus-cli = "nextbus.nextbus:main"
+[tool.poetry.scripts]
+nextbus = "nextbus:main"

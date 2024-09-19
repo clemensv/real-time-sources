@@ -1,16 +1,35 @@
-# GTFS Real Time CLI tool
+# GTFS and GTFS-RT API Bridge Usage Guide
 
-The GTFS real time tool is a command line tool that can be used to retrieve real time data from GTFS Real Time endpoints and feed that data into Azure Evnt Hubs and Microsft Fabric Event Streams.
+## Overview
 
-GTFS Real Time is a standard for exchanging real time data about public transit systems. The standard is maintained by Google and is described [here](https://developers.google.com/transit/gtfs-realtime/).
+**GTFS and GTFS-RT API Bridge** is a tool that fetches GTFS (General Transit Feed Specification) Realtime and Static data from various transit agency sources, processes the data, and publishes it to Kafka topics using SASL PLAIN authentication. This tool can be integrated with systems like Microsoft Event Hubs or Microsoft Fabric Event Streams.
 
-## Prerequisites
+GTFS is a set of open data standards for public transportation schedules and
+associated geographic information. GTFS-RT is a real-time extension to GTFS that
+allows public transportation agencies to provide real-time updates about their
+fleet. Over 2000 transit agencies worldwide provide GTFS and GTFS-RT data.
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/). You also need to install the `git` command line tool. You can download `git` from [here](https://git-scm.com/downloads).
+The [Mobility Database](mobilitydatabase.org) provides a comprehensive list of GTFS
+and GTFS-RT feeds from around the world. 
+
+## Key Features:
+- **GTFS-RT Data Polling**: Poll GTFS Realtime feeds for vehicle positions, trip updates, and alerts.
+- **GTFS Static Data Processing**: Fetch GTFS static data (routes, stops, schedules) and send it to Kafka topics.
+- **Kafka Integration**: Supports sending data to Kafka topics using SASL PLAIN authentication.
 
 ## Installation
 
-Install the tool from the command line as follows:
+The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
+
+### Installation Steps
+
+Once Python is installed, you can install the tool from the command line as follows:
+
+```bash
+pip install git+https://github.com/clemensv/real-time-sources#subdirectory=gtfs
+```
+
+If you clone the repository, you can install the tool as follows:
 
 ```bash
 git clone https://github.com/clemensv/real-time-sources.git
@@ -18,91 +37,103 @@ cd real-time-sources/gtfs
 pip install .
 ```
 
-A package install will be available later.
+For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
 
-## Usage
+## How to Use
 
+After installation, the tool can be run using the `gtfs` command. It supports several arguments for configuring the polling process and sending data to Kafka.
+
+The events sent to Kafka are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+
+### `feed` Command-Line Arguments
+
+- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
+- `--kafka-topic`: The Kafka topic to send messages to.
+- `--sasl-username`: Username for SASL PLAIN authentication.
+- `--sasl-password`: Password for SASL PLAIN authentication.
+- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
+- `--gtfs-rt-urls`: URL(s) for GTFS Realtime feeds.
+- `--gtfs-urls`: URL(s) for GTFS Static schedule feeds.
+- `--mdb-source-id`: Mobility Database source ID for GTFS Realtime or Static feeds.
+- `--agency`: Agency ID to poll data for.
+- `--route`: (Optional) Route ID to poll data for. If not provided, data for all routes will be polled.
+- `--poll-interval`: Interval in seconds to wait between polling vehicle locations.
+- `--force-schedule-refresh`: Force a refresh of the GTFS schedule data.
+
+### Example Usage
+
+#### Poll GTFS-RT and Send Data to Kafka
 ```bash
-options:
-  -h, --help            show this help message and exit
-
-subcommands:
-  {feed,vehicle-locations}
-    feed                poll vehicle locations and submit to an Event Hub
-    vehicle-locations   get the vehicle locations for a route
-    
+gtfs feed --connection-string "<your_connection_string>"
 ```
 
-
-### Vehicle Locations
-
-This command returns the vehicle locations from the feed.
-
-* `--agency <name>`: the name of the agency (required)
-* `--gtfs-url <url>`: the URL of the agency's GTFS real-time endpoint (required)`
-* `--header <key> <value>`: extra HTTP header to use for the request to the GTFS real-time endpoint. Can be specified multiple times. (optional)
-
+#### Poll a Specific Route for Vehicle Data
 ```bash
-gtfs-cli vehicle-locations --agency <agency> --gtfs-url <url> [--header <key> <value>]
+gtfs feed --connection-string "<your_connection_string>" --route "<route_id>"
 ```
 
-The output is a list of vehicle locations, one per line. Each line contains the following information:
-
-* the vehicle id
-* the vehicle location as a latitude/longitude pair
-* the vehicle heading in degrees
-* the vehicle speed in km/h
-* a link to a map showing the vehicle location
-
-
-### Feed
-
-This command polls the GTFS real-time endpoint for vehicle locations and submits them to an Azure Event Hub
-instance or to a Microsoft Fabric Event Stream. The command requires the following parameters:
-
-* `--agency <name>`: the name of the agency (required)
-* `--gtfs-url <url>`: the URL of the agency's GTFS real-time endpoint (required)`
-* `--header <key> <value>`: extra HTTP header to use for the request to the GTFS real-time endpoint. Can be specified multiple times. (optional)
-* `--feed-connection-string <string>`: the connection string for the Azure Event Hub instance that receives the
-    vehicle locations. The connection string must include the `Send` policy. (required)
-* `--feed-event-hub-name <name>`: the name of the Event Hub instance that receives the vehicle locations (required)
-* `--poll-interval <num>`: the interval in seconds between polls of the GTFS feed service. The default is 10 seconds. (optional)
-
-The connection information for the Event Hub instances can be found in the Azure portal. The connection string
-is available in the "Shared access policies" section of the Event Hub instance. The Event Hub name is the name
-of the Event Hub instance. 
-
-The feed command will run until interrupted with `Ctrl-C`. 
+#### Using Kafka Parameters Directly
+If you do not want to use a connection string, you can provide the Kafka parameters directly:
 
 ```bash
-gtfs-cli feed --agency <agency> --route <route> --feed-connection-string <feed-connection-string> --feed-event-hub-name <feed-event-hub-name>
+gtfs feed --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
 ```
 
-### "Feed" Event Hub output
+### Connection String for Microsoft Event Hubs or Fabric Event Streams
 
-The output into the "feed" Event Hub are CloudEvent messages with the `type` attribute 
-set to `gtfs.vehiclePosition`. The `subject` attribute is set to `{agency_tag}/{vehicle_id}`.
+You can provide a **connection string** for Microsoft Event Hubs or Microsoft Fabric Event Streams to simplify the configuration by consolidating the Kafka bootstrap server, topic, username, and password.
 
-#### gtfs.vehiclePosition
+#### Format:
+```
+Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
+```
 
-The `data`of the CloudEvent message is a JSON object with the following attributes:
+### Additional Commands
 
-* `agency`: the agency tag 
-* `routeTag`: the route tag 
-* `dirTag`: the direction tag 
-* `id`: the vehicle id
-* `lat`: the vehicle location latitude
-* `lon`: the vehicle location as a longitude
-* `predictable`: whether the vehicle location is predictable
-* `heading`: the vehicle heading in degrees
-* `speedKmHr`: the vehicle speed in km/h
-* `timestamp`: the timestamp of the vehicle location
+#### Print GTFS Realtime Feed Data
+Prints the GTFS-RT data for a single request:
 
-## Public GTFS Real time feeds with vehicle positions
+```bash
+gtfs printfeed --gtfs-rt-url "<gtfs_rt_url>"
+```
 
-| Agency | URL | Documentation |
-|--------|-----|---------------|
-| New York City MTA Bus Time, US | http://gtfsrt.prod.obanyc.com/vehiclePositions?key={key} | https://bustime.mta.info/wiki/Developers/GTFSRt |
-| Catalunya FGC, ES |https://fgc.opendatasoft.com/explore/dataset/vehicle-positions-gtfs_realtime/files/d286964db2d107ecdb1344bf02f7b27b/download/ | https://data.europa.eu/data/datasets/https-analisi-transparenciacatalunya-cat-api-views-y6iv-pycv?locale=en |
-| Brest métropole, FR | https://www.data.gouv.fr/fr/datasets/r/d5d43e1e-af62-4811-8a4e-ca14ad4209c8 | https://data.europa.eu/data/datasets/55ffbe0888ee387348ccb97d?locale=en |
-| ALEOP (regional transport in Pays de la Loire), FR | https://www.data.gouv.fr/fr/datasets/r/b78c6d8a-3145-4deb-b68a-9b6fc9af7a89 | https://data.europa.eu/data/datasets/632b2c56696ec36c7f4811c8?locale=en |
+#### List Agencies
+Lists the agencies in the Mobility Database:
+
+```bash
+gtfs agencies
+```
+
+#### List Routes
+Lists the routes from a GTFS Static feed:
+
+```bash
+gtfs routes --gtfs-url "<gtfs_url>"
+```
+
+#### List Stops
+Lists the stops for a given route:
+
+```bash
+gtfs stops --route "<route_id>" --gtfs-url "<gtfs_url>"
+```
+
+## Environment Variables
+
+You can avoid passing parameters via the command line by setting the following environment variables:
+- `KAFKA_BOOTSTRAP_SERVERS`: List of Kafka bootstrap servers.
+- `KAFKA_TOPIC`: Kafka topic to send messages to.
+- `SASL_USERNAME`: Username for SASL PLAIN authentication.
+- `SASL_PASSWORD`: Password for SASL PLAIN authentication.
+- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
+- `GTFS_RT_URLS`: Comma-separated list of GTFS Realtime feed URLs.
+- `GTFS_URLS`: Comma-separated list of GTFS Static schedule feed URLs.
+- `MDB_SOURCE_ID`: Mobility Database source ID for the GTFS feed.
+- `AGENCY`: Agency ID to poll data for.
+
+### CloudEvents Mode
+You can specify the CloudEvents mode (either `structured` or `binary`) when sending data to Kafka:
+
+```bash
+gtfs feed --cloudevents-mode structured
+```

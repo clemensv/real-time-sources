@@ -1,5 +1,5 @@
 # __init.py__
-from . import nextbus
+from .nextbus import main
 
 if __name__ == "__main__":
-    nextbus.main()
+    main()

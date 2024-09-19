@@ -1,3 +1,24 @@
+"""
+This script generates documentation from an xRegistry JSON manifest file containing message groups and schema groups.
+
+Usage:
+    python printdoc.py <manifest_file> [--title <title>] [--description <description>]
+Arguments:
+    manifest_file: Path to the JSON manifest file.
+    --title: Title of the documentation (replaces "Table of Contents"). Default is "Table of Contents".
+    --description: Description added under the title. Default is an empty string.
+Functions:
+    main(): Parses command line arguments, reads the JSON manifest file, and generates documentation.
+    generate_documentation(data, title, description): Generates the documentation content based on the provided data.
+    process_message(msg, schemagroups): Processes individual messages and their metadata, generating documentation for attributes and schemas.
+    resolve_schema(schemaurl, schemagroups): Resolves the schema URL to retrieve the corresponding schema from the schema groups.
+    generate_anchor(name): Generates a markdown-compatible anchor from a given name.
+    print_schema(schema): Prints the schema documentation, including nested records and enums.
+    print_record(schema, records_to_document, enums_to_document, documented_records): Prints the documentation for a record schema.
+    get_field_type_str(field_type, records_to_document, enums_to_document): Returns a string representation of a field type, handling records and enums.
+    print_enum(enum_schema, documented_enums): Prints the documentation for an enum schema.
+"""
+
 import json
 import argparse
 

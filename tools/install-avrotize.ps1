@@ -1,3 +1,23 @@
+<#
+.SYNOPSIS
+    Installs Avrotize, a code generator for schematized data.
+
+.DESCRIPTION
+    This script automates the installation of Avrotize, which is utilized by various scripts within this repository. 
+    Avrotize helps in generating code based on defined schemas, facilitating the management and manipulation of structured data.
+
+.PARAMETER None
+    This script does not take any parameters.
+
+.EXAMPLE
+    Run the script to install Avrotize for use in your projects.
+
+.NOTES
+    Author: [Your Name]
+    Date: [Date]
+    Version: 1.0
+#>
+
 # Get the user's profile directory
 $userProfile = [System.Environment]::GetFolderPath('UserProfile')
 

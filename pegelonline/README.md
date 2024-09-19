@@ -1,64 +1,114 @@
-## Usage
+# PegelOnline Usage Guide
 
-To use the `pegelonline` tool, you can run the following commands directly from the command line:
+## Overview
 
-### 1. List All Stations
+**PegelOnline** is a tool designed to interact with the German WSV PegelOnline API to fetch water level data for rivers in Germany. The tool can retrieve water level data from individual stations, list available stations, or continuously poll the API to send water level updates to a Kafka topic.
 
-To retrieve a list of all available stations providing water level data:
+## Key Features:
+- **Water Level Fetching**: Retrieve current water level data for specific stations from the PegelOnline API.
+- **Station Listing**: List all available monitoring stations.
+- **Kafka Integration**: Send water level updates as CloudEvents to a Kafka topic, supporting Microsoft Event Hubs and Microsoft Fabric Event Streams.
+
+## Installation
+
+The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or get it from the Microsoft Store if you are on Windows.
+
+### Installation Steps
+
+Once Python is installed, you can install the tool from the command line as follows:
+
+```bash
+pip install git+https://github.com/clemensv/real-time-sources#subdirectory=pegelonline
+```
+
+If you clone the repository, you can install the tool as follows:
+
+```bash
+git clone https://github.com/clemensv/real-time-sources.git
+cd real-time-sources/pegelonline
+pip install .
+```
+
+For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+
+## How to Use
+
+After installation, the tool can be run using the `pegelonline` command. It supports multiple subcommands:
+- **List Stations (`list`)**: Fetch and display all available monitoring stations.
+- **Get Water Level (`level`)**: Retrieve the current water level for a specific station.
+- **Feed Stations (`feed`)**: Continuously poll PegelOnline API for water levels and send updates to a Kafka topic.
+
+### **List Stations (`list`)**
+
+Fetches and displays all available monitoring stations from the PegelOnline API.
+
+#### Example Usage:
 
 ```bash
 pegelonline list
 ```
 
-This command will output a list of all stations, each with its unique identifier (`uuid`) and short name.
+### **Get Water Level (`level`)**
 
-### 2. Fetch Water Level for a Specific Station
+Retrieves the current water level for the specified station.
 
-To get the current water level for a specific station, use the station's short name:
+- `shortname`: The short name of the station to query.
 
-```bash
-pegelonline level <shortname>
-```
-
-Replace `<shortname>` with the desired station's short name (e.g., `KOLN` for the Cologne station).
-
-**Example:**
+#### Example Usage:
 
 ```bash
-pegelonline level KOLN
+pegelonline level <station_shortname>
 ```
 
-This will display the current water level measurement in a formatted JSON output.
+### **Feed Stations (`feed`)**
 
-### 3. Feed Water Level Updates to a Kafka Topic or Event Hub
+Polls the PegelOnline API for water level measurements and sends them as
+CloudEvents to a Kafka topic. The events are formatted using CloudEvents
+structured JSON format and described in [EVENTS.md](EVENTS.md).
 
-To continuously stream water level updates to a specified Kafka topic or Microsoft Event Hub:
+- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
+- `--kafka-topic`: Kafka topic to send messages to.
+- `--sasl-username`: Username for SASL PLAIN authentication.
+- `--sasl-password`: Password for SASL PLAIN authentication.
+- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream [connection string](#connection-string-for-microsoft-event-hubs-or-fabric-event-streams) (overrides other Kafka parameters).
+- `--polling-interval`: Interval in seconds between API polling requests
+  (default is 60 seconds; the data is for most stations is only updated once
+  every 6 minutes, but different for each station).
+
+#### Example Usage:
 
 ```bash
-pegelonline feed --kafka-bootstrap-servers <servers> --kafka-topic <topic> --sasl-username <username> --sasl-password <password> --polling-interval <interval>
+pegelonline feed --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>" --polling-interval 60
 ```
 
-Alternatively, you can use a connection string for Microsoft Event Hub:
+Alternatively, using a connection string for Microsoft Event Hubs or Microsoft Fabric Event Streams:
 
 ```bash
-pegelonline feed --connection-string <connection_str> --polling-interval <interval>
+pegelonline feed --connection-string "<your_connection_string>" --polling-interval 60
 ```
 
-#### Options
+### Connection String for Microsoft Event Hubs or Fabric Event Streams
 
-- `--kafka-bootstrap-servers <servers>`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic <topic>`: Kafka topic to send messages to.
-- `--sasl-username <username>`: Username for SASL PLAIN authentication.
-- `--sasl-password <password>`: Password for SASL PLAIN authentication.
-- `--connection-string <connection_str>`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `--polling-interval <interval>`: Polling interval in seconds (default is 60 seconds).
+The connection string format is as follows:
 
-#### Example
-
-To stream updates to a Kafka topic:
-
-```bash
-pegelonline feed --kafka-bootstrap-servers "your.kafka.server:9092" --kafka-topic "your-kafka-topic" --sasl-username "your-username" --sasl-password "your-password" --polling-interval 30
+```
+Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
 ```
 
-This command will continuously fetch water level data from all stations and send updates to the specified Kafka topic or Event Hub at the defined polling interval.
+When provided, the connection string is parsed to extract the Kafka configuration parameters:
+- **Bootstrap Servers**: Derived from the `Endpoint` value.
+- **Kafka Topic**: Derived from the `EntityPath` value.
+- **SASL Username and Password**: The username is set to `'$ConnectionString'`, and the password is the entire connection string.
+
+### Environment Variables
+The tool supports the following environment variables to avoid passing them via the command line:
+- `KAFKA_BOOTSTRAP_SERVERS`: Kafka bootstrap servers (comma-separated list).
+- `KAFKA_TOPIC`: Kafka topic for publishing.
+- `SASL_USERNAME`: SASL username for Kafka authentication.
+- `SASL_PASSWORD`: SASL password for Kafka authentication.
+- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
+- `POLLING_INTERVAL`: Polling interval in seconds.
+
+## State Management
+
+The tool handles state internally for efficient API polling and sending updates.
