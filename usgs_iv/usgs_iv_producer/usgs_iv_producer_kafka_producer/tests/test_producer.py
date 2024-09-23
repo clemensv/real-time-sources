@@ -18,7 +18,10 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
+from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer
+from test_usgs_iv_producer_data_usgs_sites_site import Test_Site
 from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_precipitation import Test_Precipitation
 from test_usgs_iv_producer_data_usgs_instantaneousvalues_streamflow import Test_Streamflow
 from test_usgs_iv_producer_data_usgs_instantaneousvalues_gageheight import Test_GageHeight
 from test_usgs_iv_producer_data_usgs_instantaneousvalues_watertemperature import Test_WaterTemperature
@@ -59,6 +62,70 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
     return ce
 
 @pytest.mark.asyncio
+async def test_usgs_sites_usgssitessite(kafka_emulator):
+    """Test the USGSSitesSite event from the USGS.Sites message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_group',
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    async def on_event():
+        while True:
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "USGS.Sites.Site":
+                return True
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = USGSSitesEventProducer(kafka_producer, topic, 'binary')
+    event_data = Test_Site.create_instance()
+    await producer_instance.send_usgs_sites_site(_source_uri = 'test', data = event_data)
+
+    assert await asyncio.wait_for(on_event(), timeout=10)
+    consumer.close()
+
+@pytest.mark.asyncio
+async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesprecipitation(kafka_emulator):
+    """Test the USGSInstantaneousValuesPrecipitation event from the USGS.InstantaneousValues message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_group',
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    async def on_event():
+        while True:
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "USGS.InstantaneousValues.Precipitation":
+                return True
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
+    event_data = Test_Precipitation.create_instance()
+    await producer_instance.send_usgs_instantaneous_values_precipitation(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+
+    assert await asyncio.wait_for(on_event(), timeout=10)
+    consumer.close()
+
+@pytest.mark.asyncio
 async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_emulator):
     """Test the USGSInstantaneousValuesStreamflow event from the USGS.InstantaneousValues message group"""
 
@@ -85,7 +152,7 @@ async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_Streamflow.create_instance()
-    await producer_instance.send_usgs_instantaneous_values_streamflow(data = event_data)
+    await producer_instance.send_usgs_instantaneous_values_streamflow(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
@@ -117,7 +184,7 @@ async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgageheight(kafka_
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_GageHeight.create_instance()
-    await producer_instance.send_usgs_instantaneous_values_gage_height(data = event_data)
+    await producer_instance.send_usgs_instantaneous_values_gage_height(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
@@ -149,7 +216,7 @@ async def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatertemperature(
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_WaterTemperature.create_instance()
-    await producer_instance.send_usgs_instantaneous_values_water_temperature(data = event_data)
+    await producer_instance.send_usgs_instantaneous_values_water_temperature(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
@@ -181,7 +248,7 @@ async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesdissolvedoxygen(k
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_DissolvedOxygen.create_instance()
-    await producer_instance.send_usgs_instantaneous_values_dissolved_oxygen(data = event_data)
+    await producer_instance.send_usgs_instantaneous_values_dissolved_oxygen(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
@@ -213,7 +280,7 @@ async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesph(kafka_emulator
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_PH.create_instance()
-    await producer_instance.send_usgs_instantaneous_values_p_h(data = event_data)
+    await producer_instance.send_usgs_instantaneous_values_p_h(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
@@ -245,7 +312,7 @@ async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesspecificconductan
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_SpecificConductance.create_instance()
-    await producer_instance.send_usgs_instantaneous_values_specific_conductance(data = event_data)
+    await producer_instance.send_usgs_instantaneous_values_specific_conductance(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()
@@ -277,7 +344,7 @@ async def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidity(kafka_e
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_Turbidity.create_instance()
-    await producer_instance.send_usgs_instantaneous_values_turbidity(data = event_data)
+    await producer_instance.send_usgs_instantaneous_values_turbidity(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()

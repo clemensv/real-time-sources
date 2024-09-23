@@ -7,7 +7,8 @@ and CloudEvents.
 ## Table of Contents
 1. [Overview](#overview)
 2. [Generated Event Dispatchers](#generated-event-dispatchers)
-    - USGSInstantaneousValuesEventDispatcher
+    - USGSSitesEventDispatcher,
+    USGSInstantaneousValuesEventDispatcher
 
 3. [Internals](#internals)
     - [EventProcessorRunner](#eventprocessorrunner)
@@ -21,6 +22,81 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 solution for event-driven applications.
 
 ## Generated Event Dispatchers
+
+
+
+### USGSSitesEventDispatcher
+
+`USGSSitesEventDispatcher` handles events for the USGS.Sites message group.
+
+#### Methods:
+
+##### `__init__`:
+
+```python
+__init__(self)-> None
+```
+
+Initializes the dispatcher.
+
+##### `create_processor`:
+
+```python
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+```
+
+Creates an `EventProcessorRunner`.
+
+Args:
+- `bootstrap_servers`: The Kafka bootstrap servers.
+- `group_id`: The consumer group ID.
+- `topics`: The list of topics to subscribe to.
+
+##### `add_consumer`:
+
+```python
+add_consumer(self, consumer: KafkaConsumer)
+```
+
+Adds a Kafka consumer to the dispatcher.
+
+Args:
+- `consumer`: The Kafka consumer.
+
+#### Event Handlers
+
+The USGSSitesEventDispatcher defines the following event handler hooks.
+
+
+##### `usgs_sites_site_async`
+
+```python
+usgs_sites_site_async:  Callable[[ConsumerRecord, CloudEvent, Site], Awaitable[None]]
+```
+
+Asynchronous handler hook for `USGS.Sites.Site`:
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `usgs_iv_producer_data.usgs.sites.Site`.
+
+Example:
+
+```python
+async def usgs_sites_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+    # Process the event data
+    await some_processing_function(record, cloud_event, data)
+```
+
+The handler function is then assigned to the event dispatcher for the message group. The event dispatcher is responsible
+for calling the appropriate handler function when a message is received. Example:
+
+```python
+usgs_sites_dispatcher.usgs_sites_site_async = usgs_sites_site_event
+```
+
 
 
 
@@ -65,6 +141,38 @@ Args:
 #### Event Handlers
 
 The USGSInstantaneousValuesEventDispatcher defines the following event handler hooks.
+
+
+##### `usgs_instantaneous_values_precipitation_async`
+
+```python
+usgs_instantaneous_values_precipitation_async:  Callable[[ConsumerRecord, CloudEvent, Precipitation], Awaitable[None]]
+```
+
+Asynchronous handler hook for `USGS.InstantaneousValues.Precipitation`:
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `usgs_iv_producer_data.usgs.instantaneousvalues.Precipitation`.
+
+Example:
+
+```python
+async def usgs_instantaneous_values_precipitation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Precipitation) -> None:
+    # Process the event data
+    await some_processing_function(record, cloud_event, data)
+```
+
+The handler function is then assigned to the event dispatcher for the message group. The event dispatcher is responsible
+for calling the appropriate handler function when a message is received. Example:
+
+```python
+usgs_instantaneous_values_dispatcher.usgs_instantaneous_values_precipitation_async =
+usgs_instantaneous_values_precipitation_event
+```
 
 
 ##### `usgs_instantaneous_values_streamflow_async`

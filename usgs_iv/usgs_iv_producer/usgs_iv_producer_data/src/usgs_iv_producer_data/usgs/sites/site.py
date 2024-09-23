@@ -1,4 +1,4 @@
-""" DissolvedOxygen dataclass. """
+""" Site dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -12,36 +12,51 @@ import json
 
 @dataclasses_json.dataclass_json
 @dataclasses.dataclass
-class DissolvedOxygen:
+class Site:
     """
-    A DissolvedOxygen record.
+    A Site record.
     Attributes:
-        site_no (str): {"description": "USGS site number."}
-        datetime (str): {"description": "Date and time of the measurement in ISO-8601 format."}
-        value (float): {"description": "Dissolved oxygen value."}
-        qualifiers (typing.List[str]): {"description": "Qualifiers for the measurement (e.g., 'P' for provisional)."}
-        parameter_cd (str): {"description": "Parameter code."}
-        timeseries_cd (str): {"description": "Timeseries code."}"""
+        agency_cd (str): Agency code.
+        site_no (str): USGS site number.
+        station_nm (str): Station name.
+        site_tp_cd (str): Site type code.
+        dec_lat_va (typing.Optional[float]): Decimal latitude.
+        dec_long_va (typing.Optional[float]): Decimal longitude.
+        coord_acy_cd (str): Coordinate accuracy code.
+        dec_coord_datum_cd (str): Decimal coordinate datum code.
+        alt_va (typing.Optional[float]): Altitude.
+        alt_acy_va (typing.Optional[float]): Altitude accuracy.
+        alt_datum_cd (str): Altitude datum code."""
     
+    agency_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency_cd"))
     site_no: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_no"))
-    datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="datetime"))
-    value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    qualifiers: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="qualifiers"))
-    parameter_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_cd"))
-    timeseries_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeseries_cd"))
+    station_nm: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_nm"))
+    site_tp_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_tp_cd"))
+    dec_lat_va: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dec_lat_va"))
+    dec_long_va: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dec_long_va"))
+    coord_acy_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="coord_acy_cd"))
+    dec_coord_datum_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dec_coord_datum_cd"))
+    alt_va: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alt_va"))
+    alt_acy_va: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alt_acy_va"))
+    alt_datum_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alt_datum_cd"))
     
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
+        self.agency_cd=str(self.agency_cd)
         self.site_no=str(self.site_no)
-        self.datetime=str(self.datetime)
-        self.value=float(self.value)
-        self.qualifiers=self.qualifiers if isinstance(self.qualifiers, list) else [str(v) for v in self.qualifiers] if self.qualifiers else None
-        self.parameter_cd=str(self.parameter_cd)
-        self.timeseries_cd=str(self.timeseries_cd)
+        self.station_nm=str(self.station_nm)
+        self.site_tp_cd=str(self.site_tp_cd)
+        self.dec_lat_va=float(self.dec_lat_va) if self.dec_lat_va else None
+        self.dec_long_va=float(self.dec_long_va) if self.dec_long_va else None
+        self.coord_acy_cd=str(self.coord_acy_cd)
+        self.dec_coord_datum_cd=str(self.dec_coord_datum_cd)
+        self.alt_va=float(self.alt_va) if self.alt_va else None
+        self.alt_acy_va=float(self.alt_acy_va) if self.alt_acy_va else None
+        self.alt_datum_cd=str(self.alt_datum_cd)
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'DissolvedOxygen':
+    def from_serializer_dict(cls, data: dict) -> 'Site':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -108,7 +123,7 @@ class DissolvedOxygen:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['DissolvedOxygen']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Site']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -142,7 +157,7 @@ class DissolvedOxygen:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return DissolvedOxygen.from_serializer_dict(_record)
+                return Site.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 

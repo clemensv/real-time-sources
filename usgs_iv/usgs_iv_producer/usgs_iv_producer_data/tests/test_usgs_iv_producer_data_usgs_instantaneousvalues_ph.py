@@ -28,10 +28,12 @@ class Test_PH(unittest.TestCase):
         Create instance of PH for testing
         """
         instance = PH(
-            site_no='qbbrrzkyfrbbmbglaiaf',
-            datetime='bwzsjrddlwavglsavbun',
-            value=float(72.78649726311477),
-            qualifiers=['xemwundyeptusazeokdf', 'qezhoujvzhuxfxsnpmbv', 'rvrunfhvhnqzfqikphzk']
+            site_no='vvnxvrwucoxqcwdwzzls',
+            datetime='tqcebufefnsqsfaidhky',
+            value=float(97.94436822937325),
+            qualifiers=['xbcnxqhglyxojxdwhpcl', 'liecpkdvgitunfacbjvv', 'gcqcijywrdvhsucneied'],
+            parameter_cd='oquasokbneiwriekjjow',
+            timeseries_cd='ijohalsbyzqtnqdklezm'
         )
         return instance
 
@@ -40,7 +42,7 @@ class Test_PH(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'qbbrrzkyfrbbmbglaiaf'
+        test_value = 'vvnxvrwucoxqcwdwzzls'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -48,7 +50,7 @@ class Test_PH(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'bwzsjrddlwavglsavbun'
+        test_value = 'tqcebufefnsqsfaidhky'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -56,7 +58,7 @@ class Test_PH(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(72.78649726311477)
+        test_value = float(97.94436822937325)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +66,23 @@ class Test_PH(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['xemwundyeptusazeokdf', 'qezhoujvzhuxfxsnpmbv', 'rvrunfhvhnqzfqikphzk']
+        test_value = ['xbcnxqhglyxojxdwhpcl', 'liecpkdvgitunfacbjvv', 'gcqcijywrdvhsucneied']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
+    
+    def test_parameter_cd_property(self):
+        """
+        Test parameter_cd property
+        """
+        test_value = 'oquasokbneiwriekjjow'
+        self.instance.parameter_cd = test_value
+        self.assertEqual(self.instance.parameter_cd, test_value)
+    
+    def test_timeseries_cd_property(self):
+        """
+        Test timeseries_cd property
+        """
+        test_value = 'ijohalsbyzqtnqdklezm'
+        self.instance.timeseries_cd = test_value
+        self.assertEqual(self.instance.timeseries_cd, test_value)
     

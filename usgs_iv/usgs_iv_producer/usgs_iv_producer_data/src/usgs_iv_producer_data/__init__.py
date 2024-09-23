@@ -1,3 +1,3 @@
-from .usgs import instantaneousvalues
+from .usgs import instantaneousvalues, sites
 
-__all__ = ["instantaneousvalues"]
+__all__ = ["instantaneousvalues", "sites"]

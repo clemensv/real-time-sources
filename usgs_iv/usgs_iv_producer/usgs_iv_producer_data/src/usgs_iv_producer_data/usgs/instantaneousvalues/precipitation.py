@@ -1,4 +1,4 @@
-""" DissolvedOxygen dataclass. """
+""" Precipitation dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -12,13 +12,13 @@ import json
 
 @dataclasses_json.dataclass_json
 @dataclasses.dataclass
-class DissolvedOxygen:
+class Precipitation:
     """
-    A DissolvedOxygen record.
+    A Precipitation record.
     Attributes:
         site_no (str): {"description": "USGS site number."}
         datetime (str): {"description": "Date and time of the measurement in ISO-8601 format."}
-        value (float): {"description": "Dissolved oxygen value."}
+        value (float): {"description": "Precipitation value, inches."}
         qualifiers (typing.List[str]): {"description": "Qualifiers for the measurement (e.g., 'P' for provisional)."}
         parameter_cd (str): {"description": "Parameter code."}
         timeseries_cd (str): {"description": "Timeseries code."}"""
@@ -41,7 +41,7 @@ class DissolvedOxygen:
         self.timeseries_cd=str(self.timeseries_cd)
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'DissolvedOxygen':
+    def from_serializer_dict(cls, data: dict) -> 'Precipitation':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -108,7 +108,7 @@ class DissolvedOxygen:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['DissolvedOxygen']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Precipitation']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -142,7 +142,7 @@ class DissolvedOxygen:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return DissolvedOxygen.from_serializer_dict(_record)
+                return Precipitation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 

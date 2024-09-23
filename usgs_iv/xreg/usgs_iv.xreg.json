@@ -1,8 +1,53 @@
 {
     "messagegroups": {
+        "USGS.Sites": {
+            "id": "USGS.Sites",
+            "messages": {
+                "USGS.Sites.Site": {
+                    "id": "USGS.Sites.Site",
+                    "name": "Site",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.Sites.Site"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.Site"
+                }
+            }
+        },
         "USGS.InstantaneousValues": {
             "id": "USGS.InstantaneousValues",
             "messages": {
+                "USGS.InstantaneousValues.Precipitation": {
+                    "id": "USGS.InstantaneousValues.Precipitation",
+                    "name": "Precipitation",
+                    "format": "CloudEvents/1.0",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.Precipitation"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Precipitation"
+                },
                 "USGS.InstantaneousValues.Streamflow": {
                     "id": "USGS.InstantaneousValues.Streamflow",
                     "name": "Streamflow",
@@ -10,6 +55,18 @@
                     "metadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.Streamflow"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
@@ -22,6 +79,18 @@
                     "metadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.GageHeight"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
@@ -34,6 +103,18 @@
                     "metadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.WaterTemperature"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
@@ -46,6 +127,18 @@
                     "metadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.DissolvedOxygen"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
@@ -58,6 +151,18 @@
                     "metadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.pH"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
@@ -70,6 +175,18 @@
                     "metadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.SpecificConductance"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
@@ -82,6 +199,18 @@
                     "metadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.Turbidity"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
@@ -91,9 +220,158 @@
         }
     },
     "schemagroups": {
+        "USGS.Sites": {
+            "id": "USGS.Sites",
+            "schemas": {
+                "USGS.Sites.Site": {
+                    "id": "USGS.Sites.Site",
+                    "name": "Site",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Site",
+                                "namespace": "USGS.Sites",
+                                "fields": [
+                                    {
+                                        "name": "agency_cd",
+                                        "doc": "Agency code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "site_no",
+                                        "doc": "USGS site number.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "station_nm",
+                                        "doc": "Station name.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "site_tp_cd",
+                                        "doc": "Site type code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "dec_lat_va",
+                                        "doc": "Decimal latitude.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "dec_long_va",
+                                        "doc": "Decimal longitude.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "coord_acy_cd",
+                                        "doc": "Coordinate accuracy code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "dec_coord_datum_cd",
+                                        "doc": "Decimal coordinate datum code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "alt_va",
+                                        "doc": "Altitude.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "alt_acy_va",
+                                        "doc": "Altitude accuracy.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "alt_datum_cd",
+                                        "doc": "Altitude datum code.",
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "USGS.InstantaneousValues": {
             "id": "USGS.InstantaneousValues",
             "schemas": {
+                "USGS.InstantaneousValues.Precipitation": {
+                    "id": "USGS.InstantaneousValues.Precipitation",
+                    "name": "Precipitation",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Precipitation",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": "double",
+                                        "unit": "inches",
+                                        "doc": "{\"description\": \"Precipitation value, inches.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ],
+                                "namespace": "USGS.InstantaneousValues"
+                            }
+                        }
+                    }
+                },
                 "USGS.InstantaneousValues.Streamflow": {
                     "id": "USGS.InstantaneousValues.Streamflow",
                     "name": "Streamflow",
@@ -131,6 +409,16 @@
                                             "items": "string"
                                         },
                                         "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
                                     }
                                 ],
                                 "namespace": "USGS.InstantaneousValues"
@@ -175,6 +463,16 @@
                                             "items": "string"
                                         },
                                         "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
                                     }
                                 ],
                                 "namespace": "USGS.InstantaneousValues"
@@ -218,6 +516,16 @@
                                             "items": "string"
                                         },
                                         "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
                                     }
                                 ],
                                 "namespace": "USGS.InstantaneousValues"
@@ -261,6 +569,16 @@
                                             "items": "string"
                                         },
                                         "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
                                     }
                                 ],
                                 "namespace": "USGS.InstantaneousValues"
@@ -304,6 +622,16 @@
                                             "items": "string"
                                         },
                                         "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
                                     }
                                 ],
                                 "namespace": "USGS.InstantaneousValues"
@@ -347,6 +675,16 @@
                                             "items": "string"
                                         },
                                         "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
                                     }
                                 ],
                                 "namespace": "USGS.InstantaneousValues"
@@ -390,6 +728,16 @@
                                             "items": "string"
                                         },
                                         "doc": "{\"description\": \"Qualifiers for the measurement (e.g., 'P' for provisional).\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
                                     }
                                 ],
                                 "namespace": "USGS.InstantaneousValues"

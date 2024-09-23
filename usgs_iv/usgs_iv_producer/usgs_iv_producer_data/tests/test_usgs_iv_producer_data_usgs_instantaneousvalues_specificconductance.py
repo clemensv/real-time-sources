@@ -28,10 +28,12 @@ class Test_SpecificConductance(unittest.TestCase):
         Create instance of SpecificConductance for testing
         """
         instance = SpecificConductance(
-            site_no='doouzignguppbtouffou',
-            datetime='xadfnspaaxxbwwbzowjo',
-            value=float(59.691412564255245),
-            qualifiers=['kqmcmxyfpdcmoszdigrm', 'kmzpmlvukinakheyuhvc', 'hdvhcshrunsdpmvtyxbo', 'rxrcketlfagjgmrphjiz', 'usrpwmnwfetqmujeqaha']
+            site_no='egsrqikmvfyvglnnoyup',
+            datetime='sojckvxkgocniehdbipl',
+            value=float(14.602723832195874),
+            qualifiers=['qhvrcmawfxnvamqdtbtk'],
+            parameter_cd='ngmtpusoilvrpvdzqkbl',
+            timeseries_cd='izsehkjhcxhpyaztqfwz'
         )
         return instance
 
@@ -40,7 +42,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'doouzignguppbtouffou'
+        test_value = 'egsrqikmvfyvglnnoyup'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -48,7 +50,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'xadfnspaaxxbwwbzowjo'
+        test_value = 'sojckvxkgocniehdbipl'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -56,7 +58,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(59.691412564255245)
+        test_value = float(14.602723832195874)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +66,23 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['kqmcmxyfpdcmoszdigrm', 'kmzpmlvukinakheyuhvc', 'hdvhcshrunsdpmvtyxbo', 'rxrcketlfagjgmrphjiz', 'usrpwmnwfetqmujeqaha']
+        test_value = ['qhvrcmawfxnvamqdtbtk']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
+    
+    def test_parameter_cd_property(self):
+        """
+        Test parameter_cd property
+        """
+        test_value = 'ngmtpusoilvrpvdzqkbl'
+        self.instance.parameter_cd = test_value
+        self.assertEqual(self.instance.parameter_cd, test_value)
+    
+    def test_timeseries_cd_property(self):
+        """
+        Test timeseries_cd property
+        """
+        test_value = 'izsehkjhcxhpyaztqfwz'
+        self.instance.timeseries_cd = test_value
+        self.assertEqual(self.instance.timeseries_cd, test_value)
     

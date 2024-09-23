@@ -28,10 +28,12 @@ class Test_DissolvedOxygen(unittest.TestCase):
         Create instance of DissolvedOxygen for testing
         """
         instance = DissolvedOxygen(
-            site_no='mfgahugvyphcgvswieym',
-            datetime='vcrlxnmqaqbomoxkdknt',
-            value=float(60.46263124089608),
-            qualifiers=['nwsqyvjyqxthxuedlbta', 'vmtnccagmjfzkfdjsiyn', 'xpsvhjzaiighlckbkwnv']
+            site_no='xchjehawoqnvmxdblqsa',
+            datetime='ppjoawcsjxrehbqkejjr',
+            value=float(30.938445102492473),
+            qualifiers=['kjaerarmlszlqanqxwnz', 'jeeioofgbonfzblyanec'],
+            parameter_cd='dosdokmsuwbxlssuywmm',
+            timeseries_cd='tmfiuvicaywiegnpypri'
         )
         return instance
 
@@ -40,7 +42,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'mfgahugvyphcgvswieym'
+        test_value = 'xchjehawoqnvmxdblqsa'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -48,7 +50,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'vcrlxnmqaqbomoxkdknt'
+        test_value = 'ppjoawcsjxrehbqkejjr'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -56,7 +58,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(60.46263124089608)
+        test_value = float(30.938445102492473)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +66,23 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['nwsqyvjyqxthxuedlbta', 'vmtnccagmjfzkfdjsiyn', 'xpsvhjzaiighlckbkwnv']
+        test_value = ['kjaerarmlszlqanqxwnz', 'jeeioofgbonfzblyanec']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
+    
+    def test_parameter_cd_property(self):
+        """
+        Test parameter_cd property
+        """
+        test_value = 'dosdokmsuwbxlssuywmm'
+        self.instance.parameter_cd = test_value
+        self.assertEqual(self.instance.parameter_cd, test_value)
+    
+    def test_timeseries_cd_property(self):
+        """
+        Test timeseries_cd property
+        """
+        test_value = 'tmfiuvicaywiegnpypri'
+        self.instance.timeseries_cd = test_value
+        self.assertEqual(self.instance.timeseries_cd, test_value)
     
