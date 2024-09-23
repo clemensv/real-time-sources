@@ -19,12 +19,16 @@ class SpecificConductance:
         site_no (str): {"description": "USGS site number."}
         datetime (str): {"description": "Date and time of the measurement in ISO-8601 format."}
         value (float): {"description": "Specific conductance value."}
-        qualifiers (typing.List[str]): {"description": "Qualifiers for the measurement (e.g., 'P' for provisional)."}"""
+        qualifiers (typing.List[str]): {"description": "Qualifiers for the measurement (e.g., 'P' for provisional)."}
+        parameter_cd (str): {"description": "Parameter code."}
+        timeseries_cd (str): {"description": "Timeseries code."}"""
     
     site_no: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_no"))
     datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="datetime"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     qualifiers: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="qualifiers"))
+    parameter_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_cd"))
+    timeseries_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeseries_cd"))
     
 
     def __post_init__(self):
@@ -33,6 +37,8 @@ class SpecificConductance:
         self.datetime=str(self.datetime)
         self.value=float(self.value)
         self.qualifiers=self.qualifiers if isinstance(self.qualifiers, list) else [str(v) for v in self.qualifiers] if self.qualifiers else None
+        self.parameter_cd=str(self.parameter_cd)
+        self.timeseries_cd=str(self.timeseries_cd)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SpecificConductance':

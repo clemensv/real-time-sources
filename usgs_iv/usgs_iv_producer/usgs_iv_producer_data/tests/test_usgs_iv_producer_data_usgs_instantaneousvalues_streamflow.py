@@ -28,10 +28,12 @@ class Test_Streamflow(unittest.TestCase):
         Create instance of Streamflow for testing
         """
         instance = Streamflow(
-            site_no='mmgueqyyhjggazsfafss',
-            datetime='niytyfggaoacmucobpzc',
-            value=float(99.26783845444123),
-            qualifiers=['osnylfmjgbiviboiyywv', 'dbjqahbfvdhztmwalsgn', 'hhhympdjiywolpdtekns', 'hkqfmcngvdprtoyyhjgd']
+            site_no='rpelbkivrxgmawblfdnr',
+            datetime='xtsxvotgushfddnhzxgh',
+            value=float(29.253286792171373),
+            qualifiers=['nzwvstyzotwyfqpttreg', 'zufwliuxujcmlyquyrrl', 'kvsnfntkczxnappngohf'],
+            parameter_cd='tpnodehsohxmdczcatsi',
+            timeseries_cd='ivfohfgcnshcvivmqjdn'
         )
         return instance
 
@@ -40,7 +42,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'mmgueqyyhjggazsfafss'
+        test_value = 'rpelbkivrxgmawblfdnr'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -48,7 +50,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'niytyfggaoacmucobpzc'
+        test_value = 'xtsxvotgushfddnhzxgh'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -56,7 +58,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(99.26783845444123)
+        test_value = float(29.253286792171373)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +66,23 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['osnylfmjgbiviboiyywv', 'dbjqahbfvdhztmwalsgn', 'hhhympdjiywolpdtekns', 'hkqfmcngvdprtoyyhjgd']
+        test_value = ['nzwvstyzotwyfqpttreg', 'zufwliuxujcmlyquyrrl', 'kvsnfntkczxnappngohf']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
+    
+    def test_parameter_cd_property(self):
+        """
+        Test parameter_cd property
+        """
+        test_value = 'tpnodehsohxmdczcatsi'
+        self.instance.parameter_cd = test_value
+        self.assertEqual(self.instance.parameter_cd, test_value)
+    
+    def test_timeseries_cd_property(self):
+        """
+        Test timeseries_cd property
+        """
+        test_value = 'ivfohfgcnshcvivmqjdn'
+        self.instance.timeseries_cd = test_value
+        self.assertEqual(self.instance.timeseries_cd, test_value)
     

@@ -3,7 +3,7 @@
 
 This is the Usgs_iv_producer Apache Kafka Consumer SDK for Python. It was
 generated from the xRegistry CLI tool based on message catalog definitions for
-"USGS.InstantaneousValues".
+"USGS.Sites", "USGS.InstantaneousValues".
 
 ## Quick Install
 
@@ -66,13 +66,12 @@ to process. The handler functions are called when a message of that type is
 received. Example:
 
 ```python
-async def handle_usgs_instantaneous_values_streamflow(record, cloud_event,
-usgs_instantaneous_values_streamflow_event_data):
-    """ Handles the USGS.InstantaneousValues.Streamflow event """
-    print(f"USGS.InstantaneousValues.Streamflow:
-{usgs_instantaneous_values_streamflow_event_data.asdict()}")
+async def handle_usgs_sites_site(record, cloud_event,
+usgs_sites_site_event_data):
+    """ Handles the USGS.Sites.Site event """
+    print(f"USGS.Sites.Site: {usgs_sites_site_event_data.asdict()}")
     await some_processing_function(record, cloud_event,
-usgs_instantaneous_values_streamflow_event_data)
+usgs_sites_site_event_data)
 ```
 
 The handler functions are then assigned to the event dispatcher for the message
@@ -80,16 +79,15 @@ group. The event dispatcher is responsible for calling the appropriate handler
 function when a message is received. Example:
 
 ```python
-usgs_instantaneous_values_dispatcher = USGSInstantaneousValuesEventDispatcher()
-usgs_instantaneous_values_dispatcher.usgs_instantaneous_values_streamflow_async
-= usgs_instantaneous_values_streamflow_event
+usgs_sites_dispatcher = USGSSitesEventDispatcher()
+usgs_sites_dispatcher.usgs_sites_site_async = usgs_sites_site_event
 ```
 
-You can then create an event processor directly from the event dispatcher. The
-event processor is responsible for receiving messages from the Kafka topic and
-will hand them to the dispatcher for processing.
+You can create an event processor and add the event dispatcher to it. The event
+processor is responsible for receiving messages from the Kafka topic and will
+hand them to the dispatcher for processing.
 
-The required parameters for the `create_processor` method are:
+The required parameters for the `create` method are:
 * `bootstrap_servers`: The Kafka bootstrap servers.
 * `group_id`: The consumer group ID.
 * `topics`: The list of topics to subscribe to.
@@ -98,14 +96,17 @@ The example below shows how to create an event processor and then wait for a
 signal to stop the processor:
 
 ```python
-async with dispatcher.create_processor(
-            bootstrap_servers,
-            group_id,
-            topics,
-        ) as processor_runner:
-            stop_event = asyncio.Event()
-            loop = asyncio.get_running_loop()
-            loop.add_signal_handler(signal.SIGTERM, lambda: stop_event.set())
-            loop.add_signal_handler(signal.SIGINT, lambda: stop_event.set())
-            await stop_event.wait()
+event_processor = EventStreamProcessor.create(
+    bootstrap_servers,
+    group_id,
+    topics,
+)
+event_processor.add_dispatcher(usgs_sites_dispatcher)
+event_processor.add_dispatcher(usgs_instantaneous_values_dispatcher)
+async with event_processor:
+    stop_event = asyncio.Event()
+    loop = asyncio.get_running_loop()
+    loop.add_signal_handler(signal.SIGTERM, lambda: stop_event.set())
+    loop.add_signal_handler(signal.SIGINT, lambda: stop_event.set())
+    await stop_event.wait()
 ```
