@@ -72,3 +72,16 @@ The [Nextbus tool](nextbus/README.md) is a command line tool that can be used to
 retrieve real-time data from the [Nextbus](https://www.nextbus.com/) service and
 feed that data into Azure Event Hubs and Microsft Fabric Event Streams. The tool
 can also be used to query the Nextbus service interactively.
+
+### Forza Motorsport PC - Racing game telemetry data
+
+The
+[Forza Motorsports telemetry bridge](https://github.com/clemensv/forza-telemetry-bridge)
+is hosted in a separate repository. The bridge app is designed to capture and
+forward Forza Motorsports telemetry data to Microsoft Azure Event Hubs or
+Microsoft Fabric Event Streams. It utilizes UDP to listen for telemetry data
+sent from Forza Motorsport games and forwards this data after processing and
+formatting into cloud event streams. The game is compatible with the XBox and PC
+games. For XBox, it requires a separate computer to run the bridge app. While
+there is no containerized version, there is a binary release in a ZIP file
+[available from the releases page](https://github.com/clemensv/forza-telemetry-bridge/releases).
