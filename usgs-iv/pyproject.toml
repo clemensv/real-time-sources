@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "usgs-iv-bridge"
+name = "usgs-iv"
 description = "USGS Instantaneous Values Bridge"
 authors = ["Clemens Vasters"]
 readme = "README.md"
