@@ -1,0 +1,157 @@
+{
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
+    "fileShareName": "fileshare"
+  },
+  "resources": [
+    {
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot"
+      },
+      "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS"
+      }
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      },
+      "name": "[concat(variables('storageAccountName'), '/default/')]",
+      "type": "Microsoft.Storage/storageAccounts/fileServices"
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 5120
+      },
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares"
+    },
+    {
+      "apiVersion": "2021-09-01",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "properties": {
+        "restartPolicy": "Always",
+        "volumes": [
+          {
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            },
+            "name": "azurefilevolume"
+          }
+        ],
+        "osType": "Linux",
+        "containers": [
+          {
+            "properties": {
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1
+                }
+              },
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ],
+              "image": "[parameters('imageName')]",
+              "environmentVariables": [
+                {
+                  "secureValue": "[parameters('connectionStringSecret')]",
+                  "name": "CONNECTION_STRING"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "FEED_URLS",
+                  "value": "[parameters('feedUrls')]"
+                },
+                {
+                  "name": "STATE_DIR",
+                  "value": "/mnt/fileshare/state"
+                }
+              ]
+            },
+            "name": "[parameters('appName')]"
+          }
+        ],
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]"
+          }
+        }
+      },
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('appName')]"
+    }
+  ],
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "parameters": {
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      }
+    },
+    "logAnalyticsWorkspaceKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      }
+    },
+    "connectionStringSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint or Azure Event Hubs connection string."
+      }
+    },
+    "feedUrls": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated list of feed URLs (usgs_iv or OPML)"
+      },
+      "defaultValue": ""
+    },
+    "appName": {
+      "maxLength": 64,
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container instance."
+      },
+      "defaultValue": "[if(empty(resourceGroup().name), 'usgs_iv-bridge', resourceGroup().name)]"
+    },
+    "imageName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container image."
+      },
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-usgs-iv:latest"
+    }
+  }
+}
