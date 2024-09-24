@@ -28,13 +28,13 @@ class Test_Salinity(unittest.TestCase):
         Create instance of Salinity for testing
         """
         instance = Salinity(
-            site_no='hwzgjrixybcgensmfdlv',
-            datetime='osahukanxsfndslewmhs',
-            value=float(53.82363589184569),
-            exception='tphkdgktolxwxxumuhwc',
-            qualifiers=['olwxzrhbumwkhsmkicnl', 'ceumcrenwnwrykuwjshs', 'jazeqydproluxrfafzeg'],
-            parameter_cd='jcegkphtsmuugsrtnjrc',
-            timeseries_cd='vrqhafwurxireqnqnbar'
+            site_no='nzitssxwreykkvpqdqtl',
+            datetime='rhqssxjyqnwopevnshgv',
+            value=float(44.109418595315965),
+            exception='nxjnfnrwgtesurdwlsrk',
+            qualifiers=['fhabjhwykuvopdrwxepw'],
+            parameter_cd='qzofsmcgugttdbmfuupl',
+            timeseries_cd='gjhutuxmkycwxxbetrkl'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'hwzgjrixybcgensmfdlv'
+        test_value = 'nzitssxwreykkvpqdqtl'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'osahukanxsfndslewmhs'
+        test_value = 'rhqssxjyqnwopevnshgv'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(53.82363589184569)
+        test_value = float(44.109418595315965)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'tphkdgktolxwxxumuhwc'
+        test_value = 'nxjnfnrwgtesurdwlsrk'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['olwxzrhbumwkhsmkicnl', 'ceumcrenwnwrykuwjshs', 'jazeqydproluxrfafzeg']
+        test_value = ['fhabjhwykuvopdrwxepw']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'jcegkphtsmuugsrtnjrc'
+        test_value = 'qzofsmcgugttdbmfuupl'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'vrqhafwurxireqnqnbar'
+        test_value = 'gjhutuxmkycwxxbetrkl'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

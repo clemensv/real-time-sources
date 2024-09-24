@@ -28,13 +28,13 @@ class Test_FDOM(unittest.TestCase):
         Create instance of FDOM for testing
         """
         instance = FDOM(
-            site_no='yhghhvqqwoveuophpltg',
-            datetime='kfnzytayakggfkvflgxi',
-            value=float(9.582062141455317),
-            exception='gdglwaoluudttbnupgba',
-            qualifiers=['zjealbymfiocdoikgsre', 'lhpkokihhhxqxemrojvj'],
-            parameter_cd='vgguoszivgyssseqthgl',
-            timeseries_cd='hktmnuyiziawnylszvsd'
+            site_no='vgpexuhlrdzfisptxtpb',
+            datetime='gypqcxiutbwuwatqocke',
+            value=float(7.326428421749154),
+            exception='cptesfvwagoghcxrlbtv',
+            qualifiers=['uenmwnqtqvamhabloxfm', 'ghvyajrranavnoreqlcx', 'qjscnhxlrxwxxgmlhbav', 'koooqmvematmklygqnfy', 'btmsftsenzuelyscpflp'],
+            parameter_cd='ukhppkuzucssqwkttrrm',
+            timeseries_cd='ftrhgbnvqldfftjxnymi'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_FDOM(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'yhghhvqqwoveuophpltg'
+        test_value = 'vgpexuhlrdzfisptxtpb'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_FDOM(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'kfnzytayakggfkvflgxi'
+        test_value = 'gypqcxiutbwuwatqocke'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_FDOM(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(9.582062141455317)
+        test_value = float(7.326428421749154)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_FDOM(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'gdglwaoluudttbnupgba'
+        test_value = 'cptesfvwagoghcxrlbtv'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_FDOM(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['zjealbymfiocdoikgsre', 'lhpkokihhhxqxemrojvj']
+        test_value = ['uenmwnqtqvamhabloxfm', 'ghvyajrranavnoreqlcx', 'qjscnhxlrxwxxgmlhbav', 'koooqmvematmklygqnfy', 'btmsftsenzuelyscpflp']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_FDOM(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'vgguoszivgyssseqthgl'
+        test_value = 'ukhppkuzucssqwkttrrm'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_FDOM(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'hktmnuyiziawnylszvsd'
+        test_value = 'ftrhgbnvqldfftjxnymi'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     
