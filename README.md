@@ -23,6 +23,7 @@ The container image documentation provides detailed information:
 * [NOAA Tides ands Currents -  Water level and current data](noaa/CONTAINER.md)
 * [RSS Feeds - News and blog posts](rss/CONTAINER.md)
 * [Pegelonline - Water level and current data](pegelonline/CONTAINER.md)
+* [USGS Instantaneous Values - Water quality and quantity data](usgs-iv/CONTAINER.md)
 
 Details about the tools and the data sources are provided in the respective
 README files.
@@ -72,6 +73,15 @@ The [Nextbus tool](nextbus/README.md) is a command line tool that can be used to
 retrieve real-time data from the [Nextbus](https://www.nextbus.com/) service and
 feed that data into Azure Event Hubs and Microsft Fabric Event Streams. The tool
 can also be used to query the Nextbus service interactively.
+
+### USGS Instantaneous Values - Water quality and quantity data
+
+The [USGS Instantaneous Values tool](usgs-iv/README.md) is a command line tool that
+can be used to retrieve real-time water quality and quantity data from the
+United States Geological Survey (USGS) Instantaneous Values API. The data is
+available for over 1.5 million stations in the United States and its territories.
+The USGS data is updated every 15 minutes, and the data volume is relatively low.
+
 
 ### Forza Motorsport PC - Racing game telemetry data
 

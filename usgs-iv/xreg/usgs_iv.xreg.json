@@ -1,0 +1,2558 @@
+{
+    "messagegroups": {
+        "USGS.Sites": {
+            "id": "USGS.Sites",
+            "messages": {
+                "USGS.Sites.Site": {
+                    "id": "USGS.Sites.Site",
+                    "name": "Site",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS site metadata.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.Sites.Site"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.Site"
+                },
+                "USGS.Sites.SiteTimeseries": {
+                    "id": "USGS.Sites.SiteTimeseries",
+                    "name": "SiteTimeseries",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS site timeseries metadata.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.Sites.SiteTimeseries"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.SiteTimeseries"
+                }
+            }
+        },
+        "USGS.InstantaneousValues": {
+            "id": "USGS.InstantaneousValues",
+            "messages": {
+                "USGS.InstantaneousValues.OtherParameter":
+                {
+                    "id": "USGS.InstantaneousValues.OtherParameter",
+                    "name": "OtherParameter",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS other parameter data.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.OtherParameter"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.OtherParameter"
+                },
+                "USGS.InstantaneousValues.Precipitation": {
+                    "id": "USGS.InstantaneousValues.Precipitation",
+                    "name": "Precipitation",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS precipitation data. Parameter code 00045.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.Precipitation"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Precipitation"
+                },
+                "USGS.InstantaneousValues.Streamflow": {
+                    "id": "USGS.InstantaneousValues.Streamflow",
+                    "name": "Streamflow",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS streamflow data. Parameter code 00060.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.Streamflow"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Streamflow"
+                },
+                "USGS.InstantaneousValues.GageHeight": {
+                    "id": "USGS.InstantaneousValues.GageHeight",
+                    "name": "GageHeight",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS gage height data. Parameter code 00065.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.GageHeight"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GageHeight"
+                },
+                "USGS.InstantaneousValues.WaterTemperature": {
+                    "id": "USGS.InstantaneousValues.WaterTemperature",
+                    "name": "WaterTemperature",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS water temperature data. Parameter code 00010.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.WaterTemperature"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterTemperature"
+                },
+                "USGS.InstantaneousValues.DissolvedOxygen": {
+                    "id": "USGS.InstantaneousValues.DissolvedOxygen",
+                    "name": "DissolvedOxygen",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS dissolved oxygen data. Parameter code 00300.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.DissolvedOxygen"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.DissolvedOxygen"
+                },
+                "USGS.InstantaneousValues.pH": {
+                    "id": "USGS.InstantaneousValues.pH",
+                    "name": "pH",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS pH data. Parameter code 00400.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.pH"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.pH"
+                },
+                "USGS.InstantaneousValues.SpecificConductance": {
+                    "id": "USGS.InstantaneousValues.SpecificConductance",
+                    "name": "SpecificConductance",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS specific conductance data. Parameter code 00095.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.SpecificConductance"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.SpecificConductance"
+                },
+                "USGS.InstantaneousValues.Turbidity": {
+                    "id": "USGS.InstantaneousValues.Turbidity",
+                    "name": "Turbidity",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS turbidity data. Parameter code 00076.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.Turbidity"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Turbidity"
+                },
+                "USGS.InstantaneousValues.AirTemperature": {
+                    "id": "USGS.InstantaneousValues.AirTemperature",
+                    "name": "AirTemperature",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS air temperature data. Parameter code 00020.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.AirTemperature"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.AirTemperature"
+                },
+                "USGS.InstantaneousValues.WindSpeed": {
+                    "id": "USGS.InstantaneousValues.WindSpeed",
+                    "name": "WindSpeed",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS wind speed data. Parameter code 00035.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.WindSpeed"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindSpeed"
+                },
+                "USGS.InstantaneousValues.WindDirection": {
+                    "id": "USGS.InstantaneousValues.WindDirection",
+                    "name": "WindDirection",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS wind direction data. Parameter codes 00036 and 163695.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.WindDirection"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindDirection"
+                },
+                "USGS.InstantaneousValues.RelativeHumidity": {
+                    "id": "USGS.InstantaneousValues.RelativeHumidity",
+                    "name": "RelativeHumidity",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS relative humidity data. Parameter code 00052.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.RelativeHumidity"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.RelativeHumidity"
+                },
+                "USGS.InstantaneousValues.BarometricPressure": {
+                    "id": "USGS.InstantaneousValues.BarometricPressure",
+                    "name": "BarometricPressure",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS barometric pressure data. Parameter codes 62605 and 75969.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.BarometricPressure"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.BarometricPressure"
+                },
+                "USGS.InstantaneousValues.TurbidityFNU": {
+                    "id": "USGS.InstantaneousValues.TurbidityFNU",
+                    "name": "TurbidityFNU",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS turbidity data (FNU). Parameter code 63680.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.TurbidityFNU"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TurbidityFNU"
+                },
+                "USGS.InstantaneousValues.fDOM": {
+                    "id": "USGS.InstantaneousValues.fDOM",
+                    "name": "fDOM",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.fDOM"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.fDOM"
+                },
+                "USGS.InstantaneousValues.ReservoirStorage": {
+                    "id": "USGS.InstantaneousValues.ReservoirStorage",
+                    "name": "ReservoirStorage",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS reservoir storage data. Parameter code 00054.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.ReservoirStorage"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.ReservoirStorage"
+                },
+                "USGS.InstantaneousValues.LakeElevationNGVD29": {
+                    "id": "USGS.InstantaneousValues.LakeElevationNGVD29",
+                    "name": "LakeElevationNGVD29",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.LakeElevationNGVD29"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
+                },
+                "USGS.InstantaneousValues.WaterDepth": {
+                    "id": "USGS.InstantaneousValues.WaterDepth",
+                    "name": "WaterDepth",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS water depth data. Parameter code 72199.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.WaterDepth"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterDepth"
+                },
+                "USGS.InstantaneousValues.EquipmentStatus": {
+                    "id": "USGS.InstantaneousValues.EquipmentStatus",
+                    "name": "EquipmentStatus",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS equipment alarm status data. Parameter code 99235.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.EquipmentStatus"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EquipmentStatus"
+                },
+                "USGS.InstantaneousValues.TidallyFilteredDischarge": {
+                    "id": "USGS.InstantaneousValues.TidallyFilteredDischarge",
+                    "name": "TidallyFilteredDischarge",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS tidally filtered discharge data. Parameter code 72137.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.TidallyFilteredDischarge"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
+                },
+                "USGS.InstantaneousValues.WaterVelocity": {
+                    "id": "USGS.InstantaneousValues.WaterVelocity",
+                    "name": "WaterVelocity",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS water velocity data. Parameter code 72254.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.WaterVelocity"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterVelocity"
+                },
+                "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
+                    "id": "USGS.InstantaneousValues.EstuaryElevationNGVD29",
+                    "name": "EstuaryElevationNGVD29",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.EstuaryElevationNGVD29"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
+                },
+                "USGS.InstantaneousValues.LakeElevationNAVD88": {
+                    "id": "USGS.InstantaneousValues.LakeElevationNAVD88",
+                    "name": "LakeElevationNAVD88",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.LakeElevationNAVD88"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
+                },
+                "USGS.InstantaneousValues.Salinity": {
+                    "id": "USGS.InstantaneousValues.Salinity",
+                    "name": "Salinity",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS salinity data. Parameter code 00480.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.Salinity"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Salinity"
+                },
+                "USGS.InstantaneousValues.GateOpening": {
+                    "id": "USGS.InstantaneousValues.GateOpening",
+                    "name": "GateOpening",
+                    "format": "CloudEvents/1.0",
+                    "description": "USGS gate opening data. Parameter code 45592.",
+                    "metadata": {
+                        "type": {
+                            "value": "USGS.InstantaneousValues.GateOpening"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{datetime}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "schemaformat": "Avro/1.11.3",
+                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GateOpening"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "USGS.Sites": {
+            "id": "USGS.Sites",
+            "description": "USGS Sites",
+            "schemas": {
+                "USGS.Sites.Site": {
+                    "id": "USGS.Sites.Site",
+                    "name": "Site",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS site metadata.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Site",
+                                "namespace": "USGS.Sites",
+                                "doc": "USGS site metadata.",
+                                "fields": [
+                                    {
+                                        "name": "agency_cd",
+                                        "doc": "Agency code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "site_no",
+                                        "doc": "USGS site number.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "station_nm",
+                                        "doc": "Station name.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "site_tp_cd",
+                                        "doc": "Site type code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "dec_lat_va",
+                                        "doc": "Decimal latitude.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "dec_long_va",
+                                        "doc": "Decimal longitude.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "coord_acy_cd",
+                                        "doc": "Coordinate accuracy code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "dec_coord_datum_cd",
+                                        "doc": "Decimal coordinate datum code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "alt_va",
+                                        "doc": "Altitude.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "alt_acy_va",
+                                        "doc": "Altitude accuracy.",
+                                        "type": [
+                                            "null",
+                                            "float"
+                                        ],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "alt_datum_cd",
+                                        "doc": "Altitude datum code.",
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.Sites.SiteTimeseries": {
+                    "id": "USGS.Sites.SiteTimeseries",
+                    "name": "SiteTimeseries",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS site timeseries metadata.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "SiteTimeseries",
+                                "doc": "USGS site timeseries metadata.",
+                                "namespace": "USGS.Sites",
+                                "fields": [
+                                    {
+                                        "name": "agency_cd",
+                                        "doc": "Agency code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "site_no",
+                                        "doc": "USGS site number.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "doc": "Parameter code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "doc": "Timeseries code.",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "name": "description",
+                                        "doc": "Description.",
+                                        "type": "string"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "USGS.InstantaneousValues": {
+            "id": "USGS.InstantaneousValues",
+            "description": "USGS Instantaneous Values",
+            "schemas": {
+                "USGS.InstantaneousValues.OtherParameter":{
+                    "id": "USGS.InstantaneousValues.OtherParameter",
+                    "name": "OtherParameter",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS other parameter data.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "OtherParameter",
+                                "doc": "USGS other parameter data.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.Precipitation": {
+                    "id": "USGS.InstantaneousValues.Precipitation",
+                    "name": "Precipitation",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS precipitation data. Parameter code 00045.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Precipitation",
+                                "doc": "USGS precipitation data. Parameter code 00045.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "inches",
+                                        "doc": "{\"description\": \"Precipitation value, inches.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.Streamflow": {
+                    "id": "USGS.InstantaneousValues.Streamflow",
+                    "name": "Streamflow",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS streamflow data. Parameter code 00060.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Streamflow",
+                                "doc": "USGS streamflow data. Parameter code 00060.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "cubic feet per second",
+                                        "doc": "{\"description\": \"Discharge value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.GageHeight": {
+                    "id": "USGS.InstantaneousValues.GageHeight",
+                    "name": "GageHeight",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS gage height data. Parameter code 00065.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "GageHeight",
+                                "doc": "USGS gage height data. Parameter code 00065.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "feet",
+                                        "doc": "{\"description\": \"Gage height value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.WaterTemperature": {
+                    "id": "USGS.InstantaneousValues.WaterTemperature",
+                    "name": "WaterTemperature",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS water temperature data. Parameter code 00010.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WaterTemperature",
+                                "doc": "USGS water temperature data. Parameter code 00010.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "degrees Celsius",
+                                        "doc": "{\"description\": \"Water temperature value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.DissolvedOxygen": {
+                    "id": "USGS.InstantaneousValues.DissolvedOxygen",
+                    "name": "DissolvedOxygen",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS dissolved oxygen data. Parameter code 00300.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "DissolvedOxygen",
+                                "doc": "USGS dissolved oxygen data. Parameter code 00300.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "milligrams per liter",
+                                        "doc": "{\"description\": \"Dissolved oxygen value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.pH": {
+                    "id": "USGS.InstantaneousValues.pH",
+                    "name": "pH",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS pH data. Parameter code 00400.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "pH",
+                                "doc": "USGS pH data. Parameter code 00400.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "standard units",
+                                        "doc": "{\"description\": \"pH value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.SpecificConductance": {
+                    "id": "USGS.InstantaneousValues.SpecificConductance",
+                    "name": "SpecificConductance",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS specific conductance data. Parameter code 00095.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "SpecificConductance",
+                                "doc": "USGS specific conductance data. Parameter code 00095.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "microsiemens per centimeter at 25 degrees Celsius",
+                                        "doc": "{\"description\": \"Specific conductance value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.Turbidity": {
+                    "id": "USGS.InstantaneousValues.Turbidity",
+                    "name": "Turbidity",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS turbidity data. Parameter code 00076.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Turbidity",
+                                "doc": "USGS turbidity data. Parameter code 00076.",
+                                "namespace": "USGS.InstantaneousValues",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "Nephelometric Turbidity Units",
+                                        "doc": "{\"description\": \"Turbidity value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.WindSpeed": {
+                    "id": "USGS.InstantaneousValues.WindSpeed",
+                    "name": "WindSpeed",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS wind speed data. Parameter code 00035.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WindSpeed",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS wind speed data. Parameter code 00035.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "miles per hour",
+                                        "doc": "{\"description\": \"Wind speed value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.WindDirection": {
+                    "id": "USGS.InstantaneousValues.WindDirection",
+                    "name": "WindDirection",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS wind direction data. Parameter codes 00036 and 163695.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WindDirection",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS wind direction data. Parameter codes 00036 and 163695.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "degrees clockwise from true north",
+                                        "doc": "{\"description\": \"Wind direction value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.RelativeHumidity": {
+                    "id": "USGS.InstantaneousValues.RelativeHumidity",
+                    "name": "RelativeHumidity",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS relative humidity data. Parameter code 00052.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "RelativeHumidity",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS relative humidity data. Parameter code 00052.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "percent",
+                                        "doc": "{\"description\": \"Relative humidity value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.BarometricPressure": {
+                    "id": "USGS.InstantaneousValues.BarometricPressure",
+                    "name": "BarometricPressure",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS barometric pressure data. Parameter codes 62605 and 75969.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "BarometricPressure",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS barometric pressure data. Parameter codes 62605 and 75969.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "inches of water / millibars",
+                                        "doc": "{\"description\": \"Barometric pressure value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.AirTemperature": {
+                    "id": "USGS.InstantaneousValues.AirTemperature",
+                    "name": "AirTemperature",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS air temperature data. Parameter code 00020.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "AirTemperature",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS air temperature data. Parameter code 00020.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "degrees Celsius",
+                                        "doc": "{\"description\": \"Air temperature value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.TurbidityFNU": {
+                    "id": "USGS.InstantaneousValues.TurbidityFNU",
+                    "name": "TurbidityFNU",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS turbidity data (FNU). Parameter code 63680.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "TurbidityFNU",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS turbidity data (FNU). Parameter code 63680.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "Formazin Nephelometric Units (FNU)",
+                                        "doc": "{\"description\": \"Turbidity value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.fDOM": {
+                    "id": "USGS.InstantaneousValues.fDOM",
+                    "name": "fDOM",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "fDOM",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "micrograms per liter (QSE) / RFU",
+                                        "doc": "{\"description\": \"Dissolved organic matter fluorescence value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.ReservoirStorage": {
+                    "id": "USGS.InstantaneousValues.ReservoirStorage",
+                    "name": "ReservoirStorage",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS reservoir storage data. Parameter code 00054.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "ReservoirStorage",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS reservoir storage data. Parameter code 00054.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "acre-feet",
+                                        "doc": "{\"description\": \"Reservoir storage value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.LakeElevationNGVD29": {
+                    "id": "USGS.InstantaneousValues.LakeElevationNGVD29",
+                    "name": "LakeElevationNGVD29",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "LakeElevationNGVD29",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "feet",
+                                        "doc": "{\"description\": \"Lake elevation above NGVD 1929.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.WaterDepth": {
+                    "id": "USGS.InstantaneousValues.WaterDepth",
+                    "name": "WaterDepth",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS water depth data. Parameter code 72199.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WaterDepth",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS water depth data. Parameter code 72199.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "feet",
+                                        "doc": "{\"description\": \"Water depth value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.EquipmentStatus": {
+                    "id": "USGS.InstantaneousValues.EquipmentStatus",
+                    "name": "EquipmentStatus",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS equipment alarm status data. Parameter code 99235.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "EquipmentStatus",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS equipment alarm status data. Parameter code 99235.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "status",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Status of equipment alarm as codes.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.TidallyFilteredDischarge": {
+                    "id": "USGS.InstantaneousValues.TidallyFilteredDischarge",
+                    "name": "TidallyFilteredDischarge",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS tidally filtered discharge data. Parameter code 72137.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "TidallyFilteredDischarge",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS tidally filtered discharge data. Parameter code 72137.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "cubic feet per second",
+                                        "doc": "{\"description\": \"Tidally filtered discharge value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.WaterVelocity": {
+                    "id": "USGS.InstantaneousValues.WaterVelocity",
+                    "name": "WaterVelocity",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS water velocity data. Parameter code 72254.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WaterVelocity",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS water velocity data. Parameter code 72254.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "feet per second",
+                                        "doc": "{\"description\": \"Water velocity value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
+                    "id": "USGS.InstantaneousValues.EstuaryElevationNGVD29",
+                    "name": "EstuaryElevationNGVD29",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "EstuaryElevationNGVD29",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "feet",
+                                        "doc": "{\"description\": \"Estuary or ocean water surface elevation above NGVD 1929.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.LakeElevationNAVD88": {
+                    "id": "USGS.InstantaneousValues.LakeElevationNAVD88",
+                    "name": "LakeElevationNAVD88",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "LakeElevationNAVD88",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "feet",
+                                        "doc": "{\"description\": \"Lake elevation above NAVD 1988.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.Salinity": {
+                    "id": "USGS.InstantaneousValues.Salinity",
+                    "name": "Salinity",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS salinity data. Parameter code 00480.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Salinity",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS salinity data. Parameter code 00480.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "parts per thousand",
+                                        "doc": "{\"description\": \"Salinity value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "USGS.InstantaneousValues.GateOpening": {
+                    "id": "USGS.InstantaneousValues.GateOpening",
+                    "name": "GateOpening",
+                    "format": "Avro/1.11.3",
+                    "description": "USGS gate opening data. Parameter code 45592.",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "id": "1",
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "GateOpening",
+                                "namespace": "USGS.InstantaneousValues",
+                                "doc": "USGS gate opening data. Parameter code 45592.",
+                                "fields": [
+                                    {
+                                        "name": "site_no",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"USGS site number.\"}"
+                                    },
+                                    {
+                                        "name": "datetime",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}"
+                                    },
+                                    {
+                                        "name": "value",
+                                        "type": [
+                                            "double",
+                                            "null"
+                                        ],
+                                        "unit": "feet",
+                                        "doc": "{\"description\": \"Gate opening value.\"}"
+                                    },
+                                    {
+                                        "name": "exception",
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "doc": "{\"description\": \"Exception code when the value is unavailable.\"}"
+                                    },
+                                    {
+                                        "name": "qualifiers",
+                                        "type": {
+                                            "type": "array",
+                                            "items": "string"
+                                        },
+                                        "doc": "{\"description\": \"Qualifiers for the measurement.\"}"
+                                    },
+                                    {
+                                        "name": "parameter_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Parameter code.\"}"
+                                    },
+                                    {
+                                        "name": "timeseries_cd",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Timeseries code.\"}"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

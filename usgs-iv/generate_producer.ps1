@@ -1,0 +1,1 @@
+xregistry generate --style kafkaproducer --language py --definitions xreg\usgs_iv.xreg.json --projectname usgs_iv_producer --output usgs_iv_producer
