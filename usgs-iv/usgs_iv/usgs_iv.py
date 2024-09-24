@@ -52,7 +52,7 @@ from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer, USG
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 else:
-    logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 logger = logging.getLogger(__name__)
 
@@ -622,7 +622,9 @@ def main():
                              help='Force refresh of site data')
     feed_parser.add_argument('--force-data-refresh', action='store_true',
                                 help='Force refresh of data')
-
+    feed_parser.add_argument('--log-level', type=str,
+                             help='Logging level', default='INFO')
+    
     sites_parser = subparsers.add_parser('sites', help="List USGS sites")
     sites_parser.add_argument('--state', type=str, help='USGS state code to poll sites for.', required=False)
 
@@ -640,12 +642,17 @@ def main():
         params = USGSDataPoller.PARAMETERS
         print(params)
     elif args.subcommand == 'feed':
+        
         if not args.connection_string:
             args.connection_string = os.getenv('CONNECTION_STRING')
         if not args.last_polled_file:
             args.last_polled_file = os.getenv('USGS_LAST_POLLED_FILE')
             if not args.last_polled_file:
                 args.last_polled_file = os.path.expanduser('~/.usgs_last_polled.json')
+        if os.getenv('LOG_LEVEL'):
+            args.log_level = os.getenv('LOG_LEVEL')
+        if args.log_level:
+            logger.setLevel(args.log_level)
 
         if args.connection_string:
             config_params = parse_connection_string(args.connection_string)
