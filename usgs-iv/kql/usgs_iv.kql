@@ -1,0 +1,2464 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [Site] (
+   [agency_cd]: string,
+   [site_no]: string,
+   [station_nm]: string,
+   [site_tp_cd]: string,
+   [dec_lat_va]: real,
+   [dec_long_va]: real,
+   [coord_acy_cd]: string,
+   [dec_coord_datum_cd]: string,
+   [alt_va]: real,
+   [alt_acy_va]: real,
+   [alt_datum_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Site] docstring "{\"description\": \"USGS site metadata.\"}";
+
+.alter table [Site] column-docstrings (
+   [agency_cd]: "{\"description\": \"Agency code.\"}",
+   [site_no]: "{\"description\": \"USGS site number.\"}",
+   [station_nm]: "{\"description\": \"Station name.\"}",
+   [site_tp_cd]: "{\"description\": \"Site type code.\"}",
+   [dec_lat_va]: "{\"description\": \"Decimal latitude.\", \"schema\": [\"null\", \"float\"]}",
+   [dec_long_va]: "{\"description\": \"Decimal longitude.\", \"schema\": [\"null\", \"float\"]}",
+   [coord_acy_cd]: "{\"description\": \"Coordinate accuracy code.\"}",
+   [dec_coord_datum_cd]: "{\"description\": \"Decimal coordinate datum code.\"}",
+   [alt_va]: "{\"description\": \"Altitude.\", \"schema\": [\"null\", \"float\"]}",
+   [alt_acy_va]: "{\"description\": \"Altitude accuracy.\", \"schema\": [\"null\", \"float\"]}",
+   [alt_datum_cd]: "{\"description\": \"Altitude datum code.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Site] ingestion json mapping "Site_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_cd", "path": "$.agency_cd"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "station_nm", "path": "$.station_nm"},
+  {"column": "site_tp_cd", "path": "$.site_tp_cd"},
+  {"column": "dec_lat_va", "path": "$.dec_lat_va"},
+  {"column": "dec_long_va", "path": "$.dec_long_va"},
+  {"column": "coord_acy_cd", "path": "$.coord_acy_cd"},
+  {"column": "dec_coord_datum_cd", "path": "$.dec_coord_datum_cd"},
+  {"column": "alt_va", "path": "$.alt_va"},
+  {"column": "alt_acy_va", "path": "$.alt_acy_va"},
+  {"column": "alt_datum_cd", "path": "$.alt_datum_cd"},
+]
+```
+
+
+.create-or-alter table [Site] ingestion json mapping "Site_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_cd", "path": "$.data.agency_cd"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "station_nm", "path": "$.data.station_nm"},
+  {"column": "site_tp_cd", "path": "$.data.site_tp_cd"},
+  {"column": "dec_lat_va", "path": "$.data.dec_lat_va"},
+  {"column": "dec_long_va", "path": "$.data.dec_long_va"},
+  {"column": "coord_acy_cd", "path": "$.data.coord_acy_cd"},
+  {"column": "dec_coord_datum_cd", "path": "$.data.dec_coord_datum_cd"},
+  {"column": "alt_va", "path": "$.data.alt_va"},
+  {"column": "alt_acy_va", "path": "$.data.alt_acy_va"},
+  {"column": "alt_datum_cd", "path": "$.data.alt_datum_cd"},
+]
+```
+
+
+.drop materialized-view SiteLatest ifexists;
+
+.create materialized-view with (backfill=true) SiteLatest on table Site {
+    Site | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Site] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.Sites.Site') | project['agency_cd'] = tostring(data.['agency_cd']),['site_no'] = tostring(data.['site_no']),['station_nm'] = tostring(data.['station_nm']),['site_tp_cd'] = tostring(data.['site_tp_cd']),['dec_lat_va'] = toreal(data.['dec_lat_va']),['dec_long_va'] = toreal(data.['dec_long_va']),['coord_acy_cd'] = tostring(data.['coord_acy_cd']),['dec_coord_datum_cd'] = tostring(data.['dec_coord_datum_cd']),['alt_va'] = toreal(data.['alt_va']),['alt_acy_va'] = toreal(data.['alt_acy_va']),['alt_datum_cd'] = tostring(data.['alt_datum_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SiteTimeseries] (
+   [agency_cd]: string,
+   [site_no]: string,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SiteTimeseries] docstring "{\"description\": \"USGS site timeseries metadata.\"}";
+
+.alter table [SiteTimeseries] column-docstrings (
+   [agency_cd]: "{\"description\": \"Agency code.\"}",
+   [site_no]: "{\"description\": \"USGS site number.\"}",
+   [parameter_cd]: "{\"description\": \"Parameter code.\"}",
+   [timeseries_cd]: "{\"description\": \"Timeseries code.\"}",
+   [description]: "{\"description\": \"Description.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SiteTimeseries] ingestion json mapping "SiteTimeseries_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_cd", "path": "$.agency_cd"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+  {"column": "description", "path": "$.description"},
+]
+```
+
+
+.create-or-alter table [SiteTimeseries] ingestion json mapping "SiteTimeseries_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_cd", "path": "$.data.agency_cd"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+  {"column": "description", "path": "$.data.description"},
+]
+```
+
+
+.drop materialized-view SiteTimeseriesLatest ifexists;
+
+.create materialized-view with (backfill=true) SiteTimeseriesLatest on table SiteTimeseries {
+    SiteTimeseries | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SiteTimeseries] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.Sites.SiteTimeseries') | project['agency_cd'] = tostring(data.['agency_cd']),['site_no'] = tostring(data.['site_no']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),['description'] = tostring(data.['description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [OtherParameter] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [OtherParameter] docstring "{\"description\": \"USGS other parameter data.\"}";
+
+.alter table [OtherParameter] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [OtherParameter] ingestion json mapping "OtherParameter_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [OtherParameter] ingestion json mapping "OtherParameter_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view OtherParameterLatest ifexists;
+
+.create materialized-view with (backfill=true) OtherParameterLatest on table OtherParameter {
+    OtherParameter | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [OtherParameter] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.OtherParameter') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Precipitation] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Precipitation] docstring "{\"description\": \"USGS precipitation data. Parameter code 00045.\"}";
+
+.alter table [Precipitation] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Precipitation value, inches.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Precipitation] ingestion json mapping "Precipitation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [Precipitation] ingestion json mapping "Precipitation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view PrecipitationLatest ifexists;
+
+.create materialized-view with (backfill=true) PrecipitationLatest on table Precipitation {
+    Precipitation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Precipitation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.Precipitation') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Streamflow] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Streamflow] docstring "{\"description\": \"USGS streamflow data. Parameter code 00060.\"}";
+
+.alter table [Streamflow] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Discharge value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Streamflow] ingestion json mapping "Streamflow_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [Streamflow] ingestion json mapping "Streamflow_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view StreamflowLatest ifexists;
+
+.create materialized-view with (backfill=true) StreamflowLatest on table Streamflow {
+    Streamflow | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Streamflow] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.Streamflow') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GageHeight] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [GageHeight] docstring "{\"description\": \"USGS gage height data. Parameter code 00065.\"}";
+
+.alter table [GageHeight] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Gage height value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [GageHeight] ingestion json mapping "GageHeight_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [GageHeight] ingestion json mapping "GageHeight_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view GageHeightLatest ifexists;
+
+.create materialized-view with (backfill=true) GageHeightLatest on table GageHeight {
+    GageHeight | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GageHeight] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.GageHeight') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WaterTemperature] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterTemperature] docstring "{\"description\": \"USGS water temperature data. Parameter code 00010.\"}";
+
+.alter table [WaterTemperature] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water temperature value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view WaterTemperatureLatest ifexists;
+
+.create materialized-view with (backfill=true) WaterTemperatureLatest on table WaterTemperature {
+    WaterTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterTemperature] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.WaterTemperature') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DissolvedOxygen] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DissolvedOxygen] docstring "{\"description\": \"USGS dissolved oxygen data. Parameter code 00300.\"}";
+
+.alter table [DissolvedOxygen] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved oxygen value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DissolvedOxygen] ingestion json mapping "DissolvedOxygen_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [DissolvedOxygen] ingestion json mapping "DissolvedOxygen_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view DissolvedOxygenLatest ifexists;
+
+.create materialized-view with (backfill=true) DissolvedOxygenLatest on table DissolvedOxygen {
+    DissolvedOxygen | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DissolvedOxygen] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.DissolvedOxygen') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [pH] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [pH] docstring "{\"description\": \"USGS pH data. Parameter code 00400.\"}";
+
+.alter table [pH] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"pH value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [pH] ingestion json mapping "pH_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [pH] ingestion json mapping "pH_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view pHLatest ifexists;
+
+.create materialized-view with (backfill=true) pHLatest on table pH {
+    pH | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [pH] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.pH') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SpecificConductance] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SpecificConductance] docstring "{\"description\": \"USGS specific conductance data. Parameter code 00095.\"}";
+
+.alter table [SpecificConductance] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Specific conductance value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SpecificConductance] ingestion json mapping "SpecificConductance_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [SpecificConductance] ingestion json mapping "SpecificConductance_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view SpecificConductanceLatest ifexists;
+
+.create materialized-view with (backfill=true) SpecificConductanceLatest on table SpecificConductance {
+    SpecificConductance | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SpecificConductance] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.SpecificConductance') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Turbidity] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Turbidity] docstring "{\"description\": \"USGS turbidity data. Parameter code 00076.\"}";
+
+.alter table [Turbidity] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Turbidity] ingestion json mapping "Turbidity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [Turbidity] ingestion json mapping "Turbidity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view TurbidityLatest ifexists;
+
+.create materialized-view with (backfill=true) TurbidityLatest on table Turbidity {
+    Turbidity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Turbidity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.Turbidity') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WindSpeed] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WindSpeed] docstring "{\"description\": \"USGS wind speed data. Parameter code 00035.\"}";
+
+.alter table [WindSpeed] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind speed value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WindSpeed] ingestion json mapping "WindSpeed_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [WindSpeed] ingestion json mapping "WindSpeed_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view WindSpeedLatest ifexists;
+
+.create materialized-view with (backfill=true) WindSpeedLatest on table WindSpeed {
+    WindSpeed | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WindSpeed] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.WindSpeed') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WindDirection] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WindDirection] docstring "{\"description\": \"USGS wind direction data. Parameter codes 00036 and 163695.\"}";
+
+.alter table [WindDirection] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind direction value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WindDirection] ingestion json mapping "WindDirection_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [WindDirection] ingestion json mapping "WindDirection_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view WindDirectionLatest ifexists;
+
+.create materialized-view with (backfill=true) WindDirectionLatest on table WindDirection {
+    WindDirection | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WindDirection] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.WindDirection') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [RelativeHumidity] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RelativeHumidity] docstring "{\"description\": \"USGS relative humidity data. Parameter code 00052.\"}";
+
+.alter table [RelativeHumidity] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Relative humidity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RelativeHumidity] ingestion json mapping "RelativeHumidity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [RelativeHumidity] ingestion json mapping "RelativeHumidity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view RelativeHumidityLatest ifexists;
+
+.create materialized-view with (backfill=true) RelativeHumidityLatest on table RelativeHumidity {
+    RelativeHumidity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RelativeHumidity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.RelativeHumidity') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BarometricPressure] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BarometricPressure] docstring "{\"description\": \"USGS barometric pressure data. Parameter codes 62605 and 75969.\"}";
+
+.alter table [BarometricPressure] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Barometric pressure value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BarometricPressure] ingestion json mapping "BarometricPressure_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [BarometricPressure] ingestion json mapping "BarometricPressure_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view BarometricPressureLatest ifexists;
+
+.create materialized-view with (backfill=true) BarometricPressureLatest on table BarometricPressure {
+    BarometricPressure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BarometricPressure] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.BarometricPressure') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AirTemperature] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [AirTemperature] docstring "{\"description\": \"USGS air temperature data. Parameter code 00020.\"}";
+
+.alter table [AirTemperature] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Air temperature value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view AirTemperatureLatest ifexists;
+
+.create materialized-view with (backfill=true) AirTemperatureLatest on table AirTemperature {
+    AirTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AirTemperature] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.AirTemperature') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TurbidityFNU] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TurbidityFNU] docstring "{\"description\": \"USGS turbidity data (FNU). Parameter code 63680.\"}";
+
+.alter table [TurbidityFNU] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TurbidityFNU] ingestion json mapping "TurbidityFNU_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [TurbidityFNU] ingestion json mapping "TurbidityFNU_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view TurbidityFNULatest ifexists;
+
+.create materialized-view with (backfill=true) TurbidityFNULatest on table TurbidityFNU {
+    TurbidityFNU | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TurbidityFNU] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.TurbidityFNU') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [fDOM] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [fDOM] docstring "{\"description\": \"USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.\"}";
+
+.alter table [fDOM] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved organic matter fluorescence value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [fDOM] ingestion json mapping "fDOM_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [fDOM] ingestion json mapping "fDOM_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view fDOMLatest ifexists;
+
+.create materialized-view with (backfill=true) fDOMLatest on table fDOM {
+    fDOM | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [fDOM] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.fDOM') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ReservoirStorage] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ReservoirStorage] docstring "{\"description\": \"USGS reservoir storage data. Parameter code 00054.\"}";
+
+.alter table [ReservoirStorage] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Reservoir storage value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ReservoirStorage] ingestion json mapping "ReservoirStorage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [ReservoirStorage] ingestion json mapping "ReservoirStorage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view ReservoirStorageLatest ifexists;
+
+.create materialized-view with (backfill=true) ReservoirStorageLatest on table ReservoirStorage {
+    ReservoirStorage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ReservoirStorage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.ReservoirStorage') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LakeElevationNGVD29] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LakeElevationNGVD29] docstring "{\"description\": \"USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.\"}";
+
+.alter table [LakeElevationNGVD29] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NGVD 1929.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LakeElevationNGVD29] ingestion json mapping "LakeElevationNGVD29_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [LakeElevationNGVD29] ingestion json mapping "LakeElevationNGVD29_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view LakeElevationNGVD29Latest ifexists;
+
+.create materialized-view with (backfill=true) LakeElevationNGVD29Latest on table LakeElevationNGVD29 {
+    LakeElevationNGVD29 | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LakeElevationNGVD29] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.LakeElevationNGVD29') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WaterDepth] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterDepth] docstring "{\"description\": \"USGS water depth data. Parameter code 72199.\"}";
+
+.alter table [WaterDepth] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water depth value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WaterDepth] ingestion json mapping "WaterDepth_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [WaterDepth] ingestion json mapping "WaterDepth_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view WaterDepthLatest ifexists;
+
+.create materialized-view with (backfill=true) WaterDepthLatest on table WaterDepth {
+    WaterDepth | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterDepth] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.WaterDepth') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [EquipmentStatus] (
+   [site_no]: string,
+   [datetime]: string,
+   [status]: string,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [EquipmentStatus] docstring "{\"description\": \"USGS equipment alarm status data. Parameter code 99235.\"}";
+
+.alter table [EquipmentStatus] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [status]: "{\"description\": \"{\\\"description\\\": \\\"Status of equipment alarm as codes.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [EquipmentStatus] ingestion json mapping "EquipmentStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "status", "path": "$.status"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [EquipmentStatus] ingestion json mapping "EquipmentStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view EquipmentStatusLatest ifexists;
+
+.create materialized-view with (backfill=true) EquipmentStatusLatest on table EquipmentStatus {
+    EquipmentStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [EquipmentStatus] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.EquipmentStatus') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['status'] = tostring(data.['status']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TidallyFilteredDischarge] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TidallyFilteredDischarge] docstring "{\"description\": \"USGS tidally filtered discharge data. Parameter code 72137.\"}";
+
+.alter table [TidallyFilteredDischarge] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Tidally filtered discharge value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TidallyFilteredDischarge] ingestion json mapping "TidallyFilteredDischarge_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [TidallyFilteredDischarge] ingestion json mapping "TidallyFilteredDischarge_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view TidallyFilteredDischargeLatest ifexists;
+
+.create materialized-view with (backfill=true) TidallyFilteredDischargeLatest on table TidallyFilteredDischarge {
+    TidallyFilteredDischarge | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TidallyFilteredDischarge] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.TidallyFilteredDischarge') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WaterVelocity] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterVelocity] docstring "{\"description\": \"USGS water velocity data. Parameter code 72254.\"}";
+
+.alter table [WaterVelocity] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water velocity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WaterVelocity] ingestion json mapping "WaterVelocity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [WaterVelocity] ingestion json mapping "WaterVelocity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view WaterVelocityLatest ifexists;
+
+.create materialized-view with (backfill=true) WaterVelocityLatest on table WaterVelocity {
+    WaterVelocity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterVelocity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.WaterVelocity') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [EstuaryElevationNGVD29] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [EstuaryElevationNGVD29] docstring "{\"description\": \"USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.\"}";
+
+.alter table [EstuaryElevationNGVD29] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Estuary or ocean water surface elevation above NGVD 1929.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [EstuaryElevationNGVD29] ingestion json mapping "EstuaryElevationNGVD29_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [EstuaryElevationNGVD29] ingestion json mapping "EstuaryElevationNGVD29_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view EstuaryElevationNGVD29Latest ifexists;
+
+.create materialized-view with (backfill=true) EstuaryElevationNGVD29Latest on table EstuaryElevationNGVD29 {
+    EstuaryElevationNGVD29 | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [EstuaryElevationNGVD29] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.EstuaryElevationNGVD29') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LakeElevationNAVD88] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LakeElevationNAVD88] docstring "{\"description\": \"USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.\"}";
+
+.alter table [LakeElevationNAVD88] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NAVD 1988.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LakeElevationNAVD88] ingestion json mapping "LakeElevationNAVD88_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [LakeElevationNAVD88] ingestion json mapping "LakeElevationNAVD88_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view LakeElevationNAVD88Latest ifexists;
+
+.create materialized-view with (backfill=true) LakeElevationNAVD88Latest on table LakeElevationNAVD88 {
+    LakeElevationNAVD88 | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LakeElevationNAVD88] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.LakeElevationNAVD88') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Salinity] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Salinity] docstring "{\"description\": \"USGS salinity data. Parameter code 00480.\"}";
+
+.alter table [Salinity] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Salinity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view SalinityLatest ifexists;
+
+.create materialized-view with (backfill=true) SalinityLatest on table Salinity {
+    Salinity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Salinity] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.Salinity') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GateOpening] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [GateOpening] docstring "{\"description\": \"USGS gate opening data. Parameter code 45592.\"}";
+
+.alter table [GateOpening] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Gate opening value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [GateOpening] ingestion json mapping "GateOpening_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+
+.create-or-alter table [GateOpening] ingestion json mapping "GateOpening_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+
+.drop materialized-view GateOpeningLatest ifexists;
+
+.create materialized-view with (backfill=true) GateOpeningLatest on table GateOpening {
+    GateOpening | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GateOpening] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.GateOpening') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```

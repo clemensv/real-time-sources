@@ -14,8 +14,6 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 
 ### Message: de.wsv.pegelonline.Station
 
-*A PEGELONLINE station with location and water body information.*
-
 #### CloudEvents Attributes:
 
 | **Name**    | **Description** | **Type**     | **Required** | **Value** |
@@ -56,8 +54,6 @@ This document describes the events that are emitted by the PegelOnline API Bridg
 ---
 
 ### Message: de.wsv.pegelonline.CurrentMeasurement
-
-*The current measurement for a PEGELONLINE station.*
 
 #### CloudEvents Attributes:
 
