@@ -89,7 +89,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _site = Site()
 
     # sends the 'USGS.Sites.Site' event to Kafka topic.
-    await usgssites_event_producer.send_usgs_sites_site(_source_uri = 'TODO: replace me', data = _site)
+    await usgssites_event_producer.send_usgs_sites_site(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', data = _site)
     print(f"Sent 'USGS.Sites.Site' event: {_site.to_json()}")
 
     # ---- USGS.Sites.SiteTimeseries ----

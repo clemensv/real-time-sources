@@ -346,7 +346,7 @@ class USGSDataPoller:
                         async for site in self.get_sites_in_state(state_code):
                             count_stations += 1
                             await self.site_producer.send_usgs_sites_site(
-                                _source_uri=self.BASE_URL, data=site, flush_producer=False
+                                _source_uri=self.BASE_URL, _agency_cd=site.agency_cd, _site_no=site.site_no, data=site, flush_producer=False
                             )
                             if count_stations % 1000 == 0:
                                 self.site_producer.producer.flush()

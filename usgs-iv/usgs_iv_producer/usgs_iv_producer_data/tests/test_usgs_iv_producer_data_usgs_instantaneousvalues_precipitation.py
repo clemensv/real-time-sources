@@ -28,13 +28,13 @@ class Test_Precipitation(unittest.TestCase):
         Create instance of Precipitation for testing
         """
         instance = Precipitation(
-            site_no='gwinplthtgasqhdcjrup',
-            datetime='dcloqozpekfhlqimurnq',
-            value=float(50.96924485750548),
-            exception='cgsnrjhwzhawltjaxsdm',
-            qualifiers=['uuqwgxjlghacadtdnygr', 'waxuddzhhdrglglnfsxf', 'ddpqonivzkqapawbpcfa'],
-            parameter_cd='jhqxhjnlvtdkixpvzghw',
-            timeseries_cd='yhtfrkwttjvafbcsgyjp'
+            site_no='wohjtmabyzidgqwqurua',
+            datetime='xvurabizgckszrkojyun',
+            value=float(26.555453475281134),
+            exception='hrvluziorjjvqatrrhtq',
+            qualifiers=['wtejpnmasfpiudqbjgfs', 'ruhjtevozpbxcnyjnkvf'],
+            parameter_cd='yootmohalovhotovpajs',
+            timeseries_cd='xwaurhxxvysxykfjcwmx'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Precipitation(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'gwinplthtgasqhdcjrup'
+        test_value = 'wohjtmabyzidgqwqurua'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_Precipitation(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'dcloqozpekfhlqimurnq'
+        test_value = 'xvurabizgckszrkojyun'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_Precipitation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(50.96924485750548)
+        test_value = float(26.555453475281134)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_Precipitation(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'cgsnrjhwzhawltjaxsdm'
+        test_value = 'hrvluziorjjvqatrrhtq'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_Precipitation(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['uuqwgxjlghacadtdnygr', 'waxuddzhhdrglglnfsxf', 'ddpqonivzkqapawbpcfa']
+        test_value = ['wtejpnmasfpiudqbjgfs', 'ruhjtevozpbxcnyjnkvf']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_Precipitation(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'jhqxhjnlvtdkixpvzghw'
+        test_value = 'yootmohalovhotovpajs'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_Precipitation(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'yhtfrkwttjvafbcsgyjp'
+        test_value = 'xwaurhxxvysxykfjcwmx'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

@@ -28,17 +28,17 @@ class Test_Site(unittest.TestCase):
         Create instance of Site for testing
         """
         instance = Site(
-            agency_cd='lywtvhsalruzpimmlenq',
-            site_no='gewlgrhanpfbmknuhdfc',
-            station_nm='muqqvpabueogixejorse',
-            site_tp_cd='ctnbgsgzcbtdzjcnkrxs',
-            dec_lat_va=float(14.063112737295903),
-            dec_long_va=float(10.207566253715772),
-            coord_acy_cd='lfoafqqrzziwuippchot',
-            dec_coord_datum_cd='icqqblzulptcwxkcmozf',
-            alt_va=float(93.48557150652064),
-            alt_acy_va=float(64.28798820927469),
-            alt_datum_cd='ufixhbyzsbklbuqbhqyo'
+            agency_cd='gxsvzhdfsanzmnomllob',
+            site_no='nqfmofoxmfrdlnrravkh',
+            station_nm='svvrqqarvigblzirimyc',
+            site_tp_cd='rgqcdqgqowvmztrilshx',
+            dec_lat_va=float(34.71144559971256),
+            dec_long_va=float(52.730965531771155),
+            coord_acy_cd='empgpcrwznnmsnbohxdu',
+            dec_coord_datum_cd='wwytfjttroxvdgcxwxuq',
+            alt_va=float(93.09156700051052),
+            alt_acy_va=float(13.887457811307847),
+            alt_datum_cd='yqjnusfafhiamkbijtet'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Site(unittest.TestCase):
         """
         Test agency_cd property
         """
-        test_value = 'lywtvhsalruzpimmlenq'
+        test_value = 'gxsvzhdfsanzmnomllob'
         self.instance.agency_cd = test_value
         self.assertEqual(self.instance.agency_cd, test_value)
     
@@ -55,7 +55,7 @@ class Test_Site(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'gewlgrhanpfbmknuhdfc'
+        test_value = 'nqfmofoxmfrdlnrravkh'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -63,7 +63,7 @@ class Test_Site(unittest.TestCase):
         """
         Test station_nm property
         """
-        test_value = 'muqqvpabueogixejorse'
+        test_value = 'svvrqqarvigblzirimyc'
         self.instance.station_nm = test_value
         self.assertEqual(self.instance.station_nm, test_value)
     
@@ -71,7 +71,7 @@ class Test_Site(unittest.TestCase):
         """
         Test site_tp_cd property
         """
-        test_value = 'ctnbgsgzcbtdzjcnkrxs'
+        test_value = 'rgqcdqgqowvmztrilshx'
         self.instance.site_tp_cd = test_value
         self.assertEqual(self.instance.site_tp_cd, test_value)
     
@@ -79,7 +79,7 @@ class Test_Site(unittest.TestCase):
         """
         Test dec_lat_va property
         """
-        test_value = float(14.063112737295903)
+        test_value = float(34.71144559971256)
         self.instance.dec_lat_va = test_value
         self.assertEqual(self.instance.dec_lat_va, test_value)
     
@@ -87,7 +87,7 @@ class Test_Site(unittest.TestCase):
         """
         Test dec_long_va property
         """
-        test_value = float(10.207566253715772)
+        test_value = float(52.730965531771155)
         self.instance.dec_long_va = test_value
         self.assertEqual(self.instance.dec_long_va, test_value)
     
@@ -95,7 +95,7 @@ class Test_Site(unittest.TestCase):
         """
         Test coord_acy_cd property
         """
-        test_value = 'lfoafqqrzziwuippchot'
+        test_value = 'empgpcrwznnmsnbohxdu'
         self.instance.coord_acy_cd = test_value
         self.assertEqual(self.instance.coord_acy_cd, test_value)
     
@@ -103,7 +103,7 @@ class Test_Site(unittest.TestCase):
         """
         Test dec_coord_datum_cd property
         """
-        test_value = 'icqqblzulptcwxkcmozf'
+        test_value = 'wwytfjttroxvdgcxwxuq'
         self.instance.dec_coord_datum_cd = test_value
         self.assertEqual(self.instance.dec_coord_datum_cd, test_value)
     
@@ -111,7 +111,7 @@ class Test_Site(unittest.TestCase):
         """
         Test alt_va property
         """
-        test_value = float(93.48557150652064)
+        test_value = float(93.09156700051052)
         self.instance.alt_va = test_value
         self.assertEqual(self.instance.alt_va, test_value)
     
@@ -119,7 +119,7 @@ class Test_Site(unittest.TestCase):
         """
         Test alt_acy_va property
         """
-        test_value = float(64.28798820927469)
+        test_value = float(13.887457811307847)
         self.instance.alt_acy_va = test_value
         self.assertEqual(self.instance.alt_acy_va, test_value)
     
@@ -127,7 +127,7 @@ class Test_Site(unittest.TestCase):
         """
         Test alt_datum_cd property
         """
-        test_value = 'ufixhbyzsbklbuqbhqyo'
+        test_value = 'yqjnusfafhiamkbijtet'
         self.instance.alt_datum_cd = test_value
         self.assertEqual(self.instance.alt_datum_cd, test_value)
     

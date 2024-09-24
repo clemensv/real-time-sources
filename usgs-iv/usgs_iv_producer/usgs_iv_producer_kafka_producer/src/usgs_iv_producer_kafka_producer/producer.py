@@ -64,12 +64,14 @@ class USGSSitesEventProducer:
         else:
             return f'{str(x.get("type"))}:{str(x.get("source"))}{("-"+str(x.get("subject"))) if x.get("subject") else ""}'
 
-    async def send_usgs_sites_site(self,_source_uri : str, data: Site, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Site], str]=None) -> None:
+    async def send_usgs_sites_site(self,_source_uri : str, _agency_cd : str, _site_no : str, data: Site, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Site], str]=None) -> None:
         """
         Sends the 'USGS.Sites.Site' event to the Kafka topic
 
         Args:
             _source_uri(str):  Value for placeholder source_uri in attribute source
+            _agency_cd(str):  Value for placeholder agency_cd in attribute subject
+            _site_no(str):  Value for placeholder site_no in attribute subject
             data: (Site): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
@@ -78,7 +80,8 @@ class USGSSitesEventProducer:
         """
         attributes = {
              "type":"USGS.Sites.Site",
-             "source":"{source_uri}".format(source_uri = _source_uri)
+             "source":"{source_uri}".format(source_uri = _source_uri),
+             "subject":"{agency_cd}/{site_no}".format(agency_cd = _agency_cd,site_no = _site_no)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)

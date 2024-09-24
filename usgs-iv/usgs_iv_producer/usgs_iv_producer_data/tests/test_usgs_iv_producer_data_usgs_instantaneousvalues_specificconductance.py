@@ -28,13 +28,13 @@ class Test_SpecificConductance(unittest.TestCase):
         Create instance of SpecificConductance for testing
         """
         instance = SpecificConductance(
-            site_no='gotgqnqwndtcmiofbeys',
-            datetime='tioejodvrsxqtvqcgssp',
-            value=float(42.833457331087786),
-            exception='khfynnavpoclwfjftapz',
-            qualifiers=['vwckukkqtqchwaieyxji', 'scmtirzvmlyijyrotbzb'],
-            parameter_cd='qxmantktipjkodcrfgcd',
-            timeseries_cd='dotiqvjwvgetokpjiajx'
+            site_no='grambmaloojgtppmkxfe',
+            datetime='jwmgkmbccwdzrjpsfosi',
+            value=float(61.818716255243466),
+            exception='wsqoawarjqcqubqiogiw',
+            qualifiers=['akqntsutvuzfeozqyvgs', 'tvphdkezeduxmddeeiux', 'ehlurljvyhllddmxbume', 'myepbbuqkhpvsaymlwgl'],
+            parameter_cd='jeidxkiicewjjcanzslh',
+            timeseries_cd='sqnmkggjsttahuhlnlfy'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'gotgqnqwndtcmiofbeys'
+        test_value = 'grambmaloojgtppmkxfe'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'tioejodvrsxqtvqcgssp'
+        test_value = 'jwmgkmbccwdzrjpsfosi'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(42.833457331087786)
+        test_value = float(61.818716255243466)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'khfynnavpoclwfjftapz'
+        test_value = 'wsqoawarjqcqubqiogiw'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['vwckukkqtqchwaieyxji', 'scmtirzvmlyijyrotbzb']
+        test_value = ['akqntsutvuzfeozqyvgs', 'tvphdkezeduxmddeeiux', 'ehlurljvyhllddmxbume', 'myepbbuqkhpvsaymlwgl']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'qxmantktipjkodcrfgcd'
+        test_value = 'jeidxkiicewjjcanzslh'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_SpecificConductance(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'dotiqvjwvgetokpjiajx'
+        test_value = 'sqnmkggjsttahuhlnlfy'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

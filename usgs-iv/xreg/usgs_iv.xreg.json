@@ -15,6 +15,10 @@
                         "source": {
                             "value": "{source_uri}",
                             "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{agency_cd}/{site_no}",
+                            "type": "uritemplate"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
