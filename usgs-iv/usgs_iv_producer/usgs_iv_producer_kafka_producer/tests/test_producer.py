@@ -107,7 +107,7 @@ async def test_usgs_sites_usgssitessite(kafka_emulator):
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSSitesEventProducer(kafka_producer, topic, 'binary')
     event_data = Test_Site.create_instance()
-    await producer_instance.send_usgs_sites_site(_source_uri = 'test', data = event_data)
+    await producer_instance.send_usgs_sites_site(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', data = event_data)
 
     assert await asyncio.wait_for(on_event(), timeout=10)
     consumer.close()

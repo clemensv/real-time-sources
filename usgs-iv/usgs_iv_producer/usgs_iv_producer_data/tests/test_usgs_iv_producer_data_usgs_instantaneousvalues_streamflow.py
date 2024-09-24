@@ -28,13 +28,13 @@ class Test_Streamflow(unittest.TestCase):
         Create instance of Streamflow for testing
         """
         instance = Streamflow(
-            site_no='zedvnregwsvajylfdsal',
-            datetime='fcyduumwvpbkhkuplpmv',
-            value=float(96.87091435622936),
-            exception='tdmvdrlwkkswxdpqntrf',
-            qualifiers=['crpdwilivtmevjcszegq', 'fdnelhmstfzxtwceclsv', 'tkqquddxvyzkbuuuqner', 'nhvqoytnaqvccvjyxgql'],
-            parameter_cd='qifeqgctuckltentoueo',
-            timeseries_cd='knewysuoegddsbxycptj'
+            site_no='bfkrfxfpwjllhdfmrmon',
+            datetime='ejracdcqjejoknawmekw',
+            value=float(50.213976690290416),
+            exception='bgfwrzdoexraopsnjpdj',
+            qualifiers=['zwirmgipquysrpojrhsy', 'rzrcuvmwnpddcrvqrpjp', 'wtjcrojiijcnzcigulcw', 'okcogfesnomtwuntbmjj'],
+            parameter_cd='fxaxkaxucfsmwwgsluds',
+            timeseries_cd='gqhhsxojuhqortqdkffn'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'zedvnregwsvajylfdsal'
+        test_value = 'bfkrfxfpwjllhdfmrmon'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'fcyduumwvpbkhkuplpmv'
+        test_value = 'ejracdcqjejoknawmekw'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(96.87091435622936)
+        test_value = float(50.213976690290416)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'tdmvdrlwkkswxdpqntrf'
+        test_value = 'bgfwrzdoexraopsnjpdj'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['crpdwilivtmevjcszegq', 'fdnelhmstfzxtwceclsv', 'tkqquddxvyzkbuuuqner', 'nhvqoytnaqvccvjyxgql']
+        test_value = ['zwirmgipquysrpojrhsy', 'rzrcuvmwnpddcrvqrpjp', 'wtjcrojiijcnzcigulcw', 'okcogfesnomtwuntbmjj']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'qifeqgctuckltentoueo'
+        test_value = 'fxaxkaxucfsmwwgsluds'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_Streamflow(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'knewysuoegddsbxycptj'
+        test_value = 'gqhhsxojuhqortqdkffn'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

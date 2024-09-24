@@ -1,4 +1,4 @@
-from .sitetimeseries import SiteTimeseries
 from .site import Site
+from .sitetimeseries import SiteTimeseries
 
-__all__ = ["SiteTimeseries", "Site"]
+__all__ = ["Site", "SiteTimeseries"]

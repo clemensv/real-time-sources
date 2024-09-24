@@ -28,13 +28,13 @@ class Test_Turbidity(unittest.TestCase):
         Create instance of Turbidity for testing
         """
         instance = Turbidity(
-            site_no='qucivtlonsqivopwzler',
-            datetime='sxjtykgeqyudvvwmxqic',
-            value=float(96.44740610919054),
-            exception='cvqcljsecghqrfycawxe',
-            qualifiers=['srsauyiiflksgvitlofr', 'pocxunifspnfqnecbsrs', 'hahuxfjimqeukumpobmp'],
-            parameter_cd='wwmgmefyyhqfszwlsmbc',
-            timeseries_cd='ahaufqherbpmslowogxu'
+            site_no='maritikanskktqilxcuf',
+            datetime='pfcywezmwahwpeiycihz',
+            value=float(76.30036474929089),
+            exception='dsssvnzjpgiewsosjlgd',
+            qualifiers=['ffhezhgeipevnduynqzs', 'nvhsustfdgqdvewsfmwf', 'qbvkbasjifpcyqpavaso', 'hurfsbioqjuikqqubykt', 'ttoeapdlsmikawipwudy'],
+            parameter_cd='fuconqhlkeeihdmvosoy',
+            timeseries_cd='uegzgwqvvlvnawycmsst'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Turbidity(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'qucivtlonsqivopwzler'
+        test_value = 'maritikanskktqilxcuf'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_Turbidity(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'sxjtykgeqyudvvwmxqic'
+        test_value = 'pfcywezmwahwpeiycihz'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_Turbidity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(96.44740610919054)
+        test_value = float(76.30036474929089)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_Turbidity(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'cvqcljsecghqrfycawxe'
+        test_value = 'dsssvnzjpgiewsosjlgd'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_Turbidity(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['srsauyiiflksgvitlofr', 'pocxunifspnfqnecbsrs', 'hahuxfjimqeukumpobmp']
+        test_value = ['ffhezhgeipevnduynqzs', 'nvhsustfdgqdvewsfmwf', 'qbvkbasjifpcyqpavaso', 'hurfsbioqjuikqqubykt', 'ttoeapdlsmikawipwudy']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_Turbidity(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'wwmgmefyyhqfszwlsmbc'
+        test_value = 'fuconqhlkeeihdmvosoy'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_Turbidity(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'ahaufqherbpmslowogxu'
+        test_value = 'uegzgwqvvlvnawycmsst'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     
