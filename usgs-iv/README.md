@@ -1,8 +1,8 @@
-# USGS Instantaneous Value Service Usage Guide
+# USGS Water Services - Instantaneous Value Service Usage Guide
 
 ## Overview
 
-**USGS-IV** is a tool designed to interact with the USGS Instantaneous Value Service API to fetch water level data for rivers in the United States. The tool can retrieve water level data from individual stations, list available stations, or continuously poll the API to send water level updates to a Kafka topic.
+**USGS-IV** is a tool designed to interact with the [USGS Water Services](https://waterservices.usgs.gov/) Instantaneous Value Service API to fetch water level data for rivers in the United States. The tool can retrieve water level data from individual stations, list available stations, or continuously poll the API to send water level updates to a Kafka topic.
 
 ## Key Features:
 - **Water Level Fetching**: Retrieve current water level data for specific stations from the USGS Instantaneous Value Service API.
