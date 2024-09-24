@@ -10,7 +10,7 @@ information. GTFS-RT is a real-time extension to GTFS that allows public
 transportation agencies to provide real-time updates about their fleet. Over 2000
 transit agencies worldwide provide GTFS and GTFS-RT data.
 
-The [Mobility Database](mobilitydatabase.org) provides a comprehensive list of GTFS
+The [Mobility Database](https://mobilitydatabase.org) provides a comprehensive list of GTFS
 and GTFS-RT feeds from around the world. 
 
 The bridge fetches GTFS and GTFS-RT data from the supplied URLs and writes the
