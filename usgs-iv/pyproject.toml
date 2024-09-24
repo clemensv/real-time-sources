@@ -13,6 +13,8 @@ confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
 gtfs-realtime-bindings = ">=1.0.0"
 requests = ">=2.32.3"
+aiohttp = ">=3.10.5"
+asyncio = ">=3.4.3"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"

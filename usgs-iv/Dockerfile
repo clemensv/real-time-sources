@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 LABEL org.opencontainers.image.source = "https://github.com/clemensv/real-time-sources/tree/main/usgs_iv"
 LABEL org.opencontainers.image.title = "USGS Instantaneous Values Service bridge to Kafka endpoints"
@@ -18,6 +18,7 @@ RUN pip install .
 
 # Define environment variables (default values)
 ENV CONNECTION_STRING=""
+ENV LOG_LEVEL="INFO"
 
 # Run the application
 CMD ["python", "-m", "usgs_iv", "feed"]
