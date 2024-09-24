@@ -1,4 +1,4 @@
-# USGS Water Services Instantaneous Values Service bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# USGS Water Services - Instantaneous Values Service bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 
 This container image provides a bridge between the [USGS Water Services](https://waterservices.usgs.gov/) Instantaneous Values
 Service and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge
