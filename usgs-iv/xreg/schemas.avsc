@@ -26,6 +26,16 @@
         "type": "string"
       },
       {
+        "name": "lat_va",
+        "doc": "DMS latitude.",
+        "type": "string"
+      },
+      {
+        "name": "long_va",
+        "doc": "DMS longitude.",
+        "type": "string"
+      },
+      {
         "name": "dec_lat_va",
         "doc": "Decimal latitude.",
         "type": [
@@ -44,14 +54,63 @@
         "default": null
       },
       {
+        "name": "coord_meth_cd",
+        "doc": "Latitude-longitude method code.",
+        "type": "string"
+      },
+      {
         "name": "coord_acy_cd",
         "doc": "Coordinate accuracy code.",
         "type": "string"
       },
       {
-        "name": "dec_coord_datum_cd",
-        "doc": "Decimal coordinate datum code.",
+        "name": "coord_datum_cd",
+        "doc": "Latitude-longitude datum code.",
         "type": "string"
+      },
+      {
+        "name": "dec_coord_datum_cd",
+        "doc": "Decimal latitude-longitude datum code.",
+        "type": "string"
+      },
+      {
+        "name": "district_cd",
+        "doc": "District code.",
+        "type": "string"
+      },
+      {
+        "name": "state_cd",
+        "doc": "State code.",
+        "type": "string"
+      },
+      {
+        "name": "county_cd",
+        "doc": "County code.",
+        "type": "string"
+      },
+      {
+        "name": "country_cd",
+        "doc": "Country code.",
+        "type": "string"
+      },
+      {
+        "name": "land_net_ds",
+        "doc": "Land net location description.",
+        "type": "string"
+      },
+      {
+        "name": "map_nm",
+        "doc": "Location map name.",
+        "type": "string"
+      },
+      {
+        "name": "map_scale_fc",
+        "doc": "Location map scale factor.",
+        "type": [
+          "null",
+          "float"
+        ],
+        "default": null
       },
       {
         "name": "alt_va",
@@ -61,6 +120,11 @@
           "float"
         ],
         "default": null
+      },
+      {
+        "name": "alt_meth_cd",
+        "doc": "Method altitude determined code.",
+        "type": "string"
       },
       {
         "name": "alt_acy_va",
@@ -74,6 +138,125 @@
       {
         "name": "alt_datum_cd",
         "doc": "Altitude datum code.",
+        "type": "string"
+      },
+      {
+        "name": "huc_cd",
+        "doc": "Hydrologic unit code.",
+        "type": "string"
+      },
+      {
+        "name": "basin_cd",
+        "doc": "Drainage basin code.",
+        "type": "string"
+      },
+      {
+        "name": "topo_cd",
+        "doc": "Topographic setting code.",
+        "type": "string"
+      },
+      {
+        "name": "instruments_cd",
+        "doc": "Flags for instruments at site.",
+        "type": "string"
+      },
+      {
+        "name": "construction_dt",
+        "doc": "Date of first construction.",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
+      },
+      {
+        "name": "inventory_dt",
+        "doc": "Date site established or inventoried.",
+        "type": [
+          "null",
+          "string"
+        ],
+        "default": null
+      },
+      {
+        "name": "drain_area_va",
+        "doc": "Drainage area.",
+        "type": [
+          "null",
+          "float"
+        ],
+        "default": null
+      },
+      {
+        "name": "contrib_drain_area_va",
+        "doc": "Contributing drainage area.",
+        "type": [
+          "null",
+          "float"
+        ],
+        "default": null
+      },
+      {
+        "name": "tz_cd",
+        "doc": "Time Zone abbreviation.",
+        "type": "string"
+      },
+      {
+        "name": "local_time_fg",
+        "doc": "Site honors Daylight Savings Time flag.",
+        "type": "boolean"
+      },
+      {
+        "name": "reliability_cd",
+        "doc": "Data reliability code.",
+        "type": "string"
+      },
+      {
+        "name": "gw_file_cd",
+        "doc": "Data-other GW files code.",
+        "type": "string"
+      },
+      {
+        "name": "nat_aqfr_cd",
+        "doc": "National aquifer code.",
+        "type": "string"
+      },
+      {
+        "name": "aqfr_cd",
+        "doc": "Local aquifer code.",
+        "type": "string"
+      },
+      {
+        "name": "aqfr_type_cd",
+        "doc": "Local aquifer type code.",
+        "type": "string"
+      },
+      {
+        "name": "well_depth_va",
+        "doc": "Well depth.",
+        "type": [
+          "null",
+          "float"
+        ],
+        "default": null
+      },
+      {
+        "name": "hole_depth_va",
+        "doc": "Hole depth.",
+        "type": [
+          "null",
+          "float"
+        ],
+        "default": null
+      },
+      {
+        "name": "depth_src_cd",
+        "doc": "Source of depth data.",
+        "type": "string"
+      },
+      {
+        "name": "project_no",
+        "doc": "Project number.",
         "type": "string"
       }
     ]

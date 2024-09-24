@@ -502,7 +502,7 @@ class USGSDataPoller:
         """Get all sites in a state."""
 
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
-            url = f'https://waterservices.usgs.gov/nwis/site/?format=rdb&stateCd={state_code}'
+            url = f'https://waterservices.usgs.gov/nwis/site/?format=rdb&stateCd={state_code}&siteOutput=expanded'
             async with session.get(url) as response:
                 data = await response.text()
 
@@ -530,13 +530,44 @@ class USGSDataPoller:
                     site_no=site_data.get('site_no', ''),
                     station_nm=site_data.get('station_nm', ''),
                     site_tp_cd=site_data.get('site_tp_cd', ''),
+                    lat_va=site_data.get('lat_va', ''),
+                    long_va=site_data.get('long_va', ''),
                     dec_lat_va=parse_float(site_data.get('dec_lat_va', '')),
                     dec_long_va=parse_float(site_data.get('dec_long_va', '')),
+                    coord_meth_cd=site_data.get('coord_meth_cd', ''),
                     coord_acy_cd=site_data.get('coord_acy_cd', ''),
+                    coord_datum_cd=site_data.get('coord_datum_cd', ''),
                     dec_coord_datum_cd=site_data.get('dec_coord_datum_cd', ''),
+                    district_cd=site_data.get('district_cd', ''),
+                    state_cd=site_data.get('state_cd', ''),
+                    county_cd=site_data.get('county_cd', ''),
+                    country_cd=site_data.get('country_cd', ''),
+                    land_net_ds=site_data.get('land_net_ds', ''),
+                    map_nm=site_data.get('map_nm', ''),
+                    map_scale_fc=parse_float(site_data.get('map_scale_fc', '')),
                     alt_va=parse_float(site_data.get('alt_va', '')),
+                    alt_meth_cd=site_data.get('alt_meth_cd', ''),
                     alt_acy_va=parse_float(site_data.get('alt_acy_va', '')),
                     alt_datum_cd=site_data.get('alt_datum_cd', ''),
+                    huc_cd=site_data.get('huc_cd', ''),
+                    basin_cd=site_data.get('basin_cd', ''),
+                    topo_cd=site_data.get('topo_cd', ''),
+                    instruments_cd=site_data.get('instruments_cd', ''),
+                    construction_dt=site_data.get('construction_dt', None),
+                    inventory_dt=site_data.get('inventory_dt', None),
+                    drain_area_va=parse_float(site_data.get('drain_area_va', '')),
+                    contrib_drain_area_va=parse_float(site_data.get('contrib_drain_area_va', '')),
+                    tz_cd=site_data.get('tz_cd', ''),
+                    local_time_fg=site_data.get('local_time_fg', False),
+                    reliability_cd=site_data.get('reliability_cd', ''),
+                    gw_file_cd=site_data.get('gw_file_cd', ''),
+                    nat_aqfr_cd=site_data.get('nat_aqfr_cd', ''),
+                    aqfr_cd=site_data.get('aqfr_cd', ''),
+                    aqfr_type_cd=site_data.get('aqfr_type_cd', ''),
+                    well_depth_va=parse_float(site_data.get('well_depth_va', '')),
+                    hole_depth_va=parse_float(site_data.get('hole_depth_va', '')),
+                    depth_src_cd=site_data.get('depth_src_cd', ''),
+                    project_no=site_data.get('project_no', '')
                 )
                 yield site
 
