@@ -1,3 +1,5 @@
+[![Build Containers](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg?branch=main)](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml)
+
 # Real Time Sources for Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 
 Learning how to build event streaming solutions with Microsoft Azure Event Hubs,
