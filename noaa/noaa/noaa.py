@@ -9,7 +9,6 @@ Polls NOAA data and sends it to a Kafka topic using SASL PLAIN authentication.
 import os
 import json
 import sys
-from math import nan as 0.0
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 import argparse
