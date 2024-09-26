@@ -155,16 +155,19 @@ class NOAADataPoller:
         Returns:
             Dict: The last polled times for each station and product.
         """
-        if os.path.exists(self.last_polled_file):
-            with open(self.last_polled_file, 'r', encoding='utf-8') as file:
-                saved_times: Dict[str, Dict[str, str]] = json.load(file)
-                last_polled_times: Dict[str, Dict[str, datetime]] = {}
-                for product, stations in saved_times.items():
-                    for station, timestamp in stations.items():
-                        if product not in last_polled_times:
-                            last_polled_times[product] = {}
-                        last_polled_times[product][station] = datetime.fromisoformat(timestamp)
-                return last_polled_times
+        try:
+            if os.path.exists(self.last_polled_file):
+                with open(self.last_polled_file, 'r', encoding='utf-8') as file:
+                    saved_times: Dict[str, Dict[str, str]] = json.load(file)
+                    last_polled_times: Dict[str, Dict[str, datetime]] = {}
+                    for product, stations in saved_times.items():
+                        for station, timestamp in stations.items():
+                            if product not in last_polled_times:
+                                last_polled_times[product] = {}
+                            last_polled_times[product][station] = datetime.fromisoformat(timestamp)
+                    return last_polled_times
+        except Exception as e:
+            print(f"Error loading last polled times: {e}")
         return {}
 
     def save_last_polled_times(self, last_polled_times: Dict):
