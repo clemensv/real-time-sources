@@ -166,8 +166,8 @@ class NOAADataPoller:
                                 last_polled_times[product] = {}
                             last_polled_times[product][station] = datetime.fromisoformat(timestamp)
                     return last_polled_times
-        except Exception as e:
-            print(f"Error loading last polled times: {e}")
+        except Exception:
+            print("Error loading last polled times")
         return {}
 
     def save_last_polled_times(self, last_polled_times: Dict):
