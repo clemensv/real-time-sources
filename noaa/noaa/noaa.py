@@ -9,7 +9,7 @@ Polls NOAA data and sends it to a Kafka topic using SASL PLAIN authentication.
 import os
 import json
 import sys
-from math import nan as NaN
+from math import nan as 0.0
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 import argparse
@@ -214,8 +214,8 @@ class NOAADataPoller:
                             water_level = WaterLevel(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
-                                stddev=float(record['s']) if 's' in record and record['s'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
+                                stddev=float(record['s']) if 's' in record and record['s'] else 0.0,
                                 outside_sigma_band=bool(record.get('f', '').split(',')[0] == '1'),
                                 flat_tolerance_limit=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_limit=bool(record.get('f', '').split(',')[2] == '1'),
@@ -229,7 +229,7 @@ class NOAADataPoller:
                             prediction = Predictions(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                             )
                             self.producer.send_microsoft_opendata_us_noaa_predictions(
                                 prediction, station_id, flush_producer=False)
@@ -237,7 +237,7 @@ class NOAADataPoller:
                             air_temperature = AirTemperature(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_temp_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 min_temp_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
@@ -248,10 +248,10 @@ class NOAADataPoller:
                             wind = Wind(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                speed=float(record['s']) if 's' in record and record['s'] else NaN,
-                                direction_degrees=record['d'] if 'd' in record and record['d'] else NaN,
+                                speed=float(record['s']) if 's' in record and record['s'] else 0.0,
+                                direction_degrees=record['d'] if 'd' in record and record['d'] else 0.0,
                                 direction_text=record['dr'] if 'dr' in record and record['dr'] else '',
-                                gusts=float(record['g']) if 'g' in record and record['g'] else NaN,
+                                gusts=float(record['g']) if 'g' in record and record['g'] else 0.0,
                                 max_wind_speed_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[1] == '1')
                             )
@@ -260,7 +260,7 @@ class NOAADataPoller:
                             air_pressure = AirPressure(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_pressure_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 min_pressure_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
@@ -271,7 +271,7 @@ class NOAADataPoller:
                             water_temperature = WaterTemperature(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_temp_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 min_temp_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
@@ -282,7 +282,7 @@ class NOAADataPoller:
                             conductivity = Conductivity(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_conductivity_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 min_conductivity_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
@@ -293,7 +293,7 @@ class NOAADataPoller:
                             visibility = Visibility(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_visibility_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 min_visibility_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
@@ -304,7 +304,7 @@ class NOAADataPoller:
                             humidity = Humidity(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                value=float(record['v']) if 'v' in record and record['v'] else NaN,
+                                value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_humidity_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 min_humidity_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
@@ -315,8 +315,8 @@ class NOAADataPoller:
                             salinity = Salinity(
                                 station_id=station_id,
                                 timestamp=timestamp.isoformat(),
-                                salinity=float(record['s']) if 's' in record and record['s'] else NaN,
-                                grams_per_kg=float(record['g']) if 'g' in record and record['g'] else NaN,
+                                salinity=float(record['s']) if 's' in record and record['s'] else 0.0,
+                                grams_per_kg=float(record['g']) if 'g' in record and record['g'] else 0.0,
                             )
                             self.producer.send_microsoft_opendata_us_noaa_salinity(
                                 salinity, station_id, flush_producer=False)
