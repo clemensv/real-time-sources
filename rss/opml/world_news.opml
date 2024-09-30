@@ -54,11 +54,13 @@
         <outline />
         <outline text="Politico.EU on BlueSky" title="Politico.EU on BlueSky" type="rss"
             xmlUrl="https://bsky.app/profile/did:plc:bak7f4b3jsiqlpyo6o4ejaji/rss" />
-        <outline text="Euractiv" title="Euractiv" type="rss"
-            xmlUrl="https://bsky.app/profile/did:plc:npdxsw4zvih4gcyqppoql7qk/rss" />
-        <outline text="Press Gazette" title="Press Gazette" type="rss"
+       <outline text="Press Gazette" title="Press Gazette" type="rss"
             xmlUrl="https://bsky.app/profile/did:plc:m44am22qggkwh6xqvddql3ss/rss" />
         <outline text="Kyiv Independent" title="Kyiv Independent" type="rss"
             xmlUrl="https://bsky.app/profile/did:plc:yazbevg3wkzp5llnzb44tqgh/rss" />
+        <outline text="The Jerusalem Post" xmlUrl="https://rss.jpost.com/rss/rssfeedsfrontpage.aspx" />
+        <outline text="Haaretz" xmlUrl="https://www.haaretz.com/srv/haaretz-latest-headlines" />
+        <outline text="Al Jazeera" xmlUrl="https://www.aljazeera.com/xml/rss/all.xml" />
+        <outline text="France 24" xmlurl="https://www.france24.com/en/rss" />
     </body>
 </opml>
