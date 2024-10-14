@@ -16,6 +16,7 @@ import logging
 from typing import Any, Dict, List, Tuple
 from datetime import datetime, timedelta, timezone
 from tempfile import TemporaryDirectory
+import uuid
 from zipfile import ZipFile
 from enum import Enum
 import dataclasses
@@ -303,7 +304,7 @@ def map_areas(rows: List[Dict[str, Any]]) -> List[Areas]:
 def map_attributions(rows: List[Dict[str, Any]]) -> List[Attributions]:
     """Maps the rows from the attributions.txt file to a list of Attributions objects"""
     return [Attributions(
-        attributionId=row.get("attribution_id"),
+        attributionId=row.get("attribution_id", row.get("trip_id", uuid.uuid4().hex)),
         agencyId=row.get("agency_id"),
         routeId=row.get("route_id"),
         tripId=row.get("trip_id"),
@@ -815,7 +816,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_attributions(file_contents)
                 logger.info("Processing %s attributions entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_attributions(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.attributionId+"/"+entity.routeId+"/"+entity.tripId, entity, flush_producer=False)
+                    await reference_producer_client.send_general_transit_feed_static_attributions(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.attributionId+"/"+(entity.routeId if entity.routeId else "any")+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
