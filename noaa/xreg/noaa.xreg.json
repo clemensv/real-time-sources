@@ -521,7 +521,7 @@
                                     },
                                     {
                                         "name": "value",
-                                        "type": "string",
+                                        "type": "double",
                                         "unit": "%",
                                         "doc": "{\"description\": \"Value of the humidity\"}"
                                     },
@@ -575,7 +575,7 @@
                                     },
                                     {
                                         "name": "value",
-                                        "type": "string",
+                                        "type": "double",
                                         "unit": "S/m",
                                         "doc": "{\"description\": \"Value of the conductivity\"}"
                                     },
