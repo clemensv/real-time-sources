@@ -2735,9 +2735,10 @@
     ___id:string,
     ___time:datetime,
     ___subject:string
+)
 
 .alter table VehiclePositionsFlat policy update
-`
+```
 [
   {
     "IsEnabled": true,
@@ -2747,7 +2748,8 @@
     "PropagateIngestionProperties": true
   }
 ]
-`
+```
+
 
 .create-merge table TripUpdateFlattened (
     trip_id: string,
@@ -2833,10 +2835,13 @@
         ___subject
 }
 
-.alter table TripUpdateFlattened policy update @'[{
+.alter table TripUpdateFlattened policy update 
+```
+[{
     "IsEnabled": true,
     "Source": "TripUpdate",
     "Query": "TripUpdateFlattenFunction()",
     "IsTransactional": false,
     "PropagateIngestionProperties": false
-}]'
+}]
+```
