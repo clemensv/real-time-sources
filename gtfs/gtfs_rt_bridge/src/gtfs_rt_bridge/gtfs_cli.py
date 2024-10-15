@@ -1061,14 +1061,20 @@ async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, k
             start_time = datetime.now(timezone.utc)
             if gtfs_urls:
                 if force_schedule_refresh or (last_schedule_run is None or datetime.now() - last_schedule_run > timedelta(seconds=schedule_poll_interval)):
-                    last_schedule_run = datetime.now()
-                    logger.info("Fetching schedule from %s", gtfs_urls)
-                    await fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_schedule_refresh, cache_dir=cache_dir)
-                    force_schedule_refresh = False
+                    try:
+                        last_schedule_run = datetime.now()
+                        logger.info("Fetching schedule from %s", gtfs_urls)
+                        await fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_schedule_refresh, cache_dir=cache_dir)
+                        force_schedule_refresh = False
+                    except Exception as e:
+                        logger.error("Failed to fetch and process schedule: %s", e)
             if gtfs_rt_urls:
                 logger.info("Polling feed updates from %s", gtfs_rt_urls)
                 for gtfs_feed_url in gtfs_rt_urls:
-                    await poll_and_submit_realtime_feed(agency_id, gtfs_rt_producer, gtfs_feed_url, gtfs_rt_headers, route)
+                    try:
+                        await poll_and_submit_realtime_feed(agency_id, gtfs_rt_producer, gtfs_feed_url, gtfs_rt_headers, route)
+                    except Exception as e:
+                        logger.error("Failed to poll and submit feed updates from %s: %s", gtfs_feed_url, e)
             logger.info("Sleeping for %s seconds. Press Ctrl+C to stop.", poll_interval)
             end_time = datetime.now(timezone.utc)
             elapsed_time = end_time - start_time
