@@ -10,8 +10,8 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate import TripUpdate
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripdescriptor import Test_TripDescriptor
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeupdate import Test_StopTimeUpdate
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_vehicledescriptor import Test_VehicleDescriptor
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeupdate import Test_StopTimeUpdate
 
 
 class Test_TripUpdate(unittest.TestCase):
@@ -33,9 +33,9 @@ class Test_TripUpdate(unittest.TestCase):
         instance = TripUpdate(
             trip=Test_TripDescriptor.create_instance(),
             vehicle=Test_VehicleDescriptor.create_instance(),
-            stop_time_update=[Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance()],
-            timestamp=int(56),
-            delay=int(69)
+            stop_time_update=[Test_StopTimeUpdate.create_instance()],
+            timestamp=int(8),
+            delay=int(65)
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test stop_time_update property
         """
-        test_value = [Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance()]
+        test_value = [Test_StopTimeUpdate.create_instance()]
         self.instance.stop_time_update = test_value
         self.assertEqual(self.instance.stop_time_update, test_value)
     
@@ -68,7 +68,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(56)
+        test_value = int(8)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -76,7 +76,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test delay property
         """
-        test_value = int(69)
+        test_value = int(65)
         self.instance.delay = test_value
         self.assertEqual(self.instance.delay, test_value)
     

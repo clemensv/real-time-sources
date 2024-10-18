@@ -14,12 +14,12 @@ import json
 @dataclasses.dataclass
 class FeedItemTitle:
     """
-    A FeedItemTitle record.
+    The title of the feed item.
     Attributes:
-        value (typing.Optional[str]): 
-        type (typing.Optional[str]): 
-        language (typing.Optional[str]): 
-        base (typing.Optional[str]): """
+        value (typing.Optional[str]): The text content of the title.
+        type (typing.Optional[str]): The content type of the title.
+        language (typing.Optional[str]): The language of the title.
+        base (typing.Optional[str]): The base URI for resolving relative URIs within the title."""
     
     value: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))

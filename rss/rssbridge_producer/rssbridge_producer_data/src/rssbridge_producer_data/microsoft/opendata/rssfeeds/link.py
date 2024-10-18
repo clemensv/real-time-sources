@@ -14,12 +14,12 @@ import json
 @dataclasses.dataclass
 class Link:
     """
-    A Link record.
+    Represents a hyperlink associated with the feed or feed item.
     Attributes:
-        rel (typing.Optional[str]): 
-        href (typing.Optional[str]): 
-        type (typing.Optional[str]): 
-        title (typing.Optional[str]): """
+        rel (typing.Optional[str]): The relationship type of the link, such as 'alternate' or 'self'.
+        href (typing.Optional[str]): The URL of the link.
+        type (typing.Optional[str]): The MIME type of the linked resource.
+        title (typing.Optional[str]): The title or description of the link."""
     
     rel: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rel"))
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))

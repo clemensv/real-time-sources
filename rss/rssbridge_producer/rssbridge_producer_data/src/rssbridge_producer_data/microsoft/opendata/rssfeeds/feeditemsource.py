@@ -9,8 +9,8 @@ import dataclasses
 import dataclasses_json
 import json
 from marshmallow import fields
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 import datetime
 
 
@@ -18,20 +18,20 @@ import datetime
 @dataclasses.dataclass
 class FeedItemSource:
     """
-    A FeedItemSource record.
+    Metadata about the original source feed, useful if the item was republished from another feed.
     Attributes:
-        author (typing.Optional[str]): 
-        author_detail (typing.Optional[FeedItemAuthor]): 
-        contributors (typing.Optional[typing.List[FeedItemAuthor]]): 
-        icon (typing.Optional[str]): 
-        id (typing.Optional[str]): 
-        link (typing.Optional[str]): 
-        links (typing.Optional[typing.List[Link]]): 
-        logo (typing.Optional[str]): 
-        rights (typing.Optional[str]): 
-        subtitle (typing.Optional[str]): 
-        title (typing.Optional[str]): 
-        updated (typing.Optional[datetime.datetime]): """
+        author (typing.Optional[str]): The name of the original author.
+        author_detail (typing.Optional[FeedItemAuthor]): Detailed information about the original author.
+        contributors (typing.Optional[typing.List[FeedItemAuthor]]): A list of contributors to the source feed.
+        icon (typing.Optional[str]): An icon image associated with the source feed.
+        id (typing.Optional[str]): A unique identifier for the source feed.
+        link (typing.Optional[str]): A link to the source feed.
+        links (typing.Optional[typing.List[Link]]): A collection of links related to the source feed.
+        logo (typing.Optional[str]): A logo image associated with the source feed.
+        rights (typing.Optional[str]): Rights information for the source feed, such as copyright notices.
+        subtitle (typing.Optional[str]): A secondary title or tagline for the source feed.
+        title (typing.Optional[str]): The title of the source feed.
+        updated (typing.Optional[datetime.datetime]): The last updated timestamp of the source feed."""
     
     author: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="author"))
     author_detail: typing.Optional[FeedItemAuthor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="author_detail"))

@@ -1,8 +1,8 @@
 
-# Gtfs_rt_producer Apache Kafka Consumer SDK for Python
+# Gtfs_rt_producer Apache Kafka Producer SDK for Python
 
-This is the Gtfs_rt_producer Apache Kafka Consumer SDK for Python. It was
-generated from the xRegistry CLI tool based on message catalog definitions for
+This is the Gtfs_rt_producer Apache Kafka Producer SDK for Python. It was
+generated from the xRegistry CLI tool based on message catalog messages for
 "GeneralTransitFeedRealTime", "GeneralTransitFeedStatic".
 
 ## Quick Install
@@ -13,21 +13,21 @@ script (or `install.bat` on Windows) in the root of the repository.
 ### Contents
 
 The repository contains two projects.
-* The `gtfs_rt_producer_kafka_consumer` project is the main project that
-contains the Kafka consumer client code.
+* The `gtfs_rt_producer_kafka_producer` project is the main project that
+contains the Kafka producer client code.
 * The `gtfs_rt_producer_data` project contains the data classes for the event
 payload data.
 
-The classes defined in `gtfs_rt_producer_kafka_consumer` are documented in the
-project [README](./gtfs_rt_producer_kafka_consumer/README.md).
+The classes defined in `gtfs_rt_producer_kafka_producer` are documented in the
+project [README](./gtfs_rt_producer_kafka_producer/README.md).
 
-The `gtfs_rt_producer_kafka_consumer` project depends on the
+The `gtfs_rt_producer_kafka_producer` project depends on the
 `gtfs_rt_producer_data` project.
 
-If you want to install the consumer project, you can run the following command:
+If you want to install the producer project, you can run the following command:
 
 ```bash
-pip install ./gtfs_rt_producer_kafka_consumer
+pip install ./gtfs_rt_producer_kafka_producer
 ```
 
 This will install both packages. If you only want to install the data project,
@@ -59,7 +59,7 @@ pytest ./gtfs_rt_producer_kafka_producer/tests ./gtfs_rt_producer_data/tests
 ## Usage
 
 The sample code in [samples/sample.py](samples/sample.py) demonstrates how to
-use the Kafka consumer client to receive messages from a Kafka topic.
+use the Kafka producer client to receive messages from a Kafka topic.
 
 In your code, you create handler functions for each message type that you want
 to process. The handler functions are called when a message of that type is
@@ -94,7 +94,7 @@ hand them to the dispatcher for processing.
 
 The required parameters for the `create` method are:
 * `bootstrap_servers`: The Kafka bootstrap servers.
-* `group_id`: The consumer group ID.
+* `group_id`: The producer group ID.
 * `topics`: The list of topics to subscribe to.
 
 The example below shows how to create an event processor and then wait for a

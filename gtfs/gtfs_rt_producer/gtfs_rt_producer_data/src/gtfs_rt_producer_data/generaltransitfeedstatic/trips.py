@@ -8,11 +8,11 @@ import typing
 import dataclasses
 import dataclasses_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairaccessible import WheelchairAccessible
+from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
+from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairaccessible import WheelchairAccessible
 from gtfs_rt_producer_data.generaltransitfeedstatic.directionid import DirectionId
 from gtfs_rt_producer_data.generaltransitfeedstatic.bikesallowed import BikesAllowed
-from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
 @dataclasses_json.dataclass_json

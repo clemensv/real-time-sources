@@ -68,6 +68,7 @@ class MicrosoftOpenDataRssFeedsEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """

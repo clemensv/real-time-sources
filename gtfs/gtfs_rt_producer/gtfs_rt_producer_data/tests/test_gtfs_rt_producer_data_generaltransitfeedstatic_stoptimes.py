@@ -9,11 +9,11 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.stoptimes import StopTimes
-from test_gtfs_rt_producer_data_generaltransitfeedstatic_timepoint import Test_Timepoint
-from test_gtfs_rt_producer_data_generaltransitfeedstatic_pickuptype import Test_PickupType
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_continuousdropoff import Test_ContinuousDropOff
-from test_gtfs_rt_producer_data_generaltransitfeedstatic_dropofftype import Test_DropOffType
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_continuouspickup import Test_ContinuousPickup
+from test_gtfs_rt_producer_data_generaltransitfeedstatic_dropofftype import Test_DropOffType
+from test_gtfs_rt_producer_data_generaltransitfeedstatic_pickuptype import Test_PickupType
+from test_gtfs_rt_producer_data_generaltransitfeedstatic_timepoint import Test_Timepoint
 
 
 class Test_StopTimes(unittest.TestCase):
@@ -33,17 +33,17 @@ class Test_StopTimes(unittest.TestCase):
         Create instance of StopTimes for testing
         """
         instance = StopTimes(
-            tripId='ksotvevphvayhopfrtac',
-            arrivalTime='ebiucpzumxeccfeyrila',
-            departureTime='cfxsnvlfkmqnvnvzcdkh',
-            stopId='vpaxomwrwkceaermperi',
-            stopSequence=int(34),
-            stopHeadsign='nyqpyjrycfpfzppniptj',
+            tripId='jjyjtxkchdlatngekwfj',
+            arrivalTime='lejbyvpooisaqqsouarc',
+            departureTime='vgwttgjsgswszklfwgwv',
+            stopId='ondfgcyxkoyorajkxkcm',
+            stopSequence=int(24),
+            stopHeadsign='tiuxjpyuvbdohslvrmeg',
             pickupType=Test_PickupType.create_instance(),
             dropOffType=Test_DropOffType.create_instance(),
             continuousPickup=Test_ContinuousPickup.create_instance(),
             continuousDropOff=Test_ContinuousDropOff.create_instance(),
-            shapeDistTraveled=float(23.959564066857787),
+            shapeDistTraveled=float(37.71752954838713),
             timepoint=Test_Timepoint.create_instance()
         )
         return instance
@@ -53,7 +53,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'ksotvevphvayhopfrtac'
+        test_value = 'jjyjtxkchdlatngekwfj'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -61,7 +61,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test arrivalTime property
         """
-        test_value = 'ebiucpzumxeccfeyrila'
+        test_value = 'lejbyvpooisaqqsouarc'
         self.instance.arrivalTime = test_value
         self.assertEqual(self.instance.arrivalTime, test_value)
     
@@ -69,7 +69,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test departureTime property
         """
-        test_value = 'cfxsnvlfkmqnvnvzcdkh'
+        test_value = 'vgwttgjsgswszklfwgwv'
         self.instance.departureTime = test_value
         self.assertEqual(self.instance.departureTime, test_value)
     
@@ -77,7 +77,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test stopId property
         """
-        test_value = 'vpaxomwrwkceaermperi'
+        test_value = 'ondfgcyxkoyorajkxkcm'
         self.instance.stopId = test_value
         self.assertEqual(self.instance.stopId, test_value)
     
@@ -85,7 +85,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test stopSequence property
         """
-        test_value = int(34)
+        test_value = int(24)
         self.instance.stopSequence = test_value
         self.assertEqual(self.instance.stopSequence, test_value)
     
@@ -93,7 +93,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test stopHeadsign property
         """
-        test_value = 'nyqpyjrycfpfzppniptj'
+        test_value = 'tiuxjpyuvbdohslvrmeg'
         self.instance.stopHeadsign = test_value
         self.assertEqual(self.instance.stopHeadsign, test_value)
     
@@ -133,7 +133,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test shapeDistTraveled property
         """
-        test_value = float(23.959564066857787)
+        test_value = float(37.71752954838713)
         self.instance.shapeDistTraveled = test_value
         self.assertEqual(self.instance.shapeDistTraveled, test_value)
     

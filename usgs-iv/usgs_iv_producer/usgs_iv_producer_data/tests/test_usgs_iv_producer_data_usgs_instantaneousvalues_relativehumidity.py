@@ -28,13 +28,13 @@ class Test_RelativeHumidity(unittest.TestCase):
         Create instance of RelativeHumidity for testing
         """
         instance = RelativeHumidity(
-            site_no='ixomdirrtrtalzoszavy',
-            datetime='sqxklwkouffrtohuxdep',
-            value=float(77.04458122195783),
-            exception='pvkmlzwobdenrljfopeq',
-            qualifiers=['svgccvxmddkqulmhltqt'],
-            parameter_cd='silpwdqgsevtldrvqwgs',
-            timeseries_cd='psoqvchwszwgsoykamaf'
+            site_no='wixobmqnwffvzylyvatt',
+            datetime='aogyzmcucxgtycfiakme',
+            value=float(3.207359963135703),
+            exception='hfadxipvkihyjsihoqnc',
+            qualifiers=['zxwwgdsrgjvmiphjqkzk', 'mmqcmfefqgxryuykwhrg', 'bxfqwdmeaduybgrqxdbv', 'icsfecbxtjbbfyaamxge', 'tkluzclhjlgeqwxbqlre'],
+            parameter_cd='zngocozmdryhmflpmuyo',
+            timeseries_cd='yqngcegsvophpyxnmqvj'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_RelativeHumidity(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'ixomdirrtrtalzoszavy'
+        test_value = 'wixobmqnwffvzylyvatt'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_RelativeHumidity(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'sqxklwkouffrtohuxdep'
+        test_value = 'aogyzmcucxgtycfiakme'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_RelativeHumidity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(77.04458122195783)
+        test_value = float(3.207359963135703)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_RelativeHumidity(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'pvkmlzwobdenrljfopeq'
+        test_value = 'hfadxipvkihyjsihoqnc'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_RelativeHumidity(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['svgccvxmddkqulmhltqt']
+        test_value = ['zxwwgdsrgjvmiphjqkzk', 'mmqcmfefqgxryuykwhrg', 'bxfqwdmeaduybgrqxdbv', 'icsfecbxtjbbfyaamxge', 'tkluzclhjlgeqwxbqlre']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_RelativeHumidity(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'silpwdqgsevtldrvqwgs'
+        test_value = 'zngocozmdryhmflpmuyo'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_RelativeHumidity(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'psoqvchwszwgsoykamaf'
+        test_value = 'yqngcegsvophpyxnmqvj'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

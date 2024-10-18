@@ -14,11 +14,11 @@ import json
 @dataclasses.dataclass
 class FeedItemPublisher:
     """
-    A FeedItemPublisher record.
+    Contains information about the publisher of the feed item.
     Attributes:
-        name (typing.Optional[str]): 
-        href (typing.Optional[str]): 
-        email (typing.Optional[str]): """
+        name (typing.Optional[str]): The name of the publisher.
+        href (typing.Optional[str]): A URL associated with the publisher.
+        email (typing.Optional[str]): The publisher's email address."""
     
     name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))
