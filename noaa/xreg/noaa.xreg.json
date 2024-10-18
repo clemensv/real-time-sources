@@ -1,133 +1,121 @@
 {
     "messagegroups": {
         "Microsoft.OpenData.US.NOAA": {
-            "id": "Microsoft.OpenData.US.NOAA",
             "messages": {
                 "Microsoft.OpenData.US.NOAA.WaterLevel": {
-                    "id": "Microsoft.OpenData.US.NOAA.WaterLevel",
                     "name": "WaterLevel",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.WaterLevel"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterLevel"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterLevel"
                 },
                 "Microsoft.OpenData.US.NOAA.Predictions": {
-                    "id": "Microsoft.OpenData.US.NOAA.Predictions",
                     "name": "Predictions",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Predictions"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Predictions"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Predictions"
                 },
                 "Microsoft.OpenData.US.NOAA.AirPressure": {
-                    "id": "Microsoft.OpenData.US.NOAA.AirPressure",
                     "name": "AirPressure",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.AirPressure"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirPressure"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirPressure"
                 },
                 "Microsoft.OpenData.US.NOAA.AirTemperature": {
-                    "id": "Microsoft.OpenData.US.NOAA.AirTemperature",
                     "name": "AirTemperature",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.AirTemperature"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirTemperature"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirTemperature"
                 },
                 "Microsoft.OpenData.US.NOAA.WaterTemperature": {
-                    "id": "Microsoft.OpenData.US.NOAA.WaterTemperature",
                     "name": "WaterTemperature",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.WaterTemperature"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterTemperature"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterTemperature"
                 },
                 "Microsoft.OpenData.US.NOAA.Wind": {
-                    "id": "Microsoft.OpenData.US.NOAA.Wind",
                     "name": "Wind",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Wind"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Wind"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Wind"
                 },
                 "Microsoft.OpenData.US.NOAA.Humidity": {
-                    "id": "Microsoft.OpenData.US.NOAA.Humidity",
                     "name": "Humidity",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Humidity"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Humidity"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Humidity"
                 },
                 "Microsoft.OpenData.US.NOAA.Conductivity": {
-                    "id": "Microsoft.OpenData.US.NOAA.Conductivity",
                     "name": "Conductivity",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Conductivity"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Conductivity"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Conductivity"
                 },
                 "Microsoft.OpenData.US.NOAA.Salinity": {
-                    "id": "Microsoft.OpenData.US.NOAA.Salinity",
                     "name": "Salinity",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Salinity"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Salinity"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Salinity"
                 },
                 "Microsoft.OpenData.US.NOAA.Station": {
-                    "id": "Microsoft.OpenData.US.NOAA.Station",
                     "name": "Station",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Station"
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Station"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Station"
                 },
                 "Microsoft.OpenData.US.NOAA.Visibility": {
-                    "id": "Microsoft.OpenData.US.NOAA.Visibility",
                     "name": "Visibility",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Visibility"
                         },
@@ -149,23 +137,20 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Visibility"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Visibility"
                 }                
             }
         }
     },
     "schemagroups": {
         "Microsoft.OpenData.US.NOAA": {
-            "id": "Microsoft.OpenData.US.NOAA",
             "schemas": {
                 "Microsoft.OpenData.US.NOAA.WaterLevel": {
-                    "id": "Microsoft.OpenData.US.NOAA.WaterLevel",
                     "name": "WaterLevel",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -231,13 +216,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.Predictions": {
-                    "id": "Microsoft.OpenData.US.NOAA.Predictions",
                     "name": "Predictions",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -269,13 +252,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.AirPressure": {
-                    "id": "Microsoft.OpenData.US.NOAA.AirPressure",
                     "name": "AirPressure",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -323,13 +304,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.AirTemperature": {
-                    "id": "Microsoft.OpenData.US.NOAA.AirTemperature",
                     "name": "AirTemperature",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -377,13 +356,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.WaterTemperature": {
-                    "id": "Microsoft.OpenData.US.NOAA.WaterTemperature",
                     "name": "WaterTemperature",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -430,13 +407,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.Wind": {
-                    "id": "Microsoft.OpenData.US.NOAA.Wind",
                     "name": "Wind",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -496,13 +471,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.Humidity": {
-                    "id": "Microsoft.OpenData.US.NOAA.Humidity",
                     "name": "Humidity",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -550,13 +523,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.Conductivity": {
-                    "id": "Microsoft.OpenData.US.NOAA.Conductivity",
                     "name": "Conductivity",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -604,13 +575,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.Salinity": {
-                    "id": "Microsoft.OpenData.US.NOAA.Salinity",
                     "name": "Salinity",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -649,13 +618,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.Station": {
-                    "id": "Microsoft.OpenData.US.NOAA.Station",
                     "name": "Station",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -958,13 +925,11 @@
                     }
                 },
                 "Microsoft.OpenData.US.NOAA.Visibility": {
-                    "id": "Microsoft.OpenData.US.NOAA.Visibility",
                     "name": "Visibility",
                     "format": "Avro/1.11.3",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",

@@ -14,16 +14,16 @@ import json
 @dataclasses.dataclass
 class FeedItemAuthor:
     """
-    A FeedItemAuthor record.
+    Contains information about the author of the feed item.
     Attributes:
-        name (typing.Optional[str]):
-        href (typing.Optional[str]):
-        email (typing.Optional[str]): """
-
+        name (typing.Optional[str]): The full name of the author.
+        href (typing.Optional[str]): A URL associated with the author, such as a personal website or profile.
+        email (typing.Optional[str]): The author's email address."""
+    
     name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))
     email: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="email"))
-
+    
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
@@ -35,10 +35,10 @@ class FeedItemAuthor:
     def from_serializer_dict(cls, data: dict) -> 'FeedItemAuthor':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dictionary.
         """
@@ -57,7 +57,7 @@ class FeedItemAuthor:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v,enum.Enum):
                 return v.value
@@ -69,7 +69,7 @@ class FeedItemAuthor:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -78,7 +78,7 @@ class FeedItemAuthor:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
@@ -102,10 +102,10 @@ class FeedItemAuthor:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['FeedItemAuthor']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:

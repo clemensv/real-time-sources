@@ -9,8 +9,8 @@ import dataclasses
 import dataclasses_json
 import json
 from gtfs_rt_producer_data.generaltransitfeedstatic.continuousdropoff import ContinuousDropOff
-from gtfs_rt_producer_data.generaltransitfeedstatic.routetype import RouteType
 from gtfs_rt_producer_data.generaltransitfeedstatic.continuouspickup import ContinuousPickup
+from gtfs_rt_producer_data.generaltransitfeedstatic.routetype import RouteType
 
 
 @dataclasses_json.dataclass_json

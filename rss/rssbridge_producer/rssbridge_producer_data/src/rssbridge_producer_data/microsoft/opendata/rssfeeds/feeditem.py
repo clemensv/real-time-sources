@@ -9,14 +9,14 @@ import dataclasses
 import dataclasses_json
 import json
 from marshmallow import fields
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
 import datetime
 
 
@@ -24,24 +24,24 @@ import datetime
 @dataclasses.dataclass
 class FeedItem:
     """
-    A FeedItem record.
+    Represents an item in an RSS feed, containing metadata such as the author, title, and content.
     Attributes:
-        author (typing.Optional[FeedItemAuthor]): 
-        publisher (typing.Optional[FeedItemPublisher]): 
-        summary (typing.Optional[FeedItemSummary]): 
-        title (typing.Optional[FeedItemTitle]): 
-        source (typing.Optional[FeedItemSource]): 
-        content (typing.Optional[typing.List[FeedItemContent]]): 
-        enclosures (typing.Optional[typing.List[FeedItemEnclosure]]): 
-        published (typing.Optional[datetime.datetime]): 
-        updated (typing.Optional[datetime.datetime]): 
-        created (typing.Optional[datetime.datetime]): 
-        expired (typing.Optional[datetime.datetime]): 
-        id (typing.Optional[str]): 
-        license (typing.Optional[str]): 
-        comments (typing.Optional[str]): 
-        contributors (typing.Optional[typing.List[FeedItemAuthor]]): 
-        links (typing.Optional[typing.List[Link]]): """
+        author (typing.Optional[FeedItemAuthor]): Information about the feed item's author.
+        publisher (typing.Optional[FeedItemPublisher]): Information about the feed item's publisher.
+        summary (typing.Optional[FeedItemSummary]): A short summary of the feed item.
+        title (typing.Optional[FeedItemTitle]): The feed item's title.
+        source (typing.Optional[FeedItemSource]): Information about the source feed of the item.
+        content (typing.Optional[typing.List[FeedItemContent]]): The content of the feed item, potentially including multiple formats.
+        enclosures (typing.Optional[typing.List[FeedItemEnclosure]]): Media attachments associated with the feed item.
+        published (typing.Optional[datetime.datetime]): The publication date and time of the feed item.
+        updated (typing.Optional[datetime.datetime]): The last updated date and time of the feed item.
+        created (typing.Optional[datetime.datetime]): The creation date and time of the feed item.
+        expired (typing.Optional[datetime.datetime]): The expiration date and time of the feed item.
+        id (typing.Optional[str]): A unique identifier for the feed item.
+        license (typing.Optional[str]): License information for the feed item.
+        comments (typing.Optional[str]): A link to comments or feedback related to the feed item.
+        contributors (typing.Optional[typing.List[FeedItemAuthor]]): A list of individuals who contributed to the feed item.
+        links (typing.Optional[typing.List[Link]]): A collection of links related to the feed item."""
     
     author: typing.Optional[FeedItemAuthor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="author"))
     publisher: typing.Optional[FeedItemPublisher]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="publisher"))

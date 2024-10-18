@@ -4,18 +4,18 @@
     "endpoints": {},
     "messagegroups": {
         "de.wsv.pegelonline": {
-            "id": "de.wsv.pegelonline",
+            "messagegroupid": "de.wsv.pegelonline",
             "messages": {
                 "de.wsv.pegelonline.Station": {
-                    "id": "de.wsv.pegelonline.Station",
-                    "format": "CloudEvents/1.0",
-                    "binding": "None",
+                    "messageid": "de.wsv.pegelonline.Station",
+                    "envelope": "CloudEvents/1.0",
+                    "protocol": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.Station",
-                    "createdat": "2024-09-18T14:22:31.895724",
+                    "schemauri": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.Station",
+                    "createdat": "2024-10-18T13:58:33.108774",
                     "epoch": 0,
-                    "modifiedat": "2024-09-18T14:22:31.895724",
-                    "metadata": {
+                    "modifiedat": "2024-10-18T13:58:33.108774",
+                    "envelopemetadata": {
                         "specversion": {
                             "name": "specversion",
                             "type": "string",
@@ -46,15 +46,15 @@
                     }
                 },
                 "de.wsv.pegelonline.CurrentMeasurement": {
-                    "id": "de.wsv.pegelonline.CurrentMeasurement",
-                    "format": "CloudEvents/1.0",
-                    "binding": "None",
+                    "messageid": "de.wsv.pegelonline.CurrentMeasurement",
+                    "envelope": "CloudEvents/1.0",
+                    "protocol": "None",
                     "schemaformat": "Avro",
-                    "schemaurl": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.CurrentMeasurement",
-                    "createdat": "2024-09-18T14:22:35.100298",
+                    "schemauri": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.CurrentMeasurement",
+                    "createdat": "2024-10-18T13:58:36.974001",
                     "epoch": 0,
-                    "modifiedat": "2024-09-18T14:22:35.100298",
-                    "metadata": {
+                    "modifiedat": "2024-10-18T13:58:36.974001",
+                    "envelopemetadata": {
                         "specversion": {
                             "name": "specversion",
                             "type": "string",
@@ -85,21 +85,22 @@
                     }
                 }
             },
-            "createdat": "2024-09-18T14:22:31.895724",
+            "createdat": "2024-10-18T13:58:33.106768",
             "epoch": 0,
-            "modifiedat": "2024-09-18T14:22:31.895724"
+            "modifiedat": "2024-10-18T13:58:33.106768"
         }
     },
     "schemagroups": {
         "de.wsv.pegelonline": {
-            "id": "de.wsv.pegelonline",
+            "schemagroupid": "de.wsv.pegelonline",
             "schemas": {
                 "de.wsv.pegelonline.Station": {
-                    "id": "de.wsv.pegelonline.Station",
+                    "schemaid": "de.wsv.pegelonline.Station",
                     "format": "Avro",
                     "versions": {
                         "1": {
-                            "id": "1",
+                            "schemaid": "de.wsv.pegelonline.Station",
+                            "versionid": "1",
                             "format": "Avro",
                             "schema": {
                                 "type": "record",
@@ -169,18 +170,19 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-18T14:22:31.131859",
+                            "createdat": "2024-10-18T13:58:32.162859",
                             "epoch": 0,
-                            "modifiedat": "2024-09-18T14:22:31.131859"
+                            "modifiedat": "2024-10-18T13:58:32.162859"
                         }
                     }
                 },
                 "de.wsv.pegelonline.CurrentMeasurement": {
-                    "id": "de.wsv.pegelonline.CurrentMeasurement",
+                    "schemaid": "de.wsv.pegelonline.CurrentMeasurement",
                     "format": "Avro",
                     "versions": {
                         "1": {
-                            "id": "1",
+                            "schemaid": "de.wsv.pegelonline.CurrentMeasurement",
+                            "versionid": "1",
                             "format": "Avro",
                             "schema": {
                                 "type": "record",
@@ -219,16 +221,16 @@
                                     }
                                 ]
                             },
-                            "createdat": "2024-09-18T14:22:34.289227",
+                            "createdat": "2024-10-18T13:58:36.003307",
                             "epoch": 0,
-                            "modifiedat": "2024-09-18T14:22:34.289227"
+                            "modifiedat": "2024-10-18T13:58:36.003307"
                         }
                     }
                 }
             },
-            "createdat": "2024-09-18T14:22:31.116771",
+            "createdat": "2024-10-18T13:58:32.152843",
             "epoch": 0,
-            "modifiedat": "2024-09-18T14:22:31.116771"
+            "modifiedat": "2024-10-18T13:58:32.152843"
         }
     }
 }

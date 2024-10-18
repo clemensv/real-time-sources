@@ -14,11 +14,11 @@ import json
 @dataclasses.dataclass
 class FeedItemEnclosure:
     """
-    A FeedItemEnclosure record.
+    Represents media content attached to the feed item, such as audio or video files.
     Attributes:
-        href (typing.Optional[str]): 
-        length (typing.Optional[int]): 
-        type (typing.Optional[str]): """
+        href (typing.Optional[str]): The URL of the enclosure.
+        length (typing.Optional[int]): The size of the enclosure in bytes.
+        type (typing.Optional[str]): The MIME type of the enclosure content."""
     
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))
     length: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="length"))

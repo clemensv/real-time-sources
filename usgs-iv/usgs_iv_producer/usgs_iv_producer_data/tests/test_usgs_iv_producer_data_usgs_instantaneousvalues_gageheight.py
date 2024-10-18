@@ -28,13 +28,13 @@ class Test_GageHeight(unittest.TestCase):
         Create instance of GageHeight for testing
         """
         instance = GageHeight(
-            site_no='nfryrnusxxbbygvsypbw',
-            datetime='dnbsfrlkjcngcmioodbk',
-            value=float(79.47522664063945),
-            exception='ostwqklympsijfsiqfhk',
-            qualifiers=['voptmucqrcpafjpvispz', 'ydzvrcenrrfuiqnucvps', 'bptrhypwntehrysensan', 'hwknighvqaagklkwwyxc', 'wkbdnqhhjvaqyfowstpx'],
-            parameter_cd='phrrisgwyncuchohifrg',
-            timeseries_cd='wgqujjrvuwspgubpqeke'
+            site_no='byhnhgcbuujrwzlxmqws',
+            datetime='dxiwftihopampvkvycdp',
+            value=float(71.81153557820198),
+            exception='tztrsurdggzavavqqgil',
+            qualifiers=['mhlsocqpymqucqfpwnoo', 'zrzznvtsgxvejmhzqxpt'],
+            parameter_cd='xagkvwrzykqxacrxcrid',
+            timeseries_cd='zcvviwnxwbumuzaxngae'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_GageHeight(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'nfryrnusxxbbygvsypbw'
+        test_value = 'byhnhgcbuujrwzlxmqws'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_GageHeight(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'dnbsfrlkjcngcmioodbk'
+        test_value = 'dxiwftihopampvkvycdp'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_GageHeight(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(79.47522664063945)
+        test_value = float(71.81153557820198)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_GageHeight(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'ostwqklympsijfsiqfhk'
+        test_value = 'tztrsurdggzavavqqgil'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_GageHeight(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['voptmucqrcpafjpvispz', 'ydzvrcenrrfuiqnucvps', 'bptrhypwntehrysensan', 'hwknighvqaagklkwwyxc', 'wkbdnqhhjvaqyfowstpx']
+        test_value = ['mhlsocqpymqucqfpwnoo', 'zrzznvtsgxvejmhzqxpt']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_GageHeight(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'phrrisgwyncuchohifrg'
+        test_value = 'xagkvwrzykqxacrxcrid'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_GageHeight(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'wgqujjrvuwspgubpqeke'
+        test_value = 'zcvviwnxwbumuzaxngae'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

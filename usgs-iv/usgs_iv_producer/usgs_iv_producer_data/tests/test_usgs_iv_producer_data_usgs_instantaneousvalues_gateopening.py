@@ -28,13 +28,13 @@ class Test_GateOpening(unittest.TestCase):
         Create instance of GateOpening for testing
         """
         instance = GateOpening(
-            site_no='pfdwvjliyqwiyskrexbs',
-            datetime='ltxuelgptlokgnuftnap',
-            value=float(22.560566785505),
-            exception='cscdxzequujwghcdzpyh',
-            qualifiers=['qpkumtrcbjzrydosdhid', 'ltvmfvnscyjzugggyhkd', 'cpndckmryhslwmysipxe', 'xlrnocujzymjeerileqs'],
-            parameter_cd='rpbelczopzssaxsixabr',
-            timeseries_cd='ewkoxulktgiesztprnyy'
+            site_no='lljaerogvfwhpiioyrpg',
+            datetime='pgjtyrdgeeotwpvnvjij',
+            value=float(59.587877058611426),
+            exception='lvhhcqbhztosmgvqtakn',
+            qualifiers=['cvnnfdjflnqawytypvwq', 'jnognmfdbznwoonhsgoy', 'ffahpvcawgeesnxqzgok', 'drbaxcdhbjyuwwvqbael', 'ybsvvklgbekklhwhdwnj'],
+            parameter_cd='namqrpmdphyeaeeeurae',
+            timeseries_cd='vzeqdcvbphagdwpxxdxx'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_GateOpening(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'pfdwvjliyqwiyskrexbs'
+        test_value = 'lljaerogvfwhpiioyrpg'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_GateOpening(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'ltxuelgptlokgnuftnap'
+        test_value = 'pgjtyrdgeeotwpvnvjij'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_GateOpening(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(22.560566785505)
+        test_value = float(59.587877058611426)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_GateOpening(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'cscdxzequujwghcdzpyh'
+        test_value = 'lvhhcqbhztosmgvqtakn'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_GateOpening(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['qpkumtrcbjzrydosdhid', 'ltvmfvnscyjzugggyhkd', 'cpndckmryhslwmysipxe', 'xlrnocujzymjeerileqs']
+        test_value = ['cvnnfdjflnqawytypvwq', 'jnognmfdbznwoonhsgoy', 'ffahpvcawgeesnxqzgok', 'drbaxcdhbjyuwwvqbael', 'ybsvvklgbekklhwhdwnj']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_GateOpening(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'rpbelczopzssaxsixabr'
+        test_value = 'namqrpmdphyeaeeeurae'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_GateOpening(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'ewkoxulktgiesztprnyy'
+        test_value = 'vzeqdcvbphagdwpxxdxx'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

@@ -1,14 +1,12 @@
 {
     "messagegroups": {
         "USGS.Sites": {
-            "id": "USGS.Sites",
             "messages": {
                 "USGS.Sites.Site": {
-                    "id": "USGS.Sites.Site",
                     "name": "Site",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS site metadata.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.Sites.Site"
                         },
@@ -22,14 +20,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.Site"
+                    "schemauri": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.Site"
                 },
                 "USGS.Sites.SiteTimeseries": {
-                    "id": "USGS.Sites.SiteTimeseries",
                     "name": "SiteTimeseries",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS site timeseries metadata.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.Sites.SiteTimeseries"
                         },
@@ -43,20 +40,18 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.SiteTimeseries"
+                    "schemauri": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.SiteTimeseries"
                 }
             }
         },
         "USGS.InstantaneousValues": {
-            "id": "USGS.InstantaneousValues",
             "messages": {
                 "USGS.InstantaneousValues.OtherParameter":
                 {
-                    "id": "USGS.InstantaneousValues.OtherParameter",
                     "name": "OtherParameter",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS other parameter data.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.OtherParameter"
                         },
@@ -74,14 +69,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.OtherParameter"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.OtherParameter"
                 },
                 "USGS.InstantaneousValues.Precipitation": {
-                    "id": "USGS.InstantaneousValues.Precipitation",
                     "name": "Precipitation",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS precipitation data. Parameter code 00045.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.Precipitation"
                         },
@@ -99,14 +93,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Precipitation"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Precipitation"
                 },
                 "USGS.InstantaneousValues.Streamflow": {
-                    "id": "USGS.InstantaneousValues.Streamflow",
                     "name": "Streamflow",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS streamflow data. Parameter code 00060.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.Streamflow"
                         },
@@ -124,14 +117,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Streamflow"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Streamflow"
                 },
                 "USGS.InstantaneousValues.GageHeight": {
-                    "id": "USGS.InstantaneousValues.GageHeight",
                     "name": "GageHeight",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS gage height data. Parameter code 00065.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.GageHeight"
                         },
@@ -149,14 +141,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GageHeight"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GageHeight"
                 },
                 "USGS.InstantaneousValues.WaterTemperature": {
-                    "id": "USGS.InstantaneousValues.WaterTemperature",
                     "name": "WaterTemperature",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS water temperature data. Parameter code 00010.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.WaterTemperature"
                         },
@@ -174,14 +165,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterTemperature"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterTemperature"
                 },
                 "USGS.InstantaneousValues.DissolvedOxygen": {
-                    "id": "USGS.InstantaneousValues.DissolvedOxygen",
                     "name": "DissolvedOxygen",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS dissolved oxygen data. Parameter code 00300.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.DissolvedOxygen"
                         },
@@ -199,14 +189,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.DissolvedOxygen"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.DissolvedOxygen"
                 },
                 "USGS.InstantaneousValues.pH": {
-                    "id": "USGS.InstantaneousValues.pH",
                     "name": "pH",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS pH data. Parameter code 00400.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.pH"
                         },
@@ -224,14 +213,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.pH"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.pH"
                 },
                 "USGS.InstantaneousValues.SpecificConductance": {
-                    "id": "USGS.InstantaneousValues.SpecificConductance",
                     "name": "SpecificConductance",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS specific conductance data. Parameter code 00095.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.SpecificConductance"
                         },
@@ -249,14 +237,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.SpecificConductance"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.SpecificConductance"
                 },
                 "USGS.InstantaneousValues.Turbidity": {
-                    "id": "USGS.InstantaneousValues.Turbidity",
                     "name": "Turbidity",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS turbidity data. Parameter code 00076.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.Turbidity"
                         },
@@ -274,14 +261,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Turbidity"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Turbidity"
                 },
                 "USGS.InstantaneousValues.AirTemperature": {
-                    "id": "USGS.InstantaneousValues.AirTemperature",
                     "name": "AirTemperature",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS air temperature data. Parameter code 00020.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.AirTemperature"
                         },
@@ -299,14 +285,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.AirTemperature"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.AirTemperature"
                 },
                 "USGS.InstantaneousValues.WindSpeed": {
-                    "id": "USGS.InstantaneousValues.WindSpeed",
                     "name": "WindSpeed",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS wind speed data. Parameter code 00035.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.WindSpeed"
                         },
@@ -324,14 +309,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindSpeed"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindSpeed"
                 },
                 "USGS.InstantaneousValues.WindDirection": {
-                    "id": "USGS.InstantaneousValues.WindDirection",
                     "name": "WindDirection",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS wind direction data. Parameter codes 00036 and 163695.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.WindDirection"
                         },
@@ -349,14 +333,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindDirection"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindDirection"
                 },
                 "USGS.InstantaneousValues.RelativeHumidity": {
-                    "id": "USGS.InstantaneousValues.RelativeHumidity",
                     "name": "RelativeHumidity",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS relative humidity data. Parameter code 00052.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.RelativeHumidity"
                         },
@@ -374,14 +357,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.RelativeHumidity"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.RelativeHumidity"
                 },
                 "USGS.InstantaneousValues.BarometricPressure": {
-                    "id": "USGS.InstantaneousValues.BarometricPressure",
                     "name": "BarometricPressure",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS barometric pressure data. Parameter codes 62605 and 75969.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.BarometricPressure"
                         },
@@ -399,14 +381,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.BarometricPressure"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.BarometricPressure"
                 },
                 "USGS.InstantaneousValues.TurbidityFNU": {
-                    "id": "USGS.InstantaneousValues.TurbidityFNU",
                     "name": "TurbidityFNU",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS turbidity data (FNU). Parameter code 63680.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.TurbidityFNU"
                         },
@@ -424,14 +405,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TurbidityFNU"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TurbidityFNU"
                 },
                 "USGS.InstantaneousValues.fDOM": {
-                    "id": "USGS.InstantaneousValues.fDOM",
                     "name": "fDOM",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.fDOM"
                         },
@@ -449,14 +429,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.fDOM"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.fDOM"
                 },
                 "USGS.InstantaneousValues.ReservoirStorage": {
-                    "id": "USGS.InstantaneousValues.ReservoirStorage",
                     "name": "ReservoirStorage",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS reservoir storage data. Parameter code 00054.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.ReservoirStorage"
                         },
@@ -474,14 +453,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.ReservoirStorage"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.ReservoirStorage"
                 },
                 "USGS.InstantaneousValues.LakeElevationNGVD29": {
-                    "id": "USGS.InstantaneousValues.LakeElevationNGVD29",
                     "name": "LakeElevationNGVD29",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.LakeElevationNGVD29"
                         },
@@ -499,14 +477,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
                 },
                 "USGS.InstantaneousValues.WaterDepth": {
-                    "id": "USGS.InstantaneousValues.WaterDepth",
                     "name": "WaterDepth",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS water depth data. Parameter code 72199.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.WaterDepth"
                         },
@@ -524,14 +501,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterDepth"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterDepth"
                 },
                 "USGS.InstantaneousValues.EquipmentStatus": {
-                    "id": "USGS.InstantaneousValues.EquipmentStatus",
                     "name": "EquipmentStatus",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS equipment alarm status data. Parameter code 99235.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.EquipmentStatus"
                         },
@@ -549,14 +525,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EquipmentStatus"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EquipmentStatus"
                 },
                 "USGS.InstantaneousValues.TidallyFilteredDischarge": {
-                    "id": "USGS.InstantaneousValues.TidallyFilteredDischarge",
                     "name": "TidallyFilteredDischarge",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS tidally filtered discharge data. Parameter code 72137.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.TidallyFilteredDischarge"
                         },
@@ -574,14 +549,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
                 },
                 "USGS.InstantaneousValues.WaterVelocity": {
-                    "id": "USGS.InstantaneousValues.WaterVelocity",
                     "name": "WaterVelocity",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS water velocity data. Parameter code 72254.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.WaterVelocity"
                         },
@@ -599,14 +573,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterVelocity"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterVelocity"
                 },
                 "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
-                    "id": "USGS.InstantaneousValues.EstuaryElevationNGVD29",
                     "name": "EstuaryElevationNGVD29",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.EstuaryElevationNGVD29"
                         },
@@ -624,14 +597,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
                 },
                 "USGS.InstantaneousValues.LakeElevationNAVD88": {
-                    "id": "USGS.InstantaneousValues.LakeElevationNAVD88",
                     "name": "LakeElevationNAVD88",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.LakeElevationNAVD88"
                         },
@@ -649,14 +621,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
                 },
                 "USGS.InstantaneousValues.Salinity": {
-                    "id": "USGS.InstantaneousValues.Salinity",
                     "name": "Salinity",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS salinity data. Parameter code 00480.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.Salinity"
                         },
@@ -674,14 +645,13 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Salinity"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Salinity"
                 },
                 "USGS.InstantaneousValues.GateOpening": {
-                    "id": "USGS.InstantaneousValues.GateOpening",
                     "name": "GateOpening",
-                    "format": "CloudEvents/1.0",
+                    "envelope": "CloudEvents/1.0",
                     "description": "USGS gate opening data. Parameter code 45592.",
-                    "metadata": {
+                    "envelopemetadata": {
                         "type": {
                             "value": "USGS.InstantaneousValues.GateOpening"
                         },
@@ -699,25 +669,22 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GateOpening"
+                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GateOpening"
                 }
             }
         }
     },
     "schemagroups": {
         "USGS.Sites": {
-            "id": "USGS.Sites",
             "description": "USGS Sites",
             "schemas": {
                 "USGS.Sites.Site": {
-                    "id": "USGS.Sites.Site",
                     "name": "Site",
                     "format": "Avro/1.11.3",
                     "description": "USGS site metadata.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -985,14 +952,12 @@
                     }
                 },
                 "USGS.Sites.SiteTimeseries": {
-                    "id": "USGS.Sites.SiteTimeseries",
                     "name": "SiteTimeseries",
                     "format": "Avro/1.11.3",
                     "description": "USGS site timeseries metadata.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1033,18 +998,15 @@
             }
         },
         "USGS.InstantaneousValues": {
-            "id": "USGS.InstantaneousValues",
             "description": "USGS Instantaneous Values",
             "schemas": {
                 "USGS.InstantaneousValues.OtherParameter":{
-                    "id": "USGS.InstantaneousValues.OtherParameter",
                     "name": "OtherParameter",
                     "format": "Avro/1.11.3",
                     "description": "USGS other parameter data.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1103,14 +1065,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.Precipitation": {
-                    "id": "USGS.InstantaneousValues.Precipitation",
                     "name": "Precipitation",
                     "format": "Avro/1.11.3",
                     "description": "USGS precipitation data. Parameter code 00045.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1170,14 +1130,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.Streamflow": {
-                    "id": "USGS.InstantaneousValues.Streamflow",
                     "name": "Streamflow",
                     "format": "Avro/1.11.3",
                     "description": "USGS streamflow data. Parameter code 00060.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1237,14 +1195,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.GageHeight": {
-                    "id": "USGS.InstantaneousValues.GageHeight",
                     "name": "GageHeight",
                     "format": "Avro/1.11.3",
                     "description": "USGS gage height data. Parameter code 00065.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1304,14 +1260,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.WaterTemperature": {
-                    "id": "USGS.InstantaneousValues.WaterTemperature",
                     "name": "WaterTemperature",
                     "format": "Avro/1.11.3",
                     "description": "USGS water temperature data. Parameter code 00010.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1370,14 +1324,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.DissolvedOxygen": {
-                    "id": "USGS.InstantaneousValues.DissolvedOxygen",
                     "name": "DissolvedOxygen",
                     "format": "Avro/1.11.3",
                     "description": "USGS dissolved oxygen data. Parameter code 00300.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1436,14 +1388,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.pH": {
-                    "id": "USGS.InstantaneousValues.pH",
                     "name": "pH",
                     "format": "Avro/1.11.3",
                     "description": "USGS pH data. Parameter code 00400.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1502,14 +1452,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.SpecificConductance": {
-                    "id": "USGS.InstantaneousValues.SpecificConductance",
                     "name": "SpecificConductance",
                     "format": "Avro/1.11.3",
                     "description": "USGS specific conductance data. Parameter code 00095.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1569,14 +1517,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.Turbidity": {
-                    "id": "USGS.InstantaneousValues.Turbidity",
                     "name": "Turbidity",
                     "format": "Avro/1.11.3",
                     "description": "USGS turbidity data. Parameter code 00076.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1635,14 +1581,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.WindSpeed": {
-                    "id": "USGS.InstantaneousValues.WindSpeed",
                     "name": "WindSpeed",
                     "format": "Avro/1.11.3",
                     "description": "USGS wind speed data. Parameter code 00035.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1701,14 +1645,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.WindDirection": {
-                    "id": "USGS.InstantaneousValues.WindDirection",
                     "name": "WindDirection",
                     "format": "Avro/1.11.3",
                     "description": "USGS wind direction data. Parameter codes 00036 and 163695.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1767,14 +1709,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.RelativeHumidity": {
-                    "id": "USGS.InstantaneousValues.RelativeHumidity",
                     "name": "RelativeHumidity",
                     "format": "Avro/1.11.3",
                     "description": "USGS relative humidity data. Parameter code 00052.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1833,14 +1773,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.BarometricPressure": {
-                    "id": "USGS.InstantaneousValues.BarometricPressure",
                     "name": "BarometricPressure",
                     "format": "Avro/1.11.3",
                     "description": "USGS barometric pressure data. Parameter codes 62605 and 75969.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1899,14 +1837,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.AirTemperature": {
-                    "id": "USGS.InstantaneousValues.AirTemperature",
                     "name": "AirTemperature",
                     "format": "Avro/1.11.3",
                     "description": "USGS air temperature data. Parameter code 00020.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -1965,14 +1901,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.TurbidityFNU": {
-                    "id": "USGS.InstantaneousValues.TurbidityFNU",
                     "name": "TurbidityFNU",
                     "format": "Avro/1.11.3",
                     "description": "USGS turbidity data (FNU). Parameter code 63680.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2031,14 +1965,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.fDOM": {
-                    "id": "USGS.InstantaneousValues.fDOM",
                     "name": "fDOM",
                     "format": "Avro/1.11.3",
                     "description": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2097,14 +2029,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.ReservoirStorage": {
-                    "id": "USGS.InstantaneousValues.ReservoirStorage",
                     "name": "ReservoirStorage",
                     "format": "Avro/1.11.3",
                     "description": "USGS reservoir storage data. Parameter code 00054.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2163,14 +2093,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.LakeElevationNGVD29": {
-                    "id": "USGS.InstantaneousValues.LakeElevationNGVD29",
                     "name": "LakeElevationNGVD29",
                     "format": "Avro/1.11.3",
                     "description": "USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2229,14 +2157,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.WaterDepth": {
-                    "id": "USGS.InstantaneousValues.WaterDepth",
                     "name": "WaterDepth",
                     "format": "Avro/1.11.3",
                     "description": "USGS water depth data. Parameter code 72199.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2295,14 +2221,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.EquipmentStatus": {
-                    "id": "USGS.InstantaneousValues.EquipmentStatus",
                     "name": "EquipmentStatus",
                     "format": "Avro/1.11.3",
                     "description": "USGS equipment alarm status data. Parameter code 99235.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2344,14 +2268,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.TidallyFilteredDischarge": {
-                    "id": "USGS.InstantaneousValues.TidallyFilteredDischarge",
                     "name": "TidallyFilteredDischarge",
                     "format": "Avro/1.11.3",
                     "description": "USGS tidally filtered discharge data. Parameter code 72137.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2410,14 +2332,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.WaterVelocity": {
-                    "id": "USGS.InstantaneousValues.WaterVelocity",
                     "name": "WaterVelocity",
                     "format": "Avro/1.11.3",
                     "description": "USGS water velocity data. Parameter code 72254.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2476,14 +2396,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
-                    "id": "USGS.InstantaneousValues.EstuaryElevationNGVD29",
                     "name": "EstuaryElevationNGVD29",
                     "format": "Avro/1.11.3",
                     "description": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2542,14 +2460,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.LakeElevationNAVD88": {
-                    "id": "USGS.InstantaneousValues.LakeElevationNAVD88",
                     "name": "LakeElevationNAVD88",
                     "format": "Avro/1.11.3",
                     "description": "USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2608,14 +2524,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.Salinity": {
-                    "id": "USGS.InstantaneousValues.Salinity",
                     "name": "Salinity",
                     "format": "Avro/1.11.3",
                     "description": "USGS salinity data. Parameter code 00480.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
@@ -2674,14 +2588,12 @@
                     }
                 },
                 "USGS.InstantaneousValues.GateOpening": {
-                    "id": "USGS.InstantaneousValues.GateOpening",
                     "name": "GateOpening",
                     "format": "Avro/1.11.3",
                     "description": "USGS gate opening data. Parameter code 45592.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",

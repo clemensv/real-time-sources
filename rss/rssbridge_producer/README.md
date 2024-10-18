@@ -1,8 +1,8 @@
 
-# Rssbridge_producer Apache Kafka Consumer SDK for Python
+# Rssbridge_producer Apache Kafka Producer SDK for Python
 
-This is the Rssbridge_producer Apache Kafka Consumer SDK for Python. It was
-generated from the xRegistry CLI tool based on message catalog definitions for
+This is the Rssbridge_producer Apache Kafka Producer SDK for Python. It was
+generated from the xRegistry CLI tool based on message catalog messages for
 "Microsoft.OpenData.RssFeeds".
 
 ## Quick Install
@@ -13,21 +13,21 @@ script (or `install.bat` on Windows) in the root of the repository.
 ### Contents
 
 The repository contains two projects.
-* The `rssbridge_producer_kafka_consumer` project is the main project that
-contains the Kafka consumer client code.
+* The `rssbridge_producer_kafka_producer` project is the main project that
+contains the Kafka producer client code.
 * The `rssbridge_producer_data` project contains the data classes for the event
 payload data.
 
-The classes defined in `rssbridge_producer_kafka_consumer` are documented in the
-project [README](./rssbridge_producer_kafka_consumer/README.md).
+The classes defined in `rssbridge_producer_kafka_producer` are documented in the
+project [README](./rssbridge_producer_kafka_producer/README.md).
 
-The `rssbridge_producer_kafka_consumer` project depends on the
+The `rssbridge_producer_kafka_producer` project depends on the
 `rssbridge_producer_data` project.
 
-If you want to install the consumer project, you can run the following command:
+If you want to install the producer project, you can run the following command:
 
 ```bash
-pip install ./rssbridge_producer_kafka_consumer
+pip install ./rssbridge_producer_kafka_producer
 ```
 
 This will install both packages. If you only want to install the data project,
@@ -59,7 +59,7 @@ pytest ./rssbridge_producer_kafka_producer/tests ./rssbridge_producer_data/tests
 ## Usage
 
 The sample code in [samples/sample.py](samples/sample.py) demonstrates how to
-use the Kafka consumer client to receive messages from a Kafka topic.
+use the Kafka producer client to receive messages from a Kafka topic.
 
 In your code, you create handler functions for each message type that you want
 to process. The handler functions are called when a message of that type is
@@ -92,7 +92,7 @@ will hand them to the dispatcher for processing.
 
 The required parameters for the `create_processor` method are:
 * `bootstrap_servers`: The Kafka bootstrap servers.
-* `group_id`: The consumer group ID.
+* `group_id`: The producer group ID.
 * `topics`: The list of topics to subscribe to.
 
 The example below shows how to create an event processor and then wait for a

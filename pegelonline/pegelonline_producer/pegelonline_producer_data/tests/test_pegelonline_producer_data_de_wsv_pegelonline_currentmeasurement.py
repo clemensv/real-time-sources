@@ -28,11 +28,11 @@ class Test_CurrentMeasurement(unittest.TestCase):
         Create instance of CurrentMeasurement for testing
         """
         instance = CurrentMeasurement(
-            station_uuid='bwalxghvlecmmqijrlja',
-            timestamp='egjchkvyalqznscstcyw',
-            value=float(99.04357651670534),
-            stateMnwMhw='mucujvicuwiwizvybvoa',
-            stateNswHsw='uaykmvloeexwaucoijoz'
+            station_uuid='rpgixdubdbkatkowwths',
+            timestamp='ahrdxljpuahlhddybitd',
+            value=float(14.106487198769146),
+            stateMnwMhw='vqqfuygbfqtylmhwjdka',
+            stateNswHsw='jrdjyzmbrlmwcyqewmrb'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test station_uuid property
         """
-        test_value = 'bwalxghvlecmmqijrlja'
+        test_value = 'rpgixdubdbkatkowwths'
         self.instance.station_uuid = test_value
         self.assertEqual(self.instance.station_uuid, test_value)
     
@@ -49,7 +49,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'egjchkvyalqznscstcyw'
+        test_value = 'ahrdxljpuahlhddybitd'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(99.04357651670534)
+        test_value = float(14.106487198769146)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -65,7 +65,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test stateMnwMhw property
         """
-        test_value = 'mucujvicuwiwizvybvoa'
+        test_value = 'vqqfuygbfqtylmhwjdka'
         self.instance.stateMnwMhw = test_value
         self.assertEqual(self.instance.stateMnwMhw, test_value)
     
@@ -73,7 +73,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test stateNswHsw property
         """
-        test_value = 'uaykmvloeexwaucoijoz'
+        test_value = 'jrdjyzmbrlmwcyqewmrb'
         self.instance.stateNswHsw = test_value
         self.assertEqual(self.instance.stateNswHsw, test_value)
     

@@ -28,13 +28,13 @@ class Test_WaterDepth(unittest.TestCase):
         Create instance of WaterDepth for testing
         """
         instance = WaterDepth(
-            site_no='aovhwgudcgtfimbgtnqa',
-            datetime='hqytuviqroicagxyyrmm',
-            value=float(4.492804932488015),
-            exception='ljnveltnrtygebkzeiml',
-            qualifiers=['rkddrxtvvlxqlrypnczy', 'zeutpbbrjchtzybzytkz', 'uiymhoyczprdxrukiusv', 'gwkjyjtxgnvfnagrzcsl', 'rcettinsilonwkotooxy'],
-            parameter_cd='qgzfnnjdwafhkvqupsyb',
-            timeseries_cd='ymyqangeuqzovxxzkwif'
+            site_no='jcjrzrbcsjpptnyvtstb',
+            datetime='jkopvjksrlnjgwhrikhx',
+            value=float(23.161957150260225),
+            exception='yrkakflizyoowfnzeupb',
+            qualifiers=['manvlsejesflghbwgsog', 'hthefurkbiovvwkfujot', 'vseiqpggpdibwpczookn'],
+            parameter_cd='yepvajvrgyvjajkwqkhm',
+            timeseries_cd='mafqtzmvavpuekebcskf'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WaterDepth(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'aovhwgudcgtfimbgtnqa'
+        test_value = 'jcjrzrbcsjpptnyvtstb'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_WaterDepth(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'hqytuviqroicagxyyrmm'
+        test_value = 'jkopvjksrlnjgwhrikhx'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_WaterDepth(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(4.492804932488015)
+        test_value = float(23.161957150260225)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_WaterDepth(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'ljnveltnrtygebkzeiml'
+        test_value = 'yrkakflizyoowfnzeupb'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_WaterDepth(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['rkddrxtvvlxqlrypnczy', 'zeutpbbrjchtzybzytkz', 'uiymhoyczprdxrukiusv', 'gwkjyjtxgnvfnagrzcsl', 'rcettinsilonwkotooxy']
+        test_value = ['manvlsejesflghbwgsog', 'hthefurkbiovvwkfujot', 'vseiqpggpdibwpczookn']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_WaterDepth(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'qgzfnnjdwafhkvqupsyb'
+        test_value = 'yepvajvrgyvjajkwqkhm'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_WaterDepth(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'ymyqangeuqzovxxzkwif'
+        test_value = 'mafqtzmvavpuekebcskf'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

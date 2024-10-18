@@ -1,14 +1,12 @@
 {
     "messagegroups": {
         "Microsoft.OpenData.RssFeeds": {
-            "id": "Microsoft.OpenData.RssFeeds",
             "messages": {
                 "Microsoft.OpenData.RssFeeds.FeedItem": {
-                    "id": "Microsoft.OpenData.RssFeeds.FeedItem",
                     "name": "FeedItem",
                     "description": "A new item has been added to the RSS feed.",
-                    "format": "CloudEvents/1.0",
-                    "metadata": {
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.RssFeeds.FeedItem"
                         },
@@ -22,24 +20,21 @@
                         }
                     },
                     "schemaformat": "Avro/1.11.3",
-                    "schemaurl": "#/schemagroups/Microsoft.OpenData.RssFeeds/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
+                    "schemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
                 }
             }
         }
     },
     "schemagroups": {
         "Microsoft.OpenData.RssFeeds": {
-            "id": "Microsoft.OpenData.RssFeeds",
             "schemas": {
                 "Microsoft.OpenData.RssFeeds.FeedItem": {
-                    "id": "Microsoft.OpenData.RssFeeds.FeedItem",
                     "name": "FeedItem",
                     "format": "Avro/1.11.3",
                     "description": "Schema for the FeedItem event in the RssFeeds message group.",
                     "defaultversionid": "1",
                     "versions": {
                         "1": {
-                            "id": "1",
                             "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",

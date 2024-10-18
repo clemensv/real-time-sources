@@ -14,12 +14,12 @@ import json
 @dataclasses.dataclass
 class FeedItemSummary:
     """
-    A FeedItemSummary record.
+    A brief summary or abstract of the feed item.
     Attributes:
-        value (typing.Optional[str]): 
-        type (typing.Optional[str]): 
-        language (typing.Optional[str]): 
-        base (typing.Optional[str]): """
+        value (typing.Optional[str]): The text content of the summary.
+        type (typing.Optional[str]): The content type of the summary, such as 'text/plain' or 'text/html'.
+        language (typing.Optional[str]): The language of the summary content.
+        base (typing.Optional[str]): The base URI for resolving relative URIs within the summary."""
     
     value: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
