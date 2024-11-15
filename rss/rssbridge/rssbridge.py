@@ -54,10 +54,13 @@ def load_state():
     Returns:
         dict: The loaded state.
     """
-    if os.path.exists(STATE_FILE):
-        with open(STATE_FILE, "r", encoding="utf-8") as f:
-            logging.info("Loading state from %s", STATE_FILE)
-            return json.load(f)
+    try:
+        if os.path.exists(STATE_FILE):
+            with open(STATE_FILE, "r", encoding="utf-8") as f:
+                logging.info("Loading state from %s", STATE_FILE)
+                return json.load(f)
+    except Exception as e:
+        logging.error("Failed to load state: %s", e)
     return {}
 
 
@@ -68,9 +71,15 @@ def save_state(state):
     Args:
         state (dict): The state to save.
     """
-    with open(STATE_FILE, "w", encoding="utf-8") as f:
-        logging.info("Saving state to %s", STATE_FILE)
-        json.dump(state, f)
+    try:
+        if not os.path.exists(os.path.dirname(STATE_FILE)):
+            os.makedirs(os.path.dirname(STATE_FILE))
+        with open(STATE_FILE, "w", encoding="utf-8") as f:
+            logging.info("Saving state to %s", STATE_FILE)
+            json.dump(state, f)
+    except Exception as e:
+        logging.error("Failed to save state: %s", e)
+    
 
 
 def load_feedstore() -> List[str]:
@@ -165,18 +174,21 @@ def add_feed(url: str):
 
         content_type = response.headers.get('Content-Type', '').lower()
 
-        if 'text/html' in content_type:
-            extracted_urls = extract_feed_urls_from_webpage(url)
-            if not extracted_urls:
-                logging.debug(f"No feeds found at {url}")
+        try:
+            if 'text/html' in content_type:
+                extracted_urls = extract_feed_urls_from_webpage(url)
+                if not extracted_urls:
+                    logging.debug(f"No feeds found at {url}")
+                else:
+                    feed_urls.extend(extracted_urls)
+                    logging.debug(f"Added feed(s) from {url}: {extracted_urls}")
+            elif 'application/rss+xml' in content_type or 'application/atom+xml' in content_type or 'application/xml' in content_type or 'text/xml' in content_type:
+                feed_urls.append(url)
+                logging.debug(f"Added feed {url}")
             else:
-                feed_urls.extend(extracted_urls)
-                logging.debug(f"Added feed(s) from {url}: {extracted_urls}")
-        elif 'application/rss+xml' in content_type or 'application/atom+xml' in content_type or 'application/xml' in content_type or 'text/xml' in content_type:
-            feed_urls.append(url)
-            logging.debug(f"Added feed {url}")
-        else:
-            logging.debug(f"Unsupported content type {content_type} at {url}")
+                logging.debug(f"Unsupported content type {content_type} at {url}")
+        except Exception as e:
+            logging.error("Error processing %s: %s", url, e)
 
     save_feedstore(list(set(feed_urls)))
 
@@ -344,21 +356,25 @@ def fetch_feed(url: str, etag: Optional[str] = None) -> requests.Response:
         requests.Response: The HTTP response object.
     """
 
-    headers = {
-        'User-Agent': USER_AGENT,
-        'Accept': 'application/atom+xml, application/rss+xml, application/xml, text/xml',
-        'Accept-Encoding': 'gzip, deflate, br, zstd',
-        'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8,de;q=0.7,de-DE;q=0.6,ko;q=0.5',
-    }
-    if etag:
-        headers['If-None-Match'] = etag
+    try:
+        headers = {
+            'User-Agent': USER_AGENT,
+            'Accept': 'application/atom+xml, application/rss+xml, application/xml, text/xml',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8,de;q=0.7,de-DE;q=0.6,ko;q=0.5',
+        }
+        if etag:
+            headers['If-None-Match'] = etag
 
-    response = requests.get(url, headers=headers, timeout=10)
-    logging.info("%s: Response status code: %s", url, response.status_code)
-    if response.status_code == 304:
+        response = requests.get(url, headers=headers, timeout=10)
+        logging.info("%s: Response status code: %s", url, response.status_code)
+        if response.status_code == 304:
+            return response
+        response.raise_for_status()
         return response
-    response.raise_for_status()
-    return response
+    except requests.RequestException as e:
+        logging.error("Failed to fetch %s: %s", url, e)
+        raise e
 
 
 async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftOpenDataRssFeedsEventProducer):
@@ -467,6 +483,8 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
                     state[feed_url] = {}
                 state[feed_url]["skip"] = True
                 logging.debug(f"Skipping {feed_url} due to 404/403 response")
+            else:
+                logging.debug(f"Error processing feed {feed_url}: {e}")
         else:
             logging.debug(f"Error processing feed {feed_url}: {e}")
 
