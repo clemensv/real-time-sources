@@ -199,7 +199,7 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
         raise ValueError("Invalid connection string format") from e
     return config_dict
 
-async def main():
+async def run():
     parser = argparse.ArgumentParser(description="Mode-S ADS-B Client")
     subparsers = parser.add_subparsers(title="subcommands", dest="subcommand")
     feed_parser = subparsers.add_parser('feed', help="Poll ADS-B data and feed it to Kafka")
@@ -318,6 +318,8 @@ async def main():
         except Exception as e:
             print("Error: %s" % e)
 
+def main():
+    asyncio.run(run())
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
