@@ -10,8 +10,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.WaterLevel"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterLevel"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterLevel"
                 },
                 "Microsoft.OpenData.US.NOAA.Predictions": {
                     "name": "Predictions",
@@ -21,8 +21,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.Predictions"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Predictions"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Predictions"
                 },
                 "Microsoft.OpenData.US.NOAA.AirPressure": {
                     "name": "AirPressure",
@@ -32,8 +32,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.AirPressure"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirPressure"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirPressure"
                 },
                 "Microsoft.OpenData.US.NOAA.AirTemperature": {
                     "name": "AirTemperature",
@@ -43,8 +43,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.AirTemperature"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirTemperature"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirTemperature"
                 },
                 "Microsoft.OpenData.US.NOAA.WaterTemperature": {
                     "name": "WaterTemperature",
@@ -54,8 +54,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.WaterTemperature"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterTemperature"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterTemperature"
                 },
                 "Microsoft.OpenData.US.NOAA.Wind": {
                     "name": "Wind",
@@ -65,8 +65,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.Wind"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Wind"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Wind"
                 },
                 "Microsoft.OpenData.US.NOAA.Humidity": {
                     "name": "Humidity",
@@ -76,8 +76,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.Humidity"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Humidity"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Humidity"
                 },
                 "Microsoft.OpenData.US.NOAA.Conductivity": {
                     "name": "Conductivity",
@@ -87,8 +87,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.Conductivity"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Conductivity"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Conductivity"
                 },
                 "Microsoft.OpenData.US.NOAA.Salinity": {
                     "name": "Salinity",
@@ -98,8 +98,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.Salinity"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Salinity"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Salinity"
                 },
                 "Microsoft.OpenData.US.NOAA.Station": {
                     "name": "Station",
@@ -109,8 +109,8 @@
                             "value": "Microsoft.OpenData.US.NOAA.Station"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Station"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Station"
                 },
                 "Microsoft.OpenData.US.NOAA.Visibility": {
                     "name": "Visibility",
@@ -136,8 +136,8 @@
                             "required": true
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Visibility"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Visibility"
                 }                
             }
         }

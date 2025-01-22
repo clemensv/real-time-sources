@@ -19,8 +19,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.Site"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.Site"
                 },
                 "USGS.Sites.SiteTimeseries": {
                     "name": "SiteTimeseries",
@@ -39,8 +39,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.SiteTimeseries"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.Sites/schemas/USGS.Sites.SiteTimeseries"
                 }
             }
         },
@@ -68,8 +68,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.OtherParameter"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.OtherParameter"
                 },
                 "USGS.InstantaneousValues.Precipitation": {
                     "name": "Precipitation",
@@ -92,8 +92,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Precipitation"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Precipitation"
                 },
                 "USGS.InstantaneousValues.Streamflow": {
                     "name": "Streamflow",
@@ -116,8 +116,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Streamflow"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Streamflow"
                 },
                 "USGS.InstantaneousValues.GageHeight": {
                     "name": "GageHeight",
@@ -140,8 +140,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GageHeight"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GageHeight"
                 },
                 "USGS.InstantaneousValues.WaterTemperature": {
                     "name": "WaterTemperature",
@@ -164,8 +164,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterTemperature"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterTemperature"
                 },
                 "USGS.InstantaneousValues.DissolvedOxygen": {
                     "name": "DissolvedOxygen",
@@ -188,8 +188,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.DissolvedOxygen"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.DissolvedOxygen"
                 },
                 "USGS.InstantaneousValues.pH": {
                     "name": "pH",
@@ -212,8 +212,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.pH"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.pH"
                 },
                 "USGS.InstantaneousValues.SpecificConductance": {
                     "name": "SpecificConductance",
@@ -236,8 +236,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.SpecificConductance"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.SpecificConductance"
                 },
                 "USGS.InstantaneousValues.Turbidity": {
                     "name": "Turbidity",
@@ -260,8 +260,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Turbidity"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Turbidity"
                 },
                 "USGS.InstantaneousValues.AirTemperature": {
                     "name": "AirTemperature",
@@ -284,8 +284,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.AirTemperature"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.AirTemperature"
                 },
                 "USGS.InstantaneousValues.WindSpeed": {
                     "name": "WindSpeed",
@@ -308,8 +308,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindSpeed"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindSpeed"
                 },
                 "USGS.InstantaneousValues.WindDirection": {
                     "name": "WindDirection",
@@ -332,8 +332,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindDirection"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WindDirection"
                 },
                 "USGS.InstantaneousValues.RelativeHumidity": {
                     "name": "RelativeHumidity",
@@ -356,8 +356,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.RelativeHumidity"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.RelativeHumidity"
                 },
                 "USGS.InstantaneousValues.BarometricPressure": {
                     "name": "BarometricPressure",
@@ -380,8 +380,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.BarometricPressure"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.BarometricPressure"
                 },
                 "USGS.InstantaneousValues.TurbidityFNU": {
                     "name": "TurbidityFNU",
@@ -404,8 +404,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TurbidityFNU"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TurbidityFNU"
                 },
                 "USGS.InstantaneousValues.fDOM": {
                     "name": "fDOM",
@@ -428,8 +428,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.fDOM"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.fDOM"
                 },
                 "USGS.InstantaneousValues.ReservoirStorage": {
                     "name": "ReservoirStorage",
@@ -452,8 +452,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.ReservoirStorage"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.ReservoirStorage"
                 },
                 "USGS.InstantaneousValues.LakeElevationNGVD29": {
                     "name": "LakeElevationNGVD29",
@@ -476,8 +476,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNGVD29"
                 },
                 "USGS.InstantaneousValues.WaterDepth": {
                     "name": "WaterDepth",
@@ -500,8 +500,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterDepth"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterDepth"
                 },
                 "USGS.InstantaneousValues.EquipmentStatus": {
                     "name": "EquipmentStatus",
@@ -524,8 +524,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EquipmentStatus"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EquipmentStatus"
                 },
                 "USGS.InstantaneousValues.TidallyFilteredDischarge": {
                     "name": "TidallyFilteredDischarge",
@@ -548,8 +548,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.TidallyFilteredDischarge"
                 },
                 "USGS.InstantaneousValues.WaterVelocity": {
                     "name": "WaterVelocity",
@@ -572,8 +572,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterVelocity"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.WaterVelocity"
                 },
                 "USGS.InstantaneousValues.EstuaryElevationNGVD29": {
                     "name": "EstuaryElevationNGVD29",
@@ -596,8 +596,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.EstuaryElevationNGVD29"
                 },
                 "USGS.InstantaneousValues.LakeElevationNAVD88": {
                     "name": "LakeElevationNAVD88",
@@ -620,8 +620,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.LakeElevationNAVD88"
                 },
                 "USGS.InstantaneousValues.Salinity": {
                     "name": "Salinity",
@@ -644,8 +644,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Salinity"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.Salinity"
                 },
                 "USGS.InstantaneousValues.GateOpening": {
                     "name": "GateOpening",
@@ -668,8 +668,8 @@
                             "type": "uritemplate"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GateOpening"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.InstantaneousValues/schemas/USGS.InstantaneousValues.GateOpening"
                 }
             }
         }

@@ -182,7 +182,7 @@ This document describes the events that are emitted by the NOAA API Bridge.
 |----------------|----------|-----------------|
 | `station_id` | *string* | {"description": "7 character station ID, or a currents station ID."} |
 | `timestamp` | *string* | {"description": "Timestamp of the humidity measurement"} |
-| `value` | *string* | {"description": "Value of the humidity"} |
+| `value` | *double* | {"description": "Value of the humidity"} |
 | `max_humidity_exceeded` | *boolean* | Flag indicating if the maximum expected humidity was exceeded |
 | `min_humidity_exceeded` | *boolean* | Flag indicating if the minimum expected humidity was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |
@@ -204,7 +204,7 @@ This document describes the events that are emitted by the NOAA API Bridge.
 |----------------|----------|-----------------|
 | `station_id` | *string* | {"description": "7 character station ID, or a currents station ID."} |
 | `timestamp` | *string* | {"description": "Timestamp of the conductivity measurement"} |
-| `value` | *string* | {"description": "Value of the conductivity"} |
+| `value` | *double* | {"description": "Value of the conductivity"} |
 | `max_conductivity_exceeded` | *boolean* | Flag indicating if the maximum expected conductivity was exceeded |
 | `min_conductivity_exceeded` | *boolean* | Flag indicating if the minimum expected conductivity was exceeded |
 | `rate_of_change_exceeded` | *boolean* | Flag indicating if the rate of change tolerance limit was exceeded |

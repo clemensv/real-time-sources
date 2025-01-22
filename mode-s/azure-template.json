@@ -1,0 +1,153 @@
+{
+  "parameters": {
+    "logAnalyticsWorkspaceId": {
+      "metadata": {
+        "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      },
+      "type": "string"
+    },
+    "imageName": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-mode-s:latest",
+      "metadata": {
+        "description": "The name of the container image."
+      },
+      "type": "string"
+    },
+    "logAnalyticsWorkspaceKey": {
+      "metadata": {
+        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      },
+      "type": "securestring"
+    },
+    "connectionStringSecret": {
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint or Azure Event Hubs connection string."
+      },
+      "type": "securestring"
+    },
+    "feedUrls": {
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated list of feed URLs (RSS or OPML)"
+      },
+      "type": "string"
+    },
+    "appName": {
+      "defaultValue": "[if(empty(resourceGroup().name), 'mode-s', resourceGroup().name)]",
+      "maxLength": 64,
+      "metadata": {
+        "description": "The name of the container instance."
+      },
+      "type": "string"
+    }
+  },
+  "variables": {
+    "fileShareName": "fileshare",
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
+  },
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "location": "[resourceGroup().location]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "properties": {
+        "accessTier": "Hot"
+      },
+      "kind": "StorageV2",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('storageAccountName')]",
+      "sku": {
+        "name": "Standard_LRS"
+      }
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/')]"
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "properties": {
+        "shareQuota": 5120
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]"
+    },
+    {
+      "name": "[parameters('appName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "containers": [
+          {
+            "name": "[parameters('appName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "USGS_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/usgs_last_polled.json"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 0.5
+                }
+              }
+            }
+          }
+        ],
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]",
+            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+          }
+        },
+        "volumes": [
+          {
+            "name": "azurefilevolume",
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]",
+              "storageAccountName": "[variables('storageAccountName')]"
+            }
+          }
+        ],
+        "osType": "Linux"
+      },
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-09-01"
+    }
+  ],
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+}

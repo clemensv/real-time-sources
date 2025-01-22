@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "mode-s"
+description = "Mode-S/ADS-B Bridge for BEAST messages (dump1090)"
+authors = ["Clemens Vasters"]
+readme = "README.md"
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+mode-s-producer-data = {path = "mode_s_producer/mode_s_producer_data"}
+mode-s-producer-kafka-producer = {path = "mode_s_producer/mode_s_producer_kafka_producer"}
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0"
+pymodes = ">=2.19"
+requests = ">=2.32.3"
+aiohttp = ">=3.10.5"
+asyncio = ">=3.4.3"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+flake8 = ">=7.1.1"
+pylint = ">=3.2.7"
+mypy = ">=1.11.2"
+testcontainers = ">=4.8.1"
+pytest-asyncio = ">=0.24.0"
+
+[tool.poetry.scripts]
+mode-s = "mode_s.mode_s:main"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
