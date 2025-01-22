@@ -5,6 +5,7 @@ Polls Mode-S data from dump1090 and sends it to a Kafka topic using SASL PLAIN a
 
 import os
 import json
+import signal
 import sys
 import asyncio
 import threading
@@ -43,7 +44,13 @@ class ADSBClient(TcpClient):
         self.records_since_last_flush = 0
         self.task_queue = deque()
 
+    def stop(self):
+        self.stop_flag = True
+        return super().stop()
+    
     def handle_messages(self, messages):
+        if self.stop_flag:
+            return
         msgs = []
         for msg, ts in messages:
             raw_msg = bytes.fromhex(msg)
@@ -123,13 +130,13 @@ class ADSBClient(TcpClient):
                 logger.warning("Queue length is now %d", len(self.task_queue))
 
 
-    async def queue_consumer(self):
+    async def queue_consumer(self, stop_event: threading.Event):
         try:
             last_flush = datetime.now()
             last_info_log = datetime.now()
             messages_since_last_log = 0
             records_since_last_log = 0
-            while True:
+            while stop_event.is_set() is False:
                 if self.task_queue:
                     try:
                         bundle:Messages = self.task_queue.popleft()
@@ -291,17 +298,20 @@ async def main():
             ref_lon=args.ref_lon,
             stationid=args.stationid
         )
-        try:
-            stop = False
-            # Run client.run as a regular thread
-            run_thread = threading.Thread(target=client.run, kwargs={'stop_flag': stop})
-            run_thread.start()
 
-            await asyncio.create_task(client.queue_consumer())
-            stop = True       
+        stop_event = threading.Event()
+
+        def signal_handler(signum, frame):
+            stop_event.set()
+
+        signal.signal(signal.SIGINT, signal_handler)
+
+        try:
+            # Run client.run as a regular thread
+            run_thread = threading.Thread(target=client.run)
+            run_thread.start()
+            await client.queue_consumer(stop_event)
             client.stop()
-            # Wait for the thread to finish
-            run_thread.join()           
             
         except KeyboardInterrupt:
             print("Interrupted")
