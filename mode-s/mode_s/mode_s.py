@@ -7,6 +7,7 @@ import os
 import json
 import sys
 import asyncio
+import threading
 import aiohttp
 import re
 import logging
@@ -154,12 +155,16 @@ class ADSBClient(TcpClient):
                             self.messages_since_last_flush = 0
                             self.records_since_last_flush = 0
                             last_flush = datetime.now()
+                    except asyncio.CancelledError:
+                        logging.info("Queue consumer task cancelled")
+                        return
                     except Exception as e:
                         logging.error("Error sending messages: %s", e)
                 else:
                     await asyncio.sleep(0.05)
         except asyncio.CancelledError:
             logging.info("Queue consumer task cancelled")
+            return
         except Exception as e:
             logging.error("Queue consumer task error: %s", e)
             raise e
@@ -286,11 +291,22 @@ async def main():
             ref_lon=args.ref_lon,
             stationid=args.stationid
         )
-        tasks = [
-            asyncio.create_task(client.queue_consumer()),
-            asyncio.to_thread(client.run)
-        ]
-        await asyncio.gather(*tasks)
+        try:
+            stop = False
+            # Run client.run as a regular thread
+            run_thread = threading.Thread(target=client.run, kwargs={'stop_flag': stop})
+            run_thread.start()
+
+            await asyncio.create_task(client.queue_consumer())
+            stop = True       
+            client.stop()
+            # Wait for the thread to finish
+            run_thread.join()           
+            
+        except KeyboardInterrupt:
+            print("Interrupted")
+        except Exception as e:
+            print("Error: %s" % e)
 
 
 if __name__ == "__main__":
