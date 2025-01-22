@@ -1,0 +1,54 @@
+
+.alter table [ModeS_ADSB_Record] policy update
+```
+[
+  {
+    "IsEnabled": true,
+    "Source": "Messages",
+    "Query": "
+      Messages
+      | where isnotempty(messages)
+      | mv-expand msg = messages
+      | project
+          stid = tostring(___subject),
+          ts = unixtime_milliseconds_todatetime(msg.ts),
+          icao = tostring(msg.icao),
+          df = toint(msg.df),
+          tc = toint(msg.tc),
+          bcode = tostring(msg.bcode),
+          alt = toint(msg.alt),
+          cs = tostring(msg.cs),
+          sq = tostring(msg.sq),
+          lat = toreal(msg.lat),
+          lon = toreal(msg.lon),
+          spd = toreal(msg.spd),
+          ang = toreal(msg.ang),
+          vr = toint(msg.vr),
+          spd_type = tostring(msg.spd_type),
+          dir_src = tostring(msg.dir_src),
+          vr_src = tostring(msg.vr_src),
+          ws = toint(msg.ws),
+          wd = toint(msg.wd),
+          at = toreal(msg.at),
+          ap = toreal(msg.ap),
+          hm = toreal(msg.hm),
+          roll = toreal(msg.roll),
+          trak = toreal(msg.trak),
+          gs = toreal(msg.gs),
+          tas = toreal(msg.tas),
+          hd = toreal(msg.hd),
+          ias = toreal(msg.ias),
+          m = toreal(msg.m),
+          vrb = toreal(msg.vrb),
+          vri = toreal(msg.vri),
+          rssi = toreal(msg.rssi),
+          emst = tostring(msg.emst),
+          tgt = tostring(msg.tgt),
+          opst = tostring(msg.opst)
+    ",
+    "IsTransactional": false,
+    "PropagateIngestionProperties": true
+  }
+]
+```
+

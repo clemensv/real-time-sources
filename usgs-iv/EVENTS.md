@@ -49,6 +49,7 @@ This document describes the events that are emitted by the USGS Instantaneous Va
 |-------------|-----------------|--------------|--------------|-----------|
 | `type` |  | `` | `False` | `USGS.Sites.Site` |
 | `source` |  | `uritemplate` | `False` | `{source_uri}` |
+| `subject` |  | `uritemplate` | `False` | `{agency_cd}/{site_no}` |
 
 #### Schema:
 
@@ -62,13 +63,44 @@ This document describes the events that are emitted by the USGS Instantaneous Va
 | `site_no` | *string* | USGS site number. |
 | `station_nm` | *string* | Station name. |
 | `site_tp_cd` | *string* | Site type code. |
+| `lat_va` | *string* | DMS latitude. |
+| `long_va` | *string* | DMS longitude. |
 | `dec_lat_va` | *float* (optional) | Decimal latitude. |
 | `dec_long_va` | *float* (optional) | Decimal longitude. |
+| `coord_meth_cd` | *string* | Latitude-longitude method code. |
 | `coord_acy_cd` | *string* | Coordinate accuracy code. |
-| `dec_coord_datum_cd` | *string* | Decimal coordinate datum code. |
+| `coord_datum_cd` | *string* | Latitude-longitude datum code. |
+| `dec_coord_datum_cd` | *string* | Decimal latitude-longitude datum code. |
+| `district_cd` | *string* | District code. |
+| `state_cd` | *string* | State code. |
+| `county_cd` | *string* | County code. |
+| `country_cd` | *string* | Country code. |
+| `land_net_ds` | *string* | Land net location description. |
+| `map_nm` | *string* | Location map name. |
+| `map_scale_fc` | *float* (optional) | Location map scale factor. |
 | `alt_va` | *float* (optional) | Altitude. |
+| `alt_meth_cd` | *string* | Method altitude determined code. |
 | `alt_acy_va` | *float* (optional) | Altitude accuracy. |
 | `alt_datum_cd` | *string* | Altitude datum code. |
+| `huc_cd` | *string* | Hydrologic unit code. |
+| `basin_cd` | *string* | Drainage basin code. |
+| `topo_cd` | *string* | Topographic setting code. |
+| `instruments_cd` | *string* | Flags for instruments at site. |
+| `construction_dt` | *string* (optional) | Date of first construction. |
+| `inventory_dt` | *string* (optional) | Date site established or inventoried. |
+| `drain_area_va` | *float* (optional) | Drainage area. |
+| `contrib_drain_area_va` | *float* (optional) | Contributing drainage area. |
+| `tz_cd` | *string* | Time Zone abbreviation. |
+| `local_time_fg` | *boolean* | Site honors Daylight Savings Time flag. |
+| `reliability_cd` | *string* | Data reliability code. |
+| `gw_file_cd` | *string* | Data-other GW files code. |
+| `nat_aqfr_cd` | *string* | National aquifer code. |
+| `aqfr_cd` | *string* | Local aquifer code. |
+| `aqfr_type_cd` | *string* | Local aquifer type code. |
+| `well_depth_va` | *float* (optional) | Well depth. |
+| `hole_depth_va` | *float* (optional) | Hole depth. |
+| `depth_src_cd` | *string* | Source of depth data. |
+| `project_no` | *string* | Project number. |
 ---
 
 ### Message: USGS.Sites.SiteTimeseries

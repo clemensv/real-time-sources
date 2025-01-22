@@ -19,8 +19,8 @@
                             "value": "{item_id}"
                         }
                     },
-                    "schemaformat": "Avro/1.11.3",
-                    "schemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
                 }
             }
         }

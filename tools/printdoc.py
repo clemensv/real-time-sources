@@ -11,7 +11,7 @@ Functions:
     main(): Parses command line arguments, reads the JSON manifest file, and generates documentation.
     generate_documentation(data, title, description): Generates the documentation content based on the provided data.
     process_message(msg, schemagroups): Processes individual messages and their metadata, generating documentation for attributes and schemas.
-    resolve_schema(schemaurl, schemagroups): Resolves the schema URL to retrieve the corresponding schema from the schema groups.
+    resolve_schema(dataschemauri, schemagroups): Resolves the schema URL to retrieve the corresponding schema from the schema groups.
     generate_anchor(name): Generates a markdown-compatible anchor from a given name.
     print_schema(schema): Prints the schema documentation, including nested records and enums.
     print_record(schema, records_to_document, enums_to_document, documented_records): Prints the documentation for a record schema.
@@ -79,7 +79,7 @@ def process_message(msg, schemagroups):
     lines.append("#### CloudEvents Attributes:\n")
     lines.append("| **Name**    | **Description** | **Type**     | **Required** | **Value** |")
     lines.append("|-------------|-----------------|--------------|--------------|-----------|")
-    metadata = msg.get('metadata', {})
+    metadata = msg.get('envelopemetadata', {})
     for md_name, md in metadata.items():
         description = md.get('description', '')
         md_type = md.get('type', '')
@@ -89,8 +89,8 @@ def process_message(msg, schemagroups):
     lines.append("")
 
     # Resolve the schema
-    schemaurl = msg.get('schemaurl')
-    schema = resolve_schema(schemaurl, schemagroups)
+    dataschemauri = msg.get('dataschemauri')
+    schema = resolve_schema(dataschemauri, schemagroups)
     if schema:
         lines.append("#### Schema:\n")
         lines.extend(print_schema(schema))
@@ -98,11 +98,11 @@ def process_message(msg, schemagroups):
         lines.append("Schema not found.\n")
     return lines
 
-def resolve_schema(schemaurl, schemagroups):
-    # schemaurl is of the form "#/schemagroups/group_name/schemas/schema_name"
-    if not schemaurl.startswith("#/"):
+def resolve_schema(dataschemauri, schemagroups):
+    # dataschemauri is of the form "#/schemagroups/group_name/schemas/schema_name"
+    if not dataschemauri.startswith("#/"):
         return None
-    path = schemaurl[2:].split('/')
+    path = dataschemauri[2:].split('/')
     node = schemagroups
     for p in path[1:]:  # skip 'schemagroups' since node starts from schemagroups
         node = node.get(p)

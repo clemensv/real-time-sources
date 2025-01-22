@@ -1,0 +1,263 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [Messages] (
+   [messages]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Messages] docstring "{\"description\": \"A container for multiple Mode-S and ADS-B decoded messages.\"}";
+
+.alter table [Messages] column-docstrings (
+   [messages]: "{\"description\": \"An array of Mode-S and ADS-B decoded message records.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Messages] ingestion json mapping "Messages_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "messages", "path": "$.messages"},
+]
+```
+
+
+.create-or-alter table [Messages] ingestion json mapping "Messages_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "messages", "path": "$.data.messages"},
+]
+```
+
+
+.drop materialized-view MessagesLatest ifexists;
+
+.create materialized-view with (backfill=true) MessagesLatest on table Messages {
+    Messages | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Messages] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Mode_S.Messages') | project['messages'] = todynamic(data.['messages']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ModeS_ADSB_Record] (
+   [stid]: string,
+   [ts]: datetime,
+   [icao]: string,
+   [df]: int,
+   [tc]: int,
+   [bcode]: string,
+   [alt]: int,
+   [cs]: string,
+   [sq]: string,
+   [lat]: real,
+   [lon]: real,
+   [spd]: real,
+   [ang]: real,
+   [vr]: int,
+   [spd_type]: string,
+   [dir_src]: string,
+   [vr_src]: string,
+   [ws]: int,
+   [wd]: int,
+   [at]: real,
+   [ap]: real,
+   [hm]: real,
+   [roll]: real,
+   [trak]: real,
+   [gs]: real,
+   [tas]: real,
+   [hd]: real,
+   [ias]: real,
+   [m]: real,
+   [vrb]: real,
+   [vri]: real,
+   [rssi]: real,
+   [emst]: string,
+   [tgt]: string,
+   [opst]: string
+);
+
+.alter table [ModeS_ADSB_Record] docstring "{\"description\": \"A comprehensive schema for Mode-S and ADS-B decoded messages, including fields for various BDS codes and ADS-B type codes.\"}";
+
+.alter table [ModeS_ADSB_Record] column-docstrings (
+   [stid]: "{\"description\": \"The station ID of the receiver. Required.\"}",
+   [ts]: "{\"description\": \"The timestamp of the message reception in milliseconds since the epoch. Required.\", \"schema\": {\"type\": \"long\", \"logicalType\": \"timestamp-millis\"}}",
+   [icao]: "{\"description\": \"The ICAO 24-bit address of the aircraft. Required.\"}",
+   [df]: "{\"description\": \"The Downlink Format (DF) of the Mode-S message, indicating the message category. Required.\"}",
+   [tc]: "{\"description\": \"The Type Code (TC) of the ADS-B message. Present for DF17 and DF18 messages; null otherwise.\", \"schema\": [\"null\", \"int\"]}",
+   [bcode]: "{\"description\": \"The BDS (Comm-B Data Selector) code. Present for DF20 and DF21 messages; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [alt]: "{\"description\": \"Barometric altitude in feet. Present for certain BDS and ADS-B messages; null otherwise.\", \"schema\": [\"null\", \"int\"]}",
+   [cs]: "{\"description\": \"Aircraft identification (call sign). Present for BDS20 and some ADS-B messages; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [sq]: "{\"description\": \"Transponder code (Squawk). Present for BDS17 messages; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [lat]: "{\"description\": \"Latitude in degrees. Present for ADS-B position messages; null otherwise.\", \"schema\": [\"null\", \"double\"]}",
+   [lon]: "{\"description\": \"Longitude in degrees. Present for ADS-B position messages; null otherwise.\", \"schema\": [\"null\", \"double\"]}",
+   [spd]: "{\"description\": \"Speed in knots. Present for ADS-B TC19 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [ang]: "{\"description\": \"Angle in degrees. Present for ADS-B TC19 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [vr]: "{\"description\": \"Vertical rate in ft/min. Present for ADS-B TC19 messages; null otherwise.\", \"schema\": [\"null\", \"int\"]}",
+   [spd_type]: "{\"description\": \"Speed type. Present for ADS-B TC19 messages; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [dir_src]: "{\"description\": \"Direction source. Present for ADS-B TC19 messages; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [vr_src]: "{\"description\": \"Vertical rate source. Present for ADS-B TC19 messages; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [ws]: "{\"description\": \"Wind speed in knots. Present for BDS44 messages; null otherwise.\", \"schema\": [\"null\", \"int\"]}",
+   [wd]: "{\"description\": \"Wind direction in degrees. Present for BDS44 messages; null otherwise.\", \"schema\": [\"null\", \"int\"]}",
+   [at]: "{\"description\": \"Air temperature in degrees Celsius. Present for BDS44/BDS45 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [ap]: "{\"description\": \"Air pressure in hPa. Present for BDS44/BDS45 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [hm]: "{\"description\": \"Relative humidity in percentage. Present for BDS44 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [roll]: "{\"description\": \"Aircraft roll angle in degrees. Present for BDS50 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [trak]: "{\"description\": \"True track angle in degrees. Present for BDS50 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [gs]: "{\"description\": \"Ground speed in knots. Present for BDS50 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [tas]: "{\"description\": \"True airspeed in knots. Present for BDS50 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [hd]: "{\"description\": \"Aircraft heading in degrees. Present for BDS60 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [ias]: "{\"description\": \"Indicated airspeed in knots. Present for BDS60 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [m]: "{\"description\": \"Mach number. Present for BDS60 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [vrb]: "{\"description\": \"Vertical rate based on barometric altitude in ft/min. Present for BDS60 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [vri]: "{\"description\": \"Vertical rate based on inertial navigation system in ft/min. Present for BDS60 messages; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [rssi]: "{\"description\": \"Received Signal Strength Indicator in dBFS. Present for all messages if available; null otherwise.\", \"schema\": [\"null\", \"float\"]}",
+   [emst]: "{\"description\": \"Emergency or priority status. Present for ADS-B TC28; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [tgt]: "{\"description\": \"Target state info. Present for certain BDS6,2 or ADS-B TC29; null otherwise.\", \"schema\": [\"null\", \"string\"]}",
+   [opst]: "{\"description\": \"Operational status info. Present for certain BDS6,5 or ADS-B TC31; null otherwise.\", \"schema\": [\"null\", \"string\"]}"
+);
+
+.create-or-alter table [ModeS_ADSB_Record] ingestion json mapping "ModeS_ADSB_Record_json_flat"
+```
+[
+  {"column": "stid", "path": "$.stid"},
+  {"column": "ts", "path": "$.ts"},
+  {"column": "icao", "path": "$.icao"},
+  {"column": "df", "path": "$.df"},
+  {"column": "tc", "path": "$.tc"},
+  {"column": "bcode", "path": "$.bcode"},
+  {"column": "alt", "path": "$.alt"},
+  {"column": "cs", "path": "$.cs"},
+  {"column": "sq", "path": "$.sq"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "spd", "path": "$.spd"},
+  {"column": "ang", "path": "$.ang"},
+  {"column": "vr", "path": "$.vr"},
+  {"column": "spd_type", "path": "$.spd_type"},
+  {"column": "dir_src", "path": "$.dir_src"},
+  {"column": "vr_src", "path": "$.vr_src"},
+  {"column": "ws", "path": "$.ws"},
+  {"column": "wd", "path": "$.wd"},
+  {"column": "at", "path": "$.at"},
+  {"column": "ap", "path": "$.ap"},
+  {"column": "hm", "path": "$.hm"},
+  {"column": "roll", "path": "$.roll"},
+  {"column": "trak", "path": "$.trak"},
+  {"column": "gs", "path": "$.gs"},
+  {"column": "tas", "path": "$.tas"},
+  {"column": "hd", "path": "$.hd"},
+  {"column": "ias", "path": "$.ias"},
+  {"column": "m", "path": "$.m"},
+  {"column": "vrb", "path": "$.vrb"},
+  {"column": "vri", "path": "$.vri"},
+  {"column": "rssi", "path": "$.rssi"},
+  {"column": "emst", "path": "$.emst"},
+  {"column": "tgt", "path": "$.tgt"},
+  {"column": "opst", "path": "$.opst"},
+]
+```
+
+.alter table [ModeS_ADSB_Record] policy update
+```
+[
+  {
+    "IsEnabled": true,
+    "Source": "Messages",
+    "Query": "
+      Messages
+      | where isnotempty(messages)
+      | mv-expand msg = messages
+      | project
+          stid = tostring(___subject),
+          ts = todatetime(msg.ts),
+          icao = tostring(msg.icao),
+          df = toint(msg.df),
+          tc = toint(msg.tc),
+          bcode = tostring(msg.bcode),
+          alt = toint(msg.alt),
+          cs = tostring(msg.cs),
+          sq = tostring(msg.sq),
+          lat = toreal(msg.lat),
+          lon = toreal(msg.lon),
+          spd = toreal(msg.spd),
+          ang = toreal(msg.ang),
+          vr = toint(msg.vr),
+          spd_type = tostring(msg.spd_type),
+          dir_src = tostring(msg.dir_src),
+          vr_src = tostring(msg.vr_src),
+          ws = toint(msg.ws),
+          wd = toint(msg.wd),
+          at = toreal(msg.at),
+          ap = toreal(msg.ap),
+          hm = toreal(msg.hm),
+          roll = toreal(msg.roll),
+          trak = toreal(msg.trak),
+          gs = toreal(msg.gs),
+          tas = toreal(msg.tas),
+          hd = toreal(msg.hd),
+          ias = toreal(msg.ias),
+          m = toreal(msg.m),
+          vrb = toreal(msg.vrb),
+          vri = toreal(msg.vri),
+          rssi = toreal(msg.rssi),
+          emst = tostring(msg.emst),
+          tgt = tostring(msg.tgt),
+          opst = tostring(msg.opst)
+    ",
+    "IsTransactional": false,
+    "PropagateIngestionProperties": true
+  }
+]
+```
