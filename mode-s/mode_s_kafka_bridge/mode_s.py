@@ -48,6 +48,14 @@ class ADSBClient(TcpClient):
         self.stop_flag = True
         return super().stop()
     
+    def run(self, raw_pipe_in=None, stop_flag=None, exception_queue=None):
+        while not self.stop_flag:
+            try:
+                super().run(raw_pipe_in=raw_pipe_in, stop_flag=stop_flag, exception_queue=exception_queue)
+            except Exception as e:
+                logger.error("Error in run loop: %s", e)
+                time.sleep(1)
+    
     def handle_messages(self, messages):
         try:
             if self.stop_flag:
