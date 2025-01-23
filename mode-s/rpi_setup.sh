@@ -59,9 +59,9 @@ After=network.target
 User=mode_s_kafka_bridge
 WorkingDirectory=$home_dir
 ExecStart=$venv_dir/bin/mode_s_kafka_bridge feed --dump1090-host $DUMP1090_HOST --dump1090-port $DUMP1090_PORT --ref-lat $ANTENNA_LAT --ref-lon $ANTENNA_LON --stationid $STATIONID \\
-    \${CONTENT_MODE:+--content-mode "\$CONTENT_MODE"} \\
-    \${CONNECTION_STRING:+--connection-string "\$CONNECTION_STRING"} \\
-    \${CONNECTION_STRING:- --kafka-bootstrap-servers "\$KAFKA_BOOTSTRAP_SERVERS" --kafka-topic "\$KAFKA_TOPIC" --sasl-username "\$SASL_USERNAME" --sasl-password "\$SASL_PASSWORD"}
+    ${CONTENT_MODE:+--content-mode "$CONTENT_MODE"} \\
+    ${CONNECTION_STRING:+--connection-string "$CONNECTION_STRING"} \\
+    ${CONNECTION_STRING:- --kafka-bootstrap-servers "$KAFKA_BOOTSTRAP_SERVERS" --kafka-topic "$KAFKA_TOPIC" --sasl-username "$SASL_USERNAME" --sasl-password "$SASL_PASSWORD"}
 Environment="STATIONID=$STATIONID"
 Environment="CONTENT_MODE=$CONTENT_MODE"
 Environment="KAFKA_BOOTSTRAP_SERVERS=$KAFKA_BOOTSTRAP_SERVERS"
@@ -86,6 +86,8 @@ EOF
 
 # Function to uninstall the service
 uninstall_service() {
+    home_dir="/home/mode_s_kafka_bridge"
+
     # Stop and disable the service
     sudo systemctl stop mode_s_kafka_bridge.service
     sudo systemctl disable mode_s_kafka_bridge.service
@@ -107,6 +109,8 @@ uninstall_service() {
     if [[ -d "$log_dir" ]]; then
         sudo rm -rf "$log_dir"
     fi
+
+    sudo rm -rf "$home_dir"
 
     echo "Service uninstalled."
 }
