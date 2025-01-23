@@ -58,10 +58,7 @@ After=network.target
 [Service]
 User=mode_s_kafka_bridge
 WorkingDirectory=$home_dir
-ExecStart=$venv_dir/bin/mode_s_kafka_bridge feed --dump1090-host $DUMP1090_HOST --dump1090-port $DUMP1090_PORT --ref-lat $ANTENNA_LAT --ref-lon $ANTENNA_LON --stationid $STATIONID \\
-    ${CONTENT_MODE:+--content-mode "$CONTENT_MODE"} \\
-    ${CONNECTION_STRING:+--connection-string "$CONNECTION_STRING"} \\
-    ${CONNECTION_STRING:- --kafka-bootstrap-servers "$KAFKA_BOOTSTRAP_SERVERS" --kafka-topic "$KAFKA_TOPIC" --sasl-username "$SASL_USERNAME" --sasl-password "$SASL_PASSWORD"}
+ExecStart=$venv_dir/bin/mode_s_kafka_bridge feed
 Environment="STATIONID=$STATIONID"
 Environment="CONTENT_MODE=$CONTENT_MODE"
 Environment="KAFKA_BOOTSTRAP_SERVERS=$KAFKA_BOOTSTRAP_SERVERS"
@@ -69,6 +66,12 @@ Environment="KAFKA_TOPIC=$KAFKA_TOPIC"
 Environment="SASL_USERNAME=$SASL_USERNAME"
 Environment="SASL_PASSWORD=$SASL_PASSWORD"
 Environment="CONNECTION_STRING=$CONNECTION_STRING"
+Environment="ANTENNA_LAT=$ANTENNA_LAT"
+Environment="ANTENNA_LON=$ANTENNA_LON"
+Environment="DUMP1090_HOST=$DUMP1090_HOST"
+Environment="DUMP1090_PORT=$DUMP1090_PORT"
+StandardOutput=append:/var/log/mode_s_kafka_bridge/stdout.log
+StandardError=append:/var/log/mode_s_kafka_bridge/stderr.log
 Restart=always
 
 [Install]
