@@ -196,6 +196,7 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
             elif 'EntityPath' in part:
                 config_dict['kafka_topic'] = part.split('=')[1]
     except IndexError as e:
+        logging.error("Connection string parsing error: %s", e)
         raise ValueError("Invalid connection string format") from e
     return config_dict
 
@@ -238,15 +239,19 @@ async def run():
     if args.subcommand == 'feed':
         # Host/port/pos checks
         if not args.host:
+            logging.error("Missing required parameter: host")
             print("Error: Dump1090 host is required (env: DUMP1090_HOST or --host)")
             return
         if not args.port:
+            logging.error("Missing required parameter: port")
             print("Error: Dump1090 port is required (env: DUMP1090_PORT or --port)")
             return
         if args.ref_lat is None:
+            logging.error("Missing required parameter: ref_lat")
             print("Error: Antenna latitude is required (env: REF_LAT or --ref-lat)")
             return
         if args.ref_lon is None:
+            logging.error("Missing required parameter: ref_lon")
             print("Error: Antenna longitude is required (env: REF_LON or --ref-lon)")
             return
 
@@ -257,11 +262,16 @@ async def run():
         sasl_password = None
 
         if args.connection_string:
-            config_params = parse_connection_string(args.connection_string)
-            kafka_bootstrap_servers = config_params.get('bootstrap.servers')
-            kafka_topic = config_params.get('kafka_topic')
-            sasl_username = config_params.get('sasl.username')
-            sasl_password = config_params.get('sasl.password')
+            try:
+                config_params = parse_connection_string(args.connection_string)
+                kafka_bootstrap_servers = config_params.get('bootstrap.servers')
+                kafka_topic = config_params.get('kafka_topic')
+                sasl_username = config_params.get('sasl.username')
+                sasl_password = config_params.get('sasl.password')
+            except ValueError as e:
+                logging.error("Invalid connection string: %s", e)
+                print("Error: Invalid connection string format.")
+                return
         else:
             kafka_bootstrap_servers = args.kafka_bootstrap_servers
             kafka_topic = args.kafka_topic
@@ -269,24 +279,33 @@ async def run():
             sasl_password = args.sasl_password
 
         if not kafka_bootstrap_servers:
+            logging.error("Missing required parameter: kafka_bootstrap_servers")
             print("Error: No Kafka bootstrap servers found.")
             return
         if not kafka_topic:
+            logging.error("Missing required parameter: kafka_topic")
             print("Error: No Kafka topic found.")
             return
         if not sasl_username or not sasl_password:
+            logging.error("Missing required SASL credentials")
             print("Error: SASL username and password are required.")
             return
 
         # Build Producer
-        kafka_config = {
-            'bootstrap.servers': kafka_bootstrap_servers,
-            'sasl.mechanisms': 'PLAIN',
-            'security.protocol': 'SASL_SSL',
-            'sasl.username': sasl_username,
-            'sasl.password': sasl_password
-        }
-        kafka_producer = Producer(kafka_config)
+        try:
+            kafka_config = {
+                'bootstrap.servers': kafka_bootstrap_servers,
+                'sasl.mechanisms': 'PLAIN',
+                'security.protocol': 'SASL_SSL',
+                'sasl.username': sasl_username,
+                'sasl.password': sasl_password
+            }
+            kafka_producer = Producer(kafka_config)
+        except Exception as producer_err:
+            logging.error("Failed to create Kafka producer: %s", producer_err)
+            print("Error: Could not create Kafka producer.")
+            return
+
         producer = ModeSEventProducer(kafka_producer, topic=kafka_topic, content_mode=args.content_mode)
 
         client = ADSBClient(
@@ -315,8 +334,10 @@ async def run():
             
         except KeyboardInterrupt:
             print("Interrupted")
+            logging.info("Application interrupted by user.")
         except Exception as e:
-            print("Error: %s" % e)
+            logging.error("Unhandled startup error: %s", e)
+            print(f"Error: {e}")
 
 def main():
     asyncio.run(run())

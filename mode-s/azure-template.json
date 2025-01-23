@@ -1,21 +1,180 @@
 {
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
+    "fileShareName": "fileshare"
+  },
+  "resources": [
+    {
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "location": "[resourceGroup().location]",
+      "name": "[variables('storageAccountName')]",
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot"
+      },
+      "apiVersion": "2021-04-01",
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('storageAccountName'), '/default/')]",
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      },
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices"
+    },
+    {
+      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "properties": {
+        "shareQuota": 5120
+      },
+      "apiVersion": "2021-04-01",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares"
+    },
+    {
+      "apiVersion": "2021-09-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "volumes": [
+          {
+            "azureFile": {
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]",
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]"
+            },
+            "name": "azurefilevolume"
+          }
+        ],
+        "restartPolicy": "Always",
+        "osType": "Linux",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]"
+          }
+        },
+        "containers": [
+          {
+            "properties": {
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 0.5
+                }
+              },
+              "volumeMounts": [
+                {
+                  "mountPath": "/mnt/fileshare",
+                  "name": "azurefilevolume"
+                }
+              ],
+              "image": "[parameters('imageName')]",
+              "environmentVariables": [
+                {
+                  "value": "[parameters('dump1090Host')]",
+                  "name": "DUMP1090_HOST"
+                },
+                {
+                  "value": "[parameters('dump1090Port')]",
+                  "name": "DUMP1090_PORT"
+                },
+                {
+                  "value": "[parameters('refLat')]",
+                  "name": "REF_LAT"
+                },
+                {
+                  "value": "[parameters('refLon')]",
+                  "name": "REF_LON"
+                },
+                {
+                  "value": "[parameters('stationId')]",
+                  "name": "STATIONID"
+                },
+                {
+                  "secureValue": "[parameters('connectionStringSecret')]",
+                  "name": "CONNECTION_STRING"
+                },
+                {
+                  "value": "[parameters('kafkaBootstrapServers')]",
+                  "name": "KAFKA_BOOTSTRAP_SERVERS"
+                },
+                {
+                  "value": "[parameters('kafkaTopic')]",
+                  "name": "KAFKA_TOPIC"
+                },
+                {
+                  "value": "[parameters('saslUsername')]",
+                  "name": "SASL_USERNAME"
+                },
+                {
+                  "secureValue": "[parameters('saslPassword')]",
+                  "name": "SASL_PASSWORD"
+                },
+                {
+                  "value": "[parameters('pollingInterval')]",
+                  "name": "POLLING_INTERVAL"
+                },
+                {
+                  "value": "[parameters('logLevel')]",
+                  "name": "LOG_LEVEL"
+                }
+              ]
+            },
+            "name": "[parameters('appName')]"
+          }
+        ]
+      },
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "name": "[parameters('appName')]"
+    }
+  ],
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
   "parameters": {
+    "dump1090Port": {
+      "metadata": {
+        "description": "TCP port dump1090 listens on."
+      },
+      "type": "string",
+      "defaultValue": "30005"
+    },
+    "stationId": {
+      "metadata": {
+        "description": "Station ID for event source attribution."
+      },
+      "type": "string",
+      "defaultValue": "station1"
+    },
+    "dump1090Host": {
+      "metadata": {
+        "description": "Hostname or IP address of dump1090."
+      },
+      "type": "string",
+      "defaultValue": "localhost"
+    },
     "logAnalyticsWorkspaceId": {
       "metadata": {
         "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
       },
       "type": "string"
     },
-    "imageName": {
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-mode-s:latest",
+    "saslPassword": {
       "metadata": {
-        "description": "The name of the container image."
-      },
-      "type": "string"
-    },
-    "logAnalyticsWorkspaceKey": {
-      "metadata": {
-        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+        "description": "Password for SASL authentication."
       },
       "type": "securestring"
     },
@@ -25,129 +184,75 @@
       },
       "type": "securestring"
     },
-    "feedUrls": {
-      "defaultValue": "",
+    "imageName": {
       "metadata": {
-        "description": "Comma-separated list of feed URLs (RSS or OPML)"
+        "description": "The name of the container image."
       },
-      "type": "string"
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-mode-s:latest"
+    },
+    "refLat": {
+      "metadata": {
+        "description": "Latitude of the receiving antenna."
+      },
+      "type": "string",
+      "defaultValue": "0"
+    },
+    "refLon": {
+      "metadata": {
+        "description": "Longitude of the receiving antenna."
+      },
+      "type": "string",
+      "defaultValue": "0"
+    },
+    "saslUsername": {
+      "metadata": {
+        "description": "Username for SASL authentication."
+      },
+      "type": "string",
+      "defaultValue": ""
+    },
+    "logLevel": {
+      "metadata": {
+        "description": "Logging level."
+      },
+      "type": "string",
+      "defaultValue": "INFO"
+    },
+    "logAnalyticsWorkspaceKey": {
+      "metadata": {
+        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      },
+      "type": "securestring"
     },
     "appName": {
-      "defaultValue": "[if(empty(resourceGroup().name), 'mode-s', resourceGroup().name)]",
-      "maxLength": 64,
       "metadata": {
         "description": "The name of the container instance."
       },
-      "type": "string"
+      "maxLength": 64,
+      "type": "string",
+      "defaultValue": "[if(empty(resourceGroup().name), 'mode-s', resourceGroup().name)]"
+    },
+    "pollingInterval": {
+      "metadata": {
+        "description": "Polling interval in seconds."
+      },
+      "type": "string",
+      "defaultValue": "60"
+    },
+    "kafkaTopic": {
+      "metadata": {
+        "description": "Kafka topic to publish messages."
+      },
+      "type": "string",
+      "defaultValue": ""
+    },
+    "kafkaBootstrapServers": {
+      "metadata": {
+        "description": "Kafka bootstrap servers."
+      },
+      "type": "string",
+      "defaultValue": ""
     }
-  },
-  "variables": {
-    "fileShareName": "fileshare",
-    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
-  },
-  "contentVersion": "1.0.0.0",
-  "resources": [
-    {
-      "location": "[resourceGroup().location]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "properties": {
-        "accessTier": "Hot"
-      },
-      "kind": "StorageV2",
-      "apiVersion": "2021-04-01",
-      "name": "[variables('storageAccountName')]",
-      "sku": {
-        "name": "Standard_LRS"
-      }
-    },
-    {
-      "location": "[resourceGroup().location]",
-      "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "properties": {
-        "protocolSettings": {
-          "smb": {
-            "enabled": true
-          }
-        }
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-      ],
-      "apiVersion": "2021-04-01",
-      "name": "[concat(variables('storageAccountName'), '/default/')]"
-    },
-    {
-      "location": "[resourceGroup().location]",
-      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-      "properties": {
-        "shareQuota": 5120
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-      ],
-      "apiVersion": "2021-04-01",
-      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]"
-    },
-    {
-      "name": "[parameters('appName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "containers": [
-          {
-            "name": "[parameters('appName')]",
-            "properties": {
-              "image": "[parameters('imageName')]",
-              "volumeMounts": [
-                {
-                  "name": "azurefilevolume",
-                  "mountPath": "/mnt/fileshare"
-                }
-              ],
-              "environmentVariables": [
-                {
-                  "name": "CONNECTION_STRING",
-                  "secureValue": "[parameters('connectionStringSecret')]"
-                },
-                {
-                  "name": "LOG_LEVEL",
-                  "value": "INFO"
-                },
-                {
-                  "name": "USGS_LAST_POLLED_FILE",
-                  "value": "/mnt/fileshare/usgs_last_polled.json"
-                }
-              ],
-              "resources": {
-                "requests": {
-                  "memoryInGB": 1,
-                  "cpu": 0.5
-                }
-              }
-            }
-          }
-        ],
-        "restartPolicy": "Always",
-        "diagnostics": {
-          "logAnalytics": {
-            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]",
-            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
-          }
-        },
-        "volumes": [
-          {
-            "name": "azurefilevolume",
-            "azureFile": {
-              "shareName": "[variables('fileShareName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]",
-              "storageAccountName": "[variables('storageAccountName')]"
-            }
-          }
-        ],
-        "osType": "Linux"
-      },
-      "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2021-09-01"
-    }
-  ],
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#"
+  }
 }

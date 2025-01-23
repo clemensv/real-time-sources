@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mode-s"
+name = "mode-s-kafka-bridge"
 description = "Mode-S/ADS-B Bridge for BEAST messages (dump1090)"
 authors = ["Clemens Vasters"]
 readme = "README.md"
@@ -25,7 +25,7 @@ testcontainers = ">=4.8.1"
 pytest-asyncio = ">=0.24.0"
 
 [tool.poetry.scripts]
-mode-s = "mode_s.mode_s:main"
+mode_s_kafka_bridge = "mode_s.mode_s:main"
 
 [build-system]
 requires = ["poetry-core>=1.9.0"]

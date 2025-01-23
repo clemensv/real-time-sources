@@ -11,13 +11,6 @@ $templateParameters = @{
                 "description" = "The Microsoft Fabric Event Stream custom input endpoint or Azure Event Hubs connection string."
             }
         }
-        "feedUrls" = @{
-            "type"        = "string"
-            "defaultValue" = ""
-            "metadata"    = @{
-                "description" = "Comma-separated list of feed URLs (RSS or OPML)"
-            }
-        }
         "appName" = @{
             "type"        = "string"
             "defaultValue" = "[if(empty(resourceGroup().name), 'mode-s', resourceGroup().name)]"
@@ -43,6 +36,82 @@ $templateParameters = @{
             "type"        = "securestring"
             "metadata"    = @{
                 "description" = "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+            }
+        }
+        "dump1090Host" = @{
+            "type"        = "string"
+            "defaultValue" = "localhost"
+            "metadata"    = @{
+                "description" = "Hostname or IP address of dump1090."
+            }
+        }
+        "dump1090Port" = @{
+            "type"        = "string"
+            "defaultValue" = "30005"
+            "metadata"    = @{
+                "description" = "TCP port dump1090 listens on."
+            }
+        }
+        "refLat" = @{
+            "type"        = "string"
+            "defaultValue" = "0"
+            "metadata"    = @{
+                "description" = "Latitude of the receiving antenna."
+            }
+        }
+        "refLon" = @{
+            "type"        = "string"
+            "defaultValue" = "0"
+            "metadata"    = @{
+                "description" = "Longitude of the receiving antenna."
+            }
+        }
+        "stationId" = @{
+            "type"        = "string"
+            "defaultValue" = "station1"
+            "metadata"    = @{
+                "description" = "Station ID for event source attribution."
+            }
+        }
+        "kafkaBootstrapServers" = @{
+            "type"        = "string"
+            "defaultValue" = ""
+            "metadata"    = @{
+                "description" = "Kafka bootstrap servers."
+            }
+        }
+        "kafkaTopic" = @{
+            "type"        = "string"
+            "defaultValue" = ""
+            "metadata"    = @{
+                "description" = "Kafka topic to publish messages."
+            }
+        }
+        "saslUsername" = @{
+            "type"        = "string"
+            "defaultValue" = ""
+            "metadata"    = @{
+                "description" = "Username for SASL authentication."
+            }
+        }
+        "saslPassword" = @{
+            "type"        = "securestring"
+            "metadata"    = @{
+                "description" = "Password for SASL authentication."
+            }
+        }
+        "pollingInterval" = @{
+            "type"        = "string"
+            "defaultValue" = "60"
+            "metadata"    = @{
+                "description" = "Polling interval in seconds."
+            }
+        }
+        "logLevel" = @{
+            "type"        = "string"
+            "defaultValue" = "INFO"
+            "metadata"    = @{
+                "description" = "Logging level."
             }
         }
     }
@@ -110,16 +179,52 @@ $templateResources = @(
                         }
                         "environmentVariables" = @(
                             @{
+                                "name"  = "DUMP1090_HOST"
+                                "value" = "[parameters('dump1090Host')]"
+                            },
+                            @{
+                                "name"  = "DUMP1090_PORT"
+                                "value" = "[parameters('dump1090Port')]"
+                            },
+                            @{
+                                "name"  = "REF_LAT"
+                                "value" = "[parameters('refLat')]"
+                            },
+                            @{
+                                "name"  = "REF_LON"
+                                "value" = "[parameters('refLon')]"
+                            },
+                            @{
+                                "name"  = "STATIONID"
+                                "value" = "[parameters('stationId')]"
+                            },
+                            @{
                                 "name"        = "CONNECTION_STRING"
                                 "secureValue" = "[parameters('connectionStringSecret')]"
-                            }
+                            },
+                            @{
+                                "name"  = "KAFKA_BOOTSTRAP_SERVERS"
+                                "value" = "[parameters('kafkaBootstrapServers')]"
+                            },
+                            @{
+                                "name"  = "KAFKA_TOPIC"
+                                "value" = "[parameters('kafkaTopic')]"
+                            },
+                            @{
+                                "name"  = "SASL_USERNAME"
+                                "value" = "[parameters('saslUsername')]"
+                            },
+                            @{
+                                "name"        = "SASL_PASSWORD"
+                                "secureValue" = "[parameters('saslPassword')]"
+                            },
+                            @{
+                                "name"  = "POLLING_INTERVAL"
+                                "value" = "[parameters('pollingInterval')]"
+                            },
                             @{
                                 "name"  = "LOG_LEVEL"
-                                "value" = "INFO"
-                            }
-                            @{
-                                "name"  = "USGS_LAST_POLLED_FILE"
-                                "value" = "/mnt/fileshare/usgs_last_polled.json"
+                                "value" = "[parameters('logLevel')]"
                             }
                         )
                         "volumeMounts" = @(
