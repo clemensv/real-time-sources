@@ -7,12 +7,14 @@ import enum
 import typing
 import dataclasses
 import dataclasses_json
+from dataclasses import dataclass
+from dataclasses_json import Undefined, dataclass_json
 import json
 import datetime
 
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
 class ModeS_ADSB_Record:
     """
     A comprehensive schema for Mode-S and ADS-B decoded messages, including fields for various BDS codes and ADS-B type codes.

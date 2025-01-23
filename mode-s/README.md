@@ -54,17 +54,20 @@ After installation, run `mode_s.py`. It supports multiple subcommands:
 
 ### **Feed (`feed`)**
 
-Polls Mode-S data from dump1090 and sends them as CloudEvents to a Kafka topic. The events are formatted using CloudEvents structured JSON format and described in [EVENTS.md](EVENTS.md).
+Polls Mode-S data from dump1090 and sends them as CloudEvents to a Kafka topic. The events are formatted using CloudEvents in "structured" or "binary" mode.
 
-- `--host`: Hostname or IP address of dump1090.
-- `--port`: TCP port dump1090 is listening on.
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream [connection string](#connection-string-for-microsoft-event-hubs-or-fabric-event-streams) (overrides other Kafka parameters).
-- `--ref-lat`: Latitude of your receiving antenna, required for decoding Mode-S/ADS-B positions.
-- `--ref-lon`: Longitude of your receiving antenna, required for decoding Mode-S/ADS-B positions.
+Parameters:
+- `--host`: Host name or IP address of dump1090 (default: $DUMP1090_HOST).
+- `--port`: TCP port dump1090 listens on (default: $DUMP1090_PORT).
+- `--ref-lat`: Latitude of the receiving antenna (default: $REF_LAT).
+- `--ref-lon`: Longitude of the receiving antenna (default: $REF_LON).
+- `--stationid`: Station ID for event source attribution (default: $STATIONID).
+- `--kafka-bootstrap-servers`: Kafka servers (default: $KAFKA_BOOTSTRAP_SERVERS).
+- `--kafka-topic`: Kafka topic to publish messages (default: $KAFKA_TOPIC).
+- `--sasl-username`: Username for SASL authentication (default: $SASL_USERNAME).
+- `--sasl-password`: Password for SASL authentication (default: $SASL_PASSWORD).
+- `--connection-string`: Connection string for Microsoft Event Hubs or Fabric Event Streams (overrides other Kafka parameters; default: $CONNECTION_STRING).
+- `--content-mode`: CloudEvent content mode (“structured” or “binary”; default: “structured”).
 
 #### Example Usage:
 

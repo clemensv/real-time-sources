@@ -7,12 +7,14 @@ import enum
 import typing
 import dataclasses
 import dataclasses_json
+from dataclasses import dataclass
+from dataclasses_json import Undefined, dataclass_json
 import json
 from mode_s_producer_data.mode_s.modes_adsb_record import ModeS_ADSB_Record
 
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
 class ModeSMessages:
     """
     A container for multiple Mode-S and ADS-B decoded messages.
