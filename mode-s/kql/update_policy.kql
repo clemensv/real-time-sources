@@ -11,8 +11,8 @@
       | mv-expand msg = messages
       | project
           stid = tostring(___subject),
-          ts = unixtime_milliseconds_todatetime(msg.ts),
-          icao = tostring(msg.icao),
+          ts = unixtime_milliseconds_todatetime(tolong(msg.ts)),
+          icao = tolower(tostring(msg.icao)),
           df = toint(msg.df),
           tc = toint(msg.tc),
           bcode = tostring(msg.bcode),
