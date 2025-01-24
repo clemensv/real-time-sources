@@ -98,13 +98,9 @@ class ADSBClient(TcpClient):
                             lat, lon = pms.adsb.airborne_position_with_ref(msg, self.ref_lat, self.ref_lon)
                             record.lat, record.lon = lat, lon
                         elif tc == 19:
-                            speed, angle, vr, spd_type, *extras = pms.adsb.velocity(msg)
+                            speed, angle, vr, spd_type = pms.adsb.velocity(msg)
                             record.spd, record.ang, record.vr = speed, angle, vr
                             record.spd_type = spd_type
-                            if len(extras) > 0:
-                                record.dir_src = extras[0]
-                            if len(extras) > 1:
-                                record.vr_src = extras[1]
                         elif 20 <= tc <= 22:
                             record.alt = pms.adsb.altitude(msg)
                             lat, lon = pms.adsb.airborne_position_with_ref(msg, self.ref_lat, self.ref_lon)
