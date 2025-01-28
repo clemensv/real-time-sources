@@ -6,14 +6,12 @@ import gzip
 import enum
 import typing
 import dataclasses
-import dataclasses_json
+import orjson
 from dataclasses import dataclass
-from dataclasses_json import Undefined, dataclass_json
 import json
 import datetime
 
 
-@dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class ModeS_ADSB_Record:
     """
@@ -54,40 +52,40 @@ class ModeS_ADSB_Record:
         tgt (typing.Optional[str]): Target state info. Present for certain BDS6,2 or ADS-B TC29; null otherwise.
         opst (typing.Optional[str]): Operational status info. Present for certain BDS6,5 or ADS-B TC31; null otherwise."""
     
-    ts: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ts"))
-    icao: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="icao"))
-    df: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="df"))
-    tc: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tc"))
-    bcode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bcode"))
-    alt: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alt"))
-    cs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cs"))
-    sq: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sq"))
-    lat: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lat"))
-    lon: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lon"))
-    spd: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="spd"))
-    ang: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ang"))
-    vr: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vr"))
-    spd_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="spd_type"))
-    dir_src: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dir_src"))
-    vr_src: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vr_src"))
-    ws: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ws"))
-    wd: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wd"))
-    at: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="at"))
-    ap: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ap"))
-    hm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hm"))
-    roll: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="roll"))
-    trak: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trak"))
-    gs: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="gs"))
-    tas: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tas"))
-    hd: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hd"))
-    ias: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ias"))
-    m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="m"))
-    vrb: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vrb"))
-    vri: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vri"))
-    rssi: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rssi"))
-    emst: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="emst"))
-    tgt: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tgt"))
-    opst: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="opst"))
+    ts: datetime.datetime=dataclasses.field(kw_only=True)
+    icao: str=dataclasses.field(kw_only=True)
+    df: int=dataclasses.field(kw_only=True)
+    tc: typing.Optional[int]=dataclasses.field(kw_only=True)
+    bcode: typing.Optional[str]=dataclasses.field(kw_only=True)
+    alt: typing.Optional[int]=dataclasses.field(kw_only=True)
+    cs: typing.Optional[str]=dataclasses.field(kw_only=True)
+    sq: typing.Optional[str]=dataclasses.field(kw_only=True)
+    lat: typing.Optional[float]=dataclasses.field(kw_only=True)
+    lon: typing.Optional[float]=dataclasses.field(kw_only=True)
+    spd: typing.Optional[float]=dataclasses.field(kw_only=True)
+    ang: typing.Optional[float]=dataclasses.field(kw_only=True)
+    vr: typing.Optional[int]=dataclasses.field(kw_only=True)
+    spd_type: typing.Optional[str]=dataclasses.field(kw_only=True)
+    dir_src: typing.Optional[str]=dataclasses.field(kw_only=True)
+    vr_src: typing.Optional[str]=dataclasses.field(kw_only=True)
+    ws: typing.Optional[int]=dataclasses.field(kw_only=True)
+    wd: typing.Optional[int]=dataclasses.field(kw_only=True)
+    at: typing.Optional[float]=dataclasses.field(kw_only=True)
+    ap: typing.Optional[float]=dataclasses.field(kw_only=True)
+    hm: typing.Optional[float]=dataclasses.field(kw_only=True)
+    roll: typing.Optional[float]=dataclasses.field(kw_only=True)
+    trak: typing.Optional[float]=dataclasses.field(kw_only=True)
+    gs: typing.Optional[float]=dataclasses.field(kw_only=True)
+    tas: typing.Optional[float]=dataclasses.field(kw_only=True)
+    hd: typing.Optional[float]=dataclasses.field(kw_only=True)
+    ias: typing.Optional[float]=dataclasses.field(kw_only=True)
+    m: typing.Optional[float]=dataclasses.field(kw_only=True)
+    vrb: typing.Optional[float]=dataclasses.field(kw_only=True)
+    vri: typing.Optional[float]=dataclasses.field(kw_only=True)
+    rssi: typing.Optional[float]=dataclasses.field(kw_only=True)
+    emst: typing.Optional[str]=dataclasses.field(kw_only=True)
+    tgt: typing.Optional[str]=dataclasses.field(kw_only=True)
+    opst: typing.Optional[str]=dataclasses.field(kw_only=True)
     
 
     def __post_init__(self):
@@ -149,6 +147,7 @@ class ModeS_ADSB_Record:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        asdict_result = {k: v for k, v in asdict_result.items() if v is not None}
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -161,7 +160,7 @@ class ModeS_ADSB_Record:
             return v
         def _fix_key(k):
             return k[:-1] if k.endswith('_') else k
-        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
+        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data) if v is not None}
 
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
@@ -180,9 +179,7 @@ class ModeS_ADSB_Record:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
-            #pylint: disable=no-member
-            result = self.to_json()
-            #pylint: enable=no-member
+            result = orjson.dumps(self.to_serializer_dict())
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:
@@ -229,7 +226,7 @@ class ModeS_ADSB_Record:
         if content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
-                _record = json.loads(data_str)
+                _record = orjson.loads(data_str)
                 return ModeS_ADSB_Record.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')

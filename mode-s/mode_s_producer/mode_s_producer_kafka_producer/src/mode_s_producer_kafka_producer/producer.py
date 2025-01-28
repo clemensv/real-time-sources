@@ -7,6 +7,7 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+import orjson
 from mode_s_producer_data.mode_s.messages import Messages
 
 class ModeSEventProducer:
@@ -57,7 +58,7 @@ class ModeSEventProducer:
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: orjson.loads(orjson.dumps(x.to_serializer_dict())), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
             message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
