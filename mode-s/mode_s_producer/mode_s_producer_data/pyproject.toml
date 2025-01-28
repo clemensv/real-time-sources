@@ -8,7 +8,7 @@ packages = [ { include = "mode_s_producer_data", from="src" } ]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-dataclasses-json = "^0.6.7"
+orjson = "^3.10"
 
 [tool.poetry.dev-dependencies]
 pylint = "^3.2.3"

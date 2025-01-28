@@ -6,14 +6,12 @@ import gzip
 import enum
 import typing
 import dataclasses
-import dataclasses_json
+import orjson
 from dataclasses import dataclass
-from dataclasses_json import Undefined, dataclass_json
 import json
 from mode_s_producer_data.mode_s.modes_adsb_record import ModeS_ADSB_Record
 
 
-@dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class ModeSMessages:
     """
@@ -21,7 +19,7 @@ class ModeSMessages:
     Attributes:
         messages (typing.List[ModeS_ADSB_Record]): An array of Mode-S and ADS-B decoded message records."""
     
-    messages: typing.List[ModeS_ADSB_Record]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="messages"))
+    messages: typing.List[ModeS_ADSB_Record]=dataclasses.field(kw_only=True)
     
 
     def __post_init__(self):
@@ -49,19 +47,22 @@ class ModeSMessages:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        asdict_result = {k: v for k, v in asdict_result.items() if v is not None}
         return asdict_result
 
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
-        def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+        def _resolve_value(v):
+            if isinstance(v, enum.Enum):
                 return v.value
+            if hasattr(v, 'to_serializer_dict') and callable(v.to_serializer_dict):
+                return v.to_serializer_dict()
             return v
         def _fix_key(k):
             return k[:-1] if k.endswith('_') else k
-        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
+        return {_fix_key(k): _resolve_value(v) for k, v in iter(data)}
 
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
@@ -80,9 +81,7 @@ class ModeSMessages:
         content_type = content_type_string.split(';')[0].strip()
         result = None
         if content_type == 'application/json':
-            #pylint: disable=no-member
-            result = self.to_json()
-            #pylint: enable=no-member
+            result = orjson.dumps(self.to_serializer_dict())
 
         if result is not None and content_type.endswith('+gzip'):
             with io.BytesIO() as stream:
@@ -129,7 +128,7 @@ class ModeSMessages:
         if content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
-                _record = json.loads(data_str)
+                _record = orjson.loads(data_str)
                 return ModeSMessages.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
