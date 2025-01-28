@@ -62,6 +62,9 @@ class ADSBClient(TcpClient):
         try:
             if self.stop_flag:
                 return
+            if (len(self.task_queue ) + 1) > 200:
+                logger.warning("Dropping input. Queue capacity exceeded.")   
+                return             
             msgs = []
             for msg, ts in messages:
                 try:
@@ -136,8 +139,6 @@ class ADSBClient(TcpClient):
             if len(msgs) > 0:
                 bundle = Messages(messages=msgs)
                 self.task_queue.append(bundle)
-                if len(self.task_queue) > 20:
-                    logger.warning("Queue length is now %d", len(self.task_queue))
         except Exception as e:
             logger.error("Error handling messages: %s", e)
             # we're going to observe a moment of silence and hope the problem goes away
