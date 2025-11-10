@@ -1,0 +1,114 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # GTFS project
+  - package-ecosystem: "pip"
+    directory: "/gtfs"
+    schedule:
+      interval: "weekly"
+
+  # GTFS RT producer data
+  - package-ecosystem: "pip"
+    directory: "/gtfs/gtfs_rt_producer/gtfs_rt_producer_data"
+    schedule:
+      interval: "weekly"
+
+  # GTFS RT producer kafka producer
+  - package-ecosystem: "pip"
+    directory: "/gtfs/gtfs_rt_producer/gtfs_rt_producer_kafka_producer"
+    schedule:
+      interval: "weekly"
+
+  # Mode-S project
+  - package-ecosystem: "pip"
+    directory: "/mode-s"
+    schedule:
+      interval: "weekly"
+
+  # Mode-S producer data
+  - package-ecosystem: "pip"
+    directory: "/mode-s/mode_s_producer/mode_s_producer_data"
+    schedule:
+      interval: "weekly"
+
+  # Mode-S producer kafka producer
+  - package-ecosystem: "pip"
+    directory: "/mode-s/mode_s_producer/mode_s_producer_kafka_producer"
+    schedule:
+      interval: "weekly"
+
+  # Nextbus project
+  - package-ecosystem: "pip"
+    directory: "/nextbus"
+    schedule:
+      interval: "weekly"
+
+  # NOAA project
+  - package-ecosystem: "pip"
+    directory: "/noaa"
+    schedule:
+      interval: "weekly"
+
+  # Pegelonline project
+  - package-ecosystem: "pip"
+    directory: "/pegelonline"
+    schedule:
+      interval: "weekly"
+
+  # Pegelonline producer data
+  - package-ecosystem: "pip"
+    directory: "/pegelonline/pegelonline_producer/pegelonline_producer_data"
+    schedule:
+      interval: "weekly"
+
+  # Pegelonline producer kafka producer
+  - package-ecosystem: "pip"
+    directory: "/pegelonline/pegelonline_producer/pegelonline_producer_kafka_producer"
+    schedule:
+      interval: "weekly"
+
+  # RSS project
+  - package-ecosystem: "pip"
+    directory: "/rss"
+    schedule:
+      interval: "weekly"
+
+  # RSS bridge producer data
+  - package-ecosystem: "pip"
+    directory: "/rss/rssbridge_producer/rssbridge_producer_data"
+    schedule:
+      interval: "weekly"
+
+  # RSS bridge producer kafka producer
+  - package-ecosystem: "pip"
+    directory: "/rss/rssbridge_producer/rssbridge_producer_kafka_producer"
+    schedule:
+      interval: "weekly"
+
+  # USGS-IV project
+  - package-ecosystem: "pip"
+    directory: "/usgs-iv"
+    schedule:
+      interval: "weekly"
+
+  # USGS-IV producer data
+  - package-ecosystem: "pip"
+    directory: "/usgs-iv/usgs_iv_producer/usgs_iv_producer_data"
+    schedule:
+      interval: "weekly"
+
+  # USGS-IV producer kafka producer
+  - package-ecosystem: "pip"
+    directory: "/usgs-iv/usgs_iv_producer/usgs_iv_producer_kafka_producer"
+    schedule:
+      interval: "weekly"
