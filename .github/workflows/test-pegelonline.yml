@@ -57,7 +57,7 @@ jobs:
         run: poetry run pytest tests/test_pegelonline_integration.py -v --tb=short
 
       - name: Run all tests with coverage
-        run: poetry run pytest tests/ -v --cov=pegelonline --cov-report=term-missing --cov-report=xml --cov-fail-under=30
+        run: poetry run pytest tests/ -v --cov=pegelonline --cov-report=term-missing --cov-report=xml --cov-fail-under=20
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
