@@ -32,39 +32,39 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer
-from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
+from usgs-iv-producer_kafka_producer.producer import USGSSitesEventProducer
+from usgs-iv-producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
 
 # imports for the data classes for each event
 
-from usgs_iv_producer_data.usgs.sites.site import Site
-from usgs_iv_producer_data.usgs.sites.sitetimeseries import SiteTimeseries
-from usgs_iv_producer_data.usgs.instantaneousvalues.otherparameter import OtherParameter
-from usgs_iv_producer_data.usgs.instantaneousvalues.precipitation import Precipitation
-from usgs_iv_producer_data.usgs.instantaneousvalues.streamflow import Streamflow
-from usgs_iv_producer_data.usgs.instantaneousvalues.gageheight import GageHeight
-from usgs_iv_producer_data.usgs.instantaneousvalues.watertemperature import WaterTemperature
-from usgs_iv_producer_data.usgs.instantaneousvalues.dissolvedoxygen import DissolvedOxygen
-from usgs_iv_producer_data.usgs.instantaneousvalues.ph import PH
-from usgs_iv_producer_data.usgs.instantaneousvalues.specificconductance import SpecificConductance
-from usgs_iv_producer_data.usgs.instantaneousvalues.turbidity import Turbidity
-from usgs_iv_producer_data.usgs.instantaneousvalues.airtemperature import AirTemperature
-from usgs_iv_producer_data.usgs.instantaneousvalues.windspeed import WindSpeed
-from usgs_iv_producer_data.usgs.instantaneousvalues.winddirection import WindDirection
-from usgs_iv_producer_data.usgs.instantaneousvalues.relativehumidity import RelativeHumidity
-from usgs_iv_producer_data.usgs.instantaneousvalues.barometricpressure import BarometricPressure
-from usgs_iv_producer_data.usgs.instantaneousvalues.turbidityfnu import TurbidityFNU
-from usgs_iv_producer_data.usgs.instantaneousvalues.fdom import FDOM
-from usgs_iv_producer_data.usgs.instantaneousvalues.reservoirstorage import ReservoirStorage
-from usgs_iv_producer_data.usgs.instantaneousvalues.lakeelevationngvd29 import LakeElevationNGVD29
-from usgs_iv_producer_data.usgs.instantaneousvalues.waterdepth import WaterDepth
-from usgs_iv_producer_data.usgs.instantaneousvalues.equipmentstatus import EquipmentStatus
-from usgs_iv_producer_data.usgs.instantaneousvalues.tidallyfiltereddischarge import TidallyFilteredDischarge
-from usgs_iv_producer_data.usgs.instantaneousvalues.watervelocity import WaterVelocity
-from usgs_iv_producer_data.usgs.instantaneousvalues.estuaryelevationngvd29 import EstuaryElevationNGVD29
-from usgs_iv_producer_data.usgs.instantaneousvalues.lakeelevationnavd88 import LakeElevationNAVD88
-from usgs_iv_producer_data.usgs.instantaneousvalues.salinity import Salinity
-from usgs_iv_producer_data.usgs.instantaneousvalues.gateopening import GateOpening
+from usgs-iv-producer_data.usgs.sites.site import Site
+from usgs-iv-producer_data.usgs.sites.sitetimeseries import SiteTimeseries
+from usgs-iv-producer_data.usgs.instantaneousvalues.otherparameter import OtherParameter
+from usgs-iv-producer_data.usgs.instantaneousvalues.precipitation import Precipitation
+from usgs-iv-producer_data.usgs.instantaneousvalues.streamflow import Streamflow
+from usgs-iv-producer_data.usgs.instantaneousvalues.gageheight import GageHeight
+from usgs-iv-producer_data.usgs.instantaneousvalues.watertemperature import WaterTemperature
+from usgs-iv-producer_data.usgs.instantaneousvalues.dissolvedoxygen import DissolvedOxygen
+from usgs-iv-producer_data.usgs.instantaneousvalues.ph import PH
+from usgs-iv-producer_data.usgs.instantaneousvalues.specificconductance import SpecificConductance
+from usgs-iv-producer_data.usgs.instantaneousvalues.turbidity import Turbidity
+from usgs-iv-producer_data.usgs.instantaneousvalues.airtemperature import AirTemperature
+from usgs-iv-producer_data.usgs.instantaneousvalues.windspeed import WindSpeed
+from usgs-iv-producer_data.usgs.instantaneousvalues.winddirection import WindDirection
+from usgs-iv-producer_data.usgs.instantaneousvalues.relativehumidity import RelativeHumidity
+from usgs-iv-producer_data.usgs.instantaneousvalues.barometricpressure import BarometricPressure
+from usgs-iv-producer_data.usgs.instantaneousvalues.turbidityfnu import TurbidityFNU
+from usgs-iv-producer_data.usgs.instantaneousvalues.fdom import FDOM
+from usgs-iv-producer_data.usgs.instantaneousvalues.reservoirstorage import ReservoirStorage
+from usgs-iv-producer_data.usgs.instantaneousvalues.lakeelevationngvd29 import LakeElevationNGVD29
+from usgs-iv-producer_data.usgs.instantaneousvalues.waterdepth import WaterDepth
+from usgs-iv-producer_data.usgs.instantaneousvalues.equipmentstatus import EquipmentStatus
+from usgs-iv-producer_data.usgs.instantaneousvalues.tidallyfiltereddischarge import TidallyFilteredDischarge
+from usgs-iv-producer_data.usgs.instantaneousvalues.watervelocity import WaterVelocity
+from usgs-iv-producer_data.usgs.instantaneousvalues.estuaryelevationngvd29 import EstuaryElevationNGVD29
+from usgs-iv-producer_data.usgs.instantaneousvalues.lakeelevationnavd88 import LakeElevationNAVD88
+from usgs-iv-producer_data.usgs.instantaneousvalues.salinity import Salinity
+from usgs-iv-producer_data.usgs.instantaneousvalues.gateopening import GateOpening
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
