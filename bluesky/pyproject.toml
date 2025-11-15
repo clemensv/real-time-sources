@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "bluesky-firehose-producer"
+description = "Bluesky AT Protocol Firehose Bridge for real-time events"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+readme = "README.md"
+version = "0.1.0"
+packages = [{include = "bluesky"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+bluesky-producer-data = {path = "bluesky_producer/bluesky-producer_data", develop = true}
+bluesky-producer-kafka-producer = {path = "bluesky_producer/bluesky-producer_kafka_producer", develop = true}
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0"
+atproto = "0.0.54"
+aiohttp = ">=3.10.5"
+asyncio = ">=3.4.3"
+dataclasses-json = ">=0.6.7"
+pydantic = "~2.7.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+pytest-asyncio = ">=0.24.0"
+pytest-cov = ">=5.0.0"
+flake8 = ">=7.1.1"
+pylint = ">=3.2.7"
+mypy = ">=1.11.2"
+testcontainers = ">=4.8.1"
+
+[tool.poetry.scripts]
+bluesky_firehose = "bluesky.bluesky:main"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
