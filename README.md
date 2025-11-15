@@ -21,6 +21,7 @@ information. The supported authentication scheme for the Kafka endpoint is
 
 The container image documentation provides detailed information:
 
+* [Bluesky Firehose - Social media posts and interactions](bluesky/CONTAINER.md)
 * [GTFS Realtime - Public transport data](gtfs/CONTAINER.md)
 * [NOAA Tides ands Currents -  Water level and current data](noaa/CONTAINER.md)
 * [RSS Feeds - News and blog posts](rss/CONTAINER.md)
@@ -32,6 +33,17 @@ README files.
 
 ## Command Line Tools
 
+### Bluesky Firehose - Social media posts and interactions
+
+The [Bluesky Firehose tool](bluesky/README.md) is a command line tool that
+connects to the Bluesky AT Protocol firehose and streams real-time events
+from the Bluesky social network. The tool captures posts, likes, reposts,
+follows, blocks, and profile updates, formatting them as CloudEvents for
+standardized event processing. The data can be sent to Kafka topics,
+Azure Event Hubs, or Microsoft Fabric Event Streams. The tool supports
+selective filtering, cursor management for resuming after restarts, and
+is optimized for high-throughput event processing.
+
 ### GTFS Realtime - Public transport data
 
 The [GTFS Realtime Bridge](gtfs/README.md) is a command line tool that retrieves
@@ -39,7 +51,7 @@ to retrieve schedules, real-time vehicle position, real-time trip updates (live
 predictions of arrivals/departures), and alerts from practically any GTFS and
 GTFS-RT service. Over 1000 public transport agencies worldwide publish their
 data in GTFS format, and many of them also provide real-time data in GTFS-RT
-format. 
+format.
 
 In terms of sheer data volume, the feeds related to the New York City
 Metropolitan Transportation Authority (MTA) will produce over 50 Gigabytes of
