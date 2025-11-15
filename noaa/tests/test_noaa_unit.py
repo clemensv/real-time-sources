@@ -59,7 +59,7 @@ class TestNOAADataPoller:
             ]
         }
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
     def test_init_with_station(self, mock_get, mock_producer, mock_kafka_config, mock_stations_response):
         """Test NOAADataPoller initialization with specific station"""
@@ -89,7 +89,7 @@ class TestNOAADataPoller:
             assert poller.station.id == '8454000'
             mock_producer.assert_called_once_with(mock_kafka_config, 'test-topic')
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
     def test_init_without_station(self, mock_get, mock_producer, mock_kafka_config, mock_stations_response):
         """Test NOAADataPoller initialization without specific station"""
@@ -114,7 +114,7 @@ class TestNOAADataPoller:
             assert poller.station is None
             assert poller.kafka_topic == 'test-topic'
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
     def test_fetch_all_stations_success(self, mock_get, mock_producer, mock_kafka_config, mock_stations_response):
         """Test successful fetching of all stations"""
@@ -144,7 +144,7 @@ class TestNOAADataPoller:
                 timeout=10
             )
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
     def test_fetch_all_stations_error(self, mock_get, mock_producer, mock_kafka_config):
         """Test handling of errors when fetching stations"""
@@ -162,7 +162,7 @@ class TestNOAADataPoller:
             # Verify empty stations list on error
             assert len(poller.stations) == 0
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
     def test_get_datum_for_station(self, mock_get, mock_producer, mock_kafka_config):
         """Test datum determination for stations"""
@@ -195,7 +195,7 @@ class TestNOAADataPoller:
             datum = poller.get_datum_for_station('9087031')
             assert datum == 'IGLD'
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
     def test_products_configuration(self, mock_get, mock_producer, mock_kafka_config):
         """Test that all expected products are configured"""
