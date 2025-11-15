@@ -2,7 +2,7 @@ import subprocess
 import os
 
 def main():
-    packages = ["usgs_iv_producer_kafka_producer", "usgs_iv_producer_data"]
+    packages = ["usgs-iv-producer_kafka_producer", "usgs-iv-producer_data"]
 
     for package in packages:
         os.chdir(package)
