@@ -84,6 +84,7 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
 
 
 @pytest.mark.asyncio
+@pytest.mark.integration
 async def test_bluesky_firehose_real_connection(kafka_emulator, tmp_path):
     """
     Test connection to the REAL Bluesky firehose and verify events flow to Kafka.
@@ -205,6 +206,7 @@ async def test_bluesky_firehose_real_connection(kafka_emulator, tmp_path):
 
 
 @pytest.mark.asyncio
+@pytest.mark.integration
 async def test_bluesky_firehose_multiple_collections(kafka_emulator, tmp_path):
     """
     Test capturing multiple event types from the real Bluesky firehose.
