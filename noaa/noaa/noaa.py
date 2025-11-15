@@ -25,7 +25,7 @@ from noaa.noaa_producer.microsoft.opendata.us.noaa.waterlevel import WaterLevel
 from noaa.noaa_producer.microsoft.opendata.us.noaa.watertemperature import WaterTemperature
 from noaa.noaa_producer.microsoft.opendata.us.noaa.wind import Wind
 from noaa.noaa_producer.microsoft.opendata.us.noaa.qualitylevel import QualityLevel
-from .noaa_producer.producer_client import MicrosoftOpendataUsNoaaEventProducer
+from .noaa_producer.producer_client import MicrosoftOpenDataUSNOAAEventProducer
 
 
 class NOAADataPoller:
@@ -59,10 +59,10 @@ class NOAADataPoller:
         """
         self.kafka_topic = kafka_topic
         self.last_polled_file = last_polled_file
-        self.producer = MicrosoftOpendataUsNoaaEventProducer(kafka_config, kafka_topic)
+        self.producer = MicrosoftOpenDataUSNOAAEventProducer(kafka_config, kafka_topic)
         self.stations = self.fetch_all_stations()
         if station:
-            self.station = next((station for station in self.stations if station.id == station), None)
+            self.station = next((s for s in self.stations if s.id == station), None)
             if not self.station:
                 print(f"Station {station} not found.")
                 sys.exit(1)
@@ -194,7 +194,7 @@ class NOAADataPoller:
         last_polled_times = self.load_last_polled_times()
 
         for station in self.stations:
-            self.producer.send_microsoft_opendata_us_noaa_station(station, flush_producer=False)
+            self.producer.send_microsoft_open_data_us_noaa_station(station, flush_producer=False)
         self.producer.producer.flush()
 
         while True:
@@ -225,7 +225,7 @@ class NOAADataPoller:
                                 quality=QualityLevel.Preliminary if record.get(
                                     'q', '') == 'p' else QualityLevel.Verified
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_waterlevel(
+                            self.producer.send_microsoft_open_data_us_noaa_water_level(
                                 water_level, station_id, flush_producer=False)
                         elif product == "predictions":
                             prediction = Predictions(
@@ -233,7 +233,7 @@ class NOAADataPoller:
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_predictions(
+                            self.producer.send_microsoft_open_data_us_noaa_predictions(
                                 prediction, station_id, flush_producer=False)
                         elif product == "air_temperature":
                             air_temperature = AirTemperature(
@@ -244,7 +244,7 @@ class NOAADataPoller:
                                 min_temp_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_airtemperature(
+                            self.producer.send_microsoft_open_data_us_noaa_air_temperature(
                                 air_temperature, station_id, flush_producer=False)
                         elif product == "wind":
                             wind = Wind(
@@ -257,7 +257,7 @@ class NOAADataPoller:
                                 max_wind_speed_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[1] == '1')
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_wind(wind, station_id, flush_producer=False)
+                            self.producer.send_microsoft_open_data_us_noaa_wind(wind, station_id, flush_producer=False)
                         elif product == "air_pressure":
                             air_pressure = AirPressure(
                                 station_id=station_id,
@@ -267,7 +267,7 @@ class NOAADataPoller:
                                 min_pressure_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_airpressure(
+                            self.producer.send_microsoft_open_data_us_noaa_air_pressure(
                                 air_pressure, station_id, flush_producer=False)
                         elif product == "water_temperature":
                             water_temperature = WaterTemperature(
@@ -278,7 +278,7 @@ class NOAADataPoller:
                                 min_temp_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_watertemperature(
+                            self.producer.send_microsoft_open_data_us_noaa_water_temperature(
                                 water_temperature, station_id, flush_producer=False)
                         elif product == "conductivity":
                             conductivity = Conductivity(
@@ -289,7 +289,7 @@ class NOAADataPoller:
                                 min_conductivity_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_conductivity(
+                            self.producer.send_microsoft_open_data_us_noaa_conductivity(
                                 conductivity, station_id, flush_producer=False)
                         elif product == "visibility":
                             visibility = Visibility(
@@ -300,7 +300,7 @@ class NOAADataPoller:
                                 min_visibility_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_visibility(
+                            self.producer.send_microsoft_open_data_us_noaa_visibility(
                                 visibility, station_id, flush_producer=False)
                         elif product == "humidity":
                             humidity = Humidity(
@@ -311,7 +311,7 @@ class NOAADataPoller:
                                 min_humidity_exceeded=bool(record.get('f', '').split(',')[1] == '1'),
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_humidity(
+                            self.producer.send_microsoft_open_data_us_noaa_humidity(
                                 humidity, station_id, flush_producer=False)
                         elif product == "salinity":
                             salinity = Salinity(
@@ -320,7 +320,7 @@ class NOAADataPoller:
                                 salinity=float(record['s']) if 's' in record and record['s'] else 0.0,
                                 grams_per_kg=float(record['g']) if 'g' in record and record['g'] else 0.0,
                             )
-                            self.producer.send_microsoft_opendata_us_noaa_salinity(
+                            self.producer.send_microsoft_open_data_us_noaa_salinity(
                                 salinity, station_id, flush_producer=False)
 
                         if timestamp > max_timestamp:
