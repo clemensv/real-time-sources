@@ -36,9 +36,23 @@ Tests interactions with external services using mocked responses:
 pytest -m integration
 ```
 
-### 3. End-to-End Tests (future)
+### 3. End-to-End Tests (`test_rssbridge_e2e.py`)
 
-Tests against real RSS/Atom feeds.
+Tests complete workflows with real feeds and services:
+- Parsing real public RSS/Atom feeds (W3C, IETF)
+- Feed discovery from real web pages
+- State and feedstore persistence workflows
+- OPML file parsing with realistic structure
+- Event Hubs connection string parsing
+- Producer client initialization
+
+**Note:** E2E tests require internet connectivity and may be slower.
+
+**Run e2e tests only:**
+
+```bash
+pytest -m e2e
+```
 
 ## Running Tests
 
