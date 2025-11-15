@@ -64,7 +64,7 @@ class TestNOAAIntegration:
             ]
         }
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     def test_fetch_stations_integration(self, mock_producer, kafka_config, stations_response):
         """Test fetching stations with mocked HTTP response"""
         with requests_mock.Mocker() as m:
@@ -91,7 +91,7 @@ class TestNOAAIntegration:
                 assert len(poller.stations) > 0
                 assert m.call_count == 1
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     def test_api_error_handling(self, mock_producer, kafka_config):
         """Test handling of API errors"""
         with requests_mock.Mocker() as m:
@@ -114,7 +114,7 @@ class TestNOAAIntegration:
                 # Should have empty stations list
                 assert len(poller.stations) == 0
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     def test_timeout_handling(self, mock_producer, kafka_config):
         """Test handling of request timeouts"""
         with requests_mock.Mocker() as m:
@@ -136,7 +136,7 @@ class TestNOAAIntegration:
 
                 assert len(poller.stations) == 0
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     def test_invalid_json_response(self, mock_producer, kafka_config):
         """Test handling of invalid JSON responses"""
         with requests_mock.Mocker() as m:
@@ -173,7 +173,7 @@ class TestNOAADataFetching:
             'sasl.password': 'test'
         }
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     def test_products_urls(self, mock_producer, kafka_config):
         """Test that product URLs are correctly constructed"""
         with requests_mock.Mocker() as m:

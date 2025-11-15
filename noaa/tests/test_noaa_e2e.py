@@ -195,7 +195,7 @@ class TestNOAAE2E:
             # Wind data should have speed and direction
             assert 's' in point or 'd' in point, "Wind data missing speed/direction"
 
-    @patch('noaa.noaa.MicrosoftOpendataUsNoaaEventProducer')
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     def test_noaa_poller_with_real_api(self, mock_producer, kafka_config):
         """Test NOAADataPoller initialization with real API"""
         # Skip this test - it exposes a bug in the Station schema
