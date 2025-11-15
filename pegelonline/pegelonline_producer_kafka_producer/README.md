@@ -73,8 +73,7 @@ The DeWsvPegelonlineEventDispatcher defines the following event handler hooks.
 de_wsv_pegelonline_station_async:  Callable[[ConsumerRecord, CloudEvent, Station], Awaitable[None]]
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.Station`: PegelOnline station metadata with location and water body
-information.
+Asynchronous handler hook for `de.wsv.pegelonline.Station`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
@@ -105,7 +104,7 @@ de_wsv_pegelonline_current_measurement_async:  Callable[[ConsumerRecord, CloudEv
 Awaitable[None]]
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.CurrentMeasurement`: PegelOnline current water level measurement.
+Asynchronous handler hook for `de.wsv.pegelonline.CurrentMeasurement`:
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
 
