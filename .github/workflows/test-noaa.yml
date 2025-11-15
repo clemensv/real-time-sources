@@ -1,0 +1,71 @@
+name: NOAA Producer Tests
+
+on:
+  push:
+    branches: [ "noaa" ]
+    paths:
+      - 'noaa/**'
+      - '.github/workflows/test-noaa.yml'
+  pull_request:
+    branches: [ "noaa" ]
+    paths:
+      - 'noaa/**'
+      - '.github/workflows/test-noaa.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./noaa
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: ./noaa/.venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            venv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Run unit tests
+        run: poetry run pytest tests/test_noaa_unit.py -v --tb=short
+
+      - name: Run integration tests
+        run: poetry run pytest tests/test_noaa_integration.py -v --tb=short
+
+      - name: Run all tests with coverage (excluding e2e)
+        run: poetry run pytest tests/ -v --cov=noaa --cov-report=term-missing --cov-report=xml --cov-fail-under=20 -m "not e2e"
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          file: ./noaa/coverage.xml
+          flags: noaa
+          name: noaa-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
