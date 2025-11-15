@@ -89,9 +89,9 @@ class PegelOnlineAPI:
             for part in connection_string.split(';'):
                 if 'Endpoint' in part:
                     config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
+                        '"').strip().replace('sb://', '').replace('/', '')+':9093'
                 elif 'EntityPath' in part:
-                    config_dict['kafka_topic'] = part.split('=')[1].strip('"')
+                    config_dict['kafka_topic'] = part.split('=')[1].strip('"').strip()
         except IndexError as e:
             raise ValueError("Invalid connection string format") from e
         return config_dict

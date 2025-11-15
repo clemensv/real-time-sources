@@ -9,13 +9,14 @@ description = "A project to fetch data from PegelOnline API"
 authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 
 [tool.poetry.dependencies]
-pegelonline_producer_data = {path = "pegelonline_producer/pegelonline_producer_data"}
-pegelonline_producer_kafka_producer = {path = "pegelonline_producer/pegelonline_producer_kafka_producer"}
-python = ">=3.8"
+python = ">=3.10,<4.0"
 requests = ">=2.32.3"
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
 dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+pegelonline_producer_data = {path = "pegelonline_producer_data"}
+pegelonline_producer_kafka_producer = {path = "pegelonline_producer_kafka_producer"}
 
 
 [tool.poetry.dev-dependencies]

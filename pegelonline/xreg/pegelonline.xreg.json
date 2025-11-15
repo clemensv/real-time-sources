@@ -1,107 +1,57 @@
 {
-    "$schema": "http://xregistry.io/schemas/manifest.json",
-    "specversion": "0.5-wip",
-    "endpoints": {},
     "messagegroups": {
         "de.wsv.pegelonline": {
-            "messagegroupid": "de.wsv.pegelonline",
             "messages": {
                 "de.wsv.pegelonline.Station": {
-                    "messageid": "de.wsv.pegelonline.Station",
+                    "name": "Station",
                     "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.Station",
-                    "createdat": "2024-10-18T13:58:33.108774",
-                    "epoch": 0,
-                    "modifiedat": "2024-10-18T13:58:33.108774",
+                    "description": "PegelOnline station metadata with location and water body information.",
                     "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
                         "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "de.wsv.pegelonline.Station",
-                            "description": "Event type"
+                            "value": "de.wsv.pegelonline.Station"
                         },
                         "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
                             "value": "{feedurl}",
-                            "description": "Source Feed URL"
+                            "type": "uritemplate"
                         },
                         "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
                             "value": "{station_id}",
-                            "description": "Station"
+                            "type": "uritemplate"
                         }
-                    }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.Station"
                 },
                 "de.wsv.pegelonline.CurrentMeasurement": {
-                    "messageid": "de.wsv.pegelonline.CurrentMeasurement",
+                    "name": "CurrentMeasurement",
                     "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.CurrentMeasurement",
-                    "createdat": "2024-10-18T13:58:36.974001",
-                    "epoch": 0,
-                    "modifiedat": "2024-10-18T13:58:36.974001",
+                    "description": "PegelOnline current water level measurement.",
                     "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
                         "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "de.wsv.pegelonline.CurrentMeasurement",
-                            "description": "Event type"
+                            "value": "de.wsv.pegelonline.CurrentMeasurement"
                         },
                         "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
                             "value": "{feedurl}",
-                            "description": "Source Feed URL"
+                            "type": "uritemplate"
                         },
                         "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
                             "value": "{station_id}",
-                            "description": "Station"
+                            "type": "uritemplate"
                         }
-                    }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/de.wsv.pegelonline/schemas/de.wsv.pegelonline.CurrentMeasurement"
                 }
-            },
-            "createdat": "2024-10-18T13:58:33.106768",
-            "epoch": 0,
-            "modifiedat": "2024-10-18T13:58:33.106768"
+            }
         }
     },
     "schemagroups": {
         "de.wsv.pegelonline": {
-            "schemagroupid": "de.wsv.pegelonline",
             "schemas": {
                 "de.wsv.pegelonline.Station": {
-                    "schemaid": "de.wsv.pegelonline.Station",
-                    "format": "Avro",
                     "versions": {
                         "1": {
-                            "schemaid": "de.wsv.pegelonline.Station",
-                            "versionid": "1",
-                            "format": "Avro",
+                            "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
                                 "name": "Station",
@@ -169,21 +119,14 @@
                                         }
                                     }
                                 ]
-                            },
-                            "createdat": "2024-10-18T13:58:32.162859",
-                            "epoch": 0,
-                            "modifiedat": "2024-10-18T13:58:32.162859"
+                            }
                         }
                     }
                 },
                 "de.wsv.pegelonline.CurrentMeasurement": {
-                    "schemaid": "de.wsv.pegelonline.CurrentMeasurement",
-                    "format": "Avro",
                     "versions": {
                         "1": {
-                            "schemaid": "de.wsv.pegelonline.CurrentMeasurement",
-                            "versionid": "1",
-                            "format": "Avro",
+                            "format": "Avro/1.11.3",
                             "schema": {
                                 "type": "record",
                                 "name": "CurrentMeasurement",
@@ -207,30 +150,20 @@
                                     },
                                     {
                                         "name": "stateMnwMhw",
-                                        "type": {
-                                            "type": "string",
-                                            "doc": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
-                                        }
+                                        "type": "string",
+                                        "doc": "State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'."
                                     },
                                     {
                                         "name": "stateNswHsw",
-                                        "type": {
-                                            "type": "string",
-                                            "doc": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
-                                        }
+                                        "type": "string",
+                                        "doc": "State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."
                                     }
                                 ]
-                            },
-                            "createdat": "2024-10-18T13:58:36.003307",
-                            "epoch": 0,
-                            "modifiedat": "2024-10-18T13:58:36.003307"
+                            }
                         }
                     }
                 }
-            },
-            "createdat": "2024-10-18T13:58:32.152843",
-            "epoch": 0,
-            "modifiedat": "2024-10-18T13:58:32.152843"
+            }
         }
     }
 }
