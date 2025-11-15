@@ -1,0 +1,622 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [Post] (
+   [uri]: string,
+   [cid]: string,
+   [did]: string,
+   [handle]: string,
+   [text]: string,
+   [langs]: dynamic,
+   [reply_parent]: string,
+   [reply_root]: string,
+   [embed_type]: string,
+   [embed_uri]: string,
+   [facets]: string,
+   [tags]: dynamic,
+   [created_at]: string,
+   [indexed_at]: string,
+   [seq]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Post] docstring "{\"description\": \"A post in the Bluesky feed\"}";
+
+.alter table [Post] column-docstrings (
+   [uri]: "{\"description\": \"AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)\"}",
+   [cid]: "{\"description\": \"Content Identifier (CID) of the post\"}",
+   [did]: "{\"description\": \"Decentralized Identifier of the author\"}",
+   [handle]: "{\"description\": \"Handle of the author\", \"schema\": [\"null\", \"string\"]}",
+   [text]: "{\"description\": \"Text content of the post\"}",
+   [langs]: "{\"description\": \"Language codes for the post\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [reply_parent]: "{\"description\": \"AT-URI of parent post if this is a reply\", \"schema\": [\"null\", \"string\"]}",
+   [reply_root]: "{\"description\": \"AT-URI of root post in thread\", \"schema\": [\"null\", \"string\"]}",
+   [embed_type]: "{\"description\": \"Type of embedded content (images, external, record, etc.)\", \"schema\": [\"null\", \"string\"]}",
+   [embed_uri]: "{\"description\": \"URI of embedded content\", \"schema\": [\"null\", \"string\"]}",
+   [facets]: "{\"description\": \"JSON string of rich text facets (mentions, links, tags)\", \"schema\": [\"null\", \"string\"]}",
+   [tags]: "{\"description\": \"Hashtags in the post\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [created_at]: "{\"description\": \"ISO 8601 timestamp of post creation\"}",
+   [indexed_at]: "{\"description\": \"ISO 8601 timestamp of when the post was indexed\"}",
+   [seq]: "{\"description\": \"Firehose sequence number\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Post] ingestion json mapping "Post_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.uri"},
+  {"column": "cid", "path": "$.cid"},
+  {"column": "did", "path": "$.did"},
+  {"column": "handle", "path": "$.handle"},
+  {"column": "text", "path": "$.text"},
+  {"column": "langs", "path": "$.langs"},
+  {"column": "reply_parent", "path": "$.reply_parent"},
+  {"column": "reply_root", "path": "$.reply_root"},
+  {"column": "embed_type", "path": "$.embed_type"},
+  {"column": "embed_uri", "path": "$.embed_uri"},
+  {"column": "facets", "path": "$.facets"},
+  {"column": "tags", "path": "$.tags"},
+  {"column": "created_at", "path": "$.created_at"},
+  {"column": "indexed_at", "path": "$.indexed_at"},
+  {"column": "seq", "path": "$.seq"},
+]
+```
+
+
+.create-or-alter table [Post] ingestion json mapping "Post_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.data.uri"},
+  {"column": "cid", "path": "$.data.cid"},
+  {"column": "did", "path": "$.data.did"},
+  {"column": "handle", "path": "$.data.handle"},
+  {"column": "text", "path": "$.data.text"},
+  {"column": "langs", "path": "$.data.langs"},
+  {"column": "reply_parent", "path": "$.data.reply_parent"},
+  {"column": "reply_root", "path": "$.data.reply_root"},
+  {"column": "embed_type", "path": "$.data.embed_type"},
+  {"column": "embed_uri", "path": "$.data.embed_uri"},
+  {"column": "facets", "path": "$.data.facets"},
+  {"column": "tags", "path": "$.data.tags"},
+  {"column": "created_at", "path": "$.data.created_at"},
+  {"column": "indexed_at", "path": "$.data.indexed_at"},
+  {"column": "seq", "path": "$.data.seq"},
+]
+```
+
+
+.drop materialized-view PostLatest ifexists;
+
+.create materialized-view with (backfill=true) PostLatest on table Post {
+    Post | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Post] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Bluesky.Feed.Post') | project['uri'] = tostring(data.['uri']),['cid'] = tostring(data.['cid']),['did'] = tostring(data.['did']),['handle'] = tostring(data.['handle']),['text'] = tostring(data.['text']),['langs'] = todynamic(data.['langs']),['reply_parent'] = tostring(data.['reply_parent']),['reply_root'] = tostring(data.['reply_root']),['embed_type'] = tostring(data.['embed_type']),['embed_uri'] = tostring(data.['embed_uri']),['facets'] = tostring(data.['facets']),['tags'] = todynamic(data.['tags']),['created_at'] = tostring(data.['created_at']),['indexed_at'] = tostring(data.['indexed_at']),['seq'] = tolong(data.['seq']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Like] (
+   [uri]: string,
+   [cid]: string,
+   [did]: string,
+   [handle]: string,
+   [subject_uri]: string,
+   [subject_cid]: string,
+   [created_at]: string,
+   [indexed_at]: string,
+   [seq]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Like] docstring "{\"description\": \"A like on a post\"}";
+
+.alter table [Like] column-docstrings (
+   [uri]: "{\"description\": \"AT-URI of the like record\"}",
+   [cid]: "{\"description\": \"Content Identifier of the like\"}",
+   [did]: "{\"description\": \"DID of the user who liked\"}",
+   [handle]: "{\"description\": \"Handle of the user who liked\", \"schema\": [\"null\", \"string\"]}",
+   [subject_uri]: "{\"description\": \"AT-URI of the liked post\"}",
+   [subject_cid]: "{\"description\": \"CID of the liked post\"}",
+   [created_at]: "{\"description\": \"ISO 8601 timestamp of like creation\"}",
+   [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
+   [seq]: "{\"description\": \"Firehose sequence number\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Like] ingestion json mapping "Like_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.uri"},
+  {"column": "cid", "path": "$.cid"},
+  {"column": "did", "path": "$.did"},
+  {"column": "handle", "path": "$.handle"},
+  {"column": "subject_uri", "path": "$.subject_uri"},
+  {"column": "subject_cid", "path": "$.subject_cid"},
+  {"column": "created_at", "path": "$.created_at"},
+  {"column": "indexed_at", "path": "$.indexed_at"},
+  {"column": "seq", "path": "$.seq"},
+]
+```
+
+
+.create-or-alter table [Like] ingestion json mapping "Like_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.data.uri"},
+  {"column": "cid", "path": "$.data.cid"},
+  {"column": "did", "path": "$.data.did"},
+  {"column": "handle", "path": "$.data.handle"},
+  {"column": "subject_uri", "path": "$.data.subject_uri"},
+  {"column": "subject_cid", "path": "$.data.subject_cid"},
+  {"column": "created_at", "path": "$.data.created_at"},
+  {"column": "indexed_at", "path": "$.data.indexed_at"},
+  {"column": "seq", "path": "$.data.seq"},
+]
+```
+
+
+.drop materialized-view LikeLatest ifexists;
+
+.create materialized-view with (backfill=true) LikeLatest on table Like {
+    Like | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Like] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Bluesky.Feed.Like') | project['uri'] = tostring(data.['uri']),['cid'] = tostring(data.['cid']),['did'] = tostring(data.['did']),['handle'] = tostring(data.['handle']),['subject_uri'] = tostring(data.['subject_uri']),['subject_cid'] = tostring(data.['subject_cid']),['created_at'] = tostring(data.['created_at']),['indexed_at'] = tostring(data.['indexed_at']),['seq'] = tolong(data.['seq']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Repost] (
+   [uri]: string,
+   [cid]: string,
+   [did]: string,
+   [handle]: string,
+   [subject_uri]: string,
+   [subject_cid]: string,
+   [created_at]: string,
+   [indexed_at]: string,
+   [seq]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Repost] docstring "{\"description\": \"A repost of a post\"}";
+
+.alter table [Repost] column-docstrings (
+   [uri]: "{\"description\": \"AT-URI of the repost record\"}",
+   [cid]: "{\"description\": \"Content Identifier of the repost\"}",
+   [did]: "{\"description\": \"DID of the user who reposted\"}",
+   [handle]: "{\"description\": \"Handle of the user who reposted\", \"schema\": [\"null\", \"string\"]}",
+   [subject_uri]: "{\"description\": \"AT-URI of the reposted post\"}",
+   [subject_cid]: "{\"description\": \"CID of the reposted post\"}",
+   [created_at]: "{\"description\": \"ISO 8601 timestamp of repost creation\"}",
+   [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
+   [seq]: "{\"description\": \"Firehose sequence number\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Repost] ingestion json mapping "Repost_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.uri"},
+  {"column": "cid", "path": "$.cid"},
+  {"column": "did", "path": "$.did"},
+  {"column": "handle", "path": "$.handle"},
+  {"column": "subject_uri", "path": "$.subject_uri"},
+  {"column": "subject_cid", "path": "$.subject_cid"},
+  {"column": "created_at", "path": "$.created_at"},
+  {"column": "indexed_at", "path": "$.indexed_at"},
+  {"column": "seq", "path": "$.seq"},
+]
+```
+
+
+.create-or-alter table [Repost] ingestion json mapping "Repost_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.data.uri"},
+  {"column": "cid", "path": "$.data.cid"},
+  {"column": "did", "path": "$.data.did"},
+  {"column": "handle", "path": "$.data.handle"},
+  {"column": "subject_uri", "path": "$.data.subject_uri"},
+  {"column": "subject_cid", "path": "$.data.subject_cid"},
+  {"column": "created_at", "path": "$.data.created_at"},
+  {"column": "indexed_at", "path": "$.data.indexed_at"},
+  {"column": "seq", "path": "$.data.seq"},
+]
+```
+
+
+.drop materialized-view RepostLatest ifexists;
+
+.create materialized-view with (backfill=true) RepostLatest on table Repost {
+    Repost | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Repost] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Bluesky.Feed.Repost') | project['uri'] = tostring(data.['uri']),['cid'] = tostring(data.['cid']),['did'] = tostring(data.['did']),['handle'] = tostring(data.['handle']),['subject_uri'] = tostring(data.['subject_uri']),['subject_cid'] = tostring(data.['subject_cid']),['created_at'] = tostring(data.['created_at']),['indexed_at'] = tostring(data.['indexed_at']),['seq'] = tolong(data.['seq']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Follow] (
+   [uri]: string,
+   [cid]: string,
+   [did]: string,
+   [handle]: string,
+   [subject]: string,
+   [subject_handle]: string,
+   [created_at]: string,
+   [indexed_at]: string,
+   [seq]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Follow] docstring "{\"description\": \"A follow relationship between users\"}";
+
+.alter table [Follow] column-docstrings (
+   [uri]: "{\"description\": \"AT-URI of the follow record\"}",
+   [cid]: "{\"description\": \"Content Identifier of the follow\"}",
+   [did]: "{\"description\": \"DID of the follower\"}",
+   [handle]: "{\"description\": \"Handle of the follower\", \"schema\": [\"null\", \"string\"]}",
+   [subject]: "{\"description\": \"DID of the followed user\"}",
+   [subject_handle]: "{\"description\": \"Handle of the followed user\", \"schema\": [\"null\", \"string\"]}",
+   [created_at]: "{\"description\": \"ISO 8601 timestamp of follow creation\"}",
+   [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
+   [seq]: "{\"description\": \"Firehose sequence number\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Follow] ingestion json mapping "Follow_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.uri"},
+  {"column": "cid", "path": "$.cid"},
+  {"column": "did", "path": "$.did"},
+  {"column": "handle", "path": "$.handle"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "subject_handle", "path": "$.subject_handle"},
+  {"column": "created_at", "path": "$.created_at"},
+  {"column": "indexed_at", "path": "$.indexed_at"},
+  {"column": "seq", "path": "$.seq"},
+]
+```
+
+
+.create-or-alter table [Follow] ingestion json mapping "Follow_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.data.uri"},
+  {"column": "cid", "path": "$.data.cid"},
+  {"column": "did", "path": "$.data.did"},
+  {"column": "handle", "path": "$.data.handle"},
+  {"column": "subject", "path": "$.data.subject"},
+  {"column": "subject_handle", "path": "$.data.subject_handle"},
+  {"column": "created_at", "path": "$.data.created_at"},
+  {"column": "indexed_at", "path": "$.data.indexed_at"},
+  {"column": "seq", "path": "$.data.seq"},
+]
+```
+
+
+.drop materialized-view FollowLatest ifexists;
+
+.create materialized-view with (backfill=true) FollowLatest on table Follow {
+    Follow | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Follow] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Bluesky.Graph.Follow') | project['uri'] = tostring(data.['uri']),['cid'] = tostring(data.['cid']),['did'] = tostring(data.['did']),['handle'] = tostring(data.['handle']),['subject'] = tostring(data.['subject']),['subject_handle'] = tostring(data.['subject_handle']),['created_at'] = tostring(data.['created_at']),['indexed_at'] = tostring(data.['indexed_at']),['seq'] = tolong(data.['seq']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Block] (
+   [uri]: string,
+   [cid]: string,
+   [did]: string,
+   [handle]: string,
+   [subject]: string,
+   [subject_handle]: string,
+   [created_at]: string,
+   [indexed_at]: string,
+   [seq]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Block] docstring "{\"description\": \"A block relationship between users\"}";
+
+.alter table [Block] column-docstrings (
+   [uri]: "{\"description\": \"AT-URI of the block record\"}",
+   [cid]: "{\"description\": \"Content Identifier of the block\"}",
+   [did]: "{\"description\": \"DID of the blocker\"}",
+   [handle]: "{\"description\": \"Handle of the blocker\", \"schema\": [\"null\", \"string\"]}",
+   [subject]: "{\"description\": \"DID of the blocked user\"}",
+   [subject_handle]: "{\"description\": \"Handle of the blocked user\", \"schema\": [\"null\", \"string\"]}",
+   [created_at]: "{\"description\": \"ISO 8601 timestamp of block creation\"}",
+   [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
+   [seq]: "{\"description\": \"Firehose sequence number\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Block] ingestion json mapping "Block_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.uri"},
+  {"column": "cid", "path": "$.cid"},
+  {"column": "did", "path": "$.did"},
+  {"column": "handle", "path": "$.handle"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "subject_handle", "path": "$.subject_handle"},
+  {"column": "created_at", "path": "$.created_at"},
+  {"column": "indexed_at", "path": "$.indexed_at"},
+  {"column": "seq", "path": "$.seq"},
+]
+```
+
+
+.create-or-alter table [Block] ingestion json mapping "Block_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "uri", "path": "$.data.uri"},
+  {"column": "cid", "path": "$.data.cid"},
+  {"column": "did", "path": "$.data.did"},
+  {"column": "handle", "path": "$.data.handle"},
+  {"column": "subject", "path": "$.data.subject"},
+  {"column": "subject_handle", "path": "$.data.subject_handle"},
+  {"column": "created_at", "path": "$.data.created_at"},
+  {"column": "indexed_at", "path": "$.data.indexed_at"},
+  {"column": "seq", "path": "$.data.seq"},
+]
+```
+
+
+.drop materialized-view BlockLatest ifexists;
+
+.create materialized-view with (backfill=true) BlockLatest on table Block {
+    Block | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Block] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Bluesky.Graph.Block') | project['uri'] = tostring(data.['uri']),['cid'] = tostring(data.['cid']),['did'] = tostring(data.['did']),['handle'] = tostring(data.['handle']),['subject'] = tostring(data.['subject']),['subject_handle'] = tostring(data.['subject_handle']),['created_at'] = tostring(data.['created_at']),['indexed_at'] = tostring(data.['indexed_at']),['seq'] = tolong(data.['seq']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Profile] (
+   [did]: string,
+   [handle]: string,
+   [display_name]: string,
+   [description]: string,
+   [avatar]: string,
+   [banner]: string,
+   [created_at]: string,
+   [indexed_at]: string,
+   [seq]: long,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Profile] docstring "{\"description\": \"A user profile update\"}";
+
+.alter table [Profile] column-docstrings (
+   [did]: "{\"description\": \"Decentralized Identifier\"}",
+   [handle]: "{\"description\": \"User handle\"}",
+   [display_name]: "{\"description\": \"Display name\", \"schema\": [\"null\", \"string\"]}",
+   [description]: "{\"description\": \"Bio/description\", \"schema\": [\"null\", \"string\"]}",
+   [avatar]: "{\"description\": \"Avatar image URL\", \"schema\": [\"null\", \"string\"]}",
+   [banner]: "{\"description\": \"Banner image URL\", \"schema\": [\"null\", \"string\"]}",
+   [created_at]: "{\"description\": \"ISO 8601 timestamp of profile creation\"}",
+   [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
+   [seq]: "{\"description\": \"Firehose sequence number\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Profile] ingestion json mapping "Profile_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "did", "path": "$.did"},
+  {"column": "handle", "path": "$.handle"},
+  {"column": "display_name", "path": "$.display_name"},
+  {"column": "description", "path": "$.description"},
+  {"column": "avatar", "path": "$.avatar"},
+  {"column": "banner", "path": "$.banner"},
+  {"column": "created_at", "path": "$.created_at"},
+  {"column": "indexed_at", "path": "$.indexed_at"},
+  {"column": "seq", "path": "$.seq"},
+]
+```
+
+
+.create-or-alter table [Profile] ingestion json mapping "Profile_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "did", "path": "$.data.did"},
+  {"column": "handle", "path": "$.data.handle"},
+  {"column": "display_name", "path": "$.data.display_name"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "avatar", "path": "$.data.avatar"},
+  {"column": "banner", "path": "$.data.banner"},
+  {"column": "created_at", "path": "$.data.created_at"},
+  {"column": "indexed_at", "path": "$.data.indexed_at"},
+  {"column": "seq", "path": "$.data.seq"},
+]
+```
+
+
+.drop materialized-view ProfileLatest ifexists;
+
+.create materialized-view with (backfill=true) ProfileLatest on table Profile {
+    Profile | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Profile] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Bluesky.Actor.Profile') | project['did'] = tostring(data.['did']),['handle'] = tostring(data.['handle']),['display_name'] = tostring(data.['display_name']),['description'] = tostring(data.['description']),['avatar'] = tostring(data.['avatar']),['banner'] = tostring(data.['banner']),['created_at'] = tostring(data.['created_at']),['indexed_at'] = tostring(data.['indexed_at']),['seq'] = tolong(data.['seq']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```

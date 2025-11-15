@@ -1,0 +1,112 @@
+{
+  "contentVersion": "1.0.0.0",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('appName')]",
+      "properties": {
+        "restartPolicy": "Always",
+        "osType": "Linux",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]",
+            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('appName')]",
+            "properties": {
+              "resources": {
+                "requests": {
+                  "memoryInGB": 2,
+                  "cpu": 1
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "BLUESKY_FIREHOSE_URL",
+                  "value": "[parameters('blueskyFirehoseUrl')]"
+                },
+                {
+                  "name": "BLUESKY_COLLECTIONS",
+                  "value": "[parameters('blueskyCollections')]"
+                },
+                {
+                  "name": "BLUESKY_SAMPLE_RATE",
+                  "value": "[parameters('blueskySampleRate')]"
+                }
+              ],
+              "image": "[parameters('imageName')]"
+            }
+          }
+        ]
+      },
+      "apiVersion": "2021-09-01"
+    }
+  ],
+  "parameters": {
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-bluesky:latest",
+      "metadata": {
+        "description": "The name of the container image."
+      }
+    },
+    "blueskySampleRate": {
+      "type": "string",
+      "defaultValue": "1.0",
+      "metadata": {
+        "description": "Sampling rate for events (0.0 to 1.0). Default 1.0 = 100%."
+      }
+    },
+    "appName": {
+      "type": "string",
+      "maxLength": 64,
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "The name of the container instance."
+      }
+    },
+    "blueskyCollections": {
+      "type": "string",
+      "maxLength": 512,
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated list of collection types to process (empty = all). Available: app.bsky.feed.post, app.bsky.feed.like, app.bsky.feed.repost, app.bsky.graph.follow, app.bsky.graph.block, app.bsky.actor.profile"
+      }
+    },
+    "connectionStringSecret": {
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      },
+      "type": "securestring"
+    },
+    "logAnalyticsWorkspaceKey": {
+      "metadata": {
+        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      },
+      "type": "securestring"
+    },
+    "blueskyFirehoseUrl": {
+      "type": "string",
+      "maxLength": 256,
+      "defaultValue": "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos",
+      "metadata": {
+        "description": "The Bluesky firehose WebSocket URL."
+      }
+    },
+    "logAnalyticsWorkspaceId": {
+      "metadata": {
+        "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      },
+      "type": "string"
+    }
+  }
+}
