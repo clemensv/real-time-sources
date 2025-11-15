@@ -62,7 +62,7 @@ class NOAADataPoller:
         self.producer = MicrosoftOpendataUsNoaaEventProducer(kafka_config, kafka_topic)
         self.stations = self.fetch_all_stations()
         if station:
-            self.station = next((station for station in self.stations if station.id == station), None)
+            self.station = next((s for s in self.stations if s.id == station), None)
             if not self.station:
                 print(f"Station {station} not found.")
                 sys.exit(1)
