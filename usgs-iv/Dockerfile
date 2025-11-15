@@ -1,11 +1,11 @@
 # Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
-LABEL org.opencontainers.image.source = "https://github.com/clemensv/real-time-sources/tree/main/usgs_iv"
-LABEL org.opencontainers.image.title = "USGS Instantaneous Values Service bridge to Kafka endpoints"
-LABEL org.opencontainers.image.description = "This container is a bridge between USGS feeds and Kafka endpoints. It fetches entries from feeds and forwards them to the configured Kafka endpoints."
-LABEL org.opencontainers.image.documentation = "https://github.com/clemensv/real-time-sources/blob/main/usgs_iv/CONTAINER.md"
-LABEL org.opencontainers.image.license = "MIT"
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/usgs_iv"
+LABEL org.opencontainers.image.title="USGS Instantaneous Values Service bridge to Kafka endpoints"
+LABEL org.opencontainers.image.description="This container is a bridge between USGS feeds and Kafka endpoints. It fetches entries from feeds and forwards them to the configured Kafka endpoints."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/usgs_iv/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
 
 # Set the working directory in the container
 WORKDIR /app
