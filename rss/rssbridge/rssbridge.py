@@ -527,10 +527,10 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
     try:
         for part in connection_string.split(';'):
             if 'Endpoint' in part:
-                config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                    '"').replace('sb://', '').replace('/', '')+':9093'
+                endpoint = part.split('=', 1)[1].strip().strip('"').strip()
+                config_dict['bootstrap.servers'] = endpoint.replace('sb://', '').replace('/', '')+':9093'
             elif 'EntityPath' in part:
-                config_dict['kafka_topic'] = part.split('=')[1].strip('"')
+                config_dict['kafka_topic'] = part.split('=', 1)[1].strip().strip('"').strip()
     except IndexError as e:
         raise ValueError("Invalid connection string format") from e
     return config_dict
