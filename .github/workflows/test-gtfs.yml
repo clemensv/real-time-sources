@@ -1,0 +1,71 @@
+name: GTFS Bridge Tests
+
+on:
+  push:
+    branches: [ "gtfs" ]
+    paths:
+      - 'gtfs/**'
+      - '.github/workflows/test-gtfs.yml'
+  pull_request:
+    branches: [ "gtfs" ]
+    paths:
+      - 'gtfs/**'
+      - '.github/workflows/test-gtfs.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./gtfs
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: ./gtfs/.venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            venv-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-ansi
+
+      - name: Run unit tests
+        run: poetry run pytest tests/test_gtfs_bridge_unit.py -v --tb=short
+
+      - name: Run integration tests
+        run: poetry run pytest tests/test_gtfs_bridge_integration.py -v --tb=short
+
+      - name: Run all tests with coverage
+        run: poetry run pytest tests/ -v --cov=gtfs_rt_bridge --cov-report=term-missing --cov-report=xml --cov-fail-under=20
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          file: ./gtfs/coverage.xml
+          flags: gtfs
+          name: gtfs-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
