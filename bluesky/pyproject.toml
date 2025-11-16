@@ -12,7 +12,7 @@ bluesky-producer-data = {path = "bluesky_producer/bluesky-producer_data", develo
 bluesky-producer-kafka-producer = {path = "bluesky_producer/bluesky-producer_kafka_producer", develop = true}
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
-atproto = "0.0.54"
+atproto = ">=0.0.63"
 aiohttp = ">=3.10.5"
 asyncio = ">=3.4.3"
 dataclasses-json = ">=0.6.7"
