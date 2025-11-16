@@ -59,7 +59,9 @@ class NOAADataPoller:
         """
         self.kafka_topic = kafka_topic
         self.last_polled_file = last_polled_file
-        self.producer = MicrosoftOpenDataUSNOAAEventProducer(kafka_config, kafka_topic)
+        from confluent_kafka import Producer
+        kafka_producer = Producer(kafka_config)
+        self.producer = MicrosoftOpenDataUSNOAAEventProducer(kafka_producer, kafka_topic)
         self.stations = self.fetch_all_stations()
         if station:
             self.station = next((s for s in self.stations if s.id == station), None)
@@ -118,10 +120,25 @@ class NOAADataPoller:
         datum = self.get_datum_for_station(station_id)
         if datum == "IGLD" and "predictions" in product:
             return []  # Great Lakes stations don't have prediction data
+        
+        # Clamp date range to NOAA API limits
+        # 6-minute interval data (water_level, met data): max 1 month
+        # Predictions: max 1 year
+        now = datetime.now(timezone.utc)
+        if product in ["predictions", "currents_predictions"]:
+            # Predictions can go back 1 year
+            max_begin_date = now - timedelta(days=365)
+        else:
+            # 6-minute interval data: max 1 month
+            max_begin_date = now - timedelta(days=30)
+        
+        # Use the more recent of last_polled_time or max_begin_date
+        begin_date = max(last_polled_time, max_begin_date)
+        
         product_url = f"{self.BASE_URL}?{self.PRODUCTS[product]}{self.COMMON_PARAMS}&station={station_id}"
         if product != "currents_predictions" and product != "currents":
             product_url += f"&datum={datum}"
-        product_url += f"&begin_date={last_polled_time.strftime('%Y%m%d %H:%M')}&end_date={datetime.now(timezone.utc).strftime('%Y%m%d %H:%M')}"
+        product_url += f"&begin_date={begin_date.strftime('%Y%m%d %H:%M')}&end_date={now.strftime('%Y%m%d %H:%M')}"
         data_key = "data" if "predictions" not in product else "predictions"
         try:
             response = requests.get(product_url, timeout=10)

@@ -59,7 +59,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.WaterLevel"
+             "type":"Microsoft.OpenData.US.NOAA.WaterLevel",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -87,7 +88,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.Predictions"
+             "type":"Microsoft.OpenData.US.NOAA.Predictions",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -115,7 +117,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.AirPressure"
+             "type":"Microsoft.OpenData.US.NOAA.AirPressure",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -143,7 +146,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.AirTemperature"
+             "type":"Microsoft.OpenData.US.NOAA.AirTemperature",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -171,7 +175,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.WaterTemperature"
+             "type":"Microsoft.OpenData.US.NOAA.WaterTemperature",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -199,7 +204,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.Wind"
+             "type":"Microsoft.OpenData.US.NOAA.Wind",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -227,7 +233,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.Humidity"
+             "type":"Microsoft.OpenData.US.NOAA.Humidity",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -255,7 +262,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.Conductivity"
+             "type":"Microsoft.OpenData.US.NOAA.Conductivity",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -283,7 +291,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.Salinity"
+             "type":"Microsoft.OpenData.US.NOAA.Salinity",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -311,7 +320,8 @@ class MicrosoftOpenDataUSNOAAEventProducer:
                 The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
         """
         attributes = {
-             "type":"Microsoft.OpenData.US.NOAA.Station"
+             "type":"Microsoft.OpenData.US.NOAA.Station",
+             "source":"https://api.tidesandcurrents.noaa.gov"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
