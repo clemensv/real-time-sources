@@ -8,6 +8,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.WaterLevel"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -19,6 +22,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Predictions"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -30,6 +36,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.AirPressure"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -41,6 +50,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.AirTemperature"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -52,6 +64,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.WaterTemperature"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -63,6 +78,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Wind"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -74,6 +92,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Humidity"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -85,6 +106,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Conductivity"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -96,6 +120,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Salinity"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -107,6 +134,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Station"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         }
                     },
                     "dataschemaformat": "Avro/1.11.3",
@@ -118,6 +148,9 @@
                     "envelopemetadata": {
                         "type": {
                             "value": "Microsoft.OpenData.US.NOAA.Visibility"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
                         },
                         "datacontenttype": {
                             "type": "string",

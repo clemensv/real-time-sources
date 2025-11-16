@@ -95,7 +95,7 @@ class Station:
     lat: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lat"))
     lng: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lng"))
     affiliations: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="affiliations"))
-    portscode: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="portscode"))
+    portscode: typing.Optional[str]=dataclasses.field(kw_only=True, default=None, metadata=dataclasses_json.config(field_name="portscode"))
     products: Products=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="products"))
     disclaimers: Disclaimers=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="disclaimers"))
     notices: Notices=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="notices"))
