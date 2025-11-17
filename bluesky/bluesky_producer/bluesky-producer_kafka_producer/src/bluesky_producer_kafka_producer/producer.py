@@ -59,7 +59,8 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Feed.Post",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did)
+             "subject":"{did}".format(did = _did),
+             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Feed.Post/versions/v1"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -92,7 +93,8 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Feed.Like",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did)
+             "subject":"{did}".format(did = _did),
+             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Feed.Like/versions/v2"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -125,7 +127,8 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Feed.Repost",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did)
+             "subject":"{did}".format(did = _did),
+             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Feed.Repost/versions/v1"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -158,7 +161,8 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Graph.Follow",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did)
+             "subject":"{did}".format(did = _did),
+             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Graph.Follow/versions/v1"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -191,7 +195,8 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Graph.Block",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did)
+             "subject":"{did}".format(did = _did),
+             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Graph.Block/versions/v1"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -224,7 +229,8 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Actor.Profile",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did)
+             "subject":"{did}".format(did = _did),
+             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Actor.Profile/versions/v2"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
