@@ -23,7 +23,7 @@ pylint = ">=3.2.7"
 mypy = ">=1.11.2"
 testcontainers = ">=4.8.1"
 pytest-asyncio = ">=0.24.0"
-pytest-cov = "^5.0.0"
+pytest-cov = "^7.0.0"
 requests-mock = "^1.12.1"
 
 [tool.poetry.scripts]
