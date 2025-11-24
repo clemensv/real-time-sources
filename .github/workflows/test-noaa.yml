@@ -60,7 +60,7 @@ jobs:
         run: poetry run pytest tests/ -v --cov=noaa --cov-report=term-missing --cov-report=xml --cov-fail-under=20 -m "not e2e"
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: always()
         with:
           file: ./noaa/coverage.xml
