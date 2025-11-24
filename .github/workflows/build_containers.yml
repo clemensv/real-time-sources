@@ -18,7 +18,7 @@ jobs:
       dockerfiles: ${{ steps.get-dockerfiles.outputs.dockerfiles }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Find all Dockerfiles
         id: get-dockerfiles
@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install cosign
         if: github.event_name != 'pull_request'
