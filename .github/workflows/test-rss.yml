@@ -63,7 +63,7 @@ jobs:
         run: poetry run pytest tests/ -v --cov=rssbridge --cov-report=term-missing --cov-report=xml --cov-fail-under=30
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: always()
         with:
           file: ./rss/coverage.xml
