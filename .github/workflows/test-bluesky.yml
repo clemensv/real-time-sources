@@ -2,12 +2,12 @@ name: Bluesky Firehose Tests
 
 on:
   push:
-    branches: [ "bluesky" ]
+    branches: [ "main" ]
     paths:
       - 'bluesky/**'
       - '.github/workflows/test-bluesky.yml'
   pull_request:
-    branches: [ "bluesky" ]
+    branches: [ "main" ]
     paths:
       - 'bluesky/**'
       - '.github/workflows/test-bluesky.yml'

@@ -2,12 +2,12 @@ name: PegelOnline Producer Tests
 
 on:
   push:
-    branches: [ "pegelonline" ]
+    branches: [ "main" ]
     paths:
       - 'pegelonline/**'
       - '.github/workflows/test-pegelonline.yml'
   pull_request:
-    branches: [ "pegelonline" ]
+    branches: [ "main" ]
     paths:
       - 'pegelonline/**'
       - '.github/workflows/test-pegelonline.yml'

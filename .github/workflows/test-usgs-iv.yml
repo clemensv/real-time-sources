@@ -2,12 +2,12 @@ name: USGS-IV Producer Tests
 
 on:
   push:
-    branches: [ "usgs-iv" ]
+    branches: [ "main" ]
     paths:
       - 'usgs-iv/**'
       - '.github/workflows/test-usgs-iv.yml'
   pull_request:
-    branches: [ "usgs-iv" ]
+    branches: [ "main" ]
     paths:
       - 'usgs-iv/**'
       - '.github/workflows/test-usgs-iv.yml'
