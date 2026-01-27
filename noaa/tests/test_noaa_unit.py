@@ -60,14 +60,19 @@ class TestNOAADataPoller:
         }
 
     @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    @patch('noaa.noaa.Producer')
     @patch('noaa.noaa.requests.get')
-    def test_init_with_station(self, mock_get, mock_producer, mock_kafka_config, mock_stations_response):
+    def test_init_with_station(self, mock_get, mock_producer_class, mock_event_producer, mock_kafka_config, mock_stations_response):
         """Test NOAADataPoller initialization with specific station"""
         # Setup mock response
         mock_response = Mock()
         mock_response.json.return_value = mock_stations_response
         mock_response.raise_for_status = Mock()
         mock_get.return_value = mock_response
+
+        # Setup mock Kafka producer
+        mock_kafka_producer = Mock()
+        mock_producer_class.return_value = mock_kafka_producer
 
         # Mock Station.schema().load() to return Station objects
         with patch('noaa.noaa.Station.schema') as mock_schema:
@@ -87,7 +92,8 @@ class TestNOAADataPoller:
             assert poller.last_polled_file == '/tmp/test_last_polled.json'
             assert poller.station is not None
             assert poller.station.id == '8454000'
-            mock_producer.assert_called_once_with(mock_kafka_config, 'test-topic')
+            mock_producer_class.assert_called_once_with(mock_kafka_config)
+            mock_event_producer.assert_called_once_with(mock_kafka_producer, 'test-topic')
 
     @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
