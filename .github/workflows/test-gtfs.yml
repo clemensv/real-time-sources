@@ -2,12 +2,12 @@ name: GTFS Bridge Tests
 
 on:
   push:
-    branches: [ "gtfs" ]
+    branches: [ "main" ]
     paths:
       - 'gtfs/**'
       - '.github/workflows/test-gtfs.yml'
   pull_request:
-    branches: [ "gtfs" ]
+    branches: [ "main" ]
     paths:
       - 'gtfs/**'
       - '.github/workflows/test-gtfs.yml'

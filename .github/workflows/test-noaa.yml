@@ -2,12 +2,12 @@ name: NOAA Producer Tests
 
 on:
   push:
-    branches: [ "noaa" ]
+    branches: [ "main" ]
     paths:
       - 'noaa/**'
       - '.github/workflows/test-noaa.yml'
   pull_request:
-    branches: [ "noaa" ]
+    branches: [ "main" ]
     paths:
       - 'noaa/**'
       - '.github/workflows/test-noaa.yml'

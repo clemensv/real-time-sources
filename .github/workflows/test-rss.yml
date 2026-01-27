@@ -2,12 +2,12 @@ name: RSS Bridge Tests
 
 on:
   push:
-    branches: [ "rss" ]
+    branches: [ "main" ]
     paths:
       - 'rss/**'
       - '.github/workflows/test-rss.yml'
   pull_request:
-    branches: [ "rss" ]
+    branches: [ "main" ]
     paths:
       - 'rss/**'
       - '.github/workflows/test-rss.yml'
