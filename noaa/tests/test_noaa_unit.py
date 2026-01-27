@@ -60,7 +60,7 @@ class TestNOAADataPoller:
         }
 
     @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
-    @patch('noaa.noaa.Producer')
+    @patch('confluent_kafka.Producer')
     @patch('noaa.noaa.requests.get')
     def test_init_with_station(self, mock_get, mock_producer_class, mock_event_producer, mock_kafka_config, mock_stations_response):
         """Test NOAADataPoller initialization with specific station"""
