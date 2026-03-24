@@ -60,7 +60,7 @@ class USGSEarthquakesEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
             content_type = "application/json"
             event["content-type"] = content_type
