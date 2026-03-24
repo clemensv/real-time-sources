@@ -286,10 +286,11 @@ class TestEventDataClass:
             depth=10.5
         )
 
-        json_bytes = event.to_byte_array("application/json")
-        assert json_bytes is not None
-        assert b"us7000test" in json_bytes
-        assert b"Test City" in json_bytes
+        json_result = event.to_byte_array("application/json")
+        assert json_result is not None
+        json_str = json_result if isinstance(json_result, str) else json_result.decode('utf-8')
+        assert "us7000test" in json_str
+        assert "Test City" in json_str
 
     def test_event_to_avro(self):
         """Test Event serialization to Avro binary."""
