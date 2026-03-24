@@ -1,0 +1,75 @@
+{
+    "messagegroups": {
+        "USGS.Earthquakes": {
+            "messages": {
+                "USGS.Earthquakes.Event": {
+                    "name": "Event",
+                    "envelope": "CloudEvents/1.0",
+                    "description": "USGS earthquake event data from the Earthquake Hazards Program.",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "USGS.Earthquakes.Event"
+                        },
+                        "source": {
+                            "value": "{source_uri}",
+                            "type": "uritemplate"
+                        },
+                        "subject": {
+                            "value": "{net}/{code}",
+                            "type": "uritemplate"
+                        },
+                        "time": {
+                            "value": "{event_time}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/USGS.Earthquakes/schemas/USGS.Earthquakes.Event"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "USGS.Earthquakes": {
+            "schemas": {
+                "USGS.Earthquakes.Event": {
+                    "format": "Avro/1.11.3",
+                    "schema": {
+                        "type": "record",
+                        "name": "Event",
+                        "namespace": "USGS.Earthquakes",
+                        "doc": "USGS earthquake event data from the Earthquake Hazards Program.",
+                        "fields": [
+                            {"name": "id", "type": "string", "doc": "Unique identifier for the earthquake event."},
+                            {"name": "magnitude", "type": ["double", "null"], "doc": "Magnitude of the earthquake."},
+                            {"name": "mag_type", "type": ["string", "null"], "doc": "Method or algorithm used to calculate the magnitude (e.g. ml, md, mb, mww)."},
+                            {"name": "place", "type": ["string", "null"], "doc": "Textual description of the named geographic region near the event."},
+                            {"name": "event_time", "type": "string", "logicalType": "timestamp-millis", "doc": "Time of the earthquake event in ISO-8601 format."},
+                            {"name": "updated", "type": "string", "logicalType": "timestamp-millis", "doc": "Time when the event was most recently updated in ISO-8601 format."},
+                            {"name": "url", "type": ["string", "null"], "doc": "Link to USGS Event Page for this event."},
+                            {"name": "detail_url", "type": ["string", "null"], "doc": "Link to GeoJSON detail feed for this event."},
+                            {"name": "felt", "type": ["int", "null"], "doc": "Number of felt reports submitted to the DYFI system."},
+                            {"name": "cdi", "type": ["double", "null"], "doc": "Maximum reported community determined intensity (DYFI)."},
+                            {"name": "mmi", "type": ["double", "null"], "doc": "Maximum estimated instrumental intensity (ShakeMap)."},
+                            {"name": "alert", "type": ["string", "null"], "doc": "PAGER alert level (green, yellow, orange, red)."},
+                            {"name": "status", "type": "string", "doc": "Review status of the event (automatic, reviewed, deleted)."},
+                            {"name": "tsunami", "type": "int", "doc": "Flag indicating whether the event has a tsunami advisory (1=yes, 0=no)."},
+                            {"name": "sig", "type": ["int", "null"], "doc": "Significance of the event, a number describing how significant the event is (0-1000)."},
+                            {"name": "net", "type": "string", "doc": "ID of the data contributor network."},
+                            {"name": "code", "type": "string", "doc": "Identifying code assigned by the corresponding source for the event."},
+                            {"name": "sources", "type": ["string", "null"], "doc": "Comma-separated list of network contributors."},
+                            {"name": "nst", "type": ["int", "null"], "doc": "Number of seismic stations used to determine earthquake location."},
+                            {"name": "dmin", "type": ["double", "null"], "doc": "Horizontal distance from the epicenter to the nearest station (degrees)."},
+                            {"name": "rms", "type": ["double", "null"], "doc": "Root-mean-square travel time residual (seconds)."},
+                            {"name": "gap", "type": ["double", "null"], "doc": "Largest azimuthal gap between azimuthally adjacent stations (degrees)."},
+                            {"name": "event_type", "type": ["string", "null"], "doc": "Type of seismic event (earthquake, quarry blast, etc.)."},
+                            {"name": "latitude", "type": "double", "doc": "Latitude of the earthquake epicenter in decimal degrees."},
+                            {"name": "longitude", "type": "double", "doc": "Longitude of the earthquake epicenter in decimal degrees."},
+                            {"name": "depth", "type": ["double", "null"], "doc": "Depth of the earthquake in kilometers."}
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
