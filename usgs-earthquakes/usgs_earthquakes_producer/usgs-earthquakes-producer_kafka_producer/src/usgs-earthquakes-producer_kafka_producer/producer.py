@@ -7,7 +7,7 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
-from usgs_earthquakes.usgs_earthquakes_producer.usgs.earthquakes.event import Event
+from usgs-earthquakes-producer_data import Event
 
 class USGSEarthquakesEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -62,7 +62,7 @@ class USGSEarthquakesEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers["content-type"] = b"application/cloudevents+json"
+            message.headers[b"content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
