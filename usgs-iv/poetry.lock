@@ -389,14 +389,14 @@ files = [
 
 [[package]]
 name = "cloudevents"
-version = "1.12.0"
+version = "1.12.1"
 description = "CloudEvents Python SDK"
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "cloudevents-1.12.0-py3-none-any.whl", hash = "sha256:49196267f5f963d87ae156f93fc0fa32f4af69485f2c8e62e0db8b0b4b8b8921"},
-    {file = "cloudevents-1.12.0.tar.gz", hash = "sha256:ebd5544ceb58c8378a0787b657a2ae895e929b80a82d6675cba63f0e8c5539e0"},
+    {file = "cloudevents-1.12.1-py3-none-any.whl", hash = "sha256:5f1574bf49ff334381319bdddcab02175a69ca877a26d0900b59c85505b675b3"},
+    {file = "cloudevents-1.12.1.tar.gz", hash = "sha256:1eb52051309c3228934f86f41d50bd02c0e3d9561e5876e73ad8ad9f98f0d3ef"},
 ]
 
 [package.dependencies]
