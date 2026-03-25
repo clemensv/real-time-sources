@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rws_waterwebservices"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "confluent_kafka",
+    "cloudevents",
+    "requests",
+    "dataclasses-json",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+    "requests-mock",
+    "testcontainers[kafka]",
+]
+
+[project.scripts]
+rws_waterwebservices = "rws_waterwebservices.rws_waterwebservices:main"
+
+[tool.setuptools.packages.find]
+include = ["rws_waterwebservices*"]
