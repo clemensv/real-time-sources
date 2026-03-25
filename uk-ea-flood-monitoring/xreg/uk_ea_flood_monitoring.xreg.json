@@ -1,0 +1,133 @@
+{
+    "messagegroups": {
+        "UK.Gov.Environment.EA.FloodMonitoring": {
+            "messages": {
+                "UK.Gov.Environment.EA.FloodMonitoring.Station": {
+                    "name": "Station",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "UK.Gov.Environment.EA.FloodMonitoring.Station"
+                        },
+                        "source": {
+                            "value": "https://environment.data.gov.uk/flood-monitoring"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring/schemas/UK.Gov.Environment.EA.FloodMonitoring.Station"
+                },
+                "UK.Gov.Environment.EA.FloodMonitoring.Reading": {
+                    "name": "Reading",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "UK.Gov.Environment.EA.FloodMonitoring.Reading"
+                        },
+                        "source": {
+                            "value": "https://environment.data.gov.uk/flood-monitoring"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/UK.Gov.Environment.EA.FloodMonitoring/schemas/UK.Gov.Environment.EA.FloodMonitoring.Reading"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "UK.Gov.Environment.EA.FloodMonitoring": {
+            "schemas": {
+                "UK.Gov.Environment.EA.FloodMonitoring.Station": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Station",
+                                "namespace": "UK.Gov.Environment.EA.FloodMonitoring",
+                                "properties": {
+                                    "station_reference": {
+                                        "type": "string",
+                                        "description": "Unique station reference identifier"
+                                    },
+                                    "label": {
+                                        "type": "string",
+                                        "description": "Station name"
+                                    },
+                                    "river_name": {
+                                        "type": "string",
+                                        "description": "Name of the river at the station"
+                                    },
+                                    "catchment_name": {
+                                        "type": "string",
+                                        "description": "Name of the catchment area"
+                                    },
+                                    "town": {
+                                        "type": "string",
+                                        "description": "Nearest town to the station"
+                                    },
+                                    "lat": {
+                                        "type": "number",
+                                        "description": "Latitude of the station in WGS84"
+                                    },
+                                    "long": {
+                                        "type": "number",
+                                        "description": "Longitude of the station in WGS84"
+                                    },
+                                    "notation": {
+                                        "type": "string",
+                                        "description": "Station notation identifier"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Station status URI"
+                                    },
+                                    "date_opened": {
+                                        "type": "string",
+                                        "description": "Date the station was opened"
+                                    }
+                                },
+                                "required": ["station_reference", "label", "lat", "long", "notation"]
+                            }
+                        }
+                    }
+                },
+                "UK.Gov.Environment.EA.FloodMonitoring.Reading": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Reading",
+                                "namespace": "UK.Gov.Environment.EA.FloodMonitoring",
+                                "properties": {
+                                    "station_reference": {
+                                        "type": "string",
+                                        "description": "Station reference for this reading"
+                                    },
+                                    "date_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Timestamp of the reading in ISO 8601 format"
+                                    },
+                                    "measure": {
+                                        "type": "string",
+                                        "description": "Measure identifier URI"
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "description": "Reading value"
+                                    }
+                                },
+                                "required": ["station_reference", "date_time", "measure", "value"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
