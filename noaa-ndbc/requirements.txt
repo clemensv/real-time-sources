@@ -1,0 +1,5 @@
+confluent-kafka>=2.5.3
+cloudevents>=1.11.0
+requests>=2.32.3
+avro>=1.12.1
+dataclasses_json>=0.6.7

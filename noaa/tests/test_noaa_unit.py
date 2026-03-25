@@ -222,7 +222,8 @@ class TestNOAADataPoller:
             expected_products = [
                 'water_level', 'predictions', 'air_temperature', 'wind',
                 'air_pressure', 'water_temperature', 'conductivity',
-                'visibility', 'humidity', 'salinity'
+                'visibility', 'humidity', 'salinity', 'currents',
+                'currents_predictions'
             ]
 
             for product in expected_products:

@@ -20,6 +20,8 @@ $methodMappings = @{
     'send_microsoft_opendata_us_noaa_visibility' = 'send_microsoft_open_data_us_noaa_visibility'
     'send_microsoft_opendata_us_noaa_humidity' = 'send_microsoft_open_data_us_noaa_humidity'
     'send_microsoft_opendata_us_noaa_salinity' = 'send_microsoft_open_data_us_noaa_salinity'
+    'send_microsoft_opendata_us_noaa_currents' = 'send_microsoft_open_data_us_noaa_currents'
+    'send_microsoft_opendata_us_noaa_currentpredictions' = 'send_microsoft_open_data_us_noaa_current_predictions'
 }
 
 $fixCount = 0

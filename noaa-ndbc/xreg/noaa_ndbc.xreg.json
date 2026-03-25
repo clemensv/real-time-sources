@@ -1,0 +1,120 @@
+{
+    "messagegroups": {
+        "Microsoft.OpenData.US.NOAA.NDBC": {
+            "messages": {
+                "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
+                    "name": "BuoyObservation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+                        },
+                        "source": {
+                            "value": "https://www.ndbc.noaa.gov"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "Microsoft.OpenData.US.NOAA.NDBC": {
+            "schemas": {
+                "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "BuoyObservation",
+                                "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+                                "properties": {
+                                    "station_id": {
+                                        "type": "string",
+                                        "description": "NDBC station identifier"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "description": "Station latitude",
+                                        "unit": "degrees"
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "description": "Station longitude",
+                                        "unit": "degrees"
+                                    },
+                                    "timestamp": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "ISO timestamp of observation"
+                                    },
+                                    "wind_direction": {
+                                        "type": "number",
+                                        "description": "Wind direction",
+                                        "unit": "degrees"
+                                    },
+                                    "wind_speed": {
+                                        "type": "number",
+                                        "description": "Wind speed",
+                                        "unit": "m/s"
+                                    },
+                                    "gust": {
+                                        "type": "number",
+                                        "description": "Wind gust speed",
+                                        "unit": "m/s"
+                                    },
+                                    "wave_height": {
+                                        "type": "number",
+                                        "description": "Significant wave height",
+                                        "unit": "meters"
+                                    },
+                                    "dominant_wave_period": {
+                                        "type": "number",
+                                        "description": "Dominant wave period",
+                                        "unit": "seconds"
+                                    },
+                                    "average_wave_period": {
+                                        "type": "number",
+                                        "description": "Average wave period",
+                                        "unit": "seconds"
+                                    },
+                                    "mean_wave_direction": {
+                                        "type": "number",
+                                        "description": "Mean wave direction",
+                                        "unit": "degrees"
+                                    },
+                                    "pressure": {
+                                        "type": "number",
+                                        "description": "Sea level pressure",
+                                        "unit": "hPa"
+                                    },
+                                    "air_temperature": {
+                                        "type": "number",
+                                        "description": "Air temperature",
+                                        "unit": "celsius"
+                                    },
+                                    "water_temperature": {
+                                        "type": "number",
+                                        "description": "Sea surface temperature",
+                                        "unit": "celsius"
+                                    },
+                                    "dewpoint": {
+                                        "type": "number",
+                                        "description": "Dewpoint temperature",
+                                        "unit": "celsius"
+                                    }
+                                },
+                                "required": ["station_id", "latitude", "longitude", "timestamp"]
+                            }
+                        }
+                    },
+                    "defaultversionid": "1.0"
+                }
+            }
+        }
+    }
+}
