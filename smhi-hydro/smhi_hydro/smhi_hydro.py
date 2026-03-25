@@ -1,0 +1,192 @@
+"""SMHI Hydrological Data Bridge - fetches discharge data from the Swedish Meteorological and Hydrological Institute."""
+
+import argparse
+import json
+import sys
+import os
+import time
+import typing
+import logging
+import requests
+from datetime import datetime, timezone
+from confluent_kafka import Producer
+
+from smhi_hydro.smhi_hydro_producer.producer_client import SEGovSMHIHydroEventProducer
+from smhi_hydro.smhi_hydro_producer.se.gov.smhi.hydro.station import Station
+from smhi_hydro.smhi_hydro_producer.se.gov.smhi.hydro.discharge_observation import DischargeObservation
+
+logger = logging.getLogger(__name__)
+
+SMHI_BASE_URL = "https://opendata-download-hydroobs.smhi.se/api/version/1.0"
+SMHI_BULK_DISCHARGE_URL = f"{SMHI_BASE_URL}/parameter/2/station-set/all/period/latest-hour/data.json"
+
+
+class SMHIHydroAPI:
+    """Client for the SMHI open data hydrological API."""
+
+    def __init__(self, base_url: str = SMHI_BASE_URL, polling_interval: int = 900):
+        self.base_url = base_url
+        self.bulk_discharge_url = f"{base_url}/parameter/2/station-set/all/period/latest-hour/data.json"
+        self.polling_interval = polling_interval
+        self.session = requests.Session()
+
+    def get_bulk_discharge_data(self) -> dict:
+        """Fetch bulk discharge data for all stations from the latest-hour endpoint."""
+        response = self.session.get(self.bulk_discharge_url, timeout=60)
+        response.raise_for_status()
+        return response.json()
+
+    @staticmethod
+    def parse_station(station_data: dict) -> Station:
+        """Parse a station entry from the bulk data into a Station object."""
+        return Station(
+            station_id=str(station_data["key"]),
+            name=station_data["name"],
+            owner=station_data.get("owner", ""),
+            measuring_stations=station_data.get("measuringStations", ""),
+            region=int(station_data.get("region", 0)),
+            catchment_name=station_data.get("catchmentName", ""),
+            catchment_number=int(station_data.get("catchmentNumber", 0)),
+            catchment_size=float(station_data.get("catchmentSize", 0.0)),
+            latitude=float(station_data["latitude"]),
+            longitude=float(station_data["longitude"]),
+        )
+
+    @staticmethod
+    def parse_latest_observation(station_data: dict) -> typing.Optional[DischargeObservation]:
+        """Parse the latest discharge observation from a station's value array."""
+        values = station_data.get("value", [])
+        if not values:
+            return None
+
+        latest = values[-1]
+        value = latest.get("value")
+        if value is None:
+            return None
+
+        epoch_ms = latest["date"]
+        ts = datetime.fromtimestamp(epoch_ms / 1000.0, tz=timezone.utc).isoformat()
+
+        return DischargeObservation(
+            station_id=str(station_data["key"]),
+            station_name=station_data["name"],
+            catchment_name=station_data.get("catchmentName", ""),
+            timestamp=ts,
+            discharge=float(value),
+            quality=latest.get("quality", ""),
+        )
+
+
+def parse_connection_string(connection_string: str) -> dict:
+    """Parse a Kafka connection string into a config dict."""
+    config = {}
+    for part in connection_string.split(';'):
+        part = part.strip()
+        if '=' in part:
+            key, value = part.split('=', 1)
+            key = key.strip()
+            value = value.strip()
+            if key == 'Endpoint':
+                config['bootstrap.servers'] = value.replace('sb://', '').rstrip('/')
+            elif key == 'SharedAccessKeyName':
+                config['sasl.username'] = '$ConnectionString'
+            elif key == 'SharedAccessKey':
+                config['sasl.password'] = connection_string
+            elif key == 'BootstrapServer':
+                config['bootstrap.servers'] = value
+    if 'sasl.username' in config:
+        config['security.protocol'] = 'SASL_SSL'
+        config['sasl.mechanism'] = 'PLAIN'
+    return config
+
+
+def feed_stations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer) -> int:
+    """Fetch all discharge data and send station reference data + observations to Kafka."""
+    bulk_data = api.get_bulk_discharge_data()
+    stations = bulk_data.get("station", [])
+    sent_count = 0
+
+    for station_data in stations:
+        station = api.parse_station(station_data)
+        producer.send_se_gov_smhi_hydro_station(
+            station,
+            flush_producer=False,
+            key_mapper=lambda ce, s: f"SE.Gov.SMHI.Hydro.Station:{s.station_id}"
+        )
+        sent_count += 1
+
+        observation = api.parse_latest_observation(station_data)
+        if observation:
+            producer.send_se_gov_smhi_hydro_discharge_observation(
+                observation,
+                flush_producer=False,
+                key_mapper=lambda ce, o: f"SE.Gov.SMHI.Hydro.DischargeObservation:{o.station_id}"
+            )
+            sent_count += 1
+
+    producer.producer.flush()
+    return sent_count
+
+
+def main():
+    """Main entry point for the SMHI Hydro bridge."""
+    parser = argparse.ArgumentParser(description="SMHI Hydrological Data Bridge")
+    parser.add_argument('--connection-string', required=False, help='Kafka/Event Hubs connection string',
+                        default=os.environ.get('KAFKA_CONNECTION_STRING') or os.environ.get('CONNECTION_STRING'))
+    parser.add_argument('--topic', required=False, help='Kafka topic', default=os.environ.get('KAFKA_TOPIC', 'smhi-hydro'))
+    parser.add_argument('--polling-interval', type=int, default=int(os.environ.get('POLLING_INTERVAL', '900')),
+                        help='Polling interval in seconds (default: 900)')
+    subparsers = parser.add_subparsers(dest='command')
+    subparsers.add_parser('list', help='List all stations')
+    obs_parser = subparsers.add_parser('observation', help='Get latest discharge for a station')
+    obs_parser.add_argument('station_id', help='Station ID (e.g. 1583)')
+    subparsers.add_parser('feed', help='Feed data to Kafka')
+
+    args = parser.parse_args()
+    logging.basicConfig(level=logging.INFO)
+    api = SMHIHydroAPI(polling_interval=args.polling_interval)
+
+    if args.command == 'list':
+        bulk_data = api.get_bulk_discharge_data()
+        for station_data in bulk_data.get("station", []):
+            station = api.parse_station(station_data)
+            print(f"{station.station_id}: {station.name} ({station.catchment_name}) [{station.latitude}, {station.longitude}]")
+    elif args.command == 'observation':
+        bulk_data = api.get_bulk_discharge_data()
+        for station_data in bulk_data.get("station", []):
+            if str(station_data["key"]) == args.station_id:
+                obs = api.parse_latest_observation(station_data)
+                if obs:
+                    print(f"Discharge: {obs.discharge} m³/s at {obs.timestamp} (quality: {obs.quality})")
+                else:
+                    print("No observation data available for this station.")
+                break
+        else:
+            print(f"Station {args.station_id} not found")
+    elif args.command == 'feed':
+        if not args.connection_string:
+            if not os.environ.get('KAFKA_BROKER'):
+                print("Error: --connection-string or KAFKA_BROKER environment variable required for feed mode")
+                sys.exit(1)
+            kafka_config = {
+                'bootstrap.servers': os.environ['KAFKA_BROKER'],
+            }
+        else:
+            kafka_config = parse_connection_string(args.connection_string)
+        kafka_config['client.id'] = 'smhi-hydro-bridge'
+        producer = Producer(kafka_config)
+        event_producer = SEGovSMHIHydroEventProducer(producer, args.topic)
+        logger.info("Starting SMHI Hydro bridge, polling every %d seconds", args.polling_interval)
+        while True:
+            try:
+                count = feed_stations(api, event_producer)
+                logger.info("Sent %d events", count)
+            except Exception as e:
+                logger.error("Error fetching/sending data: %s", e)
+            time.sleep(args.polling_interval)
+    else:
+        parser.print_help()
+
+
+if __name__ == '__main__':
+    main()
