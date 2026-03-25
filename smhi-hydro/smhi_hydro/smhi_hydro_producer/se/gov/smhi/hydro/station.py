@@ -10,38 +10,45 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+import avro.schema
+import avro.name
+import avro.io
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Station:
     """
-    A hydrological station from SMHI.
+    A Station record.
     Attributes:
-        station_id (str): Unique station identifier
-        name (str): Station name
-        owner (str): Station owner (e.g. SMHI)
-        measuring_stations (str): Station type (CORE or ADDITIONAL)
-        region (int): Region number
-        catchment_name (str): Catchment area name (river/watercourse)
-        catchment_number (int): Catchment area number
-        catchment_size (float): Catchment area size in km²
-        latitude (float): Latitude in WGS84
-        longitude (float): Longitude in WGS84
-    """
-
+        station_id (str): 
+        name (str): 
+        owner (str): 
+        measuring_stations (str): 
+        region (int): 
+        catchment_name (str): 
+        catchment_number (int): 
+        catchment_size (float): 
+        latitude (float): 
+        longitude (float): """
+    
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    owner: str=dataclasses.field(default="", kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
-    measuring_stations: str=dataclasses.field(default="", kw_only=True, metadata=dataclasses_json.config(field_name="measuring_stations"))
-    region: int=dataclasses.field(default=0, kw_only=True, metadata=dataclasses_json.config(field_name="region"))
-    catchment_name: str=dataclasses.field(default="", kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
-    catchment_number: int=dataclasses.field(default=0, kw_only=True, metadata=dataclasses_json.config(field_name="catchment_number"))
-    catchment_size: float=dataclasses.field(default=0.0, kw_only=True, metadata=dataclasses_json.config(field_name="catchment_size"))
+    owner: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
+    measuring_stations: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="measuring_stations"))
+    region: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
+    catchment_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
+    catchment_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_number"))
+    catchment_size: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_size"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"SE.Gov.SMHI.Hydro\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"owner\", \"type\": \"string\"}, {\"name\": \"measuring_stations\", \"type\": \"string\"}, {\"name\": \"region\", \"type\": \"long\"}, {\"name\": \"catchment_name\", \"type\": \"string\"}, {\"name\": \"catchment_number\", \"type\": \"long\"}, {\"name\": \"catchment_size\", \"type\": \"double\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}]}"), avro.name.Names()
+    )
 
     def __post_init__(self):
+        """ Initializes the dataclass with the provided keyword arguments."""
         self.station_id=str(self.station_id)
         self.name=str(self.name)
         self.owner=str(self.owner)
@@ -53,22 +60,143 @@ class Station:
         self.latitude=float(self.latitude)
         self.longitude=float(self.longitude)
 
+    @classmethod
+    def from_serializer_dict(cls, data: dict) -> 'Station':
+        """
+        Converts a dictionary to a dataclass instance.
+        
+        Args:
+            data: The dictionary to convert to a dataclass.
+        
+        Returns:
+            The dataclass representation of the dictionary.
+        """
+        return cls(**data)
+
+    def to_serializer_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary.
+
+        Returns:
+            The dictionary representation of the dataclass.
+        """
+        asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        return asdict_result
+
+    def _dict_resolver(self, data):
+        """
+        Helps resolving the Enum values to their actual values and fixes the key names.
+        """ 
+        def _resolve_enum(v):
+            if isinstance(v,enum.Enum):
+                return v.value
+            return v
+        def _fix_key(k):
+            return k[:-1] if k.endswith('_') else k
+        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
+
     def to_byte_array(self, content_type_string: str) -> bytes:
+        """
+        Converts the dataclass to a byte array based on the content type string.
+        
+        Args:
+            content_type_string: The content type string to convert the dataclass to.
+                Supported content types:
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
+                    'application/json': Encodes the data to JSON format.
+                Supported content type extensions:
+                    '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
+
+        Returns:
+            The byte array representation of the dataclass.        
+        """
         content_type = content_type_string.split(';')[0].strip()
-        if content_type == 'application/json':
-            return json.dumps(self.to_dict()).encode('utf-8')
-        raise NotImplementedError(f"Unsupported content type: {content_type}")
+        result = None
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            stream = io.BytesIO()
+            writer = avro.io.DatumWriter(self.AvroType)
+            encoder = avro.io.BinaryEncoder(stream)
+            writer.write(self.to_serializer_dict(), encoder)
+            result = stream.getvalue()
+        if base_content_type == 'application/json':
+            #pylint: disable=no-member
+            result = self.to_json()
+            #pylint: enable=no-member
+
+        if result is not None and content_type.endswith('+gzip'):
+            # Handle string result from to_json()
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            with io.BytesIO() as stream:
+                with gzip.GzipFile(fileobj=stream, mode='wb') as gzip_file:
+                    gzip_file.write(result)
+                result = stream.getvalue()
+
+        if result is None:
+            raise NotImplementedError(f"Unsupported media type {content_type}")
+
+        return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: str = 'application/json') -> 'Station':
-        content_type = content_type_string.split(';')[0].strip()
-        if content_type == 'application/json':
-            if isinstance(data, str):
-                data = json.loads(data)
-            if isinstance(data, bytes):
-                data = json.loads(data.decode('utf-8'))
-            return Station.from_dict(data)
-        raise NotImplementedError(f"Unsupported content type: {content_type}")
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = 'application/json') -> typing.Optional['Station']:
+        """
+        Converts the data to a dataclass based on the content type string.
+        
+        Args:
+            data: The data to convert to a dataclass.
+            content_type_string: The content type string to convert the data to. 
+                Supported content types:
+                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
+                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
+                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
+                    'application/json': Attempts to decode the data from JSON encoded format.
+                Supported content type extensions:
+                    '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
+        Returns:
+            The dataclass representation of the data.
+        """
+        if data is None:
+            return None
+        if isinstance(data, cls):
+            return data
+        if isinstance(data, dict):
+            return cls.from_serializer_dict(data)
 
-    def to_json(self) -> str:
-        return json.dumps(self.to_dict())
+        content_type = (content_type_string or 'application/json').split(';')[0].strip()
+
+        if content_type.endswith('+gzip'):
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for gzip decompression')
+            with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
+                data = gzip_file.read()
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
+            reader = avro.io.DatumReader(cls.AvroType)
+            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+                decoder = avro.io.BinaryDecoder(stream)
+            else:
+                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
+            _record = reader.read(decoder)            
+            return Station.from_serializer_dict(_record)
+        if base_content_type == 'application/json':
+            if isinstance(data, (bytes, str)):
+                data_str = data.decode('utf-8') if isinstance(data, bytes) else data
+                _record = json.loads(data_str)
+                return Station.from_serializer_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+
+        raise NotImplementedError(f'Unsupported media type {content_type}')
