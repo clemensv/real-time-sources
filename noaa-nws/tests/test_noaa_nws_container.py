@@ -357,3 +357,129 @@ class TestNWSContainerIntegration:
             assert 'zone_id' in data
             zone_ids.add(data['zone_id'])
         assert zone_ids == {'TXZ211', 'ILZ014', 'CAZ006'}
+
+    def test_live_zones_api_to_kafka(self, kafka_container, kafka_config, kafka_topic, temp_state_file):
+        """Test real NWS zones API fetched and delivered to Kafka end-to-end"""
+        topic = 'test-nws-live-zones'
+        self._create_topic(kafka_container, topic)
+
+        from noaa_nws.noaa_nws import NWSAlertPoller
+
+        poller = NWSAlertPoller(
+            kafka_config=kafka_config,
+            kafka_topic=topic,
+            last_polled_file=temp_state_file
+        )
+
+        # Call the real NWS zones API
+        zones = poller.fetch_zones()
+        assert len(zones) > 0, "Expected at least some zones from the live NWS API"
+
+        # Send a sample (first 5) to Kafka
+        sample = zones[:5]
+        for zone in sample:
+            poller.producer.send_microsoft_open_data_us_noaa_nws_zone(
+                zone, flush_producer=False)
+        poller.producer.producer.flush()
+
+        # Consume from Kafka and verify
+        from confluent_kafka import Consumer
+        consumer_config = {
+            'bootstrap.servers': kafka_container.get_bootstrap_server(),
+            'group.id': 'test-live-zone-consumer',
+            'auto.offset.reset': 'earliest',
+            'security.protocol': 'PLAINTEXT',
+        }
+        consumer = Consumer(consumer_config)
+        consumer.subscribe([topic])
+
+        messages = []
+        deadline = time.time() + 30
+        while len(messages) < len(sample) and time.time() < deadline:
+            msg = consumer.poll(timeout=1.0)
+            if msg is not None and not msg.error():
+                messages.append(msg)
+
+        consumer.close()
+
+        assert len(messages) == len(sample), f"Expected {len(sample)} zone messages, got {len(messages)}"
+
+        # Verify each message is a valid CloudEvent with zone data
+        for msg in messages:
+            value = json.loads(msg.value().decode('utf-8'))
+            data = value.get('data', value)
+            assert 'zone_id' in data, f"Missing zone_id in message: {value}"
+            assert len(data['zone_id']) >= 3, f"Zone id too short: {data['zone_id']}"
+            assert 'name' in data, f"Missing name in message: {value}"
+
+    def test_live_alerts_api_to_kafka(self, kafka_container, kafka_config, kafka_topic, temp_state_file):
+        """Test real NWS alerts API fetched and delivered to Kafka end-to-end"""
+        topic = 'test-nws-live-alerts'
+        self._create_topic(kafka_container, topic)
+
+        from noaa_nws.noaa_nws import NWSAlertPoller
+        from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
+
+        poller = NWSAlertPoller(
+            kafka_config=kafka_config,
+            kafka_topic=topic,
+            last_polled_file=temp_state_file
+        )
+
+        # Call the real NWS alerts API
+        features = poller.poll_alerts()
+        # There may or may not be active alerts right now, so just verify the flow works
+        sent_count = 0
+        for feature in features[:5]:
+            props = feature.get("properties", {})
+            alert_id = props.get("id", "")
+            if not alert_id:
+                continue
+            alert = WeatherAlert(
+                alert_id=alert_id,
+                area_desc=props.get("areaDesc", ""),
+                sent=props.get("sent", ""),
+                effective=props.get("effective", ""),
+                expires=props.get("expires", ""),
+                status=props.get("status", ""),
+                message_type=props.get("messageType", ""),
+                category=props.get("category", ""),
+                severity=props.get("severity", ""),
+                certainty=props.get("certainty", ""),
+                urgency=props.get("urgency", ""),
+                event=props.get("event", ""),
+                sender_name=props.get("senderName", ""),
+                headline=props.get("headline", ""),
+                description=props.get("description", "")
+            )
+            poller.producer.send_microsoft_open_data_us_noaa_nws_weather_alert(
+                alert, flush_producer=False)
+            sent_count += 1
+        poller.producer.producer.flush()
+
+        # Consume and verify what was sent
+        if sent_count > 0:
+            from confluent_kafka import Consumer
+            consumer_config = {
+                'bootstrap.servers': kafka_container.get_bootstrap_server(),
+                'group.id': 'test-live-alert-consumer',
+                'auto.offset.reset': 'earliest',
+                'security.protocol': 'PLAINTEXT',
+            }
+            consumer = Consumer(consumer_config)
+            consumer.subscribe([topic])
+
+            messages = []
+            deadline = time.time() + 30
+            while len(messages) < sent_count and time.time() < deadline:
+                msg = consumer.poll(timeout=1.0)
+                if msg is not None and not msg.error():
+                    messages.append(msg)
+
+            consumer.close()
+
+            assert len(messages) == sent_count, f"Expected {sent_count} alert messages, got {len(messages)}"
+            for msg in messages:
+                value = json.loads(msg.value().decode('utf-8'))
+                data = value.get('data', value)
+                assert 'alert_id' in data, f"Missing alert_id in message: {value}"
