@@ -1,4 +1,4 @@
-""" DischargeObservation dataclass. """
+""" Record dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -17,9 +17,9 @@ import avro.io
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class DischargeObservation:
+class Record:
     """
-    A DischargeObservation record.
+    A Record record.
     Attributes:
         station_id (str): 
         station_name (str): 
@@ -36,7 +36,7 @@ class DischargeObservation:
     quality: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DischargeObservation\", \"namespace\": \"SE.Gov.SMHI.Hydro\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"catchment_name\", \"type\": \"string\"}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"discharge\", \"type\": \"double\"}, {\"name\": \"quality\", \"type\": \"string\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Record\", \"namespace\": \"\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"catchment_name\", \"type\": \"string\"}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"discharge\", \"type\": \"double\"}, {\"name\": \"quality\", \"type\": \"string\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -49,7 +49,7 @@ class DischargeObservation:
         self.quality=str(self.quality)
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'DischargeObservation':
+    def from_serializer_dict(cls, data: dict) -> 'Record':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -130,7 +130,7 @@ class DischargeObservation:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = 'application/json') -> typing.Optional['DischargeObservation']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = 'application/json') -> typing.Optional['Record']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -178,12 +178,12 @@ class DischargeObservation:
             else:
                 raise NotImplementedError(f'Unsupported Avro media type {content_type}')
             _record = reader.read(decoder)            
-            return DischargeObservation.from_serializer_dict(_record)
+            return Record.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return DischargeObservation.from_serializer_dict(_record)
+                return Record.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 
