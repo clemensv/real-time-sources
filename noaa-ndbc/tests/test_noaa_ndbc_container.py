@@ -240,3 +240,107 @@ class TestNDBCContainerIntegration:
             assert 'station_id' in data
             station_ids.add(data['station_id'])
         assert station_ids == {'41001', '41002', '44013'}
+
+    def test_live_stations_api_to_kafka(self, kafka_container, kafka_config, kafka_topic, temp_state_file):
+        """Test real NDBC station table fetched and delivered to Kafka end-to-end"""
+        topic = 'test-ndbc-live-stations'
+        self._create_topic(kafka_container, topic)
+
+        from noaa_ndbc.noaa_ndbc import NDBCBuoyPoller
+
+        poller = NDBCBuoyPoller(
+            kafka_config=kafka_config,
+            kafka_topic=topic,
+            last_polled_file=temp_state_file
+        )
+
+        # Call the real NDBC station table API
+        stations = poller.fetch_stations()
+        assert len(stations) > 100, f"Expected many stations from live NDBC API, got {len(stations)}"
+
+        # Send a sample (first 10) to Kafka
+        sample = stations[:10]
+        for station in sample:
+            poller.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(
+                station, flush_producer=False)
+        poller.producer.producer.flush()
+
+        # Consume from Kafka and verify
+        from confluent_kafka import Consumer
+        consumer_config = {
+            'bootstrap.servers': kafka_container.get_bootstrap_server(),
+            'group.id': 'test-live-station-consumer',
+            'auto.offset.reset': 'earliest',
+            'security.protocol': 'PLAINTEXT',
+        }
+        consumer = Consumer(consumer_config)
+        consumer.subscribe([topic])
+
+        messages = []
+        deadline = time.time() + 30
+        while len(messages) < len(sample) and time.time() < deadline:
+            msg = consumer.poll(timeout=1.0)
+            if msg is not None and not msg.error():
+                messages.append(msg)
+
+        consumer.close()
+
+        assert len(messages) == len(sample), f"Expected {len(sample)} station messages, got {len(messages)}"
+
+        # Verify each message is a valid CloudEvent with station data
+        for msg in messages:
+            value = json.loads(msg.value().decode('utf-8'))
+            data = value.get('data', value)
+            assert 'station_id' in data, f"Missing station_id in message: {value}"
+            assert len(data['station_id']) > 0, "Station ID should not be empty"
+            assert 'name' in data, f"Missing name in message: {value}"
+
+    def test_live_observations_api_to_kafka(self, kafka_container, kafka_config, kafka_topic, temp_state_file):
+        """Test real NDBC observations fetched and delivered to Kafka end-to-end"""
+        topic = 'test-ndbc-live-obs'
+        self._create_topic(kafka_container, topic)
+
+        from noaa_ndbc.noaa_ndbc import NDBCBuoyPoller
+
+        poller = NDBCBuoyPoller(
+            kafka_config=kafka_config,
+            kafka_topic=topic,
+            last_polled_file=temp_state_file
+        )
+
+        # Call the real NDBC observations API
+        observations = poller.poll_observations()
+        assert len(observations) > 0, "Expected at least some observations from live NDBC API"
+
+        # Send a sample (first 5) to Kafka
+        sample = observations[:5]
+        for obs in sample:
+            poller.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(
+                obs, obs.station_id, flush_producer=False)
+        poller.producer.producer.flush()
+
+        # Consume from Kafka and verify
+        from confluent_kafka import Consumer
+        consumer_config = {
+            'bootstrap.servers': kafka_container.get_bootstrap_server(),
+            'group.id': 'test-live-obs-consumer',
+            'auto.offset.reset': 'earliest',
+            'security.protocol': 'PLAINTEXT',
+        }
+        consumer = Consumer(consumer_config)
+        consumer.subscribe([topic])
+
+        messages = []
+        deadline = time.time() + 30
+        while len(messages) < len(sample) and time.time() < deadline:
+            msg = consumer.poll(timeout=1.0)
+            if msg is not None and not msg.error():
+                messages.append(msg)
+
+        consumer.close()
+
+        assert len(messages) == len(sample), f"Expected {len(sample)} observation messages, got {len(messages)}"
+        for msg in messages:
+            value = json.loads(msg.value().decode('utf-8'))
+            data = value.get('data', value)
+            assert 'station_id' in data, f"Missing station_id in message: {value}"
