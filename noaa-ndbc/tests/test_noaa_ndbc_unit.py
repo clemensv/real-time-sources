@@ -11,6 +11,17 @@ from unittest.mock import Mock, patch, MagicMock
 from noaa_ndbc.noaa_ndbc import NDBCBuoyPoller, parse_connection_string, parse_float
 
 
+SAMPLE_STATION_TABLE_TEXT = """\
+# STATION_ID | OWNER | TTYPE | HULL | NAME | PAYLOAD | LOCATION | TIMEZONE | FORECAST | NOTE
+#
+41001 | NDBC | Weather Buoy | DISCUS | CAPE HATTERAS - 150 NM East of Cape Hatteras | ARES payload  | 34.700 N 72.730 W (34°42'00" N 72°43'48" W) | E | 50 mi S of 41001 |
+41002 | NDBC | Weather Buoy | DISCUS | S HATTERAS - 250 NM ESE of Charleston, SC | ARES payload  | 32.382 N 75.415 W (32°22'55" N 75°24'54" W) | E |  |
+BURL1 | NOS  | C-MAN Station |  | Southwest Pass, LA | NOS C-MAN payload | 28.905 N 89.428 W (28°54'18" N 89°25'41" W) | C |  |
+46042 |  NDBC  |  Weather Buoy  |  3-meter  |  MONTEREY - 27 NM W of Monterey, CA  |  ARES payload  |  36.789 N 122.404 W  |  P  |   |
+SAUF1 | NOS | C-MAN Station |  | ST. AUGUSTINE, FL | VEEP payload | 29.857 N 81.265 W | E | |
+"""
+
+
 SAMPLE_OBS_TEXT = """\
 #STN     LAT      LON  YYYY MM DD hh mm WDIR WSPD  GST  WVHT   DPD   APD MWD   PRES  PTDY  ATMP  WTMP  DEWP  VIS  TIDE
 #        deg      deg   yr mo da hr mn  deg  m/s  m/s    m    sec   sec deg    hPa   hPa  degC  degC  degC   nmi    ft
@@ -284,3 +295,110 @@ class TestParseConnectionString:
 
         assert result['sasl.password'] == conn_str
         assert result['sasl.username'] == '$ConnectionString'
+
+
+@pytest.mark.unit
+class TestParseStationLocation:
+    """Unit tests for the parse_station_location static method"""
+
+    def test_parse_north_west(self):
+        lat, lon = NDBCBuoyPoller.parse_station_location("34.700 N 72.730 W (34°42'00\" N 72°43'48\" W)")
+        assert lat == pytest.approx(34.700)
+        assert lon == pytest.approx(-72.730)
+
+    def test_parse_south_east(self):
+        lat, lon = NDBCBuoyPoller.parse_station_location("10.500 S 120.300 E")
+        assert lat == pytest.approx(-10.500)
+        assert lon == pytest.approx(120.300)
+
+    def test_parse_simple_format(self):
+        lat, lon = NDBCBuoyPoller.parse_station_location("36.789 N 122.404 W")
+        assert lat == pytest.approx(36.789)
+        assert lon == pytest.approx(-122.404)
+
+    def test_parse_invalid_returns_none(self):
+        lat, lon = NDBCBuoyPoller.parse_station_location("bad data")
+        assert lat is None
+        assert lon is None
+
+    def test_parse_empty_returns_none(self):
+        lat, lon = NDBCBuoyPoller.parse_station_location("")
+        assert lat is None
+        assert lon is None
+
+
+@pytest.mark.unit
+class TestFetchStations:
+    """Unit tests for the fetch_stations method"""
+
+    @pytest.fixture
+    def mock_kafka_config(self):
+        return {
+            'bootstrap.servers': 'localhost:9092',
+            'sasl.mechanisms': 'PLAIN',
+            'security.protocol': 'SASL_SSL',
+            'sasl.username': 'test_user',
+            'sasl.password': 'test_password'
+        }
+
+    @pytest.fixture
+    def temp_state_file(self):
+        fd, path = tempfile.mkstemp(suffix='.json')
+        os.close(fd)
+        yield path
+        if os.path.exists(path):
+            os.unlink(path)
+
+    @patch('noaa_ndbc.noaa_ndbc.requests.get')
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_fetch_stations_success(self, mock_producer_class, mock_event_producer, mock_get, mock_kafka_config, temp_state_file):
+        """Test fetching and parsing station table"""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.raise_for_status = Mock()
+        mock_response.text = SAMPLE_STATION_TABLE_TEXT
+        mock_get.return_value = mock_response
+
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        stations = poller.fetch_stations()
+
+        assert len(stations) == 5
+        assert stations[0].station_id == "41001"
+        assert stations[0].owner == "NDBC"
+        assert stations[0].station_type == "Weather Buoy"
+        assert stations[0].hull == "DISCUS"
+        assert "CAPE HATTERAS" in stations[0].name
+        assert stations[0].latitude == pytest.approx(34.700)
+        assert stations[0].longitude == pytest.approx(-72.730)
+        assert stations[0].timezone == "E"
+
+        # Check second station
+        assert stations[1].station_id == "41002"
+        assert stations[1].latitude == pytest.approx(32.382)
+        assert stations[1].longitude == pytest.approx(-75.415)
+
+        # Check C-MAN station
+        assert stations[2].station_id == "BURL1"
+        assert stations[2].station_type == "C-MAN Station"
+
+    @patch('noaa_ndbc.noaa_ndbc.requests.get')
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_fetch_stations_api_error(self, mock_producer_class, mock_event_producer, mock_get, mock_kafka_config, temp_state_file):
+        """Test fetch_stations handles HTTP errors gracefully"""
+        mock_get.side_effect = Exception("Network error")
+
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        stations = poller.fetch_stations()
+        assert stations == []

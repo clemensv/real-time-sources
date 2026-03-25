@@ -250,3 +250,142 @@ class TestWeatherAlertDataclass:
         assert alert.alert_id == "test-id"
         assert alert.headline == ""
         assert alert.description == ""
+
+
+@pytest.mark.unit
+class TestFetchZones:
+    """Unit tests for NWSAlertPoller.fetch_zones()"""
+
+    @pytest.fixture
+    def mock_kafka_config(self):
+        return {
+            'bootstrap.servers': 'localhost:9092',
+            'sasl.mechanisms': 'PLAIN',
+            'security.protocol': 'SASL_SSL',
+            'sasl.username': 'test_user',
+            'sasl.password': 'test_password'
+        }
+
+    @pytest.fixture
+    def temp_state_file(self):
+        fd, path = tempfile.mkstemp(suffix='.json')
+        os.close(fd)
+        yield path
+        if os.path.exists(path):
+            os.unlink(path)
+
+    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws.noaa_nws.MicrosoftOpenDataUSNOAANWSEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_fetch_zones_success(self, mock_producer_class, mock_event_producer, mock_get, mock_kafka_config, temp_state_file):
+        """Test fetching zones parses response correctly"""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.raise_for_status = Mock()
+        mock_response.json.return_value = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "properties": {
+                        "id": "AKZ101",
+                        "name": "Western Prior Sound",
+                        "type": "public",
+                        "state": "AK",
+                        "forecastOffice": "https://api.weather.gov/offices/AFC",
+                        "timeZone": "America/Anchorage",
+                        "radarStation": "PAHG"
+                    }
+                },
+                {
+                    "properties": {
+                        "id": "TXZ211",
+                        "name": "Dallas County",
+                        "type": "public",
+                        "state": "TX",
+                        "forecastOffice": "https://api.weather.gov/offices/FWD",
+                        "timeZone": "America/Chicago",
+                        "radarStation": "KFWS"
+                    }
+                }
+            ]
+        }
+        mock_get.return_value = mock_response
+
+        poller = NWSAlertPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        zones = poller.fetch_zones()
+        assert len(zones) == 2
+        assert zones[0].zone_id == "AKZ101"
+        assert zones[0].name == "Western Prior Sound"
+        assert zones[0].state == "AK"
+        assert zones[0].forecast_office == "https://api.weather.gov/offices/AFC"
+        assert zones[0].timezone == "America/Anchorage"
+        assert zones[0].radar_station == "PAHG"
+        assert zones[1].zone_id == "TXZ211"
+        assert zones[1].state == "TX"
+
+    @patch('noaa_nws.noaa_nws.requests.get')
+    @patch('noaa_nws.noaa_nws.MicrosoftOpenDataUSNOAANWSEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_fetch_zones_api_error(self, mock_producer_class, mock_event_producer, mock_get, mock_kafka_config, temp_state_file):
+        """Test fetch_zones handles API errors gracefully"""
+        mock_get.side_effect = Exception("Connection error")
+
+        poller = NWSAlertPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        zones = poller.fetch_zones()
+        assert zones == []
+
+
+@pytest.mark.unit
+class TestZoneDataclass:
+    """Unit tests for Zone dataclass creation"""
+
+    def test_create_zone(self):
+        """Test creating a Zone dataclass instance"""
+        from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.zone import Zone
+
+        zone = Zone(
+            zone_id="AKZ317",
+            name="Anchorage Bowl",
+            type="public",
+            state="AK",
+            forecast_office="https://api.weather.gov/offices/AFC",
+            timezone="America/Anchorage",
+            radar_station="PAHG"
+        )
+
+        assert zone.zone_id == "AKZ317"
+        assert zone.name == "Anchorage Bowl"
+        assert zone.type == "public"
+        assert zone.state == "AK"
+        assert zone.forecast_office == "https://api.weather.gov/offices/AFC"
+        assert zone.timezone == "America/Anchorage"
+        assert zone.radar_station == "PAHG"
+
+    def test_zone_with_empty_optional_fields(self):
+        """Test creating a Zone with empty optional fields"""
+        from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.zone import Zone
+
+        zone = Zone(
+            zone_id="TXZ001",
+            name="Test Zone",
+            type="",
+            state="TX",
+            forecast_office="",
+            timezone="",
+            radar_station=""
+        )
+
+        assert zone.zone_id == "TXZ001"
+        assert zone.name == "Test Zone"
+        assert zone.state == "TX"
+        assert zone.forecast_office == ""

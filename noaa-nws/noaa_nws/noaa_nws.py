@@ -13,6 +13,7 @@ from typing import Dict, List
 import argparse
 import requests
 from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
+from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.zone import Zone
 from .noaa_nws_producer.producer_client import MicrosoftOpenDataUSNOAANWSEventProducer
 
 
@@ -21,6 +22,7 @@ class NWSAlertPoller:
     Polls the NWS Weather Alerts API and sends alerts to Kafka as CloudEvents.
     """
     ALERTS_URL = "https://api.weather.gov/alerts/active"
+    ZONES_URL = "https://api.weather.gov/zones?type=forecast"
     HEADERS = {
         "User-Agent": "(real-time-sources, clemensv@microsoft.com)",
         "Accept": "application/geo+json"
@@ -71,6 +73,35 @@ class NWSAlertPoller:
         except Exception as e:
             print(f"Error saving state: {e}")
 
+    def fetch_zones(self):
+        """Fetch all NWS forecast zones as reference data."""
+        zones = []
+        url = self.ZONES_URL
+        try:
+            while url:
+                response = requests.get(url, headers=self.HEADERS, timeout=30)
+                response.raise_for_status()
+                data = response.json()
+                features = data.get("features", [])
+                for feature in features:
+                    props = feature.get("properties", {})
+                    zone = Zone(
+                        zone_id=props.get("id", ""),
+                        name=props.get("name", ""),
+                        type=props.get("type", ""),
+                        state=props.get("state", ""),
+                        forecast_office=props.get("forecastOffice", ""),
+                        timezone=props.get("timeZone", ""),
+                        radar_station=props.get("radarStation", "")
+                    )
+                    zones.append(zone)
+                # Handle pagination
+                pagination = data.get("pagination", {})
+                url = pagination.get("next") if pagination else None
+        except Exception as err:
+            print(f"Error fetching NWS zones: {err}")
+        return zones
+
     def poll_alerts(self) -> List[dict]:
         """
         Fetch active alerts from the NWS API.
@@ -95,6 +126,15 @@ class NWSAlertPoller:
         print(f"Starting NWS Weather Alert poller, polling every {self.POLL_INTERVAL_SECONDS}s")
         print(f"  Alerts URL: {self.ALERTS_URL}")
         print(f"  Kafka topic: {self.kafka_topic}")
+
+        # Send reference data (zones) at startup
+        print("Sending NWS forecast zones as reference data...")
+        zones = self.fetch_zones()
+        for zone in zones:
+            self.producer.send_microsoft_open_data_us_noaa_nws_zone(
+                zone, zone.zone_id, flush_producer=False)
+        self.producer.producer.flush()
+        print(f"Sent {len(zones)} zones as reference data")
 
         while True:
             try:

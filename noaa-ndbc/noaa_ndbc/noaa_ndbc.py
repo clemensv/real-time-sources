@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 import argparse
 import requests
 from noaa_ndbc.noaa_ndbc_producer.microsoft.opendata.us.noaa.ndbc.buoyobservation import BuoyObservation
+from noaa_ndbc.noaa_ndbc_producer.microsoft.opendata.us.noaa.ndbc.buoystation import BuoyStation
 from .noaa_ndbc_producer.producer_client import MicrosoftOpenDataUSNOAANDBCEventProducer
 
 
@@ -43,6 +44,7 @@ class NDBCBuoyPoller:
     to Kafka as CloudEvents.
     """
     LATEST_OBS_URL = "https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt"
+    STATION_TABLE_URL = "https://www.ndbc.noaa.gov/data/stations/station_table.txt"
     POLL_INTERVAL_SECONDS = 300  # NDBC data updates every ~5 minutes
 
     def __init__(self, kafka_config: Dict[str, str], kafka_topic: str, last_polled_file: str):
@@ -59,6 +61,83 @@ class NDBCBuoyPoller:
         from confluent_kafka import Producer
         kafka_producer = Producer(kafka_config)
         self.producer = MicrosoftOpenDataUSNOAANDBCEventProducer(kafka_producer, kafka_topic)
+
+    @staticmethod
+    def parse_station_location(location: str) -> tuple:
+        """
+        Parse latitude and longitude from the NDBC station table LOCATION field.
+
+        The format is typically "lat N lon W (deg)" or "lat S lon E (deg)".
+        For example: "44.794 N 87.313 W" yields (44.794, -87.313).
+
+        Args:
+            location: The LOCATION field string from the station table.
+
+        Returns:
+            Tuple of (latitude, longitude) in decimal degrees, or (None, None) on failure.
+        """
+        try:
+            # Remove parenthetical notes like "(deg min sec)" or "(approx)"
+            clean = re.sub(r'\([^)]*\)', '', location).strip()
+            parts = clean.split()
+            if len(parts) < 4:
+                return None, None
+            lat = float(parts[0])
+            lat_dir = parts[1].upper()
+            lon = float(parts[2])
+            lon_dir = parts[3].upper()
+            if lat_dir == 'S':
+                lat = -lat
+            if lon_dir == 'W':
+                lon = -lon
+            return lat, lon
+        except (ValueError, IndexError):
+            return None, None
+
+    def fetch_stations(self) -> List[BuoyStation]:
+        """
+        Fetch the NDBC station table and parse it into BuoyStation objects.
+
+        Returns:
+            List of BuoyStation dataclass instances.
+        """
+        try:
+            response = requests.get(self.STATION_TABLE_URL, timeout=60)
+            response.raise_for_status()
+        except Exception as err:
+            print(f"Error fetching NDBC station table: {err}")
+            return []
+
+        stations = []
+        for line in response.text.strip().split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            fields = [f.strip() for f in line.split('|')]
+            if len(fields) < 7:
+                continue
+            try:
+                station_id = fields[0]
+                owner = fields[1] if len(fields) > 1 else ""
+                station_type = fields[2] if len(fields) > 2 else ""
+                hull = fields[3] if len(fields) > 3 else ""
+                name = fields[4] if len(fields) > 4 else ""
+                location_str = fields[6] if len(fields) > 6 else ""
+                tz = fields[7] if len(fields) > 7 else ""
+                lat, lon = self.parse_station_location(location_str)
+                stations.append(BuoyStation(
+                    station_id=station_id,
+                    owner=owner,
+                    station_type=station_type,
+                    hull=hull,
+                    name=name,
+                    latitude=lat if lat is not None else 0.0,
+                    longitude=lon if lon is not None else 0.0,
+                    timezone=tz,
+                ))
+            except (IndexError, ValueError):
+                continue
+        return stations
 
     def load_state(self) -> Dict:
         """
@@ -204,6 +283,15 @@ class NDBCBuoyPoller:
         print(f"Starting NDBC Buoy Observation poller, polling every {self.POLL_INTERVAL_SECONDS}s")
         print(f"  Observations URL: {self.LATEST_OBS_URL}")
         print(f"  Kafka topic: {self.kafka_topic}")
+
+        # Send reference data (buoy stations) at startup
+        print("Sending NDBC buoy stations as reference data...")
+        stations = self.fetch_stations()
+        for station in stations:
+            self.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(
+                station, flush_producer=False)
+        self.producer.producer.flush()
+        print(f"Sent {len(stations)} buoy stations as reference data")
 
         while True:
             try:

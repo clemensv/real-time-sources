@@ -11,6 +11,7 @@ import requests
 
 
 NWS_ALERTS_URL = "https://api.weather.gov/alerts/active"
+NWS_ZONES_URL = "https://api.weather.gov/zones?type=forecast&limit=10"
 NWS_HEADERS = {
     "User-Agent": "(real-time-sources-test, clemensv@microsoft.com)",
     "Accept": "application/geo+json"
@@ -110,3 +111,26 @@ class TestNWSE2E:
         # but may get a 403 or different response
         response = requests.get(NWS_ALERTS_URL, headers=NWS_HEADERS, timeout=30)
         assert response.status_code == 200, "NWS API should respond 200 with proper User-Agent"
+
+    def test_fetch_zones_from_real_api(self):
+        """Test fetching forecast zones from the real NWS API"""
+        response = requests.get(NWS_ZONES_URL, headers=NWS_HEADERS, timeout=30)
+        assert response.status_code == 200, f"NWS Zones API returned status {response.status_code}"
+
+        data = response.json()
+        assert data.get("type") == "FeatureCollection", "Response is not a GeoJSON FeatureCollection"
+        assert "features" in data, "Response missing 'features' key"
+
+        features = data["features"]
+        assert len(features) > 0, "Expected at least one forecast zone"
+
+        # Verify structure of the first zone
+        zone_props = features[0].get("properties", {})
+        assert "id" in zone_props, "Zone missing 'id' property"
+        assert "name" in zone_props, "Zone missing 'name' property"
+        assert "state" in zone_props, "Zone missing 'state' property"
+        assert "type" in zone_props, "Zone missing 'type' property"
+
+        # Verify id looks like a zone code (e.g., AKZ317, TXZ211)
+        zone_id = zone_props["id"]
+        assert len(zone_id) >= 3, f"Zone id '{zone_id}' seems too short"
