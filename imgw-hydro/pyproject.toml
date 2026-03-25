@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "imgw_hydro"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "confluent_kafka",
+    "cloudevents",
+    "requests",
+    "dataclasses-json",
+]
+
+[project.scripts]
+imgw_hydro = "imgw_hydro:main"
+
+[tool.setuptools.packages.find]
+include = ["imgw_hydro*"]
