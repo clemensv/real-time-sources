@@ -1,0 +1,6 @@
+__pycache__/
+*.egg-info/
+*.pyc
+.pytest_cache/
+htmlcov/
+rws_waterwebservices_producer_tmp/

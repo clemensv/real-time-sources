@@ -1,0 +1,90 @@
+{
+    "messagegroups": {
+        "NL.RWS.Waterwebservices": {
+            "messages": {
+                "NL.RWS.Waterwebservices.Station": {
+                    "name": "Station",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "NL.RWS.Waterwebservices.Station"
+                        },
+                        "source": {
+                            "value": "https://waterwebservices.rijkswaterstaat.nl"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices/schemas/NL.RWS.Waterwebservices.Station"
+                },
+                "NL.RWS.Waterwebservices.WaterLevelObservation": {
+                    "name": "WaterLevelObservation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "NL.RWS.Waterwebservices.WaterLevelObservation"
+                        },
+                        "source": {
+                            "value": "https://waterwebservices.rijkswaterstaat.nl"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "NL.RWS.Waterwebservices": {
+            "schemas": {
+                "NL.RWS.Waterwebservices.Station": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Station",
+                                "namespace": "NL.RWS.Waterwebservices",
+                                "properties": {
+                                    "code": { "type": "string", "description": "Location code (e.g., hoekvanholland)" },
+                                    "name": { "type": "string", "description": "Location name (e.g., Hoek van Holland)" },
+                                    "latitude": { "type": "number", "description": "Latitude in ETRS89/WGS84" },
+                                    "longitude": { "type": "number", "description": "Longitude in ETRS89/WGS84" },
+                                    "coordinate_system": { "type": "string", "description": "Coordinate system (e.g., ETRS89)" }
+                                },
+                                "required": ["code", "name", "latitude", "longitude"]
+                            }
+                        }
+                    }
+                },
+                "NL.RWS.Waterwebservices.WaterLevelObservation": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "WaterLevelObservation",
+                                "namespace": "NL.RWS.Waterwebservices",
+                                "properties": {
+                                    "location_code": { "type": "string", "description": "Location code" },
+                                    "location_name": { "type": "string", "description": "Location name" },
+                                    "timestamp": { "type": "string", "format": "date-time", "description": "Measurement timestamp in ISO 8601" },
+                                    "value": { "type": "number", "description": "Measured water level value in cm relative to NAP" },
+                                    "unit": { "type": "string", "description": "Unit of measurement (cm)" },
+                                    "quality_code": { "type": "string", "description": "Quality value code (00=good, 99=gap)" },
+                                    "status": { "type": "string", "description": "Status (e.g., Ongecontroleerd)" },
+                                    "compartment": { "type": "string", "description": "Compartment code (OW=surface water)" },
+                                    "parameter": { "type": "string", "description": "Parameter code (WATHTE=water height)" }
+                                },
+                                "required": ["location_code", "timestamp", "value"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
