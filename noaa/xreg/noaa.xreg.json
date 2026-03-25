@@ -171,6 +171,34 @@
                     },
                     "dataschemaformat": "Avro/1.11.3",
                     "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Visibility"
+                },
+                "Microsoft.OpenData.US.NOAA.Currents": {
+                    "name": "Currents",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "Microsoft.OpenData.US.NOAA.Currents"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
+                        }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Currents"
+                },
+                "Microsoft.OpenData.US.NOAA.CurrentPredictions": {
+                    "name": "CurrentPredictions",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "Microsoft.OpenData.US.NOAA.CurrentPredictions"
+                        },
+                        "source": {
+                            "value": "https://api.tidesandcurrents.noaa.gov"
+                        }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.CurrentPredictions"
                 }                
             }
         }
@@ -1005,6 +1033,114 @@
                                     "kql": "noaa_events"
                                 },
                                 "ce_type": "Microsoft.OpenData.US.NOAA.Visibility"
+                            }
+                        }
+                    }
+                },
+                "Microsoft.OpenData.US.NOAA.Currents": {
+                    "name": "Currents",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "Currents",
+                                "fields": [
+                                    {
+                                        "name": "station_id",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                                    },
+                                    {
+                                        "name": "timestamp",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Timestamp of the currents measurement\"}"
+                                    },
+                                    {
+                                        "name": "speed",
+                                        "type": "double",
+                                        "unit": "cm/s",
+                                        "doc": "{\"description\": \"Current speed\"}"
+                                    },
+                                    {
+                                        "name": "direction_degrees",
+                                        "type": "double",
+                                        "unit": "degrees",
+                                        "doc": "{\"description\": \"Current direction in degrees\"}"
+                                    },
+                                    {
+                                        "name": "bin",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Bin number\"}"
+                                    }
+                                ],
+                                "altnames": {
+                                    "kql": "Currents"
+                                },
+                                "namespace": "Microsoft.OpenData.US.NOAA"
+                            }
+                        }
+                    }
+                },
+                "Microsoft.OpenData.US.NOAA.CurrentPredictions": {
+                    "name": "CurrentPredictions",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "CurrentPredictions",
+                                "fields": [
+                                    {
+                                        "name": "station_id",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                                    },
+                                    {
+                                        "name": "timestamp",
+                                        "type": "string",
+                                        "logicalType": "timestamp-millis",
+                                        "doc": "{\"description\": \"Timestamp of the current prediction\"}"
+                                    },
+                                    {
+                                        "name": "velocity_major",
+                                        "type": "double",
+                                        "unit": "cm/s",
+                                        "doc": "{\"description\": \"Major axis velocity\"}"
+                                    },
+                                    {
+                                        "name": "mean_flood_dir",
+                                        "type": "double",
+                                        "unit": "degrees",
+                                        "doc": "{\"description\": \"Mean flood direction in degrees\"}"
+                                    },
+                                    {
+                                        "name": "mean_ebb_dir",
+                                        "type": "double",
+                                        "unit": "degrees",
+                                        "doc": "{\"description\": \"Mean ebb direction in degrees\"}"
+                                    },
+                                    {
+                                        "name": "depth",
+                                        "type": "double",
+                                        "unit": "meters",
+                                        "doc": "{\"description\": \"Depth of measurement\"}"
+                                    },
+                                    {
+                                        "name": "bin",
+                                        "type": "string",
+                                        "doc": "{\"description\": \"Bin number\"}"
+                                    }
+                                ],
+                                "altnames": {
+                                    "kql": "CurrentPredictions"
+                                },
+                                "namespace": "Microsoft.OpenData.US.NOAA"
                             }
                         }
                     }
