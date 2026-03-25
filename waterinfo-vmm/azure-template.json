@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "containerName": {
+            "type": "string",
+            "defaultValue": "waterinfo-vmm",
+            "metadata": {
+                "description": "Name of the container instance"
+            }
+        },
+        "imageName": {
+            "type": "string",
+            "defaultValue": "ghcr.io/clemensv/real-time-sources/waterinfo-vmm:latest",
+            "metadata": {
+                "description": "Container image name"
+            }
+        },
+        "eventHubConnectionString": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Event Hub connection string (Kafka endpoint)"
+            }
+        },
+        "pollingInterval": {
+            "type": "int",
+            "defaultValue": 900,
+            "metadata": {
+                "description": "Polling interval in seconds"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2023-05-01",
+            "name": "[parameters('containerName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "[parameters('containerName')]",
+                        "properties": {
+                            "image": "[parameters('imageName')]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": 0.5,
+                                    "memoryInGB": 0.5
+                                }
+                            },
+                            "environmentVariables": [
+                                {
+                                    "name": "CONNECTION_STRING",
+                                    "secureValue": "[parameters('eventHubConnectionString')]"
+                                },
+                                {
+                                    "name": "POLLING_INTERVAL",
+                                    "value": "[string(parameters('pollingInterval'))]"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "restartPolicy": "Always",
+                "osType": "Linux"
+            }
+        }
+    ]
+}
