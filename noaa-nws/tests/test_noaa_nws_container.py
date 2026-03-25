@@ -256,3 +256,104 @@ class TestNWSContainerIntegration:
             new_count += 1
 
         assert new_count == 0, f"Expected 0 new alerts (all duplicates), got {new_count}"
+
+    @patch('noaa_nws.noaa_nws.requests.get')
+    def test_zones_delivered_to_kafka(self, mock_get, kafka_container, kafka_config, kafka_topic, temp_state_file):
+        """Test that zone reference data is fetched and delivered to Kafka"""
+        topic = 'test-nws-zones'
+        self._create_topic(kafka_container, topic)
+
+        # Mock the NWS zones API response
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.raise_for_status = Mock()
+        mock_response.json.return_value = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "TXZ211",
+                        "name": "Harris",
+                        "type": "forecast",
+                        "state": "TX",
+                        "forecastOffice": "https://api.weather.gov/offices/HGX",
+                        "timeZone": "America/Chicago",
+                        "radarStation": "KHGX"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "ILZ014",
+                        "name": "Cook",
+                        "type": "forecast",
+                        "state": "IL",
+                        "forecastOffice": "https://api.weather.gov/offices/LOT",
+                        "timeZone": "America/Chicago",
+                        "radarStation": "KLOT"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "CAZ006",
+                        "name": "San Francisco",
+                        "type": "forecast",
+                        "state": "CA",
+                        "forecastOffice": "https://api.weather.gov/offices/MTR",
+                        "timeZone": "America/Los_Angeles",
+                        "radarStation": "KMUX"
+                    }
+                }
+            ]
+        }
+        mock_get.return_value = mock_response
+
+        from noaa_nws.noaa_nws import NWSAlertPoller
+
+        poller = NWSAlertPoller(
+            kafka_config=kafka_config,
+            kafka_topic=topic,
+            last_polled_file=temp_state_file
+        )
+
+        # Fetch and send zones (as poll_and_send does at startup)
+        zones = poller.fetch_zones()
+        assert len(zones) == 3
+
+        for zone in zones:
+            poller.producer.send_microsoft_open_data_us_noaa_nws_zone(
+                zone, flush_producer=False)
+        poller.producer.producer.flush()
+
+        # Consume messages from Kafka and verify
+        from confluent_kafka import Consumer
+        consumer_config = {
+            'bootstrap.servers': kafka_container.get_bootstrap_server(),
+            'group.id': 'test-zone-consumer',
+            'auto.offset.reset': 'earliest',
+            'security.protocol': 'PLAINTEXT',
+        }
+        consumer = Consumer(consumer_config)
+        consumer.subscribe([topic])
+
+        messages = []
+        deadline = time.time() + 30
+        while len(messages) < 3 and time.time() < deadline:
+            msg = consumer.poll(timeout=1.0)
+            if msg is not None and not msg.error():
+                messages.append(msg)
+
+        consumer.close()
+
+        assert len(messages) == 3, f"Expected 3 zone messages in Kafka, got {len(messages)}"
+
+        # Verify message content (CloudEvents structured format nests data under 'data')
+        zone_ids = set()
+        for msg in messages:
+            value = json.loads(msg.value().decode('utf-8'))
+            data = value.get('data', value)
+            assert 'zone_id' in data
+            zone_ids.add(data['zone_id'])
+        assert zone_ids == {'TXZ211', 'ILZ014', 'CAZ006'}
