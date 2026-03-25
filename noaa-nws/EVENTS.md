@@ -4,6 +4,7 @@ This document describes the events emitted by the NOAA NWS Weather Alerts Bridge
 
 - [Microsoft.OpenData.US.NOAA.NWS](#message-group-microsoftopendatausnoaanws)
   - [Microsoft.OpenData.US.NOAA.NWS.WeatherAlert](#message-microsoftopendatausnoaanwsweatheralert)
+  - [Microsoft.OpenData.US.NOAA.NWS.Zone](#message-microsoftopendatausnoaanwszone)
 
 ---
 
@@ -39,3 +40,29 @@ This document describes the events emitted by the NOAA NWS Weather Alerts Bridge
 | `sender_name` | *string* | Name of the sending NWS office |
 | `headline` | *string* | Alert headline |
 | `description` | *string* | Full alert description |
+
+---
+
+### Message: Microsoft.OpenData.US.NOAA.NWS.Zone
+
+This is reference data sent at startup. It contains NWS forecast zone definitions
+fetched from the NWS API zones endpoint.
+
+#### CloudEvents Attributes:
+
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` | CloudEvent type | `string` | `True` | `Microsoft.OpenData.US.NOAA.NWS.Zone` |
+| `source` | CloudEvent source | `string` | `True` | `https://api.weather.gov` |
+
+#### Schema: Zone
+
+| **Field Name** | **Type** | **Description** |
+|----------------|----------|-----------------|
+| `zone_id` | *string* | Zone identifier (e.g., AKZ317) |
+| `name` | *string* | Zone name |
+| `type` | *string* | Zone type (e.g., public, fire, coastal) |
+| `state` | *string* | US state abbreviation |
+| `forecast_office` | *string* | Forecast office URL |
+| `timezone` | *string* | Timezone identifier |
+| `radar_station` | *string* | Associated radar station identifier |

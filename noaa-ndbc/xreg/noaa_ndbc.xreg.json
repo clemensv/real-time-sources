@@ -15,6 +15,20 @@
                     },
                     "dataschemaformat": "JsonSchema/draft-07",
                     "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+                },
+                "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
+                    "name": "BuoyStation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
+                        },
+                        "source": {
+                            "value": "https://www.ndbc.noaa.gov"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
                 }
             }
         }
@@ -109,6 +123,56 @@
                                     }
                                 },
                                 "required": ["station_id", "latitude", "longitude", "timestamp"]
+                            }
+                        }
+                    },
+                    "defaultversionid": "1.0"
+                },
+                "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "BuoyStation",
+                                "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+                                "properties": {
+                                    "station_id": {
+                                        "type": "string",
+                                        "description": "NDBC station identifier"
+                                    },
+                                    "owner": {
+                                        "type": "string",
+                                        "description": "Station owner organization"
+                                    },
+                                    "station_type": {
+                                        "type": "string",
+                                        "description": "Station type (e.g., Weather Buoy, C-MAN Station)"
+                                    },
+                                    "hull": {
+                                        "type": "string",
+                                        "description": "Hull type"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Station name and location description"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "description": "Station latitude in decimal degrees"
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "description": "Station longitude in decimal degrees"
+                                    },
+                                    "timezone": {
+                                        "type": "string",
+                                        "description": "Station timezone"
+                                    }
+                                },
+                                "required": ["station_id", "name"]
                             }
                         }
                     },

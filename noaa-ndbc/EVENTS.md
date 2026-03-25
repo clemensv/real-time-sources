@@ -4,6 +4,7 @@ This document describes the events emitted by the NOAA NDBC Buoy Observations Br
 
 - [Microsoft.OpenData.US.NOAA.NDBC](#message-group-microsoftopendatausnoaandbc)
   - [Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation](#message-microsoftopendatausnoaandbcbuoyobservation)
+  - [Microsoft.OpenData.US.NOAA.NDBC.BuoyStation](#message-microsoftopendatausnoaandbcbuoystation)
 
 ---
 
@@ -39,3 +40,29 @@ This document describes the events emitted by the NOAA NDBC Buoy Observations Br
 | `air_temperature` | *number* | celsius | Air temperature |
 | `water_temperature` | *number* | celsius | Sea surface temperature |
 | `dewpoint` | *number* | celsius | Dewpoint temperature |
+
+---
+
+### Message: Microsoft.OpenData.US.NOAA.NDBC.BuoyStation
+
+*Reference data — sent once at startup before telemetry polling begins.*
+
+#### CloudEvents Attributes:
+
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` | CloudEvent type | `string` | `True` | `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation` |
+| `source` | CloudEvent source | `string` | `True` | `https://www.ndbc.noaa.gov` |
+
+#### Schema: BuoyStation
+
+| **Field Name** | **Type** | **Description** |
+|----------------|----------|-----------------|
+| `station_id` | *string* | NDBC station identifier |
+| `owner` | *string* | Station owner organization |
+| `station_type` | *string* | Station type (e.g., Weather Buoy, C-MAN Station) |
+| `hull` | *string* | Hull type |
+| `name` | *string* | Station name and location description |
+| `latitude` | *number* | Station latitude in decimal degrees |
+| `longitude` | *number* | Station longitude in decimal degrees |
+| `timezone` | *string* | Station timezone |
