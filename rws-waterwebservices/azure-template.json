@@ -11,7 +11,7 @@
         },
         "imageName": {
             "type": "string",
-            "defaultValue": "ghcr.io/clemensv/real-time-sources/rws-waterwebservices:latest",
+            "defaultValue": "ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest",
             "metadata": {
                 "description": "Container image name"
             }
