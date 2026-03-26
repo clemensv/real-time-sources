@@ -11,5 +11,13 @@
 /.vscode
 **/_version.py
 
+# Python build artifacts (all subdirectories)
+**/*.egg-info/
+**/.coverage
+**/.pytest_cache/
+**/*.py[cod]
+**/venv/
+**/env/
+
 
 mode-s/kql/aircraft.csv
