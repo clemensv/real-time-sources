@@ -24,6 +24,31 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 
+def _load_state(state_file: str) -> dict:
+    """Load persisted dedup state from a JSON file."""
+    try:
+        if state_file and os.path.exists(state_file):
+            with open(state_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+    except Exception as e:
+        logging.warning("Could not load state from %s: %s", state_file, e)
+    return {}
+
+
+def _save_state(state_file: str, data: dict) -> None:
+    """Save dedup state to a JSON file, keeping at most 100000 entries."""
+    if not state_file:
+        return
+    try:
+        if len(data) > 100000:
+            keys = list(data.keys())
+            data = {k: data[k] for k in keys[-50000:]}
+        with open(state_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f)
+    except Exception as e:
+        logging.warning("Could not save state to %s: %s", state_file, e)
+
+
 class WaterinfoVMMAPI:
     """
     Polls the Waterinfo.be KIWIS API (VMM provider) and sends data to Kafka as CloudEvents.
@@ -85,9 +110,9 @@ class WaterinfoVMMAPI:
             raise ValueError("Invalid connection string format") from e
         return config_dict
 
-    def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int) -> None:
+    def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '') -> None:
         """Feed station and water level data as CloudEvents to Kafka."""
-        previous_readings: Dict[str, str] = {}
+        previous_readings: Dict[str, str] = _load_state(state_file)
 
         from confluent_kafka import Producer
         producer = Producer(kafka_config)
@@ -164,6 +189,7 @@ class WaterinfoVMMAPI:
                 effective_interval = max(0, polling_interval - (end_time - start_time))
                 logging.info("Sent %d readings in %.1f seconds. Waiting %.0f seconds.",
                              count, end_time - start_time, effective_interval)
+                _save_state(state_file, previous_readings)
                 if effective_interval > 0:
                     time.sleep(effective_interval)
 
@@ -202,6 +228,8 @@ def main() -> None:
         polling_interval_default = int(os.getenv('POLLING_INTERVAL'))
     feed_parser.add_argument("-i", "--polling-interval", type=int,
                              default=polling_interval_default)
+    feed_parser.add_argument('--state-file', type=str,
+                             default=os.getenv('STATE_FILE', os.path.expanduser('~/.waterinfo_vmm_state.json')))
 
     args = parser.parse_args()
     api = WaterinfoVMMAPI()
@@ -250,7 +278,7 @@ def main() -> None:
             'sasl.username': sasl_username,
             'sasl.password': sasl_password
         }
-        api.feed_stations(kafka_config, kafka_topic, args.polling_interval)
+        api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file)
     else:
         parser.print_help()
 
