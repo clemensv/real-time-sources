@@ -1,0 +1,20 @@
+# Generate the Hub'Eau Hydrométrie producer using xregistry
+
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$xregFile = Join-Path $scriptDir "xreg\hubeau_hydrometrie.xreg.json"
+$outputDir = Join-Path $scriptDir "hubeau_hydrometrie_producer"
+
+Write-Host "Generating Hub'Eau Hydrométrie producer from xRegistry definitions..." -ForegroundColor Cyan
+
+if (Test-Path $outputDir) {
+    Remove-Item -Path $outputDir -Recurse -Force
+}
+
+xregistry generate --style kafkaproducer --language py --projectname hubeau-hydrometrie-producer --definitions $xregFile --output $outputDir
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "✓ Producer generation completed successfully" -ForegroundColor Green
+} else {
+    Write-Host "✗ Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+    exit $LASTEXITCODE
+}
