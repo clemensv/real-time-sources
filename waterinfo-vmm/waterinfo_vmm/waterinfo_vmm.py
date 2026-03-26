@@ -173,7 +173,8 @@ class WaterinfoVMMAPI:
             # pylint: disable=broad-except
             except Exception as e:
                 logging.error("Error occurred: %s", e)
-                break
+                logging.info("Retrying in %d seconds...", polling_interval)
+                time.sleep(polling_interval)
             # pylint: enable=broad-except
         producer.flush()
 
