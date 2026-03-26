@@ -1,4 +1,4 @@
 confluent_kafka
-cloudevents>=1.11.0
+cloudevents>=1.11.0,<2.0.0
 requests
 dataclasses-json
