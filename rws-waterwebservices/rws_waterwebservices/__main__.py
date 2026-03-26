@@ -1,3 +1,5 @@
 """RWS Waterwebservices bridge."""
 from .rws_waterwebservices import main
-__main__ = main
+
+if __name__ == "__main__":
+    main()
