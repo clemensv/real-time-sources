@@ -15,24 +15,26 @@ jobs:
   find-dockerfiles:
     runs-on: ubuntu-latest
     outputs:
-      dockerfiles: ${{ steps.get-dockerfiles.outputs.dockerfiles }}
+      containers: ${{ steps.get-dockerfiles.outputs.containers }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Find all Dockerfiles
+      - name: Find all container projects
         id: get-dockerfiles
         run: |
-          DOCKERFILES=$(find . -name 'Dockerfile' -exec dirname {} \; | sed 's|^\./||')
-          DOCKERFILES_JSON=$(printf '%s\n' "${DOCKERFILES}" | jq -R -s -c 'split("\n") | map(select(. != ""))')
-          echo "dockerfiles=${DOCKERFILES_JSON}" >> $GITHUB_OUTPUT
+          CONTAINERS_JSON=$(find . -name 'Dockerfile' -exec dirname {} \; \
+            | sed 's|^\./||' \
+            | sort \
+            | jq -R -s -c 'split("\n") | map(select(length > 0)) | map({path: ., image: (gsub("/"; "-"))})')
+          echo "containers=${CONTAINERS_JSON}" >> $GITHUB_OUTPUT
 
   build:
     needs: find-dockerfiles
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dockerfile: ${{ fromJson(needs.find-dockerfiles.outputs.dockerfiles) }}
+        container: ${{ fromJson(needs.find-dockerfiles.outputs.containers) }}
     permissions:
       contents: read
       packages: write
@@ -63,11 +65,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf
         with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.dockerfile }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.container.image }}
           tags: |
-            type=raw,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.dockerfile }},value=${{ github.sha }}
-            type=raw,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.dockerfile }},value=latest
+            type=sha,format=long,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
 
       
       # Build and push Docker image with Buildx (don't push on PR)
@@ -76,8 +79,8 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
         with:
-          context: ./${{ matrix.dockerfile }}
-          file: ./${{ matrix.dockerfile }}/Dockerfile
+          context: ./${{ matrix.container.path }}
+          file: ./${{ matrix.container.path }}/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
