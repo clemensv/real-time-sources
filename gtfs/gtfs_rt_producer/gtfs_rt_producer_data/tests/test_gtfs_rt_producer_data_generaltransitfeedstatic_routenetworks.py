@@ -28,9 +28,9 @@ class Test_RouteNetworks(unittest.TestCase):
         Create instance of RouteNetworks for testing
         """
         instance = RouteNetworks(
-            routeNetworkId='xjqwhnipguamvtmyffca',
-            routeId='cwtrtrfqrfqhzfklgphw',
-            networkId='lfllduefwfwwpauvjdqu'
+            routeNetworkId='fdghwnjtyhihynhxhihp',
+            routeId='fuidsqlwhyivwsykphsj',
+            networkId='hnizqltyvjgyxaijtlap'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test routeNetworkId property
         """
-        test_value = 'xjqwhnipguamvtmyffca'
+        test_value = 'fdghwnjtyhihynhxhihp'
         self.instance.routeNetworkId = test_value
         self.assertEqual(self.instance.routeNetworkId, test_value)
     
@@ -47,7 +47,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'cwtrtrfqrfqhzfklgphw'
+        test_value = 'fuidsqlwhyivwsykphsj'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -55,7 +55,16 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'lfllduefwfwwpauvjdqu'
+        test_value = 'hnizqltyvjgyxaijtlap'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = RouteNetworks.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

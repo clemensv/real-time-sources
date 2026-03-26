@@ -28,9 +28,9 @@ class Test_FeedItemPublisher(unittest.TestCase):
         Create instance of FeedItemPublisher for testing
         """
         instance = FeedItemPublisher(
-            name='awodcrfxafhwaczwitkw',
-            href='exuxgvwvowlyogfrdkth',
-            email='hpwfnylnnqfgjdjuaygy'
+            name='cjidmujkybgiehupwjxh',
+            href='flrgyzrsrlmixzfvemlf',
+            email='sxhsxdzwgxfskiflumwj'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_FeedItemPublisher(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'awodcrfxafhwaczwitkw'
+        test_value = 'cjidmujkybgiehupwjxh'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -47,7 +47,7 @@ class Test_FeedItemPublisher(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'exuxgvwvowlyogfrdkth'
+        test_value = 'flrgyzrsrlmixzfvemlf'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -55,7 +55,16 @@ class Test_FeedItemPublisher(unittest.TestCase):
         """
         Test email property
         """
-        test_value = 'hpwfnylnnqfgjdjuaygy'
+        test_value = 'sxhsxdzwgxfskiflumwj'
         self.instance.email = test_value
         self.assertEqual(self.instance.email, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = FeedItemPublisher.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

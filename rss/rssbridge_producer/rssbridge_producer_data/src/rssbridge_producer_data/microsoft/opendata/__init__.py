@@ -1,3 +1,3 @@
-from .rssfeeds import feeditemauthor, feeditempublisher, feeditemsummary, feeditemtitle, link, feeditemsource, feeditemcontent, feeditemenclosure, feeditem
+from .rssfeeds import FeedItemAuthor, FeedItemPublisher, FeedItemSummary, FeedItemTitle, Link, FeedItemSource, FeedItemContent, FeedItemEnclosure, FeedItem
 
-__all__ = ["feeditemauthor", "feeditempublisher", "feeditemsummary", "feeditemtitle", "link", "feeditemsource", "feeditemcontent", "feeditemenclosure", "feeditem"]
+__all__ = ["FeedItemAuthor", "FeedItemPublisher", "FeedItemSummary", "FeedItemTitle", "Link", "FeedItemSource", "FeedItemContent", "FeedItemEnclosure", "FeedItem"]

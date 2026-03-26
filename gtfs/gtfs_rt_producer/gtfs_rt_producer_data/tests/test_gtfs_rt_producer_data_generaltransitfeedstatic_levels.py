@@ -28,9 +28,9 @@ class Test_Levels(unittest.TestCase):
         Create instance of Levels for testing
         """
         instance = Levels(
-            levelId='ulkaauwnxzjfbaifppih',
-            levelIndex=float(95.08466822720463),
-            levelName='osjewapqeiuhxiadhhyw'
+            levelId='huvqqwskbbnjbyiwltkw',
+            levelIndex=float(75.3704311572328),
+            levelName='mcikfismyoqbaxdndujj'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelId property
         """
-        test_value = 'ulkaauwnxzjfbaifppih'
+        test_value = 'huvqqwskbbnjbyiwltkw'
         self.instance.levelId = test_value
         self.assertEqual(self.instance.levelId, test_value)
     
@@ -47,7 +47,7 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelIndex property
         """
-        test_value = float(95.08466822720463)
+        test_value = float(75.3704311572328)
         self.instance.levelIndex = test_value
         self.assertEqual(self.instance.levelIndex, test_value)
     
@@ -55,7 +55,16 @@ class Test_Levels(unittest.TestCase):
         """
         Test levelName property
         """
-        test_value = 'osjewapqeiuhxiadhhyw'
+        test_value = 'mcikfismyoqbaxdndujj'
         self.instance.levelName = test_value
         self.assertEqual(self.instance.levelName, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Levels.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

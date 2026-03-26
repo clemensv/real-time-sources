@@ -30,9 +30,9 @@ class Test_Timeframes(unittest.TestCase):
         Create instance of Timeframes for testing
         """
         instance = Timeframes(
-            timeframeGroupId='bebtphhodrebyiovuggb',
-            startTime='vgyvkmgdockwqftpuuhu',
-            endTime='gqytbvgzesldibigliwo',
+            timeframeGroupId='kcgzxkowwsbyrwidivby',
+            startTime='cwvihixgxhmymwiuoamq',
+            endTime='guwszihmetouukkmkngd',
             serviceDates=Test_Calendar.create_instance()
         )
         return instance
@@ -42,7 +42,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test timeframeGroupId property
         """
-        test_value = 'bebtphhodrebyiovuggb'
+        test_value = 'kcgzxkowwsbyrwidivby'
         self.instance.timeframeGroupId = test_value
         self.assertEqual(self.instance.timeframeGroupId, test_value)
     
@@ -50,7 +50,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'vgyvkmgdockwqftpuuhu'
+        test_value = 'cwvihixgxhmymwiuoamq'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -58,7 +58,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'gqytbvgzesldibigliwo'
+        test_value = 'guwszihmetouukkmkngd'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     
@@ -70,3 +70,12 @@ class Test_Timeframes(unittest.TestCase):
         self.instance.serviceDates = test_value
         self.assertEqual(self.instance.serviceDates, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Timeframes.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

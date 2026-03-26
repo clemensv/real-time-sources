@@ -29,7 +29,7 @@ class Test_TranslatedString(unittest.TestCase):
         Create instance of TranslatedString for testing
         """
         instance = TranslatedString(
-            translation=[Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance()]
+            translation=[Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance()]
         )
         return instance
 
@@ -38,7 +38,16 @@ class Test_TranslatedString(unittest.TestCase):
         """
         Test translation property
         """
-        test_value = [Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance()]
+        test_value = [Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance(), Test_Translation.create_instance()]
         self.instance.translation = test_value
         self.assertEqual(self.instance.translation, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = TranslatedString.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

@@ -3,14 +3,15 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import json
 import avro.schema
+import avro.name
 import avro.io
 
 
@@ -40,8 +41,8 @@ class Profile:
     indexed_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="indexed_at"))
     seq: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="seq"))
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Profile\", \"namespace\": \"Bluesky.Actor\", \"fields\": [{\"name\": \"did\", \"type\": \"string\", \"doc\": \"Decentralized Identifier\"}, {\"name\": \"handle\", \"type\": \"string\", \"doc\": \"User handle\"}, {\"name\": \"display_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Display name\"}, {\"name\": \"description\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Bio/description\"}, {\"name\": \"avatar\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Avatar image URL\"}, {\"name\": \"banner\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Banner image URL\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of profile creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of indexing\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}], \"doc\": \"A user profile update\"}"
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"Profile\", \"namespace\": \"Bluesky.Actor\", \"fields\": [{\"name\": \"did\", \"type\": \"string\", \"doc\": \"Decentralized Identifier\"}, {\"name\": \"handle\", \"type\": \"string\", \"doc\": \"User handle\"}, {\"name\": \"display_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Display name\"}, {\"name\": \"description\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Bio/description\"}, {\"name\": \"avatar\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Avatar image URL\"}, {\"name\": \"banner\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Banner image URL\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of profile creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of indexing\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}], \"doc\": \"A user profile update\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

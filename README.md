@@ -22,14 +22,33 @@ information. The supported authentication scheme for the Kafka endpoint is
 The container image documentation provides detailed information:
 
 * [Bluesky Firehose - Social media posts and interactions](bluesky/CONTAINER.md)
+* [CHMI Hydro - Czech hydrological observations](chmi-hydro/CONTAINER.md)
 * [GTFS Realtime - Public transport data](gtfs/CONTAINER.md)
+* [Hub'Eau Hydrometrie - French hydrometric observations](hubeau-hydrometrie/CONTAINER.md)
+* [IMGW Hydro - Polish hydrological observations](imgw-hydro/CONTAINER.md)
+* [Mode-S - ADS-B and Mode-S aircraft telemetry](mode-s/CONTAINER.md)
 * [NOAA Tides ands Currents -  Water level and current data](noaa/CONTAINER.md)
+* [NOAA GOES and SWPC - Space weather and alert feeds](noaa-goes/CONTAINER.md)
+* [NOAA NDBC - Buoy observations](noaa-ndbc/CONTAINER.md)
+* [NOAA NWS - Weather alerts](noaa-nws/CONTAINER.md)
 * [RSS Feeds - News and blog posts](rss/CONTAINER.md)
 * [Pegelonline - Water level and current data](pegelonline/CONTAINER.md)
+* [RWS Waterwebservices - Dutch water observations](rws-waterwebservices/CONTAINER.md)
+* [SMHI Hydro - Swedish hydrological observations](smhi-hydro/CONTAINER.md)
+* [UK EA Flood Monitoring - English flood and river data](uk-ea-flood-monitoring/CONTAINER.md)
+* [USGS Earthquakes - Seismic event feeds](usgs-earthquakes/CONTAINER.md)
 * [USGS Instantaneous Values - Water quality and quantity data](usgs-iv/CONTAINER.md)
+* [Waterinfo VMM - Flemish water observations](waterinfo-vmm/CONTAINER.md)
 
 Details about the tools and the data sources are provided in the respective
 README files.
+
+## Code Generation
+
+Projects with checked-in `xreg` manifests regenerate their producer clients with
+`xrcg generate`. Each project's `generate_producer.ps1` script uses the
+checked-in manifest as the source of truth and refreshes the generated client
+package from that definition.
 
 ## Command Line Tools
 

@@ -3,7 +3,7 @@
 Write-Host "Generating USGS IV producer from xRegistry definitions..." -ForegroundColor Cyan
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path $scriptDir "xreg" "usgs_iv.xreg.json"
+$xregFile = Join-Path (Join-Path $scriptDir "xreg") "usgs_iv.xreg.json"
 $outputDir = Join-Path $scriptDir "usgs_iv_producer"
 
 Write-Host "xRegistry file: $xregFile" -ForegroundColor Gray
@@ -23,11 +23,11 @@ if (Test-Path $outputDir) {
 
 # Generate producer code
 Write-Host "Generating Kafka producer code..." -ForegroundColor Cyan
-xregistry generate --style kafkaproducer --language py --projectname usgs-iv-producer --definitions $xregFile --output $outputDir
+xrcg generate --style kafkaproducer --language py --projectname usgs-iv-producer --definitions $xregFile --output $outputDir
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "`n✓ Producer generation completed successfully" -ForegroundColor Green
+    Write-Host "`nProducer generation completed successfully" -ForegroundColor Green
 } else {
-    Write-Host "`n✗ Producer generation failed" -ForegroundColor Red
+    Write-Host "`nProducer generation failed" -ForegroundColor Red
     exit $LASTEXITCODE
 }

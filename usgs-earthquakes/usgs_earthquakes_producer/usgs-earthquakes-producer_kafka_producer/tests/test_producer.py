@@ -7,9 +7,9 @@ import sys
 import datetime
 from typing import Optional
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs-earthquakes-producer_data/src')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs-earthquakes-producer_data/tests')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs-earthquakes-producer_kafka_producer/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs_earthquakes_producer_data/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs_earthquakes_producer_data/tests')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs_earthquakes_producer_kafka_producer/src')))
 
 import tempfile
 import pytest
@@ -18,9 +18,9 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from usgs-earthquakes-producer_kafka_producer.producer import USGSEarthquakesEventProducer
-from usgs-earthquakes-producer_data import Event
-from test_usgs-earthquakes-producer_data_usgs_earthquakes_event import Test_Event
+from usgs_earthquakes_producer_kafka_producer.producer import USGSEarthquakesEventProducer
+from usgs_earthquakes_producer_data import Event
+from test_usgs_earthquakes_producer_data_usgs_earthquakes_event import Test_Event
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

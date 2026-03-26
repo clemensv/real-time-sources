@@ -19,6 +19,7 @@ from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from mode_s_producer_kafka_producer.producer import ModeSEventProducer
+from mode_s_producer_data import Messages
 from test_mode_s_producer_data_mode_s_messages import Test_Messages
 
 @pytest.fixture(scope="module")
@@ -52,8 +53,7 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
         ce['datacontenttype'] = 'application/json'
     return ce
 
-@pytest.mark.asyncio
-async def test_modes_modesmessages(kafka_emulator):
+def test_modes_modesmessages(kafka_emulator):
     """Test the ModeSMessages event from the ModeS message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
@@ -62,15 +62,34 @@ async def test_modes_modesmessages(kafka_emulator):
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_group',
+        'group.id': 'test_modes_modesmessages',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
 
-    async def on_event():
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
+            if time.time() > timeout:
+                return False
             msg = consumer.poll(1.0)
             if msg is None:
+                continue
+            if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "Mode_S.Messages":
@@ -78,8 +97,17 @@ async def test_modes_modesmessages(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
     event_data = Test_Messages.create_instance()
-    await producer_instance.send_mode_s_messages(_stationid = 'test', data = event_data)
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_mode_s_messages(_stationid = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
 
-    assert await asyncio.wait_for(on_event(), timeout=10)
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()

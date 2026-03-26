@@ -32,11 +32,12 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from noaa-nws-producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSEventProducer
+from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSEventProducer
 
 # imports for the data classes for each event
 
-from noaa-nws-producer_data.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
+from noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
+from noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.zone import Zone
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -63,6 +64,14 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert' event to Kafka topic.
     await microsoft_open_data_usnoaanwsevent_producer.send_microsoft_open_data_us_noaa_nws_weather_alert(data = _weather_alert)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert' event: {_weather_alert.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NWS.Zone ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NWS.Zone event
+    _zone = Zone()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NWS.Zone' event to Kafka topic.
+    await microsoft_open_data_usnoaanwsevent_producer.send_microsoft_open_data_us_noaa_nws_zone(data = _zone)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NWS.Zone' event: {_zone.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

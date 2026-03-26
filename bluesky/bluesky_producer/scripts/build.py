@@ -2,7 +2,7 @@ import subprocess
 import os
 
 def main():
-    packages = ["bluesky-producer_kafka_producer", "bluesky-producer_data"]
+    packages = ["bluesky_producer_kafka_producer", "bluesky_producer_data"]
 
     for package in packages:
         os.chdir(package)

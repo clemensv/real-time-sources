@@ -2,7 +2,7 @@ import subprocess
 import os
 
 def main():
-    packages = ["noaa-ndbc-producer_kafka_producer", "noaa-ndbc-producer_data"]
+    packages = ["noaa_ndbc_producer_kafka_producer", "noaa_ndbc_producer_data"]
 
     for package in packages:
         os.chdir(package)

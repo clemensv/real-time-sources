@@ -59,18 +59,17 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Feed.Post",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did),
-             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Feed.Post/versions/v1"
+             "subject":"{did}".format(did = _did)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -93,18 +92,17 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Feed.Like",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did),
-             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Feed.Like/versions/v2"
+             "subject":"{did}".format(did = _did)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -127,18 +125,17 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Feed.Repost",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did),
-             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Feed.Repost/versions/v1"
+             "subject":"{did}".format(did = _did)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -161,18 +158,17 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Graph.Follow",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did),
-             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Graph.Follow/versions/v1"
+             "subject":"{did}".format(did = _did)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -195,18 +191,17 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Graph.Block",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did),
-             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Graph.Block/versions/v1"
+             "subject":"{did}".format(did = _did)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -229,18 +224,17 @@ class BlueskyFirehoseEventProducer:
              "specversion":"1.0",
              "type":"Bluesky.Actor.Profile",
              "source":"{firehoseurl}".format(firehoseurl = _firehoseurl),
-             "subject":"{did}".format(did = _did),
-             "dataschema":"https://c98acd97-4363-4296-8323-b6ab21e53903.westcentralus.messagingcatalog.azure.net/schemagroups/f043d8c3-32c7-4c3e-8527-d79e0ac996e5/schemas/Bluesky.Actor.Profile/versions/v2"
+             "subject":"{did}".format(did = _did)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -294,5 +288,4 @@ class BlueskyFirehoseEventProducer:
         if not topic_name:
             raise ValueError("Topic name not found in connection string")
         return cls(Producer(config), topic_name, content_mode)
-
 

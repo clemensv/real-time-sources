@@ -28,8 +28,8 @@ class Test_Translation(unittest.TestCase):
         Create instance of Translation for testing
         """
         instance = Translation(
-            text='cbzfryvsjuoppxxltdxa',
-            language='adhwhkzobxriobobqnwr'
+            text='cbeugxmpqmvjtzfxyhlm',
+            language='fzcdaqxohbhudfxodjdw'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_Translation(unittest.TestCase):
         """
         Test text property
         """
-        test_value = 'cbzfryvsjuoppxxltdxa'
+        test_value = 'cbeugxmpqmvjtzfxyhlm'
         self.instance.text = test_value
         self.assertEqual(self.instance.text, test_value)
     
@@ -46,7 +46,16 @@ class Test_Translation(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'adhwhkzobxriobobqnwr'
+        test_value = 'fzcdaqxohbhudfxodjdw'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Translation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

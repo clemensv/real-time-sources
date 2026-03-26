@@ -32,13 +32,13 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from noaa-goes-producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCEventProducer
 
 # imports for the data classes for each event
 
-from noaa-goes-producer_data.microsoft.opendata.us.noaa.swpc.spaceweatheralert import SpaceWeatherAlert
-from noaa-goes-producer_data.microsoft.opendata.us.noaa.swpc.planetarykindex import PlanetaryKIndex
-from noaa-goes-producer_data.microsoft.opendata.us.noaa.swpc.solarwindsummary import SolarWindSummary
+from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.spaceweatheralert import SpaceWeatherAlert
+from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.planetarykindex import PlanetaryKIndex
+from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.solarwindsummary import SolarWindSummary
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

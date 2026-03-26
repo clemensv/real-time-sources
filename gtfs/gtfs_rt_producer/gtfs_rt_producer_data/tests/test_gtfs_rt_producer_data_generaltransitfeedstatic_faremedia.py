@@ -28,10 +28,10 @@ class Test_FareMedia(unittest.TestCase):
         Create instance of FareMedia for testing
         """
         instance = FareMedia(
-            fareMediaId='uqfqwzswelgljkeiaeqy',
-            fareMediaName='kmyhoclulkpfxlfudmll',
-            fareMediaDesc='aubpwvyfdodmwqfuswka',
-            fareMediaUrl='plairefhaauxzrcgnden'
+            fareMediaId='qdhiiauplbezdyzsjutq',
+            fareMediaName='jrmolfsynmudogbrcssl',
+            fareMediaDesc='juhkedpimziukpuejmrw',
+            fareMediaUrl='bmadkjcldyevbbdbeyrv'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaId property
         """
-        test_value = 'uqfqwzswelgljkeiaeqy'
+        test_value = 'qdhiiauplbezdyzsjutq'
         self.instance.fareMediaId = test_value
         self.assertEqual(self.instance.fareMediaId, test_value)
     
@@ -48,7 +48,7 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaName property
         """
-        test_value = 'kmyhoclulkpfxlfudmll'
+        test_value = 'jrmolfsynmudogbrcssl'
         self.instance.fareMediaName = test_value
         self.assertEqual(self.instance.fareMediaName, test_value)
     
@@ -56,7 +56,7 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaDesc property
         """
-        test_value = 'aubpwvyfdodmwqfuswka'
+        test_value = 'juhkedpimziukpuejmrw'
         self.instance.fareMediaDesc = test_value
         self.assertEqual(self.instance.fareMediaDesc, test_value)
     
@@ -64,7 +64,16 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaUrl property
         """
-        test_value = 'plairefhaauxzrcgnden'
+        test_value = 'bmadkjcldyevbbdbeyrv'
         self.instance.fareMediaUrl = test_value
         self.assertEqual(self.instance.fareMediaUrl, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = FareMedia.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

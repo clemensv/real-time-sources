@@ -5,7 +5,7 @@ $SCHEMA_FILE = Join-Path $XREG_ROOT "rws_waterwebservices.xreg.json"
 $OUTPUT_DIR = Join-Path $PSScriptRoot "rws_waterwebservices_producer_tmp"
 
 Write-Host "Generating producer from $SCHEMA_FILE"
-xregistry generate `
+xrcg generate `
     --style kafkaproducer `
     --language py `
     --projectname rws_waterwebservices_producer `

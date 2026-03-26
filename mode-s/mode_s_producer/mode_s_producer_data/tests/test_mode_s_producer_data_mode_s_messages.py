@@ -29,7 +29,7 @@ class Test_Messages(unittest.TestCase):
         Create instance of Messages for testing
         """
         instance = Messages(
-            messages=[Test_ModeS_ADSB_Record.create_instance(), Test_ModeS_ADSB_Record.create_instance(), Test_ModeS_ADSB_Record.create_instance()]
+            messages=[Test_ModeS_ADSB_Record.create_instance()]
         )
         return instance
 
@@ -38,7 +38,16 @@ class Test_Messages(unittest.TestCase):
         """
         Test messages property
         """
-        test_value = [Test_ModeS_ADSB_Record.create_instance(), Test_ModeS_ADSB_Record.create_instance(), Test_ModeS_ADSB_Record.create_instance()]
+        test_value = [Test_ModeS_ADSB_Record.create_instance()]
         self.instance.messages = test_value
         self.assertEqual(self.instance.messages, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Messages.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

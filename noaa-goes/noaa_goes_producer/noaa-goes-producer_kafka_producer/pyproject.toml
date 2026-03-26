@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "noaa-goes-producer-kafka-producer"
-description = "noaa-goes-producer_kafka_producer Kafka producer library"
+description = "noaa_goes_producer_kafka_producer Kafka producer library"
 authors = ["Your Name <your.email@example.com>"]
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
-packages = [{include = "noaa-goes-producer_kafka_producer", from = "src"}]
+packages = [{include = "noaa_goes_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-noaa-goes-producer-data = {path = "../noaa-goes-producer_data", develop = true}
+noaa-goes-producer-data = {path = "../noaa_goes_producer_data", develop = true}
 confluent-kafka = ">=2.4.0"
 cloudevents = ">=1.10.1,<2.0.0"
 

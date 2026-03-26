@@ -1,4 +1,4 @@
-# Generate the Bluesky firehose producer using xregistry
+# Generate the Bluesky firehose producer using xrcg
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = $scriptDir
@@ -17,16 +17,16 @@ if (Test-Path $outputDir) {
 
 # Generate the Kafka producer code
 Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xregistry generate --style kafkaproducer --language py --projectname bluesky-producer --definitions $xregFile --output $outputDir
+xrcg generate --style kafkaproducer --language py --projectname bluesky-producer --definitions $xregFile --output $outputDir
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "✓ Producer generation completed successfully" -ForegroundColor Green
+    Write-Host "Producer generation completed successfully" -ForegroundColor Green
     Write-Host ""
     Write-Host "Next steps:" -ForegroundColor Cyan
     Write-Host "  1. Review the generated code in: $outputDir" -ForegroundColor Gray
     Write-Host "  2. Install dependencies: poetry install" -ForegroundColor Gray
     Write-Host "  3. Run the producer: poetry run bluesky_firehose stream" -ForegroundColor Gray
 } else {
-    Write-Host "✗ Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
     exit $LASTEXITCODE
 }

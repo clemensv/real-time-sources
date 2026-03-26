@@ -2,7 +2,7 @@ import subprocess
 import os
 
 def main():
-    packages = ["noaa-nws-producer_kafka_producer", "noaa-nws-producer_data"]
+    packages = ["noaa_nws_producer_kafka_producer", "noaa_nws_producer_data"]
 
     for package in packages:
         os.chdir(package)

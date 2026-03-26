@@ -28,10 +28,10 @@ class Test_Areas(unittest.TestCase):
         Create instance of Areas for testing
         """
         instance = Areas(
-            areaId='zdzhzidahcnfdtslsxbf',
-            areaName='rliktqqovpmfcyramnpf',
-            areaDesc='kdahbwamqgjlhfkpchpq',
-            areaUrl='vjgothvpkbshpovdsmgs'
+            areaId='kexwblcrcmzqxgprkuuv',
+            areaName='lnukuwcmtweznecgtsqg',
+            areaDesc='vemzyckbvaiimgndzahb',
+            areaUrl='duhxjdxabjgblzlqnhdf'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaId property
         """
-        test_value = 'zdzhzidahcnfdtslsxbf'
+        test_value = 'kexwblcrcmzqxgprkuuv'
         self.instance.areaId = test_value
         self.assertEqual(self.instance.areaId, test_value)
     
@@ -48,7 +48,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaName property
         """
-        test_value = 'rliktqqovpmfcyramnpf'
+        test_value = 'lnukuwcmtweznecgtsqg'
         self.instance.areaName = test_value
         self.assertEqual(self.instance.areaName, test_value)
     
@@ -56,7 +56,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaDesc property
         """
-        test_value = 'kdahbwamqgjlhfkpchpq'
+        test_value = 'vemzyckbvaiimgndzahb'
         self.instance.areaDesc = test_value
         self.assertEqual(self.instance.areaDesc, test_value)
     
@@ -64,7 +64,16 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaUrl property
         """
-        test_value = 'vjgothvpkbshpovdsmgs'
+        test_value = 'duhxjdxabjgblzlqnhdf'
         self.instance.areaUrl = test_value
         self.assertEqual(self.instance.areaUrl, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Areas.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

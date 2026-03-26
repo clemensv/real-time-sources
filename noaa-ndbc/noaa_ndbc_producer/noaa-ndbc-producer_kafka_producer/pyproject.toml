@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "noaa-ndbc-producer-kafka-producer"
-description = "noaa-ndbc-producer_kafka_producer Kafka producer library"
+description = "noaa_ndbc_producer_kafka_producer Kafka producer library"
 authors = ["Your Name <your.email@example.com>"]
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
-packages = [{include = "noaa-ndbc-producer_kafka_producer", from = "src"}]
+packages = [{include = "noaa_ndbc_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-noaa-ndbc-producer-data = {path = "../noaa-ndbc-producer_data", develop = true}
+noaa-ndbc-producer-data = {path = "../noaa_ndbc_producer_data", develop = true}
 confluent-kafka = ">=2.4.0"
 cloudevents = ">=1.10.1,<2.0.0"
 

@@ -28,9 +28,9 @@ class Test_VehicleDescriptor(unittest.TestCase):
         Create instance of VehicleDescriptor for testing
         """
         instance = VehicleDescriptor(
-            id='dxncxalbyxmegerhfjnx',
-            label='zzdbzrmfwvhwsfknsyxz',
-            license_plate='itasharctcyfnpeqevct'
+            id='baofchctjpbkqumknizo',
+            label='iwzdgopuhomqrmbpsrul',
+            license_plate='symanmdfnlxcgsjoimhx'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'dxncxalbyxmegerhfjnx'
+        test_value = 'baofchctjpbkqumknizo'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -47,7 +47,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test label property
         """
-        test_value = 'zzdbzrmfwvhwsfknsyxz'
+        test_value = 'iwzdgopuhomqrmbpsrul'
         self.instance.label = test_value
         self.assertEqual(self.instance.label, test_value)
     
@@ -55,7 +55,16 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test license_plate property
         """
-        test_value = 'itasharctcyfnpeqevct'
+        test_value = 'symanmdfnlxcgsjoimhx'
         self.instance.license_plate = test_value
         self.assertEqual(self.instance.license_plate, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = VehicleDescriptor.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

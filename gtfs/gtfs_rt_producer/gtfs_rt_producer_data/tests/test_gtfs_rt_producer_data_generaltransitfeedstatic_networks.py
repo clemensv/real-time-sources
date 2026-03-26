@@ -28,10 +28,10 @@ class Test_Networks(unittest.TestCase):
         Create instance of Networks for testing
         """
         instance = Networks(
-            networkId='xfwfaqotopfmhtvruowj',
-            networkName='luhmskdlljupjwkzhikj',
-            networkDesc='mtscmwpuqoayeithvaqg',
-            networkUrl='yzdhfuozzoofelguvqmx'
+            networkId='xnduomsshubwjfyjporc',
+            networkName='ruchmyxhuolrfvqwvtnc',
+            networkDesc='siqyodfgiglpbslfhhme',
+            networkUrl='ekkwoonpijggyksqcsuh'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'xfwfaqotopfmhtvruowj'
+        test_value = 'xnduomsshubwjfyjporc'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     
@@ -48,7 +48,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkName property
         """
-        test_value = 'luhmskdlljupjwkzhikj'
+        test_value = 'ruchmyxhuolrfvqwvtnc'
         self.instance.networkName = test_value
         self.assertEqual(self.instance.networkName, test_value)
     
@@ -56,7 +56,7 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkDesc property
         """
-        test_value = 'mtscmwpuqoayeithvaqg'
+        test_value = 'siqyodfgiglpbslfhhme'
         self.instance.networkDesc = test_value
         self.assertEqual(self.instance.networkDesc, test_value)
     
@@ -64,7 +64,16 @@ class Test_Networks(unittest.TestCase):
         """
         Test networkUrl property
         """
-        test_value = 'yzdhfuozzoofelguvqmx'
+        test_value = 'ekkwoonpijggyksqcsuh'
         self.instance.networkUrl = test_value
         self.assertEqual(self.instance.networkUrl, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Networks.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

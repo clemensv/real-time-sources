@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "usgs-iv-producer-kafka-producer"
-description = "usgs-iv-producer_kafka_producer Apache Kafka producer library"
+description = "usgs_iv_producer_kafka_producer Kafka producer library"
 authors = ["Your Name <your.email@example.com>"]
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
-packages = [{include = "usgs-iv-producer_kafka_producer", from = "src"}]
+packages = [{include = "usgs_iv_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-usgs-iv-producer-data = {path = "../usgs-iv-producer_data", develop = true}
+usgs-iv-producer-data = {path = "../usgs_iv_producer_data", develop = true}
 confluent-kafka = ">=2.4.0"
-cloudevents = ">=1.10.1"
+cloudevents = ">=1.10.1,<2.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.2.2"

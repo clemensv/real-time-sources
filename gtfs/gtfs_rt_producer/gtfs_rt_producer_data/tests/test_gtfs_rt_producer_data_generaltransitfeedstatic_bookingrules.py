@@ -28,10 +28,10 @@ class Test_BookingRules(unittest.TestCase):
         Create instance of BookingRules for testing
         """
         instance = BookingRules(
-            bookingRuleId='hlkfetcbmgmfwftatygi',
-            bookingRuleName='pahdwemhcpwjkhrsqnfn',
-            bookingRuleDesc='ltmaslfdxrnquhryswlm',
-            bookingRuleUrl='juwsouepnirdsdgwedpw'
+            bookingRuleId='bvshbbtaiqvvhnwyniwy',
+            bookingRuleName='lssjjutwccgxlifdmwqb',
+            bookingRuleDesc='mtkbyjrgxsoalhvixyyx',
+            bookingRuleUrl='ggpxarngofqhkmafkhde'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleId property
         """
-        test_value = 'hlkfetcbmgmfwftatygi'
+        test_value = 'bvshbbtaiqvvhnwyniwy'
         self.instance.bookingRuleId = test_value
         self.assertEqual(self.instance.bookingRuleId, test_value)
     
@@ -48,7 +48,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleName property
         """
-        test_value = 'pahdwemhcpwjkhrsqnfn'
+        test_value = 'lssjjutwccgxlifdmwqb'
         self.instance.bookingRuleName = test_value
         self.assertEqual(self.instance.bookingRuleName, test_value)
     
@@ -56,7 +56,7 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleDesc property
         """
-        test_value = 'ltmaslfdxrnquhryswlm'
+        test_value = 'mtkbyjrgxsoalhvixyyx'
         self.instance.bookingRuleDesc = test_value
         self.assertEqual(self.instance.bookingRuleDesc, test_value)
     
@@ -64,7 +64,16 @@ class Test_BookingRules(unittest.TestCase):
         """
         Test bookingRuleUrl property
         """
-        test_value = 'juwsouepnirdsdgwedpw'
+        test_value = 'ggpxarngofqhkmafkhde'
         self.instance.bookingRuleUrl = test_value
         self.assertEqual(self.instance.bookingRuleUrl, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = BookingRules.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

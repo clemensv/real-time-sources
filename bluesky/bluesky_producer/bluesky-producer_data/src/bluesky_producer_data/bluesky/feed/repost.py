@@ -3,14 +3,15 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import json
 import avro.schema
+import avro.name
 import avro.io
 
 
@@ -40,8 +41,8 @@ class Repost:
     indexed_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="indexed_at"))
     seq: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="seq"))
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Repost\", \"namespace\": \"Bluesky.Feed\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\", \"doc\": \"AT-URI of the repost record\"}, {\"name\": \"cid\", \"type\": \"string\", \"doc\": \"Content Identifier of the repost\"}, {\"name\": \"did\", \"type\": \"string\", \"doc\": \"DID of the user who reposted\"}, {\"name\": \"handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the user who reposted\"}, {\"name\": \"subject_uri\", \"type\": \"string\", \"doc\": \"AT-URI of the reposted post\"}, {\"name\": \"subject_cid\", \"type\": \"string\", \"doc\": \"CID of the reposted post\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of repost creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of indexing\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}], \"doc\": \"A repost of a post\"}"
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"Repost\", \"namespace\": \"Bluesky.Feed\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\", \"doc\": \"AT-URI of the repost record\"}, {\"name\": \"cid\", \"type\": \"string\", \"doc\": \"Content Identifier of the repost\"}, {\"name\": \"did\", \"type\": \"string\", \"doc\": \"DID of the user who reposted\"}, {\"name\": \"handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the user who reposted\"}, {\"name\": \"subject_uri\", \"type\": \"string\", \"doc\": \"AT-URI of the reposted post\"}, {\"name\": \"subject_cid\", \"type\": \"string\", \"doc\": \"CID of the reposted post\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of repost creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of indexing\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}], \"doc\": \"A repost of a post\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

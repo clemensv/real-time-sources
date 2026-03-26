@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "noaa-producer-kafka-producer"
-description = "noaa-producer_kafka_producer Kafka producer library"
+description = "noaa_producer_kafka_producer Kafka producer library"
 authors = ["Your Name <your.email@example.com>"]
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
-packages = [{include = "noaa-producer_kafka_producer", from = "src"}]
+packages = [{include = "noaa_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-noaa-producer-data = {path = "../noaa-producer_data", develop = true}
+noaa-producer-data = {path = "../noaa_producer_data", develop = true}
 confluent-kafka = ">=2.4.0"
-cloudevents = ">=1.10.1"
+cloudevents = ">=1.10.1,<2.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.2.2"

@@ -32,16 +32,16 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from bluesky-producer_kafka_producer.producer import BlueskyFirehoseEventProducer
+from bluesky_producer_kafka_producer.producer import BlueskyFirehoseEventProducer
 
 # imports for the data classes for each event
 
-from bluesky-producer_data.bluesky.feed.post import Post
-from bluesky-producer_data.bluesky.feed.like import Like
-from bluesky-producer_data.bluesky.feed.repost import Repost
-from bluesky-producer_data.bluesky.graph.follow import Follow
-from bluesky-producer_data.bluesky.graph.block import Block
-from bluesky-producer_data.bluesky.actor.profile import Profile
+from bluesky_producer_data.bluesky.feed.post import Post
+from bluesky_producer_data.bluesky.feed.like import Like
+from bluesky_producer_data.bluesky.feed.repost import Repost
+from bluesky_producer_data.bluesky.graph.follow import Follow
+from bluesky_producer_data.bluesky.graph.block import Block
+from bluesky_producer_data.bluesky.actor.profile import Profile
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

@@ -1,0 +1,178 @@
+"""
+Test case for BuoyObservation
+"""
+
+import os
+import sys
+import unittest
+
+sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
+
+from noaa_ndbc_producer_data.microsoft.opendata.us.noaa.ndbc.buoyobservation import BuoyObservation
+
+
+class Test_BuoyObservation(unittest.TestCase):
+    """
+    Test case for BuoyObservation
+    """
+
+    def setUp(self):
+        """
+        Set up test case
+        """
+        self.instance = Test_BuoyObservation.create_instance()
+
+    @staticmethod
+    def create_instance():
+        """
+        Create instance of BuoyObservation for testing
+        """
+        instance = BuoyObservation(
+            station_id='fuwfmhziaripusskmwob',
+            latitude=float(14.950733668864125),
+            longitude=float(59.168261859745876),
+            timestamp='cjselmdmjbabgxvxgluj',
+            wind_direction=float(14.930707541380883),
+            wind_speed=float(83.35649496126554),
+            gust=float(60.295000798353584),
+            wave_height=float(57.79118485488196),
+            dominant_wave_period=float(46.17802977808295),
+            average_wave_period=float(14.566708966789054),
+            mean_wave_direction=float(92.66912181776921),
+            pressure=float(79.37833835189568),
+            air_temperature=float(18.277727006970757),
+            water_temperature=float(39.74997279712538),
+            dewpoint=float(88.0663132071608)
+        )
+        return instance
+
+    
+    def test_station_id_property(self):
+        """
+        Test station_id property
+        """
+        test_value = 'fuwfmhziaripusskmwob'
+        self.instance.station_id = test_value
+        self.assertEqual(self.instance.station_id, test_value)
+    
+    def test_latitude_property(self):
+        """
+        Test latitude property
+        """
+        test_value = float(14.950733668864125)
+        self.instance.latitude = test_value
+        self.assertEqual(self.instance.latitude, test_value)
+    
+    def test_longitude_property(self):
+        """
+        Test longitude property
+        """
+        test_value = float(59.168261859745876)
+        self.instance.longitude = test_value
+        self.assertEqual(self.instance.longitude, test_value)
+    
+    def test_timestamp_property(self):
+        """
+        Test timestamp property
+        """
+        test_value = 'cjselmdmjbabgxvxgluj'
+        self.instance.timestamp = test_value
+        self.assertEqual(self.instance.timestamp, test_value)
+    
+    def test_wind_direction_property(self):
+        """
+        Test wind_direction property
+        """
+        test_value = float(14.930707541380883)
+        self.instance.wind_direction = test_value
+        self.assertEqual(self.instance.wind_direction, test_value)
+    
+    def test_wind_speed_property(self):
+        """
+        Test wind_speed property
+        """
+        test_value = float(83.35649496126554)
+        self.instance.wind_speed = test_value
+        self.assertEqual(self.instance.wind_speed, test_value)
+    
+    def test_gust_property(self):
+        """
+        Test gust property
+        """
+        test_value = float(60.295000798353584)
+        self.instance.gust = test_value
+        self.assertEqual(self.instance.gust, test_value)
+    
+    def test_wave_height_property(self):
+        """
+        Test wave_height property
+        """
+        test_value = float(57.79118485488196)
+        self.instance.wave_height = test_value
+        self.assertEqual(self.instance.wave_height, test_value)
+    
+    def test_dominant_wave_period_property(self):
+        """
+        Test dominant_wave_period property
+        """
+        test_value = float(46.17802977808295)
+        self.instance.dominant_wave_period = test_value
+        self.assertEqual(self.instance.dominant_wave_period, test_value)
+    
+    def test_average_wave_period_property(self):
+        """
+        Test average_wave_period property
+        """
+        test_value = float(14.566708966789054)
+        self.instance.average_wave_period = test_value
+        self.assertEqual(self.instance.average_wave_period, test_value)
+    
+    def test_mean_wave_direction_property(self):
+        """
+        Test mean_wave_direction property
+        """
+        test_value = float(92.66912181776921)
+        self.instance.mean_wave_direction = test_value
+        self.assertEqual(self.instance.mean_wave_direction, test_value)
+    
+    def test_pressure_property(self):
+        """
+        Test pressure property
+        """
+        test_value = float(79.37833835189568)
+        self.instance.pressure = test_value
+        self.assertEqual(self.instance.pressure, test_value)
+    
+    def test_air_temperature_property(self):
+        """
+        Test air_temperature property
+        """
+        test_value = float(18.277727006970757)
+        self.instance.air_temperature = test_value
+        self.assertEqual(self.instance.air_temperature, test_value)
+    
+    def test_water_temperature_property(self):
+        """
+        Test water_temperature property
+        """
+        test_value = float(39.74997279712538)
+        self.instance.water_temperature = test_value
+        self.assertEqual(self.instance.water_temperature, test_value)
+    
+    def test_dewpoint_property(self):
+        """
+        Test dewpoint property
+        """
+        test_value = float(88.0663132071608)
+        self.instance.dewpoint = test_value
+        self.assertEqual(self.instance.dewpoint, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = BuoyObservation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

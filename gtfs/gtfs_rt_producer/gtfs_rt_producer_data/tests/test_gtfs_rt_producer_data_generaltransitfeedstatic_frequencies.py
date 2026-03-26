@@ -28,11 +28,11 @@ class Test_Frequencies(unittest.TestCase):
         Create instance of Frequencies for testing
         """
         instance = Frequencies(
-            tripId='eypqnurmtmeaqjgxeakv',
-            startTime='pudoyqtvpqgbfmpypvbk',
-            endTime='frtcisfspmhkozflpmjj',
-            headwaySecs=int(8),
-            exactTimes=int(15)
+            tripId='tahijtyzhterzxhdlbmf',
+            startTime='ahschhvooidibfqhildr',
+            endTime='oygqtmhizzhkyadtoftx',
+            headwaySecs=int(81),
+            exactTimes=int(33)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'eypqnurmtmeaqjgxeakv'
+        test_value = 'tahijtyzhterzxhdlbmf'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -49,7 +49,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'pudoyqtvpqgbfmpypvbk'
+        test_value = 'ahschhvooidibfqhildr'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -57,7 +57,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'frtcisfspmhkozflpmjj'
+        test_value = 'oygqtmhizzhkyadtoftx'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     
@@ -65,7 +65,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test headwaySecs property
         """
-        test_value = int(8)
+        test_value = int(81)
         self.instance.headwaySecs = test_value
         self.assertEqual(self.instance.headwaySecs, test_value)
     
@@ -73,7 +73,16 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test exactTimes property
         """
-        test_value = int(15)
+        test_value = int(33)
         self.instance.exactTimes = test_value
         self.assertEqual(self.instance.exactTimes, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Frequencies.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

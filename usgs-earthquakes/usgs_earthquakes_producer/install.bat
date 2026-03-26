@@ -1,2 +1,2 @@
-pip install .\usgs-earthquakes-producer_data
-pip install .\usgs-earthquakes-producer_kafka_producer
+pip install .\usgs_earthquakes_producer_data
+pip install .\usgs_earthquakes_producer_kafka_producer

@@ -28,11 +28,11 @@ class Test_FareRules(unittest.TestCase):
         Create instance of FareRules for testing
         """
         instance = FareRules(
-            fareId='irvbuywrgmksjcdkefwz',
-            routeId='teeirqpmsnuzpyykpqpa',
-            originId='mfianjakoaujiqoxynah',
-            destinationId='pfjuimthspfccyvpjehk',
-            containsId='cqmfdjjcrafvuvztvbzq'
+            fareId='hwmgwitpmnizudeeoqeo',
+            routeId='micpegpmftppjaipgufd',
+            originId='pmcfizrxrqnsmiubvxkc',
+            destinationId='iaqcrvgidwhsvouyksek',
+            containsId='rjbvbszjkdqcycgzbspm'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test fareId property
         """
-        test_value = 'irvbuywrgmksjcdkefwz'
+        test_value = 'hwmgwitpmnizudeeoqeo'
         self.instance.fareId = test_value
         self.assertEqual(self.instance.fareId, test_value)
     
@@ -49,7 +49,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'teeirqpmsnuzpyykpqpa'
+        test_value = 'micpegpmftppjaipgufd'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -57,7 +57,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test originId property
         """
-        test_value = 'mfianjakoaujiqoxynah'
+        test_value = 'pmcfizrxrqnsmiubvxkc'
         self.instance.originId = test_value
         self.assertEqual(self.instance.originId, test_value)
     
@@ -65,7 +65,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test destinationId property
         """
-        test_value = 'pfjuimthspfccyvpjehk'
+        test_value = 'iaqcrvgidwhsvouyksek'
         self.instance.destinationId = test_value
         self.assertEqual(self.instance.destinationId, test_value)
     
@@ -73,7 +73,16 @@ class Test_FareRules(unittest.TestCase):
         """
         Test containsId property
         """
-        test_value = 'cqmfdjjcrafvuvztvbzq'
+        test_value = 'rjbvbszjkdqcycgzbspm'
         self.instance.containsId = test_value
         self.assertEqual(self.instance.containsId, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = FareRules.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

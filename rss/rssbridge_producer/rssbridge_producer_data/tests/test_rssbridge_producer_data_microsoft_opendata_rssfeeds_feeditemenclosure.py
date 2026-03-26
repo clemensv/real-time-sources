@@ -28,9 +28,9 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         Create instance of FeedItemEnclosure for testing
         """
         instance = FeedItemEnclosure(
-            href='emfqiysinhkdswajloir',
-            length=int(31),
-            type='yxcrcenoqjidiubkvtet'
+            href='ifmqlmuxnbpnafmacbot',
+            length=int(23),
+            type='rybneswgrbijabfqqcuv'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'emfqiysinhkdswajloir'
+        test_value = 'ifmqlmuxnbpnafmacbot'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -47,7 +47,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test length property
         """
-        test_value = int(31)
+        test_value = int(23)
         self.instance.length = test_value
         self.assertEqual(self.instance.length, test_value)
     
@@ -55,7 +55,16 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'yxcrcenoqjidiubkvtet'
+        test_value = 'rybneswgrbijabfqqcuv'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = FeedItemEnclosure.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

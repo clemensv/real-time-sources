@@ -28,10 +28,10 @@ class Test_FareProducts(unittest.TestCase):
         Create instance of FareProducts for testing
         """
         instance = FareProducts(
-            fareProductId='ebrfsspviawuaaorwcob',
-            fareProductName='zxfsawdobajjwzdvfbhn',
-            fareProductDesc='lwgkvdkcqjhuqxgrxzpa',
-            fareProductUrl='zjeqxuwntpyndjldgwvn'
+            fareProductId='tenufdqklrpjkirvcnzk',
+            fareProductName='wwoinqihlutsicjvegpf',
+            fareProductDesc='tmgwerqnhrtycgztifgo',
+            fareProductUrl='bucvqbzbniseqlbqidlz'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductId property
         """
-        test_value = 'ebrfsspviawuaaorwcob'
+        test_value = 'tenufdqklrpjkirvcnzk'
         self.instance.fareProductId = test_value
         self.assertEqual(self.instance.fareProductId, test_value)
     
@@ -48,7 +48,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductName property
         """
-        test_value = 'zxfsawdobajjwzdvfbhn'
+        test_value = 'wwoinqihlutsicjvegpf'
         self.instance.fareProductName = test_value
         self.assertEqual(self.instance.fareProductName, test_value)
     
@@ -56,7 +56,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductDesc property
         """
-        test_value = 'lwgkvdkcqjhuqxgrxzpa'
+        test_value = 'tmgwerqnhrtycgztifgo'
         self.instance.fareProductDesc = test_value
         self.assertEqual(self.instance.fareProductDesc, test_value)
     
@@ -64,7 +64,16 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductUrl property
         """
-        test_value = 'zjeqxuwntpyndjldgwvn'
+        test_value = 'bucvqbzbniseqlbqidlz'
         self.instance.fareProductUrl = test_value
         self.assertEqual(self.instance.fareProductUrl, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = FareProducts.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
