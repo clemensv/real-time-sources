@@ -33,6 +33,7 @@ jobs:
     needs: find-dockerfiles
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         container: ${{ fromJson(needs.find-dockerfiles.outputs.containers) }}
     permissions:
