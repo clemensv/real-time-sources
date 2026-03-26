@@ -1,4 +1,4 @@
-""" WaterLevelObservation dataclass. """
+""" Record dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -17,9 +17,9 @@ import avro.io
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class WaterLevelObservation:
+class Record:
     """
-    A WaterLevelObservation record.
+    A Record record.
     Attributes:
         station_id (str): 
         station_name (str): 
@@ -34,15 +34,15 @@ class WaterLevelObservation:
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     stream_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stream_name"))
-    water_level: typing.Optional[float]=dataclasses.field(default=None, kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
-    water_level_timestamp: typing.Optional[str]=dataclasses.field(default=None, kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp"))
-    discharge: typing.Optional[float]=dataclasses.field(default=None, kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
-    discharge_timestamp: typing.Optional[str]=dataclasses.field(default=None, kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp"))
-    water_temperature: typing.Optional[float]=dataclasses.field(default=None, kw_only=True, metadata=dataclasses_json.config(field_name="water_temperature"))
-    water_temperature_timestamp: typing.Optional[str]=dataclasses.field(default=None, kw_only=True, metadata=dataclasses_json.config(field_name="water_temperature_timestamp"))
+    water_level: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
+    water_level_timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp"))
+    discharge: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
+    discharge_timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp"))
+    water_temperature: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_temperature"))
+    water_temperature_timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_temperature_timestamp"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"namespace\": \"CZ.Gov.CHMI.Hydro\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"stream_name\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": \"double\"}, {\"name\": \"water_level_timestamp\", \"type\": \"string\"}, {\"name\": \"discharge\", \"type\": \"double\"}, {\"name\": \"discharge_timestamp\", \"type\": \"string\"}, {\"name\": \"water_temperature\", \"type\": \"double\"}, {\"name\": \"water_temperature_timestamp\", \"type\": \"string\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Record\", \"namespace\": \"\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"stream_name\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": \"double\"}, {\"name\": \"water_level_timestamp\", \"type\": \"string\"}, {\"name\": \"discharge\", \"type\": \"double\"}, {\"name\": \"discharge_timestamp\", \"type\": \"string\"}, {\"name\": \"water_temperature\", \"type\": \"double\"}, {\"name\": \"water_temperature_timestamp\", \"type\": \"string\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -50,15 +50,15 @@ class WaterLevelObservation:
         self.station_id=str(self.station_id)
         self.station_name=str(self.station_name)
         self.stream_name=str(self.stream_name)
-        self.water_level=float(self.water_level) if self.water_level is not None else None
-        self.water_level_timestamp=str(self.water_level_timestamp) if self.water_level_timestamp is not None else None
-        self.discharge=float(self.discharge) if self.discharge is not None else None
-        self.discharge_timestamp=str(self.discharge_timestamp) if self.discharge_timestamp is not None else None
-        self.water_temperature=float(self.water_temperature) if self.water_temperature is not None else None
-        self.water_temperature_timestamp=str(self.water_temperature_timestamp) if self.water_temperature_timestamp is not None else None
+        self.water_level=float(self.water_level)
+        self.water_level_timestamp=str(self.water_level_timestamp)
+        self.discharge=float(self.discharge)
+        self.discharge_timestamp=str(self.discharge_timestamp)
+        self.water_temperature=float(self.water_temperature)
+        self.water_temperature_timestamp=str(self.water_temperature_timestamp)
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'WaterLevelObservation':
+    def from_serializer_dict(cls, data: dict) -> 'Record':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -139,7 +139,7 @@ class WaterLevelObservation:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = 'application/json') -> typing.Optional['WaterLevelObservation']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Record']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -164,7 +164,7 @@ class WaterLevelObservation:
         if isinstance(data, dict):
             return cls.from_serializer_dict(data)
 
-        content_type = (content_type_string or 'application/json').split(';')[0].strip()
+        content_type = (content_type_string or 'application/octet-stream').split(';')[0].strip()
 
         if content_type.endswith('+gzip'):
             if isinstance(data, (bytes, io.BytesIO)):
@@ -187,12 +187,12 @@ class WaterLevelObservation:
             else:
                 raise NotImplementedError(f'Unsupported Avro media type {content_type}')
             _record = reader.read(decoder)            
-            return WaterLevelObservation.from_serializer_dict(_record)
+            return Record.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return WaterLevelObservation.from_serializer_dict(_record)
+                return Record.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 
