@@ -1,0 +1,94 @@
+{
+    "messagegroups": {
+        "PL.Gov.IMGW.Hydro": {
+            "messages": {
+                "PL.Gov.IMGW.Hydro.Station": {
+                    "name": "Station",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "PL.Gov.IMGW.Hydro.Station"
+                        },
+                        "source": {
+                            "value": "https://danepubliczne.imgw.pl"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro/schemas/PL.Gov.IMGW.Hydro.Station"
+                },
+                "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
+                    "name": "WaterLevelObservation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "PL.Gov.IMGW.Hydro.WaterLevelObservation"
+                        },
+                        "source": {
+                            "value": "https://danepubliczne.imgw.pl"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "PL.Gov.IMGW.Hydro": {
+            "schemas": {
+                "PL.Gov.IMGW.Hydro.Station": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Station",
+                                "namespace": "PL.Gov.IMGW.Hydro",
+                                "properties": {
+                                    "id_stacji": { "type": "string", "description": "Unique station identifier" },
+                                    "stacja": { "type": "string", "description": "Station name" },
+                                    "rzeka": { "type": "string", "description": "River name" },
+                                    "wojewodztwo": { "type": "string", "description": "Voivodeship (province)" },
+                                    "longitude": { "type": "number", "description": "Longitude in WGS84" },
+                                    "latitude": { "type": "number", "description": "Latitude in WGS84" }
+                                },
+                                "required": ["id_stacji", "stacja"]
+                            }
+                        }
+                    }
+                },
+                "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "WaterLevelObservation",
+                                "namespace": "PL.Gov.IMGW.Hydro",
+                                "properties": {
+                                    "station_id": { "type": "string", "description": "Station identifier" },
+                                    "station_name": { "type": "string", "description": "Station name" },
+                                    "river": { "type": "string", "description": "River name" },
+                                    "voivodeship": { "type": "string", "description": "Voivodeship (province)" },
+                                    "water_level": { "type": "number", "description": "Water level in cm" },
+                                    "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp" },
+                                    "water_temperature": { "type": "number", "description": "Water temperature in °C" },
+                                    "water_temperature_timestamp": { "type": "string", "format": "date-time", "description": "Water temperature measurement timestamp" },
+                                    "discharge": { "type": "number", "description": "Discharge (flow rate) in m³/s" },
+                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp" },
+                                    "ice_phenomenon_code": { "type": "string", "description": "Ice phenomenon code" },
+                                    "overgrowth_code": { "type": "string", "description": "Vegetation overgrowth code" }
+                                },
+                                "required": ["station_id", "station_name", "water_level", "water_level_timestamp"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
