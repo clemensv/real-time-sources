@@ -1,0 +1,175 @@
+{
+    "messagegroups": {
+        "Microsoft.OpenData.US.NOAA.NWS": {
+            "messages": {
+                "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert": {
+                    "name": "WeatherAlert",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+                        },
+                        "source": {
+                            "value": "https://api.weather.gov"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+                },
+                "Microsoft.OpenData.US.NOAA.NWS.Zone": {
+                    "name": "Zone",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "Microsoft.OpenData.US.NOAA.NWS.Zone"
+                        },
+                        "source": {
+                            "value": "https://api.weather.gov"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS/schemas/Microsoft.OpenData.US.NOAA.NWS.Zone"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "Microsoft.OpenData.US.NOAA.NWS": {
+            "schemas": {
+                "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "WeatherAlert",
+                                "namespace": "Microsoft.OpenData.US.NOAA.NWS",
+                                "properties": {
+                                    "alert_id": {
+                                        "type": "string",
+                                        "description": "NWS alert ID"
+                                    },
+                                    "area_desc": {
+                                        "type": "string",
+                                        "description": "Description of affected area"
+                                    },
+                                    "sent": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When the alert was sent"
+                                    },
+                                    "effective": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When the alert becomes effective"
+                                    },
+                                    "expires": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When the alert expires"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Alert status",
+                                        "enum": ["Actual", "Exercise", "System", "Test", "Draft"]
+                                    },
+                                    "message_type": {
+                                        "type": "string",
+                                        "description": "Message type",
+                                        "enum": ["Alert", "Update", "Cancel"]
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "description": "Alert category",
+                                        "enum": ["Met", "Geo", "Safety", "Security", "Rescue", "Fire", "Health", "Env", "Transport", "Infra", "CBRNE", "Other"]
+                                    },
+                                    "severity": {
+                                        "type": "string",
+                                        "description": "Alert severity",
+                                        "enum": ["Extreme", "Severe", "Moderate", "Minor", "Unknown"]
+                                    },
+                                    "certainty": {
+                                        "type": "string",
+                                        "description": "Alert certainty",
+                                        "enum": ["Observed", "Likely", "Possible", "Unlikely", "Unknown"]
+                                    },
+                                    "urgency": {
+                                        "type": "string",
+                                        "description": "Alert urgency",
+                                        "enum": ["Immediate", "Expected", "Future", "Past", "Unknown"]
+                                    },
+                                    "event": {
+                                        "type": "string",
+                                        "description": "Event type name"
+                                    },
+                                    "sender_name": {
+                                        "type": "string",
+                                        "description": "Name of the sending office"
+                                    },
+                                    "headline": {
+                                        "type": "string",
+                                        "description": "Alert headline"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Full description"
+                                    }
+                                },
+                                "required": ["alert_id", "area_desc", "sent", "effective", "expires", "status", "message_type", "severity", "certainty", "urgency", "event"]
+                            }
+                        }
+                    },
+                    "defaultversionid": "1.0"
+                },
+                "Microsoft.OpenData.US.NOAA.NWS.Zone": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Zone",
+                                "namespace": "Microsoft.OpenData.US.NOAA.NWS",
+                                "properties": {
+                                    "zone_id": {
+                                        "type": "string",
+                                        "description": "Zone identifier (e.g., AKZ317)"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Zone name"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "description": "Zone type (e.g., public, fire, coastal)"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "description": "US state abbreviation"
+                                    },
+                                    "forecast_office": {
+                                        "type": "string",
+                                        "description": "Forecast office URL"
+                                    },
+                                    "timezone": {
+                                        "type": "string",
+                                        "description": "Timezone identifier"
+                                    },
+                                    "radar_station": {
+                                        "type": "string",
+                                        "description": "Associated radar station identifier"
+                                    }
+                                },
+                                "required": ["zone_id", "name", "state"]
+                            }
+                        }
+                    },
+                    "defaultversionid": "1.0"
+                }
+            }
+        }
+    }
+}

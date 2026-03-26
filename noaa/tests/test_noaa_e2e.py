@@ -317,3 +317,59 @@ class TestNOAAProductsE2E:
         # Either we get data or an error message (both are valid responses)
         assert 'data' in data or 'predictions' in data or 'error' in data, \
             f"Unexpected response structure for product '{product}'"
+
+    def test_currents_product_availability(self):
+        """Test that the currents endpoint is accessible with a currents station"""
+        station_id = 'PUG1515'  # Puget Sound currents station
+
+        end_date = datetime.now(timezone.utc)
+        begin_date = end_date - timedelta(hours=24)
+
+        url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter'
+        params = {
+            'station': station_id,
+            'product': 'currents',
+            'units': 'metric',
+            'time_zone': 'gmt',
+            'format': 'json',
+            'bin': '1',
+            'begin_date': begin_date.strftime('%Y%m%d %H:%M'),
+            'end_date': end_date.strftime('%Y%m%d %H:%M'),
+            'application': 'test'
+        }
+
+        response = requests.get(url, params=params, timeout=30)
+        assert response.status_code == 200, \
+            f"Currents endpoint returned {response.status_code}"
+
+        data = response.json()
+        assert 'data' in data or 'error' in data, \
+            "Unexpected response structure for currents product"
+
+    def test_currents_predictions_product_availability(self):
+        """Test that the currents_predictions endpoint is accessible"""
+        station_id = 'PUG1515'  # Puget Sound currents station
+
+        end_date = datetime.now(timezone.utc)
+        begin_date = end_date - timedelta(hours=24)
+
+        url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter'
+        params = {
+            'station': station_id,
+            'product': 'currents_predictions',
+            'units': 'metric',
+            'time_zone': 'gmt',
+            'format': 'json',
+            'bin': '1',
+            'begin_date': begin_date.strftime('%Y%m%d %H:%M'),
+            'end_date': end_date.strftime('%Y%m%d %H:%M'),
+            'application': 'test'
+        }
+
+        response = requests.get(url, params=params, timeout=30)
+        assert response.status_code == 200, \
+            f"Currents predictions endpoint returned {response.status_code}"
+
+        data = response.json()
+        assert 'current_predictions' in data or 'error' in data, \
+            "Unexpected response structure for currents_predictions product"

@@ -18,6 +18,8 @@ from noaa.noaa_producer.microsoft.opendata.us.noaa.conductivity import Conductiv
 from noaa.noaa_producer.microsoft.opendata.us.noaa.salinity import Salinity
 from noaa.noaa_producer.microsoft.opendata.us.noaa.station import Station
 from noaa.noaa_producer.microsoft.opendata.us.noaa.visibility import Visibility
+from noaa.noaa_producer.microsoft.opendata.us.noaa.currents import Currents
+from noaa.noaa_producer.microsoft.opendata.us.noaa.currentpredictions import CurrentPredictions
 
 class MicrosoftOpenDataUSNOAAEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -66,11 +68,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -95,11 +97,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -124,11 +126,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -153,11 +155,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -182,11 +184,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -211,11 +213,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -240,11 +242,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -269,11 +271,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -298,11 +300,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -327,11 +329,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -354,6 +356,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         """
         attributes = {
              "type":"Microsoft.OpenData.US.NOAA.Visibility",
+             "source":"https://api.tidesandcurrents.noaa.gov",
              "datacontenttype":_datacontenttype,
              "subject":_subject,
              "time":_time,
@@ -363,11 +366,69 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_microsoft_open_data_us_noaa_currents(self,data: Currents, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Currents], str]=None) -> None:
+        """
+        Sends the 'Microsoft.OpenData.US.NOAA.Currents' event to the Kafka topic
+
+        Args:
+            data: (Currents): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, Currents], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
+                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+        """
+        attributes = {
+             "type":"Microsoft.OpenData.US.NOAA.Currents",
+             "source":"https://api.tidesandcurrents.noaa.gov"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_microsoft_open_data_us_noaa_current_predictions(self,data: CurrentPredictions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentPredictions], str]=None) -> None:
+        """
+        Sends the 'Microsoft.OpenData.US.NOAA.CurrentPredictions' event to the Kafka topic
+
+        Args:
+            data: (CurrentPredictions): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, CurrentPredictions], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
+                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+        """
+        attributes = {
+             "type":"Microsoft.OpenData.US.NOAA.CurrentPredictions",
+             "source":"https://api.tidesandcurrents.noaa.gov"
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
