@@ -3,14 +3,15 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import json
 import avro.schema
+import avro.name
 import avro.io
 from noaa.noaa_producer.microsoft.opendata.us.noaa.qualitylevel import QualityLevel
 
@@ -41,8 +42,8 @@ class WaterLevel:
     max_min_expected_height: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="max_min_expected_height"))
     quality: QualityLevel=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"WaterLevel\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"{'description': '7 character station ID, or a currents station ID.'}\"}, {\"name\": \"timestamp\", \"type\": \"string\", \"logicalType\": \"timestamp-millis\", \"doc\": \"{'description': 'Timestamp of the water level measurement'}\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"{'description': 'Value of the water level'}\"}, {\"name\": \"stddev\", \"type\": \"double\", \"doc\": \"{'description': 'Standard deviation of 1-second samples used to compute the water level height'}\"}, {\"name\": \"outside_sigma_band\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).'}\"}, {\"name\": \"flat_tolerance_limit\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).'}\"}, {\"name\": \"rate_of_change_limit\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).'}\"}, {\"name\": \"max_min_expected_height\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).'}\"}, {\"name\": \"quality\", \"type\": {\"type\": \"enum\", \"name\": \"QualityLevel\", \"symbols\": [\"Preliminary\", \"Verified\"], \"doc\": \"Quality Assurance/Quality Control level\"}}], \"altnames\": {\"kql\": \"WaterLevel\"}, \"namespace\": \"Microsoft.OpenData.US.NOAA\"}"
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevel\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"{'description': '7 character station ID, or a currents station ID.'}\"}, {\"name\": \"timestamp\", \"type\": \"string\", \"logicalType\": \"timestamp-millis\", \"doc\": \"{'description': 'Timestamp of the water level measurement'}\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"{'description': 'Value of the water level'}\"}, {\"name\": \"stddev\", \"type\": \"double\", \"doc\": \"{'description': 'Standard deviation of 1-second samples used to compute the water level height'}\"}, {\"name\": \"outside_sigma_band\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).'}\"}, {\"name\": \"flat_tolerance_limit\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).'}\"}, {\"name\": \"rate_of_change_limit\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).'}\"}, {\"name\": \"max_min_expected_height\", \"type\": \"boolean\", \"doc\": \"{'description': 'Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).'}\"}, {\"name\": \"quality\", \"type\": {\"type\": \"enum\", \"name\": \"QualityLevel\", \"symbols\": [\"Preliminary\", \"Verified\"], \"doc\": \"Quality Assurance/Quality Control level\"}}], \"altnames\": {\"kql\": \"WaterLevel\"}, \"namespace\": \"Microsoft.OpenData.US.NOAA\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

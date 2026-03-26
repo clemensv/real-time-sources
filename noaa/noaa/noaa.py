@@ -24,6 +24,8 @@ from noaa.noaa_producer.microsoft.opendata.us.noaa.visibility import Visibility
 from noaa.noaa_producer.microsoft.opendata.us.noaa.waterlevel import WaterLevel
 from noaa.noaa_producer.microsoft.opendata.us.noaa.watertemperature import WaterTemperature
 from noaa.noaa_producer.microsoft.opendata.us.noaa.wind import Wind
+from noaa.noaa_producer.microsoft.opendata.us.noaa.currents import Currents
+from noaa.noaa_producer.microsoft.opendata.us.noaa.currentpredictions import CurrentPredictions
 from noaa.noaa_producer.microsoft.opendata.us.noaa.qualitylevel import QualityLevel
 from .noaa_producer.producer_client import MicrosoftOpenDataUSNOAAEventProducer
 
@@ -45,7 +47,9 @@ class NOAADataPoller:
         "conductivity": "product=conductivity",
         "visibility": "product=visibility",
         "humidity": "product=humidity",
-        "salinity": "product=salinity"
+        "salinity": "product=salinity",
+        "currents": "product=currents",
+        "currents_predictions": "product=currents_predictions"
     }
 
     def __init__(self, kafka_config: Dict[str, str], kafka_topic: str, last_polled_file: str, station: str = None):
@@ -138,12 +142,22 @@ class NOAADataPoller:
         product_url = f"{self.BASE_URL}?{self.PRODUCTS[product]}{self.COMMON_PARAMS}&station={station_id}"
         if product != "currents_predictions" and product != "currents":
             product_url += f"&datum={datum}"
+        if product in ["currents", "currents_predictions"]:
+            product_url += "&bin=1"
         product_url += f"&begin_date={begin_date.strftime('%Y%m%d %H:%M')}&end_date={now.strftime('%Y%m%d %H:%M')}"
-        data_key = "data" if "predictions" not in product else "predictions"
+        if product == "currents_predictions":
+            data_key = None
+        elif "predictions" in product:
+            data_key = "predictions"
+        else:
+            data_key = "data"
         try:
             response = requests.get(product_url, timeout=10)
             response.raise_for_status()
-            data = response.json().get(data_key, [])
+            if data_key is None:
+                data = response.json().get("current_predictions", {}).get("cp", [])
+            else:
+                data = response.json().get(data_key, [])
             new_data = []
             for record in data:
                 new_data.append(record)
@@ -226,7 +240,8 @@ class NOAADataPoller:
 
                     max_timestamp = last_polled_time
                     for record in new_data_records:
-                        ts_parsed = datetime.strptime(record['t'], "%Y-%m-%d %H:%M")
+                        ts_field = 'Time' if product == "currents_predictions" else 't'
+                        ts_parsed = datetime.strptime(record[ts_field], "%Y-%m-%d %H:%M")
                         timestamp = ts_parsed.replace(tzinfo=timezone.utc)
 
                         if product == "water_level":
@@ -339,6 +354,28 @@ class NOAADataPoller:
                             )
                             self.producer.send_microsoft_open_data_us_noaa_salinity(
                                 salinity, station_id, flush_producer=False)
+                        elif product == "currents":
+                            currents_record = Currents(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                speed=float(record['s']) if 's' in record and record['s'] else 0.0,
+                                direction_degrees=float(record['d']) if 'd' in record and record['d'] else 0.0,
+                                bin=record.get('b', '1')
+                            )
+                            self.producer.send_microsoft_open_data_us_noaa_currents(
+                                currents_record, station_id, flush_producer=False)
+                        elif product == "currents_predictions":
+                            current_prediction = CurrentPredictions(
+                                station_id=station_id,
+                                timestamp=timestamp.isoformat(),
+                                velocity_major=float(record['Velocity_Major']) if 'Velocity_Major' in record and record['Velocity_Major'] else 0.0,
+                                mean_flood_dir=float(record['meanFloodDir']) if 'meanFloodDir' in record and record['meanFloodDir'] else 0.0,
+                                mean_ebb_dir=float(record['meanEbbDir']) if 'meanEbbDir' in record and record['meanEbbDir'] else 0.0,
+                                depth=float(record['Depth']) if 'Depth' in record and record['Depth'] else 0.0,
+                                bin=record.get('Bin', '1')
+                            )
+                            self.producer.send_microsoft_open_data_us_noaa_current_predictions(
+                                current_prediction, station_id, flush_producer=False)
 
                         if timestamp > max_timestamp:
                             max_timestamp = timestamp
