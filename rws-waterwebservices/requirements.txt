@@ -1,0 +1,4 @@
+confluent_kafka
+cloudevents
+requests
+dataclasses-json
