@@ -100,8 +100,35 @@ def parse_connection_string(connection_string: str) -> dict:
     return config
 
 
-def feed_stations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer) -> int:
+def _load_state(state_file: str) -> dict:
+    """Load persisted dedup state from a JSON file."""
+    try:
+        if state_file and os.path.exists(state_file):
+            with open(state_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+    except Exception as e:
+        logging.warning("Could not load state from %s: %s", state_file, e)
+    return {}
+
+
+def _save_state(state_file: str, data: dict) -> None:
+    """Save dedup state to a JSON file, keeping at most 100000 entries."""
+    if not state_file:
+        return
+    try:
+        if len(data) > 100000:
+            keys = list(data.keys())
+            data = {k: data[k] for k in keys[-50000:]}
+        with open(state_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f)
+    except Exception as e:
+        logging.warning("Could not save state to %s: %s", state_file, e)
+
+
+def feed_stations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer, previous_readings: dict = None) -> int:
     """Fetch all discharge data and send station reference data + observations to Kafka."""
+    if previous_readings is None:
+        previous_readings = {}
     bulk_data = api.get_bulk_discharge_data()
     stations = bulk_data.get("station", [])
     sent_count = 0
@@ -117,12 +144,16 @@ def feed_stations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer) -> i
 
         observation = api.parse_latest_observation(station_data)
         if observation:
+            reading_key = f"{observation.station_id}:{observation.timestamp}"
+            if reading_key in previous_readings:
+                continue
             producer.send_se_gov_smhi_hydro_discharge_observation(
                 observation,
                 flush_producer=False,
                 key_mapper=lambda ce, o: f"SE.Gov.SMHI.Hydro.DischargeObservation:{o.station_id}"
             )
             sent_count += 1
+            previous_readings[reading_key] = observation.timestamp
 
     producer.producer.flush()
     return sent_count
@@ -136,6 +167,8 @@ def main():
     parser.add_argument('--topic', required=False, help='Kafka topic', default=os.environ.get('KAFKA_TOPIC', 'smhi-hydro'))
     parser.add_argument('--polling-interval', type=int, default=int(os.environ.get('POLLING_INTERVAL', '900')),
                         help='Polling interval in seconds (default: 900)')
+    parser.add_argument('--state-file', type=str,
+                        default=os.environ.get('STATE_FILE', os.path.expanduser('~/.smhi_hydro_state.json')))
     subparsers = parser.add_subparsers(dest='command')
     subparsers.add_parser('list', help='List all stations')
     obs_parser = subparsers.add_parser('observation', help='Get latest discharge for a station')
@@ -177,9 +210,11 @@ def main():
         producer = Producer(kafka_config)
         event_producer = SEGovSMHIHydroEventProducer(producer, args.topic)
         logger.info("Starting SMHI Hydro bridge, polling every %d seconds", args.polling_interval)
+        previous_readings = _load_state(args.state_file)
         while True:
             try:
-                count = feed_stations(api, event_producer)
+                count = feed_stations(api, event_producer, previous_readings)
+                _save_state(args.state_file, previous_readings)
                 logger.info("Sent %d events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)

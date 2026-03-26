@@ -24,6 +24,28 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 
+def _load_state(state_file: str) -> dict:
+    """Load persisted dedup state from a JSON file."""
+    try:
+        if state_file and os.path.exists(state_file):
+            with open(state_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+    except Exception as e:
+        logging.warning("Could not load state from %s: %s", state_file, e)
+    return {}
+
+
+def _save_state(state_file: str, data: dict) -> None:
+    """Save dedup state to a JSON file."""
+    if not state_file:
+        return
+    try:
+        with open(state_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f)
+    except Exception as e:
+        logging.warning("Could not save state to %s: %s", state_file, e)
+
+
 class PegelOnlineAPI:
     def __init__(self):
         self.skip_urls = []
@@ -96,9 +118,9 @@ class PegelOnlineAPI:
             raise ValueError("Invalid connection string format") from e
         return config_dict
 
-    async def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int) -> None:
+    async def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '') -> None:
         """Feed stations and send updates as CloudEvents."""
-        previous_readings: Dict[str, List[Dict[str, Any]]] = {}
+        previous_readings: Dict[str, List[Dict[str, Any]]] = _load_state(state_file)
 
         producer: Producer = Producer(kafka_config)
         pegelonline_producer = DeWsvPegelonlineEventProducer(producer, kafka_topic)
@@ -158,6 +180,7 @@ class PegelOnlineAPI:
                 end_time = datetime.now(timezone.utc)
                 effective_polling_interval = max(0, polling_interval-(end_time - start_time).total_seconds())
                 logging.info("Sent %s current measurements in %s seconds. Now waiting until %s.", count, (end_time - start_time).total_seconds(), (datetime.now(timezone.utc) + timedelta(seconds=effective_polling_interval)).isoformat())
+                _save_state(state_file, previous_readings)
                 if effective_polling_interval > 0:
                     time.sleep(effective_polling_interval)
             except KeyboardInterrupt:
@@ -217,6 +240,8 @@ def main() -> None:
         polling_interval_default = int(os.getenv('POLLING_INTERVAL'))
     feed_parser.add_argument("-i", "--polling-interval", type=int,
                              help='Polling interval in seconds', default=polling_interval_default)
+    feed_parser.add_argument('--state-file', type=str,
+                             default=os.getenv('STATE_FILE', os.path.expanduser('~/.pegelonline_state.json')))
 
     args = parser.parse_args()
 
@@ -261,7 +286,7 @@ def main() -> None:
             'sasl.password': sasl_password
         }
 
-        asyncio.run(api.feed_stations(kafka_config, kafka_topic, args.polling_interval))
+        asyncio.run(api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file))
     else:
         parser.print_help()
 
