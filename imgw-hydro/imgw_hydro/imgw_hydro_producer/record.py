@@ -1,4 +1,4 @@
-""" Station dataclass. """
+""" Record dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -17,9 +17,9 @@ import avro.io
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Station:
+class Record:
     """
-    A Station record.
+    A Record record.
     Attributes:
         id_stacji (str): 
         stacja (str): 
@@ -36,7 +36,7 @@ class Station:
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"PL.Gov.IMGW.Hydro\", \"fields\": [{\"name\": \"id_stacji\", \"type\": \"string\"}, {\"name\": \"stacja\", \"type\": \"string\"}, {\"name\": \"rzeka\", \"type\": \"string\"}, {\"name\": \"wojewodztwo\", \"type\": \"string\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"latitude\", \"type\": \"double\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Record\", \"namespace\": \"\", \"fields\": [{\"name\": \"id_stacji\", \"type\": \"string\"}, {\"name\": \"stacja\", \"type\": \"string\"}, {\"name\": \"rzeka\", \"type\": \"string\"}, {\"name\": \"wojewodztwo\", \"type\": \"string\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"latitude\", \"type\": \"double\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -49,7 +49,7 @@ class Station:
         self.latitude=float(self.latitude)
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Station':
+    def from_serializer_dict(cls, data: dict) -> 'Record':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -130,7 +130,7 @@ class Station:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = 'application/json') -> typing.Optional['Station']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = 'application/json') -> typing.Optional['Record']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -178,12 +178,12 @@ class Station:
             else:
                 raise NotImplementedError(f'Unsupported Avro media type {content_type}')
             _record = reader.read(decoder)            
-            return Station.from_serializer_dict(_record)
+            return Record.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Station.from_serializer_dict(_record)
+                return Record.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 
