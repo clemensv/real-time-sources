@@ -76,12 +76,12 @@
                                     "voivodeship": { "type": "string", "description": "Voivodeship (province)" },
                                     "water_level": { "type": "number", "description": "Water level in cm" },
                                     "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp" },
-                                    "water_temperature": { "type": ["number", "null"], "description": "Water temperature in °C" },
-                                    "water_temperature_timestamp": { "type": ["string", "null"], "format": "date-time", "description": "Water temperature measurement timestamp" },
-                                    "discharge": { "type": ["number", "null"], "description": "Discharge (flow rate) in m³/s" },
-                                    "discharge_timestamp": { "type": ["string", "null"], "format": "date-time", "description": "Discharge measurement timestamp" },
-                                    "ice_phenomenon_code": { "type": ["string", "null"], "description": "Ice phenomenon code" },
-                                    "overgrowth_code": { "type": ["string", "null"], "description": "Vegetation overgrowth code" }
+                                    "water_temperature": { "type": "number", "description": "Water temperature in °C" },
+                                    "water_temperature_timestamp": { "type": "string", "format": "date-time", "description": "Water temperature measurement timestamp" },
+                                    "discharge": { "type": "number", "description": "Discharge (flow rate) in m³/s" },
+                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp" },
+                                    "ice_phenomenon_code": { "type": "string", "description": "Ice phenomenon code" },
+                                    "overgrowth_code": { "type": "string", "description": "Vegetation overgrowth code" }
                                 },
                                 "required": ["station_id", "station_name", "water_level", "water_level_timestamp"]
                             }
