@@ -127,7 +127,7 @@ class Station:
             result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
-            result = self.to_json()
+            result = self.to_json().encode('utf-8')
             #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
