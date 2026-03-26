@@ -1,3 +1,5 @@
 """Waterinfo VMM bridge."""
 from .waterinfo_vmm import main
-__main__ = main
+
+if __name__ == "__main__":
+    main()
