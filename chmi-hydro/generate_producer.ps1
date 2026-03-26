@@ -5,7 +5,7 @@ $SCHEMA_FILE = Join-Path $XREG_ROOT "chmi_hydro.xreg.json"
 $OUTPUT_DIR = Join-Path $PSScriptRoot "chmi_hydro_producer_tmp"
 
 Write-Host "Generating producer from $SCHEMA_FILE"
-xregistry generate `
+xrcg generate `
     --style kafkaproducer `
     --language py `
     --projectname chmi_hydro_producer `

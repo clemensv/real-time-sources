@@ -3,14 +3,15 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import json
 import avro.schema
+import avro.name
 import avro.io
 
 
@@ -52,8 +53,8 @@ class Post:
     indexed_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="indexed_at"))
     seq: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="seq"))
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Post\", \"namespace\": \"Bluesky.Feed\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\", \"doc\": \"AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)\"}, {\"name\": \"cid\", \"type\": \"string\", \"doc\": \"Content Identifier (CID) of the post\"}, {\"name\": \"did\", \"type\": \"string\", \"doc\": \"Decentralized Identifier of the author\"}, {\"name\": \"handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the author\"}, {\"name\": \"text\", \"type\": \"string\", \"doc\": \"Text content of the post\"}, {\"name\": \"langs\", \"type\": {\"type\": \"array\", \"items\": \"string\"}, \"default\": [], \"doc\": \"Language codes for the post\"}, {\"name\": \"reply_parent\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"AT-URI of parent post if this is a reply\"}, {\"name\": \"reply_root\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"AT-URI of root post in thread\"}, {\"name\": \"embed_type\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Type of embedded content (images, external, record, etc.)\"}, {\"name\": \"embed_uri\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"URI of embedded content\"}, {\"name\": \"facets\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"JSON string of rich text facets (mentions, links, tags)\"}, {\"name\": \"tags\", \"type\": {\"type\": \"array\", \"items\": \"string\"}, \"default\": [], \"doc\": \"Hashtags in the post\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of post creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of when the post was indexed\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}], \"doc\": \"A post in the Bluesky feed\"}"
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"Post\", \"namespace\": \"Bluesky.Feed\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\", \"doc\": \"AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)\"}, {\"name\": \"cid\", \"type\": \"string\", \"doc\": \"Content Identifier (CID) of the post\"}, {\"name\": \"did\", \"type\": \"string\", \"doc\": \"Decentralized Identifier of the author\"}, {\"name\": \"handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the author\"}, {\"name\": \"text\", \"type\": \"string\", \"doc\": \"Text content of the post\"}, {\"name\": \"langs\", \"type\": {\"type\": \"array\", \"items\": \"string\"}, \"default\": [], \"doc\": \"Language codes for the post\"}, {\"name\": \"reply_parent\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"AT-URI of parent post if this is a reply\"}, {\"name\": \"reply_root\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"AT-URI of root post in thread\"}, {\"name\": \"embed_type\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Type of embedded content (images, external, record, etc.)\"}, {\"name\": \"embed_uri\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"URI of embedded content\"}, {\"name\": \"facets\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"JSON string of rich text facets (mentions, links, tags)\"}, {\"name\": \"tags\", \"type\": {\"type\": \"array\", \"items\": \"string\"}, \"default\": [], \"doc\": \"Hashtags in the post\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of post creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of when the post was indexed\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}], \"doc\": \"A post in the Bluesky feed\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

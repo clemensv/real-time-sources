@@ -157,8 +157,8 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type `noaa-goes-
-producer_data.microsoft.opendata.us.noaa.swpc.SpaceWeatherAlert`.
+### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type
+`noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.SpaceWeatherAlert`.
 
 
 
@@ -222,8 +222,8 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type `noaa-goes-
-producer_data.microsoft.opendata.us.noaa.swpc.PlanetaryKIndex`.
+### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type
+`noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.PlanetaryKIndex`.
 
 
 
@@ -287,8 +287,8 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type `noaa-goes-
-producer_data.microsoft.opendata.us.noaa.swpc.SolarWindSummary`.
+### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type
+`noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.SolarWindSummary`.
 
 
 

@@ -7,9 +7,9 @@ import sys
 import datetime
 from typing import Optional
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs-iv-producer_data/src')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs-iv-producer_data/tests')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs-iv-producer_kafka_producer/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs_iv_producer_data/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs_iv_producer_data/tests')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../usgs_iv_producer_kafka_producer/src')))
 
 import tempfile
 import pytest
@@ -18,36 +18,64 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from usgs-iv-producer_kafka_producer.producer import USGSSitesEventProducer
-from usgs-iv-producer_data import Site
-from usgs-iv-producer_data import SiteTimeseries
-from usgs-iv-producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
-from usgs-iv-producer_data import OtherParameter
-from usgs-iv-producer_data import Precipitation
-from usgs-iv-producer_data import Streamflow
-from usgs-iv-producer_data import GageHeight
-from usgs-iv-producer_data import WaterTemperature
-from usgs-iv-producer_data import DissolvedOxygen
-from usgs-iv-producer_data import PH
-from usgs-iv-producer_data import SpecificConductance
-from usgs-iv-producer_data import Turbidity
-from usgs-iv-producer_data import AirTemperature
-from usgs-iv-producer_data import WindSpeed
-from usgs-iv-producer_data import WindDirection
-from usgs-iv-producer_data import RelativeHumidity
-from usgs-iv-producer_data import BarometricPressure
-from usgs-iv-producer_data import TurbidityFNU
-from usgs-iv-producer_data import FDOM
-from usgs-iv-producer_data import ReservoirStorage
-from usgs-iv-producer_data import LakeElevationNGVD29
-from usgs-iv-producer_data import WaterDepth
-from usgs-iv-producer_data import EquipmentStatus
-from usgs-iv-producer_data import TidallyFilteredDischarge
-from usgs-iv-producer_data import WaterVelocity
-from usgs-iv-producer_data import EstuaryElevationNGVD29
-from usgs-iv-producer_data import LakeElevationNAVD88
-from usgs-iv-producer_data import Salinity
-from usgs-iv-producer_data import GateOpening
+from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer
+from usgs_iv_producer_data import Site
+from test_usgs_iv_producer_data_usgs_sites_site import Test_Site
+from usgs_iv_producer_data import SiteTimeseries
+from test_usgs_iv_producer_data_usgs_sites_sitetimeseries import Test_SiteTimeseries
+from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
+from usgs_iv_producer_data import OtherParameter
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_otherparameter import Test_OtherParameter
+from usgs_iv_producer_data import Precipitation
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_precipitation import Test_Precipitation
+from usgs_iv_producer_data import Streamflow
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_streamflow import Test_Streamflow
+from usgs_iv_producer_data import GageHeight
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_gageheight import Test_GageHeight
+from usgs_iv_producer_data import WaterTemperature
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_watertemperature import Test_WaterTemperature
+from usgs_iv_producer_data import DissolvedOxygen
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_dissolvedoxygen import Test_DissolvedOxygen
+from usgs_iv_producer_data import PH
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_ph import Test_PH
+from usgs_iv_producer_data import SpecificConductance
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_specificconductance import Test_SpecificConductance
+from usgs_iv_producer_data import Turbidity
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_turbidity import Test_Turbidity
+from usgs_iv_producer_data import AirTemperature
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_airtemperature import Test_AirTemperature
+from usgs_iv_producer_data import WindSpeed
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_windspeed import Test_WindSpeed
+from usgs_iv_producer_data import WindDirection
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_winddirection import Test_WindDirection
+from usgs_iv_producer_data import RelativeHumidity
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_relativehumidity import Test_RelativeHumidity
+from usgs_iv_producer_data import BarometricPressure
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_barometricpressure import Test_BarometricPressure
+from usgs_iv_producer_data import TurbidityFNU
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_turbidityfnu import Test_TurbidityFNU
+from usgs_iv_producer_data import FDOM
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_fdom import Test_FDOM
+from usgs_iv_producer_data import ReservoirStorage
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_reservoirstorage import Test_ReservoirStorage
+from usgs_iv_producer_data import LakeElevationNGVD29
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_lakeelevationngvd29 import Test_LakeElevationNGVD29
+from usgs_iv_producer_data import WaterDepth
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_waterdepth import Test_WaterDepth
+from usgs_iv_producer_data import EquipmentStatus
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_equipmentstatus import Test_EquipmentStatus
+from usgs_iv_producer_data import TidallyFilteredDischarge
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_tidallyfiltereddischarge import Test_TidallyFilteredDischarge
+from usgs_iv_producer_data import WaterVelocity
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_watervelocity import Test_WaterVelocity
+from usgs_iv_producer_data import EstuaryElevationNGVD29
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_estuaryelevationngvd29 import Test_EstuaryElevationNGVD29
+from usgs_iv_producer_data import LakeElevationNAVD88
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_lakeelevationnavd88 import Test_LakeElevationNAVD88
+from usgs_iv_producer_data import Salinity
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_salinity import Test_Salinity
+from usgs_iv_producer_data import GateOpening
+from test_usgs_iv_producer_data_usgs_instantaneousvalues_gateopening import Test_GateOpening
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -124,63 +152,19 @@ def test_usgs_sites_usgssitessite(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSSitesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Site
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_sites_site(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Site.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_sites_site(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_sites_usgssitessitetimeseries(kafka_emulator):
@@ -227,63 +211,19 @@ def test_usgs_sites_usgssitessitetimeseries(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSSitesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = SiteTimeseries
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_sites_site_timeseries(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_SiteTimeseries.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_sites_site_timeseries(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesotherparameter(kafka_emulator):
@@ -330,63 +270,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesotherparameter(kafka_em
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = OtherParameter
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_other_parameter(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_OtherParameter.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_other_parameter(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesprecipitation(kafka_emulator):
@@ -433,63 +329,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesprecipitation(kafka_emu
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Precipitation
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_precipitation(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Precipitation.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_precipitation(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_emulator):
@@ -536,63 +388,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_emulat
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Streamflow
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_streamflow(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Streamflow.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_streamflow(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgageheight(kafka_emulator):
@@ -639,63 +447,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgageheight(kafka_emulat
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = GageHeight
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_gage_height(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_GageHeight.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_gage_height(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatertemperature(kafka_emulator):
@@ -742,63 +506,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatertemperature(kafka_
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = WaterTemperature
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_water_temperature(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_WaterTemperature.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_water_temperature(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesdissolvedoxygen(kafka_emulator):
@@ -845,63 +565,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesdissolvedoxygen(kafka_e
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = DissolvedOxygen
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_dissolved_oxygen(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_DissolvedOxygen.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_dissolved_oxygen(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesph(kafka_emulator):
@@ -948,63 +624,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesph(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = PH
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_p_h(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_PH.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_p_h(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesspecificconductance(kafka_emulator):
@@ -1051,63 +683,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesspecificconductance(kaf
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = SpecificConductance
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_specific_conductance(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_SpecificConductance.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_specific_conductance(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidity(kafka_emulator):
@@ -1154,63 +742,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidity(kafka_emulato
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Turbidity
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_turbidity(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Turbidity.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_turbidity(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesairtemperature(kafka_emulator):
@@ -1257,63 +801,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesairtemperature(kafka_em
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = AirTemperature
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_air_temperature(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_AirTemperature.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_air_temperature(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswindspeed(kafka_emulator):
@@ -1360,63 +860,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswindspeed(kafka_emulato
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = WindSpeed
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_wind_speed(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_WindSpeed.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_wind_speed(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswinddirection(kafka_emulator):
@@ -1463,63 +919,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswinddirection(kafka_emu
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = WindDirection
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_wind_direction(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_WindDirection.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_wind_direction(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesrelativehumidity(kafka_emulator):
@@ -1566,63 +978,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesrelativehumidity(kafka_
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = RelativeHumidity
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_relative_humidity(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_RelativeHumidity.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_relative_humidity(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesbarometricpressure(kafka_emulator):
@@ -1669,63 +1037,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesbarometricpressure(kafk
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = BarometricPressure
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_barometric_pressure(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_BarometricPressure.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_barometric_pressure(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidityfnu(kafka_emulator):
@@ -1772,63 +1096,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidityfnu(kafka_emul
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = TurbidityFNU
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_turbidity_fnu(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_TurbidityFNU.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_turbidity_fnu(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesfdom(kafka_emulator):
@@ -1875,63 +1155,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesfdom(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = FDOM
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_f_dom(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_FDOM.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_f_dom(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesreservoirstorage(kafka_emulator):
@@ -1978,63 +1214,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesreservoirstorage(kafka_
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = ReservoirStorage
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_reservoir_storage(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_ReservoirStorage.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_reservoir_storage(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationngvd29(kafka_emulator):
@@ -2081,63 +1273,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationngvd29(kaf
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = LakeElevationNGVD29
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_lake_elevation_ngvd29(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_LakeElevationNGVD29.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_lake_elevation_ngvd29(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswaterdepth(kafka_emulator):
@@ -2184,63 +1332,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswaterdepth(kafka_emulat
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = WaterDepth
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_water_depth(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_WaterDepth.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_water_depth(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesequipmentstatus(kafka_emulator):
@@ -2287,63 +1391,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesequipmentstatus(kafka_e
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = EquipmentStatus
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_equipment_status(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_EquipmentStatus.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_equipment_status(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluestidallyfiltereddischarge(kafka_emulator):
@@ -2390,63 +1450,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluestidallyfiltereddischarg
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = TidallyFilteredDischarge
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_tidally_filtered_discharge(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_TidallyFilteredDischarge.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_tidally_filtered_discharge(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatervelocity(kafka_emulator):
@@ -2493,63 +1509,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatervelocity(kafka_emu
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = WaterVelocity
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_water_velocity(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_WaterVelocity.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_water_velocity(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesestuaryelevationngvd29(kafka_emulator):
@@ -2596,63 +1568,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesestuaryelevationngvd29(
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = EstuaryElevationNGVD29
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_estuary_elevation_ngvd29(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_EstuaryElevationNGVD29.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_estuary_elevation_ngvd29(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationnavd88(kafka_emulator):
@@ -2699,63 +1627,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationnavd88(kaf
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = LakeElevationNAVD88
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_lake_elevation_navd88(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_LakeElevationNAVD88.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_lake_elevation_navd88(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluessalinity(kafka_emulator):
@@ -2802,63 +1686,19 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluessalinity(kafka_emulator
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Salinity
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_salinity(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Salinity.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_salinity(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgateopening(kafka_emulator):
@@ -2905,61 +1745,17 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgateopening(kafka_emula
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = GateOpening
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_usgs_instantaneous_values_gate_opening(_source_uri = 'test', _agency_cd = 'test', _site_no = 'test', _parameter_cd = 'test', _timeseries_cd = 'test', _datetime = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_GateOpening.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_instantaneous_values_gate_opening(_source_uri = f'test_{i}', _agency_cd = f'test_{i}', _site_no = f'test_{i}', _parameter_cd = f'test_{i}', _timeseries_cd = f'test_{i}', _datetime = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()

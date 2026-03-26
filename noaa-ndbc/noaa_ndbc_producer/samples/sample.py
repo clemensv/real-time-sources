@@ -32,11 +32,12 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from noaa-ndbc-producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCEventProducer
+from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCEventProducer
 
 # imports for the data classes for each event
 
-from noaa-ndbc-producer_data.microsoft.opendata.us.noaa.ndbc.buoyobservation import BuoyObservation
+from noaa_ndbc_producer_data.microsoft.opendata.us.noaa.ndbc.buoyobservation import BuoyObservation
+from noaa_ndbc_producer_data.microsoft.opendata.us.noaa.ndbc.buoystation import BuoyStation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -63,6 +64,14 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation' event to Kafka topic.
     await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(data = _buoy_observation)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation' event: {_buoy_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.BuoyStation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.BuoyStation event
+    _buoy_station = BuoyStation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(data = _buoy_station)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation' event: {_buoy_station.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

@@ -29,11 +29,11 @@ class Test_TripDescriptor(unittest.TestCase):
         Create instance of TripDescriptor for testing
         """
         instance = TripDescriptor(
-            trip_id='wseoiwnhcjmbylrdnqid',
-            route_id='hrqdbfurzyaefjncfkgu',
-            direction_id=int(75),
-            start_time='cbwvdsmazoshqqydcatc',
-            start_date='ajgsfzowyxuubflemrat',
+            trip_id='ronovngxvvpnnowqfgvv',
+            route_id='xvwxqborkziojtwgzmpn',
+            direction_id=int(2),
+            start_time='sodpunduqremqecynhbq',
+            start_date='uelvfmsqzrlkoerjiacn',
             schedule_relationship=Test_ScheduleRelationship.create_instance()
         )
         return instance
@@ -43,7 +43,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test trip_id property
         """
-        test_value = 'wseoiwnhcjmbylrdnqid'
+        test_value = 'ronovngxvvpnnowqfgvv'
         self.instance.trip_id = test_value
         self.assertEqual(self.instance.trip_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'hrqdbfurzyaefjncfkgu'
+        test_value = 'xvwxqborkziojtwgzmpn'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test direction_id property
         """
-        test_value = int(75)
+        test_value = int(2)
         self.instance.direction_id = test_value
         self.assertEqual(self.instance.direction_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'cbwvdsmazoshqqydcatc'
+        test_value = 'sodpunduqremqecynhbq'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -75,7 +75,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test start_date property
         """
-        test_value = 'ajgsfzowyxuubflemrat'
+        test_value = 'uelvfmsqzrlkoerjiacn'
         self.instance.start_date = test_value
         self.assertEqual(self.instance.start_date, test_value)
     
@@ -87,3 +87,12 @@ class Test_TripDescriptor(unittest.TestCase):
         self.instance.schedule_relationship = test_value
         self.assertEqual(self.instance.schedule_relationship, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = TripDescriptor.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

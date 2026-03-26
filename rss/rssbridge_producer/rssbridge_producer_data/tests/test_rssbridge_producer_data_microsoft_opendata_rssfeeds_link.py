@@ -28,10 +28,10 @@ class Test_Link(unittest.TestCase):
         Create instance of Link for testing
         """
         instance = Link(
-            rel='eptwlrtpvquksfjssguc',
-            href='zftfcdttnkjertksrhiy',
-            type='bkslvlzosiunacszjcdu',
-            title='zaslhewnevivipuwsqyc'
+            rel='bmjhjklinncsmxmlhrop',
+            href='uydedakwimvobjupronl',
+            type='ojfuxcjypynvklhhygdf',
+            title='jphpkvfbahgutngwnybr'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Link(unittest.TestCase):
         """
         Test rel property
         """
-        test_value = 'eptwlrtpvquksfjssguc'
+        test_value = 'bmjhjklinncsmxmlhrop'
         self.instance.rel = test_value
         self.assertEqual(self.instance.rel, test_value)
     
@@ -48,7 +48,7 @@ class Test_Link(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'zftfcdttnkjertksrhiy'
+        test_value = 'uydedakwimvobjupronl'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -56,7 +56,7 @@ class Test_Link(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'bkslvlzosiunacszjcdu'
+        test_value = 'ojfuxcjypynvklhhygdf'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -64,7 +64,16 @@ class Test_Link(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'zaslhewnevivipuwsqyc'
+        test_value = 'jphpkvfbahgutngwnybr'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Link.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

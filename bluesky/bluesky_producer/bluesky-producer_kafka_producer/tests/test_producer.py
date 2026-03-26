@@ -7,9 +7,9 @@ import sys
 import datetime
 from typing import Optional
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../bluesky-producer_data/src')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../bluesky-producer_data/tests')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../bluesky-producer_kafka_producer/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../bluesky_producer_data/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../bluesky_producer_data/tests')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../bluesky_producer_kafka_producer/src')))
 
 import tempfile
 import pytest
@@ -18,13 +18,19 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from bluesky-producer_kafka_producer.producer import BlueskyFirehoseEventProducer
-from bluesky-producer_data import Post
-from bluesky-producer_data import Like
-from bluesky-producer_data import Repost
-from bluesky-producer_data import Follow
-from bluesky-producer_data import Block
-from bluesky-producer_data import Profile
+from bluesky_producer_kafka_producer.producer import BlueskyFirehoseEventProducer
+from bluesky_producer_data import Post
+from test_bluesky_producer_data_bluesky_feed_post import Test_Post
+from bluesky_producer_data import Like
+from test_bluesky_producer_data_bluesky_feed_like import Test_Like
+from bluesky_producer_data import Repost
+from test_bluesky_producer_data_bluesky_feed_repost import Test_Repost
+from bluesky_producer_data import Follow
+from test_bluesky_producer_data_bluesky_graph_follow import Test_Follow
+from bluesky_producer_data import Block
+from test_bluesky_producer_data_bluesky_graph_block import Test_Block
+from bluesky_producer_data import Profile
+from test_bluesky_producer_data_bluesky_actor_profile import Test_Profile
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -101,63 +107,19 @@ def test_blueskyfirehose_blueskyfeedpost(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = BlueskyFirehoseEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Post
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_bluesky_feed_post(_firehoseurl = 'test', _did = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Post.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_bluesky_feed_post(_firehoseurl = f'test_{i}', _did = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_blueskyfirehose_blueskyfeedlike(kafka_emulator):
@@ -204,63 +166,19 @@ def test_blueskyfirehose_blueskyfeedlike(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = BlueskyFirehoseEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Like
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_bluesky_feed_like(_firehoseurl = 'test', _did = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Like.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_bluesky_feed_like(_firehoseurl = f'test_{i}', _did = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_blueskyfirehose_blueskyfeedrepost(kafka_emulator):
@@ -307,63 +225,19 @@ def test_blueskyfirehose_blueskyfeedrepost(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = BlueskyFirehoseEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Repost
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_bluesky_feed_repost(_firehoseurl = 'test', _did = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Repost.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_bluesky_feed_repost(_firehoseurl = f'test_{i}', _did = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_blueskyfirehose_blueskygraphfollow(kafka_emulator):
@@ -410,63 +284,19 @@ def test_blueskyfirehose_blueskygraphfollow(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = BlueskyFirehoseEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Follow
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_bluesky_graph_follow(_firehoseurl = 'test', _did = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Follow.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_bluesky_graph_follow(_firehoseurl = f'test_{i}', _did = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_blueskyfirehose_blueskygraphblock(kafka_emulator):
@@ -513,63 +343,19 @@ def test_blueskyfirehose_blueskygraphblock(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = BlueskyFirehoseEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Block
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_bluesky_graph_block(_firehoseurl = 'test', _did = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Block.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_bluesky_graph_block(_firehoseurl = f'test_{i}', _did = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_blueskyfirehose_blueskyactorprofile(kafka_emulator):
@@ -616,61 +402,17 @@ def test_blueskyfirehose_blueskyactorprofile(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = BlueskyFirehoseEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Profile
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_bluesky_actor_profile(_firehoseurl = 'test', _did = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Profile.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_bluesky_actor_profile(_firehoseurl = f'test_{i}', _did = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()

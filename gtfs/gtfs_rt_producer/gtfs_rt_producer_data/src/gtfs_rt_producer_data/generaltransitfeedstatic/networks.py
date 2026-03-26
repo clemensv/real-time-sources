@@ -3,15 +3,20 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
+from dataclasses import dataclass
 import dataclasses_json
-import json
+from dataclasses_json import Undefined, dataclass_json
+import avro.schema
+import avro.name
+import avro.io
 
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
 class Networks:
     """
     Defines networks.
@@ -26,6 +31,9 @@ class Networks:
     networkDesc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkDesc"))
     networkUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="networkUrl"))
     
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"Networks\", \"namespace\": \"GeneralTransitFeedStatic\", \"doc\": \"Defines networks.\", \"fields\": [{\"name\": \"networkId\", \"type\": \"string\", \"doc\": \"Identifies a network.\"}, {\"name\": \"networkName\", \"type\": \"string\", \"doc\": \"Name of the network.\"}, {\"name\": \"networkDesc\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Description of the network.\"}, {\"name\": \"networkUrl\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"URL of a web page about the network.\"}]}"), avro.name.Names()
+    )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
@@ -76,6 +84,8 @@ class Networks:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -85,12 +95,24 @@ class Networks:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        if content_type == 'application/json':
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            stream = io.BytesIO()
+            writer = avro.io.DatumWriter(self.AvroType)
+            encoder = avro.io.BinaryEncoder(stream)
+            writer.write(self.to_serializer_dict(), encoder)
+            result = stream.getvalue()
+        if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
+            # Handle string result from to_json()
+            if isinstance(result, str):
+                result = result.encode('utf-8')
             with io.BytesIO() as stream:
                 with gzip.GzipFile(fileobj=stream, mode='wb') as gzip_file:
                     gzip_file.write(result)
@@ -110,6 +132,10 @@ class Networks:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
+                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
+                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
+                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -132,7 +158,22 @@ class Networks:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        if content_type == 'application/json':
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
+            reader = avro.io.DatumReader(cls.AvroType)
+            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+                decoder = avro.io.BinaryDecoder(stream)
+            else:
+                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
+            _record = reader.read(decoder)            
+            return Networks.from_serializer_dict(_record)
+        if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)

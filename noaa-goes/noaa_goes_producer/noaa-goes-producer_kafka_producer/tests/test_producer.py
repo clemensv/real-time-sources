@@ -7,9 +7,9 @@ import sys
 import datetime
 from typing import Optional
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa-goes-producer_data/src')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa-goes-producer_data/tests')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa-goes-producer_kafka_producer/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_goes_producer_data/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_goes_producer_data/tests')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_goes_producer_kafka_producer/src')))
 
 import tempfile
 import pytest
@@ -18,13 +18,13 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from noaa-goes-producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCEventProducer
-from noaa-goes-producer_data import SpaceWeatherAlert
-from test_noaa-goes-producer_data_microsoft_opendata_us_noaa_swpc_spaceweatheralert import Test_SpaceWeatherAlert
-from noaa-goes-producer_data import PlanetaryKIndex
-from test_noaa-goes-producer_data_microsoft_opendata_us_noaa_swpc_planetarykindex import Test_PlanetaryKIndex
-from noaa-goes-producer_data import SolarWindSummary
-from test_noaa-goes-producer_data_microsoft_opendata_us_noaa_swpc_solarwindsummary import Test_SolarWindSummary
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCEventProducer
+from noaa_goes_producer_data import SpaceWeatherAlert
+from test_noaa_goes_producer_data_microsoft_opendata_us_noaa_swpc_spaceweatheralert import Test_SpaceWeatherAlert
+from noaa_goes_producer_data import PlanetaryKIndex
+from test_noaa_goes_producer_data_microsoft_opendata_us_noaa_swpc_planetarykindex import Test_PlanetaryKIndex
+from noaa_goes_producer_data import SolarWindSummary
+from test_noaa_goes_producer_data_microsoft_opendata_us_noaa_swpc_solarwindsummary import Test_SolarWindSummary
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

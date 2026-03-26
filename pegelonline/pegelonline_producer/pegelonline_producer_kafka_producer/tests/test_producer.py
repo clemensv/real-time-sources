@@ -20,7 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from pegelonline_producer_kafka_producer.producer import DeWsvPegelonlineEventProducer
 from pegelonline_producer_data import Station
+from test_pegelonline_producer_data_de_wsv_pegelonline_station import Test_Station
 from pegelonline_producer_data import CurrentMeasurement
+from test_pegelonline_producer_data_de_wsv_pegelonline_currentmeasurement import Test_CurrentMeasurement
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -97,63 +99,19 @@ def test_de_wsv_pegelonline_dewsvpegelonlinestation(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DeWsvPegelonlineEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = Station
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_de_wsv_pegelonline_station(_feedurl = 'test', _station_id = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_Station.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_de_wsv_pegelonline_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 def test_de_wsv_pegelonline_dewsvpegelonlinecurrentmeasurement(kafka_emulator):
@@ -200,61 +158,17 @@ def test_de_wsv_pegelonline_dewsvpegelonlinecurrentmeasurement(kafka_emulator):
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = DeWsvPegelonlineEventProducer(kafka_producer, topic, 'binary')
-    # Create minimal test data instance to satisfy schema requirements
-    try:
-        import inspect
-        import typing
-        import enum
-        data_class = CurrentMeasurement
-        sig = inspect.signature(data_class.__init__)
-        kwargs = {}
-        for param_name, param in sig.parameters.items():
-            if param_name == 'self':
-                continue
-            if param.default == inspect.Parameter.empty or param.kind == inspect.Parameter.KEYWORD_ONLY:
-                # Get the actual type, unwrapping Optional/Union if needed
-                ann = param.annotation
-                origin = typing.get_origin(ann)
-                
-                # Handle Optional[X] which is Union[X, None]
-                if origin is typing.Union:
-                    args = typing.get_args(ann)
-                    # Use the first non-None type
-                    ann = next((a for a in args if a is not type(None)), args[0])
-                    origin = typing.get_origin(ann)
-                
-                # Now match based on the actual type
-                ann_str = str(ann).lower()
-                if ann is str or ann == 'str' or 'str' in ann_str:
-                    kwargs[param_name] = ""
-                elif ann is int or ann == 'int' or 'int' in ann_str:
-                    kwargs[param_name] = 0
-                elif ann is float or ann == 'float' or 'float' in ann_str:
-                    kwargs[param_name] = 0.0
-                elif ann is bool or ann == 'bool' or 'bool' in ann_str:
-                    kwargs[param_name] = False
-                elif origin is list or ann is list or 'list' in ann_str:
-                    kwargs[param_name] = []
-                elif origin is dict or ann is dict or 'dict' in ann_str:
-                    kwargs[param_name] = {}
-                elif isinstance(ann, type) and issubclass(ann, enum.Enum):
-                    # For enums, use the first value
-                    kwargs[param_name] = list(ann)[0] if list(ann) else None
-                elif 'enum' in ann_str:
-                    # Fallback for enum detection via string
-                    try:
-                        kwargs[param_name] = list(ann)[0] if hasattr(ann, '__iter__') else None
-                    except:
-                        kwargs[param_name] = None
-                else:
-                    kwargs[param_name] = None
-        event_data = data_class(**kwargs)
-    except Exception as e:
-        pytest.skip(f"Could not create test data instance: {e}")
-    producer_instance.send_de_wsv_pegelonline_current_measurement(_feedurl = 'test', _station_id = 'test', data = event_data)
+    # Create valid test data using the test helper
+    event_data = Test_CurrentMeasurement.create_instance()
     
-    # Flush producer to ensure message is sent before consumer polling
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_de_wsv_pegelonline_current_measurement(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    assert on_event()
+    # Verify all 5 messages received
+    for i in range(5):
+        assert on_event(), f"Failed to receive message {i+1} of 5"
     consumer.close()

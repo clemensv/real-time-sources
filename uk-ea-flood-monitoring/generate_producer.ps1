@@ -1,4 +1,4 @@
-# Generate the UK EA Flood Monitoring producer using xregistry
+# Generate the UK EA Flood Monitoring producer using xrcg
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = $scriptDir
@@ -17,10 +17,10 @@ if (Test-Path $outputDir) {
 
 # Generate the Kafka producer code
 Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xregistry generate --style kafkaproducer --language py --projectname uk-ea-flood-monitoring-producer --definitions $xregFile --output $outputDir
+xrcg generate --style kafkaproducer --language py --projectname uk-ea-flood-monitoring-producer --definitions $xregFile --output $outputDir
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "✓ Producer generation completed successfully" -ForegroundColor Green
+    Write-Host "Producer generation completed successfully" -ForegroundColor Green
     Write-Host ""
     Write-Host "Next steps:" -ForegroundColor Cyan
     Write-Host "  1. Run copy_generated_producer.ps1 to copy files into the main package" -ForegroundColor Gray
@@ -28,6 +28,6 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "  3. Install dependencies: pip install ." -ForegroundColor Gray
     Write-Host "  4. Run the poller: python -m uk_ea_flood_monitoring" -ForegroundColor Gray
 } else {
-    Write-Host "✗ Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
     exit $LASTEXITCODE
 }

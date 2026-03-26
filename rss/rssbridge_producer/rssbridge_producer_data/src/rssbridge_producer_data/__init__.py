@@ -1,3 +1,3 @@
-from .microsoft import opendata
+from .microsoft import FeedItemAuthor, FeedItemPublisher, FeedItemSummary, FeedItemTitle, Link, FeedItemSource, FeedItemContent, FeedItemEnclosure, FeedItem
 
-__all__ = ["opendata"]
+__all__ = ["FeedItemAuthor", "FeedItemPublisher", "FeedItemSummary", "FeedItemTitle", "Link", "FeedItemSource", "FeedItemContent", "FeedItemEnclosure", "FeedItem"]

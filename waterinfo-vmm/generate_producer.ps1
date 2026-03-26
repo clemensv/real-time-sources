@@ -5,7 +5,7 @@ $SCHEMA_FILE = Join-Path $XREG_ROOT "waterinfo_vmm.xreg.json"
 $OUTPUT_DIR = Join-Path $PSScriptRoot "waterinfo_vmm_producer_tmp"
 
 Write-Host "Generating producer from $SCHEMA_FILE"
-xregistry generate `
+xrcg generate `
     --style kafkaproducer `
     --language py `
     --projectname waterinfo_vmm_producer `

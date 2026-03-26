@@ -29,11 +29,11 @@ class Test_EntitySelector(unittest.TestCase):
         Create instance of EntitySelector for testing
         """
         instance = EntitySelector(
-            agency_id='fucoxkmeebkdfscihkkc',
-            route_id='moddjmnxssievxculgny',
-            route_type=int(42),
+            agency_id='dlphbjtewudcaefjdncp',
+            route_id='amlemgtjzhyksevnnuvk',
+            route_type=int(79),
             trip=Test_TripDescriptor.create_instance(),
-            stop_id='oatrnfpdcbjgzyitovap'
+            stop_id='oorjjvdwscxiiijobite'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'fucoxkmeebkdfscihkkc'
+        test_value = 'dlphbjtewudcaefjdncp'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'moddjmnxssievxculgny'
+        test_value = 'amlemgtjzhyksevnnuvk'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test route_type property
         """
-        test_value = int(42)
+        test_value = int(79)
         self.instance.route_type = test_value
         self.assertEqual(self.instance.route_type, test_value)
     
@@ -74,7 +74,16 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'oatrnfpdcbjgzyitovap'
+        test_value = 'oorjjvdwscxiiijobite'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = EntitySelector.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

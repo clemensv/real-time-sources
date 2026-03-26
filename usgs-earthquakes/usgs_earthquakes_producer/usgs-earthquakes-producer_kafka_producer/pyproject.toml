@@ -1,15 +1,15 @@
 [tool.poetry]
 name = "usgs-earthquakes-producer-kafka-producer"
-description = "usgs-earthquakes-producer_kafka_producer Kafka producer library"
+description = "usgs_earthquakes_producer_kafka_producer Kafka producer library"
 authors = ["Your Name <your.email@example.com>"]
 version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
-packages = [{include = "usgs-earthquakes-producer_kafka_producer", from = "src"}]
+packages = [{include = "usgs_earthquakes_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-usgs-earthquakes-producer-data = {path = "../usgs-earthquakes-producer_data", develop = true}
+usgs-earthquakes-producer-data = {path = "../usgs_earthquakes_producer_data", develop = true}
 confluent-kafka = ">=2.4.0"
-cloudevents = ">=1.10.1"
+cloudevents = ">=1.10.1,<2.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.2.2"

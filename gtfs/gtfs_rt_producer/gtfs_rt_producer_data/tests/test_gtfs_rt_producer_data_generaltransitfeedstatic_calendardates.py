@@ -29,8 +29,8 @@ class Test_CalendarDates(unittest.TestCase):
         Create instance of CalendarDates for testing
         """
         instance = CalendarDates(
-            serviceId='muefqsicgieubakujtyi',
-            date='eyifzcdbtqxnabfwfmnw',
+            serviceId='cqisgpamugxjslyxrvsw',
+            date='nqfdxsnhobnszfoccvxn',
             exceptionType=Test_ExceptionType.create_instance()
         )
         return instance
@@ -40,7 +40,7 @@ class Test_CalendarDates(unittest.TestCase):
         """
         Test serviceId property
         """
-        test_value = 'muefqsicgieubakujtyi'
+        test_value = 'cqisgpamugxjslyxrvsw'
         self.instance.serviceId = test_value
         self.assertEqual(self.instance.serviceId, test_value)
     
@@ -48,7 +48,7 @@ class Test_CalendarDates(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'eyifzcdbtqxnabfwfmnw'
+        test_value = 'nqfdxsnhobnszfoccvxn'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     
@@ -60,3 +60,12 @@ class Test_CalendarDates(unittest.TestCase):
         self.instance.exceptionType = test_value
         self.assertEqual(self.instance.exceptionType, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = CalendarDates.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

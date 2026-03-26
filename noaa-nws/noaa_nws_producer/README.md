@@ -157,8 +157,8 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAANWSProducer- `data`: The event data of type `noaa-nws-
-producer_data.microsoft.opendata.us.noaa.nws.WeatherAlert`.
+### MicrosoftOpenDataUSNOAANWSProducer- `data`: The event data of type
+`noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.WeatherAlert`.
 
 
 
@@ -188,6 +188,71 @@ responsible for calling the appropriate handler function when a message is recei
 
 microsoft_open_data_us_noaa_nws_dispatcher.microsoft_open_data_us_noaa_nws_weather_alert_async =
 microsoft_open_data_us_noaa_nws_weather_alert_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_nws_zone_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_nws_zone_async:  Callable[[ConsumerRecord, CloudEvent,
+Zone], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.NWS.Zone`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAANWSProducer- `data`: The event data of type
+`noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.Zone`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.NWS` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_nws_zone_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Zone) ->
+None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAANWSProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_nws_dispatcher.microsoft_open_data_us_noaa_nws_zone_async =
+microsoft_open_data_us_noaa_nws_zone_event
 
 **Parameters:**```
 
@@ -295,6 +360,109 @@ await producer.send_microsoft_open_data_us_noaa_nws_weather_alert_batch(```
         WeatherAlert(...),
 
         WeatherAlert(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_microsoft_open_data_us_noaa_nws_zone`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_microsoft_open_data_us_noaa_nws_zone(
+
+    self,##### `_process_event`
+
+    data: Zone,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Microsoft.OpenData.US.NOAA.NWS.Zone` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Zone`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_microsoft_open_data_us_noaa_nws_zone(
+
+    data=Zone(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Microsoft.OpenData.US.NOAA.NWS.Zone` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_microsoft_open_data_us_noaa_nws_zone_batch(```
+
+    messages=[
+
+        Zone(...),Initializes the runner with a Kafka consumer.
+
+        Zone(...),
+
+        Zone(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

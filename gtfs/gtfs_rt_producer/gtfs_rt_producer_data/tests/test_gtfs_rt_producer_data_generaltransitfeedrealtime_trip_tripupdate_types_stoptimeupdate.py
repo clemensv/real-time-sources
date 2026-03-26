@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeupdate_types_schedulerelationship import Test_ScheduleRelationship
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeevent import Test_StopTimeEvent
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeupdate_types_schedulerelationship import Test_ScheduleRelationship
 
 
 class Test_StopTimeUpdate(unittest.TestCase):
@@ -30,8 +30,8 @@ class Test_StopTimeUpdate(unittest.TestCase):
         Create instance of StopTimeUpdate for testing
         """
         instance = StopTimeUpdate(
-            stop_sequence=int(62),
-            stop_id='hrfvmbsjpracdfsntbyn',
+            stop_sequence=int(26),
+            stop_id='kgfttxwrrsdbgzftzlpl',
             arrival=Test_StopTimeEvent.create_instance(),
             departure=Test_StopTimeEvent.create_instance(),
             schedule_relationship=Test_ScheduleRelationship.create_instance()
@@ -43,7 +43,7 @@ class Test_StopTimeUpdate(unittest.TestCase):
         """
         Test stop_sequence property
         """
-        test_value = int(62)
+        test_value = int(26)
         self.instance.stop_sequence = test_value
         self.assertEqual(self.instance.stop_sequence, test_value)
     
@@ -51,7 +51,7 @@ class Test_StopTimeUpdate(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'hrfvmbsjpracdfsntbyn'
+        test_value = 'kgfttxwrrsdbgzftzlpl'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     
@@ -79,3 +79,12 @@ class Test_StopTimeUpdate(unittest.TestCase):
         self.instance.schedule_relationship = test_value
         self.assertEqual(self.instance.schedule_relationship, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = StopTimeUpdate.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

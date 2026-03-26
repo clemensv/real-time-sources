@@ -1,2 +1,2 @@
-pip install .\noaa-goes-producer_data
-pip install .\noaa-goes-producer_kafka_producer
+pip install .\noaa_goes_producer_data
+pip install .\noaa_goes_producer_kafka_producer

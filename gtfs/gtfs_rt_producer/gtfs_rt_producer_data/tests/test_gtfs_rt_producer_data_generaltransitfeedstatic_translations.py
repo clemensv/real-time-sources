@@ -28,10 +28,10 @@ class Test_Translations(unittest.TestCase):
         Create instance of Translations for testing
         """
         instance = Translations(
-            tableName='bidjebznjenmwevvghsw',
-            fieldName='mvtivrpbktqzisldzoqb',
-            language='vekfdrshczsfdpvxmfsh',
-            translation='gjzxtavdwgltthceikpi'
+            tableName='vsvftefxnpgadawcwuzx',
+            fieldName='syybnbquhbhxttzyypib',
+            language='ruuxppwdaaltxzfjgjkr',
+            translation='zbrbclclikryccanzirh'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test tableName property
         """
-        test_value = 'bidjebznjenmwevvghsw'
+        test_value = 'vsvftefxnpgadawcwuzx'
         self.instance.tableName = test_value
         self.assertEqual(self.instance.tableName, test_value)
     
@@ -48,7 +48,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test fieldName property
         """
-        test_value = 'mvtivrpbktqzisldzoqb'
+        test_value = 'syybnbquhbhxttzyypib'
         self.instance.fieldName = test_value
         self.assertEqual(self.instance.fieldName, test_value)
     
@@ -56,7 +56,7 @@ class Test_Translations(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'vekfdrshczsfdpvxmfsh'
+        test_value = 'ruuxppwdaaltxzfjgjkr'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -64,7 +64,16 @@ class Test_Translations(unittest.TestCase):
         """
         Test translation property
         """
-        test_value = 'gjzxtavdwgltthceikpi'
+        test_value = 'zbrbclclikryccanzirh'
         self.instance.translation = test_value
         self.assertEqual(self.instance.translation, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Translations.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

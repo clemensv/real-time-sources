@@ -28,11 +28,11 @@ class Test_Position(unittest.TestCase):
         Create instance of Position for testing
         """
         instance = Position(
-            latitude=float(69.78022607183718),
-            longitude=float(3.226088239786229),
-            bearing=float(86.09242779402788),
-            odometer=float(12.140340869844756),
-            speed=float(18.86335485532653)
+            latitude=float(57.55607608066688),
+            longitude=float(18.19137395504713),
+            bearing=float(75.71793790331381),
+            odometer=float(77.50462053680927),
+            speed=float(52.92780546623921)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Position(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(69.78022607183718)
+        test_value = float(57.55607608066688)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -49,7 +49,7 @@ class Test_Position(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(3.226088239786229)
+        test_value = float(18.19137395504713)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -57,7 +57,7 @@ class Test_Position(unittest.TestCase):
         """
         Test bearing property
         """
-        test_value = float(86.09242779402788)
+        test_value = float(75.71793790331381)
         self.instance.bearing = test_value
         self.assertEqual(self.instance.bearing, test_value)
     
@@ -65,7 +65,7 @@ class Test_Position(unittest.TestCase):
         """
         Test odometer property
         """
-        test_value = float(12.140340869844756)
+        test_value = float(77.50462053680927)
         self.instance.odometer = test_value
         self.assertEqual(self.instance.odometer, test_value)
     
@@ -73,7 +73,16 @@ class Test_Position(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(18.86335485532653)
+        test_value = float(52.92780546623921)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Position.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

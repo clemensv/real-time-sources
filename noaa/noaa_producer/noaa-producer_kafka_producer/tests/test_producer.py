@@ -7,9 +7,9 @@ import sys
 import datetime
 from typing import Optional
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa-producer_data/src')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa-producer_data/tests')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa-producer_kafka_producer/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_producer_data/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_producer_data/tests')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_producer_kafka_producer/src')))
 
 import tempfile
 import pytest
@@ -18,33 +18,33 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from noaa-producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAEventProducer
-from noaa-producer_data import WaterLevel
-from test_noaa-producer_data_microsoft_opendata_us_noaa_waterlevel import Test_WaterLevel
-from noaa-producer_data import Predictions
-from test_noaa-producer_data_microsoft_opendata_us_noaa_predictions import Test_Predictions
-from noaa-producer_data import AirPressure
-from test_noaa-producer_data_microsoft_opendata_us_noaa_airpressure import Test_AirPressure
-from noaa-producer_data import AirTemperature
-from test_noaa-producer_data_microsoft_opendata_us_noaa_airtemperature import Test_AirTemperature
-from noaa-producer_data import WaterTemperature
-from test_noaa-producer_data_microsoft_opendata_us_noaa_watertemperature import Test_WaterTemperature
-from noaa-producer_data import Wind
-from test_noaa-producer_data_microsoft_opendata_us_noaa_wind import Test_Wind
-from noaa-producer_data import Humidity
-from test_noaa-producer_data_microsoft_opendata_us_noaa_humidity import Test_Humidity
-from noaa-producer_data import Conductivity
-from test_noaa-producer_data_microsoft_opendata_us_noaa_conductivity import Test_Conductivity
-from noaa-producer_data import Salinity
-from test_noaa-producer_data_microsoft_opendata_us_noaa_salinity import Test_Salinity
-from noaa-producer_data import Station
-from test_noaa-producer_data_microsoft_opendata_us_noaa_station import Test_Station
-from noaa-producer_data import Visibility
-from test_noaa-producer_data_microsoft_opendata_us_noaa_visibility import Test_Visibility
-from noaa-producer_data import Currents
-from test_noaa-producer_data_microsoft_opendata_us_noaa_currents import Test_Currents
-from noaa-producer_data import CurrentPredictions
-from test_noaa-producer_data_microsoft_opendata_us_noaa_currentpredictions import Test_CurrentPredictions
+from noaa_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAEventProducer
+from noaa_producer_data import WaterLevel
+from test_noaa_producer_data_microsoft_opendata_us_noaa_waterlevel import Test_WaterLevel
+from noaa_producer_data import Predictions
+from test_noaa_producer_data_microsoft_opendata_us_noaa_predictions import Test_Predictions
+from noaa_producer_data import AirPressure
+from test_noaa_producer_data_microsoft_opendata_us_noaa_airpressure import Test_AirPressure
+from noaa_producer_data import AirTemperature
+from test_noaa_producer_data_microsoft_opendata_us_noaa_airtemperature import Test_AirTemperature
+from noaa_producer_data import WaterTemperature
+from test_noaa_producer_data_microsoft_opendata_us_noaa_watertemperature import Test_WaterTemperature
+from noaa_producer_data import Wind
+from test_noaa_producer_data_microsoft_opendata_us_noaa_wind import Test_Wind
+from noaa_producer_data import Humidity
+from test_noaa_producer_data_microsoft_opendata_us_noaa_humidity import Test_Humidity
+from noaa_producer_data import Conductivity
+from test_noaa_producer_data_microsoft_opendata_us_noaa_conductivity import Test_Conductivity
+from noaa_producer_data import Salinity
+from test_noaa_producer_data_microsoft_opendata_us_noaa_salinity import Test_Salinity
+from noaa_producer_data import Station
+from test_noaa_producer_data_microsoft_opendata_us_noaa_station import Test_Station
+from noaa_producer_data import Visibility
+from test_noaa_producer_data_microsoft_opendata_us_noaa_visibility import Test_Visibility
+from noaa_producer_data import Currents
+from test_noaa_producer_data_microsoft_opendata_us_noaa_currents import Test_Currents
+from noaa_producer_data import CurrentPredictions
+from test_noaa_producer_data_microsoft_opendata_us_noaa_currentpredictions import Test_CurrentPredictions
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

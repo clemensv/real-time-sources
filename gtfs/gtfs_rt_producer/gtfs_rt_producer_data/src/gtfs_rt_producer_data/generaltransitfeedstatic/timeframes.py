@@ -3,17 +3,22 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
+from dataclasses import dataclass
 import dataclasses_json
-import json
+from dataclasses_json import Undefined, dataclass_json
+import avro.schema
+import avro.name
+import avro.io
 from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
 
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
 class Timeframes:
     """
     Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.
@@ -28,6 +33,9 @@ class Timeframes:
     endTime: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="endTime"))
     serviceDates: typing.Union[Calendar, CalendarDates]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="serviceDates"))
     
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"Timeframes\", \"namespace\": \"GeneralTransitFeedStatic\", \"doc\": \"Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.\", \"fields\": [{\"name\": \"timeframeGroupId\", \"type\": \"string\", \"doc\": \"Identifies a timeframe or set of timeframes.\"}, {\"name\": \"startTime\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Defines the beginning of a timeframe.\"}, {\"name\": \"endTime\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Defines the end of a timeframe.\"}, {\"name\": \"serviceDates\", \"type\": [{\"type\": \"record\", \"name\": \"Calendar\", \"fields\": [{\"name\": \"serviceId\", \"type\": \"string\", \"doc\": \"Identifies a set of dates when service is available for one or more routes.\"}, {\"name\": \"monday\", \"type\": {\"type\": \"enum\", \"name\": \"ServiceAvailability\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"NO_SERVICE\", \"SERVICE_AVAILABLE\"], \"doc\": \"Indicates whether the service operates on all Mondays in the date range specified. Symbols: NO_SERVICE - Service is not available; SERVICE_AVAILABLE - Service is available.\"}, \"doc\": \"Indicates whether the service operates on all Mondays in the date range specified.\"}, {\"name\": \"tuesday\", \"type\": \"GeneralTransitFeedStatic.ServiceAvailability\", \"doc\": \"Indicates whether the service operates on all Tuesdays in the date range specified.\"}, {\"name\": \"wednesday\", \"type\": \"GeneralTransitFeedStatic.ServiceAvailability\", \"doc\": \"Indicates whether the service operates on all Wednesdays in the date range specified.\"}, {\"name\": \"thursday\", \"type\": \"GeneralTransitFeedStatic.ServiceAvailability\", \"doc\": \"Indicates whether the service operates on all Thursdays in the date range specified.\"}, {\"name\": \"friday\", \"type\": \"GeneralTransitFeedStatic.ServiceAvailability\", \"doc\": \"Indicates whether the service operates on all Fridays in the date range specified.\"}, {\"name\": \"saturday\", \"type\": \"GeneralTransitFeedStatic.ServiceAvailability\", \"doc\": \"Indicates whether the service operates on all Saturdays in the date range specified.\"}, {\"name\": \"sunday\", \"type\": \"GeneralTransitFeedStatic.ServiceAvailability\", \"doc\": \"Indicates whether the service operates on all Sundays in the date range specified.\"}, {\"name\": \"startDate\", \"type\": \"string\", \"doc\": \"Start service day for the service interval.\"}, {\"name\": \"endDate\", \"type\": \"string\", \"doc\": \"End service day for the service interval.\"}]}, {\"type\": \"record\", \"name\": \"CalendarDates\", \"fields\": [{\"name\": \"serviceId\", \"type\": \"string\", \"doc\": \"Identifies a set of dates when a service exception occurs for one or more routes.\"}, {\"name\": \"date\", \"type\": \"string\", \"doc\": \"Date when service exception occurs.\"}, {\"name\": \"exceptionType\", \"type\": {\"type\": \"enum\", \"name\": \"ExceptionType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"SERVICE_ADDED\", \"SERVICE_REMOVED\"], \"doc\": \"Indicates whether service is available on the date specified. Symbols: SERVICE_ADDED - Service has been added for the specified date; SERVICE_REMOVED - Service has been removed for the specified date.\"}, \"doc\": \"Indicates whether service is available on the date specified.\"}]}], \"doc\": \"Identifies a set of dates when service is available for one or more routes.\"}]}"), avro.name.Names()
+    )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
@@ -78,6 +86,8 @@ class Timeframes:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -87,12 +97,24 @@ class Timeframes:
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        if content_type == 'application/json':
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            stream = io.BytesIO()
+            writer = avro.io.DatumWriter(self.AvroType)
+            encoder = avro.io.BinaryEncoder(stream)
+            writer.write(self.to_serializer_dict(), encoder)
+            result = stream.getvalue()
+        if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
 
         if result is not None and content_type.endswith('+gzip'):
+            # Handle string result from to_json()
+            if isinstance(result, str):
+                result = result.encode('utf-8')
             with io.BytesIO() as stream:
                 with gzip.GzipFile(fileobj=stream, mode='wb') as gzip_file:
                     gzip_file.write(result)
@@ -112,6 +134,10 @@ class Timeframes:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
+                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
+                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
+                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -134,7 +160,22 @@ class Timeframes:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        if content_type == 'application/json':
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
+            reader = avro.io.DatumReader(cls.AvroType)
+            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+                decoder = avro.io.BinaryDecoder(stream)
+            else:
+                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
+            _record = reader.read(decoder)            
+            return Timeframes.from_serializer_dict(_record)
+        if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)

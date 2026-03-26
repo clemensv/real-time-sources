@@ -1,8 +1,8 @@
-from .tripdescriptor_types import schedulerelationship
+from .tripdescriptor_types import ScheduleRelationship
 from .tripdescriptor import TripDescriptor
 from .vehicledescriptor import VehicleDescriptor
 from .position import Position
-from .vehicleposition_types import vehiclestopstatus, congestionlevel, occupancystatus
+from .vehicleposition_types import VehicleStopStatus, CongestionLevel, OccupancyStatus
 from .vehicleposition import VehiclePosition
 
-__all__ = ["schedulerelationship", "TripDescriptor", "VehicleDescriptor", "Position", "vehiclestopstatus", "congestionlevel", "occupancystatus", "VehiclePosition"]
+__all__ = ["ScheduleRelationship", "TripDescriptor", "VehicleDescriptor", "Position", "VehicleStopStatus", "CongestionLevel", "OccupancyStatus", "VehiclePosition"]

@@ -29,7 +29,7 @@ class Test_Calendar(unittest.TestCase):
         Create instance of Calendar for testing
         """
         instance = Calendar(
-            serviceId='owdfwfbrcrjwlsjqsnfa',
+            serviceId='algmnluxicqudgsmfunw',
             monday=Test_ServiceAvailability.create_instance(),
             tuesday=Test_ServiceAvailability.create_instance(),
             wednesday=Test_ServiceAvailability.create_instance(),
@@ -37,8 +37,8 @@ class Test_Calendar(unittest.TestCase):
             friday=Test_ServiceAvailability.create_instance(),
             saturday=Test_ServiceAvailability.create_instance(),
             sunday=Test_ServiceAvailability.create_instance(),
-            startDate='bkutfhsfimwkocvveydf',
-            endDate='lcccrgjeupgftijcshhp'
+            startDate='visrjyqtfqbzfyokluhc',
+            endDate='murbmdsmxliuinotqvzv'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test serviceId property
         """
-        test_value = 'owdfwfbrcrjwlsjqsnfa'
+        test_value = 'algmnluxicqudgsmfunw'
         self.instance.serviceId = test_value
         self.assertEqual(self.instance.serviceId, test_value)
     
@@ -111,7 +111,7 @@ class Test_Calendar(unittest.TestCase):
         """
         Test startDate property
         """
-        test_value = 'bkutfhsfimwkocvveydf'
+        test_value = 'visrjyqtfqbzfyokluhc'
         self.instance.startDate = test_value
         self.assertEqual(self.instance.startDate, test_value)
     
@@ -119,7 +119,16 @@ class Test_Calendar(unittest.TestCase):
         """
         Test endDate property
         """
-        test_value = 'lcccrgjeupgftijcshhp'
+        test_value = 'murbmdsmxliuinotqvzv'
         self.instance.endDate = test_value
         self.assertEqual(self.instance.endDate, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Calendar.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-pip install ./bluesky-producer_data
-pip install ./bluesky-producer_kafka_producer
+pip install ./bluesky_producer_data
+pip install ./bluesky_producer_kafka_producer

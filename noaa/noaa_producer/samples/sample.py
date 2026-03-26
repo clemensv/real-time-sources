@@ -32,23 +32,23 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from noaa-producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAEventProducer
+from noaa_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAEventProducer
 
 # imports for the data classes for each event
 
-from noaa-producer_data.microsoft.opendata.us.noaa.waterlevel import WaterLevel
-from noaa-producer_data.microsoft.opendata.us.noaa.predictions import Predictions
-from noaa-producer_data.microsoft.opendata.us.noaa.airpressure import AirPressure
-from noaa-producer_data.microsoft.opendata.us.noaa.airtemperature import AirTemperature
-from noaa-producer_data.microsoft.opendata.us.noaa.watertemperature import WaterTemperature
-from noaa-producer_data.microsoft.opendata.us.noaa.wind import Wind
-from noaa-producer_data.microsoft.opendata.us.noaa.humidity import Humidity
-from noaa-producer_data.microsoft.opendata.us.noaa.conductivity import Conductivity
-from noaa-producer_data.microsoft.opendata.us.noaa.salinity import Salinity
-from noaa-producer_data.microsoft.opendata.us.noaa.station import Station
-from noaa-producer_data.microsoft.opendata.us.noaa.visibility import Visibility
-from noaa-producer_data.microsoft.opendata.us.noaa.currents import Currents
-from noaa-producer_data.microsoft.opendata.us.noaa.currentpredictions import CurrentPredictions
+from noaa_producer_data.microsoft.opendata.us.noaa.waterlevel import WaterLevel
+from noaa_producer_data.microsoft.opendata.us.noaa.predictions import Predictions
+from noaa_producer_data.microsoft.opendata.us.noaa.airpressure import AirPressure
+from noaa_producer_data.microsoft.opendata.us.noaa.airtemperature import AirTemperature
+from noaa_producer_data.microsoft.opendata.us.noaa.watertemperature import WaterTemperature
+from noaa_producer_data.microsoft.opendata.us.noaa.wind import Wind
+from noaa_producer_data.microsoft.opendata.us.noaa.humidity import Humidity
+from noaa_producer_data.microsoft.opendata.us.noaa.conductivity import Conductivity
+from noaa_producer_data.microsoft.opendata.us.noaa.salinity import Salinity
+from noaa_producer_data.microsoft.opendata.us.noaa.station import Station
+from noaa_producer_data.microsoft.opendata.us.noaa.visibility import Visibility
+from noaa_producer_data.microsoft.opendata.us.noaa.currents import Currents
+from noaa_producer_data.microsoft.opendata.us.noaa.currentpredictions import CurrentPredictions
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

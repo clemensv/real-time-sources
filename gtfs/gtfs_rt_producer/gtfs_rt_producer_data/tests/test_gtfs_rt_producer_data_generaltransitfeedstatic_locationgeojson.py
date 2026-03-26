@@ -28,9 +28,9 @@ class Test_LocationGeoJson(unittest.TestCase):
         Create instance of LocationGeoJson for testing
         """
         instance = LocationGeoJson(
-            locationGeoJsonId='fdtrevgtxviifjbvkiiq',
-            locationGeoJsonType='nnbitfmtgvpjxwjejbtm',
-            locationGeoJsonData='pivxevzssvenmpviigww'
+            locationGeoJsonId='ifwpqcokbukgxlhywquv',
+            locationGeoJsonType='qehbsqtpapesvwqphkiy',
+            locationGeoJsonData='lkrjyssfvrgasbgazztj'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonId property
         """
-        test_value = 'fdtrevgtxviifjbvkiiq'
+        test_value = 'ifwpqcokbukgxlhywquv'
         self.instance.locationGeoJsonId = test_value
         self.assertEqual(self.instance.locationGeoJsonId, test_value)
     
@@ -47,7 +47,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonType property
         """
-        test_value = 'nnbitfmtgvpjxwjejbtm'
+        test_value = 'qehbsqtpapesvwqphkiy'
         self.instance.locationGeoJsonType = test_value
         self.assertEqual(self.instance.locationGeoJsonType, test_value)
     
@@ -55,7 +55,16 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonData property
         """
-        test_value = 'pivxevzssvenmpviigww'
+        test_value = 'lkrjyssfvrgasbgazztj'
         self.instance.locationGeoJsonData = test_value
         self.assertEqual(self.instance.locationGeoJsonData, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = LocationGeoJson.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

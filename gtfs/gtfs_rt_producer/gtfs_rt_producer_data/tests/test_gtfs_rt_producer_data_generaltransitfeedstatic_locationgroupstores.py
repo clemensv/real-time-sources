@@ -28,9 +28,9 @@ class Test_LocationGroupStores(unittest.TestCase):
         Create instance of LocationGroupStores for testing
         """
         instance = LocationGroupStores(
-            locationGroupStoreId='njfrosoukrhywtexohuy',
-            locationGroupId='hvkwcscffnffooagycqs',
-            storeId='zuzpqhrastmwdzarykxs'
+            locationGroupStoreId='tkruxodrxatzzuwyxxau',
+            locationGroupId='ezldfvrirbnclydryuhm',
+            storeId='vzqiwvdxrszteqdnieox'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test locationGroupStoreId property
         """
-        test_value = 'njfrosoukrhywtexohuy'
+        test_value = 'tkruxodrxatzzuwyxxau'
         self.instance.locationGroupStoreId = test_value
         self.assertEqual(self.instance.locationGroupStoreId, test_value)
     
@@ -47,7 +47,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test locationGroupId property
         """
-        test_value = 'hvkwcscffnffooagycqs'
+        test_value = 'ezldfvrirbnclydryuhm'
         self.instance.locationGroupId = test_value
         self.assertEqual(self.instance.locationGroupId, test_value)
     
@@ -55,7 +55,16 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test storeId property
         """
-        test_value = 'zuzpqhrastmwdzarykxs'
+        test_value = 'vzqiwvdxrszteqdnieox'
         self.instance.storeId = test_value
         self.assertEqual(self.instance.storeId, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = LocationGroupStores.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

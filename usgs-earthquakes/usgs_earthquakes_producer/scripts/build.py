@@ -2,7 +2,7 @@ import subprocess
 import os
 
 def main():
-    packages = ["usgs-earthquakes-producer_kafka_producer", "usgs-earthquakes-producer_data"]
+    packages = ["usgs_earthquakes_producer_kafka_producer", "usgs_earthquakes_producer_data"]
 
     for package in packages:
         os.chdir(package)

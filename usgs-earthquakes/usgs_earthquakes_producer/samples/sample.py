@@ -32,11 +32,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from usgs-earthquakes-producer_kafka_producer.producer import USGSEarthquakesEventProducer
+from usgs_earthquakes_producer_kafka_producer.producer import USGSEarthquakesEventProducer
 
 # imports for the data classes for each event
 
-from usgs-earthquakes-producer_data.usgs.earthquakes.event import Event
+from usgs_earthquakes_producer_data.usgs.earthquakes.event import Event
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

@@ -7,7 +7,7 @@ from datetime import datetime
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
+from rssbridge_producer_data import FeedItem
 
 class MicrosoftOpenDataRssFeedsEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -37,7 +37,7 @@ class MicrosoftOpenDataRssFeedsEventProducer:
         else:
             return f'{str(x.get("type"))}:{str(x.get("source"))}{("-"+str(x.get("subject"))) if x.get("subject") else ""}'
 
-    async def send_microsoft_open_data_rss_feeds_feed_item(self,_sourceurl : str, _item_id : str, data: FeedItem, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FeedItem], str]=None) -> None:
+    def send_microsoft_open_data_rss_feeds_feed_item(self,_sourceurl : str, _item_id : str, data: FeedItem, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FeedItem], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.RssFeeds.FeedItem' event to the Kafka topic
 
@@ -59,11 +59,11 @@ class MicrosoftOpenDataRssFeedsEventProducer:
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
-            message.headers[b"content-type"] = b"application/cloudevents+json"
+            message.headers["content-type"] = b"application/cloudevents+json"
         else:
-            content_type = "application/json"
-            event["content-type"] = content_type
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array(content_type), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

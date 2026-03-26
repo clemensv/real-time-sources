@@ -3,14 +3,15 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import json
 import avro.schema
+import avro.name
 import avro.io
 
 
@@ -26,8 +27,8 @@ class Water:
     shortname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
     longname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Water\", \"doc\": \"Details of the water body associated with the station.\", \"fields\": [{\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the water body (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the water body (maximum 255 characters).\"}]}"
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"Water\", \"doc\": \"Details of the water body associated with the station.\", \"fields\": [{\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the water body (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the water body (maximum 255 characters).\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):

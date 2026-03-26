@@ -28,10 +28,10 @@ class Test_LocationGroups(unittest.TestCase):
         Create instance of LocationGroups for testing
         """
         instance = LocationGroups(
-            locationGroupId='stpezzckmabmdyyqwhrm',
-            locationGroupName='shfegtrpwxrukpoluqju',
-            locationGroupDesc='aoyrpqmhcnftbgvtedvo',
-            locationGroupUrl='tbdbcstmkcrozrjylycy'
+            locationGroupId='kcnngfepmwszntunimwa',
+            locationGroupName='nwiozaabzfifwmdbyhsd',
+            locationGroupDesc='epckhfxctimwvkxmgnbl',
+            locationGroupUrl='tivyxzsntnjlqzzzibkr'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupId property
         """
-        test_value = 'stpezzckmabmdyyqwhrm'
+        test_value = 'kcnngfepmwszntunimwa'
         self.instance.locationGroupId = test_value
         self.assertEqual(self.instance.locationGroupId, test_value)
     
@@ -48,7 +48,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupName property
         """
-        test_value = 'shfegtrpwxrukpoluqju'
+        test_value = 'nwiozaabzfifwmdbyhsd'
         self.instance.locationGroupName = test_value
         self.assertEqual(self.instance.locationGroupName, test_value)
     
@@ -56,7 +56,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupDesc property
         """
-        test_value = 'aoyrpqmhcnftbgvtedvo'
+        test_value = 'epckhfxctimwvkxmgnbl'
         self.instance.locationGroupDesc = test_value
         self.assertEqual(self.instance.locationGroupDesc, test_value)
     
@@ -64,7 +64,16 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupUrl property
         """
-        test_value = 'tbdbcstmkcrozrjylycy'
+        test_value = 'tivyxzsntnjlqzzzibkr'
         self.instance.locationGroupUrl = test_value
         self.assertEqual(self.instance.locationGroupUrl, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = LocationGroups.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

@@ -3,14 +3,15 @@
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
 import gzip
+import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import json
 import avro.schema
+import avro.name
 import avro.io
 
 
@@ -32,8 +33,8 @@ class CurrentMeasurement:
     stateMnwMhw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
     stateNswHsw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
     
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"CurrentMeasurement\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing the current measurement for a PEGELONLINE station.\", \"fields\": [{\"name\": \"station_uuid\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"timestamp\", \"type\": \"string\", \"doc\": \"Timestamp of the current measurement encoded in ISO_8601 format.\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"Current measured value as a decimal number in the unit defined by the station's timeseries.\"}, {\"name\": \"stateMnwMhw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}, {\"name\": \"stateNswHsw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}]}"
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
+        json.loads("{\"type\": \"record\", \"name\": \"CurrentMeasurement\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing the current measurement for a PEGELONLINE station.\", \"fields\": [{\"name\": \"station_uuid\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"timestamp\", \"type\": \"string\", \"doc\": \"Timestamp of the current measurement encoded in ISO_8601 format.\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"Current measured value as a decimal number in the unit defined by the station's timeseries.\"}, {\"name\": \"stateMnwMhw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}, {\"name\": \"stateNswHsw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):

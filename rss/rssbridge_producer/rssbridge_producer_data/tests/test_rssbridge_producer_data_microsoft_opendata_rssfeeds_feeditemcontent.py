@@ -28,10 +28,10 @@ class Test_FeedItemContent(unittest.TestCase):
         Create instance of FeedItemContent for testing
         """
         instance = FeedItemContent(
-            value='kmcalffheftevdivulen',
-            type='coaqhirippazywqemsne',
-            language='cmewincktobbmhlxzitl',
-            base='smmztkukiuxmptqsvvcf'
+            value='joobnfzllsirsxywnqsw',
+            type='pljuliigxlhqjzbqerfp',
+            language='hvofuulqqkdsoidnbtfl',
+            base='cnldriryisrgdfgrsfwy'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test value property
         """
-        test_value = 'kmcalffheftevdivulen'
+        test_value = 'joobnfzllsirsxywnqsw'
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -48,7 +48,7 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'coaqhirippazywqemsne'
+        test_value = 'pljuliigxlhqjzbqerfp'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -56,7 +56,7 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'cmewincktobbmhlxzitl'
+        test_value = 'hvofuulqqkdsoidnbtfl'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -64,7 +64,16 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test base property
         """
-        test_value = 'smmztkukiuxmptqsvvcf'
+        test_value = 'cnldriryisrgdfgrsfwy'
         self.instance.base = test_value
         self.assertEqual(self.instance.base, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = FeedItemContent.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)

@@ -13,15 +13,15 @@ if (Test-Path $outputDir) {
 }
 
 Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xregistry generate --style kafkaproducer --language py --projectname noaa-ndbc-producer --definitions $xregFile --output $outputDir
+xrcg generate --style kafkaproducer --language py --projectname noaa-ndbc-producer --definitions $xregFile --output $outputDir
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "✓ Producer generation completed successfully" -ForegroundColor Green
+    Write-Host "Producer generation completed successfully" -ForegroundColor Green
     Write-Host ""
     Write-Host "Next steps:" -ForegroundColor Cyan
     Write-Host "  1. Run copy_generated_producer.ps1 to copy files into the main package" -ForegroundColor Gray
     Write-Host "  2. Run fix_imports.ps1 to fix generated import paths" -ForegroundColor Gray
 } else {
-    Write-Host "✗ Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
     exit 1
 }
