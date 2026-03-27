@@ -1,7 +1,25 @@
 {
-    "$schema": "http://xregistry.io/schemas/manifest.json",
-    "specversion": "0.5-wip",
-    "endpoints": {},
+    "endpoints": {
+        "GeneralTransitFeed.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "gtfs"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/GeneralTransitFeedRealTime",
+                "#/messagegroups/GeneralTransitFeedStatic"
+            ]
+        }
+    },
     "messagegroups": {
         "GeneralTransitFeedRealTime": {
             "messagegroupid": "GeneralTransitFeedRealTime",

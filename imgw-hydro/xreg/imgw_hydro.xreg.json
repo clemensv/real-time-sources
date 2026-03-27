@@ -1,4 +1,24 @@
 {
+    "endpoints": {
+        "PL.Gov.IMGW.Hydro.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "imgw-hydro"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/PL.Gov.IMGW.Hydro"
+            ]
+        }
+    },
     "messagegroups": {
         "PL.Gov.IMGW.Hydro": {
             "messages": {

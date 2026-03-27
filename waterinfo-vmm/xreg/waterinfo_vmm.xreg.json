@@ -1,4 +1,24 @@
 {
+    "endpoints": {
+        "BE.Vlaanderen.Waterinfo.VMM.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "waterinfo-vmm"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM"
+            ]
+        }
+    },
     "messagegroups": {
         "BE.Vlaanderen.Waterinfo.VMM": {
             "messages": {

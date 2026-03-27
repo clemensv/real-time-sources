@@ -1,4 +1,24 @@
 {
+    "endpoints": {
+        "CZ.Gov.CHMI.Hydro.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "chmi-hydro"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/CZ.Gov.CHMI.Hydro"
+            ]
+        }
+    },
     "messagegroups": {
         "CZ.Gov.CHMI.Hydro": {
             "messages": {

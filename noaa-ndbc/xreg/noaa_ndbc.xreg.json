@@ -1,4 +1,24 @@
 {
+    "endpoints": {
+        "Microsoft.OpenData.US.NOAA.NDBC.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "noaa-ndbc"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC"
+            ]
+        }
+    },
     "messagegroups": {
         "Microsoft.OpenData.US.NOAA.NDBC": {
             "messages": {
