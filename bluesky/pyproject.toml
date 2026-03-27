@@ -8,8 +8,8 @@ packages = [{include = "bluesky"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-bluesky-producer-data = {path = "bluesky_producer/bluesky-producer_data", develop = true}
-bluesky-producer-kafka-producer = {path = "bluesky_producer/bluesky-producer_kafka_producer", develop = true}
+bluesky-producer-data = {path = "bluesky_producer/bluesky-producer_data"}
+bluesky-producer-kafka-producer = {path = "bluesky_producer/bluesky-producer_kafka_producer"}
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0"
 atproto = ">=0.0.63"
