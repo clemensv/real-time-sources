@@ -308,25 +308,25 @@ dataclasses-json = "^0.6.7"
 
 [package.source]
 type = "directory"
-url = "bluesky_producer/bluesky-producer_data"
+url = "bluesky_producer/bluesky_producer_data"
 
 [[package]]
 name = "bluesky-producer-kafka-producer"
 version = "0.1.0"
-description = "bluesky-producer_kafka_producer Apache Kafka producer library"
+description = "bluesky_producer_kafka_producer Apache Kafka producer library"
 optional = false
 python-versions = "<4.0,>=3.10"
 files = []
 develop = true
 
 [package.dependencies]
-bluesky-producer-data = {path = "../bluesky-producer_data", develop = true}
+bluesky-producer-data = {path = "../bluesky_producer_data", develop = true}
 cloudevents = ">=1.10.1"
 confluent-kafka = ">=2.4.0"
 
 [package.source]
 type = "directory"
-url = "bluesky_producer/bluesky-producer_kafka_producer"
+url = "bluesky_producer/bluesky_producer_kafka_producer"
 
 [[package]]
 name = "certifi"

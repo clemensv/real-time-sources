@@ -17,7 +17,7 @@ if (Test-Path $outputDir) {
 
 # Generate the Kafka producer code
 Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname bluesky-producer --definitions $xregFile --output $outputDir
+xrcg generate --style kafkaproducer --language py --projectname bluesky_producer --definitions $xregFile --output $outputDir
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Producer generation completed successfully" -ForegroundColor Green

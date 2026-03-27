@@ -14,7 +14,7 @@ WORKDIR /app
 COPY . /app
 
 # Install the required Python packages
-RUN pip install ./bluesky_producer/bluesky-producer_data ./bluesky_producer/bluesky-producer_kafka_producer .
+RUN pip install ./bluesky_producer/bluesky_producer_data ./bluesky_producer/bluesky_producer_kafka_producer .
 
 # Define environment variables (default values)
 ENV PYTHONUNBUFFERED=1

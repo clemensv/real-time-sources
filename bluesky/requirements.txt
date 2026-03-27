@@ -1,5 +1,5 @@
--e file:///C:/git/real-time-sources/bluesky/bluesky_producer/bluesky-producer_data ; python_version >= "3.10" and python_version < "3.14"
--e file:///C:/git/real-time-sources/bluesky/bluesky_producer/bluesky-producer_kafka_producer ; python_version >= "3.10" and python_version < "3.14"
+-e file:///C:/git/real-time-sources/bluesky/bluesky_producer/bluesky_producer_data ; python_version >= "3.10" and python_version < "3.14"
+-e file:///C:/git/real-time-sources/bluesky/bluesky_producer/bluesky_producer_kafka_producer ; python_version >= "3.10" and python_version < "3.14"
 aiohappyeyeballs==2.6.1 ; python_version >= "3.10" and python_version < "3.14"
 aiohttp==3.13.2 ; python_version >= "3.10" and python_version < "3.14"
 aiosignal==1.4.0 ; python_version >= "3.10" and python_version < "3.14"
