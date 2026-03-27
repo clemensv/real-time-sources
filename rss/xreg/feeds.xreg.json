@@ -1,4 +1,24 @@
 {
+    "endpoints": {
+        "Microsoft.OpenData.RssFeeds.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "rss-feeds"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/Microsoft.OpenData.RssFeeds"
+            ]
+        }
+    },
     "messagegroups": {
         "Microsoft.OpenData.RssFeeds": {
             "messages": {

@@ -1,4 +1,25 @@
 {
+    "endpoints": {
+        "USGS.InstantaneousValues.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "usgs-iv"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/USGS.Sites",
+                "#/messagegroups/USGS.InstantaneousValues"
+            ]
+        }
+    },
     "messagegroups": {
         "USGS.Sites": {
             "messages": {

@@ -1,4 +1,24 @@
 {
+    "endpoints": {
+        "USGS.Earthquakes.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "usgs-earthquakes"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/USGS.Earthquakes"
+            ]
+        }
+    },
     "messagegroups": {
         "USGS.Earthquakes": {
             "messages": {

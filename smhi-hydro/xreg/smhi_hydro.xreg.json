@@ -1,4 +1,24 @@
 {
+    "endpoints": {
+        "SE.Gov.SMHI.Hydro.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "smhi-hydro"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/SE.Gov.SMHI.Hydro"
+            ]
+        }
+    },
     "messagegroups": {
         "SE.Gov.SMHI.Hydro": {
             "messages": {
