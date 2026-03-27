@@ -14,7 +14,7 @@ WORKDIR /app
 COPY . /app
 
 # Install the required Python packages
-RUN pip install --only-binary=:all: .
+RUN pip install .
 
 # Define environment variables (default values)
 ENV PYTHONUNBUFFERED=1
