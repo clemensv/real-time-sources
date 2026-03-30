@@ -1,0 +1,94 @@
+name: Docker E2E Tests
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - '**/Dockerfile'
+      - '**/pyproject.toml'
+      - '**/requirements.txt'
+      - 'tests/docker_e2e/**'
+      - '.github/workflows/test-docker-e2e.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - '**/Dockerfile'
+      - '**/pyproject.toml'
+      - '**/requirements.txt'
+      - 'tests/docker_e2e/**'
+      - '.github/workflows/test-docker-e2e.yml'
+
+jobs:
+  docker-build:
+    name: Docker Build & Import
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - { dir: bluesky, module: bluesky }
+          - { dir: chmi-hydro, module: chmi_hydro }
+          - { dir: gtfs, module: gtfs_rt_bridge }
+          - { dir: hubeau-hydrometrie, module: hubeau_hydrometrie }
+          - { dir: imgw-hydro, module: imgw_hydro }
+          - { dir: mode-s, module: mode_s_kafka_bridge }
+          - { dir: noaa, module: noaa }
+          - { dir: noaa-goes, module: noaa_goes }
+          - { dir: noaa-ndbc, module: noaa_ndbc }
+          - { dir: noaa-nws, module: noaa_nws }
+          - { dir: pegelonline, module: pegelonline }
+          - { dir: rss, module: rssbridge }
+          - { dir: rws-waterwebservices, module: rws_waterwebservices }
+          - { dir: smhi-hydro, module: smhi_hydro }
+          - { dir: uk-ea-flood-monitoring, module: uk_ea_flood_monitoring }
+          - { dir: usgs-earthquakes, module: usgs_earthquakes }
+          - { dir: usgs-iv, module: usgs_iv }
+          - { dir: waterinfo-vmm, module: waterinfo_vmm }
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker image
+        run: |
+          docker build -t test-${{ matrix.project.dir }} ./${{ matrix.project.dir }}
+
+      - name: Verify module imports
+        run: |
+          docker run --rm test-${{ matrix.project.dir }} \
+            python -c "import ${{ matrix.project.module }}; print('OK')"
+
+  docker-kafka-flow:
+    name: Docker Kafka Flow
+    runs-on: ubuntu-latest
+    needs: docker-build
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - { dir: chmi-hydro, topic: test-chmi-hydro, test_class: TestCHMIHydroDockerFlow }
+          - { dir: imgw-hydro, topic: test-imgw-hydro, test_class: TestIMGWHydroDockerFlow }
+          - { dir: smhi-hydro, topic: test-smhi-hydro, test_class: TestSMHIHydroDockerFlow }
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install test dependencies
+        run: pip install -r tests/docker_e2e/requirements.txt
+
+      - name: Build Docker image
+        run: |
+          docker build -t test-${{ matrix.project.dir }} ./${{ matrix.project.dir }}
+
+      - name: Run Kafka flow test
+        run: |
+          pytest tests/docker_e2e/test_docker_kafka_flow.py \
+            -v --timeout=300 \
+            -k "${{ matrix.project.test_class }}" \
+            --tb=long
+        timeout-minutes: 10
