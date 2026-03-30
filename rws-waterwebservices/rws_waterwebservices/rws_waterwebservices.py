@@ -342,16 +342,19 @@ def main() -> None:
         if not kafka_topic:
             print("Error: Kafka topic must be provided.")
             sys.exit(1)
+        tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
         kafka_config = {
             'bootstrap.servers': kafka_bootstrap_servers,
         }
         if sasl_username and sasl_password:
             kafka_config.update({
                 'sasl.mechanisms': 'PLAIN',
-                'security.protocol': 'SASL_SSL',
+                'security.protocol': 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT',
                 'sasl.username': sasl_username,
                 'sasl.password': sasl_password
             })
+        elif tls_enabled:
+            kafka_config['security.protocol'] = 'SSL'
         api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file)
     else:
         parser.print_help()

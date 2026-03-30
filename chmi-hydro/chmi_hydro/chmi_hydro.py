@@ -295,6 +295,11 @@ def main():
             }
         else:
             kafka_config = parse_connection_string(args.connection_string)
+        tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
+        if 'sasl.username' in kafka_config:
+            kafka_config['security.protocol'] = 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT'
+        elif tls_enabled:
+            kafka_config['security.protocol'] = 'SSL'
         kafka_config['client.id'] = 'chmi-hydro-bridge'
         producer = Producer(kafka_config)
         event_producer = CZGovCHMIHydroEventProducer(producer, args.topic)
