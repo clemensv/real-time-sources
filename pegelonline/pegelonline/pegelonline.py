@@ -148,7 +148,7 @@ class PegelOnlineAPI:
                     longname=station.get('water').get('longname')
                 )
             )
-            await pegelonline_producer.send_de_wsv_pegelonline_station(
+            pegelonline_producer.send_de_wsv_pegelonline_station(
                 _feedurl=f"https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{station['shortname']}",
                 _station_id=station["uuid"],
                 data=station_data, flush_producer=False)
@@ -165,7 +165,7 @@ class PegelOnlineAPI:
                         count += 1
                         logging.debug("Sending current measurement for station %s", measurement.get('uuid'))
                         try:
-                            await pegelonline_producer.send_de_wsv_pegelonline_current_measurement(
+                            pegelonline_producer.send_de_wsv_pegelonline_current_measurement(
                                 _feedurl=f"https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{station_id}/W/currentmeasurement.json",
                                 _station_id=station_id,
                                 data=CurrentMeasurement(
