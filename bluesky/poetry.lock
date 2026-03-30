@@ -279,6 +279,22 @@ files = [
 ]
 
 [[package]]
+name = "avro"
+version = "1.12.1"
+description = "Avro is a serialization and RPC framework."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "avro-1.12.1-py2.py3-none-any.whl", hash = "sha256:970475dd6457924533966fe761be607c759d5a48390cc8fbed472f7c9a8868f2"},
+    {file = "avro-1.12.1.tar.gz", hash = "sha256:c5b8dd2dd4c10816f0dc127cc29cfd43b5e405cf7e6840e89460a024bf3d098d"},
+]
+
+[package.extras]
+snappy = ["python-snappy"]
+zstandard = ["zstandard"]
+
+[[package]]
 name = "backports-asyncio-runner"
 version = "1.2.0"
 description = "Backport of asyncio.Runner, a context manager that controls event loop life cycle."
@@ -2617,4 +2633,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "0604a7951fff96640f31ba027160838e9116c97f6b044ece889ae0856dc8801f"
+content-hash = "134e6c80e1e8b4d82fc34a3644053b7ac0e501fdfa32eb41dcfd82ebc265582c"
