@@ -389,21 +389,19 @@ files = [
 
 [[package]]
 name = "cloudevents"
-version = "1.12.1"
+version = "2.0.0"
 description = "CloudEvents Python SDK"
 optional = false
-python-versions = "*"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "cloudevents-1.12.1-py3-none-any.whl", hash = "sha256:5f1574bf49ff334381319bdddcab02175a69ca877a26d0900b59c85505b675b3"},
-    {file = "cloudevents-1.12.1.tar.gz", hash = "sha256:1eb52051309c3228934f86f41d50bd02c0e3d9561e5876e73ad8ad9f98f0d3ef"},
+    {file = "cloudevents-2.0.0-py3-none-any.whl", hash = "sha256:babb257989a933b18312897c3bf3a7cc65e270831227822f2db10b50d1278546"},
+    {file = "cloudevents-2.0.0.tar.gz", hash = "sha256:3224851b2ac902b868ed4bc1aa10772ada8cdf85f180322b12968d90a1dceef2"},
 ]
 
 [package.dependencies]
 deprecation = ">=2.0,<3.0"
-
-[package.extras]
-pydantic = ["pydantic (>=1.0.0,<3.0)"]
+python-dateutil = ">=2.8.2"
 
 [[package]]
 name = "colorama"
@@ -1592,6 +1590,21 @@ pytest = ">=7"
 testing = ["process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
+name = "python-dateutil"
+version = "2.9.0.post0"
+description = "Extensions to the standard Python datetime module"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+groups = ["main"]
+files = [
+    {file = "python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3"},
+    {file = "python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427"},
+]
+
+[package.dependencies]
+six = ">=1.5"
+
+[[package]]
 name = "python-dotenv"
 version = "1.2.1"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -1676,6 +1689,18 @@ requests = ">=2.22,<3"
 
 [package.extras]
 fixture = ["fixtures"]
+
+[[package]]
+name = "six"
+version = "1.17.0"
+description = "Python 2 and 3 compatibility utilities"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+groups = ["main"]
+files = [
+    {file = "six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"},
+    {file = "six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"},
+]
 
 [[package]]
 name = "testcontainers"
