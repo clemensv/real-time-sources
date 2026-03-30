@@ -134,6 +134,7 @@ def _run_kafka_flow_test(
     kafka.create_topic(topic)
     env = {
         'CONNECTION_STRING': f'BootstrapServer={kafka.internal_address};EntityPath={topic}',
+        'KAFKA_ENABLE_TLS': 'false',
     }
     if extra_env:
         env.update(extra_env)

@@ -303,16 +303,19 @@ async def run():
 
         # Build Producer
         try:
+            tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
             kafka_config = {
                 'bootstrap.servers': kafka_bootstrap_servers,
             }
             if sasl_username and sasl_password:
                 kafka_config.update({
                     'sasl.mechanisms': 'PLAIN',
-                    'security.protocol': 'SASL_SSL',
+                    'security.protocol': 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT',
                     'sasl.username': sasl_username,
                     'sasl.password': sasl_password
                 })
+            elif tls_enabled:
+                kafka_config['security.protocol'] = 'SSL'
             kafka_producer = Producer(kafka_config)
         except Exception as producer_err:
             print("Error: Could not create Kafka producer.")

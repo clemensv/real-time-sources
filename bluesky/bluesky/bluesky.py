@@ -564,6 +564,7 @@ def main():
         return 1
     
     # Build Kafka configuration
+    tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
     kafka_config = {
         'bootstrap.servers': args.kafka_bootstrap_servers or os.getenv('KAFKA_BOOTSTRAP_SERVERS'),
         'client.id': 'bluesky-firehose-producer',
@@ -572,7 +573,7 @@ def main():
     sasl_password = args.sasl_password or os.getenv('SASL_PASSWORD')
     if sasl_username and sasl_password:
         kafka_config.update({
-            'security.protocol': 'SASL_SSL',
+            'security.protocol': 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT',
             'sasl.mechanism': 'PLAIN',
             'sasl.username': sasl_username,
             'sasl.password': sasl_password,
@@ -589,6 +590,12 @@ def main():
         kafka_topic = parsed.pop('kafka_topic', None)
         kafka_config.update(parsed)
     
+    # Normalize security.protocol based on KAFKA_ENABLE_TLS
+    if 'sasl.username' in kafka_config:
+        kafka_config['security.protocol'] = 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT'
+    elif tls_enabled:
+        kafka_config['security.protocol'] = 'SSL'
+
     if not kafka_config.get('bootstrap.servers') or not kafka_topic:
         logging.error("Kafka configuration incomplete. Provide either --connection-string or all Kafka parameters.")
         return 1

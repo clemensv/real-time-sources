@@ -1035,6 +1035,7 @@ async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, k
     if not kafka_topic:
         raise ValueError("No Kafka topic specified")
 
+    tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
     kafka_config = {
         "bootstrap.servers": kafka_bootstrap_servers,
         "acks": "all",
@@ -1046,10 +1047,12 @@ async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, k
     if sasl_username and sasl_password:
         kafka_config.update({
             "sasl.mechanisms": "PLAIN",
-            "security.protocol": "SASL_SSL",
+            "security.protocol": "SASL_SSL" if tls_enabled else "SASL_PLAINTEXT",
             "sasl.username": sasl_username,
             "sasl.password": sasl_password,
         })
+    elif tls_enabled:
+        kafka_config['security.protocol'] = 'SSL'
     producer: Producer = Producer(kafka_config, logger=logger)
     gtfs_rt_producer = GeneralTransitFeedRealTimeEventProducer(producer, kafka_topic,cloudevents_mode)
     gtfs_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)
