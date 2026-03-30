@@ -48,10 +48,19 @@ class TestConnectionStringParsing:
 
     def test_parse_connection_string_sets_sasl(self):
         api = HubEauHydrometrieAPI()
-        cs = "Endpoint=sb://test.servicebus.windows.net/;EntityPath=topic"
+        cs = "Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=MyPolicy;SharedAccessKey=abc123;EntityPath=topic"
         result = api.parse_connection_string(cs)
         assert result['sasl.username'] == '$ConnectionString'
         assert result['sasl.password'] == cs.strip()
+        assert result['security.protocol'] == 'SASL_SSL'
+        assert result['sasl.mechanism'] == 'PLAIN'
+
+    def test_parse_connection_string_without_sasl(self):
+        api = HubEauHydrometrieAPI()
+        cs = "Endpoint=sb://test.servicebus.windows.net/;EntityPath=topic"
+        result = api.parse_connection_string(cs)
+        assert 'sasl.username' not in result
+        assert 'security.protocol' not in result
 
     def test_parse_connection_string_with_whitespace(self):
         api = HubEauHydrometrieAPI()
