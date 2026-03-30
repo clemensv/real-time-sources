@@ -66,13 +66,24 @@ class TestConnectionStringParsing:
         assert result['kafka_topic'] == 'mytopic'
 
     def test_parse_connection_string_sets_sasl_credentials(self):
-        """Test that SASL credentials are correctly set."""
+        """Test that SASL credentials are correctly set when SharedAccessKeyName is present."""
         api = PegelOnlineAPI()
-        connection_string = "Endpoint=sb://test.servicebus.windows.net/;EntityPath=topic"
+        connection_string = "Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=MyPolicy;SharedAccessKey=abc123;EntityPath=topic"
         result = api.parse_connection_string(connection_string)
         
         assert result['sasl.username'] == '$ConnectionString'
         assert result['sasl.password'] == connection_string.strip()
+        assert result['security.protocol'] == 'SASL_SSL'
+        assert result['sasl.mechanism'] == 'PLAIN'
+
+    def test_parse_connection_string_without_sasl(self):
+        """Test that plain connection string without SharedAccessKeyName has no SASL config."""
+        api = PegelOnlineAPI()
+        connection_string = "Endpoint=sb://test.servicebus.windows.net/;EntityPath=topic"
+        result = api.parse_connection_string(connection_string)
+        
+        assert 'sasl.username' not in result
+        assert 'security.protocol' not in result
 
     def test_parse_connection_string_with_whitespace(self):
         """Test parsing connection string with extra whitespace."""
