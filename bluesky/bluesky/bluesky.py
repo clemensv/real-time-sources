@@ -115,12 +115,7 @@ class BlueskyFirehose:
         Returns:
             Dict with bootstrap.servers and kafka_topic
         """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanism': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip(),
-        }
+        config_dict = {}
         try:
             for part in connection_string.split(';'):
                 if 'Endpoint' in part:
@@ -128,8 +123,17 @@ class BlueskyFirehose:
                         '"').replace('sb://', '').replace('/', '') + ':9093'
                 elif 'EntityPath' in part:
                     config_dict['kafka_topic'] = part.split('=')[1].strip('"')
+                elif 'SharedAccessKeyName' in part:
+                    config_dict['sasl.username'] = '$ConnectionString'
+                elif 'SharedAccessKey' in part:
+                    config_dict['sasl.password'] = connection_string.strip()
+                elif 'BootstrapServer' in part:
+                    config_dict['bootstrap.servers'] = part.split('=', 1)[1].strip()
         except IndexError as e:
             raise ValueError("Invalid connection string format") from e
+        if 'sasl.username' in config_dict:
+            config_dict['security.protocol'] = 'SASL_SSL'
+            config_dict['sasl.mechanism'] = 'PLAIN'
         return config_dict
 
     def send_cloudevent(self, event_type: str, source: str, subject: str, data: dict) -> None:
@@ -562,12 +566,17 @@ def main():
     # Build Kafka configuration
     kafka_config = {
         'bootstrap.servers': args.kafka_bootstrap_servers or os.getenv('KAFKA_BOOTSTRAP_SERVERS'),
-        'security.protocol': 'SASL_SSL',
-        'sasl.mechanism': 'PLAIN',
-        'sasl.username': args.sasl_username or os.getenv('SASL_USERNAME'),
-        'sasl.password': args.sasl_password or os.getenv('SASL_PASSWORD'),
         'client.id': 'bluesky-firehose-producer',
     }
+    sasl_username = args.sasl_username or os.getenv('SASL_USERNAME')
+    sasl_password = args.sasl_password or os.getenv('SASL_PASSWORD')
+    if sasl_username and sasl_password:
+        kafka_config.update({
+            'security.protocol': 'SASL_SSL',
+            'sasl.mechanism': 'PLAIN',
+            'sasl.username': sasl_username,
+            'sasl.password': sasl_password,
+        })
     
     kafka_topic = args.kafka_topic or os.getenv('KAFKA_TOPIC')
     

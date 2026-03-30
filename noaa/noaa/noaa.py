@@ -87,8 +87,12 @@ class NOAADataPoller:
             response = requests.get(url, timeout=10)
             response.raise_for_status()
             stations_data = response.json()
+            raw_stations = stations_data.get('stations', [])
+            for s in raw_stations:
+                if s.get('portscode') is None:
+                    s['portscode'] = ''
 # pylint: disable=no-member
-            stations = Station.schema().load(stations_data.get('stations', []), many=True)
+            stations = Station.schema().load(raw_stations, many=True)
 # pylint: enable=no-member
             return stations
         except requests.RequestException as err:
@@ -397,10 +401,7 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
     Returns:
         Dict[str, str]: Extracted connection parameters.
     """
-    config_dict = {
-        'sasl.username': '$ConnectionString',
-        'sasl.password': connection_string.strip(),
-    }
+    config_dict = {}
     try:
         for part in connection_string.split(';'):
             if 'Endpoint' in part:
@@ -408,8 +409,17 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
                     '"').replace('sb://', '').replace('/', '')+':9093'
             elif 'EntityPath' in part:
                 config_dict['kafka_topic'] = part.split('=')[1].strip('"')
+            elif 'SharedAccessKeyName' in part:
+                config_dict['sasl.username'] = '$ConnectionString'
+            elif 'SharedAccessKey' in part:
+                config_dict['sasl.password'] = connection_string.strip()
+            elif 'BootstrapServer' in part:
+                config_dict['bootstrap.servers'] = part.split('=', 1)[1].strip()
     except IndexError as e:
         raise ValueError("Invalid connection string format") from e
+    if 'sasl.username' in config_dict:
+        config_dict['security.protocol'] = 'SASL_SSL'
+        config_dict['sasl.mechanism'] = 'PLAIN'
     return config_dict
 
 
@@ -461,17 +471,16 @@ def main():
     if not kafka_topic:
         print("Error: Kafka topic must be provided either through the command line or connection string.")
         sys.exit(1)
-    if not sasl_username or not sasl_password:
-        print("Error: SASL username and password must be provided either through the command line or connection string.")
-        sys.exit(1)
-
     kafka_config = {
         'bootstrap.servers': kafka_bootstrap_servers,
-        'sasl.mechanisms': 'PLAIN',
-        'security.protocol': 'SASL_SSL',
-        'sasl.username': sasl_username,
-        'sasl.password': sasl_password
     }
+    if sasl_username and sasl_password:
+        kafka_config.update({
+            'sasl.mechanisms': 'PLAIN',
+            'security.protocol': 'SASL_SSL',
+            'sasl.username': sasl_username,
+            'sasl.password': sasl_password
+        })
 
     poller = NOAADataPoller(
         kafka_config=kafka_config,
