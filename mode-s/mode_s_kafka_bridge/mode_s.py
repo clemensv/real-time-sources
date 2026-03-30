@@ -196,10 +196,7 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
     """
     Parse the connection string and extract bootstrap server, topic name, username, and password.
     """
-    config_dict = {
-        'sasl.username': '$ConnectionString',
-        'sasl.password': connection_string.strip(),
-    }
+    config_dict = {}
     try:
         for part in connection_string.split(';'):
             if 'Endpoint' in part:
@@ -210,9 +207,18 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
                 config_dict['bootstrap.servers'] = endpoint
             elif 'EntityPath' in part:
                 config_dict['kafka_topic'] = part.split('=')[1]
+            elif 'SharedAccessKeyName' in part:
+                config_dict['sasl.username'] = '$ConnectionString'
+            elif 'SharedAccessKey' in part:
+                config_dict['sasl.password'] = connection_string.strip()
+            elif 'BootstrapServer' in part:
+                config_dict['bootstrap.servers'] = part.split('=', 1)[1].strip()
     except IndexError as e:
         logging.error("Connection string parsing error: %s", e)
         raise ValueError("Invalid connection string format") from e
+    if 'sasl.username' in config_dict:
+        config_dict['security.protocol'] = 'SASL_SSL'
+        config_dict['sasl.mechanism'] = 'PLAIN'
     return config_dict
 
 async def run():
@@ -294,19 +300,19 @@ async def run():
         if not kafka_topic:
             print("Error: No Kafka topic found.")
             return
-        if not sasl_username or not sasl_password:
-            print("Error: SASL username and password are required.")
-            return
 
         # Build Producer
         try:
             kafka_config = {
                 'bootstrap.servers': kafka_bootstrap_servers,
-                'sasl.mechanisms': 'PLAIN',
-                'security.protocol': 'SASL_SSL',
-                'sasl.username': sasl_username,
-                'sasl.password': sasl_password
             }
+            if sasl_username and sasl_password:
+                kafka_config.update({
+                    'sasl.mechanisms': 'PLAIN',
+                    'security.protocol': 'SASL_SSL',
+                    'sasl.username': sasl_username,
+                    'sasl.password': sasl_password
+                })
             kafka_producer = Producer(kafka_config)
         except Exception as producer_err:
             print("Error: Could not create Kafka producer.")

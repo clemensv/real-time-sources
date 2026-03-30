@@ -103,10 +103,7 @@ class PegelOnlineAPI:
         Returns:
             Dict[str, str]: Extracted connection parameters.
         """
-        config_dict = {
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip(),
-        }
+        config_dict = {}
         try:
             for part in connection_string.split(';'):
                 if 'Endpoint' in part:
@@ -114,8 +111,17 @@ class PegelOnlineAPI:
                         '"').strip().replace('sb://', '').replace('/', '')+':9093'
                 elif 'EntityPath' in part:
                     config_dict['kafka_topic'] = part.split('=')[1].strip('"').strip()
+                elif 'SharedAccessKeyName' in part:
+                    config_dict['sasl.username'] = '$ConnectionString'
+                elif 'SharedAccessKey' in part:
+                    config_dict['sasl.password'] = connection_string.strip()
+                elif 'BootstrapServer' in part:
+                    config_dict['bootstrap.servers'] = part.split('=', 1)[1].strip()
         except IndexError as e:
             raise ValueError("Invalid connection string format") from e
+        if 'sasl.username' in config_dict:
+            config_dict['security.protocol'] = 'SASL_SSL'
+            config_dict['sasl.mechanism'] = 'PLAIN'
         return config_dict
 
     async def feed_stations(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '') -> None:
@@ -274,17 +280,16 @@ def main() -> None:
         if not kafka_topic:
             print("Error: Kafka topic must be provided either through the command line or connection string.")
             sys.exit(1)
-        if not sasl_username or not sasl_password:
-            print("Error: SASL username and password must be provided either through the command line or connection string.")
-            sys.exit(1)
-
         kafka_config = {
             'bootstrap.servers': kafka_bootstrap_servers,
-            'sasl.mechanisms': 'PLAIN',
-            'security.protocol': 'SASL_SSL',
-            'sasl.username': sasl_username,
-            'sasl.password': sasl_password
         }
+        if sasl_username and sasl_password:
+            kafka_config.update({
+                'sasl.mechanisms': 'PLAIN',
+                'security.protocol': 'SASL_SSL',
+                'sasl.username': sasl_username,
+                'sasl.password': sasl_password
+            })
 
         asyncio.run(api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file))
     else:

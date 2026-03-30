@@ -65,9 +65,20 @@ jobs:
       fail-fast: false
       matrix:
         project:
-          - { dir: chmi-hydro, topic: test-chmi-hydro, test_class: TestCHMIHydroDockerFlow }
-          - { dir: imgw-hydro, topic: test-imgw-hydro, test_class: TestIMGWHydroDockerFlow }
-          - { dir: smhi-hydro, topic: test-smhi-hydro, test_class: TestSMHIHydroDockerFlow }
+          - { dir: chmi-hydro, test_class: TestCHMIHydroDockerFlow }
+          - { dir: hubeau-hydrometrie, test_class: TestHubeauDockerFlow }
+          - { dir: imgw-hydro, test_class: TestIMGWHydroDockerFlow }
+          - { dir: noaa, test_class: TestNOAADockerFlow }
+          - { dir: noaa-goes, test_class: TestNOAAGoesDockerFlow }
+          - { dir: noaa-ndbc, test_class: TestNOAANdbcDockerFlow }
+          - { dir: noaa-nws, test_class: TestNOAANwsDockerFlow }
+          - { dir: pegelonline, test_class: TestPegelonlineDockerFlow }
+          - { dir: rws-waterwebservices, test_class: TestRWSDockerFlow }
+          - { dir: smhi-hydro, test_class: TestSMHIHydroDockerFlow }
+          - { dir: uk-ea-flood-monitoring, test_class: TestUKEADockerFlow }
+          - { dir: usgs-earthquakes, test_class: TestUSGSEarthquakesDockerFlow }
+          - { dir: usgs-iv, test_class: TestUSGSIVDockerFlow }
+          - { dir: waterinfo-vmm, test_class: TestWaterinfoVMMDockerFlow }
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
