@@ -76,9 +76,11 @@ class TestConnectionStringParsing:
 
     def test_parse_connection_string_with_whitespace(self):
         api = WaterinfoVMMAPI()
-        cs = "  Endpoint=sb://test.servicebus.windows.net;EntityPath=topic  "
+        cs = "  Endpoint=sb://test.servicebus.windows.net;SharedAccessKeyName=k;SharedAccessKey=s;EntityPath=topic  "
         config = api.parse_connection_string(cs)
         assert config['sasl.password'] == cs.strip()
+        assert config['bootstrap.servers'] == 'test.servicebus.windows.net:9093'
+        assert config['kafka_topic'] == 'topic'
 
     def test_parse_connection_string_missing_endpoint(self):
         api = WaterinfoVMMAPI()

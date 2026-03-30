@@ -242,9 +242,11 @@ class TestHelperFunctions:
         assert result1 == result2
 
     def test_parse_connection_string_preserves_key_order(self):
-        """Test that all required keys are present in parsed result"""
+        """Test that all required keys are present in parsed result with SASL"""
         connection_string = (
             "Endpoint=sb://test.servicebus.windows.net/;"
+            "SharedAccessKeyName=MyPolicy;"
+            "SharedAccessKey=abc123;"
             "EntityPath=topic"
         )
         
