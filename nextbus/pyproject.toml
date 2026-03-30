@@ -13,7 +13,7 @@ readme = "README.md"
 python = "^3.10"
 requests = "^2.31.0"
 azure-eventhub = "^5.11.3"
-cloudevents = "^1.9.0"
+cloudevents = ">=1.9.0,<2.0.0"
 
 [tool.poetry.scripts]
 nextbus = "nextbus:main"

@@ -8,7 +8,7 @@ version = "0.1.0"
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
 confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0"
+cloudevents = ">=1.11.0,<2.0.0"
 requests = ">=2.32.3"
 aiohttp = ">=3.10.5"
 asyncio = ">=3.4.3"

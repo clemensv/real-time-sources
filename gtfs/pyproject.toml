@@ -11,7 +11,7 @@ python = "<4.0,>=3.10"
 gtfs-rt-producer-data = {path = "gtfs_rt_producer/gtfs_rt_producer_data"}
 gtfs-rt-producer-kafka-producer = {path = "gtfs_rt_producer/gtfs_rt_producer_kafka_producer"}
 confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0"
+cloudevents = ">=1.11.0,<2.0.0"
 gtfs-realtime-bindings = ">=1.0.0"
 requests = ">=2.32.3"
 dataclasses = ">=0.6"

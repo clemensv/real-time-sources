@@ -15,7 +15,7 @@ rssbridge_producer_kafka_producer = {path = "rssbridge_producer/rssbridge_produc
 python = ">=3.10,<4.0"
 requests = ">=2.32.3"
 confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0"
+cloudevents = ">=1.11.0,<2.0.0"
 dataclasses = ">=0.6"
 dataclasses_json = ">=0.6.7"
 feedparser = ">=6.0.11"
