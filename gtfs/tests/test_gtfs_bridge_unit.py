@@ -92,9 +92,11 @@ class TestConnectionStringParsing:
             parse_connection_string(connection_string)
 
     def test_parse_connection_string_sets_sasl_credentials(self):
-        """Test that SASL credentials are properly set"""
+        """Test that SASL credentials are properly set when SharedAccessKeyName is present"""
         connection_string = (
             "Endpoint=sb://test.servicebus.windows.net/;"
+            "SharedAccessKeyName=MyPolicy;"
+            "SharedAccessKey=abc123;"
             "EntityPath=topic"
         )
         
@@ -102,6 +104,20 @@ class TestConnectionStringParsing:
         
         assert result['sasl.username'] == '$ConnectionString'
         assert result['sasl.password'] == connection_string.strip()
+        assert result['security.protocol'] == 'SASL_SSL'
+        assert result['sasl.mechanism'] == 'PLAIN'
+
+    def test_parse_connection_string_without_sasl(self):
+        """Test that plain connection string without SharedAccessKeyName has no SASL config"""
+        connection_string = (
+            "Endpoint=sb://test.servicebus.windows.net/;"
+            "EntityPath=topic"
+        )
+        
+        result = parse_connection_string(connection_string)
+        
+        assert 'sasl.username' not in result
+        assert 'security.protocol' not in result
 
 
 @pytest.mark.unit
