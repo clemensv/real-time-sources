@@ -147,14 +147,20 @@ class EAFloodMonitoringAPI:
 
         for station in stations:
             station_ref = station.get("stationReference", station.get("notation", ""))
+            raw_lat = station.get("lat", 0.0)
+            raw_long = station.get("long", 0.0)
+            if isinstance(raw_lat, list):
+                raw_lat = raw_lat[0] if raw_lat else 0.0
+            if isinstance(raw_long, list):
+                raw_long = raw_long[0] if raw_long else 0.0
             station_data = Station(
                 station_reference=station_ref,
                 label=station.get("label", ""),
                 river_name=station.get("riverName", ""),
                 catchment_name=station.get("catchmentName", ""),
                 town=station.get("town", ""),
-                lat=station.get("lat", 0.0) if station.get("lat") is not None else 0.0,
-                long=station.get("long", 0.0) if station.get("long") is not None else 0.0,
+                lat=raw_lat if raw_lat is not None else 0.0,
+                long=raw_long if raw_long is not None else 0.0,
                 notation=station.get("notation", ""),
                 status=station.get("status", ""),
                 date_opened=station.get("dateOpened", "")
