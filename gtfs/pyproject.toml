@@ -12,6 +12,7 @@ gtfs-rt-producer-data = {path = "gtfs_rt_producer/gtfs_rt_producer_data"}
 gtfs-rt-producer-kafka-producer = {path = "gtfs_rt_producer/gtfs_rt_producer_kafka_producer"}
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
+avro = "^1.12.1"
 gtfs-realtime-bindings = ">=1.0.0"
 requests = ">=2.32.3"
 dataclasses = ">=0.6"
