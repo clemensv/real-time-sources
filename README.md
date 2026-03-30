@@ -1,4 +1,10 @@
-[![Build Containers](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg?branch=main)](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml)
+[![Build Containers](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml)
+[![Bluesky Firehose Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-bluesky.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-bluesky.yml)
+[![GTFS Bridge Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-gtfs.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-gtfs.yml)
+[![NOAA Producer Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-noaa.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-noaa.yml)
+[![PegelOnline Producer Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-pegelonline.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-pegelonline.yml)
+[![RSS Bridge Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-rss.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-rss.yml)
+[![USGS-IV Producer Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-usgs-iv.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-usgs-iv.yml)
 
 # Real Time Sources for Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 
@@ -63,10 +69,17 @@ Azure Event Hubs, or Microsoft Fabric Event Streams. The tool supports
 selective filtering, cursor management for resuming after restarts, and
 is optimized for high-throughput event processing.
 
+### CHMI Hydro - Czech hydrological observations
+
+The [CHMI Hydro bridge](chmi-hydro/README.md) fetches real-time water level,
+discharge, and temperature data from the Czech Hydrometeorological Institute
+(ČHMÚ) and publishes the observations to Kafka as CloudEvents. The data is
+polled every 10 minutes by default.
+
 ### GTFS Realtime - Public transport data
 
 The [GTFS Realtime Bridge](gtfs/README.md) is a command line tool that retrieves
-to retrieve schedules, real-time vehicle position, real-time trip updates (live
+schedules, real-time vehicle positions, real-time trip updates (live
 predictions of arrivals/departures), and alerts from practically any GTFS and
 GTFS-RT service. Over 1000 public transport agencies worldwide publish their
 data in GTFS format, and many of them also provide real-time data in GTFS-RT
@@ -76,13 +89,52 @@ In terms of sheer data volume, the feeds related to the New York City
 Metropolitan Transportation Authority (MTA) will produce over 50 Gigabytes of
 data each day.
 
-### NOAA Tides ands Currents -  Water level and current data
+### Hub'Eau Hydrometrie - French hydrometric observations
+
+The [Hub'Eau Hydrometrie bridge](hubeau-hydrometrie/README.md) retrieves
+real-time water level and flow data from the French Hub'Eau Hydrométrie API,
+covering approximately 6,300 monitoring stations across France, and publishes
+the observations to Kafka as CloudEvents.
+
+### IMGW Hydro - Polish hydrological observations
+
+The [IMGW Hydro bridge](imgw-hydro/README.md) fetches real-time hydrological
+data from the Polish Institute of Meteorology and Water Management (IMGW-PIB)
+and forwards the observations to Kafka as CloudEvents. The data is polled every
+10 minutes by default.
+
+### Mode-S - ADS-B and Mode-S aircraft telemetry
+
+The [Mode-S data poller](mode-s/README.md) retrieves real-time ADS-B aircraft
+position and telemetry data from dump1090 receivers and publishes the data to
+Kafka as CloudEvents. The data is polled every 60 seconds by default.
+
+### NOAA Tides and Currents - Water level and current data
 
 The [NOAA data poller](noaa/README.md) is a command line tool that can be used
 to retrieve real-time water level and current data from NOAA's National Ocean
 Service (NOS) Tides and Currents API. The data is available for over 3000
 stations in the United States and its territories. The NOAA data is updated
 every 6 minutes, and the data volume is relatively low.
+
+### NOAA GOES and SWPC - Space weather and alert feeds
+
+The [NOAA GOES/SWPC poller](noaa-goes/README.md) polls the NOAA Space Weather
+Prediction Center for space weather alerts, planetary K-index, and solar wind
+data, publishing the observations to Kafka as CloudEvents. The data is polled
+every 60 seconds by default.
+
+### NOAA NDBC - Buoy observations
+
+The [NOAA NDBC poller](noaa-ndbc/README.md) polls the National Data Buoy Center
+for the latest buoy observations across the United States and publishes the data
+to Kafka as CloudEvents. The data is polled every 5 minutes by default.
+
+### NOAA NWS - Weather alerts
+
+The [NOAA NWS poller](noaa-nws/README.md) polls the National Weather Service for
+active weather alerts across the United States and publishes them to Kafka as
+CloudEvents. The data is polled every 60 seconds by default.
 
 ### RSS Feeds - News and blog posts
 
@@ -100,12 +152,33 @@ Federal Waterways and Shipping Administration (WSV) Pegelonline API. The data is
 available for over 3000 stations in Germany. The Pegelonline data is updated
 every 15 minutes, and the data volume is relatively low.
 
-### Nextbus - Public transport data
+### RWS Waterwebservices - Dutch water observations
 
-The [Nextbus tool](nextbus/README.md) is a command line tool that can be used to
-retrieve real-time data from the [Nextbus](https://www.nextbus.com/) service and
-feed that data into Azure Event Hubs and Microsft Fabric Event Streams. The tool
-can also be used to query the Nextbus service interactively.
+The [RWS Waterwebservices bridge](rws-waterwebservices/README.md) retrieves
+water level data from the Dutch Rijkswaterstaat Waterwebservices API, covering
+approximately 785 water monitoring stations, and publishes the observations to
+Kafka as CloudEvents. The data is polled every 10 minutes by default.
+
+### SMHI Hydro - Swedish hydrological observations
+
+The [SMHI Hydro bridge](smhi-hydro/README.md) fetches real-time discharge data
+from the Swedish Meteorological and Hydrological Institute (SMHI) for hundreds
+of monitoring stations and publishes the observations to Kafka as CloudEvents.
+The data is polled every 15 minutes by default.
+
+### UK EA Flood Monitoring - English flood and river data
+
+The [UK EA Flood Monitoring bridge](uk-ea-flood-monitoring/README.md) retrieves
+real-time water level and flow data from the UK Environment Agency Flood
+Monitoring API, covering approximately 4,000 stations across England, and
+publishes the observations to Kafka as CloudEvents. The data is polled every
+15 minutes by default.
+
+### USGS Earthquakes - Seismic event feeds
+
+The [USGS Earthquakes tool](usgs-earthquakes/README.md) fetches real-time
+earthquake events from the USGS GeoJSON feeds with deduplication and publishes
+them to Kafka as CloudEvents. The data is polled every 60 seconds by default.
 
 ### USGS Instantaneous Values - Water quality and quantity data
 
@@ -114,6 +187,20 @@ can be used to retrieve real-time water quality and quantity data from the
 United States Geological Survey (USGS) Instantaneous Values API. The data is
 available for over 1.5 million stations in the United States and its territories.
 The USGS data is updated every 15 minutes, and the data volume is relatively low.
+
+### Waterinfo VMM - Flemish water observations
+
+The [Waterinfo VMM bridge](waterinfo-vmm/README.md) retrieves real-time water
+level data from the Belgian Waterinfo.be KIWIS API, covering approximately
+1,785 monitoring stations across Flanders, and publishes the observations to
+Kafka as CloudEvents. The data is polled every 15 minutes by default.
+
+### Nextbus - Public transport data
+
+The [Nextbus tool](nextbus/README.md) is a command line tool that can be used to
+retrieve real-time data from the [Nextbus](https://www.nextbus.com/) service and
+feed that data into Azure Event Hubs and Microsft Fabric Event Streams. The tool
+can also be used to query the Nextbus service interactively.
 
 
 ### Forza Motorsport PC - Racing game telemetry data
