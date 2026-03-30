@@ -11,7 +11,7 @@ python = ">=3.10,<3.13"
 bluesky-producer-data = {path = "bluesky_producer/bluesky_producer_data"}
 bluesky-producer-kafka-producer = {path = "bluesky_producer/bluesky_producer_kafka_producer"}
 confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0"
+cloudevents = ">=1.11.0,<2.0.0"
 atproto = ">=0.0.63"
 aiohttp = ">=3.10.5"
 asyncio = ">=3.4.3"
