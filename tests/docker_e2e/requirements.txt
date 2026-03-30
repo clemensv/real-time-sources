@@ -1,0 +1,5 @@
+docker
+confluent-kafka
+testcontainers[kafka]
+pytest
+pytest-timeout
