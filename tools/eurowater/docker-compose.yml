@@ -1,0 +1,114 @@
+# European Water Services - Docker Compose
+#
+# Runs all 8 European waterway information services as sidecars,
+# sharing the same Kafka target configuration.
+#
+# Usage:
+#   CONNECTION_STRING="..." docker compose up -d
+#
+# Or with individual Kafka settings:
+#   KAFKA_BOOTSTRAP_SERVERS=broker:9092 KAFKA_TOPIC=eurowater docker compose up -d
+#
+# Set KAFKA_ENABLE_TLS=false for plain Kafka without SSL.
+
+services:
+  pegelonline:
+    image: ghcr.io/clemensv/real-time-sources-pegelonline:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/pegelonline_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  chmi-hydro:
+    image: ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BROKER=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/chmi_hydro_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  imgw-hydro:
+    image: ghcr.io/clemensv/real-time-sources-imgw-hydro:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BROKER=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/imgw_hydro_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  smhi-hydro:
+    image: ghcr.io/clemensv/real-time-sources-smhi-hydro:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BROKER=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/smhi_hydro_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  hubeau-hydrometrie:
+    image: ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/hubeau_hydrometrie_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  uk-ea-flood-monitoring:
+    image: ghcr.io/clemensv/real-time-sources-uk-ea-flood-monitoring:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/uk_ea_flood_monitoring_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  rws-waterwebservices:
+    image: ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - POLLING_INTERVAL=600
+      - STATE_FILE=/data/rws_waterwebservices_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  waterinfo-vmm:
+    image: ghcr.io/clemensv/real-time-sources/waterinfo-vmm:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - POLLING_INTERVAL=900
+      - STATE_FILE=/data/waterinfo_vmm_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+volumes:
+  eurowater-data:
