@@ -1,19 +1,21 @@
 #!/bin/bash
-# Deploys the European Water container group to Azure Container Instances.
+# Deploys the European Water container group (11 services) to Azure Container Instances.
 #
 # Usage:
-#   ./deploy.sh <resource-group-name> <connection-string> [location]
+#   ./deploy.sh <resource-group-name> <connection-string> [nve-api-key] [location]
 #
 # Arguments:
 #   resource-group-name  - Azure resource group (created if it doesn't exist)
 #   connection-string    - Kafka/Event Hub connection string for all containers
+#   nve-api-key          - NVE API key for Norway bridge (optional)
 #   location             - Azure region (default: westeurope)
 
 set -euo pipefail
 
-RESOURCE_GROUP="${1:?Usage: $0 <resource-group> <connection-string> [location]}"
-CONNECTION_STRING="${2:?Usage: $0 <resource-group> <connection-string> [location]}"
-LOCATION="${3:-westeurope}"
+RESOURCE_GROUP="${1:?Usage: $0 <resource-group> <connection-string> [nve-api-key] [location]}"
+CONNECTION_STRING="${2:?Usage: $0 <resource-group> <connection-string> [nve-api-key] [location]}"
+NVE_API_KEY="${3:-}"
+LOCATION="${4:-westeurope}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMPLATE_FILE="$SCRIPT_DIR/azure-template.json"
@@ -29,6 +31,7 @@ az deployment group create \
     --resource-group "$RESOURCE_GROUP" \
     --template-file "$TEMPLATE_FILE" \
     --parameters connectionStringSecret="$CONNECTION_STRING" \
+                 nveApiKeySecret="$NVE_API_KEY" \
     --verbose
 
 echo "Deployment complete."

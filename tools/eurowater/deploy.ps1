@@ -3,7 +3,7 @@
     Deploys the European Water container group to Azure Container Instances.
 
 .DESCRIPTION
-    Deploys all 8 European waterway information services as sidecars in a
+    Deploys all 11 European waterway information services as sidecars in a
     single ACI container group, sharing one Kafka/Event Hub connection string.
 
     Services included:
@@ -15,6 +15,9 @@
       - UK EA Flood Monitoring (England)
       - RWS Waterwebservices (Netherlands)
       - Waterinfo VMM (Belgium/Flanders)
+      - NVE Hydro (Norway)
+      - SYKE Hydro (Finland)
+      - BAFU Hydro (Switzerland)
 
 .PARAMETER ResourceGroupName
     The Azure resource group to deploy into (will be created if it doesn't exist).
@@ -36,6 +39,8 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$ConnectionString,
 
+    [string]$NveApiKey = "",
+
     [string]$Location = "westeurope"
 )
 
@@ -52,10 +57,14 @@ if (-not $rg) {
 $templateFile = Join-Path $PSScriptRoot "azure-template.json"
 
 Write-Host "Deploying European Water container group..."
-New-AzResourceGroupDeployment `
-    -ResourceGroupName $ResourceGroupName `
-    -TemplateFile $templateFile `
-    -connectionStringSecret (ConvertTo-SecureString $ConnectionString -AsPlainText -Force) `
-    -Verbose
+$deployParams = @{
+    ResourceGroupName = $ResourceGroupName
+    TemplateFile      = $templateFile
+    connectionStringSecret = (ConvertTo-SecureString $ConnectionString -AsPlainText -Force)
+}
+if ($NveApiKey) {
+    $deployParams['nveApiKeySecret'] = (ConvertTo-SecureString $NveApiKey -AsPlainText -Force)
+}
+New-AzResourceGroupDeployment @deployParams -Verbose
 
 Write-Host "Deployment complete."

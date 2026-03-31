@@ -55,6 +55,26 @@
       "defaultValue": "ghcr.io/clemensv/real-time-sources-waterinfo-vmm:latest",
       "metadata": { "description": "Container image for Waterinfo VMM (Belgium/Flanders)." },
       "type": "string"
+    },
+    "nveHydroImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-nve-hydro:latest",
+      "metadata": { "description": "Container image for NVE Hydro (Norway)." },
+      "type": "string"
+    },
+    "nveApiKeySecret": {
+      "defaultValue": "",
+      "metadata": { "description": "NVE API key for the Norwegian Water Resources and Energy Directorate." },
+      "type": "securestring"
+    },
+    "sykeHydroImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-syke-hydro:latest",
+      "metadata": { "description": "Container image for SYKE Hydro (Finland)." },
+      "type": "string"
+    },
+    "bafuHydroImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-bafu-hydro:latest",
+      "metadata": { "description": "Container image for BAFU Hydro (Switzerland)." },
+      "type": "string"
     }
   },
   "resources": [
@@ -206,6 +226,50 @@
                 { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
                 { "name": "POLLING_INTERVAL", "value": "900" },
                 { "name": "STATE_FILE", "value": "/mnt/fileshare/waterinfo_vmm_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "nve-hydro",
+            "properties": {
+              "image": "[parameters('nveHydroImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "NVE_API_KEY", "secureValue": "[parameters('nveApiKeySecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/nve_hydro_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "syke-hydro",
+            "properties": {
+              "image": "[parameters('sykeHydroImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "POLLING_INTERVAL", "value": "3600" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/syke_hydro_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "bafu-hydro",
+            "properties": {
+              "image": "[parameters('bafuHydroImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/bafu_hydro_state.json" }
               ],
               "volumeMounts": [
                 { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
