@@ -1,0 +1,231 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
+    "fileShareName": "fileshare"
+  },
+  "parameters": {
+    "appName": {
+      "defaultValue": "[resourceGroup().name]",
+      "maxLength": 64,
+      "metadata": { "description": "The name of the container group." },
+      "type": "string"
+    },
+    "connectionStringSecret": {
+      "metadata": { "description": "The Kafka/Event Hub connection string shared by all containers." },
+      "type": "securestring"
+    },
+    "pegelonlineImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-pegelonline:latest",
+      "metadata": { "description": "Container image for Pegelonline (Germany)." },
+      "type": "string"
+    },
+    "chmiHydroImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-chmi-hydro:latest",
+      "metadata": { "description": "Container image for CHMI Hydro (Czech Republic)." },
+      "type": "string"
+    },
+    "imgwHydroImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-imgw-hydro:latest",
+      "metadata": { "description": "Container image for IMGW Hydro (Poland)." },
+      "type": "string"
+    },
+    "smhiHydroImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-smhi-hydro:latest",
+      "metadata": { "description": "Container image for SMHI Hydro (Sweden)." },
+      "type": "string"
+    },
+    "hubeauHydrometrieImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie:latest",
+      "metadata": { "description": "Container image for Hub'Eau Hydrometrie (France)." },
+      "type": "string"
+    },
+    "ukEaFloodMonitoringImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-uk-ea-flood-monitoring:latest",
+      "metadata": { "description": "Container image for UK EA Flood Monitoring (England)." },
+      "type": "string"
+    },
+    "rwsWaterwebservicesImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest",
+      "metadata": { "description": "Container image for RWS Waterwebservices (Netherlands)." },
+      "type": "string"
+    },
+    "waterinfoVmmImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources/waterinfo-vmm:latest",
+      "metadata": { "description": "Container image for Waterinfo VMM (Belgium/Flanders)." },
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "StorageV2",
+      "sku": { "name": "Standard_LRS" },
+      "properties": { "accessTier": "Hot" }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": { "protocolSettings": { "smb": { "enabled": true } } }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": { "shareQuota": 5120 }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-09-01",
+      "name": "[parameters('appName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "pegelonline",
+            "properties": {
+              "image": "[parameters('pegelonlineImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/pegelonline_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "chmi-hydro",
+            "properties": {
+              "image": "[parameters('chmiHydroImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/chmi_hydro_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "imgw-hydro",
+            "properties": {
+              "image": "[parameters('imgwHydroImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/imgw_hydro_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "smhi-hydro",
+            "properties": {
+              "image": "[parameters('smhiHydroImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/smhi_hydro_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "hubeau-hydrometrie",
+            "properties": {
+              "image": "[parameters('hubeauHydrometrieImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/hubeau_hydrometrie_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "uk-ea-flood-monitoring",
+            "properties": {
+              "image": "[parameters('ukEaFloodMonitoringImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/uk_ea_flood_monitoring_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "rws-waterwebservices",
+            "properties": {
+              "image": "[parameters('rwsWaterwebservicesImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "POLLING_INTERVAL", "value": "600" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/rws_waterwebservices_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "waterinfo-vmm",
+            "properties": {
+              "image": "[parameters('waterinfoVmmImage')]",
+              "resources": { "requests": { "cpu": 0.1, "memoryInGB": 0.3 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "POLLING_INTERVAL", "value": "900" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/waterinfo_vmm_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "azurefilevolume",
+            "azureFile": {
+              "storageAccountName": "[variables('storageAccountName')]",
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            }
+          }
+        ],
+        "restartPolicy": "Always",
+        "osType": "Linux"
+      }
+    }
+  ]
+}
