@@ -1,6 +1,6 @@
 # European Water Services - Combined Container Group
 
-Deploys all 8 European waterway information services as sidecars in a single
+Deploys all 11 European waterway information services as sidecars in a single
 container group, sharing one Kafka/Event Hub connection.
 
 ## Included Services
@@ -15,17 +15,20 @@ container group, sharing one Kafka/Event Hub connection.
 | [UK EA Flood Monitoring](../../uk-ea-flood-monitoring/CONTAINER.md) | England | River levels, flood data |
 | [RWS Waterwebservices](../../rws-waterwebservices/CONTAINER.md) | Netherlands | Water levels |
 | [Waterinfo VMM](../../waterinfo-vmm/CONTAINER.md) | Belgium (Flanders) | Water levels |
+| [NVE Hydro](../../nve-hydro/CONTAINER.md) | Norway | Water levels, discharge |
+| [SYKE Hydro](../../syke-hydro/CONTAINER.md) | Finland | Water levels, discharge |
+| [BAFU Hydro](../../bafu-hydro/CONTAINER.md) | Switzerland | Water levels, discharge, temperature |
 
 ## Resource Requirements
 
-All 8 containers share a single CPU core. Each container requests 0.1 CPU and
+All 11 containers share a single CPU core. Each container requests 0.1 CPU and
 0.3 GB memory. These bridges are I/O-bound (HTTP polling + Kafka producing) and
 typically use <0.1 CPU cores at steady state.
 
-| | Per container | Total (8 containers) |
+| | Per container | Total (11 containers) |
 |---|---|---|
-| CPU | 0.1 cores | 0.8 cores |
-| Memory | 0.3 GB | 2.4 GB |
+| CPU | 0.1 cores | 1.1 cores |
+| Memory | 0.3 GB | 3.3 GB |
 
 ## Deploy to Azure Container Instances
 
@@ -88,6 +91,7 @@ All containers accept the same Kafka configuration:
 | `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker address (alternative to connection string) | |
 | `KAFKA_TOPIC` | Kafka topic name (alternative to connection string) | |
 | `KAFKA_ENABLE_TLS` | Enable SSL/TLS for the Kafka connection | `true` |
+| `NVE_API_KEY` | API key for NVE Hydro (Norway) | |
 
 State files are persisted to a shared volume (`/mnt/fileshare` on ACI,
 `eurowater-data` Docker volume) so containers resume from where they left off
