@@ -103,8 +103,8 @@ def _save_state(state_file: str, data: dict) -> None:
         logging.warning("Could not save state to %s: %s", state_file, e)
 
 
-def feed_stations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer, previous_readings: dict) -> int:
-    """Fetch all data and send station reference data + observations to Kafka."""
+def send_stations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer) -> dict:
+    """Fetch all station locations and send station reference data to Kafka. Returns locations dict."""
     locations = api.get_locations()
     sent_count = 0
 
@@ -119,6 +119,15 @@ def feed_stations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer, pre
         )
         producer.send_ch_bafu_hydrology_station(data=station_data, flush_producer=False)
         sent_count += 1
+
+    producer.producer.flush()
+    logger.info("Sent %d station events", sent_count)
+    return locations
+
+
+def feed_observations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer, locations: dict, previous_readings: dict) -> int:
+    """Fetch latest measurements and send observations to Kafka."""
+    sent_count = 0
 
     latest = api.get_latest()
     measurements_by_station = {}
@@ -236,11 +245,12 @@ def main():
         bafu_producer = CHBAFUHydrologyEventProducer(kafka_producer, args.topic)
         logger.info("Starting BAFU Hydro bridge, polling every %d seconds", args.polling_interval)
         previous_readings = _load_state(args.state_file)
+        locations = send_stations(api, bafu_producer)
         while True:
             try:
-                count = feed_stations(api, bafu_producer, previous_readings)
+                count = feed_observations(api, bafu_producer, locations, previous_readings)
                 _save_state(args.state_file, previous_readings)
-                logger.info("Sent %d events", count)
+                logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
             time.sleep(args.polling_interval)

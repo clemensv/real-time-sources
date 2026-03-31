@@ -178,6 +178,8 @@ SELECT
 
     source AS source_url,
 
+    System.Timestamp() AS ingestion_time,
+
     'EU.Eurowater.Station' AS [__ce_type]
 
 INTO StationOutput

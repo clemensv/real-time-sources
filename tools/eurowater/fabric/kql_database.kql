@@ -54,7 +54,7 @@
     {"column": "longitude",         "path": "$.longitude",         "datatype": "real"},
     {"column": "source_system",     "path": "$.source_system",     "datatype": "string"},
     {"column": "source_url",        "path": "$.source_url",        "datatype": "string"},
-    {"column": "ingestion_time",    "path": "$.EventProcessedUtcTime", "datatype": "datetime"}
+    {"column": "ingestion_time",    "path": "$.ingestion_time", "datatype": "datetime"}
 ]
 ```
 
@@ -70,7 +70,7 @@
     {"column": "unit",           "path": "$.unit",           "datatype": "string"},
     {"column": "quality",        "path": "$.quality",        "datatype": "string"},
     {"column": "source_system",  "path": "$.source_system",  "datatype": "string"},
-    {"column": "ingestion_time", "path": "$.EventProcessedUtcTime", "datatype": "datetime"}
+    {"column": "ingestion_time", "path": "$.ingestion_time", "datatype": "datetime"}
 ]
 ```
 
