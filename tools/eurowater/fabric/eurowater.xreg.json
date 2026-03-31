@@ -83,7 +83,7 @@
                                     "country_code": {
                                         "type": "string",
                                         "description": "ISO 3166-1 alpha-2 country code: de, cz, pl, se, fr, gb, nl, be",
-                                        "enum": ["de", "cz", "pl", "se", "fr", "gb", "nl", "be"]
+                                        "enum": ["de", "cz", "pl", "se", "fr", "gb", "nl", "be", "no", "fi", "ch"]
                                     },
                                     "source_station_id": {
                                         "type": "string",
@@ -107,7 +107,7 @@
                                     },
                                     "source_system": {
                                         "type": "string",
-                                        "description": "Origin system identifier: pegelonline, chmi-hydro, imgw-hydro, smhi-hydro, hubeau-hydrometrie, uk-ea-flood-monitoring, rws-waterwebservices, waterinfo-vmm"
+                                        "description": "Origin system identifier: pegelonline, chmi-hydro, imgw-hydro, smhi-hydro, hubeau-hydrometrie, uk-ea-flood-monitoring, rws-waterwebservices, waterinfo-vmm, nve-hydro, syke-hydro, bafu-hydro"
                                     },
                                     "source_url": {
                                         "type": "string",
@@ -139,7 +139,7 @@
                                     "country_code": {
                                         "type": "string",
                                         "description": "ISO 3166-1 alpha-2 country code",
-                                        "enum": ["de", "cz", "pl", "se", "fr", "gb", "nl", "be"]
+                                        "enum": ["de", "cz", "pl", "se", "fr", "gb", "nl", "be", "no", "fi", "ch"]
                                     },
                                     "timestamp": {
                                         "type": "string",

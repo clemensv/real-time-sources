@@ -97,6 +97,18 @@ def rws_image():
 def waterinfo_image():
     return build_image('waterinfo-vmm')
 
+@pytest.fixture(scope='module')
+def nve_image():
+    return build_image('nve-hydro')
+
+@pytest.fixture(scope='module')
+def syke_image():
+    return build_image('syke-hydro')
+
+@pytest.fixture(scope='module')
+def bafu_image():
+    return build_image('bafu-hydro')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -429,4 +441,52 @@ class TestWaterinfoVMMDockerFlow:
             kafka, waterinfo_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['WaterLevelReading'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# NVE Hydro (Norway – water levels & discharge)
+# ---------------------------------------------------------------------------
+
+class TestNVEHydroDockerFlow:
+    TOPIC = 'test-nve-hydro'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nve_image):
+        api_key = os.environ.get('NVE_API_KEY', '')
+        assert api_key, 'NVE_API_KEY environment variable must be set'
+        _run_kafka_flow_test(
+            kafka, nve_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WaterLevelObservation'],
+            extra_env={'NVE_API_KEY': api_key},
+        )
+
+
+# ---------------------------------------------------------------------------
+# SYKE Hydro (Finland – water levels & discharge)
+# ---------------------------------------------------------------------------
+
+class TestSYKEHydroDockerFlow:
+    TOPIC = 'test-syke-hydro'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, syke_image):
+        _run_kafka_flow_test(
+            kafka, syke_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WaterLevelObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# BAFU Hydro (Switzerland – water levels, discharge & temperature)
+# ---------------------------------------------------------------------------
+
+class TestBAFUHydroDockerFlow:
+    TOPIC = 'test-bafu-hydro'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, bafu_image):
+        _run_kafka_flow_test(
+            kafka, bafu_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WaterLevelObservation'],
         )
