@@ -1,126 +1,206 @@
 #!/bin/bash
-# Sets up the Eurowater Fabric Event Stream and KQL database.
+# Sets up the Eurowater Fabric Event Stream and KQL database using the Fabric REST API.
 #
 # Usage:
-#   ./setup.sh <workspace-name> [eventhouse-name] [database-name] [eventstream-name]
+#   ./setup.sh <workspace-id> <eventhouse-id> [database-name] [eventstream-name]
 #
 # Prerequisites:
-#   - Microsoft Fabric CLI (fab) installed
-#   - Authenticated: fab login
+#   - Azure CLI (az) installed and authenticated: az login
+#   - jq installed
+#   - Permissions to create items in the Fabric workspace
 
 set -euo pipefail
 
-WORKSPACE="${1:?Usage: $0 <workspace-name> [eventhouse-name] [database-name] [eventstream-name]}"
-EVENTHOUSE="${2:-eurowater}"
+WORKSPACE_ID="${1:?Usage: $0 <workspace-id> <eventhouse-id> [database-name] [eventstream-name]}"
+EVENTHOUSE_ID="${2:?Usage: $0 <workspace-id> <eventhouse-id> [database-name] [eventstream-name]}"
 DATABASE="${3:-eurowater}"
 EVENTSTREAM="${4:-eurowater-ingest}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FABRIC_API="https://api.fabric.microsoft.com/v1"
+STREAM_NAME="${EVENTSTREAM}-stream"
+
+fabric_api() {
+    local method="$1" url="$2"
+    shift 2
+    local args=(rest --method "$method" --url "$url" --resource "https://api.fabric.microsoft.com")
+    if [ $# -gt 0 ]; then
+        args+=(--body "$1" --headers "Content-Type=application/json")
+    fi
+    az "${args[@]}" 2>&1
+}
 
 echo "=== Eurowater Fabric Setup ==="
 
-# ---------------------------------------------------------------------------
-# 1. KQL Eventhouse and Database
-# ---------------------------------------------------------------------------
-echo "[1/5] Creating KQL Eventhouse '$EVENTHOUSE'..."
-fab eventhouse create --workspace "$WORKSPACE" --name "$EVENTHOUSE" 2>/dev/null || \
-    echo "  Eventhouse may already exist, continuing..."
+# Verify workspace
+echo ""
+echo "Verifying workspace..."
+WORKSPACE_NAME=$(fabric_api GET "$FABRIC_API/workspaces/$WORKSPACE_ID" | jq -r '.displayName')
+echo "  Workspace: $WORKSPACE_NAME"
 
-echo "[2/5] Creating KQL Database '$DATABASE'..."
-fab kqldatabase create --workspace "$WORKSPACE" --eventhouse "$EVENTHOUSE" --name "$DATABASE" 2>/dev/null || \
-    echo "  Database may already exist, continuing..."
-
-echo "  Applying KQL schema..."
-KQL_SCRIPT=$(cat "$SCRIPT_DIR/kql_database.kql")
-fab kqldatabase execute \
-    --workspace "$WORKSPACE" \
-    --eventhouse "$EVENTHOUSE" \
-    --database "$DATABASE" \
-    --script "$KQL_SCRIPT"
+# Verify eventhouse
+echo "Verifying eventhouse..."
+EH_JSON=$(fabric_api GET "$FABRIC_API/workspaces/$WORKSPACE_ID/eventhouses/$EVENTHOUSE_ID")
+EH_NAME=$(echo "$EH_JSON" | jq -r '.displayName')
+QUERY_URI=$(echo "$EH_JSON" | jq -r '.properties.queryServiceUri')
+echo "  Eventhouse: $EH_NAME"
 
 # ---------------------------------------------------------------------------
-# 2. Event Stream
+# 1. Create KQL Database
 # ---------------------------------------------------------------------------
-echo "[3/5] Creating Event Stream '$EVENTSTREAM'..."
-fab eventstream create --workspace "$WORKSPACE" --name "$EVENTSTREAM" 2>/dev/null || \
-    echo "  Event Stream may already exist, continuing..."
+echo ""
+echo "[1/4] Creating KQL Database '$DATABASE'..."
 
-# ---------------------------------------------------------------------------
-# 3. Custom Input
-# ---------------------------------------------------------------------------
-echo "[4/5] Adding custom input endpoint..."
-INPUT_RESULT=$(fab eventstream add-source \
-    --workspace "$WORKSPACE" \
-    --eventstream "$EVENTSTREAM" \
-    --source-type "custom-endpoint" \
-    --name "eurowater-input" \
-    --format "json")
+DB_LIST=$(fabric_api GET "$FABRIC_API/workspaces/$WORKSPACE_ID/kqlDatabases")
+DATABASE_ID=$(echo "$DB_LIST" | jq -r ".value[] | select(.displayName==\"$DATABASE\") | .id")
 
-CONNECTION_STRING=$(echo "$INPUT_RESULT" | jq -r '.connectionString // empty')
-if [ -n "$CONNECTION_STRING" ]; then
-    echo "  Connection String: $CONNECTION_STRING"
+if [ -n "$DATABASE_ID" ]; then
+    echo "  Database already exists (ID: $DATABASE_ID)"
 else
-    echo "  Custom input created. Retrieve the connection string from the Fabric portal."
+    BODY=$(jq -n --arg name "$DATABASE" --arg ehId "$EVENTHOUSE_ID" \
+        '{displayName: $name, creationPayload: {databaseType: "ReadWrite", parentEventhouseItemId: $ehId}}')
+    TMPFILE=$(mktemp)
+    echo "$BODY" > "$TMPFILE"
+    fabric_api POST "$FABRIC_API/workspaces/$WORKSPACE_ID/kqlDatabases" "@$TMPFILE" > /dev/null || true
+    rm -f "$TMPFILE"
+    sleep 5
+    DB_LIST=$(fabric_api GET "$FABRIC_API/workspaces/$WORKSPACE_ID/kqlDatabases")
+    DATABASE_ID=$(echo "$DB_LIST" | jq -r ".value[] | select(.displayName==\"$DATABASE\") | .id")
+    echo "  Database created (ID: $DATABASE_ID)"
+fi
+
+# Apply KQL schema
+echo "  Applying KQL schema..."
+KQL_SCRIPT=$(grep -v '^\s*//' "$SCRIPT_DIR/kql_database.kql")
+BODY=$(jq -n --arg csl ".execute database script <|
+$KQL_SCRIPT" --arg db "$DATABASE" '{csl: $csl, db: $db}')
+TMPFILE=$(mktemp)
+echo "$BODY" > "$TMPFILE"
+RESULT=$(az rest --method POST --url "$QUERY_URI/v1/rest/mgmt" --resource "$QUERY_URI" --body "@$TMPFILE" --headers "Content-Type=application/json" 2>&1)
+rm -f "$TMPFILE"
+COMPLETED=$(echo "$RESULT" | jq '[.Tables[0].Rows[] | select(.[3]=="Completed")] | length')
+FAILED=$(echo "$RESULT" | jq '[.Tables[0].Rows[] | select(.[3]!="Completed")] | length')
+echo "  Schema applied: $COMPLETED commands completed, $FAILED failed"
+
+# ---------------------------------------------------------------------------
+# 2. Create Event Stream
+# ---------------------------------------------------------------------------
+echo ""
+echo "[2/4] Creating Event Stream '$EVENTSTREAM'..."
+
+ES_LIST=$(fabric_api GET "$FABRIC_API/workspaces/$WORKSPACE_ID/eventstreams")
+EVENTSTREAM_ID=$(echo "$ES_LIST" | jq -r ".value[] | select(.displayName==\"$EVENTSTREAM\") | .id")
+
+if [ -n "$EVENTSTREAM_ID" ]; then
+    echo "  Event Stream already exists (ID: $EVENTSTREAM_ID)"
+else
+    BODY=$(jq -n --arg name "$EVENTSTREAM" '{displayName: $name}')
+    TMPFILE=$(mktemp)
+    echo "$BODY" > "$TMPFILE"
+    fabric_api POST "$FABRIC_API/workspaces/$WORKSPACE_ID/eventstreams" "@$TMPFILE" > /dev/null || true
+    rm -f "$TMPFILE"
+    sleep 5
+    ES_LIST=$(fabric_api GET "$FABRIC_API/workspaces/$WORKSPACE_ID/eventstreams")
+    EVENTSTREAM_ID=$(echo "$ES_LIST" | jq -r ".value[] | select(.displayName==\"$EVENTSTREAM\") | .id")
+    echo "  Event Stream created (ID: $EVENTSTREAM_ID)"
 fi
 
 # ---------------------------------------------------------------------------
-# 4. SQL Operator
+# 3. Build and apply Event Stream definition
 # ---------------------------------------------------------------------------
-echo "[5/5] Adding SQL normalization operator..."
+echo ""
+echo "[3/4] Configuring Event Stream topology..."
 
-STATIONS_SQL=$(cat "$SCRIPT_DIR/normalize_stations.sql")
-MEASUREMENTS_SQL=$(cat "$SCRIPT_DIR/normalize_measurements.sql")
+STATION_SQL=$(grep -v '^\s*--' "$SCRIPT_DIR/normalize_stations.sql" | grep -v '^\s*$' | sed "s/FROM EventInput/FROM [$STREAM_NAME]/g")
+MEASURE_SQL=$(grep -v '^\s*--' "$SCRIPT_DIR/normalize_measurements.sql" | grep -v '^\s*$' | sed "s/FROM EventInput/FROM [$STREAM_NAME]/g")
+COMBINED_SQL="$STATION_SQL
 
-COMBINED_SQL="$STATIONS_SQL
+$MEASURE_SQL"
 
-$MEASUREMENTS_SQL"
+# Build eventstream.json
+ES_DEF=$(jq -n \
+    --arg wsId "$WORKSPACE_ID" \
+    --arg dbId "$DATABASE_ID" \
+    --arg dbName "$DATABASE" \
+    --arg streamName "$STREAM_NAME" \
+    --arg sql "$COMBINED_SQL" \
+    '{
+        sources: [{name: "eurowater-input", type: "CustomEndpoint", properties: {}}],
+        destinations: [
+            {
+                name: "stations-kql", type: "Eventhouse",
+                properties: {
+                    dataIngestionMode: "ProcessedIngestion",
+                    workspaceId: $wsId, itemId: $dbId,
+                    databaseName: $dbName, tableName: "Stations",
+                    inputSerialization: {type: "Json", properties: {encoding: "UTF8"}}
+                },
+                inputNodes: [{name: "StationOutput"}]
+            },
+            {
+                name: "measurements-kql", type: "Eventhouse",
+                properties: {
+                    dataIngestionMode: "ProcessedIngestion",
+                    workspaceId: $wsId, itemId: $dbId,
+                    databaseName: $dbName, tableName: "Measurements",
+                    inputSerialization: {type: "Json", properties: {encoding: "UTF8"}}
+                },
+                inputNodes: [{name: "MeasurementOutput"}]
+            }
+        ],
+        streams: [
+            {name: $streamName, type: "DefaultStream", properties: {}, inputNodes: [{name: "eurowater-input"}]},
+            {name: "StationOutput", type: "DerivedStream", properties: {inputSerialization: {type: "Json", properties: {encoding: "UTF8"}}}, inputNodes: [{name: "normalize"}]},
+            {name: "MeasurementOutput", type: "DerivedStream", properties: {inputSerialization: {type: "Json", properties: {encoding: "UTF8"}}}, inputNodes: [{name: "normalize"}]}
+        ],
+        operators: [{
+            name: "normalize", type: "SQL",
+            inputNodes: [{name: $streamName}],
+            properties: {query: $sql}
+        }],
+        compatibilityLevel: "1.1"
+    }')
 
-fab eventstream add-operator \
-    --workspace "$WORKSPACE" \
-    --eventstream "$EVENTSTREAM" \
-    --operator-type "sql" \
-    --name "normalize" \
-    --input "eurowater-input" \
-    --query "$COMBINED_SQL"
+ES_BASE64=$(echo "$ES_DEF" | base64 -w 0)
+
+UPDATE_BODY=$(jq -n --arg payload "$ES_BASE64" '{
+    definition: {
+        parts: [{
+            path: "eventstream.json",
+            payload: $payload,
+            payloadType: "InlineBase64"
+        }]
+    }
+}')
+
+TMPFILE=$(mktemp)
+echo "$UPDATE_BODY" > "$TMPFILE"
+az rest --method POST \
+    --url "$FABRIC_API/workspaces/$WORKSPACE_ID/eventstreams/$EVENTSTREAM_ID/updateDefinition" \
+    --resource "https://api.fabric.microsoft.com" \
+    --body "@$TMPFILE" \
+    --headers "Content-Type=application/json" 2>&1
+rm -f "$TMPFILE"
+
+echo "  Topology configured:"
+echo "    Source:       eurowater-input (Custom Endpoint)"
+echo "    Operator:     normalize (SQL - 8 water services)"
+echo "    Destinations: stations-kql, measurements-kql -> $DATABASE"
 
 # ---------------------------------------------------------------------------
-# 5. KQL Database destinations
-# ---------------------------------------------------------------------------
-echo "  Adding Stations KQL destination..."
-fab eventstream add-destination \
-    --workspace "$WORKSPACE" \
-    --eventstream "$EVENTSTREAM" \
-    --destination-type "kql-database" \
-    --name "stations-kql" \
-    --input "normalize" \
-    --output-name "StationOutput" \
-    --eventhouse "$EVENTHOUSE" \
-    --database "$DATABASE" \
-    --table "Stations" \
-    --mapping "StationsMapping" \
-    --format "json"
-
-echo "  Adding Measurements KQL destination..."
-fab eventstream add-destination \
-    --workspace "$WORKSPACE" \
-    --eventstream "$EVENTSTREAM" \
-    --destination-type "kql-database" \
-    --name "measurements-kql" \
-    --input "normalize" \
-    --output-name "MeasurementOutput" \
-    --eventhouse "$EVENTHOUSE" \
-    --database "$DATABASE" \
-    --table "Measurements" \
-    --mapping "MeasurementsMapping" \
-    --format "json"
-
+# 4. Summary
 # ---------------------------------------------------------------------------
 echo ""
 echo "=== Setup Complete ==="
 echo ""
-echo "Resources in workspace '$WORKSPACE':"
-echo "  Eventhouse:   $EVENTHOUSE"
-echo "  KQL Database: $DATABASE (tables: Stations, Measurements)"
-echo "  Event Stream: $EVENTSTREAM"
+echo "Resources in workspace '$WORKSPACE_NAME':"
+echo "  - Eventhouse:   $EH_NAME ($EVENTHOUSE_ID)"
+echo "  - KQL Database: $DATABASE ($DATABASE_ID)"
+echo "  - Event Stream: $EVENTSTREAM ($EVENTSTREAM_ID)"
 echo ""
-echo "Next: deploy the container group with the connection string above."
+echo "Next steps:"
+echo "  1. Open the Event Stream in the Fabric portal to get the Custom Endpoint connection string"
+echo "  2. Deploy the ACI container group:"
+echo "     ../deploy.ps1 -ResourceGroupName eurowater-rg -ConnectionString '<connection-string>'"
+echo "  3. Or use Docker Compose:"
+echo "     CONNECTION_STRING='<connection-string>' docker compose -f ../docker-compose.yml up -d"

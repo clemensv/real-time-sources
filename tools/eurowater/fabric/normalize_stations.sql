@@ -41,7 +41,7 @@
 SELECT
     CASE
         WHEN type = 'de.wsv.pegelonline.Station'
-            THEN CONCAT('de-', data.number)
+            THEN CONCAT('de-', data.uuid)
         WHEN type = 'CZ.Gov.CHMI.Hydro.Station'
             THEN CONCAT('cz-', data.station_id)
         WHEN type = 'PL.Gov.IMGW.Hydro.Station'
@@ -56,6 +56,7 @@ SELECT
             THEN CONCAT('nl-', data.code)
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station'
             THEN CONCAT('be-', data.station_no)
+        ELSE NULL
     END AS station_id,
 
     CASE
@@ -67,6 +68,7 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN 'gb'
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN 'nl'
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN 'be'
+        ELSE NULL
     END AS country_code,
 
     CASE
@@ -78,6 +80,7 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.station_reference
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN data.code
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.station_no
+        ELSE NULL
     END AS source_station_id,
 
     CASE
@@ -89,6 +92,7 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.label
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN data.name
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.station_name
+        ELSE NULL
     END AS station_name,
 
     CASE
@@ -100,11 +104,16 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.river_name
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN NULL
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.river_name
+        ELSE NULL
     END AS river_name,
 
     CASE
         WHEN type = 'de.wsv.pegelonline.Station' THEN data.latitude
-        WHEN type = 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station' THEN data.latitude_station
+        WHEN type = 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station' THEN
+            CASE WHEN data.latitude_station < 20 AND data.longitude_station > 35
+                 THEN data.longitude_station
+                 ELSE data.latitude_station
+            END
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.lat
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.station_latitude
         ELSE data.latitude
@@ -112,7 +121,11 @@ SELECT
 
     CASE
         WHEN type = 'de.wsv.pegelonline.Station' THEN data.longitude
-        WHEN type = 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station' THEN data.longitude_station
+        WHEN type = 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station' THEN
+            CASE WHEN data.latitude_station < 20 AND data.longitude_station > 35
+                 THEN data.latitude_station
+                 ELSE data.longitude_station
+            END
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.[long]
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.station_longitude
         ELSE data.longitude
@@ -127,6 +140,7 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN 'uk-ea-flood-monitoring'
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN 'rws-waterwebservices'
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN 'waterinfo-vmm'
+        ELSE NULL
     END AS source_system,
 
     source AS source_url,

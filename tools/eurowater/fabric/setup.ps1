@@ -1,25 +1,24 @@
 <#
 .SYNOPSIS
-    Sets up the Eurowater Fabric Event Stream and KQL database using the Fabric CLI.
+    Sets up the Eurowater Fabric Event Stream and KQL database using the Fabric REST API.
 
 .DESCRIPTION
     Creates:
-    1. A KQL database (Eventhouse) with Stations and Measurements tables
+    1. A KQL database in an existing Eventhouse with Stations and Measurements tables
     2. A Fabric Event Stream with:
-       - Custom input endpoint (returns the connection string for the ACI container group)
+       - Custom input endpoint (retrieve the connection string from the Fabric portal)
        - SQL operator that normalizes all 8 European water service events
-       - KQL database output destination
+       - Eventhouse KQL database output destinations (Stations, Measurements)
 
     Prerequisites:
-    - Microsoft Fabric CLI (fab) installed: https://learn.microsoft.com/fabric/cli
-    - Authenticated: fab login
-    - A Fabric workspace created
+    - Azure CLI (az) installed and authenticated: az login
+    - Permissions to create items in the Fabric workspace
 
-.PARAMETER WorkspaceName
-    The Fabric workspace name.
+.PARAMETER WorkspaceId
+    The Fabric workspace ID (GUID).
 
-.PARAMETER EventhouseName
-    Name for the KQL Eventhouse. Defaults to 'eurowater'.
+.PARAMETER EventhouseId
+    The existing Eventhouse item ID (GUID) to create the database in.
 
 .PARAMETER DatabaseName
     Name for the KQL database. Defaults to 'eurowater'.
@@ -28,148 +27,263 @@
     Name for the Fabric Event Stream. Defaults to 'eurowater-ingest'.
 
 .EXAMPLE
-    ./setup.ps1 -WorkspaceName "MyWorkspace"
+    ./setup.ps1 -WorkspaceId "<your-workspace-id>" -EventhouseId "<your-eventhouse-id>"
 #>
 
 param(
     [Parameter(Mandatory = $true)]
-    [string]$WorkspaceName,
+    [string]$WorkspaceId,
 
-    [string]$EventhouseName = "eurowater",
+    [Parameter(Mandatory = $true)]
+    [string]$EventhouseId,
+
     [string]$DatabaseName = "eurowater",
     [string]$EventStreamName = "eurowater-ingest"
 )
 
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$FabricApi = "https://api.fabric.microsoft.com/v1"
+$StreamName = "$EventStreamName-stream"
+
+function Invoke-FabricApi {
+    param([string]$Method, [string]$Url, [object]$Body)
+    $azArgs = @("rest", "--method", $Method, "--url", $Url, "--resource", "https://api.fabric.microsoft.com")
+    if ($Body) {
+        $bodyFile = Join-Path $env:TEMP "fabric_api_body_$(Get-Random).json"
+        $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 10 -Compress }
+        [System.IO.File]::WriteAllText($bodyFile, $json, [System.Text.UTF8Encoding]::new($false))
+        $azArgs += @("--body", "@$bodyFile", "--headers", "Content-Type=application/json")
+    }
+    $result = & az @azArgs 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        $errorText = $result | Out-String
+        if ($errorText -match '"message"\s*:\s*"([^"]+)"') { return $null }
+        throw "Fabric API error: $errorText"
+    }
+    if ($result) { return $result | ConvertFrom-Json }
+    return $null
+}
 
 Write-Host "=== Eurowater Fabric Setup ===" -ForegroundColor Cyan
 
-# ---------------------------------------------------------------------------
-# 1. Create KQL Eventhouse and Database
-# ---------------------------------------------------------------------------
-Write-Host "`n[1/5] Creating KQL Eventhouse '$EventhouseName'..." -ForegroundColor Yellow
-fab eventhouse create --workspace $WorkspaceName --name $EventhouseName 2>$null
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "  Eventhouse may already exist, continuing..." -ForegroundColor DarkYellow
-}
+# Verify workspace
+Write-Host "`nVerifying workspace..." -ForegroundColor Yellow
+$workspace = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
+if (-not $workspace) { throw "Workspace $WorkspaceId not found" }
+Write-Host "  Workspace: $($workspace.displayName)" -ForegroundColor Green
 
-Write-Host "[2/5] Creating KQL Database '$DatabaseName'..." -ForegroundColor Yellow
-fab kqldatabase create --workspace $WorkspaceName --eventhouse $EventhouseName --name $DatabaseName 2>$null
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "  Database may already exist, continuing..." -ForegroundColor DarkYellow
-}
+# Verify eventhouse
+Write-Host "Verifying eventhouse..." -ForegroundColor Yellow
+$eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+if (-not $eventhouse) { throw "Eventhouse $EventhouseId not found" }
+Write-Host "  Eventhouse: $($eventhouse.displayName)" -ForegroundColor Green
 
-# Run the KQL schema setup script
-Write-Host "  Applying KQL schema (tables, mappings, views)..."
-$kqlScript = Get-Content -Path (Join-Path $ScriptDir "kql_database.kql") -Raw
-fab kqldatabase execute `
-    --workspace $WorkspaceName `
-    --eventhouse $EventhouseName `
-    --database $DatabaseName `
-    --script $kqlScript
+$queryUri = $eventhouse.properties.queryServiceUri
 
 # ---------------------------------------------------------------------------
-# 2. Create Fabric Event Stream
+# 1. Create KQL Database
 # ---------------------------------------------------------------------------
-Write-Host "`n[3/5] Creating Event Stream '$EventStreamName'..." -ForegroundColor Yellow
-fab eventstream create --workspace $WorkspaceName --name $EventStreamName 2>$null
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "  Event Stream may already exist, continuing..." -ForegroundColor DarkYellow
-}
+Write-Host "`n[1/4] Creating KQL Database '$DatabaseName'..." -ForegroundColor Yellow
 
-# ---------------------------------------------------------------------------
-# 3. Add Custom Input (returns connection string for containers)
-# ---------------------------------------------------------------------------
-Write-Host "[4/5] Adding custom input endpoint..." -ForegroundColor Yellow
-$inputResult = fab eventstream add-source `
-    --workspace $WorkspaceName `
-    --eventstream $EventStreamName `
-    --source-type "custom-endpoint" `
-    --name "eurowater-input" `
-    --format "json" | ConvertFrom-Json
+# Check if database already exists
+$databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+$existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName }
 
-$connectionString = $inputResult.connectionString
-if ($connectionString) {
-    Write-Host "  Custom input endpoint created." -ForegroundColor Green
-    Write-Host "  Connection String:" -ForegroundColor Green
-    Write-Host "  $connectionString" -ForegroundColor White
+if ($existingDb) {
+    $databaseId = $existingDb.id
+    Write-Host "  Database already exists (ID: $databaseId)" -ForegroundColor DarkYellow
 } else {
-    Write-Host "  Custom input endpoint created. Retrieve the connection string from the Fabric portal." -ForegroundColor DarkYellow
+    $dbBody = @{
+        displayName = $DatabaseName
+        creationPayload = @{
+            databaseType = "ReadWrite"
+            parentEventhouseItemId = $EventhouseId
+        }
+    }
+    $dbResult = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Body $dbBody
+    if ($dbResult) {
+        $databaseId = $dbResult.id
+    } else {
+        Start-Sleep -Seconds 5
+        $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+        $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName }
+        $databaseId = $existingDb.id
+    }
+    Write-Host "  Database created (ID: $databaseId)" -ForegroundColor Green
+}
+
+# Apply KQL schema
+Write-Host "  Applying KQL schema (tables, mappings, views)..." -ForegroundColor Yellow
+$kqlScript = Get-Content -Path (Join-Path $ScriptDir "kql_database.kql") -Raw
+$kqlClean = ($kqlScript -split "`n" | Where-Object { $_ -notmatch '^\s*//' }) -join "`n"
+$kqlBody = @{ csl = ".execute database script <|`n$kqlClean"; db = $DatabaseName }
+$kqlBodyFile = Join-Path $env:TEMP "kql_schema_body.json"
+$kqlBodyJson = $kqlBody | ConvertTo-Json -Compress
+[System.IO.File]::WriteAllText($kqlBodyFile, $kqlBodyJson, [System.Text.UTF8Encoding]::new($false))
+
+$schemaResult = az rest --method POST --url "$queryUri/v1/rest/mgmt" --resource $queryUri --body "@$kqlBodyFile" --headers "Content-Type=application/json" 2>&1 | ConvertFrom-Json
+$completed = ($schemaResult.Tables[0].Rows | Where-Object { $_[3] -eq 'Completed' }).Count
+$failed = ($schemaResult.Tables[0].Rows | Where-Object { $_[3] -ne 'Completed' }).Count
+Write-Host "  Schema applied: $completed commands completed, $failed failed" -ForegroundColor $(if ($failed -gt 0) { "Red" } else { "Green" })
+
+# ---------------------------------------------------------------------------
+# 2. Create Event Stream
+# ---------------------------------------------------------------------------
+Write-Host "`n[2/4] Creating Event Stream '$EventStreamName'..." -ForegroundColor Yellow
+
+$eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+$existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName }
+
+if ($existingEs) {
+    $eventstreamId = $existingEs.id
+    Write-Host "  Event Stream already exists (ID: $eventstreamId)" -ForegroundColor DarkYellow
+} else {
+    $esBody = @{ displayName = $EventStreamName }
+    $esResult = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Body $esBody
+    if ($esResult) {
+        $eventstreamId = $esResult.id
+    } else {
+        Start-Sleep -Seconds 5
+        $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+        $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName }
+        $eventstreamId = $existingEs.id
+    }
+    Write-Host "  Event Stream created (ID: $eventstreamId)" -ForegroundColor Green
 }
 
 # ---------------------------------------------------------------------------
-# 4. Add SQL Operator for normalization
+# 3. Build and apply Event Stream definition
 # ---------------------------------------------------------------------------
-Write-Host "`n[5/5] Adding SQL normalization operator..." -ForegroundColor Yellow
+Write-Host "`n[3/4] Configuring Event Stream topology..." -ForegroundColor Yellow
 
-$stationsSql = Get-Content -Path (Join-Path $ScriptDir "normalize_stations.sql") -Raw
-$measurementsSql = Get-Content -Path (Join-Path $ScriptDir "normalize_measurements.sql") -Raw
+# Read and prepare SQL
+$stationSql = Get-Content (Join-Path $ScriptDir "normalize_stations.sql") -Raw
+$measurementSql = Get-Content (Join-Path $ScriptDir "normalize_measurements.sql") -Raw
 
-# Combine both queries into a single SQL operator
-$combinedSql = @"
--- Station normalization
-$stationsSql
+$stationSql = $stationSql -replace 'FROM EventInput', "FROM [$StreamName]"
+$measurementSql = $measurementSql -replace 'FROM EventInput', "FROM [$StreamName]"
 
--- Measurement normalization
-$measurementsSql
-"@
+$stationSql = ($stationSql -split "`n" | Where-Object { $_ -notmatch '^\s*--' -and $_.Trim() -ne '' }) -join "`n"
+$measurementSql = ($measurementSql -split "`n" | Where-Object { $_ -notmatch '^\s*--' -and $_.Trim() -ne '' }) -join "`n"
 
-fab eventstream add-operator `
-    --workspace $WorkspaceName `
-    --eventstream $EventStreamName `
-    --operator-type "sql" `
-    --name "normalize" `
-    --input "eurowater-input" `
-    --query $combinedSql
+$combinedSql = "$stationSql`n`n$measurementSql"
+
+$eventstreamDef = @{
+    sources = @(
+        @{
+            name = "eurowater-input"
+            type = "CustomEndpoint"
+            properties = @{}
+        }
+    )
+    destinations = @(
+        @{
+            name = "stations-kql"
+            type = "Eventhouse"
+            properties = @{
+                dataIngestionMode = "ProcessedIngestion"
+                workspaceId = $WorkspaceId
+                itemId = $databaseId
+                databaseName = $DatabaseName
+                tableName = "Stations"
+                inputSerialization = @{ type = "Json"; properties = @{ encoding = "UTF8" } }
+            }
+            inputNodes = @( @{ name = "StationOutput" } )
+        },
+        @{
+            name = "measurements-kql"
+            type = "Eventhouse"
+            properties = @{
+                dataIngestionMode = "ProcessedIngestion"
+                workspaceId = $WorkspaceId
+                itemId = $databaseId
+                databaseName = $DatabaseName
+                tableName = "Measurements"
+                inputSerialization = @{ type = "Json"; properties = @{ encoding = "UTF8" } }
+            }
+            inputNodes = @( @{ name = "MeasurementOutput" } )
+        }
+    )
+    streams = @(
+        @{
+            name = $StreamName
+            type = "DefaultStream"
+            properties = @{}
+            inputNodes = @( @{ name = "eurowater-input" } )
+        },
+        @{
+            name = "StationOutput"
+            type = "DerivedStream"
+            properties = @{ inputSerialization = @{ type = "Json"; properties = @{ encoding = "UTF8" } } }
+            inputNodes = @( @{ name = "normalize" } )
+        },
+        @{
+            name = "MeasurementOutput"
+            type = "DerivedStream"
+            properties = @{ inputSerialization = @{ type = "Json"; properties = @{ encoding = "UTF8" } } }
+            inputNodes = @( @{ name = "normalize" } )
+        }
+    )
+    operators = @(
+        @{
+            name = "normalize"
+            type = "SQL"
+            inputNodes = @( @{ name = $StreamName } )
+            properties = @{ query = $combinedSql }
+        }
+    )
+    compatibilityLevel = "1.1"
+}
+
+$eventstreamJson = $eventstreamDef | ConvertTo-Json -Depth 10
+$eventstreamBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($eventstreamJson))
+
+$updateRequest = @{
+    definition = @{
+        parts = @(
+            @{
+                path = "eventstream.json"
+                payload = $eventstreamBase64
+                payloadType = "InlineBase64"
+            }
+        )
+    }
+}
+
+$updateBody = $updateRequest | ConvertTo-Json -Depth 10 -Compress
+$updateFile = Join-Path $env:TEMP "es_update_body.json"
+[System.IO.File]::WriteAllText($updateFile, $updateBody, [System.Text.UTF8Encoding]::new($false))
+
+$result = az rest --method POST `
+    --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" `
+    --resource "https://api.fabric.microsoft.com" `
+    --body "@$updateFile" `
+    --headers "Content-Type=application/json" 2>&1
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  Error: $result" -ForegroundColor Red
+    throw "Failed to update Event Stream definition"
+}
+Write-Host "  Topology configured:" -ForegroundColor Green
+Write-Host "    Source:       eurowater-input (Custom Endpoint)" -ForegroundColor White
+Write-Host "    Operator:     normalize (SQL - 8 water services)" -ForegroundColor White
+Write-Host "    Destinations: stations-kql, measurements-kql -> $DatabaseName" -ForegroundColor White
 
 # ---------------------------------------------------------------------------
-# 5. Add KQL Database destination
-# ---------------------------------------------------------------------------
-Write-Host "  Adding KQL database destination for Stations..." -ForegroundColor Yellow
-fab eventstream add-destination `
-    --workspace $WorkspaceName `
-    --eventstream $EventStreamName `
-    --destination-type "kql-database" `
-    --name "stations-kql" `
-    --input "normalize" `
-    --output-name "StationOutput" `
-    --eventhouse $EventhouseName `
-    --database $DatabaseName `
-    --table "Stations" `
-    --mapping "StationsMapping" `
-    --format "json"
-
-Write-Host "  Adding KQL database destination for Measurements..." -ForegroundColor Yellow
-fab eventstream add-destination `
-    --workspace $WorkspaceName `
-    --eventstream $EventStreamName `
-    --destination-type "kql-database" `
-    --name "measurements-kql" `
-    --input "normalize" `
-    --output-name "MeasurementOutput" `
-    --eventhouse $EventhouseName `
-    --database $DatabaseName `
-    --table "Measurements" `
-    --mapping "MeasurementsMapping" `
-    --format "json"
-
-# ---------------------------------------------------------------------------
-# Summary
+# 4. Summary
 # ---------------------------------------------------------------------------
 Write-Host "`n=== Setup Complete ===" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Resources created in workspace '$WorkspaceName':" -ForegroundColor White
-Write-Host "  - Eventhouse:   $EventhouseName" -ForegroundColor White
-Write-Host "  - KQL Database: $DatabaseName (tables: Stations, Measurements)" -ForegroundColor White
-Write-Host "  - Event Stream: $EventStreamName" -ForegroundColor White
-Write-Host "    - Input:      eurowater-input (custom endpoint)" -ForegroundColor White
-Write-Host "    - Operator:   normalize (SQL - station & measurement normalization)" -ForegroundColor White
-Write-Host "    - Output:     stations-kql, measurements-kql -> KQL database" -ForegroundColor White
+Write-Host "Resources in workspace '$($workspace.displayName)':" -ForegroundColor White
+Write-Host "  - Eventhouse:   $($eventhouse.displayName) ($EventhouseId)" -ForegroundColor White
+Write-Host "  - KQL Database: $DatabaseName ($databaseId)" -ForegroundColor White
+Write-Host "  - Event Stream: $EventStreamName ($eventstreamId)" -ForegroundColor White
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
-Write-Host "  1. Use the connection string above to deploy the ACI container group:" -ForegroundColor White
+Write-Host "  1. Open the Event Stream in the Fabric portal to get the Custom Endpoint connection string" -ForegroundColor White
+Write-Host "  2. Deploy the ACI container group:" -ForegroundColor White
 Write-Host "     ../deploy.ps1 -ResourceGroupName eurowater-rg -ConnectionString '<connection-string>'" -ForegroundColor DarkGray
-Write-Host "  2. Or use Docker Compose:" -ForegroundColor White
+Write-Host "  3. Or use Docker Compose:" -ForegroundColor White
 Write-Host "     CONNECTION_STRING='<connection-string>' docker compose -f ../docker-compose.yml up -d" -ForegroundColor DarkGray
 Write-Host ""

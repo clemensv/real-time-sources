@@ -52,7 +52,7 @@
       "type": "string"
     },
     "waterinfoVmmImage": {
-      "defaultValue": "ghcr.io/clemensv/real-time-sources/waterinfo-vmm:latest",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-waterinfo-vmm:latest",
       "metadata": { "description": "Container image for Waterinfo VMM (Belgium/Flanders)." },
       "type": "string"
     }
