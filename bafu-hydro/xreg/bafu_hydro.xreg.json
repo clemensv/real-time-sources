@@ -1,0 +1,112 @@
+{
+    "endpoints": {
+        "CH.BAFU.Hydrology.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "bafu-hydro"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/CH.BAFU.Hydrology"
+            ]
+        }
+    },
+    "messagegroups": {
+        "CH.BAFU.Hydrology": {
+            "messages": {
+                "CH.BAFU.Hydrology.Station": {
+                    "name": "Station",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "CH.BAFU.Hydrology.Station"
+                        },
+                        "source": {
+                            "value": "https://www.hydrodaten.admin.ch"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/CH.BAFU.Hydrology/schemas/CH.BAFU.Hydrology.Station"
+                },
+                "CH.BAFU.Hydrology.WaterLevelObservation": {
+                    "name": "WaterLevelObservation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "CH.BAFU.Hydrology.WaterLevelObservation"
+                        },
+                        "source": {
+                            "value": "https://www.hydrodaten.admin.ch"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/CH.BAFU.Hydrology/schemas/CH.BAFU.Hydrology.WaterLevelObservation"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "CH.BAFU.Hydrology": {
+            "schemas": {
+                "CH.BAFU.Hydrology.Station": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Station",
+                                "namespace": "CH.BAFU.Hydrology",
+                                "properties": {
+                                    "station_id": { "type": "string", "description": "BAFU station identifier" },
+                                    "name": { "type": "string", "description": "Station name" },
+                                    "water_body_name": { "type": "string", "description": "Water body name (river, lake)" },
+                                    "water_body_type": { "type": "string", "description": "Water body type (river, lake)" },
+                                    "latitude": { "type": "number", "description": "Latitude in WGS84" },
+                                    "longitude": { "type": "number", "description": "Longitude in WGS84" }
+                                },
+                                "required": ["station_id", "name", "latitude", "longitude"]
+                            }
+                        }
+                    }
+                },
+                "CH.BAFU.Hydrology.WaterLevelObservation": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "WaterLevelObservation",
+                                "namespace": "CH.BAFU.Hydrology",
+                                "properties": {
+                                    "station_id": { "type": "string", "description": "Station identifier" },
+                                    "water_level": { "type": "number", "description": "Water level value" },
+                                    "water_level_unit": { "type": "string", "description": "Water level unit (e.g. m, cm)" },
+                                    "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp (ISO 8601)" },
+                                    "discharge": { "type": "number", "description": "Discharge (flow rate)" },
+                                    "discharge_unit": { "type": "string", "description": "Discharge unit (e.g. m3/s)" },
+                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp (ISO 8601)" },
+                                    "water_temperature": { "type": "number", "description": "Water temperature" },
+                                    "water_temperature_unit": { "type": "string", "description": "Water temperature unit (e.g. C)" },
+                                    "water_temperature_timestamp": { "type": "string", "format": "date-time", "description": "Water temperature measurement timestamp (ISO 8601)" }
+                                },
+                                "required": ["station_id"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -2,7 +2,7 @@
 -- EU.Eurowater.Station normalization query
 -- Fabric Event Stream SQL operator (Azure Stream Analytics compatible)
 --
--- Reads station reference events from all 8 European water services
+-- Reads station reference events from all 11 European water services
 -- and normalizes them into a single EU.Eurowater.Station schema.
 -- =============================================================================
 
@@ -38,6 +38,18 @@
 -- station_latitude, station_longitude, river_name
 -- CloudEvents type: BE.Vlaanderen.Waterinfo.VMM.Station
 
+-- NVE Hydro (Norway) - JSON payload, fields: station_id, station_name,
+-- river_name, latitude, longitude
+-- CloudEvents type: NO.NVE.Hydrology.Station
+
+-- SYKE Hydro (Finland) - JSON payload, fields: station_id, name,
+-- river_name, latitude, longitude
+-- CloudEvents type: FI.SYKE.Hydrology.Station
+
+-- BAFU Hydro (Switzerland) - JSON payload, fields: station_id, name,
+-- water_body_name, latitude, longitude
+-- CloudEvents type: CH.BAFU.Hydrology.Station
+
 SELECT
     CASE
         WHEN type = 'de.wsv.pegelonline.Station'
@@ -56,6 +68,12 @@ SELECT
             THEN CONCAT('nl-', data.code)
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station'
             THEN CONCAT('be-', data.station_no)
+        WHEN type = 'NO.NVE.Hydrology.Station'
+            THEN CONCAT('no-', data.station_id)
+        WHEN type = 'FI.SYKE.Hydrology.Station'
+            THEN CONCAT('fi-', data.station_id)
+        WHEN type = 'CH.BAFU.Hydrology.Station'
+            THEN CONCAT('ch-', data.station_id)
         ELSE NULL
     END AS station_id,
 
@@ -68,6 +86,9 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN 'gb'
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN 'nl'
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN 'be'
+        WHEN type = 'NO.NVE.Hydrology.Station' THEN 'no'
+        WHEN type = 'FI.SYKE.Hydrology.Station' THEN 'fi'
+        WHEN type = 'CH.BAFU.Hydrology.Station' THEN 'ch'
         ELSE NULL
     END AS country_code,
 
@@ -80,6 +101,9 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.station_reference
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN data.code
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.station_no
+        WHEN type = 'NO.NVE.Hydrology.Station' THEN data.station_id
+        WHEN type = 'FI.SYKE.Hydrology.Station' THEN data.station_id
+        WHEN type = 'CH.BAFU.Hydrology.Station' THEN data.station_id
         ELSE NULL
     END AS source_station_id,
 
@@ -92,6 +116,9 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.label
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN data.name
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.station_name
+        WHEN type = 'NO.NVE.Hydrology.Station' THEN data.station_name
+        WHEN type = 'FI.SYKE.Hydrology.Station' THEN data.name
+        WHEN type = 'CH.BAFU.Hydrology.Station' THEN data.name
         ELSE NULL
     END AS station_name,
 
@@ -104,6 +131,9 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN data.river_name
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN NULL
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN data.river_name
+        WHEN type = 'NO.NVE.Hydrology.Station' THEN data.river_name
+        WHEN type = 'FI.SYKE.Hydrology.Station' THEN data.river_name
+        WHEN type = 'CH.BAFU.Hydrology.Station' THEN data.water_body_name
         ELSE NULL
     END AS river_name,
 
@@ -140,6 +170,9 @@ SELECT
         WHEN type = 'UK.Gov.Environment.EA.FloodMonitoring.Station' THEN 'uk-ea-flood-monitoring'
         WHEN type = 'NL.RWS.Waterwebservices.Station' THEN 'rws-waterwebservices'
         WHEN type = 'BE.Vlaanderen.Waterinfo.VMM.Station' THEN 'waterinfo-vmm'
+        WHEN type = 'NO.NVE.Hydrology.Station' THEN 'nve-hydro'
+        WHEN type = 'FI.SYKE.Hydrology.Station' THEN 'syke-hydro'
+        WHEN type = 'CH.BAFU.Hydrology.Station' THEN 'bafu-hydro'
         ELSE NULL
     END AS source_system,
 
@@ -157,5 +190,8 @@ WHERE type IN (
     'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station',
     'UK.Gov.Environment.EA.FloodMonitoring.Station',
     'NL.RWS.Waterwebservices.Station',
-    'BE.Vlaanderen.Waterinfo.VMM.Station'
+    'BE.Vlaanderen.Waterinfo.VMM.Station',
+    'NO.NVE.Hydrology.Station',
+    'FI.SYKE.Hydrology.Station',
+    'CH.BAFU.Hydrology.Station'
 );

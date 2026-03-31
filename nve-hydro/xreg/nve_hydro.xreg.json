@@ -1,0 +1,112 @@
+{
+    "endpoints": {
+        "NO.NVE.Hydrology.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "nve-hydro"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/NO.NVE.Hydrology"
+            ]
+        }
+    },
+    "messagegroups": {
+        "NO.NVE.Hydrology": {
+            "messages": {
+                "NO.NVE.Hydrology.Station": {
+                    "name": "Station",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "NO.NVE.Hydrology.Station"
+                        },
+                        "source": {
+                            "value": "https://hydapi.nve.no"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NO.NVE.Hydrology/schemas/NO.NVE.Hydrology.Station"
+                },
+                "NO.NVE.Hydrology.WaterLevelObservation": {
+                    "name": "WaterLevelObservation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "NO.NVE.Hydrology.WaterLevelObservation"
+                        },
+                        "source": {
+                            "value": "https://hydapi.nve.no"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NO.NVE.Hydrology/schemas/NO.NVE.Hydrology.WaterLevelObservation"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "NO.NVE.Hydrology": {
+            "schemas": {
+                "NO.NVE.Hydrology.Station": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Station",
+                                "namespace": "NO.NVE.Hydrology",
+                                "properties": {
+                                    "station_id": { "type": "string", "description": "NVE station identifier" },
+                                    "station_name": { "type": "string", "description": "Station name" },
+                                    "river_name": { "type": "string", "description": "River name" },
+                                    "latitude": { "type": "number", "description": "Latitude in WGS84" },
+                                    "longitude": { "type": "number", "description": "Longitude in WGS84" },
+                                    "masl": { "type": "number", "description": "Meters above sea level" },
+                                    "council_name": { "type": "string", "description": "Municipality name" },
+                                    "county_name": { "type": "string", "description": "County name" },
+                                    "drainage_basin_area": { "type": "number", "description": "Drainage basin area in km²" }
+                                },
+                                "required": ["station_id", "station_name", "latitude", "longitude"]
+                            }
+                        }
+                    }
+                },
+                "NO.NVE.Hydrology.WaterLevelObservation": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "WaterLevelObservation",
+                                "namespace": "NO.NVE.Hydrology",
+                                "properties": {
+                                    "station_id": { "type": "string", "description": "Station identifier" },
+                                    "water_level": { "type": "number", "description": "Water level value" },
+                                    "water_level_unit": { "type": "string", "description": "Water level unit (e.g. m, cm)" },
+                                    "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp (ISO 8601)" },
+                                    "discharge": { "type": "number", "description": "Discharge (flow rate)" },
+                                    "discharge_unit": { "type": "string", "description": "Discharge unit (e.g. m3/s)" },
+                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp (ISO 8601)" }
+                                },
+                                "required": ["station_id"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

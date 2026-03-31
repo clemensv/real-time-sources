@@ -2,7 +2,7 @@
 -- EU.Eurowater.Measurement normalization query
 -- Fabric Event Stream SQL operator (Azure Stream Analytics compatible)
 --
--- Reads telemetry/measurement events from all 8 European water services
+-- Reads telemetry/measurement events from all 11 European water services
 -- and normalizes them into EU.Eurowater.Measurement records.
 --
 -- Some sources report multiple parameters (water_level, discharge,
@@ -241,4 +241,136 @@ SELECT
     'waterinfo-vmm'                            AS source_system,
     'EU.Eurowater.Measurement'                 AS [__ce_type]
 FROM EventInput
-WHERE type = 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading';
+WHERE type = 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading'
+
+UNION ALL
+
+-- ---- NVE Hydro (Norway) ----
+-- Multi-parameter: water_level, discharge in one event.
+-- Water level
+SELECT
+    CONCAT('no-', data.station_id)            AS station_id,
+    'no'                                       AS country_code,
+    data.water_level_timestamp                 AS [timestamp],
+    'water_level'                              AS parameter,
+    data.water_level                           AS value,
+    data.water_level_unit                      AS unit,
+    NULL                                       AS quality,
+    'nve-hydro'                                AS source_system,
+    'EU.Eurowater.Measurement'                 AS [__ce_type]
+FROM EventInput
+WHERE type = 'NO.NVE.Hydrology.WaterLevelObservation'
+    AND data.water_level_timestamp IS NOT NULL
+    AND data.water_level_timestamp <> ''
+
+UNION ALL
+
+-- NVE discharge
+SELECT
+    CONCAT('no-', data.station_id)            AS station_id,
+    'no'                                       AS country_code,
+    data.discharge_timestamp                   AS [timestamp],
+    'discharge'                                AS parameter,
+    data.discharge                             AS value,
+    data.discharge_unit                        AS unit,
+    NULL                                       AS quality,
+    'nve-hydro'                                AS source_system,
+    'EU.Eurowater.Measurement'                 AS [__ce_type]
+FROM EventInput
+WHERE type = 'NO.NVE.Hydrology.WaterLevelObservation'
+    AND data.discharge_timestamp IS NOT NULL
+    AND data.discharge_timestamp <> ''
+
+UNION ALL
+
+-- ---- SYKE Hydro (Finland) ----
+-- Multi-parameter: water_level, discharge in one event.
+-- Water level
+SELECT
+    CONCAT('fi-', data.station_id)            AS station_id,
+    'fi'                                       AS country_code,
+    data.water_level_timestamp                 AS [timestamp],
+    'water_level'                              AS parameter,
+    data.water_level                           AS value,
+    data.water_level_unit                      AS unit,
+    NULL                                       AS quality,
+    'syke-hydro'                               AS source_system,
+    'EU.Eurowater.Measurement'                 AS [__ce_type]
+FROM EventInput
+WHERE type = 'FI.SYKE.Hydrology.WaterLevelObservation'
+    AND data.water_level_timestamp IS NOT NULL
+    AND data.water_level_timestamp <> ''
+
+UNION ALL
+
+-- SYKE discharge
+SELECT
+    CONCAT('fi-', data.station_id)            AS station_id,
+    'fi'                                       AS country_code,
+    data.discharge_timestamp                   AS [timestamp],
+    'discharge'                                AS parameter,
+    data.discharge                             AS value,
+    data.discharge_unit                        AS unit,
+    NULL                                       AS quality,
+    'syke-hydro'                               AS source_system,
+    'EU.Eurowater.Measurement'                 AS [__ce_type]
+FROM EventInput
+WHERE type = 'FI.SYKE.Hydrology.WaterLevelObservation'
+    AND data.discharge_timestamp IS NOT NULL
+    AND data.discharge_timestamp <> ''
+
+UNION ALL
+
+-- ---- BAFU Hydro (Switzerland) ----
+-- Multi-parameter: water_level, discharge, water_temperature in one event.
+-- Water level
+SELECT
+    CONCAT('ch-', data.station_id)            AS station_id,
+    'ch'                                       AS country_code,
+    data.water_level_timestamp                 AS [timestamp],
+    'water_level'                              AS parameter,
+    data.water_level                           AS value,
+    data.water_level_unit                      AS unit,
+    NULL                                       AS quality,
+    'bafu-hydro'                               AS source_system,
+    'EU.Eurowater.Measurement'                 AS [__ce_type]
+FROM EventInput
+WHERE type = 'CH.BAFU.Hydrology.WaterLevelObservation'
+    AND data.water_level_timestamp IS NOT NULL
+    AND data.water_level_timestamp <> ''
+
+UNION ALL
+
+-- BAFU discharge
+SELECT
+    CONCAT('ch-', data.station_id)            AS station_id,
+    'ch'                                       AS country_code,
+    data.discharge_timestamp                   AS [timestamp],
+    'discharge'                                AS parameter,
+    data.discharge                             AS value,
+    data.discharge_unit                        AS unit,
+    NULL                                       AS quality,
+    'bafu-hydro'                               AS source_system,
+    'EU.Eurowater.Measurement'                 AS [__ce_type]
+FROM EventInput
+WHERE type = 'CH.BAFU.Hydrology.WaterLevelObservation'
+    AND data.discharge_timestamp IS NOT NULL
+    AND data.discharge_timestamp <> ''
+
+UNION ALL
+
+-- BAFU water temperature
+SELECT
+    CONCAT('ch-', data.station_id)            AS station_id,
+    'ch'                                       AS country_code,
+    data.water_temperature_timestamp           AS [timestamp],
+    'water_temperature'                        AS parameter,
+    data.water_temperature                     AS value,
+    data.water_temperature_unit                AS unit,
+    NULL                                       AS quality,
+    'bafu-hydro'                               AS source_system,
+    'EU.Eurowater.Measurement'                 AS [__ce_type]
+FROM EventInput
+WHERE type = 'CH.BAFU.Hydrology.WaterLevelObservation'
+    AND data.water_temperature_timestamp IS NOT NULL
+    AND data.water_temperature_timestamp <> '';

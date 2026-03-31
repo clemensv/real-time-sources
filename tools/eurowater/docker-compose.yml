@@ -1,6 +1,6 @@
 # European Water Services - Docker Compose
 #
-# Runs all 8 European waterway information services as sidecars,
+# Runs all 11 European waterway information services as sidecars,
 # sharing the same Kafka target configuration.
 #
 # Usage:
@@ -106,6 +106,44 @@ services:
       - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
       - POLLING_INTERVAL=900
       - STATE_FILE=/data/waterinfo_vmm_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  nve-hydro:
+    image: ghcr.io/clemensv/real-time-sources-nve-hydro:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BROKER=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - NVE_API_KEY=${NVE_API_KEY:-}
+      - STATE_FILE=/data/nve_hydro_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  syke-hydro:
+    image: ghcr.io/clemensv/real-time-sources-syke-hydro:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BROKER=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - POLLING_INTERVAL=3600
+      - STATE_FILE=/data/syke_hydro_state.json
+    volumes:
+      - eurowater-data:/data
+    restart: unless-stopped
+
+  bafu-hydro:
+    image: ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BROKER=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - STATE_FILE=/data/bafu_hydro_state.json
     volumes:
       - eurowater-data:/data
     restart: unless-stopped
