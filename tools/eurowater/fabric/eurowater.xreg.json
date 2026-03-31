@@ -1,0 +1,179 @@
+{
+    "endpoints": {
+        "EU.Eurowater.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "eurowater"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/EU.Eurowater"
+            ]
+        }
+    },
+    "messagegroups": {
+        "EU.Eurowater": {
+            "messages": {
+                "EU.Eurowater.Station": {
+                    "name": "Station",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "EU.Eurowater.Station"
+                        },
+                        "source": {
+                            "value": "eurowater"
+                        },
+                        "subject": {
+                            "type": "uritemplate",
+                            "value": "{country_code}-{station_id}"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/EU.Eurowater/schemas/EU.Eurowater.Station"
+                },
+                "EU.Eurowater.Measurement": {
+                    "name": "Measurement",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "EU.Eurowater.Measurement"
+                        },
+                        "source": {
+                            "value": "eurowater"
+                        },
+                        "subject": {
+                            "type": "uritemplate",
+                            "value": "{country_code}-{station_id}"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/EU.Eurowater/schemas/EU.Eurowater.Measurement"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "EU.Eurowater": {
+            "schemas": {
+                "EU.Eurowater.Station": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Station",
+                                "namespace": "EU.Eurowater",
+                                "description": "Normalized European water monitoring station reference data",
+                                "properties": {
+                                    "station_id": {
+                                        "type": "string",
+                                        "description": "Unique station identifier prefixed with ISO 3166-1 alpha-2 country code, e.g. de-2480010, cz-0-203-1-001000, pl-150190330"
+                                    },
+                                    "country_code": {
+                                        "type": "string",
+                                        "description": "ISO 3166-1 alpha-2 country code: de, cz, pl, se, fr, gb, nl, be",
+                                        "enum": ["de", "cz", "pl", "se", "fr", "gb", "nl", "be"]
+                                    },
+                                    "source_station_id": {
+                                        "type": "string",
+                                        "description": "Original station identifier from the source system"
+                                    },
+                                    "station_name": {
+                                        "type": "string",
+                                        "description": "Station display name"
+                                    },
+                                    "river_name": {
+                                        "type": "string",
+                                        "description": "River or waterway name, null if not available"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "description": "WGS84 latitude"
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "description": "WGS84 longitude"
+                                    },
+                                    "source_system": {
+                                        "type": "string",
+                                        "description": "Origin system identifier: pegelonline, chmi-hydro, imgw-hydro, smhi-hydro, hubeau-hydrometrie, uk-ea-flood-monitoring, rws-waterwebservices, waterinfo-vmm"
+                                    },
+                                    "source_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "URL of the source data API"
+                                    }
+                                },
+                                "required": ["station_id", "country_code", "source_station_id", "station_name", "latitude", "longitude", "source_system"]
+                            }
+                        }
+                    }
+                },
+                "EU.Eurowater.Measurement": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1.0": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "Measurement",
+                                "namespace": "EU.Eurowater",
+                                "description": "Normalized European water measurement observation",
+                                "properties": {
+                                    "station_id": {
+                                        "type": "string",
+                                        "description": "Normalized station identifier (country_code-source_id), e.g. de-2480010"
+                                    },
+                                    "country_code": {
+                                        "type": "string",
+                                        "description": "ISO 3166-1 alpha-2 country code",
+                                        "enum": ["de", "cz", "pl", "se", "fr", "gb", "nl", "be"]
+                                    },
+                                    "timestamp": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Measurement timestamp in ISO 8601 UTC"
+                                    },
+                                    "parameter": {
+                                        "type": "string",
+                                        "description": "Measured parameter type",
+                                        "enum": ["water_level", "discharge", "water_temperature"]
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "description": "Measured value"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "description": "Unit of measurement: cm, m, m3/s, C"
+                                    },
+                                    "quality": {
+                                        "type": "string",
+                                        "description": "Quality indicator from source system, null if not available"
+                                    },
+                                    "source_system": {
+                                        "type": "string",
+                                        "description": "Origin system identifier"
+                                    }
+                                },
+                                "required": ["station_id", "country_code", "timestamp", "parameter", "value", "unit", "source_system"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

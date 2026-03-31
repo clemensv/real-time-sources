@@ -1,0 +1,117 @@
+.create-merge table Stations (
+    station_id: string,
+    country_code: string,
+    source_station_id: string,
+    station_name: string,
+    river_name: string,
+    latitude: real,
+    longitude: real,
+    source_system: string,
+    source_url: string,
+    ingestion_time: datetime
+)
+
+.alter table Stations policy ingestionbatching
+```
+{
+    "MaximumBatchingTimeSpan": "00:00:30",
+    "MaximumNumberOfItems": 500,
+    "MaximumRawDataSizeMB": 100
+}
+```
+
+.create-merge table Measurements (
+    station_id: string,
+    country_code: string,
+    timestamp: datetime,
+    parameter: string,
+    value: real,
+    unit: string,
+    quality: string,
+    source_system: string,
+    ingestion_time: datetime
+)
+
+.alter table Measurements policy ingestionbatching
+```
+{
+    "MaximumBatchingTimeSpan": "00:00:30",
+    "MaximumNumberOfItems": 10000,
+    "MaximumRawDataSizeMB": 200
+}
+```
+
+// Create a JSON ingestion mapping for Stations
+.create-or-alter table Stations ingestion json mapping 'StationsMapping'
+```
+[
+    {"column": "station_id",        "path": "$.station_id",        "datatype": "string"},
+    {"column": "country_code",      "path": "$.country_code",      "datatype": "string"},
+    {"column": "source_station_id", "path": "$.source_station_id", "datatype": "string"},
+    {"column": "station_name",      "path": "$.station_name",      "datatype": "string"},
+    {"column": "river_name",        "path": "$.river_name",        "datatype": "string"},
+    {"column": "latitude",          "path": "$.latitude",          "datatype": "real"},
+    {"column": "longitude",         "path": "$.longitude",         "datatype": "real"},
+    {"column": "source_system",     "path": "$.source_system",     "datatype": "string"},
+    {"column": "source_url",        "path": "$.source_url",        "datatype": "string"},
+    {"column": "ingestion_time",    "path": "$.EventProcessedUtcTime", "datatype": "datetime"}
+]
+```
+
+// Create a JSON ingestion mapping for Measurements
+.create-or-alter table Measurements ingestion json mapping 'MeasurementsMapping'
+```
+[
+    {"column": "station_id",     "path": "$.station_id",     "datatype": "string"},
+    {"column": "country_code",   "path": "$.country_code",   "datatype": "string"},
+    {"column": "timestamp",      "path": "$.timestamp",      "datatype": "datetime"},
+    {"column": "parameter",      "path": "$.parameter",      "datatype": "string"},
+    {"column": "value",          "path": "$.value",          "datatype": "real"},
+    {"column": "unit",           "path": "$.unit",           "datatype": "string"},
+    {"column": "quality",        "path": "$.quality",        "datatype": "string"},
+    {"column": "source_system",  "path": "$.source_system",  "datatype": "string"},
+    {"column": "ingestion_time", "path": "$.EventProcessedUtcTime", "datatype": "datetime"}
+]
+```
+
+// Retention: keep measurement data for 365 days, stations indefinitely
+.alter table Measurements policy retention
+```
+{
+    "SoftDeletePeriod": "365.00:00:00",
+    "Recoverability": "Enabled"
+}
+```
+
+// Materialized view: latest station state (deduplication)
+.create-or-alter materialized-view with (backfill=true) StationsLatest on table Stations
+{
+    Stations
+    | summarize arg_max(ingestion_time, *) by station_id
+}
+
+// Materialized view: latest measurement per station+parameter
+.create-or-alter materialized-view with (backfill=true) MeasurementsLatest on table Measurements
+{
+    Measurements
+    | summarize arg_max(timestamp, *) by station_id, parameter
+}
+
+// Function: join latest measurements with station metadata
+.create-or-alter function with (docstring="Joins latest measurements with station reference data") StationMeasurements() {
+    MeasurementsLatest
+    | join kind=inner StationsLatest on station_id
+    | project
+        station_id,
+        country_code,
+        station_name,
+        river_name,
+        latitude,
+        longitude,
+        parameter,
+        value,
+        unit,
+        timestamp,
+        quality,
+        source_system
+}
