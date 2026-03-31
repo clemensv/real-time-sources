@@ -204,10 +204,8 @@ def _save_state(state_file: str, data: dict) -> None:
         logging.warning("Could not save state to %s: %s", state_file, e)
 
 
-def feed_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer, previous_readings: dict = None) -> int:
-    """Fetch all data and send station reference data + observations to Kafka."""
-    if previous_readings is None:
-        previous_readings = {}
+def send_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer) -> typing.Tuple[typing.List[str], typing.Dict[str, Station]]:
+    """Fetch all stations and send station reference data to Kafka. Returns (station_ids, stations_by_id)."""
     metadata = api.get_metadata()
     sent_count = 0
 
@@ -224,6 +222,16 @@ def feed_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer, prev
         )
         sent_count += 1
 
+    producer.producer.flush()
+    logger.info("Sent %d station events", sent_count)
+    return station_ids, stations_by_id
+
+
+def feed_observations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer,
+                      station_ids: typing.List[str], stations_by_id: typing.Dict[str, Station],
+                      previous_readings: dict) -> int:
+    """Fetch all station data and send observations to Kafka."""
+    sent_count = 0
     all_data = api.get_all_station_data(station_ids)
 
     for sid, data in all_data.items():
@@ -313,11 +321,12 @@ def main():
         event_producer = CZGovCHMIHydroEventProducer(producer, args.topic)
         logger.info("Starting ČHMÚ Hydro bridge, polling every %d seconds", args.polling_interval)
         previous_readings = _load_state(args.state_file)
+        station_ids, stations_by_id = send_stations(api, event_producer)
         while True:
             try:
-                count = feed_stations(api, event_producer, previous_readings)
+                count = feed_observations(api, event_producer, station_ids, stations_by_id, previous_readings)
                 _save_state(args.state_file, previous_readings)
-                logger.info("Sent %d events", count)
+                logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
             time.sleep(args.polling_interval)

@@ -150,8 +150,8 @@ def _get_latest_per_station(readings: list) -> dict:
     return latest
 
 
-def feed_stations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer, previous_readings: dict) -> int:
-    """Fetch all data and send station reference data + observations to Kafka."""
+def send_stations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer) -> dict:
+    """Fetch all stations and send station reference data to Kafka. Returns stations_by_id dict."""
     stations = api.get_stations()
     sent_count = 0
 
@@ -177,6 +177,14 @@ def feed_stations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer, pre
         producer.send_fi_syke_hydrology_station(data=station_data, flush_producer=False)
         sent_count += 1
 
+    producer.producer.flush()
+    logger.info("Sent %d station events", sent_count)
+    return stations_by_id
+
+
+def feed_observations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer, stations_by_id: dict, previous_readings: dict) -> int:
+    """Fetch water level and discharge observations and send to Kafka."""
+    sent_count = 0
     since = (datetime.now(timezone.utc) - timedelta(days=2)).strftime('%Y-%m-%d')
 
     # Fetch water level and discharge observations
@@ -271,11 +279,12 @@ def main():
         syke_producer = FISYKEHydrologyEventProducer(kafka_producer, args.topic)
         logger.info("Starting SYKE Hydro bridge, polling every %d seconds", args.polling_interval)
         previous_readings = _load_state(args.state_file)
+        stations_by_id = send_stations(api, syke_producer)
         while True:
             try:
-                count = feed_stations(api, syke_producer, previous_readings)
+                count = feed_observations(api, syke_producer, stations_by_id, previous_readings)
                 _save_state(args.state_file, previous_readings)
-                logger.info("Sent %d events", count)
+                logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
             time.sleep(args.polling_interval)

@@ -130,11 +130,10 @@ def _fetch_station_observations(api: NVEHydroAPI, station_id: str, params: list)
     return result
 
 
-def feed_stations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer, previous_readings: dict) -> int:
-    """Fetch all data and send station reference data + observations to Kafka."""
+def send_stations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer) -> dict:
+    """Fetch stations and send station reference events. Returns station_params map."""
     stations = api.get_stations()
     sent_count = 0
-
     station_params = {}
     for station in stations:
         sid = station.get('stationId')
@@ -161,6 +160,16 @@ def feed_stations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer, previ
         )
         producer.send_no_nve_hydrology_station(data=station_data, flush_producer=False)
         sent_count += 1
+
+    producer.producer.flush()
+    logger.info("Sent %d station events", sent_count)
+    return station_params
+
+
+def feed_observations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer,
+                      station_params: dict, previous_readings: dict) -> int:
+    """Fetch observations and send measurement events to Kafka."""
+    sent_count = 0
 
     def fetch_one(sid):
         return sid, _fetch_station_observations(api, sid, station_params[sid])
@@ -270,9 +279,10 @@ def main():
         nve_producer = NONVEHydrologyEventProducer(kafka_producer, args.topic)
         logger.info("Starting NVE Hydro bridge, polling every %d seconds", args.polling_interval)
         previous_readings = _load_state(args.state_file)
+        station_params = send_stations(api, nve_producer)
         while True:
             try:
-                count = feed_stations(api, nve_producer, previous_readings)
+                count = feed_observations(api, nve_producer, station_params, previous_readings)
                 _save_state(args.state_file, previous_readings)
                 logger.info("Sent %d events", count)
             except Exception as e:
