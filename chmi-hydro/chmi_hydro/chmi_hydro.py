@@ -164,13 +164,15 @@ def parse_connection_string(connection_string: str) -> dict:
             key = key.strip()
             value = value.strip()
             if key == 'Endpoint':
-                config['bootstrap.servers'] = value.replace('sb://', '').rstrip('/')
+                config['bootstrap.servers'] = value.replace('sb://', '').rstrip('/') + ':9093'
             elif key == 'SharedAccessKeyName':
                 config['sasl.username'] = '$ConnectionString'
             elif key == 'SharedAccessKey':
                 config['sasl.password'] = connection_string
             elif key == 'BootstrapServer':
                 config['bootstrap.servers'] = value
+            elif key == 'EntityPath':
+                config['_entity_path'] = value
     if 'sasl.username' in config:
         config['security.protocol'] = 'SASL_SSL'
         config['sasl.mechanism'] = 'PLAIN'
@@ -250,7 +252,7 @@ def main():
     parser = argparse.ArgumentParser(description="ČHMÚ Hydrological Data Bridge")
     parser.add_argument('--connection-string', required=False, help='Kafka/Event Hubs connection string',
                         default=os.environ.get('KAFKA_CONNECTION_STRING') or os.environ.get('CONNECTION_STRING'))
-    parser.add_argument('--topic', required=False, help='Kafka topic', default=os.environ.get('KAFKA_TOPIC', 'chmi-hydro'))
+    parser.add_argument('--topic', required=False, help='Kafka topic', default=os.environ.get('KAFKA_TOPIC') or None)
     parser.add_argument('--polling-interval', type=int, default=int(os.environ.get('POLLING_INTERVAL', '600')),
                         help='Polling interval in seconds (default: 600)')
     parser.add_argument('--state-file', type=str,
@@ -295,6 +297,12 @@ def main():
             }
         else:
             kafka_config = parse_connection_string(args.connection_string)
+        if '_entity_path' in kafka_config and not args.topic:
+            args.topic = kafka_config.pop('_entity_path')
+        elif '_entity_path' in kafka_config:
+            kafka_config.pop('_entity_path')
+        if not args.topic:
+            args.topic = 'chmi-hydro'
         tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
         if 'sasl.username' in kafka_config:
             kafka_config['security.protocol'] = 'SASL_SSL' if tls_enabled else 'SASL_PLAINTEXT'

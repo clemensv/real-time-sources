@@ -98,8 +98,8 @@ output types defined in [eurowater.xreg.json](eurowater.xreg.json):
 
 | File | Description |
 |---|---|
-| `setup.ps1` | PowerShell setup script (Fabric CLI) |
-| `setup.sh` | Bash setup script (Fabric CLI) |
+| `setup.ps1` | PowerShell setup script (Azure CLI + Fabric REST API) |
+| `setup.sh` | Bash setup script (Azure CLI + Fabric REST API) |
 | `eurowater.xreg.json` | xRegistry definition for the normalized output model |
 | `normalize_stations.sql` | SQL operator query for station normalization |
 | `normalize_measurements.sql` | SQL operator query for measurement normalization |
@@ -107,20 +107,28 @@ output types defined in [eurowater.xreg.json](eurowater.xreg.json):
 
 ## Usage
 
+### Prerequisites
+
+- Azure CLI (`az`) installed and authenticated (`az login`)
+- `jq` installed (for bash script)
+- Permissions to create items in the Fabric workspace
+- An existing Eventhouse in the workspace
+
 ### 1. Set up Fabric resources
 
 ```powershell
 # PowerShell
-./setup.ps1 -WorkspaceName "MyWorkspace"
+./setup.ps1 -WorkspaceId "<workspace-guid>" -EventhouseId "<eventhouse-guid>"
 ```
 
 ```bash
 # Bash
-./setup.sh MyWorkspace
+./setup.sh <workspace-guid> <eventhouse-guid>
 ```
 
-This creates the Eventhouse, KQL database, Event Stream with SQL operator, and
-prints the connection string for the custom input endpoint.
+This creates a KQL database in the existing Eventhouse, an Event Stream with
+Custom Endpoint source, SQL normalization operator, and Eventhouse destinations.
+Retrieve the Custom Endpoint connection string from the Fabric portal.
 
 ### 2. Deploy the container group
 

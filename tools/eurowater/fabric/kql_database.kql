@@ -101,6 +101,7 @@
 .create-or-alter function with (docstring="Joins latest measurements with station reference data") StationMeasurements() {
     MeasurementsLatest
     | join kind=inner StationsLatest on station_id
+    | where latitude != 0 and longitude != 0
     | project
         station_id,
         country_code,

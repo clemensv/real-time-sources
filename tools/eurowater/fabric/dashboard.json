@@ -1,0 +1,479 @@
+{
+  "schema_version": 68,
+  "autoRefresh": {
+    "enabled": true,
+    "defaultInterval": "30s",
+    "minInterval": "30s"
+  },
+  "tiles": [
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000001",
+      "title": "Stations Map",
+      "visualType": "map",
+      "pageId": "a1b2c3d4-0000-4000-8000-000000000001",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 6,
+        "height": 12
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a1b2c3d4-2222-4000-8000-000000000001"
+      },
+      "visualOptions": {
+        "map__latitudeColumn": "latitude",
+        "map__longitudeColumn": "longitude",
+        "map__labelColumn": "station_name",
+        "map__sizeColumn": null,
+        "map__sizeDisabled": true,
+        "map__geoType": "numeric",
+        "map__geoPointColumn": null,
+        "crossFilter": [
+          {
+            "interaction": "column",
+            "property": "station_id",
+            "parameterId": "a1b2c3d4-3333-4000-8000-000000000003",
+            "disabled": false
+          }
+        ],
+        "crossFilterDisabled": false,
+        "drillthrough": [],
+        "drillthroughDisabled": false
+      }
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000002",
+      "title": "Water Levels",
+      "visualType": "line",
+      "pageId": "a1b2c3d4-0000-4000-8000-000000000001",
+      "layout": {
+        "x": 6,
+        "y": 0,
+        "width": 12,
+        "height": 12
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a1b2c3d4-2222-4000-8000-000000000002"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "Water Level (cm)",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": false,
+        "legendLocation": "right",
+        "xColumnTitle": "Time",
+        "xColumn": "timestamp",
+        "yColumns": [
+          "value"
+        ],
+        "seriesColumns": [
+          "station_name"
+        ],
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [
+          {
+            "interaction": "column",
+            "property": "station_id",
+            "parameterId": "a1b2c3d4-3333-4000-8000-000000000003",
+            "disabled": false
+          }
+        ],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000003",
+      "title": "Station Detail",
+      "visualType": "area",
+      "pageId": "a1b2c3d4-0000-4000-8000-000000000001",
+      "layout": {
+        "x": 18,
+        "y": 0,
+        "width": 6,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a1b2c3d4-2222-4000-8000-000000000003"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "Value",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": "timestamp",
+        "yColumns": [
+          "value"
+        ],
+        "seriesColumns": [
+          "parameter"
+        ],
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000004",
+      "title": "Station Location",
+      "visualType": "map",
+      "pageId": "a1b2c3d4-0000-4000-8000-000000000001",
+      "layout": {
+        "x": 18,
+        "y": 6,
+        "width": 6,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a1b2c3d4-2222-4000-8000-000000000004"
+      },
+      "visualOptions": {
+        "map__latitudeColumn": "latitude",
+        "map__longitudeColumn": "longitude",
+        "map__labelColumn": "station_name",
+        "map__sizeColumn": null,
+        "map__sizeDisabled": true,
+        "map__geoType": "numeric",
+        "map__geoPointColumn": null
+      }
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000005",
+      "title": "Rate of Change per Hour",
+      "visualType": "line",
+      "pageId": "a1b2c3d4-0000-4000-8000-000000000001",
+      "layout": {
+        "x": 6,
+        "y": 12,
+        "width": 12,
+        "height": 7
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a1b2c3d4-2222-4000-8000-000000000005"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "seriesColors": {
+          "rate_of_change_per_hour": "color--(3)"
+        },
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilter": [],
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "forceAxisTicks": false,
+        "drillthrough": []
+      }
+    },
+    {
+      "id": "a1b2c3d4-1111-4000-8000-000000000006",
+      "title": "Station Count by Country",
+      "visualType": "multistat",
+      "pageId": "a1b2c3d4-0000-4000-8000-000000000001",
+      "layout": {
+        "x": 0,
+        "y": 19,
+        "width": 24,
+        "height": 6
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a1b2c3d4-2222-4000-8000-000000000006"
+      },
+      "visualOptions": {
+        "hideLegend": false,
+        "legendLocation": "bottom",
+        "crossFilter": [],
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "drillthrough": []
+      }
+    }
+  ],
+  "baseQueries": [],
+  "parameters": [
+    {
+      "kind": "duration",
+      "id": "a1b2c3d4-3333-4000-8000-000000000001",
+      "displayName": "Time range",
+      "description": "",
+      "beginVariableName": "_startTime",
+      "endVariableName": "_endTime",
+      "defaultValue": {
+        "kind": "dynamic",
+        "count": 2,
+        "unit": "days"
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    },
+    {
+      "kind": "string",
+      "id": "a1b2c3d4-3333-4000-8000-000000000002",
+      "displayName": "Select Country",
+      "description": "",
+      "variableName": "CountrySelection",
+      "selectionType": "scalar",
+      "includeAllOption": true,
+      "defaultValue": {
+        "kind": "all"
+      },
+      "dataSource": {
+        "kind": "query",
+        "columns": {
+          "value": "country_code",
+          "label": "country_code"
+        },
+        "queryRef": {
+          "kind": "query",
+          "queryId": "a1b2c3d4-2222-4000-8000-000000000007"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    },
+    {
+      "kind": "string",
+      "id": "a1b2c3d4-3333-4000-8000-000000000004",
+      "displayName": "Select River",
+      "description": "",
+      "variableName": "RiverSelection",
+      "selectionType": "scalar",
+      "includeAllOption": true,
+      "defaultValue": {
+        "kind": "all"
+      },
+      "dataSource": {
+        "kind": "query",
+        "columns": {
+          "value": "river_name",
+          "label": "river_name"
+        },
+        "queryRef": {
+          "kind": "query",
+          "queryId": "a1b2c3d4-2222-4000-8000-000000000009"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    },
+    {
+      "kind": "string",
+      "id": "a1b2c3d4-3333-4000-8000-000000000003",
+      "displayName": "Select Station",
+      "description": "",
+      "variableName": "StationSelection",
+      "selectionType": "scalar",
+      "includeAllOption": false,
+      "defaultValue": {
+        "kind": "query-result"
+      },
+      "dataSource": {
+        "kind": "query",
+        "columns": {
+          "value": "station_id",
+          "label": "station_name"
+        },
+        "queryRef": {
+          "kind": "query",
+          "queryId": "a1b2c3d4-2222-4000-8000-000000000008"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
+    }
+  ],
+  "dataSources": [
+    {
+      "kind": "kusto-trident",
+      "id": "a1b2c3d4-4444-4000-8000-000000000001",
+      "name": "eurowater",
+      "clusterUri": "https://trd-fssgb36e98qh3fk58u.z2.kusto.fabric.microsoft.com",
+      "database": "a715be70-c7e3-422b-93d6-cfa06f877d6b",
+      "workspace": "00000000-0000-0000-0000-000000000000",
+      "scopeId": "kusto-trident"
+    }
+  ],
+  "pages": [
+    {
+      "name": "European Water Levels",
+      "id": "a1b2c3d4-0000-4000-8000-000000000001"
+    }
+  ],
+  "queries": [
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "StationsLatest\n| where latitude != 0 and longitude != 0\n| where (isempty(CountrySelection) or country_code == CountrySelection)\n| where (isempty(RiverSelection) or river_name == RiverSelection)\n| project station_id, station_name, latitude, longitude, country_code\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000001",
+      "usedVariables": [
+        "CountrySelection",
+        "RiverSelection"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "let _stations = StationsLatest | where (isempty(CountrySelection) or country_code == CountrySelection) | where (isempty(RiverSelection) or river_name == RiverSelection) | project station_id, station_name;\nMeasurements\n| where parameter == 'water_level'\n| where timestamp > datetime(2000-01-01)\n| where _startTime < timestamp and timestamp < _endTime\n| join kind=inner _stations on station_id\n| project timestamp, value, station_name, station_id\n| sort by timestamp, station_name\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000002",
+      "usedVariables": [
+        "CountrySelection",
+        "RiverSelection",
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "Measurements\n| where station_id == StationSelection\n| where timestamp > datetime(2000-01-01)\n| where _startTime < timestamp and timestamp < _endTime\n| project timestamp, value, parameter\n| sort by timestamp asc\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000003",
+      "usedVariables": [
+        "StationSelection",
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "StationsLatest\n| where station_id == StationSelection\n| project station_id, station_name, latitude, longitude, river_name, country_code\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000004",
+      "usedVariables": [
+        "StationSelection"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "Measurements\n| where station_id == StationSelection\n| where parameter == 'water_level'\n| where timestamp > datetime(2000-01-01)\n| where _startTime < timestamp and timestamp < _endTime\n| sort by timestamp asc\n| extend prev_ts = prev(timestamp), prev_value = prev(value)\n| extend hours_diff = toreal(datetime_diff('second', timestamp, prev_ts)) / 3600.0\n| extend rate_of_change_per_hour = iif(isnull(prev_value) or hours_diff == 0, real(null), (value - prev_value) / hours_diff)\n| where isnotempty(rate_of_change_per_hour)\n| project timestamp, rate_of_change_per_hour\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000005",
+      "usedVariables": [
+        "StationSelection",
+        "_endTime",
+        "_startTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "StationsLatest\n| summarize Stations=dcount(station_id) by country_code\n| sort by Stations desc\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000006",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "MeasurementsLatest\n| distinct country_code\n| sort by country_code asc\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000007",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "let _measured = MeasurementsLatest | distinct station_id;\nStationsLatest\n| where (isempty(CountrySelection) or country_code == CountrySelection)\n| where (isempty(RiverSelection) or river_name == RiverSelection)\n| join kind=inner _measured on station_id\n| project station_id, station_name\n| sort by station_name asc\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000008",
+      "usedVariables": [
+        "CountrySelection",
+        "RiverSelection"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "a1b2c3d4-4444-4000-8000-000000000001"
+      },
+      "text": "let _measured = MeasurementsLatest | distinct station_id;\nStationsLatest\n| where (isempty(CountrySelection) or country_code == CountrySelection)\n| where river_name != ''\n| join kind=inner _measured on station_id\n| distinct river_name\n| sort by river_name asc\n",
+      "id": "a1b2c3d4-2222-4000-8000-000000000009",
+      "usedVariables": [
+        "CountrySelection"
+      ]
+    }
+  ]
+}
