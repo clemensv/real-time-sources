@@ -1,6 +1,6 @@
 # European Water Services - Combined Container Group
 
-Deploys all 11 European waterway information services as sidecars in a single
+Deploys all 12 European waterway information services as sidecars in a single
 container group, sharing one Kafka/Event Hub connection.
 
 ## Included Services
@@ -18,17 +18,19 @@ container group, sharing one Kafka/Event Hub connection.
 | [NVE Hydro](../../nve-hydro/CONTAINER.md) | Norway | Water levels, discharge |
 | [SYKE Hydro](../../syke-hydro/CONTAINER.md) | Finland | Water levels, discharge |
 | [BAFU Hydro](../../bafu-hydro/CONTAINER.md) | Switzerland | Water levels, discharge, temperature |
+| [German Waters](../../german-waters/README.md) | Germany (state agencies) | Water levels, discharge |
 
 ## Resource Requirements
 
-All 11 containers share a single CPU core. Each container requests 0.1 CPU and
-0.3 GB memory. These bridges are I/O-bound (HTTP polling + Kafka producing) and
-typically use <0.1 CPU cores at steady state.
+All 12 containers share the CPU allocation. Most containers request 0.1 CPU and
+0.3 GB memory; German Waters requests 0.2 CPU and 0.5 GB due to its larger
+workload (12 state providers, ~2,700 stations). These bridges are I/O-bound
+(HTTP polling + Kafka producing) and typically use <0.1 CPU cores at steady state.
 
-| | Per container | Total (11 containers) |
-|---|---|---|
-| CPU | 0.1 cores | 1.1 cores |
-| Memory | 0.3 GB | 3.3 GB |
+| | Standard container | German Waters | Total (12 containers) |
+|---|---|---|---|
+| CPU | 0.1 cores | 0.2 cores | 1.3 cores |
+| Memory | 0.3 GB | 0.5 GB | 3.8 GB |
 
 ## Deploy to Azure Container Instances
 
