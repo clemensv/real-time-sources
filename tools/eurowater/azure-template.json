@@ -75,6 +75,11 @@
       "defaultValue": "ghcr.io/clemensv/real-time-sources-bafu-hydro:latest",
       "metadata": { "description": "Container image for BAFU Hydro (Switzerland)." },
       "type": "string"
+    },
+    "germanWatersImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-german-waters:latest",
+      "metadata": { "description": "Container image for German Waters (German state gauges)." },
+      "type": "string"
     }
   },
   "resources": [
@@ -270,6 +275,20 @@
               "environmentVariables": [
                 { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
                 { "name": "STATE_FILE", "value": "/mnt/fileshare/bafu_hydro_state.json" }
+              ],
+              "volumeMounts": [
+                { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }
+              ]
+            }
+          },
+          {
+            "name": "german-waters",
+            "properties": {
+              "image": "[parameters('germanWatersImage')]",
+              "resources": { "requests": { "cpu": 0.2, "memoryInGB": 0.5 } },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionStringSecret')]" },
+                { "name": "STATE_FILE", "value": "/mnt/fileshare/german_waters_state.json" }
               ],
               "volumeMounts": [
                 { "name": "azurefilevolume", "mountPath": "/mnt/fileshare" }

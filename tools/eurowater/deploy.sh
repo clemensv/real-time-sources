@@ -1,5 +1,5 @@
 #!/bin/bash
-# Deploys the European Water container group (11 services) to Azure Container Instances.
+# Deploys the European Water container group (12 services) to Azure Container Instances.
 #
 # Usage:
 #   ./deploy.sh <resource-group-name> <connection-string> [nve-api-key] [location]

@@ -3,11 +3,12 @@
     Deploys the European Water container group to Azure Container Instances.
 
 .DESCRIPTION
-    Deploys all 11 European waterway information services as sidecars in a
+    Deploys all 12 European waterway information services as sidecars in a
     single ACI container group, sharing one Kafka/Event Hub connection string.
 
     Services included:
-      - Pegelonline (Germany)
+      - Pegelonline (Germany - federal waterways)
+      - German Waters (Germany - 12 state gauges)
       - CHMI Hydro (Czech Republic)
       - IMGW Hydro (Poland)
       - SMHI Hydro (Sweden)
