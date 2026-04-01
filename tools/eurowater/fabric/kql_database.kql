@@ -97,7 +97,7 @@
     | summarize arg_max(timestamp, *) by station_id, parameter
 }
 
-// Function: join latest measurements with station metadata
+// Function: join latest measurements with station metadata (one row per station+parameter)
 .create-or-alter function with (docstring="Joins latest measurements with station reference data") StationMeasurements() {
     MeasurementsLatest
     | join kind=inner StationsLatest on station_id
@@ -115,4 +115,41 @@
         timestamp,
         quality,
         source_system
+}
+
+// Function: one row per station with pivoted water_level + discharge for map display
+.create-or-alter function with (docstring="Latest observations pivoted to one row per station for map visualizations") StationMapView() {
+    MeasurementsLatest
+    | summarize
+        water_level       = take_anyif(value,     parameter == "water_level"),
+        water_level_unit  = take_anyif(unit,      parameter == "water_level"),
+        water_level_time  = take_anyif(timestamp, parameter == "water_level"),
+        discharge         = take_anyif(value,     parameter == "discharge"),
+        discharge_unit    = take_anyif(unit,      parameter == "discharge"),
+        discharge_time    = take_anyif(timestamp, parameter == "discharge"),
+        temperature       = take_anyif(value,     parameter == "water_temperature"),
+        temperature_unit  = take_anyif(unit,      parameter == "water_temperature"),
+        temperature_time  = take_anyif(timestamp, parameter == "water_temperature"),
+        last_update       = max(timestamp)
+        by station_id, country_code, source_system
+    | join kind=inner StationsLatest on station_id
+    | where latitude != 0 and longitude != 0
+    | project
+        station_id,
+        country_code,
+        station_name,
+        river_name,
+        latitude,
+        longitude,
+        source_system,
+        water_level,
+        water_level_unit,
+        water_level_time,
+        discharge,
+        discharge_unit,
+        discharge_time,
+        temperature,
+        temperature_unit,
+        temperature_time,
+        last_update
 }
