@@ -29,6 +29,7 @@ The container image documentation provides detailed information:
 
 * [Bluesky Firehose - Social media posts and interactions](bluesky/CONTAINER.md)
 * [CHMI Hydro - Czech hydrological observations](chmi-hydro/CONTAINER.md)
+* [German Waters - German state water level observations](german-waters/README.md)
 * [GTFS Realtime - Public transport data](gtfs/CONTAINER.md)
 * [Hub'Eau Hydrometrie - French hydrometric observations](hubeau-hydrometrie/CONTAINER.md)
 * [IMGW Hydro - Polish hydrological observations](imgw-hydro/CONTAINER.md)
@@ -75,6 +76,13 @@ The [CHMI Hydro bridge](chmi-hydro/README.md) fetches real-time water level,
 discharge, and temperature data from the Czech Hydrometeorological Institute
 (ČHMÚ) and publishes the observations to Kafka as CloudEvents. The data is
 polled every 10 minutes by default.
+
+### German Waters - German state water level observations
+
+The [German Waters bridge](german-waters/README.md) aggregates real-time water
+level and discharge data from 12 German state open data portals, covering
+approximately 2,724 monitoring stations, and publishes the observations to Kafka
+as CloudEvents. The data is polled every 15 minutes by default.
 
 ### GTFS Realtime - Public transport data
 
