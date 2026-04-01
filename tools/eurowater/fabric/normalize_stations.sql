@@ -2,13 +2,17 @@
 -- EU.Eurowater.Station normalization query
 -- Fabric Event Stream SQL operator (Azure Stream Analytics compatible)
 --
--- Reads station reference events from all 11 European water services
+-- Reads station reference events from all 12 European water services
 -- and normalizes them into a single EU.Eurowater.Station schema.
 -- =============================================================================
 
 -- Pegelonline (Germany) - Avro payload, fields: uuid, number, shortname, longname,
 -- km, agency, longitude, latitude, water.shortname, water.longname
 -- CloudEvents type: de.wsv.pegelonline.Station
+
+-- German Waters (Germany state gauges) - JSON payload, fields: station_id,
+-- station_name, water_body, state, provider, latitude, longitude
+-- CloudEvents type: DE.Waters.Hydrology.Station
 
 -- CHMI Hydro (Czech Republic) - JSON payload, fields: station_id, dbc,
 -- station_name, stream_name, latitude, longitude, flood_level_*
@@ -74,6 +78,8 @@ SELECT
             THEN CONCAT('fi-', data.station_id)
         WHEN type = 'CH.BAFU.Hydrology.Station'
             THEN CONCAT('ch-', data.station_id)
+        WHEN type = 'DE.Waters.Hydrology.Station'
+            THEN CONCAT('de-', data.station_id)
         ELSE NULL
     END AS station_id,
 
@@ -89,6 +95,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.Station' THEN 'no'
         WHEN type = 'FI.SYKE.Hydrology.Station' THEN 'fi'
         WHEN type = 'CH.BAFU.Hydrology.Station' THEN 'ch'
+        WHEN type = 'DE.Waters.Hydrology.Station' THEN 'de'
         ELSE NULL
     END AS country_code,
 
@@ -104,6 +111,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.Station' THEN data.station_id
         WHEN type = 'FI.SYKE.Hydrology.Station' THEN data.station_id
         WHEN type = 'CH.BAFU.Hydrology.Station' THEN data.station_id
+        WHEN type = 'DE.Waters.Hydrology.Station' THEN data.station_id
         ELSE NULL
     END AS source_station_id,
 
@@ -119,6 +127,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.Station' THEN data.station_name
         WHEN type = 'FI.SYKE.Hydrology.Station' THEN data.name
         WHEN type = 'CH.BAFU.Hydrology.Station' THEN data.name
+        WHEN type = 'DE.Waters.Hydrology.Station' THEN data.station_name
         ELSE NULL
     END AS station_name,
 
@@ -134,6 +143,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.Station' THEN data.river_name
         WHEN type = 'FI.SYKE.Hydrology.Station' THEN data.river_name
         WHEN type = 'CH.BAFU.Hydrology.Station' THEN data.water_body_name
+        WHEN type = 'DE.Waters.Hydrology.Station' THEN data.water_body
         ELSE NULL
     END AS river_name,
 
@@ -173,6 +183,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.Station' THEN 'nve-hydro'
         WHEN type = 'FI.SYKE.Hydrology.Station' THEN 'syke-hydro'
         WHEN type = 'CH.BAFU.Hydrology.Station' THEN 'bafu-hydro'
+        WHEN type = 'DE.Waters.Hydrology.Station' THEN 'german-waters'
         ELSE NULL
     END AS source_system,
 
@@ -195,5 +206,6 @@ WHERE type IN (
     'BE.Vlaanderen.Waterinfo.VMM.Station',
     'NO.NVE.Hydrology.Station',
     'FI.SYKE.Hydrology.Station',
-    'CH.BAFU.Hydrology.Station'
+    'CH.BAFU.Hydrology.Station',
+    'DE.Waters.Hydrology.Station'
 );

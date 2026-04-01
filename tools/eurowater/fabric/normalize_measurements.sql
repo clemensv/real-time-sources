@@ -2,7 +2,7 @@
 -- EU.Eurowater.Measurement normalization query
 -- Fabric Event Stream SQL operator (Azure Stream Analytics compatible)
 --
--- Reads telemetry/measurement events from all 11 European water services
+-- Reads telemetry/measurement events from all 12 European water services
 -- and normalizes them into EU.Eurowater.Measurement records.
 --
 -- Structured as three UNION ALL branches (water_level, discharge,
@@ -11,7 +11,7 @@
 
 -- ===================== WATER LEVEL =====================
 -- Sources: Pegelonline, CHMI, IMGW, Hub'Eau (H), UK EA, RWS, Waterinfo VMM,
---          NVE, SYKE, BAFU
+--          NVE, SYKE, BAFU, German Waters
 SELECT
     CASE
         WHEN type = 'de.wsv.pegelonline.CurrentMeasurement'
@@ -34,6 +34,8 @@ SELECT
             THEN CONCAT('fi-', data.station_id)
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
             THEN CONCAT('ch-', data.station_id)
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
+            THEN CONCAT('de-', data.station_id)
         ELSE NULL
     END AS station_id,
 
@@ -48,6 +50,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.WaterLevelObservation' THEN 'no'
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation' THEN 'fi'
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation' THEN 'ch'
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation' THEN 'de'
         ELSE NULL
     END AS country_code,
 
@@ -71,6 +74,8 @@ SELECT
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation'
             THEN data.water_level_timestamp
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
+            THEN data.water_level_timestamp
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
             THEN data.water_level_timestamp
         ELSE NULL
     END AS [timestamp],
@@ -98,6 +103,8 @@ SELECT
             THEN data.water_level
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
             THEN data.water_level
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
+            THEN data.water_level
         ELSE NULL
     END AS value,
 
@@ -115,6 +122,8 @@ SELECT
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation'
             THEN data.water_level_unit
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
+            THEN data.water_level_unit
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
             THEN data.water_level_unit
         ELSE NULL
     END AS unit,
@@ -140,6 +149,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.WaterLevelObservation' THEN 'nve-hydro'
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation' THEN 'syke-hydro'
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation' THEN 'bafu-hydro'
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation' THEN 'german-waters'
         ELSE NULL
     END AS source_system,
 
@@ -160,12 +170,13 @@ WHERE (
     OR (type = 'NO.NVE.Hydrology.WaterLevelObservation' AND data.water_level IS NOT NULL)
     OR (type = 'FI.SYKE.Hydrology.WaterLevelObservation' AND data.water_level IS NOT NULL)
     OR (type = 'CH.BAFU.Hydrology.WaterLevelObservation' AND data.water_level IS NOT NULL)
+    OR (type = 'DE.Waters.Hydrology.WaterLevelObservation' AND data.water_level IS NOT NULL)
 )
 
 UNION ALL
 
 -- ===================== DISCHARGE =====================
--- Sources: CHMI, IMGW, SMHI, Hub'Eau (Q), Waterinfo VMM (Q), NVE, SYKE, BAFU
+-- Sources: CHMI, IMGW, SMHI, Hub'Eau (Q), Waterinfo VMM (Q), NVE, SYKE, BAFU, German Waters
 SELECT
     CASE
         WHEN type = 'CZ.Gov.CHMI.Hydro.WaterLevelObservation'
@@ -184,6 +195,8 @@ SELECT
             THEN CONCAT('fi-', data.station_id)
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
             THEN CONCAT('ch-', data.station_id)
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
+            THEN CONCAT('de-', data.station_id)
         ELSE NULL
     END AS station_id,
 
@@ -196,6 +209,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.WaterLevelObservation' THEN 'no'
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation' THEN 'fi'
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation' THEN 'ch'
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation' THEN 'de'
         ELSE NULL
     END AS country_code,
 
@@ -215,6 +229,8 @@ SELECT
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation'
             THEN data.discharge_timestamp
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
+            THEN data.discharge_timestamp
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
             THEN data.discharge_timestamp
         ELSE NULL
     END AS [timestamp],
@@ -238,6 +254,8 @@ SELECT
             THEN data.discharge
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
             THEN data.discharge
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
+            THEN data.discharge
         ELSE NULL
     END AS value,
 
@@ -247,6 +265,8 @@ SELECT
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation'
             THEN data.discharge_unit
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation'
+            THEN data.discharge_unit
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation'
             THEN data.discharge_unit
         ELSE 'm3/s'
     END AS unit,
@@ -268,6 +288,7 @@ SELECT
         WHEN type = 'NO.NVE.Hydrology.WaterLevelObservation' THEN 'nve-hydro'
         WHEN type = 'FI.SYKE.Hydrology.WaterLevelObservation' THEN 'syke-hydro'
         WHEN type = 'CH.BAFU.Hydrology.WaterLevelObservation' THEN 'bafu-hydro'
+        WHEN type = 'DE.Waters.Hydrology.WaterLevelObservation' THEN 'german-waters'
         ELSE NULL
     END AS source_system,
 
@@ -285,6 +306,7 @@ WHERE (
     OR (type = 'NO.NVE.Hydrology.WaterLevelObservation' AND data.discharge IS NOT NULL)
     OR (type = 'FI.SYKE.Hydrology.WaterLevelObservation' AND data.discharge IS NOT NULL)
     OR (type = 'CH.BAFU.Hydrology.WaterLevelObservation' AND data.discharge IS NOT NULL)
+    OR (type = 'DE.Waters.Hydrology.WaterLevelObservation' AND data.discharge IS NOT NULL)
 )
 
 UNION ALL
