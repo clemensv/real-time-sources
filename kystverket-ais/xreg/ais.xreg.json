@@ -1,0 +1,207 @@
+{
+    "endpoints": {
+        "NO.Kystverket.AIS.Kafka": {
+            "usage": ["producer"],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "ais"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/NO.Kystverket.AIS"
+            ]
+        }
+    },
+    "messagegroups": {
+        "NO.Kystverket.AIS": {
+            "messages": {
+                "NO.Kystverket.AIS.PositionReportClassA": {
+                    "name": "PositionReportClassA",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "NO.Kystverket.AIS.PositionReportClassA" },
+                        "source": { "value": "urn:ais:kystverket:tcp" }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NO.Kystverket.AIS/schemas/NO.Kystverket.AIS.PositionReportClassA"
+                },
+                "NO.Kystverket.AIS.StaticVoyageData": {
+                    "name": "StaticVoyageData",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "NO.Kystverket.AIS.StaticVoyageData" },
+                        "source": { "value": "urn:ais:kystverket:tcp" }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NO.Kystverket.AIS/schemas/NO.Kystverket.AIS.StaticVoyageData"
+                },
+                "NO.Kystverket.AIS.PositionReportClassB": {
+                    "name": "PositionReportClassB",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "NO.Kystverket.AIS.PositionReportClassB" },
+                        "source": { "value": "urn:ais:kystverket:tcp" }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NO.Kystverket.AIS/schemas/NO.Kystverket.AIS.PositionReportClassB"
+                },
+                "NO.Kystverket.AIS.StaticDataClassB": {
+                    "name": "StaticDataClassB",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "NO.Kystverket.AIS.StaticDataClassB" },
+                        "source": { "value": "urn:ais:kystverket:tcp" }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NO.Kystverket.AIS/schemas/NO.Kystverket.AIS.StaticDataClassB"
+                },
+                "NO.Kystverket.AIS.AidToNavigation": {
+                    "name": "AidToNavigation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "NO.Kystverket.AIS.AidToNavigation" },
+                        "source": { "value": "urn:ais:kystverket:tcp" }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/NO.Kystverket.AIS/schemas/NO.Kystverket.AIS.AidToNavigation"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "NO.Kystverket.AIS": {
+            "schemas": {
+                "NO.Kystverket.AIS.PositionReportClassA": {
+                    "versions": {
+                        "1": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mmsi": { "type": "integer", "description": "Maritime Mobile Service Identity (9 digits)" },
+                                    "navigation_status": { "type": "integer", "description": "Navigation status (0=under way using engine, 1=at anchor, 5=moored, etc.)" },
+                                    "rate_of_turn": { "type": "number", "description": "Rate of turn in degrees/min. -128 = not available" },
+                                    "speed_over_ground": { "type": "number", "description": "Speed over ground in knots (0.1 resolution). 102.3 = not available" },
+                                    "position_accuracy": { "type": "integer", "description": "Position accuracy (1=high, 0=low)" },
+                                    "longitude": { "type": "number", "description": "Longitude in decimal degrees. 181 = not available" },
+                                    "latitude": { "type": "number", "description": "Latitude in decimal degrees. 91 = not available" },
+                                    "course_over_ground": { "type": "number", "description": "Course over ground in degrees (0.1 resolution). 360 = not available" },
+                                    "true_heading": { "type": "integer", "description": "True heading in degrees. 511 = not available" },
+                                    "timestamp": { "type": "string", "description": "ISO 8601 timestamp derived from NMEA tag block" },
+                                    "station_id": { "type": "string", "description": "Receiving AIS station ID from NMEA tag block" },
+                                    "msg_type": { "type": "integer", "description": "AIS message type (1, 2, or 3)" }
+                                },
+                                "required": ["mmsi", "longitude", "latitude", "timestamp"]
+                            }
+                        }
+                    }
+                },
+                "NO.Kystverket.AIS.StaticVoyageData": {
+                    "versions": {
+                        "1": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mmsi": { "type": "integer", "description": "Maritime Mobile Service Identity" },
+                                    "imo_number": { "type": "integer", "description": "IMO ship identification number" },
+                                    "callsign": { "type": "string", "description": "Radio callsign (7 chars)" },
+                                    "ship_name": { "type": "string", "description": "Vessel name (20 chars)" },
+                                    "ship_type": { "type": "integer", "description": "Ship type code (0-99, per ITU-R M.1371-5)" },
+                                    "dimension_to_bow": { "type": "integer", "description": "Dimension to bow in meters" },
+                                    "dimension_to_stern": { "type": "integer", "description": "Dimension to stern in meters" },
+                                    "dimension_to_port": { "type": "integer", "description": "Dimension to port in meters" },
+                                    "dimension_to_starboard": { "type": "integer", "description": "Dimension to starboard in meters" },
+                                    "draught": { "type": "number", "description": "Draught in meters (0.1 resolution)" },
+                                    "destination": { "type": "string", "description": "Destination (20 chars)" },
+                                    "eta_month": { "type": "integer", "description": "ETA month (1-12, 0=not available)" },
+                                    "eta_day": { "type": "integer", "description": "ETA day (1-31, 0=not available)" },
+                                    "eta_hour": { "type": "integer", "description": "ETA hour (0-23, 24=not available)" },
+                                    "eta_minute": { "type": "integer", "description": "ETA minute (0-59, 60=not available)" },
+                                    "timestamp": { "type": "string", "description": "ISO 8601 timestamp from NMEA tag block" },
+                                    "station_id": { "type": "string", "description": "Receiving station ID" }
+                                },
+                                "required": ["mmsi", "timestamp"]
+                            }
+                        }
+                    }
+                },
+                "NO.Kystverket.AIS.PositionReportClassB": {
+                    "versions": {
+                        "1": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mmsi": { "type": "integer", "description": "Maritime Mobile Service Identity" },
+                                    "speed_over_ground": { "type": "number", "description": "Speed over ground in knots" },
+                                    "position_accuracy": { "type": "integer", "description": "Position accuracy" },
+                                    "longitude": { "type": "number", "description": "Longitude in decimal degrees" },
+                                    "latitude": { "type": "number", "description": "Latitude in decimal degrees" },
+                                    "course_over_ground": { "type": "number", "description": "Course over ground in degrees" },
+                                    "true_heading": { "type": "integer", "description": "True heading in degrees. 511 = not available" },
+                                    "timestamp": { "type": "string", "description": "ISO 8601 timestamp from NMEA tag block" },
+                                    "station_id": { "type": "string", "description": "Receiving station ID" },
+                                    "msg_type": { "type": "integer", "description": "AIS message type (18 or 19)" }
+                                },
+                                "required": ["mmsi", "longitude", "latitude", "timestamp"]
+                            }
+                        }
+                    }
+                },
+                "NO.Kystverket.AIS.StaticDataClassB": {
+                    "versions": {
+                        "1": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mmsi": { "type": "integer", "description": "Maritime Mobile Service Identity" },
+                                    "part_number": { "type": "integer", "description": "Part number (0 or 1)" },
+                                    "ship_name": { "type": "string", "description": "Vessel name (part A)" },
+                                    "ship_type": { "type": "integer", "description": "Ship type code (part B)" },
+                                    "callsign": { "type": "string", "description": "Radio callsign (part B)" },
+                                    "dimension_to_bow": { "type": "integer", "description": "Dimension to bow" },
+                                    "dimension_to_stern": { "type": "integer", "description": "Dimension to stern" },
+                                    "dimension_to_port": { "type": "integer", "description": "Dimension to port" },
+                                    "dimension_to_starboard": { "type": "integer", "description": "Dimension to starboard" },
+                                    "timestamp": { "type": "string", "description": "ISO 8601 timestamp from NMEA tag block" },
+                                    "station_id": { "type": "string", "description": "Receiving station ID" }
+                                },
+                                "required": ["mmsi", "timestamp"]
+                            }
+                        }
+                    }
+                },
+                "NO.Kystverket.AIS.AidToNavigation": {
+                    "versions": {
+                        "1": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mmsi": { "type": "integer", "description": "Maritime Mobile Service Identity" },
+                                    "aid_type": { "type": "integer", "description": "Type of aid to navigation (0-31)" },
+                                    "name": { "type": "string", "description": "Name of aid to navigation" },
+                                    "position_accuracy": { "type": "integer", "description": "Position accuracy" },
+                                    "longitude": { "type": "number", "description": "Longitude in decimal degrees" },
+                                    "latitude": { "type": "number", "description": "Latitude in decimal degrees" },
+                                    "timestamp": { "type": "string", "description": "ISO 8601 timestamp from NMEA tag block" },
+                                    "station_id": { "type": "string", "description": "Receiving station ID" }
+                                },
+                                "required": ["mmsi", "longitude", "latitude", "timestamp"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {},
+  "parameters": {
+    "appName": {
+      "defaultValue": "[resourceGroup().name]",
+      "maxLength": 64,
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container instance."
+      }
+    },
+    "logAnalyticsWorkspaceId": {
+      "metadata": {
+        "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      },
+      "type": "string"
+    },
+    "connectionStringSecret": {
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      },
+      "type": "securestring"
+    },
+    "imageName": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-kystverket-ais:latest",
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container image."
+      }
+    },
+    "logAnalyticsWorkspaceKey": {
+      "metadata": {
+        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      },
+      "type": "securestring"
+    }
+  },
+  "resources": [
+    {
+      "properties": {
+        "osType": "Linux",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]"
+          }
+        },
+        "containers": [
+          {
+            "properties": {
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 0.5
+                }
+              },
+              "image": "[parameters('imageName')]",
+              "environmentVariables": [
+                {
+                  "secureValue": "[parameters('connectionStringSecret')]",
+                  "name": "CONNECTION_STRING"
+                }
+              ]
+            },
+            "name": "[parameters('appName')]"
+          }
+        ],
+        "restartPolicy": "Always"
+      },
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-09-01",
+      "name": "[parameters('appName')]",
+      "location": "[resourceGroup().location]"
+    }
+  ]
+}

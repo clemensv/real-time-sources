@@ -1,0 +1,27 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "kystverket-ais"
+version = "0.1.0"
+description = "Kystverket AIS bridge — Norwegian vessel tracking data to Kafka as CloudEvents"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{include = "kystverket_ais"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+pyais = ">=2.7.0"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+kystverket_ais_producer_data = {path = "kystverket_ais_producer/kystverket_ais_producer_data"}
+kystverket_ais_producer_kafka_producer = {path = "kystverket_ais_producer/kystverket_ais_producer_kafka_producer"}
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+pytest-cov = ">=5.0.0"
+
+[tool.poetry.scripts]
+kystverket-ais = "kystverket_ais:main"
