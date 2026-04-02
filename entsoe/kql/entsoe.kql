@@ -1,0 +1,315 @@
+// ENTSO-E Transparency Platform — KQL database schema
+//
+// Tables:
+//   _cloudevents_dispatch         — raw CloudEvents ingestion (Event Stream target)
+//   ActualGenerationPerType       — A75 generation per production type
+//   DayAheadPrices                — A44 day-ahead electricity prices
+//   ActualTotalLoad               — A65 actual total electricity load
+//
+// Update policies on _cloudevents_dispatch split events by type.
+// Materialized views provide latest values per bidding zone.
+
+// ===== Dispatch table =====
+
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+)
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.alter table [_cloudevents_dispatch] policy retention
+```
+{ "SoftDeletePeriod": "1.00:00:00", "Recoverability": "Disabled" }
+```
+
+.alter table [_cloudevents_dispatch] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+
+// ===== ActualGenerationPerType (document type A75) =====
+
+.create-merge table [ActualGenerationPerType] (
+   [inDomain]: string,
+   [psrType]: string,
+   [quantity]: real,
+   [resolution]: string,
+   [businessType]: string,
+   [documentType]: string,
+   [unitName]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [ActualGenerationPerType] column-docstrings (
+   [inDomain]: 'EIC code of the bidding zone',
+   [psrType]: 'Production type code (B01=Biomass, B02=Lignite, B04=Natural Gas, B05=Hard Coal, B06=Oil, B09=Geothermal, B10=Hydro Pumped Storage, B11=Hydro Run-of-river, B12=Hydro Water Reservoir, B14=Nuclear, B15=Other renewable, B16=Solar, B18=Wind Offshore, B19=Wind Onshore, B20=Other)',
+   [quantity]: 'Generated power in MW',
+   [resolution]: 'ISO 8601 duration (PT15M, PT60M)',
+   [businessType]: 'Business type code (A01=Production, A04=Consumption)',
+   [documentType]: 'ENTSO-E document type code (A75)',
+   [unitName]: 'Unit of measurement (MAW)',
+   [___type]: 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [ActualGenerationPerType] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualGenerationPerType') | project ['inDomain'] = tostring(data.['inDomain']), ['psrType'] = tostring(data.['psrType']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['businessType'] = tostring(data.['businessType']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [ActualGenerationPerType] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [ActualGenerationPerType] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== DayAheadPrices (document type A44) =====
+
+.create-merge table [DayAheadPrices] (
+   [inDomain]: string,
+   [price]: real,
+   [currency]: string,
+   [unitName]: string,
+   [resolution]: string,
+   [documentType]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [DayAheadPrices] column-docstrings (
+   [inDomain]: 'EIC code of the bidding zone',
+   [price]: 'Day-ahead electricity price',
+   [currency]: 'Currency code (EUR)',
+   [unitName]: 'Price unit (MWH)',
+   [resolution]: 'ISO 8601 duration (PT60M)',
+   [documentType]: 'ENTSO-E document type code (A44)',
+   [___type]: 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [DayAheadPrices] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.DayAheadPrices') | project ['inDomain'] = tostring(data.['inDomain']), ['price'] = toreal(data.['price']), ['currency'] = tostring(data.['currency']), ['unitName'] = tostring(data.['unitName']), ['resolution'] = tostring(data.['resolution']), ['documentType'] = tostring(data.['documentType']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [DayAheadPrices] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [DayAheadPrices] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== ActualTotalLoad (document type A65) =====
+
+.create-merge table [ActualTotalLoad] (
+   [inDomain]: string,
+   [quantity]: real,
+   [resolution]: string,
+   [outDomain]: string,
+   [documentType]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [ActualTotalLoad] column-docstrings (
+   [inDomain]: 'EIC code of the bidding zone',
+   [quantity]: 'Total electricity load in MW',
+   [resolution]: 'ISO 8601 duration (PT15M)',
+   [outDomain]: 'EIC code of the out domain, if applicable',
+   [documentType]: 'ENTSO-E document type code (A65)',
+   [___type]: 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [ActualTotalLoad] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualTotalLoad') | project ['inDomain'] = tostring(data.['inDomain']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['outDomain'] = tostring(data.['outDomain']), ['documentType'] = tostring(data.['documentType']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [ActualTotalLoad] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [ActualTotalLoad] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== Materialized views =====
+
+// Latest generation per bidding zone and production type
+.create-or-alter materialized-view with (backfill=true) ActualGenerationPerTypeLatest on table ActualGenerationPerType
+{
+    ActualGenerationPerType
+    | summarize arg_max(___time, *) by inDomain, psrType
+}
+
+// Latest prices per bidding zone
+.create-or-alter materialized-view with (backfill=true) DayAheadPricesLatest on table DayAheadPrices
+{
+    DayAheadPrices
+    | summarize arg_max(___time, *) by inDomain
+}
+
+// Latest total load per bidding zone
+.create-or-alter materialized-view with (backfill=true) ActualTotalLoadLatest on table ActualTotalLoad
+{
+    ActualTotalLoad
+    | summarize arg_max(___time, *) by inDomain
+}
+
+
+// ===== Functions =====
+
+// PSR type code to human-readable name
+.create-or-alter function with (docstring="Decode PSR type code to production type name") PsrTypeName(code: string) {
+    let lookup = datatable(psrType: string, psrTypeName: string) [
+        "B01", "Biomass",
+        "B02", "Fossil Brown coal/Lignite",
+        "B03", "Fossil Coal-derived gas",
+        "B04", "Fossil Gas",
+        "B05", "Fossil Hard coal",
+        "B06", "Fossil Oil",
+        "B07", "Fossil Oil shale",
+        "B08", "Fossil Peat",
+        "B09", "Geothermal",
+        "B10", "Hydro Pumped Storage",
+        "B11", "Hydro Run-of-river and poundage",
+        "B12", "Hydro Water Reservoir",
+        "B13", "Marine",
+        "B14", "Nuclear",
+        "B15", "Other renewable",
+        "B16", "Solar",
+        "B17", "Waste",
+        "B18", "Wind Offshore",
+        "B19", "Wind Onshore",
+        "B20", "Other"
+    ];
+    lookup | where psrType == code | project psrTypeName | take 1
+}
+
+// EIC domain code to human-readable area name
+.create-or-alter function with (docstring="Decode EIC domain code to area name") DomainName(code: string) {
+    let lookup = datatable(domainCode: string, domainName: string) [
+        "10YDE-AT-LU---Q", "DE-AT-LU",
+        "10YFR-RTE------C", "France",
+        "10YNL----------L", "Netherlands",
+        "10YES-REE------0", "Spain",
+        "10Y1001A1001A83F", "Germany",
+        "10YAT-APG------L", "Austria",
+        "10YBE----------2", "Belgium",
+        "10YCH-SWISSGRIDZ", "Switzerland",
+        "10YCZ-CEPS-----N", "Czech Republic",
+        "10YDK-1--------W", "Denmark (DK1)",
+        "10YDK-2--------M", "Denmark (DK2)",
+        "10YFI-1--------U", "Finland",
+        "10YGB----------A", "Great Britain",
+        "10YIT-GRTN-----B", "Italy",
+        "10YNO-1--------2", "Norway (NO1)",
+        "10YNO-2--------T", "Norway (NO2)",
+        "10YNO-3--------J", "Norway (NO3)",
+        "10YNO-4--------9", "Norway (NO4)",
+        "10YPL-AREA-----S", "Poland",
+        "10YPT-REN------W", "Portugal",
+        "10YSE-1--------K", "Sweden (SE1)",
+        "10YSE-2--------E", "Sweden (SE2)",
+        "10YSE-3--------Q", "Sweden (SE3)",
+        "10YSE-4--------I", "Sweden (SE4)"
+    ];
+    lookup | where domainCode == code | project domainName | take 1
+}
+
+// Generation mix: latest generation per type for a given bidding zone
+.create-or-alter function with (docstring="Current generation mix for a bidding zone — latest MW per production type") GenerationMix(domain: string) {
+    ActualGenerationPerTypeLatest
+    | where inDomain == domain
+    | extend psrTypeName = toscalar(PsrTypeName(psrType))
+    | project psrType, psrTypeName, quantity, resolution, last_update = ___time
+    | order by quantity desc
+}
+
+// Price comparison across bidding zones
+.create-or-alter function with (docstring="Latest day-ahead prices across all bidding zones") PriceOverview() {
+    DayAheadPricesLatest
+    | extend domainName = toscalar(DomainName(inDomain))
+    | project inDomain, domainName, price, currency, resolution, last_update = ___time
+    | order by price desc
+}
+
+// Load overview across bidding zones
+.create-or-alter function with (docstring="Latest total load across all bidding zones") LoadOverview() {
+    ActualTotalLoadLatest
+    | extend domainName = toscalar(DomainName(inDomain))
+    | project inDomain, domainName, quantity, resolution, last_update = ___time
+    | order by quantity desc
+}

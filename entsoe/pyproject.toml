@@ -1,0 +1,25 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "entsoe"
+version = "0.1.0"
+description = "ENTSO-E Transparency Platform bridge to Kafka endpoints"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = "^1.12.1"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.2"
+pytest-cov = ">=5.0.0"
+requests-mock = ">=1.12.1"
+
+[tool.poetry.scripts]
+entsoe = "entsoe:main"

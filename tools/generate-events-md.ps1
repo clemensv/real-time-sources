@@ -28,5 +28,6 @@ python .\printdoc.py ..\usgs-iv\xreg\usgs_iv.xreg.json --title "USGS Instantaneo
 python .\printdoc.py ..\mode-s\xreg\mode_s.xreg.json --title "Mode-S API Bridge Events" --description "This document describes the events that are emitted by the Mode-S API Bridge." > ..\mode-s\EVENTS.md
 python .\printdoc.py ..\dwd\xreg\dwd.xreg.json --title "DWD Open Data Bridge Events" --description "This document describes the events emitted by the DWD Open Data bridge." > ..\dwd\EVENTS.md
 python .\printdoc.py ..\kystverket-ais\xreg\ais.xreg.json --title "Kystverket AIS Bridge Events" --description "This document describes the events emitted by the Kystverket AIS bridge." > ..\kystverket-ais\EVENTS.md
+python .\printdoc.py ..\entsoe\xreg\entsoe.xreg.json --title "ENTSO-E Transparency Platform Bridge Events" --description "This document describes the events that are emitted by the ENTSO-E Transparency Platform Bridge." > ..\entsoe\EVENTS.md
 
 popd
