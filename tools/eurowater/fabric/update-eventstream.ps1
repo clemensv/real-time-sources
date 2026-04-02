@@ -1,6 +1,10 @@
 param(
-    [string]$WorkspaceId = "<your-workspace-id>",
-    [string]$EventstreamId = "<your-eventstream-id>"
+    [Parameter(Mandatory=$true)]
+    [string]$WorkspaceId,
+    [Parameter(Mandatory=$true)]
+    [string]$EventstreamId,
+    [Parameter(Mandatory=$true)]
+    [string]$DatabaseId
 )
 
 $ErrorActionPreference = "Stop"
@@ -45,7 +49,7 @@ $eventstreamObj = @{
             properties = @{
                 dataIngestionMode = "ProcessedIngestion"
                 workspaceId = $WorkspaceId
-                itemId = "<your-database-id>"
+                itemId = $DatabaseId
                 databaseName = "eurowater"
                 tableName = "Stations"
                 inputSerialization = @{
@@ -62,7 +66,7 @@ $eventstreamObj = @{
             properties = @{
                 dataIngestionMode = "ProcessedIngestion"
                 workspaceId = $WorkspaceId
-                itemId = "<your-database-id>"
+                itemId = $DatabaseId
                 databaseName = "eurowater"
                 tableName = "Measurements"
                 inputSerialization = @{

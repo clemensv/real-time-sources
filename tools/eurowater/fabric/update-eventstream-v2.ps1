@@ -1,6 +1,8 @@
 param(
-    [string]$WorkspaceId = "<your-workspace-id>",
-    [string]$EventstreamId = "<your-eventstream-id>"
+    [Parameter(Mandatory=$true)]
+    [string]$WorkspaceId,
+    [Parameter(Mandatory=$true)]
+    [string]$EventstreamId
 )
 
 $ErrorActionPreference = "Stop"

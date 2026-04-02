@@ -28,7 +28,7 @@
     Name for the Fabric Event Stream. Defaults to 'kystverket-ais-ingest'.
 
 .EXAMPLE
-    ./setup.ps1 -WorkspaceId "c98acd97-..." -EventhouseId "dbfd2819-..."
+    ./setup.ps1 -WorkspaceId "<your-workspace-id>" -EventhouseId "<your-eventhouse-id>"
 #>
 
 param(

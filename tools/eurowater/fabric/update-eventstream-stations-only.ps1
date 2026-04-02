@@ -2,8 +2,9 @@ $ErrorActionPreference = "Stop"
 
 # Get current (original) definition
 $token = (az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv)
-$wsId = "<your-workspace-id>"
-$esId = "<your-eventstream-id>"
+$wsId = $args[0]
+$esId = $args[1]
+if (-not $wsId -or -not $esId) { throw "Usage: .\update-eventstream-stations-only.ps1 <workspace-id> <eventstream-id>" }
 
 Write-Host "Fetching current definition..."
 $defResp = Invoke-RestMethod -Uri "https://api.fabric.microsoft.com/v1/workspaces/$wsId/eventstreams/$esId/getDefinition" -Method POST -Headers @{
