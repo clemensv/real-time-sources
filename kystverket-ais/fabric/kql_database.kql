@@ -476,6 +476,55 @@
         last_update = ___time
 }
 
+// Latest aids to navigation with decoded type names
+.create-or-alter function with (docstring="Latest aids to navigation with decoded aid type for map display") AidsToNavigation() {
+    let aid_type_lookup = datatable(aid_type: int, aid_type_name: string) [
+        0, "Default - Not specified",
+        1, "Reference point",
+        2, "RACON",
+        3, "Fixed structure",
+        4, "Spare",
+        5, "Light (no sectors)",
+        6, "Light (with sectors)",
+        7, "Leading light front",
+        8, "Leading light rear",
+        9, "Beacon, cardinal N",
+        10, "Beacon, cardinal E",
+        11, "Beacon, cardinal S",
+        12, "Beacon, cardinal W",
+        13, "Beacon, port hand",
+        14, "Beacon, starboard hand",
+        15, "Beacon, preferred channel port hand",
+        16, "Beacon, preferred channel starboard hand",
+        17, "Beacon, isolated danger",
+        18, "Beacon, safe water",
+        19, "Beacon, special mark",
+        20, "Beacon, light vessel / LANBY / FAB",
+        21, "Buoy, cardinal N",
+        22, "Buoy, cardinal E",
+        23, "Buoy, cardinal S",
+        24, "Buoy, cardinal W",
+        25, "Buoy, port hand",
+        26, "Buoy, starboard hand",
+        27, "Buoy, preferred channel port hand",
+        28, "Buoy, preferred channel starboard hand",
+        29, "Buoy, isolated danger",
+        30, "Buoy, safe water",
+        31, "Buoy, special mark"
+    ];
+    AidToNavigationLatest
+    | lookup aid_type_lookup on aid_type
+    | project
+        mmsi,
+        name,
+        aid_type,
+        aid_type_name = coalesce(aid_type_name, "Unknown"),
+        latitude,
+        longitude,
+        position_accuracy,
+        last_update = ___time
+}
+
 // Vessel count and message rates
 .create-or-alter function with (docstring="Message counts and unique vessel counts per AIS type in the last hour") AISStatistics() {
     union
