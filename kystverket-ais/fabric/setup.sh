@@ -124,7 +124,7 @@ ES_DEF=$(jq -n \
             name: "dispatch-kql",
             type: "Eventhouse",
             properties: {
-                dataIngestionMode: "EventProcessedBeforeIngestion",
+                dataIngestionMode: "ProcessedIngestion",
                 workspaceId: $wsId,
                 itemId: $dbId,
                 databaseName: $dbName,
