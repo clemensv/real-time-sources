@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch, MagicMock
 
 import pytest
 
-from entsoe.xml_parser import parse_entsoe_xml, build_api_url, TimeSeriesPoint, _parse_duration
+from entsoe.xml_parser import parse_entsoe_xml, build_api_url, TimeSeriesPoint, _parse_duration, _process_type_for_document
 from entsoe.delta_state import load_state, save_state, get_last_polled, set_last_polled
 from entsoe.entsoe import parse_connection_string, EntsoePoller
 
@@ -476,3 +476,235 @@ class TestEntsoePoller:
         total = poller.poll_once()
         assert total == 2
         assert mock_producer.send_eu_entsoe_transparency_actual_total_load.call_count == 2
+
+
+# ===== New document type fixtures =====
+
+SAMPLE_WIND_SOLAR_FORECAST_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
+  <mRID>wsf123</mRID>
+  <type>A69</type>
+  <TimeSeries>
+    <mRID>ts_wsf</mRID>
+    <businessType>A01</businessType>
+    <inBiddingZone_Domain.mRID>10Y1001A1001A83F</inBiddingZone_Domain.mRID>
+    <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
+    <MktPSRType><psrType>B16</psrType></MktPSRType>
+    <Period>
+      <timeInterval>
+        <start>2026-04-01T00:00Z</start>
+        <end>2026-04-01T01:00Z</end>
+      </timeInterval>
+      <resolution>PT15M</resolution>
+      <Point><position>1</position><quantity>0.0</quantity></Point>
+      <Point><position>2</position><quantity>50.0</quantity></Point>
+      <Point><position>3</position><quantity>200.0</quantity></Point>
+    </Period>
+  </TimeSeries>
+</GL_MarketDocument>"""
+
+SAMPLE_CROSS_BORDER_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
+  <mRID>cb123</mRID>
+  <type>A11</type>
+  <TimeSeries>
+    <mRID>ts_cb</mRID>
+    <businessType>A01</businessType>
+    <in_Domain.mRID>10YFR-RTE------C</in_Domain.mRID>
+    <out_Domain.mRID>10YES-REE------0</out_Domain.mRID>
+    <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
+    <Period>
+      <timeInterval>
+        <start>2026-04-01T00:00Z</start>
+        <end>2026-04-01T01:00Z</end>
+      </timeInterval>
+      <resolution>PT60M</resolution>
+      <Point><position>1</position><quantity>1500.0</quantity></Point>
+    </Period>
+  </TimeSeries>
+</GL_MarketDocument>"""
+
+SAMPLE_GENERATION_FORECAST_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
+  <mRID>gf123</mRID>
+  <type>A71</type>
+  <TimeSeries>
+    <mRID>ts_gf</mRID>
+    <businessType>A01</businessType>
+    <inBiddingZone_Domain.mRID>10Y1001A1001A83F</inBiddingZone_Domain.mRID>
+    <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
+    <Period>
+      <timeInterval>
+        <start>2026-04-01T00:00Z</start>
+        <end>2026-04-01T02:00Z</end>
+      </timeInterval>
+      <resolution>PT60M</resolution>
+      <Point><position>1</position><quantity>45000.0</quantity></Point>
+      <Point><position>2</position><quantity>44500.0</quantity></Point>
+    </Period>
+  </TimeSeries>
+</GL_MarketDocument>"""
+
+
+# ===== Tests for new document types =====
+
+@pytest.mark.unit
+class TestNewDocumentTypeParsing:
+    """Tests for parsing new document types (A69, A11, A71, etc)."""
+
+    def test_parse_wind_solar_forecast(self):
+        """Parse A69 wind & solar forecast XML."""
+        points = parse_entsoe_xml(SAMPLE_WIND_SOLAR_FORECAST_XML, "A69")
+        assert len(points) == 3
+        p = points[0]
+        assert p.in_domain == "10Y1001A1001A83F"
+        assert p.psr_type == "B16"
+        assert p.quantity == 0.0
+        assert p.document_type == "A69"
+        assert p.resolution == "PT15M"
+
+    def test_parse_cross_border_flows(self):
+        """Parse A11 cross-border physical flows XML."""
+        points = parse_entsoe_xml(SAMPLE_CROSS_BORDER_XML, "A11")
+        assert len(points) == 1
+        p = points[0]
+        assert p.in_domain == "10YFR-RTE------C"
+        assert p.out_domain == "10YES-REE------0"
+        assert p.quantity == 1500.0
+        assert p.document_type == "A11"
+
+    def test_parse_generation_forecast(self):
+        """Parse A71 generation forecast XML."""
+        points = parse_entsoe_xml(SAMPLE_GENERATION_FORECAST_XML, "A71")
+        assert len(points) == 2
+        assert points[0].quantity == 45000.0
+        assert points[1].quantity == 44500.0
+        assert points[0].timestamp == datetime(2026, 4, 1, 0, 0, tzinfo=timezone.utc)
+        assert points[1].timestamp == datetime(2026, 4, 1, 1, 0, tzinfo=timezone.utc)
+
+
+@pytest.mark.unit
+class TestProcessTypeMapping:
+    """Tests for document type → processType mapping."""
+
+    def test_realised_types(self):
+        for dt in ("A75", "A65", "A73", "A74", "A72", "A11", "A44"):
+            assert _process_type_for_document(dt) == "A16"
+
+    def test_forecast_types(self):
+        for dt in ("A69", "A70", "A71"):
+            assert _process_type_for_document(dt) == "A01"
+
+    def test_capacity_type(self):
+        assert _process_type_for_document("A68") == "A33"
+
+
+@pytest.mark.unit
+class TestBuildApiUrlExtended:
+    """Tests for build_api_url with new parameters."""
+
+    def test_cross_border_url(self):
+        url = build_api_url(
+            "https://web-api.tp.entsoe.eu/api", "tok", "A11",
+            "10YFR-RTE------C",
+            datetime(2026, 4, 1, tzinfo=timezone.utc),
+            datetime(2026, 4, 2, tzinfo=timezone.utc),
+            out_domain="10YES-REE------0",
+        )
+        assert "documentType=A11" in url
+        assert "in_Domain=10YFR-RTE------C" in url
+        assert "out_Domain=10YES-REE------0" in url
+        assert "processType=A16" in url
+
+    def test_forecast_process_type(self):
+        url = build_api_url(
+            "https://web-api.tp.entsoe.eu/api", "tok", "A69",
+            "10Y1001A1001A83F",
+            datetime(2026, 4, 1, tzinfo=timezone.utc),
+            datetime(2026, 4, 2, tzinfo=timezone.utc),
+        )
+        assert "processType=A01" in url
+
+    def test_capacity_process_type(self):
+        url = build_api_url(
+            "https://web-api.tp.entsoe.eu/api", "tok", "A68",
+            "10Y1001A1001A83F",
+            datetime(2026, 4, 1, tzinfo=timezone.utc),
+            datetime(2026, 4, 2, tzinfo=timezone.utc),
+        )
+        assert "processType=A33" in url
+
+
+@pytest.mark.unit
+class TestNewDocTypeEmission:
+    """Tests for emitting events for new document types."""
+
+    @patch("entsoe.entsoe.requests.get")
+    def test_wind_solar_forecast_emission(self, mock_get, tmp_path):
+        """A69 events are emitted via send_wind_solar_forecast."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.text = SAMPLE_WIND_SOLAR_FORECAST_XML
+        mock_response.raise_for_status = Mock()
+        mock_get.return_value = mock_response
+
+        mock_producer = Mock()
+        mock_producer.producer = Mock()
+        mock_producer.producer.flush = Mock()
+
+        poller = EntsoePoller(
+            security_token="test", producer=mock_producer,
+            state_file=str(tmp_path / "state.json"),
+            domains=["10Y1001A1001A83F"], document_types=["A69"],
+            lookback_hours=720, polling_interval=60,
+        )
+        total = poller.poll_once()
+        assert total == 3
+        assert mock_producer.send_eu_entsoe_transparency_wind_solar_forecast.call_count == 3
+
+    @patch("entsoe.entsoe.requests.get")
+    def test_cross_border_emission(self, mock_get, tmp_path):
+        """A11 events are emitted via send_cross_border_physical_flows."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.text = SAMPLE_CROSS_BORDER_XML
+        mock_response.raise_for_status = Mock()
+        mock_get.return_value = mock_response
+
+        mock_producer = Mock()
+        mock_producer.producer = Mock()
+        mock_producer.producer.flush = Mock()
+
+        poller = EntsoePoller(
+            security_token="test", producer=mock_producer,
+            state_file=str(tmp_path / "state.json"),
+            domains=[], document_types=["A11"],
+            cross_border_pairs=[("10YFR-RTE------C", "10YES-REE------0")],
+            lookback_hours=720, polling_interval=60,
+        )
+        total = poller.poll_once()
+        assert total == 1
+        assert mock_producer.send_eu_entsoe_transparency_cross_border_physical_flows.call_count == 1
+
+    @patch("entsoe.entsoe.requests.get")
+    def test_generation_forecast_emission(self, mock_get, tmp_path):
+        """A71 events are emitted via send_generation_forecast."""
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.text = SAMPLE_GENERATION_FORECAST_XML
+        mock_response.raise_for_status = Mock()
+        mock_get.return_value = mock_response
+
+        mock_producer = Mock()
+        mock_producer.producer = Mock()
+        mock_producer.producer.flush = Mock()
+
+        poller = EntsoePoller(
+            security_token="test", producer=mock_producer,
+            state_file=str(tmp_path / "state.json"),
+            domains=["10Y1001A1001A83F"], document_types=["A71"],
+            lookback_hours=720, polling_interval=60,
+        )
+        total = poller.poll_once()
+        assert total == 2
+        assert mock_producer.send_eu_entsoe_transparency_generation_forecast.call_count == 2

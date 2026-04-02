@@ -4,18 +4,28 @@
 
 The **ENTSO-E Transparency Platform Bridge** polls the [ENTSO-E Transparency Platform REST API](https://transparency.entsoe.eu/) for European electricity market data and emits it as [CloudEvents](https://cloudevents.io/) to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
 
-The bridge covers three data categories:
+The bridge covers eleven data categories:
 
 | Document Type | Code | Description |
 |---------------|------|-------------|
 | Actual Generation per Type | A75 | Real-time power generation broken down by production type (wind, solar, nuclear, etc.) |
 | Day-Ahead Prices | A44 | Day-ahead electricity market prices per bidding zone |
 | Actual Total Load | A65 | Actual total electricity consumption per bidding zone |
+| Wind & Solar Forecast | A69 | Day-ahead forecast for wind and solar generation per type |
+| Load Forecast Margin | A70 | Day-ahead forecast margin (available capacity minus forecast load) |
+| Generation Forecast | A71 | Day-ahead total generation forecast |
+| Reservoir Filling Information | A72 | Hydro reservoir filling levels |
+| Actual Generation (Aggregate) | A73 | Actual total generation (aggregated, no PSR breakdown) |
+| Wind & Solar Generation | A74 | Actual wind and solar generation per type |
+| Installed Generation Capacity per Type | A68 | Year-ahead installed generation capacity by production type |
+| Cross-Border Physical Flows | A11 | Physical electricity flows between bidding zones |
 
 Data is polled for configurable European bidding zones (default: DE-AT-LU, France, Netherlands, Spain, Germany) and emitted as delta-only events — only new data points since the last checkpoint are forwarded.
 
 ## Key Features
 
+- **11 document types**: Generation, prices, load, forecasts, capacity, reservoir, cross-border flows
+- **Cross-border flows**: Polls configurable domain pairs for physical electricity flows (A11)
 - **Delta-only emission**: Tracks watermarks per (document_type, domain) to avoid duplicates
 - **Persistent state**: Checkpoint state file survives restarts via mounted volume
 - **IEC 62325 XML parsing**: Handles both `GL_MarketDocument` and `Publication_MarketDocument` response formats
@@ -58,7 +68,8 @@ The events sent to Kafka are formatted as CloudEvents, documented in [EVENTS.md]
 | `--sasl-username` | `SASL_USERNAME` | SASL username | — |
 | `--sasl-password` | `SASL_PASSWORD` | SASL password | — |
 | `--domains` | `ENTSOE_DOMAINS` | Comma-separated EIC domain codes | DE-AT-LU, FR, NL, ES, DE |
-| `--document-types` | `ENTSOE_DOCUMENT_TYPES` | Comma-separated document type codes | A75, A44, A65 |
+| `--document-types` | `ENTSOE_DOCUMENT_TYPES` | Comma-separated document type codes | A75, A44, A65, A69, A70, A71, A72, A73, A74, A68, A11 |
+| `--cross-border-pairs` | `ENTSOE_CROSS_BORDER_PAIRS` | Semicolon-separated `in>out` domain pairs for A11 | 20 major European interconnections |
 | `--polling-interval` | `POLLING_INTERVAL` | Seconds between poll cycles | 900 |
 | `--lookback-hours` | `ENTSOE_LOOKBACK_HOURS` | Initial lookback window in hours | 24 |
 | `--state-file` | `STATE_FILE` | Path to the delta state file | ~/.entsoe_state.json |

@@ -1,10 +1,18 @@
 // ENTSO-E Transparency Platform — KQL database schema
 //
 // Tables:
-//   _cloudevents_dispatch         — raw CloudEvents ingestion (Event Stream target)
-//   ActualGenerationPerType       — A75 generation per production type
-//   DayAheadPrices                — A44 day-ahead electricity prices
-//   ActualTotalLoad               — A65 actual total electricity load
+//   _cloudevents_dispatch                    — raw CloudEvents ingestion (Event Stream target)
+//   ActualGenerationPerType                  — A75 generation per production type
+//   DayAheadPrices                           — A44 day-ahead electricity prices
+//   ActualTotalLoad                          — A65 actual total electricity load
+//   WindSolarForecast                        — A69 wind & solar forecast
+//   LoadForecastMargin                       — A70 load forecast margin
+//   GenerationForecast                       — A71 generation forecast
+//   ReservoirFillingInformation              — A72 reservoir filling information
+//   ActualGeneration                         — A73 actual aggregate generation
+//   WindSolarGeneration                      — A74 actual wind & solar generation
+//   InstalledGenerationCapacityPerType       — A68 installed capacity per type
+//   CrossBorderPhysicalFlows                 — A11 cross-border physical flows
 //
 // Update policies on _cloudevents_dispatch split events by type.
 // Materialized views provide latest values per bidding zone.
@@ -52,43 +60,17 @@
 // ===== ActualGenerationPerType (document type A75) =====
 
 .create-merge table [ActualGenerationPerType] (
-   [inDomain]: string,
-   [psrType]: string,
-   [quantity]: real,
-   [resolution]: string,
-   [businessType]: string,
-   [documentType]: string,
-   [unitName]: string,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-)
-
-.alter table [ActualGenerationPerType] column-docstrings (
-   [inDomain]: 'EIC code of the bidding zone',
-   [psrType]: 'Production type code (B01=Biomass, B02=Lignite, B04=Natural Gas, B05=Hard Coal, B06=Oil, B09=Geothermal, B10=Hydro Pumped Storage, B11=Hydro Run-of-river, B12=Hydro Water Reservoir, B14=Nuclear, B15=Other renewable, B16=Solar, B18=Wind Offshore, B19=Wind Onshore, B20=Other)',
-   [quantity]: 'Generated power in MW',
-   [resolution]: 'ISO 8601 duration (PT15M, PT60M)',
-   [businessType]: 'Business type code (A01=Production, A04=Consumption)',
-   [documentType]: 'ENTSO-E document type code (A75)',
-   [unitName]: 'Unit of measurement (MAW)',
-   [___type]: 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
+   [inDomain]: string, [psrType]: string, [quantity]: real, [resolution]: string,
+   [businessType]: string, [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
 )
 
 .alter table [ActualGenerationPerType] policy update
 ```
 [{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualGenerationPerType') | project ['inDomain'] = tostring(data.['inDomain']), ['psrType'] = tostring(data.['psrType']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['businessType'] = tostring(data.['businessType']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "IsTransactional": false, "PropagateIngestionProperties": true
 }]
 ```
 
@@ -106,41 +88,17 @@
 // ===== DayAheadPrices (document type A44) =====
 
 .create-merge table [DayAheadPrices] (
-   [inDomain]: string,
-   [price]: real,
-   [currency]: string,
-   [unitName]: string,
-   [resolution]: string,
-   [documentType]: string,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-)
-
-.alter table [DayAheadPrices] column-docstrings (
-   [inDomain]: 'EIC code of the bidding zone',
-   [price]: 'Day-ahead electricity price',
-   [currency]: 'Currency code (EUR)',
-   [unitName]: 'Price unit (MWH)',
-   [resolution]: 'ISO 8601 duration (PT60M)',
-   [documentType]: 'ENTSO-E document type code (A44)',
-   [___type]: 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
+   [inDomain]: string, [price]: real, [currency]: string, [unitName]: string,
+   [resolution]: string, [documentType]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
 )
 
 .alter table [DayAheadPrices] policy update
 ```
 [{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.DayAheadPrices') | project ['inDomain'] = tostring(data.['inDomain']), ['price'] = toreal(data.['price']), ['currency'] = tostring(data.['currency']), ['unitName'] = tostring(data.['unitName']), ['resolution'] = tostring(data.['resolution']), ['documentType'] = tostring(data.['documentType']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "IsTransactional": false, "PropagateIngestionProperties": true
 }]
 ```
 
@@ -158,39 +116,17 @@
 // ===== ActualTotalLoad (document type A65) =====
 
 .create-merge table [ActualTotalLoad] (
-   [inDomain]: string,
-   [quantity]: real,
-   [resolution]: string,
-   [outDomain]: string,
+   [inDomain]: string, [quantity]: real, [resolution]: string, [outDomain]: string,
    [documentType]: string,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-)
-
-.alter table [ActualTotalLoad] column-docstrings (
-   [inDomain]: 'EIC code of the bidding zone',
-   [quantity]: 'Total electricity load in MW',
-   [resolution]: 'ISO 8601 duration (PT15M)',
-   [outDomain]: 'EIC code of the out domain, if applicable',
-   [documentType]: 'ENTSO-E document type code (A65)',
-   [___type]: 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
 )
 
 .alter table [ActualTotalLoad] policy update
 ```
 [{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualTotalLoad') | project ['inDomain'] = tostring(data.['inDomain']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['outDomain'] = tostring(data.['outDomain']), ['documentType'] = tostring(data.['documentType']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "IsTransactional": false, "PropagateIngestionProperties": true
 }]
 ```
 
@@ -205,27 +141,285 @@
 ```
 
 
+// ===== WindSolarForecast (document type A69) =====
+
+.create-merge table [WindSolarForecast] (
+   [inDomain]: string, [psrType]: string, [quantity]: real, [resolution]: string,
+   [businessType]: string, [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [WindSolarForecast] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.WindSolarForecast') | project ['inDomain'] = tostring(data.['inDomain']), ['psrType'] = tostring(data.['psrType']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['businessType'] = tostring(data.['businessType']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [WindSolarForecast] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [WindSolarForecast] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== LoadForecastMargin (document type A70) =====
+
+.create-merge table [LoadForecastMargin] (
+   [inDomain]: string, [quantity]: real, [resolution]: string,
+   [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [LoadForecastMargin] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.LoadForecastMargin') | project ['inDomain'] = tostring(data.['inDomain']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [LoadForecastMargin] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [LoadForecastMargin] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== GenerationForecast (document type A71) =====
+
+.create-merge table [GenerationForecast] (
+   [inDomain]: string, [quantity]: real, [resolution]: string,
+   [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [GenerationForecast] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.GenerationForecast') | project ['inDomain'] = tostring(data.['inDomain']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [GenerationForecast] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [GenerationForecast] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== ReservoirFillingInformation (document type A72) =====
+
+.create-merge table [ReservoirFillingInformation] (
+   [inDomain]: string, [quantity]: real, [resolution]: string,
+   [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [ReservoirFillingInformation] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ReservoirFillingInformation') | project ['inDomain'] = tostring(data.['inDomain']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [ReservoirFillingInformation] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [ReservoirFillingInformation] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== ActualGeneration (document type A73) =====
+
+.create-merge table [ActualGeneration] (
+   [inDomain]: string, [quantity]: real, [resolution]: string,
+   [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [ActualGeneration] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.ActualGeneration') | project ['inDomain'] = tostring(data.['inDomain']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [ActualGeneration] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [ActualGeneration] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== WindSolarGeneration (document type A74) =====
+
+.create-merge table [WindSolarGeneration] (
+   [inDomain]: string, [psrType]: string, [quantity]: real, [resolution]: string,
+   [businessType]: string, [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [WindSolarGeneration] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.WindSolarGeneration') | project ['inDomain'] = tostring(data.['inDomain']), ['psrType'] = tostring(data.['psrType']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['businessType'] = tostring(data.['businessType']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [WindSolarGeneration] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [WindSolarGeneration] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== InstalledGenerationCapacityPerType (document type A68) =====
+
+.create-merge table [InstalledGenerationCapacityPerType] (
+   [inDomain]: string, [psrType]: string, [quantity]: real, [resolution]: string,
+   [businessType]: string, [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [InstalledGenerationCapacityPerType] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.InstalledGenerationCapacityPerType') | project ['inDomain'] = tostring(data.['inDomain']), ['psrType'] = tostring(data.['psrType']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['businessType'] = tostring(data.['businessType']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [InstalledGenerationCapacityPerType] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [InstalledGenerationCapacityPerType] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== CrossBorderPhysicalFlows (document type A11) =====
+
+.create-merge table [CrossBorderPhysicalFlows] (
+   [inDomain]: string, [outDomain]: string, [quantity]: real, [resolution]: string,
+   [documentType]: string, [unitName]: string,
+   [___type]: string, [___source]: string, [___id]: string, [___time]: datetime, [___subject]: string
+)
+
+.alter table [CrossBorderPhysicalFlows] policy update
+```
+[{
+  "IsEnabled": true, "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.entsoe.transparency.CrossBorderPhysicalFlows') | project ['inDomain'] = tostring(data.['inDomain']), ['outDomain'] = tostring(data.['outDomain']), ['quantity'] = toreal(data.['quantity']), ['resolution'] = tostring(data.['resolution']), ['documentType'] = tostring(data.['documentType']), ['unitName'] = tostring(data.['unitName']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false, "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [CrossBorderPhysicalFlows] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [CrossBorderPhysicalFlows] policy retention
+```
+{ "SoftDeletePeriod": "365.00:00:00", "Recoverability": "Enabled" }
+```
+
+
 // ===== Materialized views =====
 
-// Latest generation per bidding zone and production type
 .create-or-alter materialized-view with (backfill=true) ActualGenerationPerTypeLatest on table ActualGenerationPerType
 {
-    ActualGenerationPerType
-    | summarize arg_max(___time, *) by inDomain, psrType
+    ActualGenerationPerType | summarize arg_max(___time, *) by inDomain, psrType
 }
 
-// Latest prices per bidding zone
 .create-or-alter materialized-view with (backfill=true) DayAheadPricesLatest on table DayAheadPrices
 {
-    DayAheadPrices
-    | summarize arg_max(___time, *) by inDomain
+    DayAheadPrices | summarize arg_max(___time, *) by inDomain
 }
 
-// Latest total load per bidding zone
 .create-or-alter materialized-view with (backfill=true) ActualTotalLoadLatest on table ActualTotalLoad
 {
-    ActualTotalLoad
-    | summarize arg_max(___time, *) by inDomain
+    ActualTotalLoad | summarize arg_max(___time, *) by inDomain
+}
+
+.create-or-alter materialized-view with (backfill=true) WindSolarForecastLatest on table WindSolarForecast
+{
+    WindSolarForecast | summarize arg_max(___time, *) by inDomain, psrType
+}
+
+.create-or-alter materialized-view with (backfill=true) LoadForecastMarginLatest on table LoadForecastMargin
+{
+    LoadForecastMargin | summarize arg_max(___time, *) by inDomain
+}
+
+.create-or-alter materialized-view with (backfill=true) GenerationForecastLatest on table GenerationForecast
+{
+    GenerationForecast | summarize arg_max(___time, *) by inDomain
+}
+
+.create-or-alter materialized-view with (backfill=true) ReservoirFillingInformationLatest on table ReservoirFillingInformation
+{
+    ReservoirFillingInformation | summarize arg_max(___time, *) by inDomain
+}
+
+.create-or-alter materialized-view with (backfill=true) ActualGenerationLatest on table ActualGeneration
+{
+    ActualGeneration | summarize arg_max(___time, *) by inDomain
+}
+
+.create-or-alter materialized-view with (backfill=true) WindSolarGenerationLatest on table WindSolarGeneration
+{
+    WindSolarGeneration | summarize arg_max(___time, *) by inDomain, psrType
+}
+
+.create-or-alter materialized-view with (backfill=true) InstalledGenerationCapacityPerTypeLatest on table InstalledGenerationCapacityPerType
+{
+    InstalledGenerationCapacityPerType | summarize arg_max(___time, *) by inDomain, psrType
+}
+
+.create-or-alter materialized-view with (backfill=true) CrossBorderPhysicalFlowsLatest on table CrossBorderPhysicalFlows
+{
+    CrossBorderPhysicalFlows | summarize arg_max(___time, *) by inDomain, outDomain
 }
 
 
@@ -281,10 +475,11 @@
         "10YNO-4--------9", "Norway (NO4)",
         "10YPL-AREA-----S", "Poland",
         "10YPT-REN------W", "Portugal",
-        "10YSE-1--------K", "Sweden (SE1)",
-        "10YSE-2--------E", "Sweden (SE2)",
-        "10YSE-3--------Q", "Sweden (SE3)",
-        "10YSE-4--------I", "Sweden (SE4)"
+        "10YSE-1--------K", "Sweden",
+        "10Y1001A1001A44P", "Sweden (SE1)",
+        "10Y1001A1001A45N", "Sweden (SE2)",
+        "10Y1001A1001A46L", "Sweden (SE3)",
+        "10Y1001A1001A47J", "Sweden (SE4)"
     ];
     lookup | where domainCode == code | project domainName | take 1
 }
@@ -312,4 +507,32 @@
     | extend domainName = toscalar(DomainName(inDomain))
     | project inDomain, domainName, quantity, resolution, last_update = ___time
     | order by quantity desc
+}
+
+// Wind & solar forecast vs actual for a given bidding zone
+.create-or-alter function with (docstring="Compare wind & solar forecast vs actual generation for a bidding zone") WindSolarForecastVsActual(domain: string) {
+    WindSolarForecastLatest
+    | where inDomain == domain
+    | join kind=leftouter (WindSolarGenerationLatest | where inDomain == domain) on psrType
+    | extend psrTypeName = toscalar(PsrTypeName(psrType))
+    | project psrType, psrTypeName, forecast_MW = quantity, actual_MW = quantity1,
+              delta_MW = quantity1 - quantity,
+              forecast_time = ___time, actual_time = ___time1
+}
+
+// Cross-border physical flows overview
+.create-or-alter function with (docstring="Latest cross-border physical flows between all domain pairs") CrossBorderOverview() {
+    CrossBorderPhysicalFlowsLatest
+    | extend fromName = toscalar(DomainName(outDomain)), toName = toscalar(DomainName(inDomain))
+    | project outDomain, fromName, inDomain, toName, quantity, resolution, last_update = ___time
+    | order by quantity desc
+}
+
+// Net cross-border position for a domain
+.create-or-alter function with (docstring="Net cross-border position (imports minus exports) for a domain") NetCrossBorderPosition(domain: string) {
+    let imports = CrossBorderPhysicalFlowsLatest | where inDomain == domain | summarize total_import = sum(quantity);
+    let exports = CrossBorderPhysicalFlowsLatest | where outDomain == domain | summarize total_export = sum(quantity);
+    print net_position_MW = toscalar(imports) - toscalar(exports),
+          total_import_MW = toscalar(imports),
+          total_export_MW = toscalar(exports)
 }

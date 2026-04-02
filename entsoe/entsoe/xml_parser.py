@@ -165,33 +165,51 @@ def parse_entsoe_xml(xml_text: str, document_type: str) -> List[TimeSeriesPoint]
     return points
 
 
+def _process_type_for_document(document_type: str) -> str:
+    """Return the appropriate processType for the given ENTSO-E document type."""
+    # Forecast types use day-ahead process
+    if document_type in ("A69", "A70", "A71"):
+        return "A01"
+    # Installed capacity uses year-ahead
+    if document_type == "A68":
+        return "A33"
+    # Everything else (A75, A65, A73, A74, A72, A11, A44) uses realised
+    return "A16"
+
+
 def build_api_url(base_url: str, security_token: str, document_type: str,
                   in_domain: str, period_start: datetime,
-                  period_end: datetime, psr_type: Optional[str] = None) -> str:
+                  period_end: datetime, psr_type: Optional[str] = None,
+                  out_domain: Optional[str] = None) -> str:
     """
     Build an ENTSO-E REST API query URL.
 
     Args:
         base_url: ENTSO-E API base URL.
         security_token: API security token.
-        document_type: ENTSO-E document type code (A44, A65, A75).
-        in_domain: EIC code of the bidding zone.
+        document_type: ENTSO-E document type code.
+        in_domain: EIC code of the importing/consuming bidding zone.
         period_start: Start of the query window.
         period_end: End of the query window.
         psr_type: Optional PSR type filter.
+        out_domain: EIC code of the exporting bidding zone (for cross-border flows).
 
     Returns:
         Fully constructed API URL.
     """
     start_str = period_start.strftime("%Y%m%d%H%M")
     end_str = period_end.strftime("%Y%m%d%H%M")
+    process_type = _process_type_for_document(document_type)
 
     url = (f"{base_url}?securityToken={security_token}"
            f"&documentType={document_type}"
-           f"&processType=A16"
+           f"&processType={process_type}"
            f"&in_Domain={in_domain}"
            f"&periodStart={start_str}"
            f"&periodEnd={end_str}")
+
+    if out_domain:
+        url += f"&out_Domain={out_domain}"
 
     if psr_type:
         url += f"&psrType={psr_type}"

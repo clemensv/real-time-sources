@@ -343,3 +343,150 @@ class TestConnectionStringIntegration:
         assert config["sasl.mechanism"] == "PLAIN"
         # Password should be the entire connection string
         assert "SharedAccessKey=" in config["sasl.password"]
+
+
+# XML for cross-border integration tests
+CROSS_BORDER_FLOW_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
+  <mRID>cb_int</mRID>
+  <type>A11</type>
+  <TimeSeries>
+    <mRID>ts_flow</mRID>
+    <businessType>A01</businessType>
+    <in_Domain.mRID>{in_domain}</in_Domain.mRID>
+    <out_Domain.mRID>{out_domain}</out_Domain.mRID>
+    <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
+    <Period>
+      <timeInterval>
+        <start>2026-04-01T00:00Z</start>
+        <end>2026-04-01T02:00Z</end>
+      </timeInterval>
+      <resolution>PT60M</resolution>
+      <Point><position>1</position><quantity>1200.0</quantity></Point>
+      <Point><position>2</position><quantity>1350.0</quantity></Point>
+    </Period>
+  </TimeSeries>
+</GL_MarketDocument>"""
+
+
+@pytest.mark.integration
+class TestCrossBorderPolling:
+    """Integration tests for A11 cross-border physical flow polling."""
+
+    @patch("entsoe.entsoe.requests.get")
+    def test_cross_border_polls_each_pair(self, mock_get, tmp_path):
+        """A11 queries are made for each cross-border pair."""
+        pairs = [
+            ("10Y1001A1001A83F", "10YFR-RTE------C"),  # DE→FR
+            ("10YFR-RTE------C", "10Y1001A1001A83F"),  # FR→DE
+        ]
+
+        def side_effect(*args, **kwargs):
+            url = args[0] if args else kwargs.get("url", "")
+            params = kwargs.get("params", {})
+            # Return valid XML for each pair
+            in_d = "10Y1001A1001A83F" if "10Y1001A1001A83F" in str(url) + str(params) else "10YFR-RTE------C"
+            out_d = "10YFR-RTE------C" if in_d == "10Y1001A1001A83F" else "10Y1001A1001A83F"
+            xml = CROSS_BORDER_FLOW_XML.format(in_domain=in_d, out_domain=out_d)
+            return _make_response(xml)
+
+        mock_get.side_effect = side_effect
+
+        mock_producer = Mock()
+        mock_producer.producer = Mock()
+        mock_producer.producer.flush = Mock()
+
+        poller = EntsoePoller(
+            security_token="test-token",
+            producer=mock_producer,
+            state_file=str(tmp_path / "state.json"),
+            domains=[],
+            document_types=["A11"],
+            cross_border_pairs=pairs,
+            lookback_hours=720,
+            polling_interval=60,
+        )
+
+        total = poller.poll_once()
+        # 2 points × 2 pairs = 4
+        assert total == 4
+        assert mock_producer.send_eu_entsoe_transparency_cross_border_physical_flows.call_count == 4
+
+    @patch("entsoe.entsoe.requests.get")
+    def test_cross_border_state_uses_pair_key(self, mock_get, tmp_path):
+        """Cross-border state keys include both in and out domains."""
+        pair = ("10Y1001A1001A83F", "10YFR-RTE------C")
+        xml = CROSS_BORDER_FLOW_XML.format(in_domain=pair[0], out_domain=pair[1])
+        mock_get.return_value = _make_response(xml)
+
+        mock_producer = Mock()
+        mock_producer.producer = Mock()
+        mock_producer.producer.flush = Mock()
+
+        state_file = str(tmp_path / "state.json")
+        poller = EntsoePoller(
+            security_token="test-token",
+            producer=mock_producer,
+            state_file=state_file,
+            domains=[],
+            document_types=["A11"],
+            cross_border_pairs=[pair],
+            lookback_hours=720,
+            polling_interval=60,
+        )
+
+        total1 = poller.poll_once()
+        assert total1 == 2
+
+        state = load_state(state_file)
+        assert "A11" in state
+        # State key should include both domains
+        state_key = f"{pair[0]}>{pair[1]}"
+        assert state_key in state["A11"]
+
+        # Second poll — same data → 0 new
+        mock_producer.reset_mock()
+        total2 = poller.poll_once()
+        assert total2 == 0
+
+    @patch("entsoe.entsoe.requests.get")
+    def test_mixed_doctypes_with_cross_border(self, mock_get, tmp_path):
+        """A75 + A11 in same poll cycle: domains for A75, pairs for A11."""
+        call_count = {"n": 0}
+
+        def side_effect(*args, **kwargs):
+            idx = call_count["n"]
+            call_count["n"] += 1
+            if idx == 0:
+                # A75 for DE domain
+                return _make_response(MULTI_SERIES_XML)
+            else:
+                # A11 for cross-border pair
+                xml = CROSS_BORDER_FLOW_XML.format(
+                    in_domain="10Y1001A1001A83F",
+                    out_domain="10YFR-RTE------C",
+                )
+                return _make_response(xml)
+
+        mock_get.side_effect = side_effect
+
+        mock_producer = Mock()
+        mock_producer.producer = Mock()
+        mock_producer.producer.flush = Mock()
+
+        poller = EntsoePoller(
+            security_token="test-token",
+            producer=mock_producer,
+            state_file=str(tmp_path / "state.json"),
+            domains=["10YDE-AT-LU---Q"],
+            document_types=["A75", "A11"],
+            cross_border_pairs=[("10Y1001A1001A83F", "10YFR-RTE------C")],
+            lookback_hours=720,
+            polling_interval=60,
+        )
+
+        total = poller.poll_once()
+        # A75: 10 generation points; A11: 2 cross-border points
+        assert total == 12
+        assert mock_producer.send_eu_entsoe_transparency_actual_generation_per_type.call_count == 10
+        assert mock_producer.send_eu_entsoe_transparency_cross_border_physical_flows.call_count == 2

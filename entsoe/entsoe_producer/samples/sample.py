@@ -39,6 +39,14 @@ from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyEventPro
 from entsoe_producer_data.eu.entsoe.transparency.actualgenerationpertype import ActualGenerationPerType
 from entsoe_producer_data.eu.entsoe.transparency.dayaheadprices import DayAheadPrices
 from entsoe_producer_data.eu.entsoe.transparency.actualtotalload import ActualTotalLoad
+from entsoe_producer_data.eu.entsoe.transparency.windsolarforecast import WindSolarForecast
+from entsoe_producer_data.eu.entsoe.transparency.loadforecastmargin import LoadForecastMargin
+from entsoe_producer_data.eu.entsoe.transparency.generationforecast import GenerationForecast
+from entsoe_producer_data.eu.entsoe.transparency.reservoirfillinginformation import ReservoirFillingInformation
+from entsoe_producer_data.eu.entsoe.transparency.actualgeneration import ActualGeneration
+from entsoe_producer_data.eu.entsoe.transparency.windsolargeneration import WindSolarGeneration
+from entsoe_producer_data.eu.entsoe.transparency.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
+from entsoe_producer_data.eu.entsoe.transparency.crossborderphysicalflows import CrossBorderPhysicalFlows
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -81,6 +89,70 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'eu.entsoe.transparency.ActualTotalLoad' event to Kafka topic.
     await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_actual_total_load(data = _actual_total_load)
     print(f"Sent 'eu.entsoe.transparency.ActualTotalLoad' event: {_actual_total_load.to_json()}")
+
+    # ---- eu.entsoe.transparency.WindSolarForecast ----
+    # TODO: Supply event data for the eu.entsoe.transparency.WindSolarForecast event
+    _wind_solar_forecast = WindSolarForecast()
+
+    # sends the 'eu.entsoe.transparency.WindSolarForecast' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_wind_solar_forecast(data = _wind_solar_forecast)
+    print(f"Sent 'eu.entsoe.transparency.WindSolarForecast' event: {_wind_solar_forecast.to_json()}")
+
+    # ---- eu.entsoe.transparency.LoadForecastMargin ----
+    # TODO: Supply event data for the eu.entsoe.transparency.LoadForecastMargin event
+    _load_forecast_margin = LoadForecastMargin()
+
+    # sends the 'eu.entsoe.transparency.LoadForecastMargin' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_load_forecast_margin(data = _load_forecast_margin)
+    print(f"Sent 'eu.entsoe.transparency.LoadForecastMargin' event: {_load_forecast_margin.to_json()}")
+
+    # ---- eu.entsoe.transparency.GenerationForecast ----
+    # TODO: Supply event data for the eu.entsoe.transparency.GenerationForecast event
+    _generation_forecast = GenerationForecast()
+
+    # sends the 'eu.entsoe.transparency.GenerationForecast' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_generation_forecast(data = _generation_forecast)
+    print(f"Sent 'eu.entsoe.transparency.GenerationForecast' event: {_generation_forecast.to_json()}")
+
+    # ---- eu.entsoe.transparency.ReservoirFillingInformation ----
+    # TODO: Supply event data for the eu.entsoe.transparency.ReservoirFillingInformation event
+    _reservoir_filling_information = ReservoirFillingInformation()
+
+    # sends the 'eu.entsoe.transparency.ReservoirFillingInformation' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_reservoir_filling_information(data = _reservoir_filling_information)
+    print(f"Sent 'eu.entsoe.transparency.ReservoirFillingInformation' event: {_reservoir_filling_information.to_json()}")
+
+    # ---- eu.entsoe.transparency.ActualGeneration ----
+    # TODO: Supply event data for the eu.entsoe.transparency.ActualGeneration event
+    _actual_generation = ActualGeneration()
+
+    # sends the 'eu.entsoe.transparency.ActualGeneration' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_actual_generation(data = _actual_generation)
+    print(f"Sent 'eu.entsoe.transparency.ActualGeneration' event: {_actual_generation.to_json()}")
+
+    # ---- eu.entsoe.transparency.WindSolarGeneration ----
+    # TODO: Supply event data for the eu.entsoe.transparency.WindSolarGeneration event
+    _wind_solar_generation = WindSolarGeneration()
+
+    # sends the 'eu.entsoe.transparency.WindSolarGeneration' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_wind_solar_generation(data = _wind_solar_generation)
+    print(f"Sent 'eu.entsoe.transparency.WindSolarGeneration' event: {_wind_solar_generation.to_json()}")
+
+    # ---- eu.entsoe.transparency.InstalledGenerationCapacityPerType ----
+    # TODO: Supply event data for the eu.entsoe.transparency.InstalledGenerationCapacityPerType event
+    _installed_generation_capacity_per_type = InstalledGenerationCapacityPerType()
+
+    # sends the 'eu.entsoe.transparency.InstalledGenerationCapacityPerType' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_installed_generation_capacity_per_type(data = _installed_generation_capacity_per_type)
+    print(f"Sent 'eu.entsoe.transparency.InstalledGenerationCapacityPerType' event: {_installed_generation_capacity_per_type.to_json()}")
+
+    # ---- eu.entsoe.transparency.CrossBorderPhysicalFlows ----
+    # TODO: Supply event data for the eu.entsoe.transparency.CrossBorderPhysicalFlows event
+    _cross_border_physical_flows = CrossBorderPhysicalFlows()
+
+    # sends the 'eu.entsoe.transparency.CrossBorderPhysicalFlows' event to Kafka topic.
+    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_cross_border_physical_flows(data = _cross_border_physical_flows)
+    print(f"Sent 'eu.entsoe.transparency.CrossBorderPhysicalFlows' event: {_cross_border_physical_flows.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

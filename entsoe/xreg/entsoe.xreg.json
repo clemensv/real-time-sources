@@ -26,12 +26,8 @@
                     "name": "ActualGenerationPerType",
                     "envelope": "CloudEvents/1.0",
                     "envelopemetadata": {
-                        "type": {
-                            "value": "eu.entsoe.transparency.ActualGenerationPerType"
-                        },
-                        "source": {
-                            "value": "https://transparency.entsoe.eu/api"
-                        }
+                        "type": { "value": "eu.entsoe.transparency.ActualGenerationPerType" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
                     },
                     "dataschemaformat": "Avro/1.11.3",
                     "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.ActualGenerationPerType"
@@ -40,12 +36,8 @@
                     "name": "DayAheadPrices",
                     "envelope": "CloudEvents/1.0",
                     "envelopemetadata": {
-                        "type": {
-                            "value": "eu.entsoe.transparency.DayAheadPrices"
-                        },
-                        "source": {
-                            "value": "https://transparency.entsoe.eu/api"
-                        }
+                        "type": { "value": "eu.entsoe.transparency.DayAheadPrices" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
                     },
                     "dataschemaformat": "Avro/1.11.3",
                     "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.DayAheadPrices"
@@ -54,15 +46,91 @@
                     "name": "ActualTotalLoad",
                     "envelope": "CloudEvents/1.0",
                     "envelopemetadata": {
-                        "type": {
-                            "value": "eu.entsoe.transparency.ActualTotalLoad"
-                        },
-                        "source": {
-                            "value": "https://transparency.entsoe.eu/api"
-                        }
+                        "type": { "value": "eu.entsoe.transparency.ActualTotalLoad" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
                     },
                     "dataschemaformat": "Avro/1.11.3",
                     "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.ActualTotalLoad"
+                },
+                "eu.entsoe.transparency.WindSolarForecast": {
+                    "name": "WindSolarForecast",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.WindSolarForecast" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.WindSolarForecast"
+                },
+                "eu.entsoe.transparency.LoadForecastMargin": {
+                    "name": "LoadForecastMargin",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.LoadForecastMargin" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.LoadForecastMargin"
+                },
+                "eu.entsoe.transparency.GenerationForecast": {
+                    "name": "GenerationForecast",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.GenerationForecast" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.GenerationForecast"
+                },
+                "eu.entsoe.transparency.ReservoirFillingInformation": {
+                    "name": "ReservoirFillingInformation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.ReservoirFillingInformation" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.ReservoirFillingInformation"
+                },
+                "eu.entsoe.transparency.ActualGeneration": {
+                    "name": "ActualGeneration",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.ActualGeneration" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.ActualGeneration"
+                },
+                "eu.entsoe.transparency.WindSolarGeneration": {
+                    "name": "WindSolarGeneration",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.WindSolarGeneration" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.WindSolarGeneration"
+                },
+                "eu.entsoe.transparency.InstalledGenerationCapacityPerType": {
+                    "name": "InstalledGenerationCapacityPerType",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.InstalledGenerationCapacityPerType" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType"
+                },
+                "eu.entsoe.transparency.CrossBorderPhysicalFlows": {
+                    "name": "CrossBorderPhysicalFlows",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": { "value": "eu.entsoe.transparency.CrossBorderPhysicalFlows" },
+                        "source": { "value": "https://transparency.entsoe.eu/api" }
+                    },
+                    "dataschemaformat": "Avro/1.11.3",
+                    "dataschemauri": "#/schemagroups/eu.entsoe.transparency/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows"
                 }
             }
         }
@@ -138,6 +206,197 @@
                                     {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A65)"}
                                 ],
                                 "altnames": {"kql": "ActualTotalLoad"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.WindSolarForecast": {
+                    "name": "WindSolarForecast",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WindSolarForecast",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the bidding zone"},
+                                    {"name": "psrType", "type": "string", "doc": "Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)"},
+                                    {"name": "quantity", "type": "double", "doc": "Forecast power in MW", "unit": "MW"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration (PT15M, PT60M)"},
+                                    {"name": "businessType", "type": "string", "doc": "Business type code"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A69)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement (MAW)"}
+                                ],
+                                "altnames": {"kql": "WindSolarForecast"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.LoadForecastMargin": {
+                    "name": "LoadForecastMargin",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "LoadForecastMargin",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the bidding zone"},
+                                    {"name": "quantity", "type": "double", "doc": "Forecast margin in MW", "unit": "MW"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A70)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement (MAW)"}
+                                ],
+                                "altnames": {"kql": "LoadForecastMargin"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.GenerationForecast": {
+                    "name": "GenerationForecast",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "GenerationForecast",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the bidding zone"},
+                                    {"name": "quantity", "type": "double", "doc": "Forecast total generation in MW", "unit": "MW"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A71)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement (MAW)"}
+                                ],
+                                "altnames": {"kql": "GenerationForecast"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.ReservoirFillingInformation": {
+                    "name": "ReservoirFillingInformation",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "ReservoirFillingInformation",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the bidding zone"},
+                                    {"name": "quantity", "type": "double", "doc": "Stored energy in MWh", "unit": "MWh"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A72)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement"}
+                                ],
+                                "altnames": {"kql": "ReservoirFillingInformation"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.ActualGeneration": {
+                    "name": "ActualGeneration",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "ActualGeneration",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the bidding zone"},
+                                    {"name": "quantity", "type": "double", "doc": "Total actual generation in MW", "unit": "MW"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A73)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement (MAW)"}
+                                ],
+                                "altnames": {"kql": "ActualGeneration"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.WindSolarGeneration": {
+                    "name": "WindSolarGeneration",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "WindSolarGeneration",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the bidding zone"},
+                                    {"name": "psrType", "type": "string", "doc": "Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)"},
+                                    {"name": "quantity", "type": "double", "doc": "Actual wind/solar generation in MW", "unit": "MW"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration"},
+                                    {"name": "businessType", "type": "string", "doc": "Business type code"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A74)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement (MAW)"}
+                                ],
+                                "altnames": {"kql": "WindSolarGeneration"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.InstalledGenerationCapacityPerType": {
+                    "name": "InstalledGenerationCapacityPerType",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "InstalledGenerationCapacityPerType",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the bidding zone"},
+                                    {"name": "psrType", "type": "string", "doc": "Production type code (B01=Biomass, B02=Lignite, ...)"},
+                                    {"name": "quantity", "type": "double", "doc": "Installed capacity in MW", "unit": "MW"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration"},
+                                    {"name": "businessType", "type": "string", "doc": "Business type code"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A68)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement (MAW)"}
+                                ],
+                                "altnames": {"kql": "InstalledGenerationCapacityPerType"}
+                            }
+                        }
+                    }
+                },
+                "eu.entsoe.transparency.CrossBorderPhysicalFlows": {
+                    "name": "CrossBorderPhysicalFlows",
+                    "format": "Avro/1.11.3",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "Avro/1.11.3",
+                            "schema": {
+                                "type": "record",
+                                "name": "CrossBorderPhysicalFlows",
+                                "namespace": "eu.entsoe.transparency",
+                                "fields": [
+                                    {"name": "inDomain", "type": "string", "doc": "EIC code of the importing bidding zone"},
+                                    {"name": "outDomain", "type": "string", "doc": "EIC code of the exporting bidding zone"},
+                                    {"name": "quantity", "type": "double", "doc": "Physical flow in MW", "unit": "MW"},
+                                    {"name": "resolution", "type": "string", "doc": "ISO 8601 duration"},
+                                    {"name": "documentType", "type": "string", "doc": "ENTSO-E document type code (A11)"},
+                                    {"name": "unitName", "type": "string", "doc": "Unit of measurement (MAW)"}
+                                ],
+                                "altnames": {"kql": "CrossBorderPhysicalFlows"}
                             }
                         }
                     }

@@ -21,6 +21,14 @@ import requests
 from entsoe.entsoe_producer.eu.entsoe.transparency.actualgenerationpertype import ActualGenerationPerType
 from entsoe.entsoe_producer.eu.entsoe.transparency.dayaheadprices import DayAheadPrices
 from entsoe.entsoe_producer.eu.entsoe.transparency.actualtotalload import ActualTotalLoad
+from entsoe.entsoe_producer.eu.entsoe.transparency.windsolarforecast import WindSolarForecast
+from entsoe.entsoe_producer.eu.entsoe.transparency.loadforecastmargin import LoadForecastMargin
+from entsoe.entsoe_producer.eu.entsoe.transparency.generationforecast import GenerationForecast
+from entsoe.entsoe_producer.eu.entsoe.transparency.reservoirfillinginformation import ReservoirFillingInformation
+from entsoe.entsoe_producer.eu.entsoe.transparency.actualgeneration import ActualGeneration
+from entsoe.entsoe_producer.eu.entsoe.transparency.windsolargeneration import WindSolarGeneration
+from entsoe.entsoe_producer.eu.entsoe.transparency.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
+from entsoe.entsoe_producer.eu.entsoe.transparency.crossborderphysicalflows import CrossBorderPhysicalFlows
 from entsoe.entsoe_producer.producer_client import EuEntsoeTransparencyEventProducer
 from entsoe.xml_parser import parse_entsoe_xml, build_api_url, TimeSeriesPoint
 from entsoe.delta_state import load_state, save_state, get_last_polled, set_last_polled
@@ -37,14 +45,59 @@ DEFAULT_DOMAINS = [
     "10Y1001A1001A83F",  # Germany
 ]
 
-DEFAULT_DOCUMENT_TYPES = ["A75", "A44", "A65"]
+DEFAULT_DOCUMENT_TYPES = [
+    "A75", "A44", "A65",
+    "A69", "A70", "A71", "A72", "A73", "A74", "A68",
+    "A11",
+]
+
+# Cross-border domain pairs (in_domain, out_domain) for A11 physical flows
+DEFAULT_CROSS_BORDER_PAIRS = [
+    ("10YFR-RTE------C",  "10YES-REE------0"),   # France → Spain
+    ("10YES-REE------0",  "10YFR-RTE------C"),   # Spain → France
+    ("10YFR-RTE------C",  "10Y1001A1001A83F"),   # France → Germany
+    ("10Y1001A1001A83F",  "10YFR-RTE------C"),   # Germany → France
+    ("10Y1001A1001A83F",  "10YNL----------L"),   # Germany → Netherlands
+    ("10YNL----------L",  "10Y1001A1001A83F"),   # Netherlands → Germany
+    ("10YFR-RTE------C",  "10YGB----------A"),   # France → Great Britain
+    ("10YGB----------A",  "10YFR-RTE------C"),   # Great Britain → France
+    ("10YNL----------L",  "10YGB----------A"),   # Netherlands → Great Britain
+    ("10YGB----------A",  "10YNL----------L"),   # Great Britain → Netherlands
+    ("10Y1001A1001A83F",  "10YDK-1--------W"),   # Germany → Denmark DK1
+    ("10YDK-1--------W",  "10Y1001A1001A83F"),   # Denmark DK1 → Germany
+    ("10Y1001A1001A83F",  "10YPL-AREA-----S"),   # Germany → Poland
+    ("10YPL-AREA-----S",  "10Y1001A1001A83F"),   # Poland → Germany
+    ("10Y1001A1001A83F",  "10YCH-SWISSGRIDZ"),   # Germany → Switzerland
+    ("10YCH-SWISSGRIDZ",  "10Y1001A1001A83F"),   # Switzerland → Germany
+    ("10Y1001A1001A83F",  "10YAT-APG------L"),   # Germany → Austria
+    ("10YAT-APG------L",  "10Y1001A1001A83F"),   # Austria → Germany
+    ("10Y1001A1001A83F",  "10YCZ-CEPS-----N"),   # Germany → Czech Republic
+    ("10YCZ-CEPS-----N",  "10Y1001A1001A83F"),   # Czech Republic → Germany
+]
 
 # Document type to CloudEvent type mapping
 DOC_TYPE_NAMES = {
     "A75": "ActualGenerationPerType",
     "A44": "DayAheadPrices",
     "A65": "ActualTotalLoad",
+    "A69": "WindSolarForecast",
+    "A70": "LoadForecastMargin",
+    "A71": "GenerationForecast",
+    "A72": "ReservoirFillingInformation",
+    "A73": "ActualGeneration",
+    "A74": "WindSolarGeneration",
+    "A68": "InstalledGenerationCapacityPerType",
+    "A11": "CrossBorderPhysicalFlows",
 }
+
+# Document types that use the same schema shape as A75 (with psrType)
+DOC_TYPES_WITH_PSR = {"A75", "A69", "A74", "A68"}
+
+# Document types that are simple quantity-per-domain (no psrType, no price)
+DOC_TYPES_SIMPLE_QUANTITY = {"A65", "A70", "A71", "A72", "A73"}
+
+# Cross-border document type
+DOC_TYPE_CROSS_BORDER = "A11"
 
 
 class EntsoePoller:
@@ -52,21 +105,25 @@ class EntsoePoller:
 
     def __init__(self, security_token: str, producer: EuEntsoeTransparencyEventProducer,
                  state_file: str, domains: List[str], document_types: List[str],
+                 cross_border_pairs: Optional[List[tuple]] = None,
                  lookback_hours: int = 24, polling_interval: int = 900):
         self.security_token = security_token
         self.producer = producer
         self.state_file = state_file
         self.domains = domains
         self.document_types = document_types
+        self.cross_border_pairs = cross_border_pairs or DEFAULT_CROSS_BORDER_PAIRS
         self.lookback_hours = lookback_hours
         self.polling_interval = polling_interval
         self.state = load_state(state_file)
 
     def _query_api(self, document_type: str, domain: str,
-                   period_start: datetime, period_end: datetime) -> Optional[str]:
+                   period_start: datetime, period_end: datetime,
+                   out_domain: Optional[str] = None) -> Optional[str]:
         """Query the ENTSO-E API and return XML response text."""
         url = build_api_url(BASE_URL, self.security_token, document_type,
-                            domain, period_start, period_end)
+                            domain, period_start, period_end,
+                            out_domain=out_domain)
         try:
             response = requests.get(url, timeout=60)
             if response.status_code == 400:
@@ -84,41 +141,144 @@ class EntsoePoller:
 
     def _emit_point(self, point: TimeSeriesPoint) -> None:
         """Emit a single data point as a CloudEvent."""
-        if point.document_type == "A75":
-            data = ActualGenerationPerType(
-                inDomain=point.in_domain,
-                psrType=point.psr_type,
-                quantity=point.quantity or 0.0,
-                resolution=point.resolution,
-                businessType=point.business_type,
-                documentType=point.document_type,
-                unitName=point.unit_name or "MAW",
-            )
-            self.producer.send_eu_entsoe_transparency_actual_generation_per_type(
-                data, flush_producer=False)
+        dt = point.document_type
 
-        elif point.document_type == "A44":
+        if dt in DOC_TYPES_WITH_PSR:
+            # A75, A69, A74, A68 — generation-like with psrType
+            if dt == "A75":
+                data = ActualGenerationPerType(
+                    inDomain=point.in_domain, psrType=point.psr_type,
+                    quantity=point.quantity or 0.0, resolution=point.resolution,
+                    businessType=point.business_type, documentType=dt,
+                    unitName=point.unit_name or "MAW")
+                self.producer.send_eu_entsoe_transparency_actual_generation_per_type(
+                    data, flush_producer=False)
+            elif dt == "A69":
+                data = WindSolarForecast(
+                    inDomain=point.in_domain, psrType=point.psr_type,
+                    quantity=point.quantity or 0.0, resolution=point.resolution,
+                    businessType=point.business_type, documentType=dt,
+                    unitName=point.unit_name or "MAW")
+                self.producer.send_eu_entsoe_transparency_wind_solar_forecast(
+                    data, flush_producer=False)
+            elif dt == "A74":
+                data = WindSolarGeneration(
+                    inDomain=point.in_domain, psrType=point.psr_type,
+                    quantity=point.quantity or 0.0, resolution=point.resolution,
+                    businessType=point.business_type, documentType=dt,
+                    unitName=point.unit_name or "MAW")
+                self.producer.send_eu_entsoe_transparency_wind_solar_generation(
+                    data, flush_producer=False)
+            elif dt == "A68":
+                data = InstalledGenerationCapacityPerType(
+                    inDomain=point.in_domain, psrType=point.psr_type,
+                    quantity=point.quantity or 0.0, resolution=point.resolution,
+                    businessType=point.business_type, documentType=dt,
+                    unitName=point.unit_name or "MAW")
+                self.producer.send_eu_entsoe_transparency_installed_generation_capacity_per_type(
+                    data, flush_producer=False)
+
+        elif dt == "A44":
             data = DayAheadPrices(
-                inDomain=point.in_domain,
-                price=point.price or 0.0,
+                inDomain=point.in_domain, price=point.price or 0.0,
                 currency=point.currency or "EUR",
                 unitName=point.unit_name or "MWH",
-                resolution=point.resolution,
-                documentType=point.document_type,
-            )
+                resolution=point.resolution, documentType=dt)
             self.producer.send_eu_entsoe_transparency_day_ahead_prices(
                 data, flush_producer=False)
 
-        elif point.document_type == "A65":
-            data = ActualTotalLoad(
+        elif dt == DOC_TYPE_CROSS_BORDER:
+            data = CrossBorderPhysicalFlows(
                 inDomain=point.in_domain,
+                outDomain=point.out_domain or "",
                 quantity=point.quantity or 0.0,
-                resolution=point.resolution,
-                outDomain=point.out_domain,
-                documentType=point.document_type,
-            )
+                resolution=point.resolution, documentType=dt,
+                unitName=point.unit_name or "MAW")
+            self.producer.send_eu_entsoe_transparency_cross_border_physical_flows(
+                data, flush_producer=False)
+
+        elif dt == "A65":
+            data = ActualTotalLoad(
+                inDomain=point.in_domain, quantity=point.quantity or 0.0,
+                resolution=point.resolution, outDomain=point.out_domain,
+                documentType=dt)
             self.producer.send_eu_entsoe_transparency_actual_total_load(
                 data, flush_producer=False)
+
+        elif dt == "A70":
+            data = LoadForecastMargin(
+                inDomain=point.in_domain, quantity=point.quantity or 0.0,
+                resolution=point.resolution, documentType=dt,
+                unitName=point.unit_name or "MAW")
+            self.producer.send_eu_entsoe_transparency_load_forecast_margin(
+                data, flush_producer=False)
+
+        elif dt == "A71":
+            data = GenerationForecast(
+                inDomain=point.in_domain, quantity=point.quantity or 0.0,
+                resolution=point.resolution, documentType=dt,
+                unitName=point.unit_name or "MAW")
+            self.producer.send_eu_entsoe_transparency_generation_forecast(
+                data, flush_producer=False)
+
+        elif dt == "A72":
+            data = ReservoirFillingInformation(
+                inDomain=point.in_domain, quantity=point.quantity or 0.0,
+                resolution=point.resolution, documentType=dt,
+                unitName=point.unit_name or "MAW")
+            self.producer.send_eu_entsoe_transparency_reservoir_filling_information(
+                data, flush_producer=False)
+
+        elif dt == "A73":
+            data = ActualGeneration(
+                inDomain=point.in_domain, quantity=point.quantity or 0.0,
+                resolution=point.resolution, documentType=dt,
+                unitName=point.unit_name or "MAW")
+            self.producer.send_eu_entsoe_transparency_actual_generation(
+                data, flush_producer=False)
+
+    def _poll_domain(self, doc_type: str, domain: str, now: datetime,
+                     out_domain: Optional[str] = None) -> int:
+        """Poll a single (doc_type, domain[, out_domain]) combination."""
+        state_key = f"{domain}>{out_domain}" if out_domain else domain
+
+        last_polled = get_last_polled(self.state, doc_type, state_key)
+        if last_polled is None:
+            last_polled = now - timedelta(hours=self.lookback_hours)
+
+        period_start = last_polled
+        period_end = now
+
+        label = f"{DOC_TYPE_NAMES.get(doc_type, doc_type)} {domain}" + (f"→{out_domain}" if out_domain else "")
+        logger.info("Polling %s since %s", label, period_start.isoformat())
+
+        xml_text = self._query_api(doc_type, domain, period_start, period_end,
+                                   out_domain=out_domain)
+        if not xml_text:
+            return 0
+
+        points = parse_entsoe_xml(xml_text, doc_type)
+        new_points = [p for p in points if p.timestamp > last_polled]
+
+        if not new_points:
+            logger.info("  No new points for %s/%s", doc_type, state_key)
+            return 0
+
+        max_timestamp = last_polled
+        for point in new_points:
+            self._emit_point(point)
+            if point.timestamp > max_timestamp:
+                max_timestamp = point.timestamp
+
+        self.producer.producer.flush()
+
+        set_last_polled(self.state, doc_type, state_key, max_timestamp)
+        save_state(self.state_file, self.state)
+
+        logger.info("  Emitted %d events for %s/%s (up to %s)",
+                    len(new_points), doc_type, state_key,
+                    max_timestamp.isoformat())
+        return len(new_points)
 
     def poll_once(self) -> int:
         """
@@ -131,47 +291,14 @@ class EntsoePoller:
         total_emitted = 0
 
         for doc_type in self.document_types:
-            for domain in self.domains:
-                last_polled = get_last_polled(self.state, doc_type, domain)
-                if last_polled is None:
-                    last_polled = now - timedelta(hours=self.lookback_hours)
-
-                period_start = last_polled
-                period_end = now
-
-                logger.info("Polling %s for %s since %s",
-                            DOC_TYPE_NAMES.get(doc_type, doc_type), domain,
-                            period_start.isoformat())
-
-                xml_text = self._query_api(doc_type, domain, period_start, period_end)
-                if not xml_text:
-                    continue
-
-                points = parse_entsoe_xml(xml_text, doc_type)
-
-                # Filter to delta-only: points strictly after the last checkpoint
-                new_points = [p for p in points if p.timestamp > last_polled]
-
-                if not new_points:
-                    logger.info("  No new points for %s/%s", doc_type, domain)
-                    continue
-
-                max_timestamp = last_polled
-                for point in new_points:
-                    self._emit_point(point)
-                    if point.timestamp > max_timestamp:
-                        max_timestamp = point.timestamp
-                    total_emitted += 1
-
-                self.producer.producer.flush()
-
-                # Advance checkpoint
-                set_last_polled(self.state, doc_type, domain, max_timestamp)
-                save_state(self.state_file, self.state)
-
-                logger.info("  Emitted %d events for %s/%s (up to %s)",
-                            len(new_points), doc_type, domain,
-                            max_timestamp.isoformat())
+            if doc_type == DOC_TYPE_CROSS_BORDER:
+                # Cross-border flows use domain pairs
+                for in_dom, out_dom in self.cross_border_pairs:
+                    total_emitted += self._poll_domain(doc_type, in_dom, now,
+                                                       out_domain=out_dom)
+            else:
+                for domain in self.domains:
+                    total_emitted += self._poll_domain(doc_type, domain, now)
 
         return total_emitted
 

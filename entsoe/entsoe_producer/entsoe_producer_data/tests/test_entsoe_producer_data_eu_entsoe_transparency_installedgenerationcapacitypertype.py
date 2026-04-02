@@ -1,5 +1,5 @@
 """
-Test case for ActualGenerationPerType
+Test case for InstalledGenerationCapacityPerType
 """
 
 import os
@@ -8,33 +8,33 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from entsoe_producer_data.eu.entsoe.transparency.actualgenerationpertype import ActualGenerationPerType
+from entsoe_producer_data.eu.entsoe.transparency.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
 
 
-class Test_ActualGenerationPerType(unittest.TestCase):
+class Test_InstalledGenerationCapacityPerType(unittest.TestCase):
     """
-    Test case for ActualGenerationPerType
+    Test case for InstalledGenerationCapacityPerType
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_ActualGenerationPerType.create_instance()
+        self.instance = Test_InstalledGenerationCapacityPerType.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of ActualGenerationPerType for testing
+        Create instance of InstalledGenerationCapacityPerType for testing
         """
-        instance = ActualGenerationPerType(
-            inDomain='cnwzrouglesliudixqjx',
-            psrType='pdahzpjipwgxjsuubvli',
-            quantity=float(35.92103938617248),
-            resolution='fzvhlwspziuxtfvwjtrc',
-            businessType='rtuopiibwzqbvezxsdhx',
-            documentType='wxfuxfhehpudqutnmzdu',
-            unitName='dtonhgwptqbasulzkvsf'
+        instance = InstalledGenerationCapacityPerType(
+            inDomain='qbpohftkcilcdotaejxi',
+            psrType='qaxkqfqlpaphtikumylo',
+            quantity=float(60.147386128904834),
+            resolution='xnknbpmvvydznzqfxyon',
+            businessType='rsqlnpnhiachcdrkwkif',
+            documentType='sxtqqmnmnowogicbfjog',
+            unitName='ddhsypmsvffeihukvkwa'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'cnwzrouglesliudixqjx'
+        test_value = 'qbpohftkcilcdotaejxi'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -51,7 +51,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test psrType property
         """
-        test_value = 'pdahzpjipwgxjsuubvli'
+        test_value = 'qaxkqfqlpaphtikumylo'
         self.instance.psrType = test_value
         self.assertEqual(self.instance.psrType, test_value)
     
@@ -59,7 +59,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(35.92103938617248)
+        test_value = float(60.147386128904834)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -67,7 +67,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'fzvhlwspziuxtfvwjtrc'
+        test_value = 'xnknbpmvvydznzqfxyon'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -75,7 +75,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test businessType property
         """
-        test_value = 'rtuopiibwzqbvezxsdhx'
+        test_value = 'rsqlnpnhiachcdrkwkif'
         self.instance.businessType = test_value
         self.assertEqual(self.instance.businessType, test_value)
     
@@ -83,7 +83,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'wxfuxfhehpudqutnmzdu'
+        test_value = 'sxtqqmnmnowogicbfjog'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -91,7 +91,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'dtonhgwptqbasulzkvsf'
+        test_value = 'ddhsypmsvffeihukvkwa'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     
@@ -101,6 +101,6 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         media_type = "application/vnd.apache.avro+avro"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = ActualGenerationPerType.from_data(bytes_data, media_type)
+        new_instance = InstalledGenerationCapacityPerType.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
