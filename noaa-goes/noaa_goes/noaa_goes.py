@@ -92,20 +92,19 @@ class SWPCPoller:
             print(f"Error fetching SWPC alerts: {err}")
             return []
 
-    def poll_k_index(self) -> List[list]:
+    def poll_k_index(self) -> List[dict]:
         """
         Fetch planetary K-index data from the SWPC endpoint.
-        Skips the header row (first element).
 
         Returns:
-            List of K-index data arrays [time_tag, Kp, Kp_fraction, a_running, station_count].
+            List of K-index data dicts with time_tag, Kp, a_running, station_count.
         """
         try:
             response = requests.get(self.K_INDEX_URL, timeout=30)
             response.raise_for_status()
             data = response.json()
-            if isinstance(data, list) and len(data) > 1:
-                return data[1:]  # skip header row
+            if isinstance(data, list):
+                return [row for row in data if isinstance(row, dict)]
             return []
         except Exception as err:
             print(f"Error fetching K-index data: {err}")
@@ -128,10 +127,15 @@ class SWPCPoller:
             mag_response.raise_for_status()
             mag_data = mag_response.json()
 
-            timestamp = speed_data.get("TimeStamp") or mag_data.get("TimeStamp") or ""
-            wind_speed = speed_data.get("WindSpeed", 0)
-            bt = mag_data.get("Bt", 0)
-            bz = mag_data.get("Bz", 0)
+            if isinstance(speed_data, list) and speed_data:
+                speed_data = speed_data[0]
+            if isinstance(mag_data, list) and mag_data:
+                mag_data = mag_data[0]
+
+            timestamp = speed_data.get("time_tag") or speed_data.get("TimeStamp") or mag_data.get("time_tag") or mag_data.get("TimeStamp") or ""
+            wind_speed = speed_data.get("proton_speed") or speed_data.get("WindSpeed") or 0
+            bt = mag_data.get("bt") or mag_data.get("Bt") or 0
+            bz = mag_data.get("bz_gsm") or mag_data.get("Bz") or 0
 
             return [{
                 "timestamp": timestamp,
@@ -183,17 +187,15 @@ class SWPCPoller:
                 k_index_rows = self.poll_k_index()
                 last_kindex_time = state.get("last_kindex_time")
                 for row in k_index_rows:
-                    if len(row) < 4:
-                        continue
-                    time_tag = str(row[0])
-                    if time_tag == last_kindex_time:
+                    time_tag = str(row.get("time_tag", ""))
+                    if not time_tag or time_tag == last_kindex_time:
                         continue
 
                     kindex = PlanetaryKIndex(
                         time_tag=time_tag,
-                        kp=float(row[1]) if row[1] else 0.0,
-                        a_running=float(row[2]) if row[2] else 0.0,
-                        station_count=float(row[3]) if row[3] else 0.0
+                        kp=float(row.get("Kp", 0)),
+                        a_running=float(row.get("a_running", 0)),
+                        station_count=float(row.get("station_count", 0))
                     )
                     self.producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(
                         kindex, time_tag, flush_producer=False)

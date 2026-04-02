@@ -1,3 +1,3 @@
-from .hydrometrie import Observation, Station
+from .hydrometrie import Station, Observation
 
-__all__ = ["Observation", "Station"]
+__all__ = ["Station", "Observation"]

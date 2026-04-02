@@ -36,7 +36,7 @@ from usgs_earthquakes_producer_kafka_producer.producer import USGSEarthquakesEve
 
 # imports for the data classes for each event
 
-from usgs_earthquakes_producer_data.usgs.earthquakes.event import Event
+from usgs_earthquakes_producer_data.event import Event
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

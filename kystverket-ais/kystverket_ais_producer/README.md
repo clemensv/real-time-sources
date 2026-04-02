@@ -1,6 +1,6 @@
 
 
-# Kystverket_ais_producer Kafka Producer# Kystverket_ais_producer Event Dispatcher for Apache Kafka
+# Kystverket_ais-producer Kafka Producer# Kystverket_ais-producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from kystverket_ais_producer import NOKystverketAISProducer```python
+from kystverket_ais-producer import NOKystverketAISProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -157,8 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NOKystverketAISProducer- `data`: The event data of type
-`kystverket_ais_producer_data.no.kystverket.ais.PositionReportClassA`.
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReportClassA`.
 
 
 
@@ -222,8 +221,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NOKystverketAISProducer- `data`: The event data of type
-`kystverket_ais_producer_data.no.kystverket.ais.StaticVoyageData`.
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.StaticVoyageData`.
 
 
 
@@ -286,8 +284,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NOKystverketAISProducer- `data`: The event data of type
-`kystverket_ais_producer_data.no.kystverket.ais.PositionReportClassB`.
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.PositionReportClassB`.
 
 
 
@@ -351,8 +348,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NOKystverketAISProducer- `data`: The event data of type
-`kystverket_ais_producer_data.no.kystverket.ais.StaticDataClassB`.
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.StaticDataClassB`.
 
 
 
@@ -415,8 +411,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NOKystverketAISProducer- `data`: The event data of type
-`kystverket_ais_producer_data.no.kystverket.ais.AidToNavigation`.
+### NOKystverketAISProducer- `data`: The event data of type `kystverket_ais_producer_data.AidToNavigation`.
 
 
 

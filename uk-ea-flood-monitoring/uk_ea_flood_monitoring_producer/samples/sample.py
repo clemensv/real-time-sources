@@ -36,8 +36,8 @@ from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnviron
 
 # imports for the data classes for each event
 
-from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
-from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.reading import Reading
+from uk_ea_flood_monitoring_producer_data.station import Station
+from uk_ea_flood_monitoring_producer_data.reading import Reading
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

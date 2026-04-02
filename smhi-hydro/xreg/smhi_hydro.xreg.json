@@ -1,112 +1,301 @@
 {
-    "endpoints": {
-        "SE.Gov.SMHI.Hydro.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "smhi-hydro"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/SE.Gov.SMHI.Hydro"
-            ]
+  "endpoints": {
+    "SE.Gov.SMHI.Hydro.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "smhi-hydro"
         }
-    },
-    "messagegroups": {
-        "SE.Gov.SMHI.Hydro": {
-            "messages": {
-                "SE.Gov.SMHI.Hydro.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "SE.Gov.SMHI.Hydro.Station"
-                        },
-                        "source": {
-                            "value": "https://opendata-download-hydroobs.smhi.se"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro/schemas/SE.Gov.SMHI.Hydro.Station"
-                },
-                "SE.Gov.SMHI.Hydro.DischargeObservation": {
-                    "name": "DischargeObservation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "SE.Gov.SMHI.Hydro.DischargeObservation"
-                        },
-                        "source": {
-                            "value": "https://opendata-download-hydroobs.smhi.se"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro/schemas/SE.Gov.SMHI.Hydro.DischargeObservation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "SE.Gov.SMHI.Hydro": {
-            "schemas": {
-                "SE.Gov.SMHI.Hydro.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "SE.Gov.SMHI.Hydro",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Unique station identifier" },
-                                    "name": { "type": "string", "description": "Station name" },
-                                    "owner": { "type": "string", "description": "Station owner (e.g. SMHI)" },
-                                    "measuring_stations": { "type": "string", "description": "Station type (CORE or ADDITIONAL)" },
-                                    "region": { "type": "integer", "description": "Region number" },
-                                    "catchment_name": { "type": "string", "description": "Catchment area name (river/watercourse)" },
-                                    "catchment_number": { "type": "integer", "description": "Catchment area number" },
-                                    "catchment_size": { "type": "number", "description": "Catchment area size in km²" },
-                                    "latitude": { "type": "number", "description": "Latitude in WGS84" },
-                                    "longitude": { "type": "number", "description": "Longitude in WGS84" }
-                                },
-                                "required": ["station_id", "name", "latitude", "longitude"]
-                            }
-                        }
-                    }
-                },
-                "SE.Gov.SMHI.Hydro.DischargeObservation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "DischargeObservation",
-                                "namespace": "SE.Gov.SMHI.Hydro",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Station identifier" },
-                                    "station_name": { "type": "string", "description": "Station name" },
-                                    "catchment_name": { "type": "string", "description": "Catchment area name (river/watercourse)" },
-                                    "timestamp": { "type": "string", "format": "date-time", "description": "Measurement timestamp (ISO 8601)" },
-                                    "discharge": { "type": "number", "description": "Discharge (flow rate) in m³/s" },
-                                    "quality": { "type": "string", "description": "Data quality flag (e.g. O = original)" }
-                                },
-                                "required": ["station_id", "station_name", "timestamp", "discharge"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/SE.Gov.SMHI.Hydro"
+      ]
     }
+  },
+  "messagegroups": {
+    "SE.Gov.SMHI.Hydro": {
+      "messages": {
+        "SE.Gov.SMHI.Hydro.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "SE.Gov.SMHI.Hydro.Station"
+            },
+            "source": {
+              "value": "https://opendata-download-hydroobs.smhi.se"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.Station"
+        },
+        "SE.Gov.SMHI.Hydro.DischargeObservation": {
+          "name": "DischargeObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "SE.Gov.SMHI.Hydro.DischargeObservation"
+            },
+            "source": {
+              "value": "https://opendata-download-hydroobs.smhi.se"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.DischargeObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "SE.Gov.SMHI.Hydro.jstruct": {
+      "schemas": {
+        "SE.Gov.SMHI.Hydro.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "name",
+                  "latitude",
+                  "longitude"
+                ],
+                "name": "Station",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "owner": {
+                    "type": "string"
+                  },
+                  "measuring_stations": {
+                    "type": "string"
+                  },
+                  "region": {
+                    "type": "int32"
+                  },
+                  "catchment_name": {
+                    "type": "string"
+                  },
+                  "catchment_number": {
+                    "type": "int32"
+                  },
+                  "catchment_size": {
+                    "type": "double"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  }
+                },
+                "$id": "https://example.com/SE/Gov/SMHI/Hydro.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "SE.Gov.SMHI.Hydro.DischargeObservation": {
+          "name": "DischargeObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "timestamp",
+                  "discharge"
+                ],
+                "name": "DischargeObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "station_name": {
+                    "type": "string"
+                  },
+                  "catchment_name": {
+                    "type": "string"
+                  },
+                  "timestamp": {
+                    "type": "datetime"
+                  },
+                  "discharge": {
+                    "type": "double"
+                  },
+                  "quality": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/SE/Gov/SMHI/Hydro.schema.json",
+                "description": "DischargeObservation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Hydro.avro": {
+      "schemas": {
+        "SE.Gov.SMHI.Hydro.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "owner",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "measuring_stations",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "region",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "catchment_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "catchment_number",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "catchment_size",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double"
+                  }
+                ],
+                "namespace": "SE.Gov.SMHI.Hydro"
+              }
+            }
+          }
+        },
+        "SE.Gov.SMHI.Hydro.DischargeObservation": {
+          "name": "DischargeObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DischargeObservation",
+                "doc": "DischargeObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "catchment_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "discharge",
+                    "type": "double"
+                  },
+                  {
+                    "name": "quality",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "SE.Gov.SMHI.Hydro"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

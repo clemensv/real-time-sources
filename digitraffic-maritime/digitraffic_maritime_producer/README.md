@@ -157,8 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### FiDigitrafficMarineAisProducer- `data`: The event data of type
-`digitraffic_maritime_producer_data.fi.digitraffic.marine.ais.VesselLocation`.
+### FiDigitrafficMarineAisProducer- `data`: The event data of type `digitraffic_maritime_producer_data.VesselLocation`.
 
 
 
@@ -222,8 +221,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### FiDigitrafficMarineAisProducer- `data`: The event data of type
-`digitraffic_maritime_producer_data.fi.digitraffic.marine.ais.VesselMetadata`.
+### FiDigitrafficMarineAisProducer- `data`: The event data of type `digitraffic_maritime_producer_data.VesselMetadata`.
 
 
 

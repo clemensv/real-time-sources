@@ -55,21 +55,17 @@ class TestSWPCE2E:
         assert len(data) > 1, "Response should have header + data rows"
 
     def test_k_index_response_structure(self):
-        """Test that K-index data has the expected array structure"""
+        """Test that K-index data has the expected dict structure"""
         response = requests.get(SWPC_K_INDEX_URL, timeout=30)
         assert response.status_code == 200
 
         data = response.json()
-        # First row is the header
-        header = data[0]
-        assert isinstance(header, list), "Header row is not a list"
+        assert len(data) > 0, "Response should have data rows"
 
-        if len(data) < 2:
-            pytest.skip("No K-index data rows available")
-
-        row = data[1]
-        assert isinstance(row, list), "Data row is not a list"
-        assert len(row) >= 4, f"Data row has {len(row)} elements, expected at least 4"
+        row = data[0]
+        assert isinstance(row, dict), "Data row is not a dict"
+        assert "time_tag" in row, "Data row missing 'time_tag' field"
+        assert "Kp" in row, "Data row missing 'Kp' field"
 
     def test_fetch_solar_wind_speed(self):
         """Test fetching solar wind speed from the real SWPC API"""
@@ -77,9 +73,10 @@ class TestSWPCE2E:
         assert response.status_code == 200, f"SWPC solar wind speed API returned status {response.status_code}"
 
         data = response.json()
-        assert isinstance(data, dict), "Response is not a dict"
-        assert "WindSpeed" in data, "Response missing 'WindSpeed' field"
-        assert "TimeStamp" in data, "Response missing 'TimeStamp' field"
+        assert isinstance(data, list), "Response is not a list"
+        assert len(data) > 0, "Response is empty"
+        assert "proton_speed" in data[0], "Response missing 'proton_speed' field"
+        assert "time_tag" in data[0], "Response missing 'time_tag' field"
 
     def test_fetch_solar_wind_mag_field(self):
         """Test fetching solar wind magnetic field from the real SWPC API"""
@@ -87,10 +84,11 @@ class TestSWPCE2E:
         assert response.status_code == 200, f"SWPC solar wind mag field API returned status {response.status_code}"
 
         data = response.json()
-        assert isinstance(data, dict), "Response is not a dict"
-        assert "Bt" in data, "Response missing 'Bt' field"
-        assert "Bz" in data, "Response missing 'Bz' field"
-        assert "TimeStamp" in data, "Response missing 'TimeStamp' field"
+        assert isinstance(data, list), "Response is not a list"
+        assert len(data) > 0, "Response is empty"
+        assert "bt" in data[0], "Response missing 'bt' field"
+        assert "bz_gsm" in data[0], "Response missing 'bz_gsm' field"
+        assert "time_tag" in data[0], "Response missing 'time_tag' field"
 
     def test_solar_wind_speed_values_numeric(self):
         """Test that solar wind speed values can be converted to float"""
@@ -98,10 +96,11 @@ class TestSWPCE2E:
         assert response.status_code == 200
 
         data = response.json()
-        wind_speed = data.get("WindSpeed")
-        if wind_speed is not None and wind_speed != "":
-            float_val = float(wind_speed)
-            assert float_val >= 0, f"WindSpeed should be non-negative, got {float_val}"
+        assert isinstance(data, list) and len(data) > 0
+        proton_speed = data[0].get("proton_speed")
+        if proton_speed is not None and proton_speed != "":
+            float_val = float(proton_speed)
+            assert float_val >= 0, f"proton_speed should be non-negative, got {float_val}"
 
     def test_solar_wind_mag_field_values_numeric(self):
         """Test that magnetic field values can be converted to float"""
@@ -109,8 +108,9 @@ class TestSWPCE2E:
         assert response.status_code == 200
 
         data = response.json()
-        bt = data.get("Bt")
-        bz = data.get("Bz")
+        assert isinstance(data, list) and len(data) > 0
+        bt = data[0].get("bt")
+        bz = data[0].get("bz_gsm")
         if bt is not None and bt != "":
             float(bt)  # should not raise
         if bz is not None and bz != "":

@@ -158,7 +158,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DeWsvPegelonlineProducer- `data`: The event data of type `pegelonline_producer_data.de.wsv.pegelonline.Station`.
+### DeWsvPegelonlineProducer- `data`: The event data of type `pegelonline_producer_data.Station`.
 
 
 
@@ -220,8 +220,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DeWsvPegelonlineProducer- `data`: The event data of type
-`pegelonline_producer_data.de.wsv.pegelonline.CurrentMeasurement`.
+### DeWsvPegelonlineProducer- `data`: The event data of type `pegelonline_producer_data.CurrentMeasurement`.
 
 
 

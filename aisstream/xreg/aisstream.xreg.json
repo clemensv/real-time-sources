@@ -1,0 +1,4388 @@
+{
+  "endpoints": {
+    "IO.AISstream.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "aisstream"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/IO.AISstream"
+      ]
+    }
+  },
+  "messagegroups": {
+    "IO.AISstream": {
+      "messages": {
+        "IO.AISstream.PositionReport": {
+          "name": "PositionReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.PositionReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.PositionReport"
+        },
+        "IO.AISstream.ShipStaticData": {
+          "name": "ShipStaticData",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.ShipStaticData"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ShipStaticData"
+        },
+        "IO.AISstream.StandardClassBPositionReport": {
+          "name": "StandardClassBPositionReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.StandardClassBPositionReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardClassBPositionReport"
+        },
+        "IO.AISstream.ExtendedClassBPositionReport": {
+          "name": "ExtendedClassBPositionReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.ExtendedClassBPositionReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ExtendedClassBPositionReport"
+        },
+        "IO.AISstream.AidsToNavigationReport": {
+          "name": "AidsToNavigationReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AidsToNavigationReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AidsToNavigationReport"
+        },
+        "IO.AISstream.StaticDataReport": {
+          "name": "StaticDataReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.StaticDataReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StaticDataReport"
+        },
+        "IO.AISstream.BaseStationReport": {
+          "name": "BaseStationReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.BaseStationReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BaseStationReport"
+        },
+        "IO.AISstream.SafetyBroadcastMessage": {
+          "name": "SafetyBroadcastMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.SafetyBroadcastMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SafetyBroadcastMessage"
+        },
+        "IO.AISstream.StandardSearchAndRescueAircraftReport": {
+          "name": "StandardSearchAndRescueAircraftReport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.StandardSearchAndRescueAircraftReport"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardSearchAndRescueAircraftReport"
+        },
+        "IO.AISstream.LongRangeAisBroadcastMessage": {
+          "name": "LongRangeAisBroadcastMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.LongRangeAisBroadcastMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.LongRangeAisBroadcastMessage"
+        },
+        "IO.AISstream.AddressedSafetyMessage": {
+          "name": "AddressedSafetyMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AddressedSafetyMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedSafetyMessage"
+        },
+        "IO.AISstream.AddressedBinaryMessage": {
+          "name": "AddressedBinaryMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AddressedBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedBinaryMessage"
+        },
+        "IO.AISstream.AssignedModeCommand": {
+          "name": "AssignedModeCommand",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.AssignedModeCommand"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AssignedModeCommand"
+        },
+        "IO.AISstream.BinaryAcknowledge": {
+          "name": "BinaryAcknowledge",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.BinaryAcknowledge"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryAcknowledge"
+        },
+        "IO.AISstream.BinaryBroadcastMessage": {
+          "name": "BinaryBroadcastMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.BinaryBroadcastMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryBroadcastMessage"
+        },
+        "IO.AISstream.ChannelManagement": {
+          "name": "ChannelManagement",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.ChannelManagement"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ChannelManagement"
+        },
+        "IO.AISstream.CoordinatedUTCInquiry": {
+          "name": "CoordinatedUTCInquiry",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.CoordinatedUTCInquiry"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.CoordinatedUTCInquiry"
+        },
+        "IO.AISstream.DataLinkManagementMessage": {
+          "name": "DataLinkManagementMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.DataLinkManagementMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.DataLinkManagementMessage"
+        },
+        "IO.AISstream.GnssBroadcastBinaryMessage": {
+          "name": "GnssBroadcastBinaryMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.GnssBroadcastBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GnssBroadcastBinaryMessage"
+        },
+        "IO.AISstream.GroupAssignmentCommand": {
+          "name": "GroupAssignmentCommand",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.GroupAssignmentCommand"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GroupAssignmentCommand"
+        },
+        "IO.AISstream.Interrogation": {
+          "name": "Interrogation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.Interrogation"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.Interrogation"
+        },
+        "IO.AISstream.MultiSlotBinaryMessage": {
+          "name": "MultiSlotBinaryMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.MultiSlotBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.MultiSlotBinaryMessage"
+        },
+        "IO.AISstream.SingleSlotBinaryMessage": {
+          "name": "SingleSlotBinaryMessage",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "IO.AISstream.SingleSlotBinaryMessage"
+            },
+            "source": {
+              "value": "wss://stream.aisstream.io/v0/stream"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SingleSlotBinaryMessage"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "IO.AISstream.jstruct": {
+      "schemas": {
+        "IO.AISstream.PositionReport": {
+          "name": "PositionReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Longitude",
+                  "Latitude",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "NavigationalStatus": {
+                    "type": "int32"
+                  },
+                  "RateOfTurn": {
+                    "type": "int32"
+                  },
+                  "Sog": {
+                    "type": "double"
+                  },
+                  "PositionAccuracy": {
+                    "type": "boolean"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "Cog": {
+                    "type": "double"
+                  },
+                  "TrueHeading": {
+                    "type": "int32"
+                  },
+                  "Timestamp": {
+                    "type": "int32"
+                  },
+                  "SpecialManoeuvreIndicator": {
+                    "type": "int32"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "Raim": {
+                    "type": "boolean"
+                  },
+                  "CommunicationState": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.ShipStaticData": {
+          "name": "ShipStaticData",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "AisVersion": {
+                    "type": "int32"
+                  },
+                  "ImoNumber": {
+                    "type": "int32"
+                  },
+                  "CallSign": {
+                    "type": "string"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "int32"
+                  },
+                  "Dimension": {
+                    "type": "object",
+                    "required": [
+                      "A",
+                      "B",
+                      "C",
+                      "D"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "A": {
+                        "type": "int32"
+                      },
+                      "B": {
+                        "type": "int32"
+                      },
+                      "C": {
+                        "type": "int32"
+                      },
+                      "D": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "FixType": {
+                    "type": "int32"
+                  },
+                  "Eta": {
+                    "type": "object",
+                    "required": [
+                      "Month",
+                      "Day",
+                      "Hour",
+                      "Minute"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Month": {
+                        "type": "int32"
+                      },
+                      "Day": {
+                        "type": "int32"
+                      },
+                      "Hour": {
+                        "type": "int32"
+                      },
+                      "Minute": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "MaximumStaticDraught": {
+                    "type": "double"
+                  },
+                  "Destination": {
+                    "type": "string"
+                  },
+                  "Dte": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "boolean"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.StandardClassBPositionReport": {
+          "name": "StandardClassBPositionReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Longitude",
+                  "Latitude",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "Sog": {
+                    "type": "double"
+                  },
+                  "PositionAccuracy": {
+                    "type": "boolean"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "Cog": {
+                    "type": "double"
+                  },
+                  "TrueHeading": {
+                    "type": "int32"
+                  },
+                  "Timestamp": {
+                    "type": "int32"
+                  },
+                  "Spare2": {
+                    "type": "int32"
+                  },
+                  "ClassBUnit": {
+                    "type": "boolean"
+                  },
+                  "ClassBDisplay": {
+                    "type": "boolean"
+                  },
+                  "ClassBDsc": {
+                    "type": "boolean"
+                  },
+                  "ClassBBand": {
+                    "type": "boolean"
+                  },
+                  "ClassBMsg22": {
+                    "type": "boolean"
+                  },
+                  "AssignedMode": {
+                    "type": "boolean"
+                  },
+                  "Raim": {
+                    "type": "boolean"
+                  },
+                  "CommunicationStateIsItdma": {
+                    "type": "boolean"
+                  },
+                  "CommunicationState": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.ExtendedClassBPositionReport": {
+          "name": "ExtendedClassBPositionReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Longitude",
+                  "Latitude",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "Sog": {
+                    "type": "double"
+                  },
+                  "PositionAccuracy": {
+                    "type": "boolean"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "Cog": {
+                    "type": "double"
+                  },
+                  "TrueHeading": {
+                    "type": "int32"
+                  },
+                  "Timestamp": {
+                    "type": "int32"
+                  },
+                  "Spare2": {
+                    "type": "int32"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "Type": {
+                    "type": "int32"
+                  },
+                  "Dimension": {
+                    "type": "object",
+                    "required": [
+                      "A",
+                      "B",
+                      "C",
+                      "D"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "A": {
+                        "type": "int32"
+                      },
+                      "B": {
+                        "type": "int32"
+                      },
+                      "C": {
+                        "type": "int32"
+                      },
+                      "D": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "FixType": {
+                    "type": "int32"
+                  },
+                  "Raim": {
+                    "type": "boolean"
+                  },
+                  "Dte": {
+                    "type": "boolean"
+                  },
+                  "AssignedMode": {
+                    "type": "boolean"
+                  },
+                  "Spare3": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.AidsToNavigationReport": {
+          "name": "AidsToNavigationReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Longitude",
+                  "Latitude",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Type": {
+                    "type": "int32"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "PositionAccuracy": {
+                    "type": "boolean"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "Dimension": {
+                    "type": "object",
+                    "required": [
+                      "A",
+                      "B",
+                      "C",
+                      "D"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "A": {
+                        "type": "int32"
+                      },
+                      "B": {
+                        "type": "int32"
+                      },
+                      "C": {
+                        "type": "int32"
+                      },
+                      "D": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "Fixtype": {
+                    "type": "int32"
+                  },
+                  "Timestamp": {
+                    "type": "int32"
+                  },
+                  "OffPosition": {
+                    "type": "boolean"
+                  },
+                  "AtoN": {
+                    "type": "int32"
+                  },
+                  "Raim": {
+                    "type": "boolean"
+                  },
+                  "VirtualAtoN": {
+                    "type": "boolean"
+                  },
+                  "AssignedMode": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "boolean"
+                  },
+                  "NameExtension": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.StaticDataReport": {
+          "name": "StaticDataReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Reserved": {
+                    "type": "int32"
+                  },
+                  "PartNumber": {
+                    "type": "boolean"
+                  },
+                  "ReportA": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "Name"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "Name": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "ReportB": {
+                    "type": "object",
+                    "required": [
+                      "Valid"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "ShipType": {
+                        "type": "int32"
+                      },
+                      "VendorIDName": {
+                        "type": "string"
+                      },
+                      "VenderIDModel": {
+                        "type": "int32"
+                      },
+                      "VenderIDSerial": {
+                        "type": "int32"
+                      },
+                      "CallSign": {
+                        "type": "string"
+                      },
+                      "Dimension": {
+                        "type": "object",
+                        "required": [
+                          "A",
+                          "B",
+                          "C",
+                          "D"
+                        ],
+                        "name": "document",
+                        "properties": {
+                          "A": {
+                            "type": "int32"
+                          },
+                          "B": {
+                            "type": "int32"
+                          },
+                          "C": {
+                            "type": "int32"
+                          },
+                          "D": {
+                            "type": "int32"
+                          }
+                        }
+                      },
+                      "FixType": {
+                        "type": "int32"
+                      },
+                      "Spare": {
+                        "type": "int32"
+                      }
+                    }
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.BaseStationReport": {
+          "name": "BaseStationReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Longitude",
+                  "Latitude",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "UtcYear": {
+                    "type": "int32"
+                  },
+                  "UtcMonth": {
+                    "type": "int32"
+                  },
+                  "UtcDay": {
+                    "type": "int32"
+                  },
+                  "UtcHour": {
+                    "type": "int32"
+                  },
+                  "UtcMinute": {
+                    "type": "int32"
+                  },
+                  "UtcSecond": {
+                    "type": "int32"
+                  },
+                  "PositionAccuracy": {
+                    "type": "boolean"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "FixType": {
+                    "type": "int32"
+                  },
+                  "LongRangeEnable": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "Raim": {
+                    "type": "boolean"
+                  },
+                  "CommunicationState": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.SafetyBroadcastMessage": {
+          "name": "SafetyBroadcastMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "Text": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.StandardSearchAndRescueAircraftReport": {
+          "name": "StandardSearchAndRescueAircraftReport",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Longitude",
+                  "Latitude",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Altitude": {
+                    "type": "int32"
+                  },
+                  "Sog": {
+                    "type": "double"
+                  },
+                  "PositionAccuracy": {
+                    "type": "boolean"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "Cog": {
+                    "type": "double"
+                  },
+                  "Timestamp": {
+                    "type": "int32"
+                  },
+                  "AltFromBaro": {
+                    "type": "boolean"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "Dte": {
+                    "type": "boolean"
+                  },
+                  "Spare2": {
+                    "type": "int32"
+                  },
+                  "AssignedMode": {
+                    "type": "boolean"
+                  },
+                  "Raim": {
+                    "type": "boolean"
+                  },
+                  "CommunicationStateIsItdma": {
+                    "type": "boolean"
+                  },
+                  "CommunicationState": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.LongRangeAisBroadcastMessage": {
+          "name": "LongRangeAisBroadcastMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Longitude",
+                  "Latitude",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "PositionAccuracy": {
+                    "type": "boolean"
+                  },
+                  "Raim": {
+                    "type": "boolean"
+                  },
+                  "NavigationalStatus": {
+                    "type": "int32"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "Sog": {
+                    "type": "double"
+                  },
+                  "Cog": {
+                    "type": "double"
+                  },
+                  "PositionLatency": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "boolean"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.AddressedSafetyMessage": {
+          "name": "AddressedSafetyMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Sequenceinteger": {
+                    "type": "int32"
+                  },
+                  "DestinationID": {
+                    "type": "int32"
+                  },
+                  "Retransmission": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "boolean"
+                  },
+                  "Text": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.AddressedBinaryMessage": {
+          "name": "AddressedBinaryMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Sequenceinteger": {
+                    "type": "int32"
+                  },
+                  "DestinationID": {
+                    "type": "int32"
+                  },
+                  "Retransmission": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "boolean"
+                  },
+                  "ApplicationID": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "DesignatedAreaCode",
+                      "FunctionIdentifier"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "DesignatedAreaCode": {
+                        "type": "int32"
+                      },
+                      "FunctionIdentifier": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "BinaryData": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.AssignedModeCommand": {
+          "name": "AssignedModeCommand",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "Commands": {
+                    "type": "map",
+                    "values": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.BinaryAcknowledge": {
+          "name": "BinaryAcknowledge",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "Destinations": {
+                    "type": "map",
+                    "values": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.BinaryBroadcastMessage": {
+          "name": "BinaryBroadcastMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "ApplicationID": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "DesignatedAreaCode",
+                      "FunctionIdentifier"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "DesignatedAreaCode": {
+                        "type": "int32"
+                      },
+                      "FunctionIdentifier": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "BinaryData": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.ChannelManagement": {
+          "name": "ChannelManagement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "ChannelA": {
+                    "type": "int32"
+                  },
+                  "ChannelB": {
+                    "type": "int32"
+                  },
+                  "TxRxMode": {
+                    "type": "int32"
+                  },
+                  "LowPower": {
+                    "type": "boolean"
+                  },
+                  "Area": {
+                    "type": "object",
+                    "required": [
+                      "Longitude1",
+                      "Latitude1",
+                      "Longitude2",
+                      "Latitude2"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Longitude1": {
+                        "type": "double"
+                      },
+                      "Latitude1": {
+                        "type": "double"
+                      },
+                      "Longitude2": {
+                        "type": "double"
+                      },
+                      "Latitude2": {
+                        "type": "double"
+                      }
+                    }
+                  },
+                  "Unicast": {
+                    "type": "object",
+                    "required": [
+                      "AddressStation1",
+                      "AddressStation2"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "AddressStation1": {
+                        "type": "int32"
+                      },
+                      "Spare2": {
+                        "type": "int32"
+                      },
+                      "AddressStation2": {
+                        "type": "int32"
+                      },
+                      "Spare3": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "IsAddressed": {
+                    "type": "boolean"
+                  },
+                  "BwA": {
+                    "type": "boolean"
+                  },
+                  "BwB": {
+                    "type": "boolean"
+                  },
+                  "TransitionalZoneSize": {
+                    "type": "int32"
+                  },
+                  "Spare4": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.CoordinatedUTCInquiry": {
+          "name": "CoordinatedUTCInquiry",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "DestinationID": {
+                    "type": "int32"
+                  },
+                  "Spare2": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.DataLinkManagementMessage": {
+          "name": "DataLinkManagementMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "Data": {
+                    "type": "map",
+                    "values": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.GnssBroadcastBinaryMessage": {
+          "name": "GnssBroadcastBinaryMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "Longitude": {
+                    "type": "double"
+                  },
+                  "Latitude": {
+                    "type": "double"
+                  },
+                  "Spare2": {
+                    "type": "int32"
+                  },
+                  "Data": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.GroupAssignmentCommand": {
+          "name": "GroupAssignmentCommand",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "Longitude1": {
+                    "type": "double"
+                  },
+                  "Latitude1": {
+                    "type": "double"
+                  },
+                  "Longitude2": {
+                    "type": "double"
+                  },
+                  "Latitude2": {
+                    "type": "double"
+                  },
+                  "StationType": {
+                    "type": "int32"
+                  },
+                  "ShipType": {
+                    "type": "int32"
+                  },
+                  "Spare2": {
+                    "type": "int32"
+                  },
+                  "TxRxMode": {
+                    "type": "int32"
+                  },
+                  "ReportingInterval": {
+                    "type": "int32"
+                  },
+                  "QuietTime": {
+                    "type": "int32"
+                  },
+                  "Spare3": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.Interrogation": {
+          "name": "Interrogation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "Station1Msg1": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "StationID",
+                      "MessageID",
+                      "SlotOffset"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "StationID": {
+                        "type": "int32"
+                      },
+                      "MessageID": {
+                        "type": "int32"
+                      },
+                      "SlotOffset": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "Station1Msg2": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "MessageID",
+                      "SlotOffset"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "Spare": {
+                        "type": "int32"
+                      },
+                      "MessageID": {
+                        "type": "int32"
+                      },
+                      "SlotOffset": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "Station2": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "StationID",
+                      "MessageID",
+                      "SlotOffset"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "Spare1": {
+                        "type": "int32"
+                      },
+                      "StationID": {
+                        "type": "int32"
+                      },
+                      "MessageID": {
+                        "type": "int32"
+                      },
+                      "SlotOffset": {
+                        "type": "int32"
+                      },
+                      "Spare2": {
+                        "type": "int32"
+                      }
+                    }
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.MultiSlotBinaryMessage": {
+          "name": "MultiSlotBinaryMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "DestinationIDValid": {
+                    "type": "boolean"
+                  },
+                  "ApplicationIDValid": {
+                    "type": "boolean"
+                  },
+                  "DestinationID": {
+                    "type": "int32"
+                  },
+                  "Spare1": {
+                    "type": "int32"
+                  },
+                  "ApplicationID": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "DesignatedAreaCode",
+                      "FunctionIdentifier"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "DesignatedAreaCode": {
+                        "type": "int32"
+                      },
+                      "FunctionIdentifier": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "Payload": {
+                    "type": "string"
+                  },
+                  "Spare2": {
+                    "type": "int32"
+                  },
+                  "CommunicationStateIsItdma": {
+                    "type": "boolean"
+                  },
+                  "CommunicationState": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        },
+        "IO.AISstream.SingleSlotBinaryMessage": {
+          "name": "SingleSlotBinaryMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "MessageID",
+                  "UserID",
+                  "Valid"
+                ],
+                "name": "document",
+                "properties": {
+                  "MessageID": {
+                    "type": "int32"
+                  },
+                  "RepeatIndicator": {
+                    "type": "int32"
+                  },
+                  "UserID": {
+                    "type": "int32"
+                  },
+                  "Valid": {
+                    "type": "boolean"
+                  },
+                  "DestinationIDValid": {
+                    "type": "boolean"
+                  },
+                  "ApplicationIDValid": {
+                    "type": "boolean"
+                  },
+                  "DestinationID": {
+                    "type": "int32"
+                  },
+                  "Spare": {
+                    "type": "int32"
+                  },
+                  "ApplicationID": {
+                    "type": "object",
+                    "required": [
+                      "Valid",
+                      "DesignatedAreaCode",
+                      "FunctionIdentifier"
+                    ],
+                    "name": "document",
+                    "properties": {
+                      "Valid": {
+                        "type": "boolean"
+                      },
+                      "DesignatedAreaCode": {
+                        "type": "int32"
+                      },
+                      "FunctionIdentifier": {
+                        "type": "int32"
+                      }
+                    }
+                  },
+                  "Payload": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/IO/AISstream.schema.json"
+              }
+            }
+          }
+        }
+      }
+    },
+    "IO.AISstream.avro": {
+      "schemas": {
+        "IO.AISstream.PositionReport": {
+          "name": "PositionReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "NavigationalStatus",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "RateOfTurn",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Sog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PositionAccuracy",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Cog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "TrueHeading",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Timestamp",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "SpecialManoeuvreIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Raim",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationState",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.ShipStaticData": {
+          "name": "ShipStaticData",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "AisVersion",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ImoNumber",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CallSign",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Type",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Dimension",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "FixType",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Eta",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "MaximumStaticDraught",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Destination",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Dte",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.StandardClassBPositionReport": {
+          "name": "StandardClassBPositionReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Sog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PositionAccuracy",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Cog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "TrueHeading",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Timestamp",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare2",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ClassBUnit",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ClassBDisplay",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ClassBDsc",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ClassBBand",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ClassBMsg22",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "AssignedMode",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Raim",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationStateIsItdma",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationState",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.ExtendedClassBPositionReport": {
+          "name": "ExtendedClassBPositionReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Sog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PositionAccuracy",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Cog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "TrueHeading",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Timestamp",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare2",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Type",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Dimension",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "FixType",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Raim",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Dte",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "AssignedMode",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare3",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.AidsToNavigationReport": {
+          "name": "AidsToNavigationReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Type",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PositionAccuracy",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Dimension",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Fixtype",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Timestamp",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "OffPosition",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "AtoN",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Raim",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "VirtualAtoN",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "AssignedMode",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "NameExtension",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.StaticDataReport": {
+          "name": "StaticDataReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Reserved",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PartNumber",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ReportA",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ReportB",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.BaseStationReport": {
+          "name": "BaseStationReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "UtcYear",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UtcMonth",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UtcDay",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UtcHour",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UtcMinute",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UtcSecond",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PositionAccuracy",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "FixType",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "LongRangeEnable",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Raim",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationState",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.SafetyBroadcastMessage": {
+          "name": "SafetyBroadcastMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Text",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.StandardSearchAndRescueAircraftReport": {
+          "name": "StandardSearchAndRescueAircraftReport",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Altitude",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Sog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PositionAccuracy",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Cog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Timestamp",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "AltFromBaro",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Dte",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare2",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "AssignedMode",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Raim",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationStateIsItdma",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationState",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.LongRangeAisBroadcastMessage": {
+          "name": "LongRangeAisBroadcastMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "PositionAccuracy",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Raim",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "NavigationalStatus",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "Sog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Cog",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "PositionLatency",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.AddressedSafetyMessage": {
+          "name": "AddressedSafetyMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Sequenceinteger",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "DestinationID",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Retransmission",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Text",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.AddressedBinaryMessage": {
+          "name": "AddressedBinaryMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Sequenceinteger",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "DestinationID",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Retransmission",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ApplicationID",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "BinaryData",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.AssignedModeCommand": {
+          "name": "AssignedModeCommand",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Commands",
+                    "type": [
+                      "null",
+                      {
+                        "type": "map",
+                        "values": "string"
+                      }
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.BinaryAcknowledge": {
+          "name": "BinaryAcknowledge",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Destinations",
+                    "type": [
+                      "null",
+                      {
+                        "type": "map",
+                        "values": "string"
+                      }
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.BinaryBroadcastMessage": {
+          "name": "BinaryBroadcastMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ApplicationID",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "BinaryData",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.ChannelManagement": {
+          "name": "ChannelManagement",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ChannelA",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ChannelB",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "TxRxMode",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "LowPower",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Area",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Unicast",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "IsAddressed",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "BwA",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "BwB",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "TransitionalZoneSize",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare4",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.CoordinatedUTCInquiry": {
+          "name": "CoordinatedUTCInquiry",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "DestinationID",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare2",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.DataLinkManagementMessage": {
+          "name": "DataLinkManagementMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Data",
+                    "type": [
+                      "null",
+                      {
+                        "type": "map",
+                        "values": "string"
+                      }
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.GnssBroadcastBinaryMessage": {
+          "name": "GnssBroadcastBinaryMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare2",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Data",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.GroupAssignmentCommand": {
+          "name": "GroupAssignmentCommand",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude1",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Latitude1",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Longitude2",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Latitude2",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "StationType",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ShipType",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare2",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "TxRxMode",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ReportingInterval",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "QuietTime",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare3",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.Interrogation": {
+          "name": "Interrogation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Station1Msg1",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Station1Msg2",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Station2",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.MultiSlotBinaryMessage": {
+          "name": "MultiSlotBinaryMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "DestinationIDValid",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ApplicationIDValid",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "DestinationID",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare1",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ApplicationID",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Payload",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare2",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationStateIsItdma",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "CommunicationState",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "IO.AISstream.SingleSlotBinaryMessage": {
+          "name": "SingleSlotBinaryMessage",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "document",
+                "fields": [
+                  {
+                    "name": "MessageID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "RepeatIndicator",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "UserID",
+                    "type": "int"
+                  },
+                  {
+                    "name": "Valid",
+                    "type": "boolean"
+                  },
+                  {
+                    "name": "DestinationIDValid",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ApplicationIDValid",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "DestinationID",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Spare",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ApplicationID",
+                    "type": [
+                      "null",
+                      "object"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "Payload",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

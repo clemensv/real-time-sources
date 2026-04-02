@@ -179,6 +179,13 @@ def feed_observations(api: IMGWHydroAPI, producer: PLGovIMGWHydroEventProducer, 
     return sent_count
 
 
+def feed_stations(api: IMGWHydroAPI, producer: PLGovIMGWHydroEventProducer) -> int:
+    """Fetch all stations and observations and send to Kafka. Returns total events sent."""
+    station_count = send_stations(api, producer)
+    obs_count = feed_observations(api, producer, {})
+    return station_count + obs_count
+
+
 def main():
     """Main entry point for the IMGW Hydro bridge."""
     parser = argparse.ArgumentParser(description="IMGW-PIB Hydrological Data Bridge")

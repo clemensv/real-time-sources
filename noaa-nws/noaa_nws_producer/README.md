@@ -157,8 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAANWSProducer- `data`: The event data of type
-`noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.WeatherAlert`.
+### MicrosoftOpenDataUSNOAANWSProducer- `data`: The event data of type `noaa_nws_producer_data.WeatherAlert`.
 
 
 
@@ -222,8 +221,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAANWSProducer- `data`: The event data of type
-`noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.Zone`.
+### MicrosoftOpenDataUSNOAANWSProducer- `data`: The event data of type `noaa_nws_producer_data.Zone`.
 
 
 

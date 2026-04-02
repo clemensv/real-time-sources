@@ -157,8 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
-`noaa_ndbc_producer_data.microsoft.opendata.us.noaa.ndbc.BuoyObservation`.
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyObservation`.
 
 
 
@@ -222,8 +221,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type
-`noaa_ndbc_producer_data.microsoft.opendata.us.noaa.ndbc.BuoyStation`.
+### MicrosoftOpenDataUSNOAANDBCProducer- `data`: The event data of type `noaa_ndbc_producer_data.BuoyStation`.
 
 
 

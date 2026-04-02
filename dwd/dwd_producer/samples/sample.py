@@ -36,13 +36,13 @@ from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer
 
 # imports for the data classes for each event
 
-from dwd_producer_data.de.dwd.cdc.stationmetadata import StationMetadata
-from dwd_producer_data.de.dwd.cdc.airtemperature10min import AirTemperature10Min
-from dwd_producer_data.de.dwd.cdc.precipitation10min import Precipitation10Min
-from dwd_producer_data.de.dwd.cdc.wind10min import Wind10Min
-from dwd_producer_data.de.dwd.cdc.solar10min import Solar10Min
-from dwd_producer_data.de.dwd.cdc.hourlyobservation import HourlyObservation
-from dwd_producer_data.de.dwd.cdc.de.dwd.weather.alert import Alert
+from dwd_producer_data.stationmetadata import StationMetadata
+from dwd_producer_data.airtemperature10min import AirTemperature10Min
+from dwd_producer_data.precipitation10min import Precipitation10Min
+from dwd_producer_data.wind10min import Wind10Min
+from dwd_producer_data.solar10min import Solar10Min
+from dwd_producer_data.hourlyobservation import HourlyObservation
+from dwd_producer_data.alert import Alert
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

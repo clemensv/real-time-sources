@@ -36,11 +36,11 @@ from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISEvent
 
 # imports for the data classes for each event
 
-from kystverket_ais_producer_data.no.kystverket.ais.positionreportclassa import PositionReportClassA
-from kystverket_ais_producer_data.no.kystverket.ais.staticvoyagedata import StaticVoyageData
-from kystverket_ais_producer_data.no.kystverket.ais.positionreportclassb import PositionReportClassB
-from kystverket_ais_producer_data.no.kystverket.ais.staticdataclassb import StaticDataClassB
-from kystverket_ais_producer_data.no.kystverket.ais.aidtonavigation import AidToNavigation
+from kystverket_ais_producer_data.positionreportclassa import PositionReportClassA
+from kystverket_ais_producer_data.staticvoyagedata import StaticVoyageData
+from kystverket_ais_producer_data.positionreportclassb import PositionReportClassB
+from kystverket_ais_producer_data.staticdataclassb import StaticDataClassB
+from kystverket_ais_producer_data.aidtonavigation import AidToNavigation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

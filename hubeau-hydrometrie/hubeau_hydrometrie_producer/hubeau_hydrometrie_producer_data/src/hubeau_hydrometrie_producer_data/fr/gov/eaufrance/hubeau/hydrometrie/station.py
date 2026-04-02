@@ -19,46 +19,46 @@ import avro.io
 @dataclass
 class Station:
     """
-    A Station record.
+    Station
     Attributes:
         code_station (str): 
         libelle_station (str): 
-        code_site (str): 
+        code_site (typing.Optional[str]): 
         longitude_station (float): 
         latitude_station (float): 
-        libelle_cours_eau (str): 
-        libelle_commune (str): 
-        code_departement (str): 
-        en_service (bool): 
-        date_ouverture_station (str): """
+        libelle_cours_eau (typing.Optional[str]): 
+        libelle_commune (typing.Optional[str]): 
+        code_departement (typing.Optional[str]): 
+        en_service (typing.Optional[bool]): 
+        date_ouverture_station (typing.Optional[str]): """
     
     code_station: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_station"))
     libelle_station: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_station"))
-    code_site: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_site"))
+    code_site: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_site"))
     longitude_station: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude_station"))
     latitude_station: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude_station"))
-    libelle_cours_eau: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_cours_eau"))
-    libelle_commune: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_commune"))
-    code_departement: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_departement"))
-    en_service: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="en_service"))
-    date_ouverture_station: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_ouverture_station"))
+    libelle_cours_eau: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_cours_eau"))
+    libelle_commune: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_commune"))
+    code_departement: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_departement"))
+    en_service: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="en_service"))
+    date_ouverture_station: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_ouverture_station"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"libelle_station\", \"type\": \"string\"}, {\"name\": \"code_site\", \"type\": \"string\"}, {\"name\": \"longitude_station\", \"type\": \"double\"}, {\"name\": \"latitude_station\", \"type\": \"double\"}, {\"name\": \"libelle_cours_eau\", \"type\": \"string\"}, {\"name\": \"libelle_commune\", \"type\": \"string\"}, {\"name\": \"code_departement\", \"type\": \"string\"}, {\"name\": \"en_service\", \"type\": \"boolean\"}, {\"name\": \"date_ouverture_station\", \"type\": \"string\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"libelle_station\", \"type\": \"string\"}, {\"name\": \"code_site\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"longitude_station\", \"type\": \"double\"}, {\"name\": \"latitude_station\", \"type\": \"double\"}, {\"name\": \"libelle_cours_eau\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"libelle_commune\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"code_departement\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"en_service\", \"type\": [\"null\", \"boolean\"], \"default\": null}, {\"name\": \"date_ouverture_station\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.code_station=str(self.code_station)
         self.libelle_station=str(self.libelle_station)
-        self.code_site=str(self.code_site)
+        self.code_site=str(self.code_site) if self.code_site else None
         self.longitude_station=float(self.longitude_station)
         self.latitude_station=float(self.latitude_station)
-        self.libelle_cours_eau=str(self.libelle_cours_eau)
-        self.libelle_commune=str(self.libelle_commune)
-        self.code_departement=str(self.code_departement)
-        self.en_service=bool(self.en_service)
-        self.date_ouverture_station=str(self.date_ouverture_station)
+        self.libelle_cours_eau=str(self.libelle_cours_eau) if self.libelle_cours_eau else None
+        self.libelle_commune=str(self.libelle_commune) if self.libelle_commune else None
+        self.code_departement=str(self.code_departement) if self.code_departement else None
+        self.en_service=bool(self.en_service) if self.en_service else None
+        self.date_ouverture_station=str(self.date_ouverture_station) if self.date_ouverture_station else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':

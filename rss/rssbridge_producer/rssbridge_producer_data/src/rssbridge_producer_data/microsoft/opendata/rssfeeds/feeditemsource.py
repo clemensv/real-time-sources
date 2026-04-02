@@ -14,8 +14,8 @@ from marshmallow import fields
 import avro.schema
 import avro.name
 import avro.io
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 import datetime
 
 

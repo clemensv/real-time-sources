@@ -1,4 +1,3 @@
-from .fi import VesselLocation, VesselMetadata
-from .record import Record
+from .digitraffic_maritime_producer_data import Document
 
-__all__ = ["VesselLocation", "VesselMetadata", "Record"]
+__all__ = ["Document"]

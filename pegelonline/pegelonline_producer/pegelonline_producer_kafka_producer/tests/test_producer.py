@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from pegelonline_producer_kafka_producer.producer import DeWsvPegelonlineEventProducer
 from pegelonline_producer_data import Station
-from test_pegelonline_producer_data_de_wsv_pegelonline_station import Test_Station
+from test_pegelonline_producer_data_station import Test_Station
 from pegelonline_producer_data import CurrentMeasurement
-from test_pegelonline_producer_data_de_wsv_pegelonline_currentmeasurement import Test_CurrentMeasurement
+from test_pegelonline_producer_data_currentmeasurement import Test_CurrentMeasurement
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

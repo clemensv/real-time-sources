@@ -13,11 +13,11 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-from gtfs_rt_producer_data.generaltransitfeedstatic.timepoint import Timepoint
-from gtfs_rt_producer_data.generaltransitfeedstatic.pickuptype import PickupType
-from gtfs_rt_producer_data.generaltransitfeedstatic.dropofftype import DropOffType
 from gtfs_rt_producer_data.generaltransitfeedstatic.continuouspickup import ContinuousPickup
 from gtfs_rt_producer_data.generaltransitfeedstatic.continuousdropoff import ContinuousDropOff
+from gtfs_rt_producer_data.generaltransitfeedstatic.pickuptype import PickupType
+from gtfs_rt_producer_data.generaltransitfeedstatic.dropofftype import DropOffType
+from gtfs_rt_producer_data.generaltransitfeedstatic.timepoint import Timepoint
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)

@@ -87,7 +87,7 @@ class TestConnectionStringParsing:
     def test_event_hubs_connection_string(self):
         conn_str = "Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=test;SharedAccessKey=testkey"
         config = parse_connection_string(conn_str)
-        assert config['bootstrap.servers'] == 'test.servicebus.windows.net'
+        assert config['bootstrap.servers'] == 'test.servicebus.windows.net:9093'
         assert config['sasl.username'] == '$ConnectionString'
         assert config['security.protocol'] == 'SASL_SSL'
         assert config['sasl.mechanism'] == 'PLAIN'

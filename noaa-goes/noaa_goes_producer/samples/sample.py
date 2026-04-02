@@ -36,9 +36,9 @@ from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASW
 
 # imports for the data classes for each event
 
-from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.spaceweatheralert import SpaceWeatherAlert
-from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.planetarykindex import PlanetaryKIndex
-from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.solarwindsummary import SolarWindSummary
+from noaa_goes_producer_data.spaceweatheralert import SpaceWeatherAlert
+from noaa_goes_producer_data.planetarykindex import PlanetaryKIndex
+from noaa_goes_producer_data.solarwindsummary import SolarWindSummary
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

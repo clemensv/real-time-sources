@@ -7,7 +7,7 @@ version = "0.1.0"
 packages = [{include = "bluesky"}]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = ">=3.10,<3.15"
 bluesky-producer-data = {path = "bluesky_producer/bluesky_producer_data"}
 bluesky-producer-kafka-producer = {path = "bluesky_producer/bluesky_producer_kafka_producer"}
 confluent-kafka = ">=2.5.3"
@@ -17,7 +17,7 @@ atproto = ">=0.0.63"
 aiohttp = ">=3.10.5"
 asyncio = ">=3.4.3"
 dataclasses-json = ">=0.6.7"
-pydantic = "~2.7.0"
+pydantic = ">=2.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"

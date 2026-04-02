@@ -157,7 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### ModeSProducer- `data`: The event data of type `mode_s_producer_data.mode_s.Messages`.
+### ModeSProducer- `data`: The event data of type `mode_s_producer_data.Messages`.
 
 
 

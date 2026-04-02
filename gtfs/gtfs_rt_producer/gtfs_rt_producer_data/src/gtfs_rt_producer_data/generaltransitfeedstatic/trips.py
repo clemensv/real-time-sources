@@ -13,11 +13,11 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-from gtfs_rt_producer_data.generaltransitfeedstatic.bikesallowed import BikesAllowed
-from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairaccessible import WheelchairAccessible
 from gtfs_rt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
+from gtfs_rt_producer_data.generaltransitfeedstatic.bikesallowed import BikesAllowed
 from gtfs_rt_producer_data.generaltransitfeedstatic.directionid import DirectionId
+from gtfs_rt_producer_data.generaltransitfeedstatic.calendar import Calendar
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)

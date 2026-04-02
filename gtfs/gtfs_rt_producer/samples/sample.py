@@ -37,37 +37,37 @@ from gtfs_rt_producer_kafka_producer.producer import GeneralTransitFeedStaticEve
 
 # imports for the data classes for each event
 
-from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
-from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate import TripUpdate
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.alert import Alert
-from gtfs_rt_producer_data.generaltransitfeedstatic.agency import Agency
-from gtfs_rt_producer_data.generaltransitfeedstatic.areas import Areas
-from gtfs_rt_producer_data.generaltransitfeedstatic.attributions import Attributions
-from gtfs_rt_producer_data.generaltransitfeedstatic.bookingrules import BookingRules
-from gtfs_rt_producer_data.generaltransitfeedstatic.fareattributes import FareAttributes
-from gtfs_rt_producer_data.generaltransitfeedstatic.farelegrules import FareLegRules
-from gtfs_rt_producer_data.generaltransitfeedstatic.faremedia import FareMedia
-from gtfs_rt_producer_data.generaltransitfeedstatic.fareproducts import FareProducts
-from gtfs_rt_producer_data.generaltransitfeedstatic.farerules import FareRules
-from gtfs_rt_producer_data.generaltransitfeedstatic.faretransferrules import FareTransferRules
-from gtfs_rt_producer_data.generaltransitfeedstatic.feedinfo import FeedInfo
-from gtfs_rt_producer_data.generaltransitfeedstatic.frequencies import Frequencies
-from gtfs_rt_producer_data.generaltransitfeedstatic.levels import Levels
-from gtfs_rt_producer_data.generaltransitfeedstatic.locationgeojson import LocationGeoJson
-from gtfs_rt_producer_data.generaltransitfeedstatic.locationgroups import LocationGroups
-from gtfs_rt_producer_data.generaltransitfeedstatic.locationgroupstores import LocationGroupStores
-from gtfs_rt_producer_data.generaltransitfeedstatic.networks import Networks
-from gtfs_rt_producer_data.generaltransitfeedstatic.pathways import Pathways
-from gtfs_rt_producer_data.generaltransitfeedstatic.routenetworks import RouteNetworks
-from gtfs_rt_producer_data.generaltransitfeedstatic.routes import Routes
-from gtfs_rt_producer_data.generaltransitfeedstatic.shapes import Shapes
-from gtfs_rt_producer_data.generaltransitfeedstatic.stopareas import StopAreas
-from gtfs_rt_producer_data.generaltransitfeedstatic.stops import Stops
-from gtfs_rt_producer_data.generaltransitfeedstatic.stoptimes import StopTimes
-from gtfs_rt_producer_data.generaltransitfeedstatic.timeframes import Timeframes
-from gtfs_rt_producer_data.generaltransitfeedstatic.transfers import Transfers
-from gtfs_rt_producer_data.generaltransitfeedstatic.translations import Translations
-from gtfs_rt_producer_data.generaltransitfeedstatic.trips import Trips
+from gtfs_rt_producer_data.vehicleposition import VehiclePosition
+from gtfs_rt_producer_data.tripupdate import TripUpdate
+from gtfs_rt_producer_data.alert import Alert
+from gtfs_rt_producer_data.agency import Agency
+from gtfs_rt_producer_data.areas import Areas
+from gtfs_rt_producer_data.attributions import Attributions
+from gtfs_rt_producer_data.bookingrules import BookingRules
+from gtfs_rt_producer_data.fareattributes import FareAttributes
+from gtfs_rt_producer_data.farelegrules import FareLegRules
+from gtfs_rt_producer_data.faremedia import FareMedia
+from gtfs_rt_producer_data.fareproducts import FareProducts
+from gtfs_rt_producer_data.farerules import FareRules
+from gtfs_rt_producer_data.faretransferrules import FareTransferRules
+from gtfs_rt_producer_data.feedinfo import FeedInfo
+from gtfs_rt_producer_data.frequencies import Frequencies
+from gtfs_rt_producer_data.levels import Levels
+from gtfs_rt_producer_data.locationgeojson import LocationGeoJson
+from gtfs_rt_producer_data.locationgroups import LocationGroups
+from gtfs_rt_producer_data.locationgroupstores import LocationGroupStores
+from gtfs_rt_producer_data.networks import Networks
+from gtfs_rt_producer_data.pathways import Pathways
+from gtfs_rt_producer_data.routenetworks import RouteNetworks
+from gtfs_rt_producer_data.routes import Routes
+from gtfs_rt_producer_data.shapes import Shapes
+from gtfs_rt_producer_data.stopareas import StopAreas
+from gtfs_rt_producer_data.stops import Stops
+from gtfs_rt_producer_data.stoptimes import StopTimes
+from gtfs_rt_producer_data.timeframes import Timeframes
+from gtfs_rt_producer_data.transfers import Transfers
+from gtfs_rt_producer_data.translations import Translations
+from gtfs_rt_producer_data.trips import Trips
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

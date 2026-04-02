@@ -1,112 +1,301 @@
 {
-    "endpoints": {
-        "BE.Vlaanderen.Waterinfo.VMM.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "waterinfo-vmm"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM"
-            ]
+  "endpoints": {
+    "BE.Vlaanderen.Waterinfo.VMM.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "waterinfo-vmm"
         }
-    },
-    "messagegroups": {
-        "BE.Vlaanderen.Waterinfo.VMM": {
-            "messages": {
-                "BE.Vlaanderen.Waterinfo.VMM.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "BE.Vlaanderen.Waterinfo.VMM.Station"
-                        },
-                        "source": {
-                            "value": "https://waterinfo.vlaanderen.be"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM/schemas/BE.Vlaanderen.Waterinfo.VMM.Station"
-                },
-                "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
-                    "name": "WaterLevelReading",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
-                        },
-                        "source": {
-                            "value": "https://waterinfo.vlaanderen.be"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "BE.Vlaanderen.Waterinfo.VMM": {
-            "schemas": {
-                "BE.Vlaanderen.Waterinfo.VMM.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "BE.Vlaanderen.Waterinfo.VMM",
-                                "properties": {
-                                    "station_no": { "type": "string", "description": "Station number/code" },
-                                    "station_name": { "type": "string", "description": "Station name" },
-                                    "station_id": { "type": "string", "description": "Numeric station identifier" },
-                                    "station_latitude": { "type": "number", "description": "Latitude in WGS84" },
-                                    "station_longitude": { "type": "number", "description": "Longitude in WGS84" },
-                                    "river_name": { "type": "string", "description": "Name of the river or waterway" },
-                                    "stationparameter_name": { "type": "string", "description": "Parameter measured (e.g., H for water level)" },
-                                    "ts_id": { "type": "string", "description": "Time series identifier" },
-                                    "ts_unitname": { "type": "string", "description": "Unit of measurement (e.g., meter)" }
-                                },
-                                "required": ["station_no", "station_name", "station_latitude", "station_longitude"]
-                            }
-                        }
-                    }
-                },
-                "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "WaterLevelReading",
-                                "namespace": "BE.Vlaanderen.Waterinfo.VMM",
-                                "properties": {
-                                    "ts_id": { "type": "string", "description": "Time series identifier" },
-                                    "station_no": { "type": "string", "description": "Station number/code" },
-                                    "station_name": { "type": "string", "description": "Station name" },
-                                    "timestamp": { "type": "string", "format": "date-time", "description": "Measurement timestamp in ISO 8601 UTC" },
-                                    "value": { "type": "number", "description": "Measured value" },
-                                    "unit_name": { "type": "string", "description": "Unit of measurement" },
-                                    "parameter_name": { "type": "string", "description": "Parameter code (H = water level, Q = discharge)" }
-                                },
-                                "required": ["ts_id", "station_no", "timestamp", "value"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM"
+      ]
     }
+  },
+  "messagegroups": {
+    "BE.Vlaanderen.Waterinfo.VMM": {
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "BE.Vlaanderen.Waterinfo.VMM.Station"
+            },
+            "source": {
+              "value": "https://waterinfo.vlaanderen.be"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.Station"
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
+            },
+            "source": {
+              "value": "https://waterinfo.vlaanderen.be"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "BE.Vlaanderen.Waterinfo.VMM.jstruct": {
+      "schemas": {
+        "BE.Vlaanderen.Waterinfo.VMM.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_no",
+                  "station_name",
+                  "station_latitude",
+                  "station_longitude"
+                ],
+                "name": "Station",
+                "properties": {
+                  "station_no": {
+                    "type": "string"
+                  },
+                  "station_name": {
+                    "type": "string"
+                  },
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "station_latitude": {
+                    "type": "double"
+                  },
+                  "station_longitude": {
+                    "type": "double"
+                  },
+                  "river_name": {
+                    "type": "string"
+                  },
+                  "stationparameter_name": {
+                    "type": "string"
+                  },
+                  "ts_id": {
+                    "type": "string"
+                  },
+                  "ts_unitname": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/BE/Vlaanderen/Waterinfo/VMM.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "ts_id",
+                  "station_no",
+                  "timestamp",
+                  "value"
+                ],
+                "name": "WaterLevelReading",
+                "properties": {
+                  "ts_id": {
+                    "type": "string"
+                  },
+                  "station_no": {
+                    "type": "string"
+                  },
+                  "station_name": {
+                    "type": "string"
+                  },
+                  "timestamp": {
+                    "type": "datetime"
+                  },
+                  "value": {
+                    "type": "double"
+                  },
+                  "unit_name": {
+                    "type": "string"
+                  },
+                  "parameter_name": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/BE/Vlaanderen/Waterinfo/VMM.schema.json",
+                "description": "WaterLevelReading"
+              }
+            }
+          }
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.avro": {
+      "schemas": {
+        "BE.Vlaanderen.Waterinfo.VMM.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "station_no",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "station_latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "station_longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "river_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "stationparameter_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ts_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ts_unitname",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "BE.Vlaanderen.Waterinfo.VMM"
+              }
+            }
+          }
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevelReading",
+                "doc": "WaterLevelReading",
+                "fields": [
+                  {
+                    "name": "ts_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_no",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "value",
+                    "type": "double"
+                  },
+                  {
+                    "name": "unit_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "parameter_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "BE.Vlaanderen.Waterinfo.VMM"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

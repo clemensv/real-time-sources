@@ -1,4 +1,3 @@
-from .de import StationMetadata, AirTemperature10Min, HourlyObservation, Alert, Precipitation10Min, Solar10Min, Wind10Min
-from .record import Record
+from .dwd_producer_data import Document
 
-__all__ = ["StationMetadata", "AirTemperature10Min", "HourlyObservation", "Alert", "Precipitation10Min", "Solar10Min", "Wind10Min", "Record"]
+__all__ = ["Document"]

@@ -13,8 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairboarding import WheelchairBoarding
 from gtfs_rt_producer_data.generaltransitfeedstatic.locationtype import LocationType
+from gtfs_rt_producer_data.generaltransitfeedstatic.wheelchairboarding import WheelchairBoarding
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)

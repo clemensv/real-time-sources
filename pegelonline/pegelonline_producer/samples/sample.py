@@ -36,8 +36,8 @@ from pegelonline_producer_kafka_producer.producer import DeWsvPegelonlineEventPr
 
 # imports for the data classes for each event
 
-from pegelonline_producer_data.de.wsv.pegelonline.station import Station
-from pegelonline_producer_data.de.wsv.pegelonline.currentmeasurement import CurrentMeasurement
+from pegelonline_producer_data.station import Station
+from pegelonline_producer_data.currentmeasurement import CurrentMeasurement
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

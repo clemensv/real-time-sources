@@ -36,7 +36,7 @@ from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeeds
 
 # imports for the data classes for each event
 
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
+from rssbridge_producer_data.feeditem import FeedItem
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

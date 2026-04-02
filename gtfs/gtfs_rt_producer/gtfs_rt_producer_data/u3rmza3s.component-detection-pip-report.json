@@ -1,0 +1,392 @@
+{
+  "version": "1",
+  "pip_version": "25.3",
+  "install": [
+    {
+      "download_info": {
+        "url": "file:///c:/git/real-time-sources/gtfs/gtfs_rt_producer/gtfs_rt_producer_data",
+        "dir_info": {
+          "editable": true
+        }
+      },
+      "is_direct": true,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "gtfs-rt-producer-data",
+        "version": "0.1.0",
+        "summary": "A package for handling Avro schema data",
+        "author": "Your Name",
+        "license": "MIT",
+        "classifier": [
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14"
+        ],
+        "requires_dist": [
+          "dataclasses-json (>=0.6.7,<0.7.0)"
+        ],
+        "requires_python": ">=3.10,<4.0"
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/c3/be/d0d44e092656fe7a06b55e6103cbce807cdbdee17884a5367c68c9860853/dataclasses_json-0.6.7-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=0dbf33f26c8d5305befd61b39d2b3414e8a407bedc2834dea9b8d642666fb40a",
+          "hashes": {
+            "sha256": "0dbf33f26c8d5305befd61b39d2b3414e8a407bedc2834dea9b8d642666fb40a"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "dataclasses-json",
+        "version": "0.6.7",
+        "summary": "Easily serialize dataclasses to and from JSON.",
+        "description": "# Dataclasses JSON\n\n![](https://github.com/lidatong/dataclasses-json/workflows/dataclasses-json/badge.svg)\n\nThis library provides a simple API for encoding and decoding [dataclasses](https://docs.python.org/3/library/dataclasses.html) to and from JSON.\n\nIt's very easy to get started.\n\n[README / Documentation website](https://lidatong.github.io/dataclasses-json). Features a navigation bar and search functionality, and should mirror this README exactly -- take a look!\n\n## Quickstart\n\n`pip install dataclasses-json`\n\n```python\nfrom dataclasses import dataclass\nfrom dataclasses_json import dataclass_json\n\n\n@dataclass_json\n@dataclass\nclass Person:\n    name: str\n\n\nperson = Person(name='lidatong')\nperson.to_json()  # '{\"name\": \"lidatong\"}' <- this is a string\nperson.to_dict()  # {'name': 'lidatong'} <- this is a dict\nPerson.from_json('{\"name\": \"lidatong\"}')  # Person(1)\nPerson.from_dict({'name': 'lidatong'})  # Person(1)\n\n# You can also apply _schema validation_ using an alternative API\n# This can be useful for \"typed\" Python code\n\nPerson.from_json('{\"name\": 42}')  # This is ok. 42 is not a `str`, but\n                                  # dataclass creation does not validate types\nPerson.schema().loads('{\"name\": 42}')  # Error! Raises `ValidationError`\n```\n\n**What if you want to work with camelCase JSON?**\n\n```python\n# same imports as above, with the additional `LetterCase` import\nfrom dataclasses import dataclass\nfrom dataclasses_json import dataclass_json, LetterCase\n\n@dataclass_json(letter_case=LetterCase.CAMEL)  # now all fields are encoded/decoded from camelCase\n@dataclass\nclass ConfiguredSimpleExample:\n    int_field: int\n\nConfiguredSimpleExample(1).to_json()  # {\"intField\": 1}\nConfiguredSimpleExample.from_json('{\"intField\": 1}')  # ConfiguredSimpleExample(1)\n```\n\n## Supported types\n\nIt's recursive (see caveats below), so you can easily work with nested dataclasses.\nIn addition to the supported types in the \n[py to JSON table](https://docs.python.org/3/library/json.html#py-to-json-table), this library supports the following:\n\n- any arbitrary [Collection](https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection) type is supported.\n[Mapping](https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping) types are encoded as JSON objects and `str` types as JSON strings. \nAny other Collection types are encoded into JSON arrays, but decoded into the original collection types.\n\n- [datetime](https://docs.python.org/3/library/datetime.html#available-types) \nobjects. `datetime` objects are encoded to `float` (JSON number) using \n[timestamp](https://docs.python.org/3/library/datetime.html#datetime.datetime.timestamp).\nAs specified in the `datetime` docs, if your `datetime` object is naive, it will \nassume your system local timezone when calling `.timestamp()`. JSON numbers \ncorresponding to a `datetime` field in your dataclass are decoded \ninto a datetime-aware object, with `tzinfo` set to your system local timezone.\nThus, if you encode a datetime-naive object, you will decode into a \ndatetime-aware object. This is important, because encoding and decoding won't \nstrictly be inverses. See [this section](#Overriding) if you want to override this default\nbehavior (for example, if you want to use ISO).\n\n- [UUID](https://docs.python.org/3/library/uuid.html#uuid.UUID) objects. They \nare encoded as `str` (JSON string).\n\n- [Decimal](https://docs.python.org/3/library/decimal.html) objects. They are\nalso encoded as `str`.\n\n**The [latest release](https://github.com/lidatong/dataclasses-json/releases/latest) is compatible with both Python 3.7 and Python 3.6 (with the dataclasses backport).**\n\n## Usage\n\n#### Approach 1: Class decorator\n\n```python\nfrom dataclasses import dataclass\nfrom dataclasses_json import dataclass_json\n\n@dataclass_json\n@dataclass\nclass Person:\n    name: str\n\nlidatong = Person('lidatong')\n\n# Encoding to JSON\nlidatong.to_json()  # '{\"name\": \"lidatong\"}'\n\n# Decoding from JSON\nPerson.from_json('{\"name\": \"lidatong\"}')  # Person(name='lidatong')\n```\n\nNote that the `@dataclass_json` decorator must be stacked above the `@dataclass`\ndecorator (order matters!)\n\n#### Approach 2: Inherit from a mixin\n\n```python\nfrom dataclasses import dataclass\nfrom dataclasses_json import DataClassJsonMixin\n\n@dataclass\nclass Person(DataClassJsonMixin):\n    name: str\n\nlidatong = Person('lidatong')\n\n# A different example from Approach 1 above, but usage is the exact same\nassert Person.from_json(lidatong.to_json()) == lidatong\n```\n\nPick whichever approach suits your taste. Note that there is better support for\n the mixin approach when using _static analysis_ tools (e.g. linting, typing),\n but the differences in implementation will be invisible in _runtime_ usage.\n\n## How do I...\n\n\n\n### Use my dataclass with JSON arrays or objects?\n\n```python\nfrom dataclasses import dataclass\nfrom dataclasses_json import dataclass_json\n\n@dataclass_json\n@dataclass\nclass Person:\n    name: str\n```\n\n**Encode into a JSON array containing instances of my Data Class**\n\n```python\npeople_json = [Person('lidatong')]\nPerson.schema().dumps(people_json, many=True)  # '[{\"name\": \"lidatong\"}]'\n```\n\n**Decode a JSON array containing instances of my Data Class**\n\n```python\npeople_json = '[{\"name\": \"lidatong\"}]'\nPerson.schema().loads(people_json, many=True)  # [Person(name='lidatong')]\n```\n\n**Encode as part of a larger JSON object containing my Data Class (e.g. an HTTP \nrequest/response)**\n\n```python\nimport json\n\nresponse_dict = {\n    'response': {\n        'person': Person('lidatong').to_dict()\n    }\n}\n\nresponse_json = json.dumps(response_dict)\n```\n\nIn this case, we do two steps. First, we encode the dataclass into a \n**python dictionary** rather than a JSON string, using `.to_dict`. \n\nSecond, we leverage the built-in `json.dumps` to serialize our `dataclass` into \na JSON string.\n\n**Decode as part of a larger JSON object containing my Data Class (e.g. an HTTP \nresponse)**\n\n```python\nimport json\n\nresponse_dict = json.loads('{\"response\": {\"person\": {\"name\": \"lidatong\"}}}')\n\nperson_dict = response_dict['response']\n\nperson = Person.from_dict(person_dict)\n```\n\nIn a similar vein to encoding above, we leverage the built-in `json` module.\n\nFirst, call `json.loads` to read the entire JSON object into a \ndictionary. We then access the key of the value containing the encoded dict of \nour `Person` that we want to decode (`response_dict['response']`).\n\nSecond, we load in the dictionary using `Person.from_dict`.\n\n\n### Encode or decode into Python lists/dictionaries rather than JSON?\n\nThis can be by calling `.schema()` and then using the corresponding \nencoder/decoder methods, ie. `.load(...)`/`.dump(...)`.\n\n**Encode into a single Python dictionary**\n\n```python\nperson = Person('lidatong')\nperson.to_dict()  # {'name': 'lidatong'}\n```\n\n**Encode into a list of Python dictionaries**\n\n```python\npeople = [Person('lidatong')]\nPerson.schema().dump(people, many=True)  # [{'name': 'lidatong'}]\n```\n\n**Decode a dictionary into a single dataclass instance**\n\n```python\nperson_dict = {'name': 'lidatong'}\nPerson.from_dict(person_dict)  # Person(name='lidatong')\n```\n\n**Decode a list of dictionaries into a list of dataclass instances**\n\n```python\npeople_dicts = [{\"name\": \"lidatong\"}]\nPerson.schema().load(people_dicts, many=True)  # [Person(name='lidatong')]\n```\n\n### Encode or decode from camelCase (or kebab-case)?\n\nJSON letter case by convention is camelCase, in Python members are by convention snake_case.\n\nYou can configure it to encode/decode from other casing schemes at both the class level and the field level.\n\n```python\nfrom dataclasses import dataclass, field\n\nfrom dataclasses_json import LetterCase, config, dataclass_json\n\n\n# changing casing at the class level\n@dataclass_json(letter_case=LetterCase.CAMEL)\n@dataclass\nclass Person:\n    given_name: str\n    family_name: str\n    \nPerson('Alice', 'Liddell').to_json()  # '{\"givenName\": \"Alice\"}'\nPerson.from_json('{\"givenName\": \"Alice\", \"familyName\": \"Liddell\"}')  # Person('Alice', 'Liddell')\n\n# at the field level\n@dataclass_json\n@dataclass\nclass Person:\n    given_name: str = field(metadata=config(letter_case=LetterCase.CAMEL))\n    family_name: str\n    \nPerson('Alice', 'Liddell').to_json()  # '{\"givenName\": \"Alice\"}'\n# notice how the `family_name` field is still snake_case, because it wasn't configured above\nPerson.from_json('{\"givenName\": \"Alice\", \"family_name\": \"Liddell\"}')  # Person('Alice', 'Liddell')\n```\n\n**This library assumes your field follows the Python convention of snake_case naming.**\nIf your field is not `snake_case` to begin with and you attempt to parameterize `LetterCase`, \nthe behavior of encoding/decoding is undefined (most likely it will result in subtle bugs).\n\n### Encode or decode using a different name\n\n```python\nfrom dataclasses import dataclass, field\n\nfrom dataclasses_json import config, dataclass_json\n\n@dataclass_json\n@dataclass\nclass Person:\n    given_name: str = field(metadata=config(field_name=\"overriddenGivenName\"))\n\nPerson(given_name=\"Alice\")  # Person('Alice')\nPerson.from_json('{\"overriddenGivenName\": \"Alice\"}')  # Person('Alice')\nPerson('Alice').to_json()  # {\"overriddenGivenName\": \"Alice\"}\n```\n\n### Handle missing or optional field values when decoding?\n\nBy default, any fields in your dataclass that use `default` or \n`default_factory` will have the values filled with the provided default, if the\ncorresponding field is missing from the JSON you're decoding.\n\n**Decode JSON with missing field**\n\n```python\n@dataclass_json\n@dataclass\nclass Student:\n    id: int\n    name: str = 'student'\n\nStudent.from_json('{\"id\": 1}')  # Student(id=1, name='student')\n```\n\nNotice `from_json` filled the field `name` with the specified default 'student'\nwhen it was missing from the JSON.\n\nSometimes you have fields that are typed as `Optional`, but you don't \nnecessarily want to assign a default. In that case, you can use the \n`infer_missing` kwarg to make `from_json` infer the missing field value as `None`.\n\n**Decode optional field without default**\n\n```python\n@dataclass_json\n@dataclass\nclass Tutor:\n    id: int\n    student: Optional[Student] = None\n\nTutor.from_json('{\"id\": 1}')  # Tutor(id=1, student=None)\n```\n\nPersonally I recommend you leverage dataclass defaults rather than using \n`infer_missing`, but if for some reason you need to decouple the behavior of \nJSON decoding from the field's default value, this will allow you to do so.\n\n\n### Handle unknown / extraneous fields in JSON?\n\nBy default, it is up to the implementation what happens when a `json_dataclass` receives input parameters that are not defined.\n(the `from_dict` method ignores them, when loading using `schema()` a ValidationError is raised.)\nThere are three ways to customize this behavior.\n\nAssume you want to instantiate a dataclass with the following dictionary:\n```python\ndump_dict = {\"endpoint\": \"some_api_endpoint\", \"data\": {\"foo\": 1, \"bar\": \"2\"}, \"undefined_field_name\": [1, 2, 3]}\n```\n\n1. You can enforce to always raise an error by setting the `undefined` keyword to `Undefined.RAISE`\n (`'RAISE'` as a case-insensitive string works as well). Of course it works normally if you don't pass any undefined parameters.\n    \n```python\nfrom dataclasses_json import Undefined\n\n@dataclass_json(undefined=Undefined.RAISE)\n@dataclass()\nclass ExactAPIDump:\n    endpoint: str\n    data: Dict[str, Any]\n\ndump = ExactAPIDump.from_dict(dump_dict)  # raises UndefinedParameterError\n```\n\n2. You can simply ignore any undefined parameters by setting the `undefined` keyword to `Undefined.EXCLUDE`\n (`'EXCLUDE'` as a case-insensitive string works as well). Note that you will not be able to retrieve them using `to_dict`:\n    \n```python\nfrom dataclasses_json import Undefined\n\n@dataclass_json(undefined=Undefined.EXCLUDE)\n@dataclass()\nclass DontCareAPIDump:\n    endpoint: str\n    data: Dict[str, Any]\n\ndump = DontCareAPIDump.from_dict(dump_dict)  # DontCareAPIDump(endpoint='some_api_endpoint', data={'foo': 1, 'bar': '2'})\ndump.to_dict()  # {\"endpoint\": \"some_api_endpoint\", \"data\": {\"foo\": 1, \"bar\": \"2\"}}\n```\n\n3. You can save them in a catch-all field and do whatever needs to be done later. Simply set the `undefined`\nkeyword to `Undefined.INCLUDE` (`'INCLUDE'` as a case-insensitive string works as well) and define a field\nof type `CatchAll` where all unknown values will end up.\n This simply represents a dictionary that can hold anything. \n If there are no undefined parameters, this will be an empty dictionary.\n    \n```python\nfrom dataclasses_json import Undefined, CatchAll\n\n@dataclass_json(undefined=Undefined.INCLUDE)\n@dataclass()\nclass UnknownAPIDump:\n    endpoint: str\n    data: Dict[str, Any]\n    unknown_things: CatchAll\n\ndump = UnknownAPIDump.from_dict(dump_dict)  # UnknownAPIDump(endpoint='some_api_endpoint', data={'foo': 1, 'bar': '2'}, unknown_things={'undefined_field_name': [1, 2, 3]})\ndump.to_dict()  # {'endpoint': 'some_api_endpoint', 'data': {'foo': 1, 'bar': '2'}, 'undefined_field_name': [1, 2, 3]}\n```\n\nNotes:\n- When using `Undefined.INCLUDE`, an `UndefinedParameterError` will be raised if you don't specify\nexactly one field of type `CatchAll`.\n- Note that `LetterCase` does not affect values written into the `CatchAll` field, they will be as they are given.\n- When specifying a default (or a default factory) for the the `CatchAll`-field, e.g. `unknown_things: CatchAll = None`, the default value will be used instead of an empty dict if there are no undefined parameters.\n- Calling __init__ with non-keyword arguments resolves the arguments to the defined fields and writes everything else into the catch-all field.\n\n4. All 3 options work as well using `schema().loads` and `schema().dumps`, as long as you don't overwrite it by specifying `schema(unknown=<a marshmallow value>)`.\nmarshmallow uses the same 3 keywords ['include', 'exclude', 'raise'](https://marshmallow.readthedocs.io/en/stable/quickstart.html#handling-unknown-fields).\n\n5. All 3 operations work as well using `__init__`, e.g. `UnknownAPIDump(**dump_dict)` will **not** raise a `TypeError`, but write all unknown values to the field tagged as `CatchAll`.\n   Classes tagged with `EXCLUDE` will also simply ignore unknown parameters. Note that classes tagged as `RAISE` still raise a `TypeError`, and **not** a `UndefinedParameterError` if supplied with unknown keywords.\n\n\n### Override the default encode / decode / marshmallow field of a specific field?\n\nSee [Overriding](#Overriding)\n\n### Handle recursive dataclasses?\nObject hierarchies where fields are of the type that they are declared within require a small\ntype hinting trick to declare the forward reference.\n```python\nfrom typing import Optional\nfrom dataclasses import dataclass\nfrom dataclasses_json import dataclass_json\n\n@dataclass_json\n@dataclass\nclass Tree():\n    value: str\n    left: Optional['Tree']\n    right: Optional['Tree']\n```\n\nAvoid using\n```python\nfrom __future__ import annotations\n```\nas it will cause problems with the way dataclasses_json accesses the type annotations.\n\n### Use numpy or pandas types?\nData types specific to libraries commonly used in data analysis and machine learning like [numpy](https://github.com/numpy/numpy) and [pandas](https://github.com/pandas-dev/pandas) are not supported by default, but you can easily enable them by using custom decoders and encoders. Below are two examples for `numpy` and `pandas` types.\n\n```python\nfrom dataclasses import field, dataclass\nfrom dataclasses_json import config, dataclass_json\nimport numpy as np\nimport pandas as pd\n\n@dataclass_json\n@dataclass\nclass DataWithNumpy:\n    my_int: np.int64 = field(metadata=config(decoder=np.int64))\n    my_float: np.float64 = field(metadata=config(decoder=np.float64))\n    my_array: np.ndarray = field(metadata=config(decoder=np.asarray))\nDataWithNumpy.from_json(\"{\\\"my_int\\\": 42, \\\"my_float\\\": 13.37, \\\"my_array\\\": [1,2,3]}\")\n\n@dataclass_json\n@dataclass\nclass DataWithPandas:\n    my_df: pd.DataFrame = field(metadata=config(decoder=pd.DataFrame.from_records, encoder=lambda x: x.to_dict(orient=\"records\")))\ndata = DataWithPandas.from_dict({\"my_df\": [{\"col1\": 1, \"col2\": 2}, {\"col1\": 3, \"col2\": 4}]})\n# my_df results in:\n# col1  col2\n# 1    2    \n# 3    4\ndata.to_dict()\n# {\"my_df\": [{\"col1\": 1, \"col2\": 2}, {\"col1\": 3, \"col2\": 4}]}\n```\n\n## Marshmallow interop\n\nUsing the `dataclass_json` decorator or mixing in `DataClassJsonMixin` will\nprovide you with an additional method `.schema()`.\n\n`.schema()` generates a schema exactly equivalent to manually creating a\nmarshmallow schema for your dataclass. You can reference the [marshmallow API docs](https://marshmallow.readthedocs.io/en/3.0/api_reference.html#schema)\nto learn other ways you can use the schema returned by `.schema()`.\n\nYou can pass in the exact same arguments to `.schema()` that you would when\nconstructing a `PersonSchema` instance, e.g. `.schema(many=True)`, and they will\nget passed through to the marshmallow schema.\n\n\n```python\nfrom dataclasses import dataclass\nfrom dataclasses_json import dataclass_json\n\n@dataclass_json\n@dataclass\nclass Person:\n    name: str\n\n# You don't need to do this - it's generated for you by `.schema()`!\nfrom marshmallow import Schema, fields\n\nclass PersonSchema(Schema):\n    name = fields.Str()\n```\n\nBriefly, on what's going on under the hood in the above examples: calling \n`.schema()` will have this library generate a\n[marshmallow schema]('https://marshmallow.readthedocs.io/en/3.0/api_reference.html#schema)\nfor you. It also fills in the corresponding object hook, so that marshmallow\nwill create an instance of your Data Class on `load` (e.g.\n`Person.schema().load` returns a `Person`) rather than a `dict`, which it does\nby default in marshmallow.\n\n**Performance note**\n\n`.schema()` is not cached (it generates the schema on every call), so if you\nhave a nested Data Class you may want to save the result to a variable to \navoid re-generation of the schema on every usage.\n\n```python\nperson_schema = Person.schema()\nperson_schema.dump(people, many=True)\n\n# later in the code...\n\nperson_schema.dump(person)\n```\n\n## Overriding / Extending\n\n#### Overriding\n\nFor example, you might want to encode/decode `datetime` objects using ISO format\nrather than the default `timestamp`.\n\n```python\nfrom dataclasses import dataclass, field\nfrom dataclasses_json import dataclass_json, config\nfrom datetime import datetime\nfrom marshmallow import fields\n\n@dataclass_json\n@dataclass\nclass DataClassWithIsoDatetime:\n    created_at: datetime = field(\n        metadata=config(\n            encoder=datetime.isoformat,\n            decoder=datetime.fromisoformat,\n            mm_field=fields.DateTime(format='iso')\n        )\n    )\n```\n\n#### Extending\n\nSimilarly, you might want to extend `dataclasses_json` to encode `date` objects.\n\n```python\nfrom dataclasses import dataclass, field\nfrom dataclasses_json import dataclass_json, config\nfrom datetime import date\nfrom marshmallow import fields\n\ndataclasses_json.cfg.global_config.encoders[date] = date.isoformat\ndataclasses_json.cfg.global_config.decoders[date] = date.fromisoformat\n\n@dataclass_json\n@dataclass\nclass DataClassWithIsoDatetime:\n    created_at: date\n    modified_at: date\n    accessed_at: date\n```\n\nAs you can see, you can **override** or **extend** the default codecs by providing a \"hook\" via a \ncallable:\n- `encoder`: a callable, which will be invoked to convert the field value when encoding to JSON\n- `decoder`: a callable, which will be invoked to convert the JSON value when decoding from JSON\n- `mm_field`: a marshmallow field, which will affect the behavior of any operations involving `.schema()`\n\nNote that these hooks will be invoked regardless if you're using \n`.to_json`/`dump`/`dumps`\nand `.from_json`/`load`/`loads`. So apply overrides / extensions judiciously, making sure to \ncarefully consider whether the interaction of the encode/decode/mm_field is consistent with what you expect!\n\n\n#### What if I have other dataclass field extensions that rely on `metadata`\n\nAll the `dataclasses_json.config` does is return a mapping, namespaced under the key `'dataclasses_json'`.\n\nSay there's another module, `other_dataclass_package` that uses metadata. Here's how you solve your problem:\n\n```python\nmetadata = {'other_dataclass_package': 'some metadata...'}  # pre-existing metadata for another dataclass package\ndataclass_json_config = config(\n            encoder=datetime.isoformat,\n            decoder=datetime.fromisoformat,\n            mm_field=fields.DateTime(format='iso')\n        )\nmetadata.update(dataclass_json_config)\n\n@dataclass_json\n@dataclass\nclass DataClassWithIsoDatetime:\n    created_at: datetime = field(metadata=metadata)\n```\n\nYou can also manually specify the dataclass_json configuration mapping.\n\n```python\n@dataclass_json\n@dataclass\nclass DataClassWithIsoDatetime:\n    created_at: date = field(\n        metadata={'dataclasses_json': {\n            'encoder': date.isoformat,\n            'decoder': date.fromisoformat,\n            'mm_field': fields.DateTime(format='iso')\n        }}\n    )\n```\n\n## A larger example\n\n```python\nfrom dataclasses import dataclass\nfrom dataclasses_json import dataclass_json\n\nfrom typing import List\n\n@dataclass_json\n@dataclass(frozen=True)\nclass Minion:\n    name: str\n\n\n@dataclass_json\n@dataclass(frozen=True)\nclass Boss:\n    minions: List[Minion]\n\nboss = Boss([Minion('evil minion'), Minion('very evil minion')])\nboss_json = \"\"\"\n{\n    \"minions\": [\n        {\n            \"name\": \"evil minion\"\n        },\n        {\n            \"name\": \"very evil minion\"\n        }\n    ]\n}\n\"\"\".strip()\n\nassert boss.to_json(indent=4) == boss_json\nassert Boss.from_json(boss_json) == boss\n```\n\n## Performance\n\nTake a look at [this issue](https://github.com/lidatong/dataclasses-json/issues/228)\n\n## Versioning\n\nNote this library is still pre-1.0.0 (SEMVER).\n\nThe current convention is:\n- **PATCH** version upgrades for bug fixes and minor feature additions.\n- **MINOR** version upgrades for big API features and breaking changes.\n\nOnce this library is 1.0.0, it will follow standard SEMVER conventions.\n\n### Python compatibility \n\nAny version that is not listed in the table below we do not test against, though you might still be able to install the library. For future Python versions, please open an issue and/or a pull request, adding them to the CI suite.\n\n\n| Python version range | Compatible dataclasses-json version |\n|----------------------|:-----------------------------------:|\n| 3.7.x - 3.12.x       |            0.5.x - 0.6.x            |\n| >= 3.13.x            |         No official support (yet)   |\n\n\n## Roadmap\n\nCurrently the focus is on investigating and fixing bugs in this library, working\non performance, and finishing [this issue](https://github.com/lidatong/dataclasses-json/issues/31).\n\nThat said, if you think there's a feature missing / something new needed in the\nlibrary, please see the contributing section below.\n\n\n## Contributing\n\nFirst of all, thank you for being interested in contributing to this library.\nI really appreciate you taking the time to work on this project.\n\n- If you're just interested in getting into the code, a good place to start are \nissues tagged as bugs.\n- If introducing a new feature, especially one that modifies the public API, \nconsider submitting an issue for discussion before a PR. Please also take a look \nat existing issues / PRs to see what you're proposing has  already been covered \nbefore / exists.\n- I like to follow the commit conventions documented [here](https://www.conventionalcommits.org/en/v1.0.0/#summary)\n\n### Setting up your environment\n\nThis project uses [Poetry](https://python-poetry.org/) for dependency and venv management. It is quite simple to get ready for your first commit:\n- [Install](https://python-poetry.org/docs/#installation) latest stable Poetry\n- Navigate to where you cloned `dataclasses-json`\n- Run `poetry install`\n- Create a branch and start writing code!\n\n",
+        "description_content_type": "text/markdown",
+        "home_page": "https://github.com/lidatong/dataclasses-json",
+        "author": "Charles Li",
+        "author_email": "charles.dt.li@gmail.com",
+        "maintainer": "Charles Li",
+        "maintainer_email": "charles.dt.li@gmail.com",
+        "license": "MIT",
+        "classifier": [
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12"
+        ],
+        "requires_dist": [
+          "marshmallow (>=3.18.0,<4.0.0)",
+          "typing-inspect (>=0.4.0,<1)"
+        ],
+        "requires_python": ">=3.7,<4.0",
+        "project_url": [
+          "Repository, https://github.com/lidatong/dataclasses-json",
+          "changelog, https://github.com/lidatong/dataclasses-json/releases",
+          "documentation, https://lidatong.github.io/dataclasses-json/",
+          "issues, https://github.com/lidatong/dataclasses-json/issues"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/be/2f/5108cb3ee4ba6501748c4908b908e55f42a5b66245b4cfe0c99326e1ef6e/marshmallow-3.26.2-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=013fa8a3c4c276c24d26d84ce934dc964e2aa794345a0f8c7e5a7191482c8a73",
+          "hashes": {
+            "sha256": "013fa8a3c4c276c24d26d84ce934dc964e2aa794345a0f8c7e5a7191482c8a73"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "marshmallow",
+        "version": "3.26.2",
+        "summary": "A lightweight library for converting complex datatypes to and from native Python datatypes.",
+        "description": "********************************************\nmarshmallow: simplified object serialization\n********************************************\n\n|pypi| |build-status| |pre-commit| |docs|\n\n.. |pypi| image:: https://badgen.net/pypi/v/marshmallow\n    :target: https://pypi.org/project/marshmallow/\n    :alt: Latest version\n\n.. |build-status| image:: https://github.com/marshmallow-code/marshmallow/actions/workflows/build-release.yml/badge.svg\n    :target: https://github.com/marshmallow-code/marshmallow/actions/workflows/build-release.yml\n    :alt: Build status\n\n.. |pre-commit| image:: https://results.pre-commit.ci/badge/github/marshmallow-code/marshmallow/dev.svg\n   :target: https://results.pre-commit.ci/latest/github/marshmallow-code/marshmallow/dev\n   :alt: pre-commit.ci status\n\n.. |docs| image:: https://readthedocs.org/projects/marshmallow/badge/\n   :target: https://marshmallow.readthedocs.io/\n   :alt: Documentation\n\n.. start elevator-pitch\n\n**marshmallow** is an ORM/ODM/framework-agnostic library for converting complex datatypes, such as objects, to and from native Python datatypes.\n\n.. code-block:: python\n\n    from datetime import date\n    from pprint import pprint\n\n    from marshmallow import Schema, fields\n\n\n    class ArtistSchema(Schema):\n        name = fields.Str()\n\n\n    class AlbumSchema(Schema):\n        title = fields.Str()\n        release_date = fields.Date()\n        artist = fields.Nested(ArtistSchema())\n\n\n    bowie = dict(name=\"David Bowie\")\n    album = dict(artist=bowie, title=\"Hunky Dory\", release_date=date(1971, 12, 17))\n\n    schema = AlbumSchema()\n    result = schema.dump(album)\n    pprint(result, indent=2)\n    # { 'artist': {'name': 'David Bowie'},\n    #   'release_date': '1971-12-17',\n    #   'title': 'Hunky Dory'}\n\nIn short, marshmallow schemas can be used to:\n\n- **Validate** input data.\n- **Deserialize** input data to app-level objects.\n- **Serialize** app-level objects to primitive Python types. The serialized objects can then be rendered to standard formats such as JSON for use in an HTTP API.\n\nGet it now\n==========\n\n.. code-block:: shell-session\n\n    $ pip install -U marshmallow\n\n.. end elevator-pitch\n\nDocumentation\n=============\n\nFull documentation is available at https://marshmallow.readthedocs.io/ .\n\nEcosystem\n=========\n\nA list of marshmallow-related libraries can be found at the GitHub wiki here:\n\nhttps://github.com/marshmallow-code/marshmallow/wiki/Ecosystem\n\nCredits\n=======\n\nContributors\n------------\n\nThis project exists thanks to all the people who contribute.\n\n**You're highly encouraged to participate in marshmallow's development.**\nCheck out the `Contributing Guidelines <https://marshmallow.readthedocs.io/en/latest/contributing.html>`_ to see how you can help.\n\nThank you to all who have already contributed to marshmallow!\n\n.. image:: https://opencollective.com/marshmallow/contributors.svg?width=890&button=false\n    :target: https://marshmallow.readthedocs.io/en/latest/authors.html\n    :alt: Contributors\n\nBackers\n-------\n\nIf you find marshmallow useful, please consider supporting the team with\na donation. Your donation helps move marshmallow forward.\n\nThank you to all our backers! [`Become a backer`_]\n\n.. _`Become a backer`: https://opencollective.com/marshmallow#backer\n\n.. image:: https://opencollective.com/marshmallow/backers.svg?width=890\n    :target: https://opencollective.com/marshmallow#backers\n    :alt: Backers\n\nSponsors\n--------\n\n.. start sponsors\n\nmarshmallow is sponsored by `Route4Me <https://route4me.com>`_.\n\n.. image:: https://github.com/user-attachments/assets/018c2e23-032e-4a11-98da-8b6dc25b9054\n    :target: https://route4me.com\n    :alt: Routing Planner\n\nSupport this project by becoming a sponsor (or ask your company to support this project by becoming a sponsor).\nYour logo will be displayed here with a link to your website. [`Become a sponsor`_]\n\n.. _`Become a sponsor`: https://opencollective.com/marshmallow#sponsor\n\n.. end sponsors\n\nProfessional Support\n====================\n\nProfessionally-supported marshmallow is now available through the\n`Tidelift Subscription <https://tidelift.com/subscription/pkg/pypi-marshmallow?utm_source=pypi-marshmallow&utm_medium=readme>`_.\n\nTidelift gives software development teams a single source for purchasing and maintaining their software,\nwith professional-grade assurances from the experts who know it best,\nwhile seamlessly integrating with existing tools. [`Get professional support`_]\n\n.. _`Get professional support`: https://tidelift.com/subscription/pkg/pypi-marshmallow?utm_source=marshmallow&utm_medium=referral&utm_campaign=github\n\n.. image:: https://user-images.githubusercontent.com/2379650/45126032-50b69880-b13f-11e8-9c2c-abd16c433495.png\n    :target: https://tidelift.com/subscription/pkg/pypi-marshmallow?utm_source=pypi-marshmallow&utm_medium=readme\n    :alt: Get supported marshmallow with Tidelift\n\n\nProject Links\n=============\n\n- Docs: https://marshmallow.readthedocs.io/\n- Changelog: https://marshmallow.readthedocs.io/en/latest/changelog.html\n- Contributing Guidelines: https://marshmallow.readthedocs.io/en/latest/contributing.html\n- PyPI: https://pypi.org/project/marshmallow/\n- Issues: https://github.com/marshmallow-code/marshmallow/issues\n- Donate: https://opencollective.com/marshmallow\n\nLicense\n=======\n\nMIT licensed. See the bundled `LICENSE <https://github.com/marshmallow-code/marshmallow/blob/dev/LICENSE>`_ file for more details.\n\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Steven Loria <sloria1@gmail.com>",
+        "maintainer_email": "Steven Loria <sloria1@gmail.com>, Jérôme Lafréchoux <jerome@jolimont.fr>, Jared Deckard <jared@shademaps.com>",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13"
+        ],
+        "requires_dist": [
+          "packaging>=17.0",
+          "marshmallow[tests] ; extra == \"dev\"",
+          "tox ; extra == \"dev\"",
+          "pre-commit>=3.5,<5.0 ; extra == \"dev\"",
+          "autodocsumm==0.2.14 ; extra == \"docs\"",
+          "furo==2024.8.6 ; extra == \"docs\"",
+          "sphinx-copybutton==0.5.2 ; extra == \"docs\"",
+          "sphinx-issues==5.0.0 ; extra == \"docs\"",
+          "sphinx==8.1.3 ; extra == \"docs\"",
+          "sphinxext-opengraph==0.9.1 ; extra == \"docs\"",
+          "pytest ; extra == \"tests\"",
+          "simplejson ; extra == \"tests\""
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Changelog, https://marshmallow.readthedocs.io/en/latest/changelog.html",
+          "Funding, https://opencollective.com/marshmallow",
+          "Issues, https://github.com/marshmallow-code/marshmallow/issues",
+          "Source, https://github.com/marshmallow-code/marshmallow",
+          "Tidelift, https://tidelift.com/subscription/pkg/pypi-marshmallow?utm_source=pypi-marshmallow&utm_medium=pypi"
+        ],
+        "provides_extra": [
+          "dev",
+          "docs",
+          "tests"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/65/f3/107a22063bf27bdccf2024833d3445f4eea42b2e598abfbd46f6a63b6cb0/typing_inspect-0.9.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=9ee6fc59062311ef8547596ab6b955e1b8aa46242d854bfc78f4f6b0eff35f9f",
+          "hashes": {
+            "sha256": "9ee6fc59062311ef8547596ab6b955e1b8aa46242d854bfc78f4f6b0eff35f9f"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "typing-inspect",
+        "version": "0.9.0",
+        "summary": "Runtime inspection utilities for typing module.",
+        "description": "Typing Inspect\n==============\n\nThe \"typing_inspect\" module defines experimental API for runtime\ninspection of types defined in the standard \"typing\" module.\n",
+        "keywords": [
+          "typing",
+          "function",
+          "annotations",
+          "type",
+          "hints",
+          "hinting",
+          "checking",
+          "checker",
+          "typehints",
+          "typehinting",
+          "typechecking",
+          "inspect",
+          "reflection",
+          "introspection"
+        ],
+        "home_page": "https://github.com/ilevkivskyi/typing_inspect",
+        "author": "Ivan Levkivskyi",
+        "author_email": "levkivskyi@gmail.com",
+        "license": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 3 - Alpha",
+          "Environment :: Console",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 2",
+          "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.5",
+          "Programming Language :: Python :: 3.6",
+          "Programming Language :: Python :: 3.7",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Topic :: Software Development"
+        ],
+        "requires_dist": [
+          "mypy-extensions (>=0.3.0)",
+          "typing-extensions (>=3.7.4)",
+          "typing (>=3.7.4) ; python_version < \"3.5\""
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/79/7b/2c79738432f5c924bef5071f933bcc9efd0473bac3b4aa584a6f7c1c8df8/mypy_extensions-1.1.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505",
+          "hashes": {
+            "sha256": "1be4cccdb0f2482337c4743e60421de3a356cd97508abadd57d47403e94f5505"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "mypy_extensions",
+        "version": "1.1.0",
+        "summary": "Type system extensions for programs checked with the mypy type checker.",
+        "description": "Mypy Extensions\n===============\n\nThe `mypy_extensions` module defines extensions to the Python standard\nlibrary `typing` module that are supported by the mypy type checker and\nthe mypyc compiler.\n\n",
+        "description_content_type": "text/markdown",
+        "author_email": "The mypy developers <jukka.lehtosalo@iki.fi>",
+        "license_expression": "MIT",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Environment :: Console",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Topic :: Software Development"
+        ],
+        "requires_python": ">=3.8",
+        "project_url": [
+          "Homepage, https://github.com/python/mypy_extensions"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/b7/b9/c538f279a4e237a006a2c98387d081e9eb060d203d8ed34467cc0f0b9b53/packaging-26.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=b36f1fef9334a5588b4166f8bcd26a14e521f2b55e6b9de3aaa80d3ff7a37529",
+          "hashes": {
+            "sha256": "b36f1fef9334a5588b4166f8bcd26a14e521f2b55e6b9de3aaa80d3ff7a37529"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "packaging",
+        "version": "26.0",
+        "summary": "Core utilities for Python packages",
+        "description": "packaging\n=========\n\n.. start-intro\n\nReusable core utilities for various Python Packaging\n`interoperability specifications <https://packaging.python.org/specifications/>`_.\n\nThis library provides utilities that implement the interoperability\nspecifications which have clearly one correct behaviour (eg: :pep:`440`)\nor benefit greatly from having a single shared implementation (eg: :pep:`425`).\n\n.. end-intro\n\nThe ``packaging`` project includes the following: version handling, specifiers,\nmarkers, requirements, tags, metadata, lockfiles, utilities.\n\nDocumentation\n-------------\n\nThe `documentation`_ provides information and the API for the following:\n\n- Version Handling\n- Specifiers\n- Markers\n- Requirements\n- Tags\n- Metadata\n- Lockfiles\n- Utilities\n\nInstallation\n------------\n\nUse ``pip`` to install these utilities::\n\n    pip install packaging\n\nThe ``packaging`` library uses calendar-based versioning (``YY.N``).\n\nDiscussion\n----------\n\nIf you run into bugs, you can file them in our `issue tracker`_.\n\nYou can also join ``#pypa`` on Freenode to ask questions or get involved.\n\n\n.. _`documentation`: https://packaging.pypa.io/\n.. _`issue tracker`: https://github.com/pypa/packaging/issues\n\n\nCode of Conduct\n---------------\n\nEveryone interacting in the packaging project's codebases, issue trackers, chat\nrooms, and mailing lists is expected to follow the `PSF Code of Conduct`_.\n\n.. _PSF Code of Conduct: https://github.com/pypa/.github/blob/main/CODE_OF_CONDUCT.md\n\nContributing\n------------\n\nThe ``CONTRIBUTING.rst`` file outlines how to contribute to this project as\nwell as how to report a potential security issue. The documentation for this\nproject also covers information about `project development`_ and `security`_.\n\n.. _`project development`: https://packaging.pypa.io/en/latest/development/\n.. _`security`: https://packaging.pypa.io/en/latest/security/\n\nProject History\n---------------\n\nPlease review the ``CHANGELOG.rst`` file or the `Changelog documentation`_ for\nrecent changes and project history.\n\n.. _`Changelog documentation`: https://packaging.pypa.io/en/latest/changelog/\n\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Donald Stufft <donald@stufft.io>",
+        "license_expression": "Apache-2.0 OR BSD-2-Clause",
+        "license_file": [
+          "LICENSE",
+          "LICENSE.APACHE",
+          "LICENSE.BSD"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Typing :: Typed"
+        ],
+        "requires_python": ">=3.8",
+        "project_url": [
+          "Documentation, https://packaging.pypa.io/",
+          "Source, https://github.com/pypa/packaging"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548",
+          "hashes": {
+            "sha256": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "typing_extensions",
+        "version": "4.15.0",
+        "summary": "Backported and Experimental Type Hints for Python 3.9+",
+        "description": "# Typing Extensions\n\n[![Chat at https://gitter.im/python/typing](https://badges.gitter.im/python/typing.svg)](https://gitter.im/python/typing)\n\n[Documentation](https://typing-extensions.readthedocs.io/en/latest/#) –\n[PyPI](https://pypi.org/project/typing-extensions/)\n\n## Overview\n\nThe `typing_extensions` module serves two related purposes:\n\n- Enable use of new type system features on older Python versions. For example,\n  `typing.TypeGuard` is new in Python 3.10, but `typing_extensions` allows\n  users on previous Python versions to use it too.\n- Enable experimentation with new type system PEPs before they are accepted and\n  added to the `typing` module.\n\n`typing_extensions` is treated specially by static type checkers such as\nmypy and pyright. Objects defined in `typing_extensions` are treated the same\nway as equivalent forms in `typing`.\n\n`typing_extensions` uses\n[Semantic Versioning](https://semver.org/). The\nmajor version will be incremented only for backwards-incompatible changes.\nTherefore, it's safe to depend\non `typing_extensions` like this: `typing_extensions ~=x.y`,\nwhere `x.y` is the first version that includes all features you need.\n[This](https://packaging.python.org/en/latest/specifications/version-specifiers/#compatible-release)\nis equivalent to `typing_extensions >=x.y, <(x+1)`. Do not depend on `~= x.y.z`\nunless you really know what you're doing; that defeats the purpose of\nsemantic versioning.\n\n## Included items\n\nSee [the documentation](https://typing-extensions.readthedocs.io/en/latest/#) for a\ncomplete listing of module contents.\n\n## Contributing\n\nSee [CONTRIBUTING.md](https://github.com/python/typing_extensions/blob/main/CONTRIBUTING.md)\nfor how to contribute to `typing_extensions`.\n\n",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "annotations",
+          "backport",
+          "checker",
+          "checking",
+          "function",
+          "hinting",
+          "hints",
+          "type",
+          "typechecking",
+          "typehinting",
+          "typehints",
+          "typing"
+        ],
+        "author_email": "\"Guido van Rossum, Jukka Lehtosalo, Łukasz Langa, Michael Lee\" <levkivskyi@gmail.com>",
+        "license_expression": "PSF-2.0",
+        "license_file": [
+          "LICENSE"
+        ],
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Environment :: Console",
+          "Intended Audience :: Developers",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Topic :: Software Development"
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Bug Tracker, https://github.com/python/typing_extensions/issues",
+          "Changes, https://github.com/python/typing_extensions/blob/main/CHANGELOG.md",
+          "Documentation, https://typing-extensions.readthedocs.io/",
+          "Home, https://github.com/python/typing_extensions",
+          "Q & A, https://github.com/python/typing/discussions",
+          "Repository, https://github.com/python/typing_extensions"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.14.3",
+    "os_name": "nt",
+    "platform_machine": "AMD64",
+    "platform_release": "11",
+    "platform_system": "Windows",
+    "platform_version": "10.0.26200",
+    "python_full_version": "3.14.3",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.14",
+    "sys_platform": "win32"
+  }
+}

@@ -28,11 +28,11 @@ class Test_ActualGeneration(unittest.TestCase):
         Create instance of ActualGeneration for testing
         """
         instance = ActualGeneration(
-            inDomain='dgzjbgwcnazshdnqayvb',
-            quantity=float(16.505727450282983),
-            resolution='orsqmzkznmarywgekhyo',
-            documentType='odqealczhfyptdupvwjn',
-            unitName='cowrighbwbxnhaaevkcb'
+            inDomain='qsmaazfhemflfuetckwq',
+            quantity=float(26.282509840868727),
+            resolution='pjeshqhkqxjojtciovrt',
+            documentType='nvgvnaqsscfpeqfukcip',
+            unitName='usqcrwfyehdyfuudoaki'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'dgzjbgwcnazshdnqayvb'
+        test_value = 'qsmaazfhemflfuetckwq'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(16.505727450282983)
+        test_value = float(26.282509840868727)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'orsqmzkznmarywgekhyo'
+        test_value = 'pjeshqhkqxjojtciovrt'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'odqealczhfyptdupvwjn'
+        test_value = 'nvgvnaqsscfpeqfukcip'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -73,7 +73,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'cowrighbwbxnhaaevkcb'
+        test_value = 'usqcrwfyehdyfuudoaki'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     

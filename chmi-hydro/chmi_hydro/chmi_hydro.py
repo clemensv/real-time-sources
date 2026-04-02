@@ -255,6 +255,13 @@ def feed_observations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer,
     return sent_count
 
 
+def feed_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer) -> int:
+    """Fetch all stations and observations and send to Kafka. Returns total events sent."""
+    station_ids, stations_by_id = send_stations(api, producer)
+    obs_count = feed_observations(api, producer, station_ids, stations_by_id, {})
+    return len(station_ids) + obs_count
+
+
 def main():
     """Main entry point for the ČHMÚ Hydro bridge."""
     parser = argparse.ArgumentParser(description="ČHMÚ Hydrological Data Bridge")

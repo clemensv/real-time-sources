@@ -36,8 +36,8 @@ from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAND
 
 # imports for the data classes for each event
 
-from noaa_ndbc_producer_data.microsoft.opendata.us.noaa.ndbc.buoyobservation import BuoyObservation
-from noaa_ndbc_producer_data.microsoft.opendata.us.noaa.ndbc.buoystation import BuoyStation
+from noaa_ndbc_producer_data.buoyobservation import BuoyObservation
+from noaa_ndbc_producer_data.buoystation import BuoyStation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

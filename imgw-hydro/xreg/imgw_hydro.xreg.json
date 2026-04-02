@@ -1,114 +1,335 @@
 {
-    "endpoints": {
-        "PL.Gov.IMGW.Hydro.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "imgw-hydro"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/PL.Gov.IMGW.Hydro"
-            ]
+  "endpoints": {
+    "PL.Gov.IMGW.Hydro.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "imgw-hydro"
         }
-    },
-    "messagegroups": {
-        "PL.Gov.IMGW.Hydro": {
-            "messages": {
-                "PL.Gov.IMGW.Hydro.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "PL.Gov.IMGW.Hydro.Station"
-                        },
-                        "source": {
-                            "value": "https://danepubliczne.imgw.pl"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro/schemas/PL.Gov.IMGW.Hydro.Station"
-                },
-                "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
-                    "name": "WaterLevelObservation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "PL.Gov.IMGW.Hydro.WaterLevelObservation"
-                        },
-                        "source": {
-                            "value": "https://danepubliczne.imgw.pl"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "PL.Gov.IMGW.Hydro": {
-            "schemas": {
-                "PL.Gov.IMGW.Hydro.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "PL.Gov.IMGW.Hydro",
-                                "properties": {
-                                    "id_stacji": { "type": "string", "description": "Unique station identifier" },
-                                    "stacja": { "type": "string", "description": "Station name" },
-                                    "rzeka": { "type": "string", "description": "River name" },
-                                    "wojewodztwo": { "type": "string", "description": "Voivodeship (province)" },
-                                    "longitude": { "type": "number", "description": "Longitude in WGS84" },
-                                    "latitude": { "type": "number", "description": "Latitude in WGS84" }
-                                },
-                                "required": ["id_stacji", "stacja"]
-                            }
-                        }
-                    }
-                },
-                "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "WaterLevelObservation",
-                                "namespace": "PL.Gov.IMGW.Hydro",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Station identifier" },
-                                    "station_name": { "type": "string", "description": "Station name" },
-                                    "river": { "type": "string", "description": "River name" },
-                                    "voivodeship": { "type": "string", "description": "Voivodeship (province)" },
-                                    "water_level": { "type": "number", "description": "Water level in cm" },
-                                    "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp" },
-                                    "water_temperature": { "type": "number", "description": "Water temperature in °C" },
-                                    "water_temperature_timestamp": { "type": "string", "format": "date-time", "description": "Water temperature measurement timestamp" },
-                                    "discharge": { "type": "number", "description": "Discharge (flow rate) in m³/s" },
-                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp" },
-                                    "ice_phenomenon_code": { "type": "string", "description": "Ice phenomenon code" },
-                                    "overgrowth_code": { "type": "string", "description": "Vegetation overgrowth code" }
-                                },
-                                "required": ["station_id", "station_name", "water_level", "water_level_timestamp"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/PL.Gov.IMGW.Hydro"
+      ]
     }
+  },
+  "messagegroups": {
+    "PL.Gov.IMGW.Hydro": {
+      "messages": {
+        "PL.Gov.IMGW.Hydro.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "PL.Gov.IMGW.Hydro.Station"
+            },
+            "source": {
+              "value": "https://danepubliczne.imgw.pl"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.jstruct/schemas/PL.Gov.IMGW.Hydro.Station"
+        },
+        "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "PL.Gov.IMGW.Hydro.WaterLevelObservation"
+            },
+            "source": {
+              "value": "https://danepubliczne.imgw.pl"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.jstruct/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "PL.Gov.IMGW.Hydro.jstruct": {
+      "schemas": {
+        "PL.Gov.IMGW.Hydro.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "id_stacji",
+                  "stacja"
+                ],
+                "name": "Station",
+                "properties": {
+                  "id_stacji": {
+                    "type": "string"
+                  },
+                  "stacja": {
+                    "type": "string"
+                  },
+                  "rzeka": {
+                    "type": "string"
+                  },
+                  "wojewodztwo": {
+                    "type": "string"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  }
+                },
+                "$id": "https://example.com/PL/Gov/IMGW/Hydro.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "water_level",
+                  "water_level_timestamp"
+                ],
+                "name": "WaterLevelObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "station_name": {
+                    "type": "string"
+                  },
+                  "river": {
+                    "type": "string"
+                  },
+                  "voivodeship": {
+                    "type": "string"
+                  },
+                  "water_level": {
+                    "type": "double"
+                  },
+                  "water_level_timestamp": {
+                    "type": "datetime"
+                  },
+                  "water_temperature": {
+                    "type": "double"
+                  },
+                  "water_temperature_timestamp": {
+                    "type": "datetime"
+                  },
+                  "discharge": {
+                    "type": "double"
+                  },
+                  "discharge_timestamp": {
+                    "type": "datetime"
+                  },
+                  "ice_phenomenon_code": {
+                    "type": "string"
+                  },
+                  "overgrowth_code": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/PL/Gov/IMGW/Hydro.schema.json",
+                "description": "WaterLevelObservation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.avro": {
+      "schemas": {
+        "PL.Gov.IMGW.Hydro.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "id_stacji",
+                    "type": "string"
+                  },
+                  {
+                    "name": "stacja",
+                    "type": "string"
+                  },
+                  {
+                    "name": "rzeka",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wojewodztwo",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "PL.Gov.IMGW.Hydro"
+              }
+            }
+          }
+        },
+        "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevelObservation",
+                "doc": "WaterLevelObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "river",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "voivodeship",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_level",
+                    "type": "double"
+                  },
+                  {
+                    "name": "water_level_timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "water_temperature",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_temperature_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ice_phenomenon_code",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "overgrowth_code",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "PL.Gov.IMGW.Hydro"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

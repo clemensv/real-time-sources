@@ -36,8 +36,8 @@ from german_waters_producer_kafka_producer.producer import DEWatersHydrologyEven
 
 # imports for the data classes for each event
 
-from german_waters_producer_data.de.waters.hydrology.station import Station
-from german_waters_producer_data.de.waters.hydrology.waterlevelobservation import WaterLevelObservation
+from german_waters_producer_data.station import Station
+from german_waters_producer_data.waterlevelobservation import WaterLevelObservation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

@@ -157,8 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataRssFeedsProducer- `data`: The event data of type
-`rssbridge_producer_data.microsoft.opendata.rssfeeds.FeedItem`.
+### MicrosoftOpenDataRssFeedsProducer- `data`: The event data of type `rssbridge_producer_data.FeedItem`.
 
 
 

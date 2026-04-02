@@ -1,6 +1,6 @@
 
 
-# Bluesky-producer Kafka Producer# Bluesky-producer Event Dispatcher for Apache Kafka
+# Bluesky_producer Kafka Producer# Bluesky_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from bluesky-producer import BlueskyFirehoseProducer```python
+from bluesky_producer import BlueskyFirehoseProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -156,7 +156,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.bluesky.feed.Post`.
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Post`.
 
 
 
@@ -217,7 +217,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.bluesky.feed.Like`.
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Like`.
 
 
 
@@ -279,7 +279,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.bluesky.feed.Repost`.
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
 
 
 
@@ -341,7 +341,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.bluesky.graph.Follow`.
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
 
 
 
@@ -403,7 +403,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.bluesky.graph.Block`.
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Block`.
 
 
 
@@ -465,7 +465,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.bluesky.actor.Profile`.
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
 
 
 

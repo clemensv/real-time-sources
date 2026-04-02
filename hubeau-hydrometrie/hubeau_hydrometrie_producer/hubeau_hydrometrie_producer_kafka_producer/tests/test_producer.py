@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
 from hubeau_hydrometrie_producer_data import Station
-from test_hubeau_hydrometrie_producer_data_fr_gov_eaufrance_hubeau_hydrometrie_station import Test_Station
+from test_hubeau_hydrometrie_producer_data_station import Test_Station
 from hubeau_hydrometrie_producer_data import Observation
-from test_hubeau_hydrometrie_producer_data_fr_gov_eaufrance_hubeau_hydrometrie_observation import Test_Observation
+from test_hubeau_hydrometrie_producer_data_observation import Test_Observation
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

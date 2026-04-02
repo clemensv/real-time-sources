@@ -27,21 +27,17 @@ SAMPLE_ALERTS_RESPONSE = [
 ]
 
 SAMPLE_K_INDEX_RESPONSE = [
-    ["time_tag", "Kp", "a_running", "station_count"],
-    ["2024-01-01 00:00:00.000", "2", "5", "8"],
-    ["2024-01-01 03:00:00.000", "4", "15", "8"]
+    {"time_tag": "2024-01-01 00:00:00.000", "Kp": 2, "a_running": 5, "station_count": 8},
+    {"time_tag": "2024-01-01 03:00:00.000", "Kp": 4, "a_running": 15, "station_count": 8}
 ]
 
-SAMPLE_SOLAR_WIND_SPEED_RESPONSE = {
-    "TimeStamp": "2024-01-01T00:05:00Z",
-    "WindSpeed": "425.3"
-}
+SAMPLE_SOLAR_WIND_SPEED_RESPONSE = [
+    {"proton_speed": 425.3, "time_tag": "2024-01-01T00:05:00Z"}
+]
 
-SAMPLE_SOLAR_WIND_MAG_FIELD_RESPONSE = {
-    "TimeStamp": "2024-01-01T00:05:00Z",
-    "Bt": "5.2",
-    "Bz": "-1.3"
-}
+SAMPLE_SOLAR_WIND_MAG_FIELD_RESPONSE = [
+    {"bt": 5.2, "bz_gsm": -1.3, "time_tag": "2024-01-01T00:05:00Z"}
+]
 
 
 @pytest.mark.integration
@@ -193,13 +189,13 @@ class TestSWPCContainerIntegration:
 
         for row in rows:
             kindex = PlanetaryKIndex(
-                time_tag=str(row[0]),
-                kp=float(row[1]),
-                a_running=float(row[2]),
-                station_count=float(row[3])
+                time_tag=str(row["time_tag"]),
+                kp=float(row["Kp"]),
+                a_running=float(row["a_running"]),
+                station_count=float(row["station_count"])
             )
             poller.producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(
-                kindex, str(row[0]), flush_producer=False)
+                kindex, str(row["time_tag"]), flush_producer=False)
 
         poller.producer.producer.flush()
 

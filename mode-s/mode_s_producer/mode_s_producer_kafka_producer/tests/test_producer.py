@@ -20,7 +20,7 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from mode_s_producer_kafka_producer.producer import ModeSEventProducer
 from mode_s_producer_data import Messages
-from test_mode_s_producer_data_mode_s_messages import Test_Messages
+from test_mode_s_producer_data_messages import Test_Messages
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

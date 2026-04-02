@@ -1,204 +1,384 @@
 {
-    "endpoints": {
-        "Microsoft.OpenData.US.NOAA.NDBC.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "noaa-ndbc"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC"
-            ]
+  "endpoints": {
+    "Microsoft.OpenData.US.NOAA.NDBC.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-ndbc"
         }
-    },
-    "messagegroups": {
-        "Microsoft.OpenData.US.NOAA.NDBC": {
-            "messages": {
-                "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
-                    "name": "BuoyObservation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
-                        },
-                        "source": {
-                            "value": "https://www.ndbc.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
-                },
-                "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
-                    "name": "BuoyStation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
-                        },
-                        "source": {
-                            "value": "https://www.ndbc.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "Microsoft.OpenData.US.NOAA.NDBC": {
-            "schemas": {
-                "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "BuoyObservation",
-                                "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
-                                "properties": {
-                                    "station_id": {
-                                        "type": "string",
-                                        "description": "NDBC station identifier"
-                                    },
-                                    "latitude": {
-                                        "type": "number",
-                                        "description": "Station latitude",
-                                        "unit": "degrees"
-                                    },
-                                    "longitude": {
-                                        "type": "number",
-                                        "description": "Station longitude",
-                                        "unit": "degrees"
-                                    },
-                                    "timestamp": {
-                                        "type": "string",
-                                        "format": "date-time",
-                                        "description": "ISO timestamp of observation"
-                                    },
-                                    "wind_direction": {
-                                        "type": "number",
-                                        "description": "Wind direction",
-                                        "unit": "degrees"
-                                    },
-                                    "wind_speed": {
-                                        "type": "number",
-                                        "description": "Wind speed",
-                                        "unit": "m/s"
-                                    },
-                                    "gust": {
-                                        "type": "number",
-                                        "description": "Wind gust speed",
-                                        "unit": "m/s"
-                                    },
-                                    "wave_height": {
-                                        "type": "number",
-                                        "description": "Significant wave height",
-                                        "unit": "meters"
-                                    },
-                                    "dominant_wave_period": {
-                                        "type": "number",
-                                        "description": "Dominant wave period",
-                                        "unit": "seconds"
-                                    },
-                                    "average_wave_period": {
-                                        "type": "number",
-                                        "description": "Average wave period",
-                                        "unit": "seconds"
-                                    },
-                                    "mean_wave_direction": {
-                                        "type": "number",
-                                        "description": "Mean wave direction",
-                                        "unit": "degrees"
-                                    },
-                                    "pressure": {
-                                        "type": "number",
-                                        "description": "Sea level pressure",
-                                        "unit": "hPa"
-                                    },
-                                    "air_temperature": {
-                                        "type": "number",
-                                        "description": "Air temperature",
-                                        "unit": "celsius"
-                                    },
-                                    "water_temperature": {
-                                        "type": "number",
-                                        "description": "Sea surface temperature",
-                                        "unit": "celsius"
-                                    },
-                                    "dewpoint": {
-                                        "type": "number",
-                                        "description": "Dewpoint temperature",
-                                        "unit": "celsius"
-                                    }
-                                },
-                                "required": ["station_id", "latitude", "longitude", "timestamp"]
-                            }
-                        }
-                    },
-                    "defaultversionid": "1.0"
-                },
-                "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "BuoyStation",
-                                "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
-                                "properties": {
-                                    "station_id": {
-                                        "type": "string",
-                                        "description": "NDBC station identifier"
-                                    },
-                                    "owner": {
-                                        "type": "string",
-                                        "description": "Station owner organization"
-                                    },
-                                    "station_type": {
-                                        "type": "string",
-                                        "description": "Station type (e.g., Weather Buoy, C-MAN Station)"
-                                    },
-                                    "hull": {
-                                        "type": "string",
-                                        "description": "Hull type"
-                                    },
-                                    "name": {
-                                        "type": "string",
-                                        "description": "Station name and location description"
-                                    },
-                                    "latitude": {
-                                        "type": "number",
-                                        "description": "Station latitude in decimal degrees"
-                                    },
-                                    "longitude": {
-                                        "type": "number",
-                                        "description": "Station longitude in decimal degrees"
-                                    },
-                                    "timezone": {
-                                        "type": "string",
-                                        "description": "Station timezone"
-                                    }
-                                },
-                                "required": ["station_id", "name"]
-                            }
-                        }
-                    },
-                    "defaultversionid": "1.0"
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC"
+      ]
     }
+  },
+  "messagegroups": {
+    "Microsoft.OpenData.US.NOAA.NDBC": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
+          "name": "BuoyObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
+          "name": "BuoyStation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Microsoft.OpenData.US.NOAA.NDBC.jstruct": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
+          "name": "BuoyObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "latitude",
+                  "longitude",
+                  "timestamp"
+                ],
+                "name": "BuoyObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  },
+                  "timestamp": {
+                    "type": "datetime"
+                  },
+                  "wind_direction": {
+                    "type": "double"
+                  },
+                  "wind_speed": {
+                    "type": "double"
+                  },
+                  "gust": {
+                    "type": "double"
+                  },
+                  "wave_height": {
+                    "type": "double"
+                  },
+                  "dominant_wave_period": {
+                    "type": "double"
+                  },
+                  "average_wave_period": {
+                    "type": "double"
+                  },
+                  "mean_wave_direction": {
+                    "type": "double"
+                  },
+                  "pressure": {
+                    "type": "double"
+                  },
+                  "air_temperature": {
+                    "type": "double"
+                  },
+                  "water_temperature": {
+                    "type": "double"
+                  },
+                  "dewpoint": {
+                    "type": "double"
+                  }
+                },
+                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/NDBC.schema.json",
+                "description": "BuoyObservation"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
+          "name": "BuoyStation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "name"
+                ],
+                "name": "BuoyStation",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "owner": {
+                    "type": "string"
+                  },
+                  "station_type": {
+                    "type": "string"
+                  },
+                  "hull": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  },
+                  "timezone": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/NDBC.schema.json",
+                "description": "BuoyStation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.avro": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation": {
+          "name": "BuoyObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoyObservation",
+                "doc": "BuoyObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "wind_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wind_speed",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "gust",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wave_height",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "dominant_wave_period",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "average_wave_period",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "mean_wave_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "pressure",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "air_temperature",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_temperature",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "dewpoint",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation": {
+          "name": "BuoyStation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoyStation",
+                "doc": "BuoyStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "owner",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "station_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "hull",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "timezone",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

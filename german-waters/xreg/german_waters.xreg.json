@@ -1,121 +1,409 @@
 {
-    "endpoints": {
-        "DE.Waters.Hydrology.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "german-waters"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/DE.Waters.Hydrology"
-            ]
+  "endpoints": {
+    "DE.Waters.Hydrology.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "german-waters"
         }
-    },
-    "messagegroups": {
-        "DE.Waters.Hydrology": {
-            "messages": {
-                "DE.Waters.Hydrology.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "DE.Waters.Hydrology.Station"
-                        },
-                        "source": {
-                            "value": "https://github.com/clemensv/real-time-sources/german-waters"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/DE.Waters.Hydrology/schemas/DE.Waters.Hydrology.Station"
-                },
-                "DE.Waters.Hydrology.WaterLevelObservation": {
-                    "name": "WaterLevelObservation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "DE.Waters.Hydrology.WaterLevelObservation"
-                        },
-                        "source": {
-                            "value": "https://github.com/clemensv/real-time-sources/german-waters"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/DE.Waters.Hydrology/schemas/DE.Waters.Hydrology.WaterLevelObservation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "DE.Waters.Hydrology": {
-            "schemas": {
-                "DE.Waters.Hydrology.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "DE.Waters.Hydrology",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Station identifier (provider-specific)" },
-                                    "station_name": { "type": "string", "description": "Station name" },
-                                    "water_body": { "type": "string", "description": "Water body name (river, lake, canal)" },
-                                    "state": { "type": "string", "description": "German federal state (Bundesland)" },
-                                    "region": { "type": "string", "description": "Region or catchment area" },
-                                    "provider": { "type": "string", "description": "Data provider name" },
-                                    "latitude": { "type": "number", "description": "Latitude in WGS84" },
-                                    "longitude": { "type": "number", "description": "Longitude in WGS84" },
-                                    "river_km": { "type": "number", "description": "Position on the waterway in kilometers" },
-                                    "altitude": { "type": "number", "description": "Gauge zero altitude in meters above sea level" },
-                                    "station_type": { "type": "string", "description": "Station type (e.g. surfacewater, groundwater)" },
-                                    "warn_level_cm": { "type": "number", "description": "Warning water level threshold in cm" },
-                                    "alarm_level_cm": { "type": "number", "description": "Alarm water level threshold in cm" },
-                                    "warn_level_m3s": { "type": "number", "description": "Warning discharge threshold in m3/s" },
-                                    "alarm_level_m3s": { "type": "number", "description": "Alarm discharge threshold in m3/s" }
-                                },
-                                "required": ["station_id", "station_name", "water_body", "provider"]
-                            }
-                        }
-                    }
-                },
-                "DE.Waters.Hydrology.WaterLevelObservation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "WaterLevelObservation",
-                                "namespace": "DE.Waters.Hydrology",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Station identifier" },
-                                    "provider": { "type": "string", "description": "Data provider name" },
-                                    "water_level": { "type": "number", "description": "Water level in cm" },
-                                    "water_level_unit": { "type": "string", "description": "Water level unit (cm)" },
-                                    "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp (ISO 8601)" },
-                                    "discharge": { "type": "number", "description": "Discharge (flow rate) in m3/s" },
-                                    "discharge_unit": { "type": "string", "description": "Discharge unit (m3/s)" },
-                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp (ISO 8601)" },
-                                    "trend": { "type": "integer", "description": "Water level trend (-10=falling, 0=stable, 10=rising)" },
-                                    "situation": { "type": "integer", "description": "Flood situation severity (10=low, 20=minor, 30=moderate, 40=major, 50=extreme)" }
-                                },
-                                "required": ["station_id", "provider"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.Waters.Hydrology"
+      ]
     }
+  },
+  "messagegroups": {
+    "DE.Waters.Hydrology": {
+      "messages": {
+        "DE.Waters.Hydrology.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Waters.Hydrology.Station"
+            },
+            "source": {
+              "value": "https://github.com/clemensv/real-time-sources/german-waters"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.Station"
+        },
+        "DE.Waters.Hydrology.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Waters.Hydrology.WaterLevelObservation"
+            },
+            "source": {
+              "value": "https://github.com/clemensv/real-time-sources/german-waters"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "DE.Waters.Hydrology.jstruct": {
+      "schemas": {
+        "DE.Waters.Hydrology.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "water_body",
+                  "provider"
+                ],
+                "name": "Station",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "station_name": {
+                    "type": "string"
+                  },
+                  "water_body": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  },
+                  "region": {
+                    "type": "string"
+                  },
+                  "provider": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  },
+                  "river_km": {
+                    "type": "double"
+                  },
+                  "altitude": {
+                    "type": "double"
+                  },
+                  "station_type": {
+                    "type": "string"
+                  },
+                  "warn_level_cm": {
+                    "type": "double"
+                  },
+                  "alarm_level_cm": {
+                    "type": "double"
+                  },
+                  "warn_level_m3s": {
+                    "type": "double"
+                  },
+                  "alarm_level_m3s": {
+                    "type": "double"
+                  }
+                },
+                "$id": "https://example.com/DE/Waters/Hydrology.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "DE.Waters.Hydrology.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "provider"
+                ],
+                "name": "WaterLevelObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "provider": {
+                    "type": "string"
+                  },
+                  "water_level": {
+                    "type": "double"
+                  },
+                  "water_level_unit": {
+                    "type": "string"
+                  },
+                  "water_level_timestamp": {
+                    "type": "datetime"
+                  },
+                  "discharge": {
+                    "type": "double"
+                  },
+                  "discharge_unit": {
+                    "type": "string"
+                  },
+                  "discharge_timestamp": {
+                    "type": "datetime"
+                  },
+                  "trend": {
+                    "type": "int32"
+                  },
+                  "situation": {
+                    "type": "int32"
+                  }
+                },
+                "$id": "https://example.com/DE/Waters/Hydrology.schema.json",
+                "description": "WaterLevelObservation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.Waters.Hydrology.avro": {
+      "schemas": {
+        "DE.Waters.Hydrology.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "water_body",
+                    "type": "string"
+                  },
+                  {
+                    "name": "state",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "region",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "provider",
+                    "type": "string"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "river_km",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "altitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "station_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "warn_level_cm",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "alarm_level_cm",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "warn_level_m3s",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "alarm_level_m3s",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "DE.Waters.Hydrology"
+              }
+            }
+          }
+        },
+        "DE.Waters.Hydrology.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevelObservation",
+                "doc": "WaterLevelObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "provider",
+                    "type": "string"
+                  },
+                  {
+                    "name": "water_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_unit",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_unit",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "trend",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "situation",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "DE.Waters.Hydrology"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

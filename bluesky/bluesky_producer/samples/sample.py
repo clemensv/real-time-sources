@@ -36,12 +36,12 @@ from bluesky_producer_kafka_producer.producer import BlueskyFirehoseEventProduce
 
 # imports for the data classes for each event
 
-from bluesky_producer_data.bluesky.feed.post import Post
-from bluesky_producer_data.bluesky.feed.like import Like
-from bluesky_producer_data.bluesky.feed.repost import Repost
-from bluesky_producer_data.bluesky.graph.follow import Follow
-from bluesky_producer_data.bluesky.graph.block import Block
-from bluesky_producer_data.bluesky.actor.profile import Profile
+from bluesky_producer_data.post import Post
+from bluesky_producer_data.like import Like
+from bluesky_producer_data.repost import Repost
+from bluesky_producer_data.follow import Follow
+from bluesky_producer_data.block import Block
+from bluesky_producer_data.profile import Profile
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

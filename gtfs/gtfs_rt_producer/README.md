@@ -163,8 +163,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.VehiclePosition`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.VehiclePosition`.
 
 
 
@@ -203,8 +202,7 @@ general_transit_feed_real_time_vehicle_vehicle_position_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.VehiclePosition`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.VehiclePosition`.
 
 
 
@@ -268,8 +266,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedrealtime.trip.TripUpdate`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.TripUpdate`.
 
 
 
@@ -308,8 +305,7 @@ general_transit_feed_real_time_trip_trip_update_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedrealtime.trip.TripUpdate`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.TripUpdate`.
 
 
 
@@ -373,8 +369,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedrealtime.alert.Alert`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Alert`.
 
 
 
@@ -413,8 +408,7 @@ general_transit_feed_real_time_alert_alert_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedrealtime.alert.Alert`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Alert`.
 
 
 
@@ -881,8 +875,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Agency`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Agency`.
 
 
 
@@ -921,8 +914,7 @@ general_transit_feed_static_agency_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Agency`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Agency`.
 
 
 
@@ -986,8 +978,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Areas`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Areas`.
 
 
 
@@ -1025,8 +1016,7 @@ general_transit_feed_static_areas_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Areas`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Areas`.
 
 
 
@@ -1088,8 +1078,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Attributions`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Attributions`.
 
 
 
@@ -1128,8 +1117,7 @@ general_transit_feed_static_attributions_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Attributions`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Attributions`.
 
 
 
@@ -1193,8 +1181,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.BookingRules`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.BookingRules`.
 
 
 
@@ -1233,8 +1220,7 @@ general_transit_feed_booking_rules_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.BookingRules`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.BookingRules`.
 
 
 
@@ -1298,8 +1284,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareAttributes`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.FareAttributes`.
 
 
 
@@ -1338,8 +1323,7 @@ general_transit_feed_static_fare_attributes_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareAttributes`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.FareAttributes`.
 
 
 
@@ -1403,8 +1387,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareLegRules`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.FareLegRules`.
 
 
 
@@ -1443,8 +1426,7 @@ general_transit_feed_static_fare_leg_rules_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareLegRules`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.FareLegRules`.
 
 
 
@@ -1508,8 +1490,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareMedia`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.FareMedia`.
 
 
 
@@ -1548,8 +1529,7 @@ general_transit_feed_static_fare_media_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareMedia`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.FareMedia`.
 
 
 
@@ -1613,8 +1593,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareProducts`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.FareProducts`.
 
 
 
@@ -1653,8 +1632,7 @@ general_transit_feed_static_fare_products_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareProducts`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.FareProducts`.
 
 
 
@@ -1718,8 +1696,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareRules`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.FareRules`.
 
 
 
@@ -1758,8 +1735,7 @@ general_transit_feed_static_fare_rules_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareRules`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.FareRules`.
 
 
 
@@ -1823,8 +1799,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareTransferRules`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.FareTransferRules`.
 
 
 
@@ -1863,8 +1838,7 @@ general_transit_feed_static_fare_transfer_rules_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FareTransferRules`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.FareTransferRules`.
 
 
 
@@ -1928,8 +1902,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FeedInfo`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.FeedInfo`.
 
 
 
@@ -1968,8 +1941,7 @@ general_transit_feed_static_feed_info_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.FeedInfo`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.FeedInfo`.
 
 
 
@@ -2033,8 +2005,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Frequencies`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Frequencies`.
 
 
 
@@ -2073,8 +2044,7 @@ general_transit_feed_static_frequencies_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Frequencies`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Frequencies`.
 
 
 
@@ -2138,8 +2108,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Levels`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Levels`.
 
 
 
@@ -2178,8 +2147,7 @@ general_transit_feed_static_levels_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Levels`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Levels`.
 
 
 
@@ -2243,8 +2211,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.LocationGeoJson`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.LocationGeoJson`.
 
 
 
@@ -2283,8 +2250,7 @@ general_transit_feed_static_location_geo_json_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.LocationGeoJson`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.LocationGeoJson`.
 
 
 
@@ -2348,8 +2314,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.LocationGroups`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.LocationGroups`.
 
 
 
@@ -2388,8 +2353,7 @@ general_transit_feed_static_location_groups_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.LocationGroups`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.LocationGroups`.
 
 
 
@@ -2453,8 +2417,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.LocationGroupStores`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.LocationGroupStores`.
 
 
 
@@ -2493,8 +2456,7 @@ general_transit_feed_static_location_group_stores_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.LocationGroupStores`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.LocationGroupStores`.
 
 
 
@@ -2558,8 +2520,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Networks`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Networks`.
 
 
 
@@ -2598,8 +2559,7 @@ general_transit_feed_static_networks_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Networks`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Networks`.
 
 
 
@@ -2663,8 +2623,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Pathways`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Pathways`.
 
 
 
@@ -2703,8 +2662,7 @@ general_transit_feed_static_pathways_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Pathways`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Pathways`.
 
 
 
@@ -2768,8 +2726,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.RouteNetworks`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.RouteNetworks`.
 
 
 
@@ -2808,8 +2765,7 @@ general_transit_feed_static_route_networks_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.RouteNetworks`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.RouteNetworks`.
 
 
 
@@ -2873,8 +2829,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Routes`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Routes`.
 
 
 
@@ -2913,8 +2868,7 @@ general_transit_feed_static_routes_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Routes`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Routes`.
 
 
 
@@ -2978,8 +2932,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Shapes`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Shapes`.
 
 
 
@@ -3018,8 +2971,7 @@ general_transit_feed_static_shapes_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Shapes`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Shapes`.
 
 
 
@@ -3083,8 +3035,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.StopAreas`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.StopAreas`.
 
 
 
@@ -3123,8 +3074,7 @@ general_transit_feed_static_stop_areas_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.StopAreas`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.StopAreas`.
 
 
 
@@ -3188,8 +3138,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Stops`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Stops`.
 
 
 
@@ -3227,8 +3176,7 @@ general_transit_feed_static_stops_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Stops`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Stops`.
 
 
 
@@ -3290,8 +3238,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.StopTimes`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.StopTimes`.
 
 
 
@@ -3330,8 +3277,7 @@ general_transit_feed_static_stop_times_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.StopTimes`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.StopTimes`.
 
 
 
@@ -3395,8 +3341,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Timeframes`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Timeframes`.
 
 
 
@@ -3435,8 +3380,7 @@ general_transit_feed_static_timeframes_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Timeframes`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Timeframes`.
 
 
 
@@ -3500,8 +3444,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Transfers`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Transfers`.
 
 
 
@@ -3540,8 +3483,7 @@ general_transit_feed_static_transfers_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Transfers`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Transfers`.
 
 
 
@@ -3605,8 +3547,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Translations`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Translations`.
 
 
 
@@ -3645,8 +3586,7 @@ general_transit_feed_static_translations_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Translations`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Translations`.
 
 
 
@@ -3710,8 +3650,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedRealTimeProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Trips`.
+### GeneralTransitFeedRealTimeProducer- `data`: The event data of type `gtfs_rt_producer_data.Trips`.
 
 
 
@@ -3749,8 +3688,7 @@ general_transit_feed_static_trips_event
 
 - `cloud_event`: The CloudEvent.
 
-### GeneralTransitFeedStaticProducer- `data`: The event data of type
-`gtfs_rt_producer_data.generaltransitfeedstatic.Trips`.
+### GeneralTransitFeedStaticProducer- `data`: The event data of type `gtfs_rt_producer_data.Trips`.
 
 
 

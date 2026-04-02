@@ -1,639 +1,1029 @@
 {
-    "endpoints": {
-        "Microsoft.OpenData.RssFeeds.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "rss-feeds"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/Microsoft.OpenData.RssFeeds"
-            ]
+  "endpoints": {
+    "Microsoft.OpenData.RssFeeds.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "rss-feeds"
         }
-    },
-    "messagegroups": {
-        "Microsoft.OpenData.RssFeeds": {
-            "messages": {
-                "Microsoft.OpenData.RssFeeds.FeedItem": {
-                    "name": "FeedItem",
-                    "description": "A new item has been added to the RSS feed.",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.RssFeeds.FeedItem"
-                        },
-                        "source": {
-                            "type": "uritemplate",
-                            "value": "{sourceurl}"
-                        },
-                        "subject": {
-                            "type": "uritemplate",
-                            "value": "{item_id}"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "Microsoft.OpenData.RssFeeds": {
-            "schemas": {
-                "Microsoft.OpenData.RssFeeds.FeedItem": {
-                    "name": "FeedItem",
-                    "format": "Avro/1.11.3",
-                    "description": "Schema for the FeedItem event in the RssFeeds message group.",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "FeedItem",
-                                "namespace": "Microsoft.OpenData.RssFeeds",
-                                "doc": "Represents an item in an RSS feed, containing metadata such as the author, title, and content.",
-                                "fields": [
-                                    {
-                                        "name": "author",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "record",
-                                                "name": "FeedItemAuthor",
-                                                "namespace": "Microsoft.OpenData.RssFeeds",
-                                                "doc": "Contains information about the author of the feed item.",
-                                                "fields": [
-                                                    {
-                                                        "name": "name",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The full name of the author."
-                                                    },
-                                                    {
-                                                        "name": "href",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A URL associated with the author, such as a personal website or profile."
-                                                    },
-                                                    {
-                                                        "name": "email",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The author's email address."
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "Information about the feed item's author."
-                                    },
-                                    {
-                                        "name": "publisher",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "record",
-                                                "name": "FeedItemPublisher",
-                                                "namespace": "Microsoft.OpenData.RssFeeds",
-                                                "doc": "Contains information about the publisher of the feed item.",
-                                                "fields": [
-                                                    {
-                                                        "name": "name",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The name of the publisher."
-                                                    },
-                                                    {
-                                                        "name": "href",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A URL associated with the publisher."
-                                                    },
-                                                    {
-                                                        "name": "email",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The publisher's email address."
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "Information about the feed item's publisher."
-                                    },
-                                    {
-                                        "name": "summary",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "record",
-                                                "name": "FeedItemSummary",
-                                                "namespace": "Microsoft.OpenData.RssFeeds",
-                                                "doc": "A brief summary or abstract of the feed item.",
-                                                "fields": [
-                                                    {
-                                                        "name": "value",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The text content of the summary."
-                                                    },
-                                                    {
-                                                        "name": "type",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The content type of the summary, such as 'text/plain' or 'text/html'."
-                                                    },
-                                                    {
-                                                        "name": "language",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The language of the summary content."
-                                                    },
-                                                    {
-                                                        "name": "base",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The base URI for resolving relative URIs within the summary."
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "A short summary of the feed item."
-                                    },
-                                    {
-                                        "name": "title",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "record",
-                                                "name": "FeedItemTitle",
-                                                "namespace": "Microsoft.OpenData.RssFeeds",
-                                                "doc": "The title of the feed item.",
-                                                "fields": [
-                                                    {
-                                                        "name": "value",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The text content of the title."
-                                                    },
-                                                    {
-                                                        "name": "type",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The content type of the title."
-                                                    },
-                                                    {
-                                                        "name": "language",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The language of the title."
-                                                    },
-                                                    {
-                                                        "name": "base",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The base URI for resolving relative URIs within the title."
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "The feed item's title."
-                                    },
-                                    {
-                                        "name": "source",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "record",
-                                                "name": "FeedItemSource",
-                                                "namespace": "Microsoft.OpenData.RssFeeds",
-                                                "doc": "Metadata about the original source feed, useful if the item was republished from another feed.",
-                                                "fields": [
-                                                    {
-                                                        "name": "author",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The name of the original author."
-                                                    },
-                                                    {
-                                                        "name": "author_detail",
-                                                        "type": [
-                                                            "null",
-                                                            "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "Detailed information about the original author."
-                                                    },
-                                                    {
-                                                        "name": "contributors",
-                                                        "type": [
-                                                            "null",
-                                                            {
-                                                                "type": "array",
-                                                                "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
-                                                            }
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A list of contributors to the source feed."
-                                                    },
-                                                    {
-                                                        "name": "icon",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "An icon image associated with the source feed."
-                                                    },
-                                                    {
-                                                        "name": "id",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A unique identifier for the source feed."
-                                                    },
-                                                    {
-                                                        "name": "link",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A link to the source feed."
-                                                    },
-                                                    {
-                                                        "name": "links",
-                                                        "type": [
-                                                            "null",
-                                                            {
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "type": "record",
-                                                                    "name": "Link",
-                                                                    "namespace": "Microsoft.OpenData.RssFeeds",
-                                                                    "doc": "Represents a hyperlink associated with the feed or feed item.",
-                                                                    "fields": [
-                                                                        {
-                                                                            "name": "rel",
-                                                                            "type": [
-                                                                                "null",
-                                                                                "string"
-                                                                            ],
-                                                                            "default": null,
-                                                                            "doc": "The relationship type of the link, such as 'alternate' or 'self'."
-                                                                        },
-                                                                        {
-                                                                            "name": "href",
-                                                                            "type": [
-                                                                                "null",
-                                                                                "string"
-                                                                            ],
-                                                                            "default": null,
-                                                                            "doc": "The URL of the link."
-                                                                        },
-                                                                        {
-                                                                            "name": "type",
-                                                                            "type": [
-                                                                                "null",
-                                                                                "string"
-                                                                            ],
-                                                                            "default": null,
-                                                                            "doc": "The MIME type of the linked resource."
-                                                                        },
-                                                                        {
-                                                                            "name": "title",
-                                                                            "type": [
-                                                                                "null",
-                                                                                "string"
-                                                                            ],
-                                                                            "default": null,
-                                                                            "doc": "The title or description of the link."
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            }
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A collection of links related to the source feed."
-                                                    },
-                                                    {
-                                                        "name": "logo",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A logo image associated with the source feed."
-                                                    },
-                                                    {
-                                                        "name": "rights",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "Rights information for the source feed, such as copyright notices."
-                                                    },
-                                                    {
-                                                        "name": "subtitle",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "A secondary title or tagline for the source feed."
-                                                    },
-                                                    {
-                                                        "name": "title",
-                                                        "type": [
-                                                            "null",
-                                                            "string"
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The title of the source feed."
-                                                    },
-                                                    {
-                                                        "name": "updated",
-                                                        "type": [
-                                                            "null",
-                                                            {
-                                                                "type": "long",
-                                                                "logicalType": "timestamp-millis"
-                                                            }
-                                                        ],
-                                                        "default": null,
-                                                        "doc": "The last updated timestamp of the source feed."
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "Information about the source feed of the item."
-                                    },
-                                    {
-                                        "name": "content",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "record",
-                                                    "name": "FeedItemContent",
-                                                    "namespace": "Microsoft.OpenData.RssFeeds",
-                                                    "doc": "Represents the main content of the feed item.",
-                                                    "fields": [
-                                                        {
-                                                            "name": "value",
-                                                            "type": [
-                                                                "null",
-                                                                "string"
-                                                            ],
-                                                            "default": null,
-                                                            "doc": "The actual content of the feed item."
-                                                        },
-                                                        {
-                                                            "name": "type",
-                                                            "type": [
-                                                                "null",
-                                                                "string"
-                                                            ],
-                                                            "default": null,
-                                                            "doc": "The content type, such as 'text/html' or 'text/plain'."
-                                                        },
-                                                        {
-                                                            "name": "language",
-                                                            "type": [
-                                                                "null",
-                                                                "string"
-                                                            ],
-                                                            "default": null,
-                                                            "doc": "The language of the content."
-                                                        },
-                                                        {
-                                                            "name": "base",
-                                                            "type": [
-                                                                "null",
-                                                                "string"
-                                                            ],
-                                                            "default": null,
-                                                            "doc": "The base URI for resolving relative URIs within the content."
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "The content of the feed item, potentially including multiple formats."
-                                    },
-                                    {
-                                        "name": "enclosures",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "record",
-                                                    "name": "FeedItemEnclosure",
-                                                    "namespace": "Microsoft.OpenData.RssFeeds",
-                                                    "doc": "Represents media content attached to the feed item, such as audio or video files.",
-                                                    "fields": [
-                                                        {
-                                                            "name": "href",
-                                                            "type": [
-                                                                "null",
-                                                                "string"
-                                                            ],
-                                                            "default": null,
-                                                            "doc": "The URL of the enclosure."
-                                                        },
-                                                        {
-                                                            "name": "length",
-                                                            "type": [
-                                                                "null",
-                                                                "long"
-                                                            ],
-                                                            "default": null,
-                                                            "doc": "The size of the enclosure in bytes."
-                                                        },
-                                                        {
-                                                            "name": "type",
-                                                            "type": [
-                                                                "null",
-                                                                "string"
-                                                            ],
-                                                            "default": null,
-                                                            "doc": "The MIME type of the enclosure content."
-                                                        }
-                                                    ]
-                                                }
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "Media attachments associated with the feed item."
-                                    },
-                                    {
-                                        "name": "published",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "long",
-                                                "logicalType": "timestamp-millis"
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "The publication date and time of the feed item."
-                                    },
-                                    {
-                                        "name": "updated",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "long",
-                                                "logicalType": "timestamp-millis"
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "The last updated date and time of the feed item."
-                                    },
-                                    {
-                                        "name": "created",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "long",
-                                                "logicalType": "timestamp-millis"
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "The creation date and time of the feed item."
-                                    },
-                                    {
-                                        "name": "expired",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "long",
-                                                "logicalType": "timestamp-millis"
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "The expiration date and time of the feed item."
-                                    },
-                                    {
-                                        "name": "id",
-                                        "type": [
-                                            "null",
-                                            "string"
-                                        ],
-                                        "default": null,
-                                        "doc": "A unique identifier for the feed item."
-                                    },
-                                    {
-                                        "name": "license",
-                                        "type": [
-                                            "null",
-                                            "string"
-                                        ],
-                                        "default": null,
-                                        "doc": "License information for the feed item."
-                                    },
-                                    {
-                                        "name": "comments",
-                                        "type": [
-                                            "null",
-                                            "string"
-                                        ],
-                                        "default": null,
-                                        "doc": "A link to comments or feedback related to the feed item."
-                                    },
-                                    {
-                                        "name": "contributors",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "array",
-                                                "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "A list of individuals who contributed to the feed item."
-                                    },
-                                    {
-                                        "name": "links",
-                                        "type": [
-                                            "null",
-                                            {
-                                                "type": "array",
-                                                "items": "Microsoft.OpenData.RssFeeds.Link"
-                                            }
-                                        ],
-                                        "default": null,
-                                        "doc": "A collection of links related to the feed item."
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.RssFeeds"
+      ]
     }
+  },
+  "messagegroups": {
+    "Microsoft.OpenData.RssFeeds": {
+      "messages": {
+        "Microsoft.OpenData.RssFeeds.FeedItem": {
+          "name": "FeedItem",
+          "description": "A new item has been added to the RSS feed.",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.RssFeeds.FeedItem"
+            },
+            "source": {
+              "type": "uritemplate",
+              "value": "{sourceurl}"
+            },
+            "subject": {
+              "type": "uritemplate",
+              "value": "{item_id}"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.RssFeeds.jstruct/schemas/Microsoft.OpenData.RssFeeds.FeedItem"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Microsoft.OpenData.RssFeeds.jstruct": {
+      "schemas": {
+        "Microsoft.OpenData.RssFeeds.FeedItem": {
+          "name": "FeedItem",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/RssFeeds/FeedItem",
+                "name": "FeedItem",
+                "$root": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItem",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "RssFeeds": {
+                        "FeedItemAuthor": {
+                          "name": "FeedItemAuthor",
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The full name of the author."
+                            },
+                            "href": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A URL associated with the author, such as a personal website or profile."
+                            },
+                            "email": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The author's email address."
+                            }
+                          },
+                          "required": [],
+                          "description": "Contains information about the author of the feed item."
+                        },
+                        "FeedItemPublisher": {
+                          "name": "FeedItemPublisher",
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The name of the publisher."
+                            },
+                            "href": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A URL associated with the publisher."
+                            },
+                            "email": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The publisher's email address."
+                            }
+                          },
+                          "required": [],
+                          "description": "Contains information about the publisher of the feed item."
+                        },
+                        "FeedItemSummary": {
+                          "name": "FeedItemSummary",
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The text content of the summary."
+                            },
+                            "type": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The content type of the summary, such as 'text/plain' or 'text/html'."
+                            },
+                            "language": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The language of the summary content."
+                            },
+                            "base": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The base URI for resolving relative URIs within the summary."
+                            }
+                          },
+                          "required": [],
+                          "description": "A brief summary or abstract of the feed item."
+                        },
+                        "FeedItemTitle": {
+                          "name": "FeedItemTitle",
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The text content of the title."
+                            },
+                            "type": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The content type of the title."
+                            },
+                            "language": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The language of the title."
+                            },
+                            "base": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The base URI for resolving relative URIs within the title."
+                            }
+                          },
+                          "required": [],
+                          "description": "The title of the feed item."
+                        },
+                        "Link": {
+                          "name": "Link",
+                          "type": "object",
+                          "properties": {
+                            "rel": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The relationship type of the link, such as 'alternate' or 'self'."
+                            },
+                            "href": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The URL of the link."
+                            },
+                            "type": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The MIME type of the linked resource."
+                            },
+                            "title": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The title or description of the link."
+                            }
+                          },
+                          "required": [],
+                          "description": "Represents a hyperlink associated with the feed or feed item."
+                        },
+                        "FeedItemSource": {
+                          "name": "FeedItemSource",
+                          "type": "object",
+                          "properties": {
+                            "author": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The name of the original author."
+                            },
+                            "author_detail": {
+                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor",
+                              "default": null,
+                              "description": "Detailed information about the original author."
+                            },
+                            "contributors": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                              },
+                              "default": null,
+                              "description": "A list of contributors to the source feed."
+                            },
+                            "icon": {
+                              "type": "string",
+                              "default": null,
+                              "description": "An icon image associated with the source feed."
+                            },
+                            "id": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A unique identifier for the source feed."
+                            },
+                            "link": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A link to the source feed."
+                            },
+                            "links": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/Link"
+                              },
+                              "default": null,
+                              "description": "A collection of links related to the source feed."
+                            },
+                            "logo": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A logo image associated with the source feed."
+                            },
+                            "rights": {
+                              "type": "string",
+                              "default": null,
+                              "description": "Rights information for the source feed, such as copyright notices."
+                            },
+                            "subtitle": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A secondary title or tagline for the source feed."
+                            },
+                            "title": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The title of the source feed."
+                            },
+                            "updated": {
+                              "type": "int64",
+                              "logicalType": "timestampMillis",
+                              "default": null,
+                              "description": "The last updated timestamp of the source feed."
+                            }
+                          },
+                          "required": [],
+                          "description": "Metadata about the original source feed, useful if the item was republished from another feed."
+                        },
+                        "FeedItemContent": {
+                          "name": "FeedItemContent",
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The actual content of the feed item."
+                            },
+                            "type": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The content type, such as 'text/html' or 'text/plain'."
+                            },
+                            "language": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The language of the content."
+                            },
+                            "base": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The base URI for resolving relative URIs within the content."
+                            }
+                          },
+                          "required": [],
+                          "description": "Represents the main content of the feed item."
+                        },
+                        "FeedItemEnclosure": {
+                          "name": "FeedItemEnclosure",
+                          "type": "object",
+                          "properties": {
+                            "href": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The URL of the enclosure."
+                            },
+                            "length": {
+                              "type": "int64",
+                              "default": null,
+                              "description": "The size of the enclosure in bytes."
+                            },
+                            "type": {
+                              "type": "string",
+                              "default": null,
+                              "description": "The MIME type of the enclosure content."
+                            }
+                          },
+                          "required": [],
+                          "description": "Represents media content attached to the feed item, such as audio or video files."
+                        },
+                        "FeedItem": {
+                          "name": "FeedItem",
+                          "type": "object",
+                          "properties": {
+                            "author": {
+                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor",
+                              "default": null,
+                              "description": "Information about the feed item's author."
+                            },
+                            "publisher": {
+                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemPublisher",
+                              "default": null,
+                              "description": "Information about the feed item's publisher."
+                            },
+                            "summary": {
+                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemSummary",
+                              "default": null,
+                              "description": "A short summary of the feed item."
+                            },
+                            "title": {
+                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemTitle",
+                              "default": null,
+                              "description": "The feed item's title."
+                            },
+                            "source": {
+                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemSource",
+                              "default": null,
+                              "description": "Information about the source feed of the item."
+                            },
+                            "content": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemContent"
+                              },
+                              "default": null,
+                              "description": "The content of the feed item, potentially including multiple formats."
+                            },
+                            "enclosures": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemEnclosure"
+                              },
+                              "default": null,
+                              "description": "Media attachments associated with the feed item."
+                            },
+                            "published": {
+                              "type": "int64",
+                              "logicalType": "timestampMillis",
+                              "default": null,
+                              "description": "The publication date and time of the feed item."
+                            },
+                            "updated": {
+                              "type": "int64",
+                              "logicalType": "timestampMillis",
+                              "default": null,
+                              "description": "The last updated date and time of the feed item."
+                            },
+                            "created": {
+                              "type": "int64",
+                              "logicalType": "timestampMillis",
+                              "default": null,
+                              "description": "The creation date and time of the feed item."
+                            },
+                            "expired": {
+                              "type": "int64",
+                              "logicalType": "timestampMillis",
+                              "default": null,
+                              "description": "The expiration date and time of the feed item."
+                            },
+                            "id": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A unique identifier for the feed item."
+                            },
+                            "license": {
+                              "type": "string",
+                              "default": null,
+                              "description": "License information for the feed item."
+                            },
+                            "comments": {
+                              "type": "string",
+                              "default": null,
+                              "description": "A link to comments or feedback related to the feed item."
+                            },
+                            "contributors": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                              },
+                              "default": null,
+                              "description": "A list of individuals who contributed to the feed item."
+                            },
+                            "links": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/Link"
+                              },
+                              "default": null,
+                              "description": "A collection of links related to the feed item."
+                            }
+                          },
+                          "required": [],
+                          "description": "Represents an item in an RSS feed, containing metadata such as the author, title, and content."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.RssFeeds.avro": {
+      "schemas": {
+        "Microsoft.OpenData.RssFeeds.FeedItem": {
+          "name": "FeedItem",
+          "format": "Avro/1.11.3",
+          "description": "Schema for the FeedItem event in the RssFeeds message group.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "FeedItem",
+                "namespace": "Microsoft.OpenData.RssFeeds",
+                "doc": "Represents an item in an RSS feed, containing metadata such as the author, title, and content.",
+                "fields": [
+                  {
+                    "name": "author",
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "FeedItemAuthor",
+                        "namespace": "Microsoft.OpenData.RssFeeds",
+                        "doc": "Contains information about the author of the feed item.",
+                        "fields": [
+                          {
+                            "name": "name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The full name of the author."
+                          },
+                          {
+                            "name": "href",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "A URL associated with the author, such as a personal website or profile."
+                          },
+                          {
+                            "name": "email",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The author's email address."
+                          }
+                        ]
+                      }
+                    ],
+                    "default": null,
+                    "doc": "Information about the feed item's author."
+                  },
+                  {
+                    "name": "publisher",
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "FeedItemPublisher",
+                        "namespace": "Microsoft.OpenData.RssFeeds",
+                        "doc": "Contains information about the publisher of the feed item.",
+                        "fields": [
+                          {
+                            "name": "name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The name of the publisher."
+                          },
+                          {
+                            "name": "href",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "A URL associated with the publisher."
+                          },
+                          {
+                            "name": "email",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The publisher's email address."
+                          }
+                        ]
+                      }
+                    ],
+                    "default": null,
+                    "doc": "Information about the feed item's publisher."
+                  },
+                  {
+                    "name": "summary",
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "FeedItemSummary",
+                        "namespace": "Microsoft.OpenData.RssFeeds",
+                        "doc": "A brief summary or abstract of the feed item.",
+                        "fields": [
+                          {
+                            "name": "value",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The text content of the summary."
+                          },
+                          {
+                            "name": "type",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The content type of the summary, such as 'text/plain' or 'text/html'."
+                          },
+                          {
+                            "name": "language",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The language of the summary content."
+                          },
+                          {
+                            "name": "base",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The base URI for resolving relative URIs within the summary."
+                          }
+                        ]
+                      }
+                    ],
+                    "default": null,
+                    "doc": "A short summary of the feed item."
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "FeedItemTitle",
+                        "namespace": "Microsoft.OpenData.RssFeeds",
+                        "doc": "The title of the feed item.",
+                        "fields": [
+                          {
+                            "name": "value",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The text content of the title."
+                          },
+                          {
+                            "name": "type",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The content type of the title."
+                          },
+                          {
+                            "name": "language",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The language of the title."
+                          },
+                          {
+                            "name": "base",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The base URI for resolving relative URIs within the title."
+                          }
+                        ]
+                      }
+                    ],
+                    "default": null,
+                    "doc": "The feed item's title."
+                  },
+                  {
+                    "name": "source",
+                    "type": [
+                      "null",
+                      {
+                        "type": "record",
+                        "name": "FeedItemSource",
+                        "namespace": "Microsoft.OpenData.RssFeeds",
+                        "doc": "Metadata about the original source feed, useful if the item was republished from another feed.",
+                        "fields": [
+                          {
+                            "name": "author",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The name of the original author."
+                          },
+                          {
+                            "name": "author_detail",
+                            "type": [
+                              "null",
+                              "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
+                            ],
+                            "default": null,
+                            "doc": "Detailed information about the original author."
+                          },
+                          {
+                            "name": "contributors",
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
+                              }
+                            ],
+                            "default": null,
+                            "doc": "A list of contributors to the source feed."
+                          },
+                          {
+                            "name": "icon",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "An icon image associated with the source feed."
+                          },
+                          {
+                            "name": "id",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "A unique identifier for the source feed."
+                          },
+                          {
+                            "name": "link",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "A link to the source feed."
+                          },
+                          {
+                            "name": "links",
+                            "type": [
+                              "null",
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "Link",
+                                  "namespace": "Microsoft.OpenData.RssFeeds",
+                                  "doc": "Represents a hyperlink associated with the feed or feed item.",
+                                  "fields": [
+                                    {
+                                      "name": "rel",
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "default": null,
+                                      "doc": "The relationship type of the link, such as 'alternate' or 'self'."
+                                    },
+                                    {
+                                      "name": "href",
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "default": null,
+                                      "doc": "The URL of the link."
+                                    },
+                                    {
+                                      "name": "type",
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "default": null,
+                                      "doc": "The MIME type of the linked resource."
+                                    },
+                                    {
+                                      "name": "title",
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ],
+                                      "default": null,
+                                      "doc": "The title or description of the link."
+                                    }
+                                  ]
+                                }
+                              }
+                            ],
+                            "default": null,
+                            "doc": "A collection of links related to the source feed."
+                          },
+                          {
+                            "name": "logo",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "A logo image associated with the source feed."
+                          },
+                          {
+                            "name": "rights",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "Rights information for the source feed, such as copyright notices."
+                          },
+                          {
+                            "name": "subtitle",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "A secondary title or tagline for the source feed."
+                          },
+                          {
+                            "name": "title",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "The title of the source feed."
+                          },
+                          {
+                            "name": "updated",
+                            "type": [
+                              "null",
+                              {
+                                "type": "long",
+                                "logicalType": "timestamp-millis"
+                              }
+                            ],
+                            "default": null,
+                            "doc": "The last updated timestamp of the source feed."
+                          }
+                        ]
+                      }
+                    ],
+                    "default": null,
+                    "doc": "Information about the source feed of the item."
+                  },
+                  {
+                    "name": "content",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "FeedItemContent",
+                          "namespace": "Microsoft.OpenData.RssFeeds",
+                          "doc": "Represents the main content of the feed item.",
+                          "fields": [
+                            {
+                              "name": "value",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null,
+                              "doc": "The actual content of the feed item."
+                            },
+                            {
+                              "name": "type",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null,
+                              "doc": "The content type, such as 'text/html' or 'text/plain'."
+                            },
+                            {
+                              "name": "language",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null,
+                              "doc": "The language of the content."
+                            },
+                            {
+                              "name": "base",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null,
+                              "doc": "The base URI for resolving relative URIs within the content."
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "default": null,
+                    "doc": "The content of the feed item, potentially including multiple formats."
+                  },
+                  {
+                    "name": "enclosures",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "FeedItemEnclosure",
+                          "namespace": "Microsoft.OpenData.RssFeeds",
+                          "doc": "Represents media content attached to the feed item, such as audio or video files.",
+                          "fields": [
+                            {
+                              "name": "href",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null,
+                              "doc": "The URL of the enclosure."
+                            },
+                            {
+                              "name": "length",
+                              "type": [
+                                "null",
+                                "long"
+                              ],
+                              "default": null,
+                              "doc": "The size of the enclosure in bytes."
+                            },
+                            {
+                              "name": "type",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null,
+                              "doc": "The MIME type of the enclosure content."
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "default": null,
+                    "doc": "Media attachments associated with the feed item."
+                  },
+                  {
+                    "name": "published",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null,
+                    "doc": "The publication date and time of the feed item."
+                  },
+                  {
+                    "name": "updated",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null,
+                    "doc": "The last updated date and time of the feed item."
+                  },
+                  {
+                    "name": "created",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null,
+                    "doc": "The creation date and time of the feed item."
+                  },
+                  {
+                    "name": "expired",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null,
+                    "doc": "The expiration date and time of the feed item."
+                  },
+                  {
+                    "name": "id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "A unique identifier for the feed item."
+                  },
+                  {
+                    "name": "license",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "License information for the feed item."
+                  },
+                  {
+                    "name": "comments",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "A link to comments or feedback related to the feed item."
+                  },
+                  {
+                    "name": "contributors",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "Microsoft.OpenData.RssFeeds.FeedItemAuthor"
+                      }
+                    ],
+                    "default": null,
+                    "doc": "A list of individuals who contributed to the feed item."
+                  },
+                  {
+                    "name": "links",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "Microsoft.OpenData.RssFeeds.Link"
+                      }
+                    ],
+                    "default": null,
+                    "doc": "A collection of links related to the feed item."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

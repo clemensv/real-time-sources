@@ -157,7 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEWatersHydrologyProducer- `data`: The event data of type `german_waters_producer_data.de.waters.hydrology.Station`.
+### DEWatersHydrologyProducer- `data`: The event data of type `german_waters_producer_data.Station`.
 
 
 
@@ -219,8 +219,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEWatersHydrologyProducer- `data`: The event data of type
-`german_waters_producer_data.de.waters.hydrology.WaterLevelObservation`.
+### DEWatersHydrologyProducer- `data`: The event data of type `german_waters_producer_data.WaterLevelObservation`.
 
 
 

@@ -159,7 +159,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `cloud_event`: The CloudEvent.
 
 ### UKGovEnvironmentEAFloodMonitoringProducer- `data`: The event data of type
-`uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.Station`.
+`uk_ea_flood_monitoring_producer_data.Station`.
 
 
 
@@ -224,7 +224,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `cloud_event`: The CloudEvent.
 
 ### UKGovEnvironmentEAFloodMonitoringProducer- `data`: The event data of type
-`uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.Reading`.
+`uk_ea_flood_monitoring_producer_data.Reading`.
 
 
 

@@ -36,8 +36,8 @@ from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWS
 
 # imports for the data classes for each event
 
-from noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
-from noaa_nws_producer_data.microsoft.opendata.us.noaa.nws.zone import Zone
+from noaa_nws_producer_data.weatheralert import WeatherAlert
+from noaa_nws_producer_data.zone import Zone
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

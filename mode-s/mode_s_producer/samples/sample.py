@@ -36,7 +36,7 @@ from mode_s_producer_kafka_producer.producer import ModeSEventProducer
 
 # imports for the data classes for each event
 
-from mode_s_producer_data.mode_s.messages import Messages
+from mode_s_producer_data.messages import Messages
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

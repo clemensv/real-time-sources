@@ -36,8 +36,8 @@ from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficM
 
 # imports for the data classes for each event
 
-from digitraffic_maritime_producer_data.fi.digitraffic.marine.ais.vessellocation import VesselLocation
-from digitraffic_maritime_producer_data.fi.digitraffic.marine.ais.vesselmetadata import VesselMetadata
+from digitraffic_maritime_producer_data.vessellocation import VesselLocation
+from digitraffic_maritime_producer_data.vesselmetadata import VesselMetadata
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

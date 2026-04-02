@@ -157,7 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### USGSEarthquakesProducer- `data`: The event data of type `usgs_earthquakes_producer_data.usgs.earthquakes.Event`.
+### USGSEarthquakesProducer- `data`: The event data of type `usgs_earthquakes_producer_data.Event`.
 
 
 

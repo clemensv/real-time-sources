@@ -20,17 +20,17 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from bluesky_producer_kafka_producer.producer import BlueskyFirehoseEventProducer
 from bluesky_producer_data import Post
-from test_bluesky_producer_data_bluesky_feed_post import Test_Post
+from test_bluesky_producer_data_post import Test_Post
 from bluesky_producer_data import Like
-from test_bluesky_producer_data_bluesky_feed_like import Test_Like
+from test_bluesky_producer_data_like import Test_Like
 from bluesky_producer_data import Repost
-from test_bluesky_producer_data_bluesky_feed_repost import Test_Repost
+from test_bluesky_producer_data_repost import Test_Repost
 from bluesky_producer_data import Follow
-from test_bluesky_producer_data_bluesky_graph_follow import Test_Follow
+from test_bluesky_producer_data_follow import Test_Follow
 from bluesky_producer_data import Block
-from test_bluesky_producer_data_bluesky_graph_block import Test_Block
+from test_bluesky_producer_data_block import Test_Block
 from bluesky_producer_data import Profile
-from test_bluesky_producer_data_bluesky_actor_profile import Test_Profile
+from test_bluesky_producer_data_profile import Test_Profile
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

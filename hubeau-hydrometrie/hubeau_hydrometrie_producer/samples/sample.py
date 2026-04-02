@@ -36,8 +36,8 @@ from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHu
 
 # imports for the data classes for each event
 
-from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
-from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+from hubeau_hydrometrie_producer_data.station import Station
+from hubeau_hydrometrie_producer_data.observation import Observation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

@@ -10,55 +10,57 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import avro.schema
 import avro.name
 import avro.io
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class WaterLevelObservation:
     """
-    A WaterLevelObservation record.
+    WaterLevelObservation
     Attributes:
         station_id (str): 
         provider (str): 
-        water_level (float): 
-        water_level_unit (str): 
-        water_level_timestamp (str): 
-        discharge (float): 
-        discharge_unit (str): 
-        discharge_timestamp (str): 
-        trend (int): 
-        situation (int): """
+        water_level (typing.Optional[float]): 
+        water_level_unit (typing.Optional[str]): 
+        water_level_timestamp (typing.Optional[datetime.datetime]): 
+        discharge (typing.Optional[float]): 
+        discharge_unit (typing.Optional[str]): 
+        discharge_timestamp (typing.Optional[datetime.datetime]): 
+        trend (typing.Optional[int]): 
+        situation (typing.Optional[int]): """
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     provider: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="provider"))
-    water_level: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
-    water_level_unit: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_unit"))
-    water_level_timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp"))
-    discharge: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
-    discharge_unit: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_unit"))
-    discharge_timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp"))
-    trend: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
-    situation: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="situation"))
+    water_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level"))
+    water_level_unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_unit"))
+    water_level_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_level_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    discharge: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
+    discharge_unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_unit"))
+    discharge_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    trend: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trend"))
+    situation: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="situation"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"namespace\": \"DE.Waters.Hydrology\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": \"double\"}, {\"name\": \"water_level_unit\", \"type\": \"string\"}, {\"name\": \"water_level_timestamp\", \"type\": \"string\"}, {\"name\": \"discharge\", \"type\": \"double\"}, {\"name\": \"discharge_unit\", \"type\": \"string\"}, {\"name\": \"discharge_timestamp\", \"type\": \"string\"}, {\"name\": \"trend\", \"type\": \"long\"}, {\"name\": \"situation\", \"type\": \"long\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"trend\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"situation\", \"type\": [\"null\", \"int\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_id=str(self.station_id)
         self.provider=str(self.provider)
-        self.water_level=float(self.water_level)
-        self.water_level_unit=str(self.water_level_unit)
-        self.water_level_timestamp=str(self.water_level_timestamp)
-        self.discharge=float(self.discharge)
-        self.discharge_unit=str(self.discharge_unit)
-        self.discharge_timestamp=str(self.discharge_timestamp)
-        self.trend=int(self.trend)
-        self.situation=int(self.situation)
+        self.water_level=float(self.water_level) if self.water_level else None
+        self.water_level_unit=str(self.water_level_unit) if self.water_level_unit else None
+        self.water_level_timestamp=self.water_level_timestamp if self.water_level_timestamp else None
+        self.discharge=float(self.discharge) if self.discharge else None
+        self.discharge_unit=str(self.discharge_unit) if self.discharge_unit else None
+        self.discharge_timestamp=self.discharge_timestamp if self.discharge_timestamp else None
+        self.trend=int(self.trend) if self.trend else None
+        self.situation=int(self.situation) if self.situation else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WaterLevelObservation':

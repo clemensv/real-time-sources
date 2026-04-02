@@ -20,7 +20,7 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsEventProducer
 from rssbridge_producer_data import FeedItem
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditem import Test_FeedItem
+from test_rssbridge_producer_data_feeditem import Test_FeedItem
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

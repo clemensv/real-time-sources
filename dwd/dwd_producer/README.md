@@ -157,7 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.de.dwd.cdc.StationMetadata`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.StationMetadata`.
 
 
 
@@ -220,7 +220,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.de.dwd.cdc.AirTemperature10Min`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.AirTemperature10Min`.
 
 
 
@@ -283,7 +283,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.de.dwd.cdc.Precipitation10Min`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.Precipitation10Min`.
 
 
 
@@ -346,7 +346,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.de.dwd.cdc.Wind10Min`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.Wind10Min`.
 
 
 
@@ -408,7 +408,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.de.dwd.cdc.Solar10Min`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.Solar10Min`.
 
 
 
@@ -470,7 +470,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.de.dwd.cdc.HourlyObservation`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.HourlyObservation`.
 
 
 
@@ -533,7 +533,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.de.dwd.cdc.de.dwd.weather.Alert`.
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.Alert`.
 
 
 

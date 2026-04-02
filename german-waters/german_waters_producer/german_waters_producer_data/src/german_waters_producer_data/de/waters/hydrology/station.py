@@ -19,42 +19,42 @@ import avro.io
 @dataclass
 class Station:
     """
-    A Station record.
+    Station
     Attributes:
         station_id (str): 
         station_name (str): 
         water_body (str): 
-        state (str): 
-        region (str): 
+        state (typing.Optional[str]): 
+        region (typing.Optional[str]): 
         provider (str): 
-        latitude (float): 
-        longitude (float): 
-        river_km (float): 
-        altitude (float): 
-        station_type (str): 
-        warn_level_cm (float): 
-        alarm_level_cm (float): 
-        warn_level_m3s (float): 
-        alarm_level_m3s (float): """
+        latitude (typing.Optional[float]): 
+        longitude (typing.Optional[float]): 
+        river_km (typing.Optional[float]): 
+        altitude (typing.Optional[float]): 
+        station_type (typing.Optional[str]): 
+        warn_level_cm (typing.Optional[float]): 
+        alarm_level_cm (typing.Optional[float]): 
+        warn_level_m3s (typing.Optional[float]): 
+        alarm_level_m3s (typing.Optional[float]): """
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     water_body: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_body"))
-    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
-    region: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    region: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
     provider: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="provider"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    river_km: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river_km"))
-    altitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="altitude"))
-    station_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_type"))
-    warn_level_cm: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warn_level_cm"))
-    alarm_level_cm: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alarm_level_cm"))
-    warn_level_m3s: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warn_level_m3s"))
-    alarm_level_m3s: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alarm_level_m3s"))
+    latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    river_km: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river_km"))
+    altitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="altitude"))
+    station_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_type"))
+    warn_level_cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warn_level_cm"))
+    alarm_level_cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alarm_level_cm"))
+    warn_level_m3s: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warn_level_m3s"))
+    alarm_level_m3s: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alarm_level_m3s"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"DE.Waters.Hydrology\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\"}, {\"name\": \"state\", \"type\": \"string\"}, {\"name\": \"region\", \"type\": \"string\"}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"river_km\", \"type\": \"double\"}, {\"name\": \"altitude\", \"type\": \"double\"}, {\"name\": \"station_type\", \"type\": \"string\"}, {\"name\": \"warn_level_cm\", \"type\": \"double\"}, {\"name\": \"alarm_level_cm\", \"type\": \"double\"}, {\"name\": \"warn_level_m3s\", \"type\": \"double\"}, {\"name\": \"alarm_level_m3s\", \"type\": \"double\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"water_body\", \"type\": \"string\"}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"region\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"provider\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"river_km\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"altitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"station_type\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"warn_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"warn_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"alarm_level_m3s\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"DE.Waters.Hydrology\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -62,18 +62,18 @@ class Station:
         self.station_id=str(self.station_id)
         self.station_name=str(self.station_name)
         self.water_body=str(self.water_body)
-        self.state=str(self.state)
-        self.region=str(self.region)
+        self.state=str(self.state) if self.state else None
+        self.region=str(self.region) if self.region else None
         self.provider=str(self.provider)
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
-        self.river_km=float(self.river_km)
-        self.altitude=float(self.altitude)
-        self.station_type=str(self.station_type)
-        self.warn_level_cm=float(self.warn_level_cm)
-        self.alarm_level_cm=float(self.alarm_level_cm)
-        self.warn_level_m3s=float(self.warn_level_m3s)
-        self.alarm_level_m3s=float(self.alarm_level_m3s)
+        self.latitude=float(self.latitude) if self.latitude else None
+        self.longitude=float(self.longitude) if self.longitude else None
+        self.river_km=float(self.river_km) if self.river_km else None
+        self.altitude=float(self.altitude) if self.altitude else None
+        self.station_type=str(self.station_type) if self.station_type else None
+        self.warn_level_cm=float(self.warn_level_cm) if self.warn_level_cm else None
+        self.alarm_level_cm=float(self.alarm_level_cm) if self.alarm_level_cm else None
+        self.warn_level_m3s=float(self.warn_level_m3s) if self.warn_level_m3s else None
+        self.alarm_level_m3s=float(self.alarm_level_m3s) if self.alarm_level_m3s else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':

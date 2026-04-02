@@ -13,32 +13,34 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Reading:
     """
-    A Reading record.
+    Reading
     Attributes:
         station_reference (str): 
-        date_time (str): 
+        date_time (datetime.datetime): 
         measure (str): 
         value (float): """
     
     station_reference: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_reference"))
-    date_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_time"))
+    date_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_time"))
     measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="measure"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Reading\", \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"date_time\", \"type\": \"string\"}, {\"name\": \"measure\", \"type\": \"string\"}, {\"name\": \"value\", \"type\": \"double\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Reading\", \"doc\": \"Reading\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"date_time\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"measure\", \"type\": \"string\"}, {\"name\": \"value\", \"type\": \"double\"}], \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_reference=str(self.station_reference)
-        self.date_time=str(self.date_time)
+        value_date_time = self.date_time
+        self.date_time = value_date_time
         self.measure=str(self.measure)
         self.value=float(self.value)
 

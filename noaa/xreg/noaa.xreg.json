@@ -1,1171 +1,2304 @@
 {
-    "endpoints": {
-        "Microsoft.OpenData.US.NOAA.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "noaa-tides-currents"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/Microsoft.OpenData.US.NOAA"
-            ]
+  "endpoints": {
+    "Microsoft.OpenData.US.NOAA.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-tides-currents"
         }
-    },
-    "messagegroups": {
-        "Microsoft.OpenData.US.NOAA": {
-            "messages": {
-                "Microsoft.OpenData.US.NOAA.WaterLevel": {
-                    "name": "WaterLevel",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.WaterLevel"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterLevel"
-                },
-                "Microsoft.OpenData.US.NOAA.Predictions": {
-                    "name": "Predictions",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Predictions"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Predictions"
-                },
-                "Microsoft.OpenData.US.NOAA.AirPressure": {
-                    "name": "AirPressure",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.AirPressure"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirPressure"
-                },
-                "Microsoft.OpenData.US.NOAA.AirTemperature": {
-                    "name": "AirTemperature",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.AirTemperature"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.AirTemperature"
-                },
-                "Microsoft.OpenData.US.NOAA.WaterTemperature": {
-                    "name": "WaterTemperature",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.WaterTemperature"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.WaterTemperature"
-                },
-                "Microsoft.OpenData.US.NOAA.Wind": {
-                    "name": "Wind",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Wind"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Wind"
-                },
-                "Microsoft.OpenData.US.NOAA.Humidity": {
-                    "name": "Humidity",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Humidity"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Humidity"
-                },
-                "Microsoft.OpenData.US.NOAA.Conductivity": {
-                    "name": "Conductivity",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Conductivity"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Conductivity"
-                },
-                "Microsoft.OpenData.US.NOAA.Salinity": {
-                    "name": "Salinity",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Salinity"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Salinity"
-                },
-                "Microsoft.OpenData.US.NOAA.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Station"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Station"
-                },
-                "Microsoft.OpenData.US.NOAA.Visibility": {
-                    "name": "Visibility",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Visibility"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        },
-                        "datacontenttype": {
-                            "type": "string",
-                            "required": true
-                        },
-                        "subject": {
-                            "type": "string",
-                            "required": true
-                        },
-                        "time": {
-                            "type": "string",
-                            "required": true
-                        },
-                        "dataschema": {
-                            "type": "string",
-                            "required": true
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Visibility"
-                },
-                "Microsoft.OpenData.US.NOAA.Currents": {
-                    "name": "Currents",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.Currents"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.Currents"
-                },
-                "Microsoft.OpenData.US.NOAA.CurrentPredictions": {
-                    "name": "CurrentPredictions",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.CurrentPredictions"
-                        },
-                        "source": {
-                            "value": "https://api.tidesandcurrents.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "Avro/1.11.3",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA/schemas/Microsoft.OpenData.US.NOAA.CurrentPredictions"
-                }                
-            }
-        }
-    },
-    "schemagroups": {
-        "Microsoft.OpenData.US.NOAA": {
-            "schemas": {
-                "Microsoft.OpenData.US.NOAA.WaterLevel": {
-                    "name": "WaterLevel",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "WaterLevel",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the water level measurement\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Value of the water level\"}"
-                                    },
-                                    {
-                                        "name": "stddev",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Standard deviation of 1-second samples used to compute the water level height\"}"
-                                    },
-                                    {
-                                        "name": "outside_sigma_band",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).\"}"
-                                    },
-                                    {
-                                        "name": "flat_tolerance_limit",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
-                                    },
-                                    {
-                                        "name": "rate_of_change_limit",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
-                                    },
-                                    {
-                                        "name": "max_min_expected_height",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
-                                    },
-                                    {
-                                        "name": "quality",
-                                        "type": {
-                                            "type": "enum",
-                                            "name": "QualityLevel",
-                                            "symbols": ["Preliminary", "Verified"],
-                                            "doc": "Quality Assurance/Quality Control level"
-                                        }
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "WaterLevel"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Predictions": {
-                    "name": "Predictions",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Predictions",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis", 
-                                        "doc": "{\"description\": \"Timestamp of the prediction\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Value of the prediction\"}"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "Predictions"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.AirPressure": {
-                    "name": "AirPressure",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "AirPressure",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the air pressure measurement\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Value of the air pressure\"}",
-                                        "unit": "hPa"
-                                    },
-                                    {
-                                        "name": "max_pressure_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the maximum expected air pressure was exceeded"
-                                    },
-                                    {
-                                        "name": "min_pressure_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the minimum expected air pressure was exceeded"
-                                    },
-                                    {
-                                        "name": "rate_of_change_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "AirPressure"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.AirTemperature": {
-                    "name": "AirTemperature",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "AirTemperature",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the air temperature measurement\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Value of the air temperature\"}",
-                                        "unit": "C"
-                                    },
-                                    {
-                                        "name": "max_temp_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the maximum expected air temperature was exceeded"
-                                    },
-                                    {
-                                        "name": "min_temp_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the minimum expected air temperature was exceeded"
-                                    },
-                                    {
-                                        "name": "rate_of_change_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "AirTemperature"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.WaterTemperature": {
-                    "name": "WaterTemperature",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "WaterTemperature",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the water temperature measurement\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Value of the water temperature\"}"
-                                    },
-                                    {
-                                        "name": "max_temp_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the maximum expected water temperature was exceeded"
-                                    },
-                                    {
-                                        "name": "min_temp_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the minimum expected water temperature was exceeded"
-                                    },
-                                    {
-                                        "name": "rate_of_change_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "WaterTemperature"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Wind": {
-                    "name": "Wind",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Wind",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the wind measurement\"}"
-                                    },
-                                    {
-                                        "name": "speed",
-                                        "type": "double",
-                                        "unit": "m/s",
-                                        "doc": "{\"description\": \"Wind speed\"}"
-                                    },
-                                    {
-                                        "name": "direction_degrees",
-                                        "type": "string",
-                                        "unit": "degrees",
-                                        "doc": "{\"description\": \"Wind direction\"}"
-                                    },
-                                    {
-                                        "name": "direction_text",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Direction - wind direction in text.\"}"
-                                    },
-                                    {
-                                        "name": "gusts",
-                                        "type": "double",
-                                        "unit": "m/s",
-                                        "doc": "{\"description\": \"Wind gust speed\"}"
-                                    },
-                                    {
-                                        "name": "max_wind_speed_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the maximum wind speed was exceeded"
-                                    },
-                                    {
-                                        "name": "rate_of_change_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "Wind"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Humidity": {
-                    "name": "Humidity",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Humidity",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the humidity measurement\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "unit": "%",
-                                        "doc": "{\"description\": \"Value of the humidity\"}"
-                                    },
-                                    {
-                                        "name": "max_humidity_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the maximum expected humidity was exceeded"
-                                    },
-                                    {
-                                        "name": "min_humidity_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the minimum expected humidity was exceeded"
-                                    },
-                                    {
-                                        "name": "rate_of_change_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "Humidity"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Conductivity": {
-                    "name": "Conductivity",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Conductivity",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the conductivity measurement\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "unit": "S/m",
-                                        "doc": "{\"description\": \"Value of the conductivity\"}"
-                                    },
-                                    {
-                                        "name": "max_conductivity_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the maximum expected conductivity was exceeded"
-                                    },
-                                    {
-                                        "name": "min_conductivity_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the minimum expected conductivity was exceeded"
-                                    },
-                                    {
-                                        "name": "rate_of_change_exceeded",
-                                        "type": "boolean",
-                                        "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "Conductivity"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Salinity": {
-                    "name": "Salinity",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Salinity",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the salinity measurement\"}"
-                                    },
-                                    {
-                                        "name": "salinity",
-                                        "type": "double",
-                                        "unit": "ppt",
-                                        "doc": "{\"description\": \"Value of the salinity\"}"
-                                    },
-                                    {
-                                        "name": "grams_per_kg",
-                                        "type": "double",
-                                        "unit": "g/kg",
-                                        "doc": "{\"description\": \"Grams of salt per kilogram of water\"}"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "Salinity"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Station": {
-                    "name": "Station",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Station",
-                                "fields": [
-                                    {
-                                        "name": "tidal",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station measures tidal data.\"}"
-                                    },
-                                    {
-                                        "name": "greatlakes",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station is located in the Great Lakes region.\"}"
-                                    },
-                                    {
-                                        "name": "shefcode",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Standard Hydrologic Exchange Format code for the station.\"}"
-                                    },
-                                    {
-                                        "name": "details",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "details",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "sensors",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "sensors",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "floodlevels",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "floodlevels",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "datums",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "datums",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "supersededdatums",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "supersededdatums",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "harmonicConstituents",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "harmonicConstituents",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "benchmarks",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "benchmarks",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "tidePredOffsets",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "tidePredOffsets",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "ofsMapOffsets",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "ofsMapOffsets",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "state",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"State where the station is located.\"}"
-                                    },
-                                    {
-                                        "name": "timezone",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Timezone of the station.\"}"
-                                    },
-                                    {
-                                        "name": "timezonecorr",
-                                        "type": "int",
-                                        "doc": "{\"description\": \"Timezone correction in minutes for the station.\"}"
-                                    },
-                                    {
-                                        "name": "observedst",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station observes Daylight Saving Time.\"}"
-                                    },
-                                    {
-                                        "name": "stormsurge",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station measures storm surge data.\"}"
-                                    },
-                                    {
-                                        "name": "nearby",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "nearby",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "forecast",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station provides forecast data.\"}"
-                                    },
-                                    {
-                                        "name": "outlook",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station provides outlook data.\"}"
-                                    },
-                                    {
-                                        "name": "HTFhistorical",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station has historical High Tide Flooding data.\"}"
-                                    },
-                                    {
-                                        "name": "nonNavigational",
-                                        "type": "boolean",
-                                        "doc": "{\"description\": \"Indicates whether the station is non-navigational.\"}"
-                                    },
-                                    {
-                                        "name": "id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Unique identifier for the station.\"}"
-                                    },
-                                    {
-                                        "name": "name",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Name of the station.\"}"
-                                    },
-                                    {
-                                        "name": "lat",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Latitude of the station.\"}"
-                                    },
-                                    {
-                                        "name": "lng",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Longitude of the station.\"}"
-                                    },
-                                    {
-                                        "name": "affiliations",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Affiliations of the station.\"}"
-                                    },
-                                    {
-                                        "name": "portscode",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"PORTS code for the station.\"}"
-                                    },
-                                    {
-                                        "name": "products",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "products",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "disclaimers",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "disclaimers",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "notices",
-                                        "type": {
-                                            "type": "record",
-                                            "name": "notices",
-                                            "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
-                                            "fields": [
-                                                {
-                                                    "name": "self",
-                                                    "type": "string"
-                                                }
-                                            ]
-                                        }
-                                    },
-                                    {
-                                        "name": "self",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"URL to the station's data.\"}"
-                                    },
-                                    {
-                                        "name": "expand",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"URL to expanded information about the station.\"}"
-                                    },
-                                    {
-                                        "name": "tideType",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Type of tide measured by the station.\"}"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "Station"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Visibility": {
-                    "name": "Visibility",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Visibility",
-                                "namespace": "Microsoft.OpenData.US.NOAA",
-                                "fields": [
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the visibility measurement\"}"
-                                    },
-                                    {
-                                        "name": "value",
-                                        "type": "double",
-                                        "doc": "{\"description\": \"Value of the visibility\"}",
-                                        "unit": "km"
-                                    },
-                                    {
-                                        "name": "max_visibility_exceeded",
-                                        "type": "boolean",
-                                        "doc": "A flag that indicates whether the maximum expected visibility was exceeded"
-                                    },
-                                    {
-                                        "name": "min_visibility_exceeded",
-                                        "type": "boolean",
-                                        "doc": "A flag that indicates whether the minimum expected visibility was exceeded"
-                                    },
-                                    {
-                                        "name": "rate_of_change_exceeded",
-                                        "type": "boolean",
-                                        "doc": "A flag that indicates whether the rate of change tolerance limit was exceeded"
-                                    },
-                                    {
-                                        "name": "station_id",
-                                        "type": "string"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "noaa_events"
-                                },
-                                "ce_type": "Microsoft.OpenData.US.NOAA.Visibility"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.Currents": {
-                    "name": "Currents",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "Currents",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the currents measurement\"}"
-                                    },
-                                    {
-                                        "name": "speed",
-                                        "type": "double",
-                                        "unit": "cm/s",
-                                        "doc": "{\"description\": \"Current speed\"}"
-                                    },
-                                    {
-                                        "name": "direction_degrees",
-                                        "type": "double",
-                                        "unit": "degrees",
-                                        "doc": "{\"description\": \"Current direction in degrees\"}"
-                                    },
-                                    {
-                                        "name": "bin",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Bin number\"}"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "Currents"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                },
-                "Microsoft.OpenData.US.NOAA.CurrentPredictions": {
-                    "name": "CurrentPredictions",
-                    "format": "Avro/1.11.3",
-                    "defaultversionid": "1",
-                    "versions": {
-                        "1": {
-                            "format": "Avro/1.11.3",
-                            "schema": {
-                                "type": "record",
-                                "name": "CurrentPredictions",
-                                "fields": [
-                                    {
-                                        "name": "station_id",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
-                                    },
-                                    {
-                                        "name": "timestamp",
-                                        "type": "string",
-                                        "logicalType": "timestamp-millis",
-                                        "doc": "{\"description\": \"Timestamp of the current prediction\"}"
-                                    },
-                                    {
-                                        "name": "velocity_major",
-                                        "type": "double",
-                                        "unit": "cm/s",
-                                        "doc": "{\"description\": \"Major axis velocity\"}"
-                                    },
-                                    {
-                                        "name": "mean_flood_dir",
-                                        "type": "double",
-                                        "unit": "degrees",
-                                        "doc": "{\"description\": \"Mean flood direction in degrees\"}"
-                                    },
-                                    {
-                                        "name": "mean_ebb_dir",
-                                        "type": "double",
-                                        "unit": "degrees",
-                                        "doc": "{\"description\": \"Mean ebb direction in degrees\"}"
-                                    },
-                                    {
-                                        "name": "depth",
-                                        "type": "double",
-                                        "unit": "meters",
-                                        "doc": "{\"description\": \"Depth of measurement\"}"
-                                    },
-                                    {
-                                        "name": "bin",
-                                        "type": "string",
-                                        "doc": "{\"description\": \"Bin number\"}"
-                                    }
-                                ],
-                                "altnames": {
-                                    "kql": "CurrentPredictions"
-                                },
-                                "namespace": "Microsoft.OpenData.US.NOAA"
-                            }
-                        }
-                    }
-                }               
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA"
+      ]
     }
+  },
+  "messagegroups": {
+    "Microsoft.OpenData.US.NOAA": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.WaterLevel": {
+          "name": "WaterLevel",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.WaterLevel"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.WaterLevel"
+        },
+        "Microsoft.OpenData.US.NOAA.Predictions": {
+          "name": "Predictions",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Predictions"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Predictions"
+        },
+        "Microsoft.OpenData.US.NOAA.AirPressure": {
+          "name": "AirPressure",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.AirPressure"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.AirPressure"
+        },
+        "Microsoft.OpenData.US.NOAA.AirTemperature": {
+          "name": "AirTemperature",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.AirTemperature"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.AirTemperature"
+        },
+        "Microsoft.OpenData.US.NOAA.WaterTemperature": {
+          "name": "WaterTemperature",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.WaterTemperature"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.WaterTemperature"
+        },
+        "Microsoft.OpenData.US.NOAA.Wind": {
+          "name": "Wind",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Wind"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Wind"
+        },
+        "Microsoft.OpenData.US.NOAA.Humidity": {
+          "name": "Humidity",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Humidity"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Humidity"
+        },
+        "Microsoft.OpenData.US.NOAA.Conductivity": {
+          "name": "Conductivity",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Conductivity"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Conductivity"
+        },
+        "Microsoft.OpenData.US.NOAA.Salinity": {
+          "name": "Salinity",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Salinity"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Salinity"
+        },
+        "Microsoft.OpenData.US.NOAA.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Station"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Station"
+        },
+        "Microsoft.OpenData.US.NOAA.Visibility": {
+          "name": "Visibility",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Visibility"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "required": true
+            },
+            "subject": {
+              "type": "string",
+              "required": true
+            },
+            "time": {
+              "type": "string",
+              "required": true
+            },
+            "dataschema": {
+              "type": "string",
+              "required": true
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Visibility"
+        },
+        "Microsoft.OpenData.US.NOAA.Currents": {
+          "name": "Currents",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.Currents"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Currents"
+        },
+        "Microsoft.OpenData.US.NOAA.CurrentPredictions": {
+          "name": "CurrentPredictions",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.CurrentPredictions"
+            },
+            "source": {
+              "value": "https://api.tidesandcurrents.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.CurrentPredictions"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Microsoft.OpenData.US.NOAA.jstruct": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.WaterLevel": {
+          "name": "WaterLevel",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/WaterLevel",
+                "name": "WaterLevel",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/WaterLevel",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "QualityLevel": {
+                            "name": "QualityLevel",
+                            "type": "string",
+                            "enum": [
+                              "Preliminary",
+                              "Verified"
+                            ],
+                            "description": "Quality Assurance/Quality Control level"
+                          },
+                          "WaterLevel": {
+                            "name": "WaterLevel",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the water level measurement\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the water level\"}"
+                              },
+                              "stddev": {
+                                "type": "double",
+                                "description": "{\"description\": \"Standard deviation of 1-second samples used to compute the water level height\"}"
+                              },
+                              "outside_sigma_band": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).\"}"
+                              },
+                              "flat_tolerance_limit": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
+                              },
+                              "rate_of_change_limit": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
+                              },
+                              "max_min_expected_height": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
+                              },
+                              "quality": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/QualityLevel"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "value",
+                              "stddev",
+                              "outside_sigma_band",
+                              "flat_tolerance_limit",
+                              "rate_of_change_limit",
+                              "max_min_expected_height",
+                              "quality"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Predictions": {
+          "name": "Predictions",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Predictions",
+                "name": "Predictions",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Predictions",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "Predictions": {
+                            "name": "Predictions",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the prediction\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the prediction\"}"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "value"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.AirPressure": {
+          "name": "AirPressure",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/AirPressure",
+                "name": "AirPressure",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/AirPressure",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "AirPressure": {
+                            "name": "AirPressure",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the air pressure measurement\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the air pressure\"}"
+                              },
+                              "max_pressure_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the maximum expected air pressure was exceeded"
+                              },
+                              "min_pressure_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the minimum expected air pressure was exceeded"
+                              },
+                              "rate_of_change_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "value",
+                              "max_pressure_exceeded",
+                              "min_pressure_exceeded",
+                              "rate_of_change_exceeded"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.AirTemperature": {
+          "name": "AirTemperature",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/AirTemperature",
+                "name": "AirTemperature",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/AirTemperature",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "AirTemperature": {
+                            "name": "AirTemperature",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the air temperature measurement\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the air temperature\"}"
+                              },
+                              "max_temp_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the maximum expected air temperature was exceeded"
+                              },
+                              "min_temp_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the minimum expected air temperature was exceeded"
+                              },
+                              "rate_of_change_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "value",
+                              "max_temp_exceeded",
+                              "min_temp_exceeded",
+                              "rate_of_change_exceeded"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.WaterTemperature": {
+          "name": "WaterTemperature",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/WaterTemperature",
+                "name": "WaterTemperature",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/WaterTemperature",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "WaterTemperature": {
+                            "name": "WaterTemperature",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the water temperature measurement\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the water temperature\"}"
+                              },
+                              "max_temp_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the maximum expected water temperature was exceeded"
+                              },
+                              "min_temp_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the minimum expected water temperature was exceeded"
+                              },
+                              "rate_of_change_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "value",
+                              "max_temp_exceeded",
+                              "min_temp_exceeded",
+                              "rate_of_change_exceeded"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Wind": {
+          "name": "Wind",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Wind",
+                "name": "Wind",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Wind",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "Wind": {
+                            "name": "Wind",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the wind measurement\"}"
+                              },
+                              "speed": {
+                                "type": "double",
+                                "description": "{\"description\": \"Wind speed\"}"
+                              },
+                              "direction_degrees": {
+                                "type": "string",
+                                "description": "{\"description\": \"Wind direction\"}"
+                              },
+                              "direction_text": {
+                                "type": "string",
+                                "description": "{\"description\": \"Direction - wind direction in text.\"}"
+                              },
+                              "gusts": {
+                                "type": "double",
+                                "description": "{\"description\": \"Wind gust speed\"}"
+                              },
+                              "max_wind_speed_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the maximum wind speed was exceeded"
+                              },
+                              "rate_of_change_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "speed",
+                              "direction_degrees",
+                              "direction_text",
+                              "gusts",
+                              "max_wind_speed_exceeded",
+                              "rate_of_change_exceeded"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Humidity": {
+          "name": "Humidity",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Humidity",
+                "name": "Humidity",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Humidity",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "Humidity": {
+                            "name": "Humidity",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the humidity measurement\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the humidity\"}"
+                              },
+                              "max_humidity_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the maximum expected humidity was exceeded"
+                              },
+                              "min_humidity_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the minimum expected humidity was exceeded"
+                              },
+                              "rate_of_change_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "value",
+                              "max_humidity_exceeded",
+                              "min_humidity_exceeded",
+                              "rate_of_change_exceeded"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Conductivity": {
+          "name": "Conductivity",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Conductivity",
+                "name": "Conductivity",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Conductivity",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "Conductivity": {
+                            "name": "Conductivity",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the conductivity measurement\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the conductivity\"}"
+                              },
+                              "max_conductivity_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the maximum expected conductivity was exceeded"
+                              },
+                              "min_conductivity_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the minimum expected conductivity was exceeded"
+                              },
+                              "rate_of_change_exceeded": {
+                                "type": "boolean",
+                                "description": "Flag indicating if the rate of change tolerance limit was exceeded"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "value",
+                              "max_conductivity_exceeded",
+                              "min_conductivity_exceeded",
+                              "rate_of_change_exceeded"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Salinity": {
+          "name": "Salinity",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Salinity",
+                "name": "Salinity",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Salinity",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "Salinity": {
+                            "name": "Salinity",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the salinity measurement\"}"
+                              },
+                              "salinity": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the salinity\"}"
+                              },
+                              "grams_per_kg": {
+                                "type": "double",
+                                "description": "{\"description\": \"Grams of salt per kilogram of water\"}"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "salinity",
+                              "grams_per_kg"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Station",
+                "name": "Station",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Station",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "StationTypes": {
+                            "details": {
+                              "name": "details",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "sensors": {
+                              "name": "sensors",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "floodlevels": {
+                              "name": "floodlevels",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "datums": {
+                              "name": "datums",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "supersededdatums": {
+                              "name": "supersededdatums",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "harmonicConstituents": {
+                              "name": "harmonicConstituents",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "benchmarks": {
+                              "name": "benchmarks",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "tidePredOffsets": {
+                              "name": "tidePredOffsets",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "ofsMapOffsets": {
+                              "name": "ofsMapOffsets",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "nearby": {
+                              "name": "nearby",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "products": {
+                              "name": "products",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "disclaimers": {
+                              "name": "disclaimers",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            },
+                            "notices": {
+                              "name": "notices",
+                              "type": "object",
+                              "properties": {
+                                "self": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "self"
+                              ]
+                            }
+                          },
+                          "Station": {
+                            "name": "Station",
+                            "type": "object",
+                            "properties": {
+                              "tidal": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station measures tidal data.\"}"
+                              },
+                              "greatlakes": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station is located in the Great Lakes region.\"}"
+                              },
+                              "shefcode": {
+                                "type": "string",
+                                "description": "{\"description\": \"Standard Hydrologic Exchange Format code for the station.\"}"
+                              },
+                              "details": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/details"
+                              },
+                              "sensors": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/sensors"
+                              },
+                              "floodlevels": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/floodlevels"
+                              },
+                              "datums": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/datums"
+                              },
+                              "supersededdatums": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/supersededdatums"
+                              },
+                              "harmonicConstituents": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/harmonicConstituents"
+                              },
+                              "benchmarks": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/benchmarks"
+                              },
+                              "tidePredOffsets": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/tidePredOffsets"
+                              },
+                              "ofsMapOffsets": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/ofsMapOffsets"
+                              },
+                              "state": {
+                                "type": "string",
+                                "description": "{\"description\": \"State where the station is located.\"}"
+                              },
+                              "timezone": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timezone of the station.\"}"
+                              },
+                              "timezonecorr": {
+                                "type": "int32",
+                                "description": "{\"description\": \"Timezone correction in minutes for the station.\"}"
+                              },
+                              "observedst": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station observes Daylight Saving Time.\"}"
+                              },
+                              "stormsurge": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station measures storm surge data.\"}"
+                              },
+                              "nearby": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/nearby"
+                              },
+                              "forecast": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station provides forecast data.\"}"
+                              },
+                              "outlook": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station provides outlook data.\"}"
+                              },
+                              "HTFhistorical": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station has historical High Tide Flooding data.\"}"
+                              },
+                              "nonNavigational": {
+                                "type": "boolean",
+                                "description": "{\"description\": \"Indicates whether the station is non-navigational.\"}"
+                              },
+                              "id": {
+                                "type": "string",
+                                "description": "{\"description\": \"Unique identifier for the station.\"}"
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "{\"description\": \"Name of the station.\"}"
+                              },
+                              "lat": {
+                                "type": "double",
+                                "description": "{\"description\": \"Latitude of the station.\"}"
+                              },
+                              "lng": {
+                                "type": "double",
+                                "description": "{\"description\": \"Longitude of the station.\"}"
+                              },
+                              "affiliations": {
+                                "type": "string",
+                                "description": "{\"description\": \"Affiliations of the station.\"}"
+                              },
+                              "portscode": {
+                                "type": "string",
+                                "description": "{\"description\": \"PORTS code for the station.\"}"
+                              },
+                              "products": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/products"
+                              },
+                              "disclaimers": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/disclaimers"
+                              },
+                              "notices": {
+                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/notices"
+                              },
+                              "self": {
+                                "type": "string",
+                                "description": "{\"description\": \"URL to the station's data.\"}"
+                              },
+                              "expand": {
+                                "type": "string",
+                                "description": "{\"description\": \"URL to expanded information about the station.\"}"
+                              },
+                              "tideType": {
+                                "type": "string",
+                                "description": "{\"description\": \"Type of tide measured by the station.\"}"
+                              }
+                            },
+                            "required": [
+                              "tidal",
+                              "greatlakes",
+                              "shefcode",
+                              "details",
+                              "sensors",
+                              "floodlevels",
+                              "datums",
+                              "supersededdatums",
+                              "harmonicConstituents",
+                              "benchmarks",
+                              "tidePredOffsets",
+                              "ofsMapOffsets",
+                              "state",
+                              "timezone",
+                              "timezonecorr",
+                              "observedst",
+                              "stormsurge",
+                              "nearby",
+                              "forecast",
+                              "outlook",
+                              "HTFhistorical",
+                              "nonNavigational",
+                              "id",
+                              "name",
+                              "lat",
+                              "lng",
+                              "affiliations",
+                              "portscode",
+                              "products",
+                              "disclaimers",
+                              "notices",
+                              "self",
+                              "expand",
+                              "tideType"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Visibility": {
+          "name": "Visibility",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Visibility",
+                "name": "Visibility",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Visibility",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "Visibility": {
+                            "name": "Visibility",
+                            "type": "object",
+                            "properties": {
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the visibility measurement\"}"
+                              },
+                              "value": {
+                                "type": "double",
+                                "description": "{\"description\": \"Value of the visibility\"}"
+                              },
+                              "max_visibility_exceeded": {
+                                "type": "boolean",
+                                "description": "A flag that indicates whether the maximum expected visibility was exceeded"
+                              },
+                              "min_visibility_exceeded": {
+                                "type": "boolean",
+                                "description": "A flag that indicates whether the minimum expected visibility was exceeded"
+                              },
+                              "rate_of_change_exceeded": {
+                                "type": "boolean",
+                                "description": "A flag that indicates whether the rate of change tolerance limit was exceeded"
+                              },
+                              "station_id": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "timestamp",
+                              "value",
+                              "max_visibility_exceeded",
+                              "min_visibility_exceeded",
+                              "rate_of_change_exceeded",
+                              "station_id"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Currents": {
+          "name": "Currents",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Currents",
+                "name": "Currents",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/Currents",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "Currents": {
+                            "name": "Currents",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the currents measurement\"}"
+                              },
+                              "speed": {
+                                "type": "double",
+                                "description": "{\"description\": \"Current speed\"}"
+                              },
+                              "direction_degrees": {
+                                "type": "double",
+                                "description": "{\"description\": \"Current direction in degrees\"}"
+                              },
+                              "bin": {
+                                "type": "string",
+                                "description": "{\"description\": \"Bin number\"}"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "speed",
+                              "direction_degrees",
+                              "bin"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.CurrentPredictions": {
+          "name": "CurrentPredictions",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/CurrentPredictions",
+                "name": "CurrentPredictions",
+                "$root": "#/definitions/Microsoft/OpenData/US/NOAA/CurrentPredictions",
+                "definitions": {
+                  "Microsoft": {
+                    "OpenData": {
+                      "US": {
+                        "NOAA": {
+                          "CurrentPredictions": {
+                            "name": "CurrentPredictions",
+                            "type": "object",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                              },
+                              "timestamp": {
+                                "type": "string",
+                                "description": "{\"description\": \"Timestamp of the current prediction\"}"
+                              },
+                              "velocity_major": {
+                                "type": "double",
+                                "description": "{\"description\": \"Major axis velocity\"}"
+                              },
+                              "mean_flood_dir": {
+                                "type": "double",
+                                "description": "{\"description\": \"Mean flood direction in degrees\"}"
+                              },
+                              "mean_ebb_dir": {
+                                "type": "double",
+                                "description": "{\"description\": \"Mean ebb direction in degrees\"}"
+                              },
+                              "depth": {
+                                "type": "double",
+                                "description": "{\"description\": \"Depth of measurement\"}"
+                              },
+                              "bin": {
+                                "type": "string",
+                                "description": "{\"description\": \"Bin number\"}"
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "timestamp",
+                              "velocity_major",
+                              "mean_flood_dir",
+                              "mean_ebb_dir",
+                              "depth",
+                              "bin"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.avro": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.WaterLevel": {
+          "name": "WaterLevel",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevel",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the water level measurement\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "{\"description\": \"Value of the water level\"}"
+                  },
+                  {
+                    "name": "stddev",
+                    "type": "double",
+                    "doc": "{\"description\": \"Standard deviation of 1-second samples used to compute the water level height\"}"
+                  },
+                  {
+                    "name": "outside_sigma_band",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).\"}"
+                  },
+                  {
+                    "name": "flat_tolerance_limit",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
+                  },
+                  {
+                    "name": "rate_of_change_limit",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
+                  },
+                  {
+                    "name": "max_min_expected_height",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
+                  },
+                  {
+                    "name": "quality",
+                    "type": {
+                      "type": "enum",
+                      "name": "QualityLevel",
+                      "symbols": [
+                        "Preliminary",
+                        "Verified"
+                      ],
+                      "doc": "Quality Assurance/Quality Control level"
+                    }
+                  }
+                ],
+                "altnames": {
+                  "kql": "WaterLevel"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Predictions": {
+          "name": "Predictions",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Predictions",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the prediction\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "{\"description\": \"Value of the prediction\"}"
+                  }
+                ],
+                "altnames": {
+                  "kql": "Predictions"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.AirPressure": {
+          "name": "AirPressure",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "AirPressure",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the air pressure measurement\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "{\"description\": \"Value of the air pressure\"}",
+                    "unit": "hPa"
+                  },
+                  {
+                    "name": "max_pressure_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the maximum expected air pressure was exceeded"
+                  },
+                  {
+                    "name": "min_pressure_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the minimum expected air pressure was exceeded"
+                  },
+                  {
+                    "name": "rate_of_change_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
+                  }
+                ],
+                "altnames": {
+                  "kql": "AirPressure"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.AirTemperature": {
+          "name": "AirTemperature",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "AirTemperature",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the air temperature measurement\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "{\"description\": \"Value of the air temperature\"}",
+                    "unit": "C"
+                  },
+                  {
+                    "name": "max_temp_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the maximum expected air temperature was exceeded"
+                  },
+                  {
+                    "name": "min_temp_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the minimum expected air temperature was exceeded"
+                  },
+                  {
+                    "name": "rate_of_change_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
+                  }
+                ],
+                "altnames": {
+                  "kql": "AirTemperature"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.WaterTemperature": {
+          "name": "WaterTemperature",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterTemperature",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the water temperature measurement\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "{\"description\": \"Value of the water temperature\"}"
+                  },
+                  {
+                    "name": "max_temp_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the maximum expected water temperature was exceeded"
+                  },
+                  {
+                    "name": "min_temp_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the minimum expected water temperature was exceeded"
+                  },
+                  {
+                    "name": "rate_of_change_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
+                  }
+                ],
+                "altnames": {
+                  "kql": "WaterTemperature"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Wind": {
+          "name": "Wind",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Wind",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the wind measurement\"}"
+                  },
+                  {
+                    "name": "speed",
+                    "type": "double",
+                    "unit": "m/s",
+                    "doc": "{\"description\": \"Wind speed\"}"
+                  },
+                  {
+                    "name": "direction_degrees",
+                    "type": "string",
+                    "unit": "degrees",
+                    "doc": "{\"description\": \"Wind direction\"}"
+                  },
+                  {
+                    "name": "direction_text",
+                    "type": "string",
+                    "doc": "{\"description\": \"Direction - wind direction in text.\"}"
+                  },
+                  {
+                    "name": "gusts",
+                    "type": "double",
+                    "unit": "m/s",
+                    "doc": "{\"description\": \"Wind gust speed\"}"
+                  },
+                  {
+                    "name": "max_wind_speed_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the maximum wind speed was exceeded"
+                  },
+                  {
+                    "name": "rate_of_change_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
+                  }
+                ],
+                "altnames": {
+                  "kql": "Wind"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Humidity": {
+          "name": "Humidity",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Humidity",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the humidity measurement\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "unit": "%",
+                    "doc": "{\"description\": \"Value of the humidity\"}"
+                  },
+                  {
+                    "name": "max_humidity_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the maximum expected humidity was exceeded"
+                  },
+                  {
+                    "name": "min_humidity_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the minimum expected humidity was exceeded"
+                  },
+                  {
+                    "name": "rate_of_change_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
+                  }
+                ],
+                "altnames": {
+                  "kql": "Humidity"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Conductivity": {
+          "name": "Conductivity",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Conductivity",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the conductivity measurement\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "unit": "S/m",
+                    "doc": "{\"description\": \"Value of the conductivity\"}"
+                  },
+                  {
+                    "name": "max_conductivity_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the maximum expected conductivity was exceeded"
+                  },
+                  {
+                    "name": "min_conductivity_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the minimum expected conductivity was exceeded"
+                  },
+                  {
+                    "name": "rate_of_change_exceeded",
+                    "type": "boolean",
+                    "doc": "Flag indicating if the rate of change tolerance limit was exceeded"
+                  }
+                ],
+                "altnames": {
+                  "kql": "Conductivity"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Salinity": {
+          "name": "Salinity",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Salinity",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the salinity measurement\"}"
+                  },
+                  {
+                    "name": "salinity",
+                    "type": "double",
+                    "unit": "ppt",
+                    "doc": "{\"description\": \"Value of the salinity\"}"
+                  },
+                  {
+                    "name": "grams_per_kg",
+                    "type": "double",
+                    "unit": "g/kg",
+                    "doc": "{\"description\": \"Grams of salt per kilogram of water\"}"
+                  }
+                ],
+                "altnames": {
+                  "kql": "Salinity"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "fields": [
+                  {
+                    "name": "tidal",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station measures tidal data.\"}"
+                  },
+                  {
+                    "name": "greatlakes",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station is located in the Great Lakes region.\"}"
+                  },
+                  {
+                    "name": "shefcode",
+                    "type": "string",
+                    "doc": "{\"description\": \"Standard Hydrologic Exchange Format code for the station.\"}"
+                  },
+                  {
+                    "name": "details",
+                    "type": {
+                      "type": "record",
+                      "name": "details",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "sensors",
+                    "type": {
+                      "type": "record",
+                      "name": "sensors",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "floodlevels",
+                    "type": {
+                      "type": "record",
+                      "name": "floodlevels",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "datums",
+                    "type": {
+                      "type": "record",
+                      "name": "datums",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "supersededdatums",
+                    "type": {
+                      "type": "record",
+                      "name": "supersededdatums",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "harmonicConstituents",
+                    "type": {
+                      "type": "record",
+                      "name": "harmonicConstituents",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "benchmarks",
+                    "type": {
+                      "type": "record",
+                      "name": "benchmarks",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "tidePredOffsets",
+                    "type": {
+                      "type": "record",
+                      "name": "tidePredOffsets",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "ofsMapOffsets",
+                    "type": {
+                      "type": "record",
+                      "name": "ofsMapOffsets",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "{\"description\": \"State where the station is located.\"}"
+                  },
+                  {
+                    "name": "timezone",
+                    "type": "string",
+                    "doc": "{\"description\": \"Timezone of the station.\"}"
+                  },
+                  {
+                    "name": "timezonecorr",
+                    "type": "int",
+                    "doc": "{\"description\": \"Timezone correction in minutes for the station.\"}"
+                  },
+                  {
+                    "name": "observedst",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station observes Daylight Saving Time.\"}"
+                  },
+                  {
+                    "name": "stormsurge",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station measures storm surge data.\"}"
+                  },
+                  {
+                    "name": "nearby",
+                    "type": {
+                      "type": "record",
+                      "name": "nearby",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "forecast",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station provides forecast data.\"}"
+                  },
+                  {
+                    "name": "outlook",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station provides outlook data.\"}"
+                  },
+                  {
+                    "name": "HTFhistorical",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station has historical High Tide Flooding data.\"}"
+                  },
+                  {
+                    "name": "nonNavigational",
+                    "type": "boolean",
+                    "doc": "{\"description\": \"Indicates whether the station is non-navigational.\"}"
+                  },
+                  {
+                    "name": "id",
+                    "type": "string",
+                    "doc": "{\"description\": \"Unique identifier for the station.\"}"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "{\"description\": \"Name of the station.\"}"
+                  },
+                  {
+                    "name": "lat",
+                    "type": "double",
+                    "doc": "{\"description\": \"Latitude of the station.\"}"
+                  },
+                  {
+                    "name": "lng",
+                    "type": "double",
+                    "doc": "{\"description\": \"Longitude of the station.\"}"
+                  },
+                  {
+                    "name": "affiliations",
+                    "type": "string",
+                    "doc": "{\"description\": \"Affiliations of the station.\"}"
+                  },
+                  {
+                    "name": "portscode",
+                    "type": "string",
+                    "doc": "{\"description\": \"PORTS code for the station.\"}"
+                  },
+                  {
+                    "name": "products",
+                    "type": {
+                      "type": "record",
+                      "name": "products",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "disclaimers",
+                    "type": {
+                      "type": "record",
+                      "name": "disclaimers",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "notices",
+                    "type": {
+                      "type": "record",
+                      "name": "notices",
+                      "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+                      "fields": [
+                        {
+                          "name": "self",
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "self",
+                    "type": "string",
+                    "doc": "{\"description\": \"URL to the station's data.\"}"
+                  },
+                  {
+                    "name": "expand",
+                    "type": "string",
+                    "doc": "{\"description\": \"URL to expanded information about the station.\"}"
+                  },
+                  {
+                    "name": "tideType",
+                    "type": "string",
+                    "doc": "{\"description\": \"Type of tide measured by the station.\"}"
+                  }
+                ],
+                "altnames": {
+                  "kql": "Station"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Visibility": {
+          "name": "Visibility",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Visibility",
+                "namespace": "Microsoft.OpenData.US.NOAA",
+                "fields": [
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the visibility measurement\"}"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "{\"description\": \"Value of the visibility\"}",
+                    "unit": "km"
+                  },
+                  {
+                    "name": "max_visibility_exceeded",
+                    "type": "boolean",
+                    "doc": "A flag that indicates whether the maximum expected visibility was exceeded"
+                  },
+                  {
+                    "name": "min_visibility_exceeded",
+                    "type": "boolean",
+                    "doc": "A flag that indicates whether the minimum expected visibility was exceeded"
+                  },
+                  {
+                    "name": "rate_of_change_exceeded",
+                    "type": "boolean",
+                    "doc": "A flag that indicates whether the rate of change tolerance limit was exceeded"
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  }
+                ],
+                "altnames": {
+                  "kql": "noaa_events"
+                },
+                "ce_type": "Microsoft.OpenData.US.NOAA.Visibility"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.Currents": {
+          "name": "Currents",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Currents",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the currents measurement\"}"
+                  },
+                  {
+                    "name": "speed",
+                    "type": "double",
+                    "unit": "cm/s",
+                    "doc": "{\"description\": \"Current speed\"}"
+                  },
+                  {
+                    "name": "direction_degrees",
+                    "type": "double",
+                    "unit": "degrees",
+                    "doc": "{\"description\": \"Current direction in degrees\"}"
+                  },
+                  {
+                    "name": "bin",
+                    "type": "string",
+                    "doc": "{\"description\": \"Bin number\"}"
+                  }
+                ],
+                "altnames": {
+                  "kql": "Currents"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.CurrentPredictions": {
+          "name": "CurrentPredictions",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "CurrentPredictions",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "logicalType": "timestamp-millis",
+                    "doc": "{\"description\": \"Timestamp of the current prediction\"}"
+                  },
+                  {
+                    "name": "velocity_major",
+                    "type": "double",
+                    "unit": "cm/s",
+                    "doc": "{\"description\": \"Major axis velocity\"}"
+                  },
+                  {
+                    "name": "mean_flood_dir",
+                    "type": "double",
+                    "unit": "degrees",
+                    "doc": "{\"description\": \"Mean flood direction in degrees\"}"
+                  },
+                  {
+                    "name": "mean_ebb_dir",
+                    "type": "double",
+                    "unit": "degrees",
+                    "doc": "{\"description\": \"Mean ebb direction in degrees\"}"
+                  },
+                  {
+                    "name": "depth",
+                    "type": "double",
+                    "unit": "meters",
+                    "doc": "{\"description\": \"Depth of measurement\"}"
+                  },
+                  {
+                    "name": "bin",
+                    "type": "string",
+                    "doc": "{\"description\": \"Bin number\"}"
+                  }
+                ],
+                "altnames": {
+                  "kql": "CurrentPredictions"
+                },
+                "namespace": "Microsoft.OpenData.US.NOAA"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

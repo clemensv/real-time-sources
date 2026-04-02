@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeevent import Test_StopTimeEvent
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeupdate_types_schedulerelationship import Test_ScheduleRelationship
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeevent import Test_StopTimeEvent
 
 
 class Test_StopTimeUpdate(unittest.TestCase):
@@ -30,8 +30,8 @@ class Test_StopTimeUpdate(unittest.TestCase):
         Create instance of StopTimeUpdate for testing
         """
         instance = StopTimeUpdate(
-            stop_sequence=int(26),
-            stop_id='kgfttxwrrsdbgzftzlpl',
+            stop_sequence=int(73),
+            stop_id='udkwlrsbmqhmqbodlrmu',
             arrival=Test_StopTimeEvent.create_instance(),
             departure=Test_StopTimeEvent.create_instance(),
             schedule_relationship=Test_ScheduleRelationship.create_instance()
@@ -43,7 +43,7 @@ class Test_StopTimeUpdate(unittest.TestCase):
         """
         Test stop_sequence property
         """
-        test_value = int(26)
+        test_value = int(73)
         self.instance.stop_sequence = test_value
         self.assertEqual(self.instance.stop_sequence, test_value)
     
@@ -51,7 +51,7 @@ class Test_StopTimeUpdate(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'kgfttxwrrsdbgzftzlpl'
+        test_value = 'udkwlrsbmqhmqbodlrmu'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     

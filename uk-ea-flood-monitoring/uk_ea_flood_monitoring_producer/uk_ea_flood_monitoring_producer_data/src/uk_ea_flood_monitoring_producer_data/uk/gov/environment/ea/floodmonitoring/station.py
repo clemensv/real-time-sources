@@ -19,46 +19,46 @@ import avro.io
 @dataclass
 class Station:
     """
-    A Station record.
+    Station
     Attributes:
         station_reference (str): 
         label (str): 
-        river_name (str): 
-        catchment_name (str): 
-        town (str): 
+        river_name (typing.Optional[str]): 
+        catchment_name (typing.Optional[str]): 
+        town (typing.Optional[str]): 
         lat (float): 
         long (float): 
         notation (str): 
-        status (str): 
-        date_opened (str): """
+        status (typing.Optional[str]): 
+        date_opened (typing.Optional[str]): """
     
     station_reference: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_reference"))
     label: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="label"))
-    river_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river_name"))
-    catchment_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
-    town: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="town"))
+    river_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river_name"))
+    catchment_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="catchment_name"))
+    town: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="town"))
     lat: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lat"))
     long: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="long"))
     notation: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="notation"))
-    status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
-    date_opened: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_opened"))
+    status: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
+    date_opened: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_opened"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"label\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": \"string\"}, {\"name\": \"catchment_name\", \"type\": \"string\"}, {\"name\": \"town\", \"type\": \"string\"}, {\"name\": \"lat\", \"type\": \"double\"}, {\"name\": \"long\", \"type\": \"double\"}, {\"name\": \"notation\", \"type\": \"string\"}, {\"name\": \"status\", \"type\": \"string\"}, {\"name\": \"date_opened\", \"type\": \"string\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"label\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"catchment_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"town\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"lat\", \"type\": \"double\"}, {\"name\": \"long\", \"type\": \"double\"}, {\"name\": \"notation\", \"type\": \"string\"}, {\"name\": \"status\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"date_opened\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_reference=str(self.station_reference)
         self.label=str(self.label)
-        self.river_name=str(self.river_name)
-        self.catchment_name=str(self.catchment_name)
-        self.town=str(self.town)
+        self.river_name=str(self.river_name) if self.river_name else None
+        self.catchment_name=str(self.catchment_name) if self.catchment_name else None
+        self.town=str(self.town) if self.town else None
         self.lat=float(self.lat)
         self.long=float(self.long)
         self.notation=str(self.notation)
-        self.status=str(self.status)
-        self.date_opened=str(self.date_opened)
+        self.status=str(self.status) if self.status else None
+        self.date_opened=str(self.date_opened) if self.date_opened else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':

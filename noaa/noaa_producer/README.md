@@ -157,8 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.WaterLevel`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.WaterLevel`.
 
 
 
@@ -222,8 +221,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Predictions`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Predictions`.
 
 
 
@@ -287,8 +285,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.AirPressure`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.AirPressure`.
 
 
 
@@ -352,8 +349,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.AirTemperature`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.AirTemperature`.
 
 
 
@@ -417,8 +413,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.WaterTemperature`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.WaterTemperature`.
 
 
 
@@ -482,8 +477,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Wind`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Wind`.
 
 
 
@@ -545,8 +539,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Humidity`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Humidity`.
 
 
 
@@ -610,8 +603,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Conductivity`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Conductivity`.
 
 
 
@@ -675,8 +667,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Salinity`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Salinity`.
 
 
 
@@ -740,8 +731,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Station`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Station`.
 
 
 
@@ -805,8 +795,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Visibility`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Visibility`.
 
 
 
@@ -870,8 +859,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.Currents`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.Currents`.
 
 
 
@@ -935,8 +923,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type
-`noaa_producer_data.microsoft.opendata.us.noaa.CurrentPredictions`.
+### MicrosoftOpenDataUSNOAAProducer- `data`: The event data of type `noaa_producer_data.CurrentPredictions`.
 
 
 

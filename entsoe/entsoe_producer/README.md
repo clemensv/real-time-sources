@@ -157,8 +157,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.ActualGenerationPerType`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.ActualGenerationPerType`.
 
 
 
@@ -222,8 +221,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.DayAheadPrices`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.DayAheadPrices`.
 
 
 
@@ -287,8 +285,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.ActualTotalLoad`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.ActualTotalLoad`.
 
 
 
@@ -352,8 +349,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.WindSolarForecast`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.WindSolarForecast`.
 
 
 
@@ -417,8 +413,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.LoadForecastMargin`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.LoadForecastMargin`.
 
 
 
@@ -482,8 +477,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.GenerationForecast`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.GenerationForecast`.
 
 
 
@@ -547,8 +541,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.ReservoirFillingInformation`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.ReservoirFillingInformation`.
 
 
 
@@ -612,8 +605,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.ActualGeneration`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.ActualGeneration`.
 
 
 
@@ -677,8 +669,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.WindSolarGeneration`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.WindSolarGeneration`.
 
 
 
@@ -743,7 +734,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `cloud_event`: The CloudEvent.
 
 ### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.InstalledGenerationCapacityPerType`.
+`entsoe_producer_data.InstalledGenerationCapacityPerType`.
 
 
 
@@ -807,8 +798,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### EuEntsoeTransparencyProducer- `data`: The event data of type
-`entsoe_producer_data.eu.entsoe.transparency.CrossBorderPhysicalFlows`.
+### EuEntsoeTransparencyProducer- `data`: The event data of type `entsoe_producer_data.CrossBorderPhysicalFlows`.
 
 
 

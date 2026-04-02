@@ -1,110 +1,291 @@
 {
-    "endpoints": {
-        "FI.SYKE.Hydrology.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "syke-hydro"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/FI.SYKE.Hydrology"
-            ]
+  "endpoints": {
+    "FI.SYKE.Hydrology.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "syke-hydro"
         }
-    },
-    "messagegroups": {
-        "FI.SYKE.Hydrology": {
-            "messages": {
-                "FI.SYKE.Hydrology.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "FI.SYKE.Hydrology.Station"
-                        },
-                        "source": {
-                            "value": "https://rajapinnat.ymparisto.fi"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology/schemas/FI.SYKE.Hydrology.Station"
-                },
-                "FI.SYKE.Hydrology.WaterLevelObservation": {
-                    "name": "WaterLevelObservation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "FI.SYKE.Hydrology.WaterLevelObservation"
-                        },
-                        "source": {
-                            "value": "https://rajapinnat.ymparisto.fi"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology/schemas/FI.SYKE.Hydrology.WaterLevelObservation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "FI.SYKE.Hydrology": {
-            "schemas": {
-                "FI.SYKE.Hydrology.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "FI.SYKE.Hydrology",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "SYKE station identifier (Paikka_Id)" },
-                                    "name": { "type": "string", "description": "Station name" },
-                                    "river_name": { "type": "string", "description": "Main water area name" },
-                                    "water_area_name": { "type": "string", "description": "Water area name" },
-                                    "municipality": { "type": "string", "description": "Municipality name" },
-                                    "latitude": { "type": "number", "description": "Latitude in WGS84" },
-                                    "longitude": { "type": "number", "description": "Longitude in WGS84" }
-                                },
-                                "required": ["station_id", "name", "latitude", "longitude"]
-                            }
-                        }
-                    }
-                },
-                "FI.SYKE.Hydrology.WaterLevelObservation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "WaterLevelObservation",
-                                "namespace": "FI.SYKE.Hydrology",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Station identifier" },
-                                    "water_level": { "type": "number", "description": "Water level value" },
-                                    "water_level_unit": { "type": "string", "description": "Water level unit (e.g. m, cm)" },
-                                    "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp (ISO 8601)" },
-                                    "discharge": { "type": "number", "description": "Discharge (flow rate)" },
-                                    "discharge_unit": { "type": "string", "description": "Discharge unit (e.g. m3/s)" },
-                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp (ISO 8601)" }
-                                },
-                                "required": ["station_id"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/FI.SYKE.Hydrology"
+      ]
     }
+  },
+  "messagegroups": {
+    "FI.SYKE.Hydrology": {
+      "messages": {
+        "FI.SYKE.Hydrology.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "FI.SYKE.Hydrology.Station"
+            },
+            "source": {
+              "value": "https://rajapinnat.ymparisto.fi"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.Station"
+        },
+        "FI.SYKE.Hydrology.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "FI.SYKE.Hydrology.WaterLevelObservation"
+            },
+            "source": {
+              "value": "https://rajapinnat.ymparisto.fi"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.WaterLevelObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "FI.SYKE.Hydrology.jstruct": {
+      "schemas": {
+        "FI.SYKE.Hydrology.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "name",
+                  "latitude",
+                  "longitude"
+                ],
+                "name": "Station",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "river_name": {
+                    "type": "string"
+                  },
+                  "water_area_name": {
+                    "type": "string"
+                  },
+                  "municipality": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  }
+                },
+                "$id": "https://example.com/FI/SYKE/Hydrology.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "FI.SYKE.Hydrology.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id"
+                ],
+                "name": "WaterLevelObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "water_level": {
+                    "type": "double"
+                  },
+                  "water_level_unit": {
+                    "type": "string"
+                  },
+                  "water_level_timestamp": {
+                    "type": "datetime"
+                  },
+                  "discharge": {
+                    "type": "double"
+                  },
+                  "discharge_unit": {
+                    "type": "string"
+                  },
+                  "discharge_timestamp": {
+                    "type": "datetime"
+                  }
+                },
+                "$id": "https://example.com/FI/SYKE/Hydrology.schema.json",
+                "description": "WaterLevelObservation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.avro": {
+      "schemas": {
+        "FI.SYKE.Hydrology.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "river_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_area_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "municipality",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double"
+                  }
+                ],
+                "namespace": "FI.SYKE.Hydrology"
+              }
+            }
+          }
+        },
+        "FI.SYKE.Hydrology.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevelObservation",
+                "doc": "WaterLevelObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "water_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_unit",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_unit",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "FI.SYKE.Hydrology"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

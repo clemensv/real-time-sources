@@ -151,9 +151,8 @@ class TestSWPCPoller:
         mock_response.status_code = 200
         mock_response.raise_for_status = Mock()
         mock_response.json.return_value = [
-            ["time_tag", "Kp", "a_running", "station_count"],
-            ["2024-01-01 00:00:00.000", "2", "5", "8"],
-            ["2024-01-01 03:00:00.000", "3", "7", "8"]
+            {"time_tag": "2024-01-01 00:00:00.000", "Kp": 2, "a_running": 5, "station_count": 8},
+            {"time_tag": "2024-01-01 03:00:00.000", "Kp": 3, "a_running": 7, "station_count": 8}
         ]
         mock_get.return_value = mock_response
 
@@ -165,8 +164,8 @@ class TestSWPCPoller:
 
         rows = poller.poll_k_index()
         assert len(rows) == 2
-        assert rows[0][0] == "2024-01-01 00:00:00.000"
-        assert rows[0][1] == "2"
+        assert rows[0]["time_tag"] == "2024-01-01 00:00:00.000"
+        assert rows[0]["Kp"] == 2
 
     @patch('noaa_goes.noaa_goes.requests.get')
     @patch('noaa_goes.noaa_goes.MicrosoftOpenDataUSNOAASWPCEventProducer')
@@ -192,12 +191,12 @@ class TestSWPCPoller:
         speed_response = Mock()
         speed_response.status_code = 200
         speed_response.raise_for_status = Mock()
-        speed_response.json.return_value = {"TimeStamp": "2024-01-01T00:05:00Z", "WindSpeed": "425.3"}
+        speed_response.json.return_value = [{"proton_speed": 425.3, "time_tag": "2024-01-01T00:05:00Z"}]
 
         mag_response = Mock()
         mag_response.status_code = 200
         mag_response.raise_for_status = Mock()
-        mag_response.json.return_value = {"TimeStamp": "2024-01-01T00:05:00Z", "Bt": "5.2", "Bz": "-1.3"}
+        mag_response.json.return_value = [{"bt": 5.2, "bz_gsm": -1.3, "time_tag": "2024-01-01T00:05:00Z"}]
 
         mock_get.side_effect = [speed_response, mag_response]
 

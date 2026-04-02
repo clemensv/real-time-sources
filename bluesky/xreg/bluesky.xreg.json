@@ -1,732 +1,1276 @@
 {
-    "endpoints": {
-        "BlueskyFirehose.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "bluesky"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/BlueskyFirehose"
-            ]
+  "endpoints": {
+    "BlueskyFirehose.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "bluesky"
         }
-    },
-    "messagegroups": {
-        "BlueskyFirehose": {
-            "messagegroupid": "BlueskyFirehose",
-            "messages": {
-                "Bluesky.Feed.Post": {
-                    "messageid": "Bluesky.Feed.Post",
-                    "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/BlueskyFirehose/schemas/Bluesky.Feed.Post",
-                    "createdat": "2024-11-14T12:00:00.000000",
-                    "epoch": 0,
-                    "modifiedat": "2024-11-14T12:00:00.000000",
-                    "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
-                        "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "Bluesky.Feed.Post",
-                            "description": "Event type"
-                        },
-                        "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
-                            "value": "{firehoseurl}",
-                            "description": "Source Firehose URL"
-                        },
-                        "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
-                            "value": "{did}",
-                            "description": "Decentralized Identifier"
-                        }
-                    }
-                },
-                "Bluesky.Feed.Like": {
-                    "messageid": "Bluesky.Feed.Like",
-                    "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/BlueskyFirehose/schemas/Bluesky.Feed.Like",
-                    "createdat": "2024-11-14T12:00:01.000000",
-                    "epoch": 0,
-                    "modifiedat": "2024-11-14T12:00:01.000000",
-                    "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
-                        "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "Bluesky.Feed.Like",
-                            "description": "Event type"
-                        },
-                        "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
-                            "value": "{firehoseurl}",
-                            "description": "Source Firehose URL"
-                        },
-                        "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
-                            "value": "{did}",
-                            "description": "Decentralized Identifier"
-                        }
-                    }
-                },
-                "Bluesky.Feed.Repost": {
-                    "messageid": "Bluesky.Feed.Repost",
-                    "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/BlueskyFirehose/schemas/Bluesky.Feed.Repost",
-                    "createdat": "2024-11-14T12:00:02.000000",
-                    "epoch": 0,
-                    "modifiedat": "2024-11-14T12:00:02.000000",
-                    "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
-                        "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "Bluesky.Feed.Repost",
-                            "description": "Event type"
-                        },
-                        "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
-                            "value": "{firehoseurl}",
-                            "description": "Source Firehose URL"
-                        },
-                        "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
-                            "value": "{did}",
-                            "description": "Decentralized Identifier"
-                        }
-                    }
-                },
-                "Bluesky.Graph.Follow": {
-                    "messageid": "Bluesky.Graph.Follow",
-                    "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/BlueskyFirehose/schemas/Bluesky.Graph.Follow",
-                    "createdat": "2024-11-14T12:00:03.000000",
-                    "epoch": 0,
-                    "modifiedat": "2024-11-14T12:00:03.000000",
-                    "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
-                        "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "Bluesky.Graph.Follow",
-                            "description": "Event type"
-                        },
-                        "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
-                            "value": "{firehoseurl}",
-                            "description": "Source Firehose URL"
-                        },
-                        "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
-                            "value": "{did}",
-                            "description": "Decentralized Identifier"
-                        }
-                    }
-                },
-                "Bluesky.Graph.Block": {
-                    "messageid": "Bluesky.Graph.Block",
-                    "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/BlueskyFirehose/schemas/Bluesky.Graph.Block",
-                    "createdat": "2024-11-14T12:00:04.000000",
-                    "epoch": 0,
-                    "modifiedat": "2024-11-14T12:00:04.000000",
-                    "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
-                        "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "Bluesky.Graph.Block",
-                            "description": "Event type"
-                        },
-                        "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
-                            "value": "{firehoseurl}",
-                            "description": "Source Firehose URL"
-                        },
-                        "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
-                            "value": "{did}",
-                            "description": "Decentralized Identifier"
-                        }
-                    }
-                },
-                "Bluesky.Actor.Profile": {
-                    "messageid": "Bluesky.Actor.Profile",
-                    "envelope": "CloudEvents/1.0",
-                    "protocol": "None",
-                    "dataschemaformat": "Avro",
-                    "dataschemauri": "#/schemagroups/BlueskyFirehose/schemas/Bluesky.Actor.Profile",
-                    "createdat": "2024-11-14T12:00:05.000000",
-                    "epoch": 0,
-                    "modifiedat": "2024-11-14T12:00:05.000000",
-                    "envelopemetadata": {
-                        "specversion": {
-                            "name": "specversion",
-                            "type": "string",
-                            "required": true,
-                            "value": "1.0",
-                            "description": "CloudEvents version"
-                        },
-                        "type": {
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "value": "Bluesky.Actor.Profile",
-                            "description": "Event type"
-                        },
-                        "source": {
-                            "name": "source",
-                            "type": "uritemplate",
-                            "required": true,
-                            "value": "{firehoseurl}",
-                            "description": "Source Firehose URL"
-                        },
-                        "subject": {
-                            "name": "subject",
-                            "type": "uritemplate",
-                            "value": "{did}",
-                            "description": "Decentralized Identifier"
-                        }
-                    }
-                }
-            },
-            "createdat": "2024-11-14T12:00:00.000000",
-            "epoch": 0,
-            "modifiedat": "2024-11-14T12:00:00.000000"
-        }
-    },
-    "schemagroups": {
-        "BlueskyFirehose": {
-            "schemagroupid": "BlueskyFirehose",
-            "schemas": {
-                "Bluesky.Feed.Post": {
-                    "schemaid": "Bluesky.Feed.Post",
-                    "format": "Avro",
-                    "versions": {
-                        "1": {
-                            "schemaid": "Bluesky.Feed.Post",
-                            "versionid": "1",
-                            "format": "Avro",
-                            "schema": {
-                                "type": "record",
-                                "name": "Post",
-                                "namespace": "Bluesky.Feed",
-                                "fields": [
-                                    {
-                                        "name": "uri",
-                                        "type": "string",
-                                        "doc": "AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)"
-                                    },
-                                    {
-                                        "name": "cid",
-                                        "type": "string",
-                                        "doc": "Content Identifier (CID) of the post"
-                                    },
-                                    {
-                                        "name": "did",
-                                        "type": "string",
-                                        "doc": "Decentralized Identifier of the author"
-                                    },
-                                    {
-                                        "name": "handle",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Handle of the author"
-                                    },
-                                    {
-                                        "name": "text",
-                                        "type": "string",
-                                        "doc": "Text content of the post"
-                                    },
-                                    {
-                                        "name": "langs",
-                                        "type": {
-                                            "type": "array",
-                                            "items": "string"
-                                        },
-                                        "default": [],
-                                        "doc": "Language codes for the post"
-                                    },
-                                    {
-                                        "name": "reply_parent",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "AT-URI of parent post if this is a reply"
-                                    },
-                                    {
-                                        "name": "reply_root",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "AT-URI of root post in thread"
-                                    },
-                                    {
-                                        "name": "embed_type",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Type of embedded content (images, external, record, etc.)"
-                                    },
-                                    {
-                                        "name": "embed_uri",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "URI of embedded content"
-                                    },
-                                    {
-                                        "name": "facets",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "JSON string of rich text facets (mentions, links, tags)"
-                                    },
-                                    {
-                                        "name": "tags",
-                                        "type": {
-                                            "type": "array",
-                                            "items": "string"
-                                        },
-                                        "default": [],
-                                        "doc": "Hashtags in the post"
-                                    },
-                                    {
-                                        "name": "created_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of post creation"
-                                    },
-                                    {
-                                        "name": "indexed_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of when the post was indexed"
-                                    },
-                                    {
-                                        "name": "seq",
-                                        "type": "long",
-                                        "doc": "Firehose sequence number"
-                                    }
-                                ],
-                                "doc": "A post in the Bluesky feed"
-                            },
-                            "createdat": "2024-11-14T12:00:00.000000",
-                            "epoch": 0,
-                            "modifiedat": "2024-11-14T12:00:00.000000"
-                        }
-                    }
-                },
-                "Bluesky.Feed.Like": {
-                    "schemaid": "Bluesky.Feed.Like",
-                    "format": "Avro",
-                    "versions": {
-                        "1": {
-                            "schemaid": "Bluesky.Feed.Like",
-                            "versionid": "1",
-                            "format": "Avro",
-                            "schema": {
-                                "type": "record",
-                                "name": "Like",
-                                "namespace": "Bluesky.Feed",
-                                "fields": [
-                                    {
-                                        "name": "uri",
-                                        "type": "string",
-                                        "doc": "AT-URI of the like record"
-                                    },
-                                    {
-                                        "name": "cid",
-                                        "type": "string",
-                                        "doc": "Content Identifier of the like"
-                                    },
-                                    {
-                                        "name": "did",
-                                        "type": "string",
-                                        "doc": "DID of the user who liked"
-                                    },
-                                    {
-                                        "name": "handle",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Handle of the user who liked"
-                                    },
-                                    {
-                                        "name": "subject_uri",
-                                        "type": "string",
-                                        "doc": "AT-URI of the liked post"
-                                    },
-                                    {
-                                        "name": "subject_cid",
-                                        "type": "string",
-                                        "doc": "CID of the liked post"
-                                    },
-                                    {
-                                        "name": "created_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of like creation"
-                                    },
-                                    {
-                                        "name": "indexed_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of indexing"
-                                    },
-                                    {
-                                        "name": "seq",
-                                        "type": "long",
-                                        "doc": "Firehose sequence number"
-                                    }
-                                ],
-                                "doc": "A like on a post"
-                            },
-                            "createdat": "2024-11-14T12:00:01.000000",
-                            "epoch": 0,
-                            "modifiedat": "2024-11-14T12:00:01.000000"
-                        }
-                    }
-                },
-                "Bluesky.Feed.Repost": {
-                    "schemaid": "Bluesky.Feed.Repost",
-                    "format": "Avro",
-                    "versions": {
-                        "1": {
-                            "schemaid": "Bluesky.Feed.Repost",
-                            "versionid": "1",
-                            "format": "Avro",
-                            "schema": {
-                                "type": "record",
-                                "name": "Repost",
-                                "namespace": "Bluesky.Feed",
-                                "fields": [
-                                    {
-                                        "name": "uri",
-                                        "type": "string",
-                                        "doc": "AT-URI of the repost record"
-                                    },
-                                    {
-                                        "name": "cid",
-                                        "type": "string",
-                                        "doc": "Content Identifier of the repost"
-                                    },
-                                    {
-                                        "name": "did",
-                                        "type": "string",
-                                        "doc": "DID of the user who reposted"
-                                    },
-                                    {
-                                        "name": "handle",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Handle of the user who reposted"
-                                    },
-                                    {
-                                        "name": "subject_uri",
-                                        "type": "string",
-                                        "doc": "AT-URI of the reposted post"
-                                    },
-                                    {
-                                        "name": "subject_cid",
-                                        "type": "string",
-                                        "doc": "CID of the reposted post"
-                                    },
-                                    {
-                                        "name": "created_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of repost creation"
-                                    },
-                                    {
-                                        "name": "indexed_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of indexing"
-                                    },
-                                    {
-                                        "name": "seq",
-                                        "type": "long",
-                                        "doc": "Firehose sequence number"
-                                    }
-                                ],
-                                "doc": "A repost of a post"
-                            },
-                            "createdat": "2024-11-14T12:00:02.000000",
-                            "epoch": 0,
-                            "modifiedat": "2024-11-14T12:00:02.000000"
-                        }
-                    }
-                },
-                "Bluesky.Graph.Follow": {
-                    "schemaid": "Bluesky.Graph.Follow",
-                    "format": "Avro",
-                    "versions": {
-                        "1": {
-                            "schemaid": "Bluesky.Graph.Follow",
-                            "versionid": "1",
-                            "format": "Avro",
-                            "schema": {
-                                "type": "record",
-                                "name": "Follow",
-                                "namespace": "Bluesky.Graph",
-                                "fields": [
-                                    {
-                                        "name": "uri",
-                                        "type": "string",
-                                        "doc": "AT-URI of the follow record"
-                                    },
-                                    {
-                                        "name": "cid",
-                                        "type": "string",
-                                        "doc": "Content Identifier of the follow"
-                                    },
-                                    {
-                                        "name": "did",
-                                        "type": "string",
-                                        "doc": "DID of the follower"
-                                    },
-                                    {
-                                        "name": "handle",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Handle of the follower"
-                                    },
-                                    {
-                                        "name": "subject",
-                                        "type": "string",
-                                        "doc": "DID of the followed user"
-                                    },
-                                    {
-                                        "name": "subject_handle",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Handle of the followed user"
-                                    },
-                                    {
-                                        "name": "created_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of follow creation"
-                                    },
-                                    {
-                                        "name": "indexed_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of indexing"
-                                    },
-                                    {
-                                        "name": "seq",
-                                        "type": "long",
-                                        "doc": "Firehose sequence number"
-                                    }
-                                ],
-                                "doc": "A follow relationship between users"
-                            },
-                            "createdat": "2024-11-14T12:00:03.000000",
-                            "epoch": 0,
-                            "modifiedat": "2024-11-14T12:00:03.000000"
-                        }
-                    }
-                },
-                "Bluesky.Graph.Block": {
-                    "schemaid": "Bluesky.Graph.Block",
-                    "format": "Avro",
-                    "versions": {
-                        "1": {
-                            "schemaid": "Bluesky.Graph.Block",
-                            "versionid": "1",
-                            "format": "Avro",
-                            "schema": {
-                                "type": "record",
-                                "name": "Block",
-                                "namespace": "Bluesky.Graph",
-                                "fields": [
-                                    {
-                                        "name": "uri",
-                                        "type": "string",
-                                        "doc": "AT-URI of the block record"
-                                    },
-                                    {
-                                        "name": "cid",
-                                        "type": "string",
-                                        "doc": "Content Identifier of the block"
-                                    },
-                                    {
-                                        "name": "did",
-                                        "type": "string",
-                                        "doc": "DID of the blocker"
-                                    },
-                                    {
-                                        "name": "handle",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Handle of the blocker"
-                                    },
-                                    {
-                                        "name": "subject",
-                                        "type": "string",
-                                        "doc": "DID of the blocked user"
-                                    },
-                                    {
-                                        "name": "subject_handle",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Handle of the blocked user"
-                                    },
-                                    {
-                                        "name": "created_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of block creation"
-                                    },
-                                    {
-                                        "name": "indexed_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of indexing"
-                                    },
-                                    {
-                                        "name": "seq",
-                                        "type": "long",
-                                        "doc": "Firehose sequence number"
-                                    }
-                                ],
-                                "doc": "A block relationship between users"
-                            },
-                            "createdat": "2024-11-14T12:00:04.000000",
-                            "epoch": 0,
-                            "modifiedat": "2024-11-14T12:00:04.000000"
-                        }
-                    }
-                },
-                "Bluesky.Actor.Profile": {
-                    "schemaid": "Bluesky.Actor.Profile",
-                    "format": "Avro",
-                    "versions": {
-                        "1": {
-                            "schemaid": "Bluesky.Actor.Profile",
-                            "versionid": "1",
-                            "format": "Avro",
-                            "schema": {
-                                "type": "record",
-                                "name": "Profile",
-                                "namespace": "Bluesky.Actor",
-                                "fields": [
-                                    {
-                                        "name": "did",
-                                        "type": "string",
-                                        "doc": "Decentralized Identifier"
-                                    },
-                                    {
-                                        "name": "handle",
-                                        "type": "string",
-                                        "doc": "User handle"
-                                    },
-                                    {
-                                        "name": "display_name",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Display name"
-                                    },
-                                    {
-                                        "name": "description",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Bio/description"
-                                    },
-                                    {
-                                        "name": "avatar",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Avatar image URL"
-                                    },
-                                    {
-                                        "name": "banner",
-                                        "type": ["null", "string"],
-                                        "default": null,
-                                        "doc": "Banner image URL"
-                                    },
-                                    {
-                                        "name": "created_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of profile creation"
-                                    },
-                                    {
-                                        "name": "indexed_at",
-                                        "type": "string",
-                                        "doc": "ISO 8601 timestamp of indexing"
-                                    },
-                                    {
-                                        "name": "seq",
-                                        "type": "long",
-                                        "doc": "Firehose sequence number"
-                                    }
-                                ],
-                                "doc": "A user profile update"
-                            },
-                            "createdat": "2024-11-14T12:00:05.000000",
-                            "epoch": 0,
-                            "modifiedat": "2024-11-14T12:00:05.000000"
-                        }
-                    }
-                }
-            },
-            "createdat": "2024-11-14T12:00:00.000000",
-            "epoch": 0,
-            "modifiedat": "2024-11-14T12:00:00.000000"
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/BlueskyFirehose"
+      ]
     }
+  },
+  "messagegroups": {
+    "BlueskyFirehose": {
+      "messagegroupid": "BlueskyFirehose",
+      "messages": {
+        "Bluesky.Feed.Post": {
+          "messageid": "Bluesky.Feed.Post",
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Post",
+          "createdat": "2024-11-14T12:00:00",
+          "epoch": 0,
+          "modifiedat": "2024-11-14T12:00:00",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "Bluesky.Feed.Post",
+              "description": "Event type"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{firehoseurl}",
+              "description": "Source Firehose URL"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "value": "{did}",
+              "description": "Decentralized Identifier"
+            }
+          }
+        },
+        "Bluesky.Feed.Like": {
+          "messageid": "Bluesky.Feed.Like",
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Like",
+          "createdat": "2024-11-14T12:00:01",
+          "epoch": 0,
+          "modifiedat": "2024-11-14T12:00:01",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "Bluesky.Feed.Like",
+              "description": "Event type"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{firehoseurl}",
+              "description": "Source Firehose URL"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "value": "{did}",
+              "description": "Decentralized Identifier"
+            }
+          }
+        },
+        "Bluesky.Feed.Repost": {
+          "messageid": "Bluesky.Feed.Repost",
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Feed.Repost",
+          "createdat": "2024-11-14T12:00:02",
+          "epoch": 0,
+          "modifiedat": "2024-11-14T12:00:02",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "Bluesky.Feed.Repost",
+              "description": "Event type"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{firehoseurl}",
+              "description": "Source Firehose URL"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "value": "{did}",
+              "description": "Decentralized Identifier"
+            }
+          }
+        },
+        "Bluesky.Graph.Follow": {
+          "messageid": "Bluesky.Graph.Follow",
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Graph.Follow",
+          "createdat": "2024-11-14T12:00:03",
+          "epoch": 0,
+          "modifiedat": "2024-11-14T12:00:03",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "Bluesky.Graph.Follow",
+              "description": "Event type"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{firehoseurl}",
+              "description": "Source Firehose URL"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "value": "{did}",
+              "description": "Decentralized Identifier"
+            }
+          }
+        },
+        "Bluesky.Graph.Block": {
+          "messageid": "Bluesky.Graph.Block",
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Graph.Block",
+          "createdat": "2024-11-14T12:00:04",
+          "epoch": 0,
+          "modifiedat": "2024-11-14T12:00:04",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "Bluesky.Graph.Block",
+              "description": "Event type"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{firehoseurl}",
+              "description": "Source Firehose URL"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "value": "{did}",
+              "description": "Decentralized Identifier"
+            }
+          }
+        },
+        "Bluesky.Actor.Profile": {
+          "messageid": "Bluesky.Actor.Profile",
+          "envelope": "CloudEvents/1.0",
+          "protocol": "None",
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Actor.Profile",
+          "createdat": "2024-11-14T12:00:05",
+          "epoch": 0,
+          "modifiedat": "2024-11-14T12:00:05",
+          "envelopemetadata": {
+            "specversion": {
+              "name": "specversion",
+              "type": "string",
+              "required": true,
+              "value": "1.0",
+              "description": "CloudEvents version"
+            },
+            "type": {
+              "name": "type",
+              "type": "string",
+              "required": true,
+              "value": "Bluesky.Actor.Profile",
+              "description": "Event type"
+            },
+            "source": {
+              "name": "source",
+              "type": "uritemplate",
+              "required": true,
+              "value": "{firehoseurl}",
+              "description": "Source Firehose URL"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "value": "{did}",
+              "description": "Decentralized Identifier"
+            }
+          }
+        }
+      },
+      "createdat": "2024-11-14T12:00:00",
+      "epoch": 0,
+      "modifiedat": "2024-11-14T12:00:00"
+    }
+  },
+  "schemagroups": {
+    "BlueskyFirehose.jstruct": {
+      "schemas": {
+        "Bluesky.Feed.Post": {
+          "name": "Post",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Bluesky/Feed/Post",
+                "name": "Post",
+                "$root": "#/definitions/Bluesky/Feed/Post",
+                "definitions": {
+                  "Bluesky": {
+                    "Feed": {
+                      "Post": {
+                        "name": "Post",
+                        "type": "object",
+                        "properties": {
+                          "uri": {
+                            "type": "string",
+                            "description": "AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)"
+                          },
+                          "cid": {
+                            "type": "string",
+                            "description": "Content Identifier (CID) of the post"
+                          },
+                          "did": {
+                            "type": "string",
+                            "description": "Decentralized Identifier of the author"
+                          },
+                          "handle": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Handle of the author"
+                          },
+                          "text": {
+                            "type": "string",
+                            "description": "Text content of the post"
+                          },
+                          "langs": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "default": [],
+                            "description": "Language codes for the post"
+                          },
+                          "reply_parent": {
+                            "type": "string",
+                            "default": null,
+                            "description": "AT-URI of parent post if this is a reply"
+                          },
+                          "reply_root": {
+                            "type": "string",
+                            "default": null,
+                            "description": "AT-URI of root post in thread"
+                          },
+                          "embed_type": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Type of embedded content (images, external, record, etc.)"
+                          },
+                          "embed_uri": {
+                            "type": "string",
+                            "default": null,
+                            "description": "URI of embedded content"
+                          },
+                          "facets": {
+                            "type": "string",
+                            "default": null,
+                            "description": "JSON string of rich text facets (mentions, links, tags)"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "default": [],
+                            "description": "Hashtags in the post"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of post creation"
+                          },
+                          "indexed_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of when the post was indexed"
+                          },
+                          "seq": {
+                            "type": "int64",
+                            "description": "Firehose sequence number"
+                          }
+                        },
+                        "required": [
+                          "uri",
+                          "cid",
+                          "did",
+                          "text",
+                          "langs",
+                          "tags",
+                          "created_at",
+                          "indexed_at",
+                          "seq"
+                        ],
+                        "description": "A post in the Bluesky feed"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Bluesky.Feed.Like": {
+          "name": "Like",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Bluesky/Feed/Like",
+                "name": "Like",
+                "$root": "#/definitions/Bluesky/Feed/Like",
+                "definitions": {
+                  "Bluesky": {
+                    "Feed": {
+                      "Like": {
+                        "name": "Like",
+                        "type": "object",
+                        "properties": {
+                          "uri": {
+                            "type": "string",
+                            "description": "AT-URI of the like record"
+                          },
+                          "cid": {
+                            "type": "string",
+                            "description": "Content Identifier of the like"
+                          },
+                          "did": {
+                            "type": "string",
+                            "description": "DID of the user who liked"
+                          },
+                          "handle": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Handle of the user who liked"
+                          },
+                          "subject_uri": {
+                            "type": "string",
+                            "description": "AT-URI of the liked post"
+                          },
+                          "subject_cid": {
+                            "type": "string",
+                            "description": "CID of the liked post"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of like creation"
+                          },
+                          "indexed_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of indexing"
+                          },
+                          "seq": {
+                            "type": "int64",
+                            "description": "Firehose sequence number"
+                          }
+                        },
+                        "required": [
+                          "uri",
+                          "cid",
+                          "did",
+                          "subject_uri",
+                          "subject_cid",
+                          "created_at",
+                          "indexed_at",
+                          "seq"
+                        ],
+                        "description": "A like on a post"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Bluesky.Feed.Repost": {
+          "name": "Repost",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Bluesky/Feed/Repost",
+                "name": "Repost",
+                "$root": "#/definitions/Bluesky/Feed/Repost",
+                "definitions": {
+                  "Bluesky": {
+                    "Feed": {
+                      "Repost": {
+                        "name": "Repost",
+                        "type": "object",
+                        "properties": {
+                          "uri": {
+                            "type": "string",
+                            "description": "AT-URI of the repost record"
+                          },
+                          "cid": {
+                            "type": "string",
+                            "description": "Content Identifier of the repost"
+                          },
+                          "did": {
+                            "type": "string",
+                            "description": "DID of the user who reposted"
+                          },
+                          "handle": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Handle of the user who reposted"
+                          },
+                          "subject_uri": {
+                            "type": "string",
+                            "description": "AT-URI of the reposted post"
+                          },
+                          "subject_cid": {
+                            "type": "string",
+                            "description": "CID of the reposted post"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of repost creation"
+                          },
+                          "indexed_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of indexing"
+                          },
+                          "seq": {
+                            "type": "int64",
+                            "description": "Firehose sequence number"
+                          }
+                        },
+                        "required": [
+                          "uri",
+                          "cid",
+                          "did",
+                          "subject_uri",
+                          "subject_cid",
+                          "created_at",
+                          "indexed_at",
+                          "seq"
+                        ],
+                        "description": "A repost of a post"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Bluesky.Graph.Follow": {
+          "name": "Follow",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Bluesky/Graph/Follow",
+                "name": "Follow",
+                "$root": "#/definitions/Bluesky/Graph/Follow",
+                "definitions": {
+                  "Bluesky": {
+                    "Graph": {
+                      "Follow": {
+                        "name": "Follow",
+                        "type": "object",
+                        "properties": {
+                          "uri": {
+                            "type": "string",
+                            "description": "AT-URI of the follow record"
+                          },
+                          "cid": {
+                            "type": "string",
+                            "description": "Content Identifier of the follow"
+                          },
+                          "did": {
+                            "type": "string",
+                            "description": "DID of the follower"
+                          },
+                          "handle": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Handle of the follower"
+                          },
+                          "subject": {
+                            "type": "string",
+                            "description": "DID of the followed user"
+                          },
+                          "subject_handle": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Handle of the followed user"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of follow creation"
+                          },
+                          "indexed_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of indexing"
+                          },
+                          "seq": {
+                            "type": "int64",
+                            "description": "Firehose sequence number"
+                          }
+                        },
+                        "required": [
+                          "uri",
+                          "cid",
+                          "did",
+                          "subject",
+                          "created_at",
+                          "indexed_at",
+                          "seq"
+                        ],
+                        "description": "A follow relationship between users"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Bluesky.Graph.Block": {
+          "name": "Block",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Bluesky/Graph/Block",
+                "name": "Block",
+                "$root": "#/definitions/Bluesky/Graph/Block",
+                "definitions": {
+                  "Bluesky": {
+                    "Graph": {
+                      "Block": {
+                        "name": "Block",
+                        "type": "object",
+                        "properties": {
+                          "uri": {
+                            "type": "string",
+                            "description": "AT-URI of the block record"
+                          },
+                          "cid": {
+                            "type": "string",
+                            "description": "Content Identifier of the block"
+                          },
+                          "did": {
+                            "type": "string",
+                            "description": "DID of the blocker"
+                          },
+                          "handle": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Handle of the blocker"
+                          },
+                          "subject": {
+                            "type": "string",
+                            "description": "DID of the blocked user"
+                          },
+                          "subject_handle": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Handle of the blocked user"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of block creation"
+                          },
+                          "indexed_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of indexing"
+                          },
+                          "seq": {
+                            "type": "int64",
+                            "description": "Firehose sequence number"
+                          }
+                        },
+                        "required": [
+                          "uri",
+                          "cid",
+                          "did",
+                          "subject",
+                          "created_at",
+                          "indexed_at",
+                          "seq"
+                        ],
+                        "description": "A block relationship between users"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Bluesky.Actor.Profile": {
+          "name": "Profile",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/Bluesky/Actor/Profile",
+                "name": "Profile",
+                "$root": "#/definitions/Bluesky/Actor/Profile",
+                "definitions": {
+                  "Bluesky": {
+                    "Actor": {
+                      "Profile": {
+                        "name": "Profile",
+                        "type": "object",
+                        "properties": {
+                          "did": {
+                            "type": "string",
+                            "description": "Decentralized Identifier"
+                          },
+                          "handle": {
+                            "type": "string",
+                            "description": "User handle"
+                          },
+                          "display_name": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Display name"
+                          },
+                          "description": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Bio/description"
+                          },
+                          "avatar": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Avatar image URL"
+                          },
+                          "banner": {
+                            "type": "string",
+                            "default": null,
+                            "description": "Banner image URL"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of profile creation"
+                          },
+                          "indexed_at": {
+                            "type": "string",
+                            "description": "ISO 8601 timestamp of indexing"
+                          },
+                          "seq": {
+                            "type": "int64",
+                            "description": "Firehose sequence number"
+                          }
+                        },
+                        "required": [
+                          "did",
+                          "handle",
+                          "created_at",
+                          "indexed_at",
+                          "seq"
+                        ],
+                        "description": "A user profile update"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "BlueskyFirehose.avro": {
+      "schemas": {
+        "Bluesky.Feed.Post": {
+          "schemaid": "Bluesky.Feed.Post",
+          "format": "Avro",
+          "versions": {
+            "1": {
+              "schemaid": "Bluesky.Feed.Post",
+              "versionid": "1",
+              "format": "Avro",
+              "schema": {
+                "type": "record",
+                "name": "Post",
+                "namespace": "Bluesky.Feed",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier (CID) of the post"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "Decentralized Identifier of the author"
+                  },
+                  {
+                    "name": "handle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Handle of the author"
+                  },
+                  {
+                    "name": "text",
+                    "type": "string",
+                    "doc": "Text content of the post"
+                  },
+                  {
+                    "name": "langs",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "default": [],
+                    "doc": "Language codes for the post"
+                  },
+                  {
+                    "name": "reply_parent",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "AT-URI of parent post if this is a reply"
+                  },
+                  {
+                    "name": "reply_root",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "AT-URI of root post in thread"
+                  },
+                  {
+                    "name": "embed_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Type of embedded content (images, external, record, etc.)"
+                  },
+                  {
+                    "name": "embed_uri",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "URI of embedded content"
+                  },
+                  {
+                    "name": "facets",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "JSON string of rich text facets (mentions, links, tags)"
+                  },
+                  {
+                    "name": "tags",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "default": [],
+                    "doc": "Hashtags in the post"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of post creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of when the post was indexed"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  }
+                ],
+                "doc": "A post in the Bluesky feed"
+              },
+              "createdat": "2024-11-14T12:00:00",
+              "epoch": 0,
+              "modifiedat": "2024-11-14T12:00:00"
+            }
+          }
+        },
+        "Bluesky.Feed.Like": {
+          "schemaid": "Bluesky.Feed.Like",
+          "format": "Avro",
+          "versions": {
+            "1": {
+              "schemaid": "Bluesky.Feed.Like",
+              "versionid": "1",
+              "format": "Avro",
+              "schema": {
+                "type": "record",
+                "name": "Like",
+                "namespace": "Bluesky.Feed",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the like record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the like"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the user who liked"
+                  },
+                  {
+                    "name": "handle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Handle of the user who liked"
+                  },
+                  {
+                    "name": "subject_uri",
+                    "type": "string",
+                    "doc": "AT-URI of the liked post"
+                  },
+                  {
+                    "name": "subject_cid",
+                    "type": "string",
+                    "doc": "CID of the liked post"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of like creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  }
+                ],
+                "doc": "A like on a post"
+              },
+              "createdat": "2024-11-14T12:00:01",
+              "epoch": 0,
+              "modifiedat": "2024-11-14T12:00:01"
+            }
+          }
+        },
+        "Bluesky.Feed.Repost": {
+          "schemaid": "Bluesky.Feed.Repost",
+          "format": "Avro",
+          "versions": {
+            "1": {
+              "schemaid": "Bluesky.Feed.Repost",
+              "versionid": "1",
+              "format": "Avro",
+              "schema": {
+                "type": "record",
+                "name": "Repost",
+                "namespace": "Bluesky.Feed",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the repost record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the repost"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the user who reposted"
+                  },
+                  {
+                    "name": "handle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Handle of the user who reposted"
+                  },
+                  {
+                    "name": "subject_uri",
+                    "type": "string",
+                    "doc": "AT-URI of the reposted post"
+                  },
+                  {
+                    "name": "subject_cid",
+                    "type": "string",
+                    "doc": "CID of the reposted post"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of repost creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  }
+                ],
+                "doc": "A repost of a post"
+              },
+              "createdat": "2024-11-14T12:00:02",
+              "epoch": 0,
+              "modifiedat": "2024-11-14T12:00:02"
+            }
+          }
+        },
+        "Bluesky.Graph.Follow": {
+          "schemaid": "Bluesky.Graph.Follow",
+          "format": "Avro",
+          "versions": {
+            "1": {
+              "schemaid": "Bluesky.Graph.Follow",
+              "versionid": "1",
+              "format": "Avro",
+              "schema": {
+                "type": "record",
+                "name": "Follow",
+                "namespace": "Bluesky.Graph",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the follow record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the follow"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the follower"
+                  },
+                  {
+                    "name": "handle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Handle of the follower"
+                  },
+                  {
+                    "name": "subject",
+                    "type": "string",
+                    "doc": "DID of the followed user"
+                  },
+                  {
+                    "name": "subject_handle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Handle of the followed user"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of follow creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  }
+                ],
+                "doc": "A follow relationship between users"
+              },
+              "createdat": "2024-11-14T12:00:03",
+              "epoch": 0,
+              "modifiedat": "2024-11-14T12:00:03"
+            }
+          }
+        },
+        "Bluesky.Graph.Block": {
+          "schemaid": "Bluesky.Graph.Block",
+          "format": "Avro",
+          "versions": {
+            "1": {
+              "schemaid": "Bluesky.Graph.Block",
+              "versionid": "1",
+              "format": "Avro",
+              "schema": {
+                "type": "record",
+                "name": "Block",
+                "namespace": "Bluesky.Graph",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the block record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the block"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the blocker"
+                  },
+                  {
+                    "name": "handle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Handle of the blocker"
+                  },
+                  {
+                    "name": "subject",
+                    "type": "string",
+                    "doc": "DID of the blocked user"
+                  },
+                  {
+                    "name": "subject_handle",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Handle of the blocked user"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of block creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  }
+                ],
+                "doc": "A block relationship between users"
+              },
+              "createdat": "2024-11-14T12:00:04",
+              "epoch": 0,
+              "modifiedat": "2024-11-14T12:00:04"
+            }
+          }
+        },
+        "Bluesky.Actor.Profile": {
+          "schemaid": "Bluesky.Actor.Profile",
+          "format": "Avro",
+          "versions": {
+            "1": {
+              "schemaid": "Bluesky.Actor.Profile",
+              "versionid": "1",
+              "format": "Avro",
+              "schema": {
+                "type": "record",
+                "name": "Profile",
+                "namespace": "Bluesky.Actor",
+                "fields": [
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "Decentralized Identifier"
+                  },
+                  {
+                    "name": "handle",
+                    "type": "string",
+                    "doc": "User handle"
+                  },
+                  {
+                    "name": "display_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Display name"
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Bio/description"
+                  },
+                  {
+                    "name": "avatar",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Avatar image URL"
+                  },
+                  {
+                    "name": "banner",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Banner image URL"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of profile creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  }
+                ],
+                "doc": "A user profile update"
+              },
+              "createdat": "2024-11-14T12:00:05",
+              "epoch": 0,
+              "modifiedat": "2024-11-14T12:00:05"
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -13,40 +13,42 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Observation:
     """
-    A Observation record.
+    Observation
     Attributes:
         code_station (str): 
-        date_obs (str): 
+        date_obs (datetime.datetime): 
         resultat_obs (float): 
         grandeur_hydro (str): 
-        libelle_methode_obs (str): 
-        libelle_qualification_obs (str): """
+        libelle_methode_obs (typing.Optional[str]): 
+        libelle_qualification_obs (typing.Optional[str]): """
     
     code_station: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_station"))
-    date_obs: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_obs"))
+    date_obs: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_obs"))
     resultat_obs: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="resultat_obs"))
     grandeur_hydro: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="grandeur_hydro"))
-    libelle_methode_obs: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_methode_obs"))
-    libelle_qualification_obs: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_qualification_obs"))
+    libelle_methode_obs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_methode_obs"))
+    libelle_qualification_obs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_qualification_obs"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Observation\", \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"date_obs\", \"type\": \"string\"}, {\"name\": \"resultat_obs\", \"type\": \"double\"}, {\"name\": \"grandeur_hydro\", \"type\": \"string\"}, {\"name\": \"libelle_methode_obs\", \"type\": \"string\"}, {\"name\": \"libelle_qualification_obs\", \"type\": \"string\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Observation\", \"doc\": \"Observation\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"date_obs\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"resultat_obs\", \"type\": \"double\"}, {\"name\": \"grandeur_hydro\", \"type\": \"string\"}, {\"name\": \"libelle_methode_obs\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"libelle_qualification_obs\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.code_station=str(self.code_station)
-        self.date_obs=str(self.date_obs)
+        value_date_obs = self.date_obs
+        self.date_obs = value_date_obs
         self.resultat_obs=float(self.resultat_obs)
         self.grandeur_hydro=str(self.grandeur_hydro)
-        self.libelle_methode_obs=str(self.libelle_methode_obs)
-        self.libelle_qualification_obs=str(self.libelle_qualification_obs)
+        self.libelle_methode_obs=str(self.libelle_methode_obs) if self.libelle_methode_obs else None
+        self.libelle_qualification_obs=str(self.libelle_qualification_obs) if self.libelle_qualification_obs else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Observation':

@@ -36,19 +36,19 @@ from noaa_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAEventPr
 
 # imports for the data classes for each event
 
-from noaa_producer_data.microsoft.opendata.us.noaa.waterlevel import WaterLevel
-from noaa_producer_data.microsoft.opendata.us.noaa.predictions import Predictions
-from noaa_producer_data.microsoft.opendata.us.noaa.airpressure import AirPressure
-from noaa_producer_data.microsoft.opendata.us.noaa.airtemperature import AirTemperature
-from noaa_producer_data.microsoft.opendata.us.noaa.watertemperature import WaterTemperature
-from noaa_producer_data.microsoft.opendata.us.noaa.wind import Wind
-from noaa_producer_data.microsoft.opendata.us.noaa.humidity import Humidity
-from noaa_producer_data.microsoft.opendata.us.noaa.conductivity import Conductivity
-from noaa_producer_data.microsoft.opendata.us.noaa.salinity import Salinity
-from noaa_producer_data.microsoft.opendata.us.noaa.station import Station
-from noaa_producer_data.microsoft.opendata.us.noaa.visibility import Visibility
-from noaa_producer_data.microsoft.opendata.us.noaa.currents import Currents
-from noaa_producer_data.microsoft.opendata.us.noaa.currentpredictions import CurrentPredictions
+from noaa_producer_data.waterlevel import WaterLevel
+from noaa_producer_data.predictions import Predictions
+from noaa_producer_data.airpressure import AirPressure
+from noaa_producer_data.airtemperature import AirTemperature
+from noaa_producer_data.watertemperature import WaterTemperature
+from noaa_producer_data.wind import Wind
+from noaa_producer_data.humidity import Humidity
+from noaa_producer_data.conductivity import Conductivity
+from noaa_producer_data.salinity import Salinity
+from noaa_producer_data.station import Station
+from noaa_producer_data.visibility import Visibility
+from noaa_producer_data.currents import Currents
+from noaa_producer_data.currentpredictions import CurrentPredictions
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

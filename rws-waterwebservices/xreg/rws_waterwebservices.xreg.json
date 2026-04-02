@@ -1,110 +1,282 @@
 {
-    "endpoints": {
-        "NL.RWS.Waterwebservices.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "rws-waterwebservices"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/NL.RWS.Waterwebservices"
-            ]
+  "endpoints": {
+    "NL.RWS.Waterwebservices.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "rws-waterwebservices"
         }
-    },
-    "messagegroups": {
-        "NL.RWS.Waterwebservices": {
-            "messages": {
-                "NL.RWS.Waterwebservices.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "NL.RWS.Waterwebservices.Station"
-                        },
-                        "source": {
-                            "value": "https://waterwebservices.rijkswaterstaat.nl"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices/schemas/NL.RWS.Waterwebservices.Station"
-                },
-                "NL.RWS.Waterwebservices.WaterLevelObservation": {
-                    "name": "WaterLevelObservation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "NL.RWS.Waterwebservices.WaterLevelObservation"
-                        },
-                        "source": {
-                            "value": "https://waterwebservices.rijkswaterstaat.nl"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "NL.RWS.Waterwebservices": {
-            "schemas": {
-                "NL.RWS.Waterwebservices.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "NL.RWS.Waterwebservices",
-                                "properties": {
-                                    "code": { "type": "string", "description": "Location code (e.g., hoekvanholland)" },
-                                    "name": { "type": "string", "description": "Location name (e.g., Hoek van Holland)" },
-                                    "latitude": { "type": "number", "description": "Latitude in ETRS89/WGS84" },
-                                    "longitude": { "type": "number", "description": "Longitude in ETRS89/WGS84" },
-                                    "coordinate_system": { "type": "string", "description": "Coordinate system (e.g., ETRS89)" }
-                                },
-                                "required": ["code", "name", "latitude", "longitude"]
-                            }
-                        }
-                    }
-                },
-                "NL.RWS.Waterwebservices.WaterLevelObservation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "WaterLevelObservation",
-                                "namespace": "NL.RWS.Waterwebservices",
-                                "properties": {
-                                    "location_code": { "type": "string", "description": "Location code" },
-                                    "location_name": { "type": "string", "description": "Location name" },
-                                    "timestamp": { "type": "string", "format": "date-time", "description": "Measurement timestamp in ISO 8601" },
-                                    "value": { "type": "number", "description": "Measured water level value in cm relative to NAP" },
-                                    "unit": { "type": "string", "description": "Unit of measurement (cm)" },
-                                    "quality_code": { "type": "string", "description": "Quality value code (00=good, 99=gap)" },
-                                    "status": { "type": "string", "description": "Status (e.g., Ongecontroleerd)" },
-                                    "compartment": { "type": "string", "description": "Compartment code (OW=surface water)" },
-                                    "parameter": { "type": "string", "description": "Parameter code (WATHTE=water height)" }
-                                },
-                                "required": ["location_code", "timestamp", "value"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.RWS.Waterwebservices"
+      ]
     }
+  },
+  "messagegroups": {
+    "NL.RWS.Waterwebservices": {
+      "messages": {
+        "NL.RWS.Waterwebservices.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.RWS.Waterwebservices.Station"
+            },
+            "source": {
+              "value": "https://waterwebservices.rijkswaterstaat.nl"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.Station"
+        },
+        "NL.RWS.Waterwebservices.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.RWS.Waterwebservices.WaterLevelObservation"
+            },
+            "source": {
+              "value": "https://waterwebservices.rijkswaterstaat.nl"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "NL.RWS.Waterwebservices.jstruct": {
+      "schemas": {
+        "NL.RWS.Waterwebservices.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "code",
+                  "name",
+                  "latitude",
+                  "longitude"
+                ],
+                "name": "Station",
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  },
+                  "coordinate_system": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/NL/RWS/Waterwebservices.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "NL.RWS.Waterwebservices.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "location_code",
+                  "timestamp",
+                  "value"
+                ],
+                "name": "WaterLevelObservation",
+                "properties": {
+                  "location_code": {
+                    "type": "string"
+                  },
+                  "location_name": {
+                    "type": "string"
+                  },
+                  "timestamp": {
+                    "type": "datetime"
+                  },
+                  "value": {
+                    "type": "double"
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "quality_code": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "compartment": {
+                    "type": "string"
+                  },
+                  "parameter": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/NL/RWS/Waterwebservices.schema.json",
+                "description": "WaterLevelObservation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "NL.RWS.Waterwebservices.avro": {
+      "schemas": {
+        "NL.RWS.Waterwebservices.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "code",
+                    "type": "string"
+                  },
+                  {
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "coordinate_system",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "NL.RWS.Waterwebservices"
+              }
+            }
+          }
+        },
+        "NL.RWS.Waterwebservices.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevelObservation",
+                "doc": "WaterLevelObservation",
+                "fields": [
+                  {
+                    "name": "location_code",
+                    "type": "string"
+                  },
+                  {
+                    "name": "location_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "value",
+                    "type": "double"
+                  },
+                  {
+                    "name": "unit",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "quality_code",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "compartment",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "parameter",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "NL.RWS.Waterwebservices"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

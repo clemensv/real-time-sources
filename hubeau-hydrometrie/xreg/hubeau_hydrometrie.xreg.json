@@ -1,112 +1,301 @@
 {
-    "endpoints": {
-        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "hubeau-hydrometrie"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie"
-            ]
+  "endpoints": {
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "hubeau-hydrometrie"
         }
-    },
-    "messagegroups": {
-        "FR.Gov.Eaufrance.HubEau.Hydrometrie": {
-            "messages": {
-                "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
-                        },
-                        "source": {
-                            "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
-                },
-                "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
-                    "name": "Observation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
-                        },
-                        "source": {
-                            "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "FR.Gov.Eaufrance.HubEau.Hydrometrie": {
-            "schemas": {
-                "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie",
-                                "properties": {
-                                    "code_station": { "type": "string", "description": "Unique station code (10 characters)" },
-                                    "libelle_station": { "type": "string", "description": "Station name/label" },
-                                    "code_site": { "type": "string", "description": "Parent site code (8 characters)" },
-                                    "longitude_station": { "type": "number", "description": "Longitude in WGS84" },
-                                    "latitude_station": { "type": "number", "description": "Latitude in WGS84" },
-                                    "libelle_cours_eau": { "type": "string", "description": "River/waterway name" },
-                                    "libelle_commune": { "type": "string", "description": "Municipality name" },
-                                    "code_departement": { "type": "string", "description": "Department code" },
-                                    "en_service": { "type": "boolean", "description": "Whether the station is currently active" },
-                                    "date_ouverture_station": { "type": "string", "description": "Station opening date in ISO 8601" }
-                                },
-                                "required": ["code_station", "libelle_station", "longitude_station", "latitude_station"]
-                            }
-                        }
-                    }
-                },
-                "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Observation",
-                                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie",
-                                "properties": {
-                                    "code_station": { "type": "string", "description": "Station code for this observation" },
-                                    "date_obs": { "type": "string", "format": "date-time", "description": "Observation timestamp in ISO 8601" },
-                                    "resultat_obs": { "type": "number", "description": "Observation value (mm for H, L/s for Q)" },
-                                    "grandeur_hydro": { "type": "string", "description": "Hydrometric quantity: H (height) or Q (discharge)" },
-                                    "libelle_methode_obs": { "type": "string", "description": "Observation method label" },
-                                    "libelle_qualification_obs": { "type": "string", "description": "Quality qualification label" }
-                                },
-                                "required": ["code_station", "date_obs", "resultat_obs", "grandeur_hydro"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie"
+      ]
     }
+  },
+  "messagegroups": {
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie": {
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+            },
+            "source": {
+              "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+            },
+            "source": {
+              "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct": {
+      "schemas": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "code_station",
+                  "libelle_station",
+                  "longitude_station",
+                  "latitude_station"
+                ],
+                "name": "Station",
+                "properties": {
+                  "code_station": {
+                    "type": "string"
+                  },
+                  "libelle_station": {
+                    "type": "string"
+                  },
+                  "code_site": {
+                    "type": "string"
+                  },
+                  "longitude_station": {
+                    "type": "double"
+                  },
+                  "latitude_station": {
+                    "type": "double"
+                  },
+                  "libelle_cours_eau": {
+                    "type": "string"
+                  },
+                  "libelle_commune": {
+                    "type": "string"
+                  },
+                  "code_departement": {
+                    "type": "string"
+                  },
+                  "en_service": {
+                    "type": "boolean"
+                  },
+                  "date_ouverture_station": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/FR/Gov/Eaufrance/HubEau/Hydrometrie.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "code_station",
+                  "date_obs",
+                  "resultat_obs",
+                  "grandeur_hydro"
+                ],
+                "name": "Observation",
+                "properties": {
+                  "code_station": {
+                    "type": "string"
+                  },
+                  "date_obs": {
+                    "type": "datetime"
+                  },
+                  "resultat_obs": {
+                    "type": "double"
+                  },
+                  "grandeur_hydro": {
+                    "type": "string"
+                  },
+                  "libelle_methode_obs": {
+                    "type": "string"
+                  },
+                  "libelle_qualification_obs": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/FR/Gov/Eaufrance/HubEau/Hydrometrie.schema.json",
+                "description": "Observation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.avro": {
+      "schemas": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "code_station",
+                    "type": "string"
+                  },
+                  {
+                    "name": "libelle_station",
+                    "type": "string"
+                  },
+                  {
+                    "name": "code_site",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "longitude_station",
+                    "type": "double"
+                  },
+                  {
+                    "name": "latitude_station",
+                    "type": "double"
+                  },
+                  {
+                    "name": "libelle_cours_eau",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "libelle_commune",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "code_departement",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "en_service",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "date_ouverture_station",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie"
+              }
+            }
+          }
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation": {
+          "name": "Observation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Observation",
+                "doc": "Observation",
+                "fields": [
+                  {
+                    "name": "code_station",
+                    "type": "string"
+                  },
+                  {
+                    "name": "date_obs",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "resultat_obs",
+                    "type": "double"
+                  },
+                  {
+                    "name": "grandeur_hydro",
+                    "type": "string"
+                  },
+                  {
+                    "name": "libelle_methode_obs",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "libelle_qualification_obs",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

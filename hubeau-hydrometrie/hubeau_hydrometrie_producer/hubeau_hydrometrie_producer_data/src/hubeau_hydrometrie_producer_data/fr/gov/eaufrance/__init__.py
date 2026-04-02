@@ -1,3 +1,3 @@
-from .hubeau import Observation, Station
+from .hubeau import Station, Observation
 
-__all__ = ["Observation", "Station"]
+__all__ = ["Station", "Observation"]

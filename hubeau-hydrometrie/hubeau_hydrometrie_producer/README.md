@@ -158,8 +158,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### FRGovEaufranceHubEauHydrometrieProducer- `data`: The event data of type
-`hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.Station`.
+### FRGovEaufranceHubEauHydrometrieProducer- `data`: The event data of type `hubeau_hydrometrie_producer_data.Station`.
 
 
 
@@ -224,7 +223,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `cloud_event`: The CloudEvent.
 
 ### FRGovEaufranceHubEauHydrometrieProducer- `data`: The event data of type
-`hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.Observation`.
+`hubeau_hydrometrie_producer_data.Observation`.
 
 
 

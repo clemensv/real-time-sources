@@ -1,4 +1,3 @@
-from .record import Record
-from .fr import Observation, Station
+from .fr import Station, Observation
 
-__all__ = ["Record", "Observation", "Station"]
+__all__ = ["Station", "Observation"]

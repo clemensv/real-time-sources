@@ -29,7 +29,7 @@ class Test_Messages(unittest.TestCase):
         Create instance of Messages for testing
         """
         instance = Messages(
-            messages=[Test_ModeS_ADSB_Record.create_instance()]
+            messages=[Test_ModeS_ADSB_Record.create_instance(), Test_ModeS_ADSB_Record.create_instance()]
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_Messages(unittest.TestCase):
         """
         Test messages property
         """
-        test_value = [Test_ModeS_ADSB_Record.create_instance()]
+        test_value = [Test_ModeS_ADSB_Record.create_instance(), Test_ModeS_ADSB_Record.create_instance()]
         self.instance.messages = test_value
         self.assertEqual(self.instance.messages, test_value)
     

@@ -9,6 +9,7 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+import datetime
 
 
 class Test_Observation(unittest.TestCase):
@@ -28,12 +29,12 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            code_station='suuaqvwfypjnwbqumzhl',
-            date_obs='wxkhfybgpccqkwneumcd',
-            resultat_obs=float(32.494946667038136),
-            grandeur_hydro='fnqcopltwooghhfkpsfl',
-            libelle_methode_obs='lavjjotjtcillsrjippi',
-            libelle_qualification_obs='gdyonxkejboacpwnrapm'
+            code_station='wtcrdctgdbgasxzjppaj',
+            date_obs=datetime.datetime.now(datetime.timezone.utc),
+            resultat_obs=float(76.507658124494),
+            grandeur_hydro='kipmlrmfewshoodtgdbh',
+            libelle_methode_obs='vloxicpycceroahlqshv',
+            libelle_qualification_obs='tlmtngqbcgcamxaszxbs'
         )
         return instance
 
@@ -42,7 +43,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test code_station property
         """
-        test_value = 'suuaqvwfypjnwbqumzhl'
+        test_value = 'wtcrdctgdbgasxzjppaj'
         self.instance.code_station = test_value
         self.assertEqual(self.instance.code_station, test_value)
     
@@ -50,7 +51,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test date_obs property
         """
-        test_value = 'wxkhfybgpccqkwneumcd'
+        test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.date_obs = test_value
         self.assertEqual(self.instance.date_obs, test_value)
     
@@ -58,7 +59,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test resultat_obs property
         """
-        test_value = float(32.494946667038136)
+        test_value = float(76.507658124494)
         self.instance.resultat_obs = test_value
         self.assertEqual(self.instance.resultat_obs, test_value)
     
@@ -66,7 +67,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test grandeur_hydro property
         """
-        test_value = 'fnqcopltwooghhfkpsfl'
+        test_value = 'kipmlrmfewshoodtgdbh'
         self.instance.grandeur_hydro = test_value
         self.assertEqual(self.instance.grandeur_hydro, test_value)
     
@@ -74,7 +75,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test libelle_methode_obs property
         """
-        test_value = 'lavjjotjtcillsrjippi'
+        test_value = 'vloxicpycceroahlqshv'
         self.instance.libelle_methode_obs = test_value
         self.assertEqual(self.instance.libelle_methode_obs, test_value)
     
@@ -82,7 +83,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test libelle_qualification_obs property
         """
-        test_value = 'gdyonxkejboacpwnrapm'
+        test_value = 'tlmtngqbcgcamxaszxbs'
         self.instance.libelle_qualification_obs = test_value
         self.assertEqual(self.instance.libelle_qualification_obs, test_value)
     

@@ -1,174 +1,287 @@
 {
-    "endpoints": {
-        "Microsoft.OpenData.US.NOAA.SWPC.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "noaa-goes"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC"
-            ]
+  "endpoints": {
+    "Microsoft.OpenData.US.NOAA.SWPC.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-goes"
         }
-    },
-    "messagegroups": {
-        "Microsoft.OpenData.US.NOAA.SWPC": {
-            "messages": {
-                "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
-                    "name": "SpaceWeatherAlert",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
-                        },
-                        "source": {
-                            "value": "https://services.swpc.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
-                },
-                "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
-                    "name": "PlanetaryKIndex",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex"
-                        },
-                        "source": {
-                            "value": "https://services.swpc.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC/schemas/Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex"
-                },
-                "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary": {
-                    "name": "SolarWindSummary",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary"
-                        },
-                        "source": {
-                            "value": "https://services.swpc.noaa.gov"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "Microsoft.OpenData.US.NOAA.SWPC": {
-            "schemas": {
-                "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "SpaceWeatherAlert",
-                                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
-                                "properties": {
-                                    "product_id": {
-                                        "type": "string",
-                                        "description": "Alert product ID"
-                                    },
-                                    "issue_datetime": {
-                                        "type": "string",
-                                        "description": "When the alert was issued"
-                                    },
-                                    "message": {
-                                        "type": "string",
-                                        "description": "Full alert message text"
-                                    }
-                                },
-                                "required": ["product_id", "issue_datetime", "message"]
-                            }
-                        }
-                    },
-                    "defaultversionid": "1.0"
-                },
-                "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "PlanetaryKIndex",
-                                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
-                                "properties": {
-                                    "time_tag": {
-                                        "type": "string",
-                                        "description": "Timestamp of the measurement"
-                                    },
-                                    "kp": {
-                                        "type": "number",
-                                        "description": "Planetary K-index value (0-9)"
-                                    },
-                                    "a_running": {
-                                        "type": "number",
-                                        "description": "Running A-index"
-                                    },
-                                    "station_count": {
-                                        "type": "number",
-                                        "description": "Number of stations used"
-                                    }
-                                },
-                                "required": ["time_tag", "kp", "a_running", "station_count"]
-                            }
-                        }
-                    },
-                    "defaultversionid": "1.0"
-                },
-                "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "SolarWindSummary",
-                                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
-                                "properties": {
-                                    "timestamp": {
-                                        "type": "string",
-                                        "description": "Timestamp of the measurement"
-                                    },
-                                    "wind_speed": {
-                                        "type": "number",
-                                        "description": "Solar wind speed in km/s"
-                                    },
-                                    "bt": {
-                                        "type": "number",
-                                        "description": "Total magnetic field strength in nT"
-                                    },
-                                    "bz": {
-                                        "type": "number",
-                                        "description": "North-south magnetic field component in nT"
-                                    }
-                                },
-                                "required": ["timestamp", "wind_speed", "bt", "bz"]
-                            }
-                        }
-                    },
-                    "defaultversionid": "1.0"
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC"
+      ]
     }
+  },
+  "messagegroups": {
+    "Microsoft.OpenData.US.NOAA.SWPC": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
+          "name": "SpaceWeatherAlert",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
+            },
+            "source": {
+              "value": "https://services.swpc.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
+          "name": "PlanetaryKIndex",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex"
+            },
+            "source": {
+              "value": "https://services.swpc.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary": {
+          "name": "SolarWindSummary",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary"
+            },
+            "source": {
+              "value": "https://services.swpc.noaa.gov"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Microsoft.OpenData.US.NOAA.SWPC.jstruct": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
+          "name": "SpaceWeatherAlert",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "product_id",
+                  "issue_datetime",
+                  "message"
+                ],
+                "name": "SpaceWeatherAlert",
+                "properties": {
+                  "product_id": {
+                    "type": "string"
+                  },
+                  "issue_datetime": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/SWPC.schema.json",
+                "description": "SpaceWeatherAlert"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
+          "name": "PlanetaryKIndex",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "time_tag",
+                  "kp",
+                  "a_running",
+                  "station_count"
+                ],
+                "name": "PlanetaryKIndex",
+                "properties": {
+                  "time_tag": {
+                    "type": "string"
+                  },
+                  "kp": {
+                    "type": "double"
+                  },
+                  "a_running": {
+                    "type": "double"
+                  },
+                  "station_count": {
+                    "type": "double"
+                  }
+                },
+                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/SWPC.schema.json",
+                "description": "PlanetaryKIndex"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary": {
+          "name": "SolarWindSummary",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "timestamp",
+                  "wind_speed",
+                  "bt",
+                  "bz"
+                ],
+                "name": "SolarWindSummary",
+                "properties": {
+                  "timestamp": {
+                    "type": "string"
+                  },
+                  "wind_speed": {
+                    "type": "double"
+                  },
+                  "bt": {
+                    "type": "double"
+                  },
+                  "bz": {
+                    "type": "double"
+                  }
+                },
+                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/SWPC.schema.json",
+                "description": "SolarWindSummary"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.avro": {
+      "schemas": {
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
+          "name": "SpaceWeatherAlert",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SpaceWeatherAlert",
+                "doc": "SpaceWeatherAlert",
+                "fields": [
+                  {
+                    "name": "product_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "issue_datetime",
+                    "type": "string"
+                  },
+                  {
+                    "name": "message",
+                    "type": "string"
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
+          "name": "PlanetaryKIndex",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PlanetaryKIndex",
+                "doc": "PlanetaryKIndex",
+                "fields": [
+                  {
+                    "name": "time_tag",
+                    "type": "string"
+                  },
+                  {
+                    "name": "kp",
+                    "type": "double"
+                  },
+                  {
+                    "name": "a_running",
+                    "type": "double"
+                  },
+                  {
+                    "name": "station_count",
+                    "type": "double"
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary": {
+          "name": "SolarWindSummary",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SolarWindSummary",
+                "doc": "SolarWindSummary",
+                "fields": [
+                  {
+                    "name": "timestamp",
+                    "type": "string"
+                  },
+                  {
+                    "name": "wind_speed",
+                    "type": "double"
+                  },
+                  {
+                    "name": "bt",
+                    "type": "double"
+                  },
+                  {
+                    "name": "bz",
+                    "type": "double"
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

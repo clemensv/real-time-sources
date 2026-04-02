@@ -1,116 +1,354 @@
 {
-    "endpoints": {
-        "CZ.Gov.CHMI.Hydro.Kafka": {
-            "usage": ["producer"],
-            "protocol": "KAFKA",
-            "envelope": "CloudEvents/1.0",
-            "envelopeoptions": {
-                "mode": "structured",
-                "format": "application/cloudevents+json"
-            },
-            "protocoloptions": {
-                "deployed": false,
-                "options": {
-                    "topic": "chmi-hydro"
-                }
-            },
-            "messagegroups": [
-                "#/messagegroups/CZ.Gov.CHMI.Hydro"
-            ]
+  "endpoints": {
+    "CZ.Gov.CHMI.Hydro.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "chmi-hydro"
         }
-    },
-    "messagegroups": {
-        "CZ.Gov.CHMI.Hydro": {
-            "messages": {
-                "CZ.Gov.CHMI.Hydro.Station": {
-                    "name": "Station",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "CZ.Gov.CHMI.Hydro.Station"
-                        },
-                        "source": {
-                            "value": "https://opendata.chmi.cz"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro/schemas/CZ.Gov.CHMI.Hydro.Station"
-                },
-                "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
-                    "name": "WaterLevelObservation",
-                    "envelope": "CloudEvents/1.0",
-                    "envelopemetadata": {
-                        "type": {
-                            "value": "CZ.Gov.CHMI.Hydro.WaterLevelObservation"
-                        },
-                        "source": {
-                            "value": "https://opendata.chmi.cz"
-                        }
-                    },
-                    "dataschemaformat": "JsonSchema/draft-07",
-                    "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation"
-                }
-            }
-        }
-    },
-    "schemagroups": {
-        "CZ.Gov.CHMI.Hydro": {
-            "schemas": {
-                "CZ.Gov.CHMI.Hydro.Station": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "Station",
-                                "namespace": "CZ.Gov.CHMI.Hydro",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Unique station identifier (e.g. 0-203-1-001000)" },
-                                    "dbc": { "type": "string", "description": "Station database code" },
-                                    "station_name": { "type": "string", "description": "Station name" },
-                                    "stream_name": { "type": "string", "description": "River or stream name" },
-                                    "latitude": { "type": "number", "description": "Latitude in WGS84" },
-                                    "longitude": { "type": "number", "description": "Longitude in WGS84" },
-                                    "flood_level_1": { "type": "number", "description": "1st degree flood warning water level in cm" },
-                                    "flood_level_2": { "type": "number", "description": "2nd degree flood warning water level in cm" },
-                                    "flood_level_3": { "type": "number", "description": "3rd degree flood warning water level in cm" },
-                                    "flood_level_4": { "type": "number", "description": "Extreme flood warning water level in cm" },
-                                    "has_forecast": { "type": "boolean", "description": "Whether the station provides forecast data" }
-                                },
-                                "required": ["station_id", "station_name", "stream_name", "latitude", "longitude"]
-                            }
-                        }
-                    }
-                },
-                "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
-                    "format": "JsonSchema/draft-07",
-                    "versions": {
-                        "1.0": {
-                            "format": "JsonSchema/draft-07",
-                            "schema": {
-                                "$schema": "http://json-schema.org/draft-07/schema#",
-                                "type": "object",
-                                "title": "WaterLevelObservation",
-                                "namespace": "CZ.Gov.CHMI.Hydro",
-                                "properties": {
-                                    "station_id": { "type": "string", "description": "Station identifier" },
-                                    "station_name": { "type": "string", "description": "Station name" },
-                                    "stream_name": { "type": "string", "description": "River or stream name" },
-                                    "water_level": { "type": "number", "description": "Water level in cm" },
-                                    "water_level_timestamp": { "type": "string", "format": "date-time", "description": "Water level measurement timestamp" },
-                                    "discharge": { "type": "number", "description": "Discharge (flow rate) in m³/s" },
-                                    "discharge_timestamp": { "type": "string", "format": "date-time", "description": "Discharge measurement timestamp" },
-                                    "water_temperature": { "type": "number", "description": "Water temperature in °C" },
-                                    "water_temperature_timestamp": { "type": "string", "format": "date-time", "description": "Water temperature measurement timestamp" }
-                                },
-                                "required": ["station_id", "station_name"]
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      },
+      "messagegroups": [
+        "#/messagegroups/CZ.Gov.CHMI.Hydro"
+      ]
     }
+  },
+  "messagegroups": {
+    "CZ.Gov.CHMI.Hydro": {
+      "messages": {
+        "CZ.Gov.CHMI.Hydro.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "CZ.Gov.CHMI.Hydro.Station"
+            },
+            "source": {
+              "value": "https://opendata.chmi.cz"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.Station"
+        },
+        "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "CZ.Gov.CHMI.Hydro.WaterLevelObservation"
+            },
+            "source": {
+              "value": "https://opendata.chmi.cz"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.WaterLevelObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "CZ.Gov.CHMI.Hydro.jstruct": {
+      "schemas": {
+        "CZ.Gov.CHMI.Hydro.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "stream_name",
+                  "latitude",
+                  "longitude"
+                ],
+                "name": "Station",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "dbc": {
+                    "type": "string"
+                  },
+                  "station_name": {
+                    "type": "string"
+                  },
+                  "stream_name": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "double"
+                  },
+                  "longitude": {
+                    "type": "double"
+                  },
+                  "flood_level_1": {
+                    "type": "double"
+                  },
+                  "flood_level_2": {
+                    "type": "double"
+                  },
+                  "flood_level_3": {
+                    "type": "double"
+                  },
+                  "flood_level_4": {
+                    "type": "double"
+                  },
+                  "has_forecast": {
+                    "type": "boolean"
+                  }
+                },
+                "$id": "https://example.com/CZ/Gov/CHMI/Hydro.schema.json",
+                "description": "Station"
+              }
+            }
+          }
+        },
+        "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "station_name"
+                ],
+                "name": "WaterLevelObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string"
+                  },
+                  "station_name": {
+                    "type": "string"
+                  },
+                  "stream_name": {
+                    "type": "string"
+                  },
+                  "water_level": {
+                    "type": "double"
+                  },
+                  "water_level_timestamp": {
+                    "type": "datetime"
+                  },
+                  "discharge": {
+                    "type": "double"
+                  },
+                  "discharge_timestamp": {
+                    "type": "datetime"
+                  },
+                  "water_temperature": {
+                    "type": "double"
+                  },
+                  "water_temperature_timestamp": {
+                    "type": "datetime"
+                  }
+                },
+                "$id": "https://example.com/CZ/Gov/CHMI/Hydro.schema.json",
+                "description": "WaterLevelObservation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "CZ.Gov.CHMI.Hydro.avro": {
+      "schemas": {
+        "CZ.Gov.CHMI.Hydro.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "doc": "Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "dbc",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "stream_name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double"
+                  },
+                  {
+                    "name": "flood_level_1",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "flood_level_2",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "flood_level_3",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "flood_level_4",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "has_forecast",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "CZ.Gov.CHMI.Hydro"
+              }
+            }
+          }
+        },
+        "CZ.Gov.CHMI.Hydro.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevelObservation",
+                "doc": "WaterLevelObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string"
+                  },
+                  {
+                    "name": "stream_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_level",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_level_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "discharge_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_temperature",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "water_temperature_timestamp",
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "CZ.Gov.CHMI.Hydro"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

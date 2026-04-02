@@ -1,4 +1,3 @@
-from .record import Record
-from .no import StaticVoyageData, AidToNavigation, PositionReportClassA, PositionReportClassB, StaticDataClassB
+from .kystverket_ais_producer_data import Document
 
-__all__ = ["Record", "StaticVoyageData", "AidToNavigation", "PositionReportClassA", "PositionReportClassB", "StaticDataClassB"]
+__all__ = ["Document"]

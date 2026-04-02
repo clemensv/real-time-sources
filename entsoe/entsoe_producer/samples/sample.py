@@ -36,17 +36,17 @@ from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyEventPro
 
 # imports for the data classes for each event
 
-from entsoe_producer_data.eu.entsoe.transparency.actualgenerationpertype import ActualGenerationPerType
-from entsoe_producer_data.eu.entsoe.transparency.dayaheadprices import DayAheadPrices
-from entsoe_producer_data.eu.entsoe.transparency.actualtotalload import ActualTotalLoad
-from entsoe_producer_data.eu.entsoe.transparency.windsolarforecast import WindSolarForecast
-from entsoe_producer_data.eu.entsoe.transparency.loadforecastmargin import LoadForecastMargin
-from entsoe_producer_data.eu.entsoe.transparency.generationforecast import GenerationForecast
-from entsoe_producer_data.eu.entsoe.transparency.reservoirfillinginformation import ReservoirFillingInformation
-from entsoe_producer_data.eu.entsoe.transparency.actualgeneration import ActualGeneration
-from entsoe_producer_data.eu.entsoe.transparency.windsolargeneration import WindSolarGeneration
-from entsoe_producer_data.eu.entsoe.transparency.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
-from entsoe_producer_data.eu.entsoe.transparency.crossborderphysicalflows import CrossBorderPhysicalFlows
+from entsoe_producer_data.actualgenerationpertype import ActualGenerationPerType
+from entsoe_producer_data.dayaheadprices import DayAheadPrices
+from entsoe_producer_data.actualtotalload import ActualTotalLoad
+from entsoe_producer_data.windsolarforecast import WindSolarForecast
+from entsoe_producer_data.loadforecastmargin import LoadForecastMargin
+from entsoe_producer_data.generationforecast import GenerationForecast
+from entsoe_producer_data.reservoirfillinginformation import ReservoirFillingInformation
+from entsoe_producer_data.actualgeneration import ActualGeneration
+from entsoe_producer_data.windsolargeneration import WindSolarGeneration
+from entsoe_producer_data.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
+from entsoe_producer_data.crossborderphysicalflows import CrossBorderPhysicalFlows
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
