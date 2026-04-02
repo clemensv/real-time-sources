@@ -43,6 +43,11 @@ class WeatherAlertsModule(BaseModule):
         events: List[Dict[str, Any]] = []
         seen_ids: set = set(state.get("seen_ids", []))
 
+        # Use ETag to skip re-downloading when the bundle hasn't changed
+        if not self._http.check_modified(_ALERTS_PATH + _LATEST_FILE):
+            logger.debug("weather_alerts: LATEST bundle unchanged (304)")
+            return events
+
         data = self._http.download_bytes(_ALERTS_PATH + _LATEST_FILE)
         if data is None:
             return events

@@ -83,11 +83,25 @@ class StationObs10MinModule(BaseModule):
                 logger.debug("%s: no changes since last poll", category)
                 continue
 
-            logger.info("%s: directory updated (%d files), downloading...", category, len(zip_entries))
+            # Per-file watermark: track modified timestamp from directory listing
+            # to skip files that haven't changed since the last poll
+            file_watermarks: Dict[str, str] = cat_state.get("file_watermarks", {})
+            changed_entries = [
+                e for e in zip_entries
+                if e.modified.isoformat() != file_watermarks.get(e.name)
+            ]
+
+            if not changed_entries:
+                logger.debug("%s: no individual files changed since last poll", category)
+                cat_state["dir_timestamp"] = newest_ts
+                continue
+
+            logger.info("%s: directory updated (%d/%d files changed), downloading...",
+                        category, len(changed_entries), len(zip_entries))
             station_timestamps: Dict[str, str] = cat_state.get("stations", {})
             new_count = 0
 
-            for entry in zip_entries:
+            for entry in changed_entries:
                 csv_text = self._http.download_zip_csv(now_path + entry.name)
                 if not csv_text:
                     continue
@@ -117,6 +131,10 @@ class StationObs10MinModule(BaseModule):
                     events.append({"type": event_type, "data": mapped})
                     new_count += 1
 
+            # Update per-file watermarks for files we successfully processed
+            for entry in changed_entries:
+                file_watermarks[entry.name] = entry.modified.isoformat()
+            cat_state["file_watermarks"] = file_watermarks
             cat_state["stations"] = station_timestamps
             cat_state["dir_timestamp"] = newest_ts
             logger.info("%s: emitted %d new observations", category, new_count)

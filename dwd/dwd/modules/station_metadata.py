@@ -105,11 +105,19 @@ class StationMetadataModule(BaseModule):
     def poll(self, state: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Fetch station lists, merge, compare checksum, emit if changed."""
         all_stations: Dict[str, Dict[str, Any]] = {}
+        any_modified = False
         for path in _STATION_LIST_PATHS:
+            # Use ETag to skip re-downloading unchanged station list files
+            if self._http.check_modified(path):
+                any_modified = True
             text = self._http.download_text(path)
             if text:
                 for s in _parse_station_list(text):
                     all_stations[s["station_id"]] = s
+
+        if not any_modified:
+            logger.debug("Station list files unchanged (304), skipping")
+            return []
 
         if not all_stations:
             logger.warning("No station data fetched from DWD")
