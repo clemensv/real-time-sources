@@ -209,7 +209,7 @@
 // ===== Functions =====
 
 // All vessel positions joined with latest metadata for map display
-.create-or-alter function with (docstring="Latest vessel positions joined with metadata (name, type, destination) for map display") VesselPositions() {
+.create-or-alter function with (docstring="Latest Finnish/Baltic vessel positions joined with metadata (name, type, destination) for map display") VesselPositionsFI() {
     let ship_type_lookup = datatable(ship_type: int, ship_type_name: string) [
         0, "Not available",
         20, "Wing in ground",
