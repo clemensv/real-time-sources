@@ -10,7 +10,7 @@ Kystverket provides open, real-time AIS data from 50+ terrestrial and offshore s
 
 The bridge connects to the Kystverket AIS TCP stream, decodes NMEA AIS sentences (including multi-sentence reassembly), and writes them to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
 

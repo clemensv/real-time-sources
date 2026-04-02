@@ -110,32 +110,9 @@ You can deploy the Bluesky firehose bridge as a container directly to Azure Cont
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template.json)
 
-## Additional Information
-
-- **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/bluesky)
-- **Documentation**: Refer to [EVENTS.md](EVENTS.md) for the JSON event format.
-- **License**: MIT
-
-## Example
-
-To run the bridge connecting to the Bluesky firehose, processing only posts and likes, and sending them to an Azure Event Hub:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...' \
-    -e BLUESKY_COLLECTIONS='app.bsky.feed.post,app.bsky.feed.like' \
-    ghcr.io/clemensv/real-time-sources-bluesky:latest
-```
-
-This setup allows you to integrate Bluesky social network data into your data processing pipelines, enabling real-time analysis of social interactions.
-
 ## Notes
 
 - The Bluesky firehose is a high-volume stream. Consider using `BLUESKY_SAMPLE_RATE` to reduce load during testing or for use cases that don't require all events.
 - The firehose typically produces 50-100 posts per second, 200-400 likes per second, and varying amounts of other event types.
 - Ensure sufficient network bandwidth and Kafka/Event Hub capacity to handle the event volume.
 - The bridge automatically handles reconnection if the firehose connection is interrupted.
-
-## Support
-
-For issues or questions, please open an issue on the [GitHub repository](https://github.com/clemensv/real-time-sources/issues).

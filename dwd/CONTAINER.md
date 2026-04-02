@@ -10,7 +10,7 @@ The DWD Climate Data Center (CDC) provides free access to weather and climate da
 
 The bridge retrieves data from the DWD open-data file server and writes it to a Kafka topic as [CloudEvents](https://cloudevents.io/) in a JSON format, which is documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
 

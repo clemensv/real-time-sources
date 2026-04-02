@@ -18,9 +18,9 @@ The bridge fetches hydrological data from the ČHMÚ open data API and writes th
 data to a Kafka topic as structured JSON [CloudEvents](https://cloudevents.io/)
 in a JSON format documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
@@ -55,6 +55,10 @@ $ docker run --rm \
 
 ### With Azure Event Hubs or Fabric Event Streams
 
+Use the connection string to establish a connection to the service. Obtain the
+connection string from the Azure portal, Azure CLI, or the "custom endpoint" of
+a Fabric Event Stream.
+
 ```shell
 $ docker run --rm \
     -e CONNECTION_STRING='<connection-string>' \
@@ -62,7 +66,46 @@ $ docker run --rm \
     ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
 ```
 
-## Azure Deployment
+### Preserving State Between Restarts
+
+To preserve the state between restarts and avoid reprocessing observations,
+mount a volume to the container and set the `STATE_FILE` environment variable:
+
+```shell
+$ docker run --rm \
+    -v /path/to/state:/mnt/state \
+    -e STATE_FILE='/mnt/state/chmi_hydro_state.json' \
+    ... other args ... \
+    ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+```
+
+## Environment Variables
+
+### `CONNECTION_STRING`
+
+An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
+or Fabric Event Streams. This replaces the need for `KAFKA_BROKER`.
+
+### `KAFKA_BROKER`
+
+The address of the Kafka broker (e.g., `broker1:9092`). The client communicates
+with TLS-enabled Kafka brokers.
+
+### `KAFKA_TOPIC`
+
+The Kafka topic where messages will be produced.
+
+### `POLLING_INTERVAL`
+
+The polling interval in seconds. Default: `600` (10 minutes).
+
+### `STATE_FILE`
+
+The file path where the bridge stores the state of processed observations. This
+helps in resuming data fetching without duplication after restarts. Default:
+`~/.chmi_hydro_state.json`.
+
+## Deploying into Azure Container Instances
 
 You can deploy the container using the included ARM template:
 

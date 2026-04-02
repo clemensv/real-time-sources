@@ -12,7 +12,7 @@ Digitraffic Marine is an open data service from [Fintraffic](https://www.fintraf
 
 The bridge connects to the Digitraffic MQTT endpoint at `wss://meri.digitraffic.fi:443/mqtt`, subscribes to vessel location and metadata topics, and writes messages to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
 

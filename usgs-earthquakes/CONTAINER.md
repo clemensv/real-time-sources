@@ -5,6 +5,14 @@ Program](https://earthquake.usgs.gov/) real-time GeoJSON feeds and Apache Kafka,
 Azure Event Hubs, and Fabric Event Streams. The bridge fetches earthquake events
 and forwards them to the configured Kafka endpoints.
 
+## USGS Earthquake Hazards Program
+
+The [USGS Earthquake Hazards Program](https://earthquake.usgs.gov/) provides
+real-time earthquake data via GeoJSON feeds. The feeds include data on
+earthquakes worldwide for the past hour, day, week, and month, updated every
+minute. The data includes location, magnitude, depth, felt reports, and
+alert levels.
+
 ## Functionality
 
 The bridge polls the USGS Earthquake GeoJSON feeds at regular intervals and
@@ -12,7 +20,7 @@ writes earthquake events to a Kafka topic as
 [CloudEvents](https://cloudevents.io/) in JSON format, documented in
 [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
@@ -73,8 +81,36 @@ Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Mic
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `CONNECTION_STRING` | Microsoft Event Hubs or Fabric Event Stream connection string |
-| `LOG_LEVEL` | Logging level (default: INFO) |
-| `USGS_EQ_LAST_POLLED_FILE` | Path to the file storing the last polled event IDs |
+### `CONNECTION_STRING`
+
+An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
+or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`,
+`SASL_USERNAME`, and `SASL_PASSWORD`.
+
+### `KAFKA_BOOTSTRAP_SERVERS`
+
+The address of the Kafka broker. Provide a comma-separated list of host and port
+pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with
+TLS-enabled Kafka brokers.
+
+### `KAFKA_TOPIC`
+
+The Kafka topic where messages will be produced.
+
+### `SASL_USERNAME`
+
+Username for SASL PLAIN authentication.
+
+### `SASL_PASSWORD`
+
+Password for SASL PLAIN authentication.
+
+### `LOG_LEVEL`
+
+The logging level. Default: `INFO`.
+
+### `USGS_EQ_LAST_POLLED_FILE`
+
+The file path where the bridge stores the IDs of previously processed events to
+avoid duplication after restarts. Default:
+`~/.usgs_earthquakes_last_polled.json`.

@@ -17,7 +17,7 @@ AISstream.io provides free, real-time terrestrial AIS data from ground stations 
 
 The bridge connects to the AISstream.io WebSocket API, subscribes to AIS messages with configurable geographic and message type filters, and writes them to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
 

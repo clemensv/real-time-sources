@@ -12,9 +12,9 @@ Kafka topic as [CloudEvents](https://cloudevents.io/) in a JSON format, which is
 documented in [EVENTS.md](EVENTS.md). You can specify multiple feed URLs by
 providing them in the configuration.
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
@@ -115,31 +115,3 @@ You can deploy the USGS Instananeous Values Service bridge as a container direct
 Instances providing the information explained above. Just click the button below and go.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs_iv%2Fazure-template.json)
-
-## Additional Information
-
-- **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/usgs_iv)
-- **Documentation**: Refer to [EVENTS.md](EVENTS.md) for the JSON event format.
-- **License**: MIT
-
-## Example
-
-To run the bridge fetching entries from multiple feeds every 10 minutes and sending them to an Azure Event Hub:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...' \
-    -v /path/to/state:/mnt/state \
-    ghcr.io/clemensv/real-time-sources-usgs-iv:latest
-```
-
-This setup allows you to integrate USGS services data into your data processing pipelines, enabling real-time data analysis and monitoring.
-
-## Notes
-
-- Ensure that you have network connectivity to the USGS services.
-- The bridge efficiently handles data fetching and forwarding, but monitor resource usage if you are fetching data from many feeds at a high frequency.
-
-## Support
-
-For issues or questions, please open an issue on the [GitHub repository](https://github.com/clemensv/real-time-sources/issues).

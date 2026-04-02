@@ -21,9 +21,9 @@ in a JSON format documented in [EVENTS.md](EVENTS.md). You can configure the
 bridge to handle multiple stations by supplying their identifiers in the
 configuration.
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
@@ -104,78 +104,7 @@ Password for SASL PLAIN authentication.
 
 ## Deploying into Azure Container Instances
 
-You can deploy the RSS/Atom bridge as a container directly to Azure Container
-Instances providing the information explained above. Just click the button below and go.
+You can deploy the Pegelonline bridge as a container directly to Azure Container
+Instances. Just click the button below and go.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template.json)
-
-## Additional Information
-
-- **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/pegelonline)
-- **Documentation**: Refer to [EVENTS.md](EVENTS.md) for the JSON event format.
-- **License**: MIT
-
-## Example
-
-To run the bridge sending it to an Azure Event Hub:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...' \
-    ghcr.io/clemensv/real-time-sources-pegelonline:latest
-```
-
-The events documented in [EVENTS.md](EVENTS.md) may look as follows:
-
-#### Station Event
-
-The [`de.wsv.pegelonline.Station`](EVENTS.md#message-dewsvpegelonlinestation) event provides information about a water level monitoring station. It is emitted when a new station is discovered or when the station information is updated, and during the first run of the bridge.
-
-```JSON
-{
-    "specversion": "1.0",
-    "type": "de.wsv.pegelonline.Station",
-    "source": "https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/EITZE",
-    "id": "05fd3e7f-c415-4e53-986a-6480189626c0",
-    "time": "2024-09-15T16:10:42.986549Z",
-    "subject": "47174d8f-1b8e-4599-8a59-b580dd55bc87",
-    "data": {
-        "uuid": "47174d8f-1b8e-4599-8a59-b580dd55bc87",
-        "number": "48900237",
-        "shortname": "EITZE",
-        "longname": "EITZE",
-        "km": 9.56,
-        "agency": "VERDEN",
-        "longitude": "9.276769435375872",
-        "latitude": "52.90406544743417",
-        "water": {
-            "shortname": "ALLER",
-            "longname": "ALLER"
-        }
-    }
-}
-```	
-
-#### Current Measurement Event
-
-The [`de.wsv.pegelonline.CurrentMeasurement`](EVENTS.md#message-dewsvpegelonlinecurrentmeasurement) event provides the current water level measurement for a station. It is emitted at regular intervals, typically every 15 minutes.
-
-```JSON
-{
-    "specversion": "1.0",
-    "type": "de.wsv.pegelonline.CurrentMeasurement",
-    "source": "https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/47174d8f-1b8e-4599-8a59-b580dd55bc87/W/currentmeasurement.json",
-    "id": "8401ce11-4538-4fb2-a53a-61ff99e7abeb",
-    "time": "2024-09-17T02:46:15.822779Z",
-    "subject": "47174d8f-1b8e-4599-8a59-b580dd55bc87",
-    "data": {
-        "station_uuid": "47174d8f-1b8e-4599-8a59-b580dd55bc87",
-        "timestamp": "2024-09-17T02:45:00.0000000Z",
-        "value": 262,
-        "stateMnwMhw": "normal",
-        "stateNswHsw": "unknown"
-    }
-}
-```	
-
-This setup allows you to integrate real-time water level data into your data processing pipelines, facilitating timely decision-making for navigation and environmental monitoring.

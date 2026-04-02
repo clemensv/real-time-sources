@@ -15,9 +15,9 @@ The bridge polls the ENTSO-E REST API for three data categories:
 
 Data is emitted as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
@@ -120,9 +120,3 @@ Comma-separated list of ENTSO-E document type codes. Default is `A75,A44,A65`.
 You can deploy the ENTSO-E bridge as a container directly to Azure Container Instances. Just click the button below and go.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template.json)
-
-## Additional Information
-
-- **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/entsoe)
-- **Documentation**: Refer to [EVENTS.md](EVENTS.md) for the CloudEvent schema documentation.
-- **License**: MIT

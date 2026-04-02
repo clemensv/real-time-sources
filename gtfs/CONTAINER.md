@@ -32,9 +32,9 @@ Use as base image in Dockerfile:
 FROM ghcr.io/clemensv/real-time-sources-gtfs:latest
 ```
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
@@ -44,7 +44,7 @@ The container image defines a single command that starts the bridge. The bridge
 reads data from GTFS and GTFS-RT APIs and writes data to a Kafka topic or
 Azure Event Hubs or Fabric Event Streams.
 
-### With a Kafka broker
+### With a Kafka Broker
 
 The image assumes that you have a Kafka broker that is configured with TLS and
 SASL PLAIN authentication. You can start the container locally on docker with

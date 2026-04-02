@@ -18,9 +18,9 @@ The bridge fetches water level data from the EA Flood Monitoring API and writes
 the data to a Kafka topic as structured JSON [CloudEvents](https://cloudevents.io/)
 in a JSON format documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
@@ -48,22 +48,75 @@ Event Hubs, or Fabric Event Streams.
 
 ```shell
 $ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS=<kafka-bootstrap-servers> \
-    -e KAFKA_TOPIC=<kafka-topic> \
-    -e SASL_USERNAME=<sasl-username> \
-    -e SASL_PASSWORD=<sasl-password> \
+    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
+    -e KAFKA_TOPIC='<kafka-topic>' \
+    -e SASL_USERNAME='<sasl-username>' \
+    -e SASL_PASSWORD='<sasl-password>' \
     ghcr.io/clemensv/real-time-sources-uk-ea-flood-monitoring:latest
 ```
 
-### With a Connection String
+### With Azure Event Hubs or Fabric Event Streams
+
+Use the connection string to establish a connection to the service. Obtain the
+connection string from the Azure portal, Azure CLI, or the "custom endpoint" of
+a Fabric Event Stream.
 
 ```shell
 $ docker run --rm \
-    -e CONNECTION_STRING="Endpoint=sb://...;EntityPath=...;SharedAccessKeyName=...;SharedAccessKey=..." \
+    -e CONNECTION_STRING='<connection-string>' \
     ghcr.io/clemensv/real-time-sources-uk-ea-flood-monitoring:latest
 ```
 
-### Azure Container Instance Deployment
+### Preserving State Between Restarts
+
+To preserve the state between restarts and avoid reprocessing readings, mount a
+volume to the container and set the `STATE_FILE` environment variable:
+
+```shell
+$ docker run --rm \
+    -v /path/to/state:/mnt/state \
+    -e STATE_FILE='/mnt/state/uk_ea_flood_monitoring_state.json' \
+    ... other args ... \
+    ghcr.io/clemensv/real-time-sources-uk-ea-flood-monitoring:latest
+```
+
+## Environment Variables
+
+### `CONNECTION_STRING`
+
+An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
+or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`,
+`SASL_USERNAME`, and `SASL_PASSWORD`.
+
+### `KAFKA_BOOTSTRAP_SERVERS`
+
+The address of the Kafka broker. Provide a comma-separated list of host and port
+pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with
+TLS-enabled Kafka brokers.
+
+### `KAFKA_TOPIC`
+
+The Kafka topic where messages will be produced.
+
+### `SASL_USERNAME`
+
+Username for SASL PLAIN authentication.
+
+### `SASL_PASSWORD`
+
+Password for SASL PLAIN authentication.
+
+### `POLLING_INTERVAL`
+
+The polling interval in seconds. Default: `900` (15 minutes).
+
+### `STATE_FILE`
+
+The file path where the bridge stores the state of processed readings. This
+helps in resuming data fetching without duplication after restarts. Default:
+`~/.uk_ea_flood_monitoring_state.json`.
+
+## Deploying into Azure Container Instances
 
 Deploy using the provided ARM template:
 
@@ -71,5 +124,5 @@ Deploy using the provided ARM template:
 $ az deployment group create \
     --resource-group <resource-group> \
     --template-file azure-template.json \
-    --parameters connectionStringSecret=<connection-string>
+    --parameters connectionStringSecret='<connection-string>'
 ```

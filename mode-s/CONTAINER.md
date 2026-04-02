@@ -1,95 +1,95 @@
-# USGS Water Services - Instantaneous Values Service bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Mode-S/ADS-B Aircraft Telemetry Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 
-This container image provides a bridge between the [USGS Water Services](https://waterservices.usgs.gov/) Instantaneous Values
-Service and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge
-fetches entries from specified feeds and forwards them to the configured Kafka
-endpoints.
+This container image provides a bridge between a local [dump1090](https://github.com/flightaware/dump1090) ADS-B receiver and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge connects to your dump1090 instance via the BEAST protocol, decodes raw Mode-S/ADS-B messages from aircraft broadcasting on 1090 MHz, and forwards structured aircraft telemetry to the configured Kafka endpoint.
+
+## Mode-S/ADS-B Data
+
+ADS-B (Automatic Dependent Surveillance-Broadcast) is a surveillance technology where aircraft broadcast their position, altitude, speed, and identification. You receive these signals with an inexpensive RTL-SDR USB dongle and an antenna, decoded by [dump1090](https://github.com/flightaware/dump1090). The easiest way to get started is [PiAware](https://flightaware.com/adsb/piaware/install) on a Raspberry Pi.
+
+The bridge reads from dump1090's BEAST output (TCP port 30005 by default), decodes the raw messages, and bundles them into batches flushed every second or after 1,000 records.
 
 ## Functionality
 
-The bridge retrieves data from the USGS Instantaneous Values Service and writes the entries to a
-Kafka topic as [CloudEvents](https://cloudevents.io/) in a JSON format, which is
-documented in [EVENTS.md](EVENTS.md). You can specify multiple feed URLs by
-providing them in the configuration.
+The bridge connects to a dump1090 instance via the BEAST binary protocol, decodes aircraft telemetry (position, altitude, speed, heading, callsign, vertical rate), and writes batched messages to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
 
 ## Installing the Container Image
 
 Pull the container image from the GitHub Container Registry:
 
 ```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-usgs-iv:latest
-```
-
-To use it as a base image in a Dockerfile:
-
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-usgs-iv:latest
+$ docker pull ghcr.io/clemensv/real-time-sources-mode-s:latest
 ```
 
 ## Using the Container Image
 
-The container defines a command that starts the bridge, reading data from the
-USGS services and writing it to Kafka, Azure Event Hubs, or
-Fabric Event Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN
-authentication. Run the container with the following command:
+### With Azure Event Hubs or Fabric Event Streams
 
 ```shell
 $ docker run --rm \
+    -e DUMP1090_HOST='<dump1090-host-ip>' \
+    -e CONNECTION_STRING='<connection-string>' \
+    ghcr.io/clemensv/real-time-sources-mode-s:latest
+```
+
+### With a Kafka Broker
+
+```shell
+$ docker run --rm \
+    -e DUMP1090_HOST='<dump1090-host-ip>' \
     -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
     -e KAFKA_TOPIC='<kafka-topic>' \
     -e SASL_USERNAME='<sasl-username>' \
     -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-usgs-iv:latest
+    ghcr.io/clemensv/real-time-sources-mode-s:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+### With Antenna Reference Position
 
-Use the connection string to establish a connection to the service. Obtain the
-connection string from the Azure portal, Azure CLI, or the "custom endpoint" of
-a Fabric Event Stream.
+Provide your antenna's coordinates for accurate distance and bearing calculations:
 
 ```shell
 $ docker run --rm \
+    -e DUMP1090_HOST='<dump1090-host-ip>' \
+    -e REF_LAT='52.3676' \
+    -e REF_LON='4.9041' \
+    -e STATIONID='amsterdam-01' \
     -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-usgs-iv:latest
-```
-
-### Preserving State Between Restarts
-
-To preserve the state between restarts and avoid reprocessing feed entries,
-mount a volume to the container and set the `USGS_LAST_POLLED_FILE` environment variable:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/state \
-    -e USGS_LAST_POLLED_FILE='/mnt/state/usgs_last_polled.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-usgs-iv:latest
+    ghcr.io/clemensv/real-time-sources-mode-s:latest
 ```
 
 ## Environment Variables
 
+### `DUMP1090_HOST`
+
+Host or IP address of the dump1090 instance. Default: `localhost`.
+
+### `DUMP1090_PORT`
+
+TCP port for the BEAST binary output of dump1090. Default: `30005`.
+
+### `REF_LAT`
+
+Latitude of the receiving antenna, used for position calculations. Default: `0`.
+
+### `REF_LON`
+
+Longitude of the receiving antenna, used for position calculations. Default: `0`.
+
+### `STATIONID`
+
+Identifier for this receiving station, used as the CloudEvent source. Default: `station1`.
+
 ### `CONNECTION_STRING`
 
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
-or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`,
-`SASL_USERNAME`, and `SASL_PASSWORD`.
+An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams.
 
 ### `KAFKA_BOOTSTRAP_SERVERS`
 
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with
-TLS-enabled Kafka brokers.
+The address of the Kafka broker. Provide a comma-separated list of host and port pairs.
 
 ### `KAFKA_TOPIC`
 
@@ -97,49 +97,13 @@ The Kafka topic where messages will be produced.
 
 ### `SASL_USERNAME`
 
-Username for SASL PLAIN authentication. Ensure your Kafka brokers support SASL PLAIN authentication.
+Username for SASL PLAIN authentication.
 
 ### `SASL_PASSWORD`
 
 Password for SASL PLAIN authentication.
 
-### `USGS_LAST_POLLED_FILE`
+### `POLLING_INTERVAL`
 
-The file path where the bridge stores the state of processed entries. This helps
-in resuming data fetching without duplication after restarts. Default is
-`/mnt/state/usgs_last_polled.json`.
+Polling interval in seconds. Default: `60`.
 
-## Deploying into Azure Container Instances
-
-You can deploy the USGS Instananeous Values Service bridge as a container directly to Azure Container
-Instances providing the information explained above. Just click the button below and go.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs_iv%2Fazure-template.json)
-
-## Additional Information
-
-- **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/usgs_iv)
-- **Documentation**: Refer to [EVENTS.md](EVENTS.md) for the JSON event format.
-- **License**: MIT
-
-## Example
-
-To run the bridge fetching entries from multiple feeds every 10 minutes and sending them to an Azure Event Hub:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...' \
-    -v /path/to/state:/mnt/state \
-    ghcr.io/clemensv/real-time-sources-usgs-iv:latest
-```
-
-This setup allows you to integrate USGS services data into your data processing pipelines, enabling real-time data analysis and monitoring.
-
-## Notes
-
-- Ensure that you have network connectivity to the USGS services.
-- The bridge efficiently handles data fetching and forwarding, but monitor resource usage if you are fetching data from many feeds at a high frequency.
-
-## Support
-
-For issues or questions, please open an issue on the [GitHub repository](https://github.com/clemensv/real-time-sources/issues).

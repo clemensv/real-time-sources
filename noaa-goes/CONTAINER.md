@@ -16,9 +16,9 @@ Endpoints polled:
 - `https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json` — Solar wind speed
 - `https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json` — Solar wind magnetic field
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 

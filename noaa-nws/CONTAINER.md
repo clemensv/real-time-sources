@@ -10,9 +10,9 @@ The National Weather Service (NWS) provides a public API for accessing active we
 
 The bridge polls the NWS Weather Alerts API at `https://api.weather.gov/alerts/active` and writes new alerts to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Previously seen alert IDs are tracked in a state file to prevent duplicates.
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 

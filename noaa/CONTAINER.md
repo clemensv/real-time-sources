@@ -10,9 +10,9 @@ The National Oceanic and Atmospheric Administration (NOAA) Tides and Currents AP
 
 The bridge retrieves data from the NOAA Tides and Currents API and writes it to a Kafka topic as [CloudEvents](https://cloudevents.io/) in a JSON format, which is documented in [EVENTS.md](EVENTS.md).
 
-## Database Schemas and handling
+## Database Schemas and Handling
 
-If you want to build a full data pipeline with all events ingested into
+If you want to build a full data pipeline with all events ingested into a
 database, the integration with Fabric Eventhouse and Azure Data Explorer is
 described in [DATABASE.md](../DATABASE.md).
 
@@ -98,58 +98,8 @@ The file path where the bridge stores the last polled timestamps. This helps in 
 
 ## Deploying into Azure Container Instances
 
-You can deploy the RSS/Atom bridge as a container directly to Azure Container
-Instances providing the information explained above. Just click the button below and go.
+You can deploy the NOAA bridge as a container directly to Azure Container
+Instances. Just click the button below and go.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template.json)
-
-
-## Additional Information
-
-- **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/noaa)
-- **Documentation**: Refer to [EVENTS.md](EVENTS.md) for the JSON event format.
-- **License**: MIT
-
-## Example
-
-To run the bridge and send data to an Azure Event Hub:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...' \
-    -e NOAA_LAST_POLLED_FILE='/mnt/fileshare/noaa_last_polled.json' \
-    -v /path/to/state:/mnt/fileshare \
-    ghcr.io/clemensv/real-time-sources-noaa:latest
-```
-
-An exemplary CloudEvent produced by the bridge looks as follows:
-
-```json
-{
-    "specversion": "1.0",
-    "type": "Microsoft.OpenData.US.NOAA.WaterLevel",
-    "source": "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations/8652587.json",
-    "id": "7bf3c89c-0d21-4815-a882-ce7a2c1e9637",
-    "time": "2024-09-17T15:59:18.831393Z",
-    "data": {
-        "station_id": "8652587",
-        "timestamp": "2024-09-16T16:06:00.0000000Z",
-        "value": 0.295,
-        "stddev": 0.005,
-        "outside_sigma_band": false,
-        "flat_tolerance_limit": false,
-        "rate_of_change_limit": false,
-        "max_min_expected_height": false,
-        "quality": 0
-    }
-}
-```
-
-This setup allows you to integrate real-time oceanographic data into your data processing pipelines, aiding in navigation safety, coastal planning, and environmental monitoring.
-
-## Notes
-
-- Ensure that you have network connectivity to the NOAA Tides and Currents API endpoints.
-- The bridge efficiently handles data fetching and forwarding, but monitor resource usage if you are fetching data at a high frequency.
-- Customize the application according to your data freshness requirements and system capabilities.
 
