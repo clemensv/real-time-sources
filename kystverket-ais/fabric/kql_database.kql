@@ -394,6 +394,57 @@
 
 // All vessel positions (Class A + Class B combined) with latest static info
 .create-or-alter function with (docstring="Latest vessel positions (Class A + B) joined with static vessel info for map display") VesselPositions() {
+    let ship_type_lookup = datatable(ship_type: int, ship_type_name: string) [
+        0, "Not available",
+        20, "Wing in ground",
+        21, "Wing in ground - Hazardous A",
+        22, "Wing in ground - Hazardous B",
+        23, "Wing in ground - Hazardous C",
+        24, "Wing in ground - Hazardous D",
+        30, "Fishing",
+        31, "Towing",
+        32, "Towing (large)",
+        33, "Dredging/underwater ops",
+        34, "Diving ops",
+        35, "Military ops",
+        36, "Sailing",
+        37, "Pleasure craft",
+        40, "High speed craft",
+        41, "High speed craft - Hazardous A",
+        42, "High speed craft - Hazardous B",
+        43, "High speed craft - Hazardous C",
+        44, "High speed craft - Hazardous D",
+        50, "Pilot vessel",
+        51, "Search and rescue",
+        52, "Tug",
+        53, "Port tender",
+        54, "Anti-pollution",
+        55, "Law enforcement",
+        56, "Spare - Local vessel",
+        57, "Spare - Local vessel",
+        58, "Medical transport",
+        59, "Noncombatant ship (RR Resolution No. 18)",
+        60, "Passenger",
+        61, "Passenger - Hazardous A",
+        62, "Passenger - Hazardous B",
+        63, "Passenger - Hazardous C",
+        64, "Passenger - Hazardous D",
+        70, "Cargo",
+        71, "Cargo - Hazardous A",
+        72, "Cargo - Hazardous B",
+        73, "Cargo - Hazardous C",
+        74, "Cargo - Hazardous D",
+        80, "Tanker",
+        81, "Tanker - Hazardous A",
+        82, "Tanker - Hazardous B",
+        83, "Tanker - Hazardous C",
+        84, "Tanker - Hazardous D",
+        90, "Other",
+        91, "Other - Hazardous A",
+        92, "Other - Hazardous B",
+        93, "Other - Hazardous C",
+        94, "Other - Hazardous D"
+    ];
     let positions = union
         (PositionClassALatest | project mmsi, latitude, longitude, speed_over_ground, course_over_ground, true_heading, navigation_status, timestamp, ___time),
         (PositionClassBLatest | project mmsi, latitude, longitude, speed_over_ground, course_over_ground, true_heading, navigation_status=int(null), timestamp, ___time)
@@ -405,11 +456,13 @@
     positions
     | where latitude != 91.0 and longitude != 181.0
     | join kind=leftouter static_info on mmsi
+    | lookup ship_type_lookup on ship_type
     | project
         mmsi,
         ship_name,
         callsign,
         ship_type,
+        ship_type_name = coalesce(ship_type_name, "Unknown"),
         imo_number,
         latitude,
         longitude,
