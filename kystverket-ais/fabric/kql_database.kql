@@ -1,0 +1,435 @@
+// Kystverket AIS — KQL database schema for Fabric Eventhouse
+//
+// Tables:
+//   _cloudevents_dispatch  — raw CloudEvents ingestion (Event Stream target)
+//   PositionReportClassA   — AIS types 1,2,3 (Class A position)
+//   StaticVoyageData       — AIS type 5  (Class A static + voyage)
+//   PositionReportClassB   — AIS types 18,19 (Class B position)
+//   StaticDataClassB       — AIS type 24 (Class B static)
+//   AidToNavigation        — AIS type 21 (aids to navigation)
+//
+// Update policies on _cloudevents_dispatch split events by type into the
+// five typed tables. Materialized views provide latest-state per vessel.
+
+// ===== Dispatch table =====
+
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+)
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.alter table [_cloudevents_dispatch] policy retention
+```
+{ "SoftDeletePeriod": "1.00:00:00", "Recoverability": "Disabled" }
+```
+
+.alter table [_cloudevents_dispatch] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+
+// ===== PositionReportClassA (AIS types 1, 2, 3) =====
+
+.create-merge table [PositionReportClassA] (
+   [mmsi]: int,
+   [navigation_status]: int,
+   [rate_of_turn]: real,
+   [speed_over_ground]: real,
+   [position_accuracy]: int,
+   [longitude]: real,
+   [latitude]: real,
+   [course_over_ground]: real,
+   [true_heading]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [msg_type]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [PositionReportClassA] column-docstrings (
+   [mmsi]: 'Maritime Mobile Service Identity (9 digits)',
+   [navigation_status]: 'AIS navigation status (0=under way using engine, 1=at anchor, etc.)',
+   [rate_of_turn]: 'Rate of turn in degrees/minute',
+   [speed_over_ground]: 'Speed over ground in knots (102.3=not available)',
+   [position_accuracy]: 'Position accuracy (1=high, 0=low)',
+   [longitude]: 'Longitude in decimal degrees (181.0=not available)',
+   [latitude]: 'Latitude in decimal degrees (91.0=not available)',
+   [course_over_ground]: 'Course over ground in degrees (360.0=not available)',
+   [true_heading]: 'True heading in degrees (511=not available)',
+   [timestamp]: 'Receive timestamp (ISO 8601)',
+   [station_id]: 'Kystverket receiving station ID',
+   [msg_type]: 'AIS message type (1, 2, or 3)',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [PositionReportClassA] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.PositionReportClassA') | project ['mmsi'] = toint(data.['mmsi']), ['navigation_status'] = toint(data.['navigation_status']), ['rate_of_turn'] = toreal(data.['rate_of_turn']), ['speed_over_ground'] = toreal(data.['speed_over_ground']), ['position_accuracy'] = toint(data.['position_accuracy']), ['longitude'] = toreal(data.['longitude']), ['latitude'] = toreal(data.['latitude']), ['course_over_ground'] = toreal(data.['course_over_ground']), ['true_heading'] = toint(data.['true_heading']), ['timestamp'] = tostring(data.['timestamp']), ['station_id'] = tostring(data.['station_id']), ['msg_type'] = toint(data.['msg_type']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [PositionReportClassA] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [PositionReportClassA] policy retention
+```
+{ "SoftDeletePeriod": "30.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== StaticVoyageData (AIS type 5) =====
+
+.create-merge table [StaticVoyageData] (
+   [mmsi]: int,
+   [imo_number]: int,
+   [callsign]: string,
+   [ship_name]: string,
+   [ship_type]: int,
+   [dimension_to_bow]: int,
+   [dimension_to_stern]: int,
+   [dimension_to_port]: int,
+   [dimension_to_starboard]: int,
+   [draught]: real,
+   [destination]: string,
+   [eta_month]: int,
+   [eta_day]: int,
+   [eta_hour]: int,
+   [eta_minute]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [StaticVoyageData] column-docstrings (
+   [mmsi]: 'Maritime Mobile Service Identity',
+   [imo_number]: 'IMO ship identification number',
+   [callsign]: 'International radio callsign (7 chars)',
+   [ship_name]: 'Ship name (20 chars)',
+   [ship_type]: 'Ship and cargo type code',
+   [dimension_to_bow]: 'Distance from GPS antenna to bow in meters',
+   [dimension_to_stern]: 'Distance from GPS antenna to stern in meters',
+   [dimension_to_port]: 'Distance from GPS antenna to port in meters',
+   [dimension_to_starboard]: 'Distance from GPS antenna to starboard in meters',
+   [draught]: 'Maximum static draught in meters',
+   [destination]: 'Destination (20 chars)',
+   [eta_month]: 'ETA month (1-12, 0=not available)',
+   [eta_day]: 'ETA day (1-31, 0=not available)',
+   [eta_hour]: 'ETA hour (0-23, 24=not available)',
+   [eta_minute]: 'ETA minute (0-59, 60=not available)',
+   [timestamp]: 'Receive timestamp (ISO 8601)',
+   [station_id]: 'Kystverket receiving station ID',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [StaticVoyageData] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.StaticVoyageData') | project ['mmsi'] = toint(data.['mmsi']), ['imo_number'] = toint(data.['imo_number']), ['callsign'] = tostring(data.['callsign']), ['ship_name'] = tostring(data.['ship_name']), ['ship_type'] = toint(data.['ship_type']), ['dimension_to_bow'] = toint(data.['dimension_to_bow']), ['dimension_to_stern'] = toint(data.['dimension_to_stern']), ['dimension_to_port'] = toint(data.['dimension_to_port']), ['dimension_to_starboard'] = toint(data.['dimension_to_starboard']), ['draught'] = toreal(data.['draught']), ['destination'] = tostring(data.['destination']), ['eta_month'] = toint(data.['eta_month']), ['eta_day'] = toint(data.['eta_day']), ['eta_hour'] = toint(data.['eta_hour']), ['eta_minute'] = toint(data.['eta_minute']), ['timestamp'] = tostring(data.['timestamp']), ['station_id'] = tostring(data.['station_id']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [StaticVoyageData] policy retention
+```
+{ "SoftDeletePeriod": "30.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== PositionReportClassB (AIS types 18, 19) =====
+
+.create-merge table [PositionReportClassB] (
+   [mmsi]: int,
+   [speed_over_ground]: real,
+   [position_accuracy]: int,
+   [longitude]: real,
+   [latitude]: real,
+   [course_over_ground]: real,
+   [true_heading]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [msg_type]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [PositionReportClassB] column-docstrings (
+   [mmsi]: 'Maritime Mobile Service Identity',
+   [speed_over_ground]: 'Speed over ground in knots',
+   [position_accuracy]: 'Position accuracy (1=high, 0=low)',
+   [longitude]: 'Longitude in decimal degrees',
+   [latitude]: 'Latitude in decimal degrees',
+   [course_over_ground]: 'Course over ground in degrees',
+   [true_heading]: 'True heading in degrees (511=not available)',
+   [timestamp]: 'Receive timestamp (ISO 8601)',
+   [station_id]: 'Kystverket receiving station ID',
+   [msg_type]: 'AIS message type (18 or 19)',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [PositionReportClassB] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.PositionReportClassB') | project ['mmsi'] = toint(data.['mmsi']), ['speed_over_ground'] = toreal(data.['speed_over_ground']), ['position_accuracy'] = toint(data.['position_accuracy']), ['longitude'] = toreal(data.['longitude']), ['latitude'] = toreal(data.['latitude']), ['course_over_ground'] = toreal(data.['course_over_ground']), ['true_heading'] = toint(data.['true_heading']), ['timestamp'] = tostring(data.['timestamp']), ['station_id'] = tostring(data.['station_id']), ['msg_type'] = toint(data.['msg_type']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [PositionReportClassB] policy ingestionbatching
+```
+{ "MaximumBatchingTimeSpan": "00:00:30", "MaximumNumberOfItems": 10000, "MaximumRawDataSizeMB": 200 }
+```
+
+.alter table [PositionReportClassB] policy retention
+```
+{ "SoftDeletePeriod": "30.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== StaticDataClassB (AIS type 24) =====
+
+.create-merge table [StaticDataClassB] (
+   [mmsi]: int,
+   [part_number]: int,
+   [ship_name]: string,
+   [ship_type]: int,
+   [callsign]: string,
+   [dimension_to_bow]: int,
+   [dimension_to_stern]: int,
+   [dimension_to_port]: int,
+   [dimension_to_starboard]: int,
+   [timestamp]: string,
+   [station_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [StaticDataClassB] column-docstrings (
+   [mmsi]: 'Maritime Mobile Service Identity',
+   [part_number]: 'Part number (0=Part A with name, 1=Part B with callsign/dimensions)',
+   [ship_name]: 'Ship name (Part A only)',
+   [ship_type]: 'Ship and cargo type code (Part B only)',
+   [callsign]: 'Callsign (Part B only)',
+   [dimension_to_bow]: 'Distance to bow in meters (Part B only)',
+   [dimension_to_stern]: 'Distance to stern in meters (Part B only)',
+   [dimension_to_port]: 'Distance to port in meters (Part B only)',
+   [dimension_to_starboard]: 'Distance to starboard in meters (Part B only)',
+   [timestamp]: 'Receive timestamp (ISO 8601)',
+   [station_id]: 'Kystverket receiving station ID',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [StaticDataClassB] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.StaticDataClassB') | project ['mmsi'] = toint(data.['mmsi']), ['part_number'] = toint(data.['part_number']), ['ship_name'] = tostring(data.['ship_name']), ['ship_type'] = toint(data.['ship_type']), ['callsign'] = tostring(data.['callsign']), ['dimension_to_bow'] = toint(data.['dimension_to_bow']), ['dimension_to_stern'] = toint(data.['dimension_to_stern']), ['dimension_to_port'] = toint(data.['dimension_to_port']), ['dimension_to_starboard'] = toint(data.['dimension_to_starboard']), ['timestamp'] = tostring(data.['timestamp']), ['station_id'] = tostring(data.['station_id']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [StaticDataClassB] policy retention
+```
+{ "SoftDeletePeriod": "30.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== AidToNavigation (AIS type 21) =====
+
+.create-merge table [AidToNavigation] (
+   [mmsi]: int,
+   [aid_type]: int,
+   [name]: string,
+   [position_accuracy]: int,
+   [longitude]: real,
+   [latitude]: real,
+   [timestamp]: string,
+   [station_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+)
+
+.alter table [AidToNavigation] column-docstrings (
+   [mmsi]: 'Maritime Mobile Service Identity',
+   [aid_type]: 'Type of aid to navigation',
+   [name]: 'Name of the aid to navigation',
+   [position_accuracy]: 'Position accuracy (1=high, 0=low)',
+   [longitude]: 'Longitude in decimal degrees',
+   [latitude]: 'Latitude in decimal degrees',
+   [timestamp]: 'Receive timestamp (ISO 8601)',
+   [station_id]: 'Kystverket receiving station ID',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+)
+
+.alter table [AidToNavigation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.AidToNavigation') | project ['mmsi'] = toint(data.['mmsi']), ['aid_type'] = toint(data.['aid_type']), ['name'] = tostring(data.['name']), ['position_accuracy'] = toint(data.['position_accuracy']), ['longitude'] = toreal(data.['longitude']), ['latitude'] = toreal(data.['latitude']), ['timestamp'] = tostring(data.['timestamp']), ['station_id'] = tostring(data.['station_id']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [AidToNavigation] policy retention
+```
+{ "SoftDeletePeriod": "30.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== Materialized views — latest state per vessel =====
+
+// Latest Class A position per vessel (MMSI)
+.create-or-alter materialized-view with (backfill=true) PositionClassALatest on table PositionReportClassA
+{
+    PositionReportClassA
+    | summarize arg_max(___time, *) by mmsi
+}
+
+// Latest Class B position per vessel (MMSI)
+.create-or-alter materialized-view with (backfill=true) PositionClassBLatest on table PositionReportClassB
+{
+    PositionReportClassB
+    | summarize arg_max(___time, *) by mmsi
+}
+
+// Latest static/voyage data per vessel (MMSI)
+.create-or-alter materialized-view with (backfill=true) StaticVoyageDataLatest on table StaticVoyageData
+{
+    StaticVoyageData
+    | summarize arg_max(___time, *) by mmsi
+}
+
+// Latest Class B static data per vessel (MMSI)
+.create-or-alter materialized-view with (backfill=true) StaticDataClassBLatest on table StaticDataClassB
+{
+    StaticDataClassB
+    | summarize arg_max(___time, *) by mmsi
+}
+
+// Latest aid-to-navigation position per MMSI
+.create-or-alter materialized-view with (backfill=true) AidToNavigationLatest on table AidToNavigation
+{
+    AidToNavigation
+    | summarize arg_max(___time, *) by mmsi
+}
+
+
+// ===== Functions =====
+
+// All vessel positions (Class A + Class B combined) with latest static info
+.create-or-alter function with (docstring="Latest vessel positions (Class A + B) joined with static vessel info for map display") VesselPositions() {
+    let positions = union
+        (PositionClassALatest | project mmsi, latitude, longitude, speed_over_ground, course_over_ground, true_heading, navigation_status, timestamp, ___time),
+        (PositionClassBLatest | project mmsi, latitude, longitude, speed_over_ground, course_over_ground, true_heading, navigation_status=int(null), timestamp, ___time)
+        | summarize arg_max(___time, *) by mmsi;
+    let static_info = union
+        (StaticVoyageDataLatest | project mmsi, ship_name, callsign, ship_type, imo_number, destination, draught),
+        (StaticDataClassBLatest | project mmsi, ship_name, callsign, ship_type, imo_number=int(null), destination="", draught=real(null))
+        | summarize arg_max(ship_name, *) by mmsi;
+    positions
+    | where latitude != 91.0 and longitude != 181.0
+    | join kind=leftouter static_info on mmsi
+    | project
+        mmsi,
+        ship_name,
+        callsign,
+        ship_type,
+        imo_number,
+        latitude,
+        longitude,
+        speed_over_ground,
+        course_over_ground,
+        true_heading,
+        navigation_status,
+        destination,
+        draught,
+        timestamp,
+        last_update = ___time
+}
+
+// Vessel count and message rates
+.create-or-alter function with (docstring="Message counts and unique vessel counts per AIS type in the last hour") AISStatistics() {
+    union
+        (PositionReportClassA | where ___time > ago(1h) | summarize messages=count(), vessels=dcount(mmsi) | extend type="PositionReportClassA"),
+        (StaticVoyageData     | where ___time > ago(1h) | summarize messages=count(), vessels=dcount(mmsi) | extend type="StaticVoyageData"),
+        (PositionReportClassB | where ___time > ago(1h) | summarize messages=count(), vessels=dcount(mmsi) | extend type="PositionReportClassB"),
+        (StaticDataClassB     | where ___time > ago(1h) | summarize messages=count(), vessels=dcount(mmsi) | extend type="StaticDataClassB"),
+        (AidToNavigation      | where ___time > ago(1h) | summarize messages=count(), vessels=dcount(mmsi) | extend type="AidToNavigation")
+    | project type, messages, vessels
+}
