@@ -1,6 +1,6 @@
 # Nextbus CLI tool
 
-The Nextbus tool is a command line tool that can be used to retrieve real time data from the [Nextbus](https://www.nextbus.com/) service and feed that data into Azure Evnt Hubs and Microsft Fabric Event Streams.
+The Nextbus tool is a command line tool that can be used to retrieve real time data from the [Nextbus](https://www.nextbus.com/) service and feed that data into Azure Event Hubs and Microsoft Fabric Event Streams.
 
 The tool can also be used to query the Nextbus service interactively.
 

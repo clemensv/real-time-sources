@@ -27,19 +27,24 @@ information. The supported authentication scheme for the Kafka endpoint is
 
 The container image documentation provides detailed information:
 
+* [AISStream - Global AIS vessel tracking](aisstream/CONTAINER.md)
 * [Bluesky Firehose - Social media posts and interactions](bluesky/CONTAINER.md)
 * [CHMI Hydro - Czech hydrological observations](chmi-hydro/CONTAINER.md)
+* [Digitraffic Maritime - Finnish AIS vessel tracking](digitraffic-maritime/CONTAINER.md)
+* [DWD - German weather observations and alerts](dwd/CONTAINER.md)
+* [ENTSO-E - European electricity market data](entsoe/CONTAINER.md)
 * [German Waters - German state water level observations](german-waters/README.md)
 * [GTFS Realtime - Public transport data](gtfs/CONTAINER.md)
 * [Hub'Eau Hydrometrie - French hydrometric observations](hubeau-hydrometrie/CONTAINER.md)
 * [IMGW Hydro - Polish hydrological observations](imgw-hydro/CONTAINER.md)
+* [Kystverket AIS - Norwegian AIS vessel tracking](kystverket-ais/CONTAINER.md)
 * [Mode-S - ADS-B and Mode-S aircraft telemetry](mode-s/CONTAINER.md)
-* [NOAA Tides ands Currents -  Water level and current data](noaa/CONTAINER.md)
+* [NOAA Tides and Currents - Water level and current data](noaa/CONTAINER.md)
 * [NOAA GOES and SWPC - Space weather and alert feeds](noaa-goes/CONTAINER.md)
 * [NOAA NDBC - Buoy observations](noaa-ndbc/CONTAINER.md)
 * [NOAA NWS - Weather alerts](noaa-nws/CONTAINER.md)
-* [RSS Feeds - News and blog posts](rss/CONTAINER.md)
 * [Pegelonline - Water level and current data](pegelonline/CONTAINER.md)
+* [RSS Feeds - News and blog posts](rss/CONTAINER.md)
 * [RWS Waterwebservices - Dutch water observations](rws-waterwebservices/CONTAINER.md)
 * [SMHI Hydro - Swedish hydrological observations](smhi-hydro/CONTAINER.md)
 * [UK EA Flood Monitoring - English flood and river data](uk-ea-flood-monitoring/CONTAINER.md)
@@ -59,6 +64,14 @@ package from that definition.
 
 ## Command Line Tools
 
+### AISStream - Global AIS vessel tracking
+
+The [AISStream bridge](aisstream/README.md) connects to the AISStream.io
+WebSocket API and streams real-time AIS vessel tracking data from ships
+worldwide. Coverage extends approximately 200 km from shore. The bridge
+publishes 23 AIS message types as CloudEvents to Kafka. Note that the free
+AISStream service can be unreliable and may have frequent outages.
+
 ### Bluesky Firehose - Social media posts and interactions
 
 The [Bluesky Firehose tool](bluesky/README.md) is a command line tool that
@@ -76,6 +89,30 @@ The [CHMI Hydro bridge](chmi-hydro/README.md) fetches real-time water level,
 discharge, and temperature data from the Czech Hydrometeorological Institute
 (ČHMÚ) and publishes the observations to Kafka as CloudEvents. The data is
 polled every 10 minutes by default.
+
+### Digitraffic Maritime - Finnish AIS vessel tracking
+
+The [Digitraffic Maritime bridge](digitraffic-maritime/README.md) connects to
+Finland's Digitraffic Marine MQTT stream and forwards real-time AIS vessel
+positions and metadata from the Finnish coastal zone and Baltic Sea. The data is
+open (CC 4.0 BY), requires no API key, and produces approximately 35 messages
+per second.
+
+### DWD - German weather observations and alerts
+
+The [DWD bridge](dwd/README.md) fetches real-time weather observations and
+alerts from the German Weather Service (Deutscher Wetterdienst). It covers
+approximately 1,450 stations reporting 10-minute observations for temperature,
+precipitation, wind, and other parameters, plus CAP weather alerts. The data is
+published to Kafka as CloudEvents.
+
+### ENTSO-E - European electricity market data
+
+The [ENTSO-E bridge](entsoe/README.md) retrieves European electricity market
+data from the ENTSO-E Transparency Platform, including generation output,
+day-ahead prices, load data, forecasts, installed capacity, reservoir filling,
+and cross-border flows across multiple European bidding zones. The data is
+published to Kafka as CloudEvents.
 
 ### German Waters - German state water level observations
 
@@ -110,6 +147,14 @@ The [IMGW Hydro bridge](imgw-hydro/README.md) fetches real-time hydrological
 data from the Polish Institute of Meteorology and Water Management (IMGW-PIB)
 and forwards the observations to Kafka as CloudEvents. The data is polled every
 10 minutes by default.
+
+### Kystverket AIS - Norwegian AIS vessel tracking
+
+The [Kystverket AIS bridge](kystverket-ais/README.md) connects to the Norwegian
+Coastal Administration's raw TCP AIS stream and decodes NMEA AIS sentences from
+50+ terrestrial and offshore stations covering the Norwegian economic zone,
+Svalbard, and Jan Mayen. The stream produces approximately 34 messages per
+second (~2.9 million per day) and publishes them to Kafka as CloudEvents.
 
 ### Mode-S - ADS-B and Mode-S aircraft telemetry
 
@@ -207,7 +252,7 @@ Kafka as CloudEvents. The data is polled every 15 minutes by default.
 
 The [Nextbus tool](nextbus/README.md) is a command line tool that can be used to
 retrieve real-time data from the [Nextbus](https://www.nextbus.com/) service and
-feed that data into Azure Event Hubs and Microsft Fabric Event Streams. The tool
+feed that data into Azure Event Hubs and Microsoft Fabric Event Streams. The tool
 can also be used to query the Nextbus service interactively.
 
 
