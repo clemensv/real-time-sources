@@ -1,0 +1,198 @@
+{
+    "endpoints": {
+        "fi.digitraffic.marine.Kafka": {
+            "usage": [
+                "producer"
+            ],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "digitraffic-maritime"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/fi.digitraffic.marine.ais"
+            ]
+        }
+    },
+    "messagegroups": {
+        "fi.digitraffic.marine.ais": {
+            "messages": {
+                "fi.digitraffic.marine.ais.VesselLocation": {
+                    "name": "VesselLocation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "fi.digitraffic.marine.ais.VesselLocation"
+                        },
+                        "source": {
+                            "value": "wss://meri.digitraffic.fi/mqtt"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais/schemas/fi.digitraffic.marine.ais.VesselLocation"
+                },
+                "fi.digitraffic.marine.ais.VesselMetadata": {
+                    "name": "VesselMetadata",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "fi.digitraffic.marine.ais.VesselMetadata"
+                        },
+                        "source": {
+                            "value": "wss://meri.digitraffic.fi/mqtt"
+                        }
+                    },
+                    "dataschemaformat": "JsonSchema/draft-07",
+                    "dataschemauri": "#/schemagroups/fi.digitraffic.marine.ais/schemas/fi.digitraffic.marine.ais.VesselMetadata"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "fi.digitraffic.marine.ais": {
+            "schemas": {
+                "fi.digitraffic.marine.ais.VesselLocation": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "VesselLocation",
+                                "description": "AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update.",
+                                "properties": {
+                                    "mmsi": {
+                                        "type": "integer",
+                                        "description": "Maritime Mobile Service Identity — unique vessel identifier"
+                                    },
+                                    "time": {
+                                        "type": "integer",
+                                        "description": "AIS timestamp in epoch seconds"
+                                    },
+                                    "sog": {
+                                        "type": "number",
+                                        "description": "Speed over ground in knots (1/10 knot precision)"
+                                    },
+                                    "cog": {
+                                        "type": "number",
+                                        "description": "Course over ground in degrees (1/10 degree precision)"
+                                    },
+                                    "navStat": {
+                                        "type": "integer",
+                                        "description": "Navigational status code (0=under way using engine, 1=at anchor, etc.)"
+                                    },
+                                    "rot": {
+                                        "type": "integer",
+                                        "description": "Rate of turn in degrees/minute (-127 to 127, -128=not available)"
+                                    },
+                                    "posAcc": {
+                                        "type": "boolean",
+                                        "description": "Position accuracy — true if DGPS-quality (< 10 m)"
+                                    },
+                                    "raim": {
+                                        "type": "boolean",
+                                        "description": "RAIM (Receiver Autonomous Integrity Monitoring) flag"
+                                    },
+                                    "heading": {
+                                        "type": "integer",
+                                        "description": "True heading in degrees (0-359, 511=not available)"
+                                    },
+                                    "lon": {
+                                        "type": "number",
+                                        "description": "Longitude in decimal degrees (WGS-84)"
+                                    },
+                                    "lat": {
+                                        "type": "number",
+                                        "description": "Latitude in decimal degrees (WGS-84)"
+                                    }
+                                },
+                                "required": ["time", "sog", "cog", "navStat", "rot", "posAcc", "raim", "heading", "lon", "lat"]
+                            }
+                        }
+                    }
+                },
+                "fi.digitraffic.marine.ais.VesselMetadata": {
+                    "format": "JsonSchema/draft-07",
+                    "versions": {
+                        "1": {
+                            "format": "JsonSchema/draft-07",
+                            "schema": {
+                                "$schema": "http://json-schema.org/draft-07/schema#",
+                                "type": "object",
+                                "title": "VesselMetadata",
+                                "description": "AIS vessel static and voyage data from Digitraffic MQTT stream. Represents decoded AIS message type 5/24 data.",
+                                "properties": {
+                                    "mmsi": {
+                                        "type": "integer",
+                                        "description": "Maritime Mobile Service Identity — unique vessel identifier"
+                                    },
+                                    "timestamp": {
+                                        "type": "integer",
+                                        "description": "Metadata update timestamp in epoch milliseconds"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Vessel name (up to 20 characters)"
+                                    },
+                                    "callSign": {
+                                        "type": "string",
+                                        "description": "Radio callsign (up to 7 characters)"
+                                    },
+                                    "imo": {
+                                        "type": "integer",
+                                        "description": "IMO ship identification number (0 if not available)"
+                                    },
+                                    "type": {
+                                        "type": "integer",
+                                        "description": "Ship and cargo type code (0-99)"
+                                    },
+                                    "draught": {
+                                        "type": "integer",
+                                        "description": "Maximum present static draught in 1/10 m"
+                                    },
+                                    "eta": {
+                                        "type": "integer",
+                                        "description": "Estimated time of arrival — encoded as MMDDHHMM"
+                                    },
+                                    "destination": {
+                                        "type": "string",
+                                        "description": "Destination port (up to 20 characters)"
+                                    },
+                                    "posType": {
+                                        "type": "integer",
+                                        "description": "Type of electronic position fixing device"
+                                    },
+                                    "refA": {
+                                        "type": "integer",
+                                        "description": "Reference point for reported position — distance from bow (meters)"
+                                    },
+                                    "refB": {
+                                        "type": "integer",
+                                        "description": "Reference point — distance from stern (meters)"
+                                    },
+                                    "refC": {
+                                        "type": "integer",
+                                        "description": "Reference point — distance from port side (meters)"
+                                    },
+                                    "refD": {
+                                        "type": "integer",
+                                        "description": "Reference point — distance from starboard side (meters)"
+                                    }
+                                },
+                                "required": ["timestamp"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,2 @@
+pip install .\digitraffic_maritime_producer_data
+pip install .\digitraffic_maritime_producer_kafka_producer

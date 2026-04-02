@@ -1,0 +1,27 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "digitraffic-maritime"
+version = "0.1.0"
+description = "Digitraffic Marine AIS bridge — Finnish/Baltic vessel tracking data to Kafka as CloudEvents"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{include = "digitraffic_maritime"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.0.0"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+digitraffic_maritime_producer_data = {path = "digitraffic_maritime_producer/digitraffic_maritime_producer_data"}
+digitraffic_maritime_producer_kafka_producer = {path = "digitraffic_maritime_producer/digitraffic_maritime_producer_kafka_producer"}
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+pytest-cov = ">=5.0.0"
+
+[tool.poetry.scripts]
+digitraffic-maritime = "digitraffic_maritime:main"
