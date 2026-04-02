@@ -1,0 +1,316 @@
+// ===== CloudEvents dispatch table (ingestion target) =====
+
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+// ===== Typed tables =====
+
+.create-merge table [VesselLocation] (
+   [mmsi]: int,
+   [time_epoch]: long,
+   [sog]: real,
+   [cog]: real,
+   [nav_stat]: int,
+   [rot]: int,
+   [pos_acc]: bool,
+   [raim]: bool,
+   [heading]: int,
+   [longitude]: real,
+   [latitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VesselLocation] column-docstrings (
+   [mmsi]: 'Maritime Mobile Service Identity (9 digits)',
+   [time_epoch]: 'AIS timestamp in epoch seconds',
+   [sog]: 'Speed over ground in knots (1/10 knot precision)',
+   [cog]: 'Course over ground in degrees (1/10 degree precision)',
+   [nav_stat]: 'Navigational status (0=under way using engine, 1=at anchor, 2=not under command, etc.)',
+   [rot]: 'Rate of turn in degrees/minute (-127=left, 127=right, -128=not available)',
+   [pos_acc]: 'Position accuracy — true if DGPS-quality (< 10 m)',
+   [raim]: 'RAIM (Receiver Autonomous Integrity Monitoring) flag',
+   [heading]: 'True heading in degrees (0-359, 511=not available)',
+   [longitude]: 'Longitude in decimal degrees (WGS-84)',
+   [latitude]: 'Latitude in decimal degrees (WGS-84)',
+   [___type]: 'CloudEvents type',
+   [___source]: 'CloudEvents source',
+   [___id]: 'CloudEvents event identifier',
+   [___time]: 'CloudEvents event time',
+   [___subject]: 'CloudEvents subject'
+);
+
+.create-or-alter table [VesselLocation] ingestion json mapping "VesselLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "time_epoch", "path": "$.data.time"},
+  {"column": "sog", "path": "$.data.sog"},
+  {"column": "cog", "path": "$.data.cog"},
+  {"column": "nav_stat", "path": "$.data.navStat"},
+  {"column": "rot", "path": "$.data.rot"},
+  {"column": "pos_acc", "path": "$.data.posAcc"},
+  {"column": "raim", "path": "$.data.raim"},
+  {"column": "heading", "path": "$.data.heading"},
+  {"column": "longitude", "path": "$.data.lon"},
+  {"column": "latitude", "path": "$.data.lat"}
+]
+```
+
+.alter table [VesselLocation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.marine.ais.VesselLocation') | project ['mmsi'] = toint(data.['mmsi']), ['time_epoch'] = tolong(data.['time']), ['sog'] = toreal(data.['sog']), ['cog'] = toreal(data.['cog']), ['nav_stat'] = toint(data.['navStat']), ['rot'] = toint(data.['rot']), ['pos_acc'] = tobool(data.['posAcc']), ['raim'] = tobool(data.['raim']), ['heading'] = toint(data.['heading']), ['longitude'] = toreal(data.['lon']), ['latitude'] = toreal(data.['lat']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+
+.create-merge table [VesselMetadata] (
+   [mmsi]: int,
+   [timestamp_ms]: long,
+   [name]: string,
+   [call_sign]: string,
+   [imo]: int,
+   [ship_type]: int,
+   [draught]: int,
+   [eta]: int,
+   [destination]: string,
+   [pos_type]: int,
+   [ref_a]: int,
+   [ref_b]: int,
+   [ref_c]: int,
+   [ref_d]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VesselMetadata] column-docstrings (
+   [mmsi]: 'Maritime Mobile Service Identity',
+   [timestamp_ms]: 'Metadata update timestamp in epoch milliseconds',
+   [name]: 'Vessel name (up to 20 characters)',
+   [call_sign]: 'International radio callsign (up to 7 characters)',
+   [imo]: 'IMO ship identification number (0 if not available)',
+   [ship_type]: 'Ship and cargo type code (0-99)',
+   [draught]: 'Maximum present static draught in 1/10 m',
+   [eta]: 'Estimated time of arrival — encoded as MMDDHHMM',
+   [destination]: 'Destination port (up to 20 characters)',
+   [pos_type]: 'Type of electronic position fixing device',
+   [ref_a]: 'Distance from reference point to bow in meters',
+   [ref_b]: 'Distance from reference point to stern in meters',
+   [ref_c]: 'Distance from reference point to port side in meters',
+   [ref_d]: 'Distance from reference point to starboard side in meters',
+   [___type]: 'CloudEvents type',
+   [___source]: 'CloudEvents source',
+   [___id]: 'CloudEvents event identifier',
+   [___time]: 'CloudEvents event time',
+   [___subject]: 'CloudEvents subject'
+);
+
+.create-or-alter table [VesselMetadata] ingestion json mapping "VesselMetadata_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "timestamp_ms", "path": "$.data.timestamp"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "call_sign", "path": "$.data.callSign"},
+  {"column": "imo", "path": "$.data.imo"},
+  {"column": "ship_type", "path": "$.data.type"},
+  {"column": "draught", "path": "$.data.draught"},
+  {"column": "eta", "path": "$.data.eta"},
+  {"column": "destination", "path": "$.data.destination"},
+  {"column": "pos_type", "path": "$.data.posType"},
+  {"column": "ref_a", "path": "$.data.refA"},
+  {"column": "ref_b", "path": "$.data.refB"},
+  {"column": "ref_c", "path": "$.data.refC"},
+  {"column": "ref_d", "path": "$.data.refD"}
+]
+```
+
+.alter table [VesselMetadata] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.marine.ais.VesselMetadata') | project ['mmsi'] = toint(data.['mmsi']), ['timestamp_ms'] = tolong(data.['timestamp']), ['name'] = tostring(data.['name']), ['call_sign'] = tostring(data.['callSign']), ['imo'] = toint(data.['imo']), ['ship_type'] = toint(data.['type']), ['draught'] = toint(data.['draught']), ['eta'] = toint(data.['eta']), ['destination'] = tostring(data.['destination']), ['pos_type'] = toint(data.['posType']), ['ref_a'] = toint(data.['refA']), ['ref_b'] = toint(data.['refB']), ['ref_c'] = toint(data.['refC']), ['ref_d'] = toint(data.['refD']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.alter table [VesselMetadata] policy retention
+```
+{ "SoftDeletePeriod": "30.00:00:00", "Recoverability": "Enabled" }
+```
+
+
+// ===== Materialized views — latest state per vessel =====
+
+// Latest position per vessel (MMSI)
+.create-or-alter materialized-view with (backfill=true) VesselLocationLatest on table VesselLocation
+{
+    VesselLocation
+    | summarize arg_max(___time, *) by mmsi
+}
+
+// Latest metadata per vessel (MMSI)
+.create-or-alter materialized-view with (backfill=true) VesselMetadataLatest on table VesselMetadata
+{
+    VesselMetadata
+    | summarize arg_max(___time, *) by mmsi
+}
+
+
+// ===== Functions =====
+
+// All vessel positions joined with latest metadata for map display
+.create-or-alter function with (docstring="Latest vessel positions joined with metadata (name, type, destination) for map display") VesselPositions() {
+    let ship_type_lookup = datatable(ship_type: int, ship_type_name: string) [
+        0, "Not available",
+        20, "Wing in ground",
+        21, "Wing in ground - Hazardous A",
+        22, "Wing in ground - Hazardous B",
+        23, "Wing in ground - Hazardous C",
+        24, "Wing in ground - Hazardous D",
+        30, "Fishing",
+        31, "Towing",
+        32, "Towing (large)",
+        33, "Dredging/underwater ops",
+        34, "Diving ops",
+        35, "Military ops",
+        36, "Sailing",
+        37, "Pleasure craft",
+        40, "High speed craft",
+        41, "High speed craft - Hazardous A",
+        42, "High speed craft - Hazardous B",
+        43, "High speed craft - Hazardous C",
+        44, "High speed craft - Hazardous D",
+        50, "Pilot vessel",
+        51, "Search and rescue",
+        52, "Tug",
+        53, "Port tender",
+        54, "Anti-pollution",
+        55, "Law enforcement",
+        56, "Spare - Local vessel",
+        57, "Spare - Local vessel",
+        58, "Medical transport",
+        59, "Noncombatant ship (RR Resolution No. 18)",
+        60, "Passenger",
+        61, "Passenger - Hazardous A",
+        62, "Passenger - Hazardous B",
+        63, "Passenger - Hazardous C",
+        64, "Passenger - Hazardous D",
+        70, "Cargo",
+        71, "Cargo - Hazardous A",
+        72, "Cargo - Hazardous B",
+        73, "Cargo - Hazardous C",
+        74, "Cargo - Hazardous D",
+        80, "Tanker",
+        81, "Tanker - Hazardous A",
+        82, "Tanker - Hazardous B",
+        83, "Tanker - Hazardous C",
+        84, "Tanker - Hazardous D",
+        90, "Other",
+        91, "Other - Hazardous A",
+        92, "Other - Hazardous B",
+        93, "Other - Hazardous C",
+        94, "Other - Hazardous D"
+    ];
+    let nav_status_lookup = datatable(nav_stat: int, nav_status_name: string) [
+        0, "Under way using engine",
+        1, "At anchor",
+        2, "Not under command",
+        3, "Restricted manoeuvrability",
+        4, "Constrained by draught",
+        5, "Moored",
+        6, "Aground",
+        7, "Engaged in fishing",
+        8, "Under way sailing",
+        11, "Power-driven vessel towing astern",
+        12, "Power-driven vessel pushing ahead or towing alongside",
+        14, "AIS-SART (active)",
+        15, "Not defined"
+    ];
+    VesselLocationLatest
+    | join kind=leftouter VesselMetadataLatest on mmsi
+    | lookup ship_type_lookup on ship_type
+    | lookup nav_status_lookup on nav_stat
+    | project
+        mmsi,
+        name,
+        call_sign,
+        ship_type,
+        ship_type_name = coalesce(ship_type_name, "Unknown"),
+        imo,
+        latitude,
+        longitude,
+        sog,
+        cog,
+        heading,
+        nav_stat,
+        nav_status_name = coalesce(nav_status_name, "Unknown"),
+        destination,
+        draught,
+        last_update = ___time
+}
+
+// Message counts and vessel counts in the last hour
+.create-or-alter function with (docstring="Message counts and unique vessel counts per event type in the last hour") AISStatistics() {
+    union
+        (VesselLocation | where ___time > ago(1h) | summarize messages=count(), vessels=dcount(mmsi) | extend type="VesselLocation"),
+        (VesselMetadata | where ___time > ago(1h) | summarize messages=count(), vessels=dcount(mmsi) | extend type="VesselMetadata")
+    | project type, messages, vessels
+}
+
+// Vessel track history for a given MMSI and time window
+.create-or-alter function with (docstring="Vessel track history for a given MMSI over a time range") VesselTrack(target_mmsi: int, lookback: timespan = 24h) {
+    VesselLocation
+    | where mmsi == target_mmsi and ___time > ago(lookback)
+    | order by ___time asc
+    | project ___time, latitude, longitude, sog, cog, heading, nav_stat
+}
