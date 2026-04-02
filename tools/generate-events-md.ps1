@@ -26,5 +26,6 @@ python .\printdoc.py ..\rss\xreg\feeds.xreg.json --title "RSS API Bridge Events"
 python .\printdoc.py ..\noaa\xreg\noaa.xreg.json --title "NOAA Tides and Currents API Bridge Events" --description "This document describes the events that are emitted by the NOAA API Bridge." > ..\noaa\EVENTS.md
 python .\printdoc.py ..\usgs-iv\xreg\usgs_iv.xreg.json --title "USGS Instantaneous Values API Bridge Events" --description "This document describes the events that are emitted by the USGS Instantaneous Values API Bridge." > ..\usgs-iv\EVENTS.md
 python .\printdoc.py ..\mode-s\xreg\mode_s.xreg.json --title "Mode-S API Bridge Events" --description "This document describes the events that are emitted by the Mode-S API Bridge." > ..\mode-s\EVENTS.md
+python .\printdoc.py ..\dwd\xreg\dwd.xreg.json --title "DWD Open Data Bridge Events" --description "This document describes the events emitted by the DWD Open Data bridge." > ..\dwd\EVENTS.md
 
 popd

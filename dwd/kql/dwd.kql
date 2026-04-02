@@ -1,0 +1,465 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+
+.create-merge table [StationMetadata] (
+   [station_id]: string,
+   [station_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [elevation]: real,
+   [state]: string,
+   [from_date]: string,
+   [to_date]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [StationMetadata] column-docstrings (
+   [station_id]: 'DWD station ID',
+   [station_name]: 'Station name',
+   [latitude]: 'Latitude in decimal degrees',
+   [longitude]: 'Longitude in decimal degrees',
+   [elevation]: 'Elevation in meters above sea level',
+   [state]: 'German federal state (Bundesland)',
+   [from_date]: 'Start date of station operation (ISO 8601)',
+   [to_date]: 'End date of station operation or empty if still active',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [StationMetadata] ingestion json mapping "StationMetadata_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "elevation", "path": "$.data.elevation"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "from_date", "path": "$.data.from_date"},
+  {"column": "to_date", "path": "$.data.to_date"}
+]
+```
+
+.alter table [StationMetadata] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.StationMetadata') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toreal(data.['elevation']),['state'] = tostring(data.['state']),['from_date'] = tostring(data.['from_date']),['to_date'] = tostring(data.['to_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+
+.create-merge table [AirTemperature10Min] (
+   [station_id]: string,
+   [timestamp]: string,
+   [quality_level]: int,
+   [pressure_station_level]: real,
+   [air_temperature_2m]: real,
+   [air_temperature_5cm]: real,
+   [relative_humidity]: real,
+   [dew_point_temperature]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [AirTemperature10Min] column-docstrings (
+   [station_id]: 'DWD station ID',
+   [timestamp]: 'Measurement timestamp (ISO 8601)',
+   [quality_level]: 'Quality level of the measurement',
+   [pressure_station_level]: 'Station-level pressure in hPa',
+   [air_temperature_2m]: 'Air temperature at 2m height in degrees Celsius',
+   [air_temperature_5cm]: 'Air temperature at 5cm height in degrees Celsius',
+   [relative_humidity]: 'Relative humidity in percent',
+   [dew_point_temperature]: 'Dew point temperature in degrees Celsius',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AirTemperature10Min] ingestion json mapping "AirTemperature10Min_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "quality_level", "path": "$.data.quality_level"},
+  {"column": "pressure_station_level", "path": "$.data.pressure_station_level"},
+  {"column": "air_temperature_2m", "path": "$.data.air_temperature_2m"},
+  {"column": "air_temperature_5cm", "path": "$.data.air_temperature_5cm"},
+  {"column": "relative_humidity", "path": "$.data.relative_humidity"},
+  {"column": "dew_point_temperature", "path": "$.data.dew_point_temperature"}
+]
+```
+
+.alter table [AirTemperature10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.AirTemperature10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['pressure_station_level'] = toreal(data.['pressure_station_level']),['air_temperature_2m'] = toreal(data.['air_temperature_2m']),['air_temperature_5cm'] = toreal(data.['air_temperature_5cm']),['relative_humidity'] = toreal(data.['relative_humidity']),['dew_point_temperature'] = toreal(data.['dew_point_temperature']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+
+.create-merge table [Precipitation10Min] (
+   [station_id]: string,
+   [timestamp]: string,
+   [quality_level]: int,
+   [precipitation_height]: real,
+   [precipitation_indicator]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Precipitation10Min] column-docstrings (
+   [station_id]: 'DWD station ID',
+   [timestamp]: 'Measurement timestamp (ISO 8601)',
+   [quality_level]: 'Quality level of the measurement',
+   [precipitation_height]: 'Precipitation height in mm',
+   [precipitation_indicator]: 'Precipitation indicator (0=no, 1=yes)',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Precipitation10Min] ingestion json mapping "Precipitation10Min_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "quality_level", "path": "$.data.quality_level"},
+  {"column": "precipitation_height", "path": "$.data.precipitation_height"},
+  {"column": "precipitation_indicator", "path": "$.data.precipitation_indicator"}
+]
+```
+
+.alter table [Precipitation10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Precipitation10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['precipitation_height'] = toreal(data.['precipitation_height']),['precipitation_indicator'] = toint(data.['precipitation_indicator']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+
+.create-merge table [Wind10Min] (
+   [station_id]: string,
+   [timestamp]: string,
+   [quality_level]: int,
+   [wind_speed]: real,
+   [wind_direction]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Wind10Min] column-docstrings (
+   [station_id]: 'DWD station ID',
+   [timestamp]: 'Measurement timestamp (ISO 8601)',
+   [quality_level]: 'Quality level of the measurement',
+   [wind_speed]: 'Wind speed in m/s',
+   [wind_direction]: 'Wind direction in degrees (0-360)',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Wind10Min] ingestion json mapping "Wind10Min_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "quality_level", "path": "$.data.quality_level"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"}
+]
+```
+
+.alter table [Wind10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Wind10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['wind_speed'] = toreal(data.['wind_speed']),['wind_direction'] = toreal(data.['wind_direction']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+
+.create-merge table [Solar10Min] (
+   [station_id]: string,
+   [timestamp]: string,
+   [quality_level]: int,
+   [global_radiation]: real,
+   [sunshine_duration]: real,
+   [diffuse_radiation]: real,
+   [longwave_radiation]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Solar10Min] column-docstrings (
+   [station_id]: 'DWD station ID',
+   [timestamp]: 'Measurement timestamp (ISO 8601)',
+   [quality_level]: 'Quality level of the measurement',
+   [global_radiation]: 'Global radiation in J/cm^2',
+   [sunshine_duration]: 'Sunshine duration in hours',
+   [diffuse_radiation]: 'Diffuse radiation in J/cm^2',
+   [longwave_radiation]: 'Longwave downward radiation in J/cm^2',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Solar10Min] ingestion json mapping "Solar10Min_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "quality_level", "path": "$.data.quality_level"},
+  {"column": "global_radiation", "path": "$.data.global_radiation"},
+  {"column": "sunshine_duration", "path": "$.data.sunshine_duration"},
+  {"column": "diffuse_radiation", "path": "$.data.diffuse_radiation"},
+  {"column": "longwave_radiation", "path": "$.data.longwave_radiation"}
+]
+```
+
+.alter table [Solar10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.Solar10Min') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['global_radiation'] = toreal(data.['global_radiation']),['sunshine_duration'] = toreal(data.['sunshine_duration']),['diffuse_radiation'] = toreal(data.['diffuse_radiation']),['longwave_radiation'] = toreal(data.['longwave_radiation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+
+.create-merge table [HourlyObservation] (
+   [station_id]: string,
+   [timestamp]: string,
+   [quality_level]: int,
+   [parameter]: string,
+   [value]: real,
+   [unit]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [HourlyObservation] column-docstrings (
+   [station_id]: 'DWD station ID',
+   [timestamp]: 'Measurement timestamp (ISO 8601)',
+   [quality_level]: 'Quality level of the measurement',
+   [parameter]: 'Measurement parameter name',
+   [value]: 'Measurement value',
+   [unit]: 'Unit of the measurement value',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [HourlyObservation] ingestion json mapping "HourlyObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "quality_level", "path": "$.data.quality_level"},
+  {"column": "parameter", "path": "$.data.parameter"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "unit", "path": "$.data.unit"}
+]
+```
+
+.alter table [HourlyObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.CDC.HourlyObservation') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['quality_level'] = toint(data.['quality_level']),['parameter'] = tostring(data.['parameter']),['value'] = toreal(data.['value']),['unit'] = tostring(data.['unit']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+
+.create-merge table [Alert] (
+   [identifier]: string,
+   [sender]: string,
+   [sent]: string,
+   [status]: string,
+   [msg_type]: string,
+   [severity]: string,
+   [urgency]: string,
+   [certainty]: string,
+   [event]: string,
+   [headline]: string,
+   [description]: string,
+   [effective]: string,
+   [onset]: string,
+   [expires]: string,
+   [area_desc]: string,
+   [geocodes]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Alert] column-docstrings (
+   [identifier]: 'CAP alert identifier',
+   [sender]: 'Alert sender',
+   [sent]: 'Time the alert was sent (ISO 8601)',
+   [status]: 'Alert status (Actual, Exercise, Test, etc.)',
+   [msg_type]: 'Message type (Alert, Update, Cancel)',
+   [severity]: 'Severity (Extreme, Severe, Moderate, Minor, Unknown)',
+   [urgency]: 'Urgency (Immediate, Expected, Future, Past, Unknown)',
+   [certainty]: 'Certainty (Observed, Likely, Possible, Unlikely, Unknown)',
+   [event]: 'Event type description',
+   [headline]: 'Alert headline',
+   [description]: 'Detailed alert description',
+   [effective]: 'Effective time of the alert (ISO 8601)',
+   [onset]: 'Expected onset time (ISO 8601)',
+   [expires]: 'Expiration time (ISO 8601)',
+   [area_desc]: 'Affected area description',
+   [geocodes]: 'Geocodes for affected areas (JSON)',
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Alert] ingestion json mapping "Alert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "sender", "path": "$.data.sender"},
+  {"column": "sent", "path": "$.data.sent"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "msg_type", "path": "$.data.msg_type"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "urgency", "path": "$.data.urgency"},
+  {"column": "certainty", "path": "$.data.certainty"},
+  {"column": "event", "path": "$.data.event"},
+  {"column": "headline", "path": "$.data.headline"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "effective", "path": "$.data.effective"},
+  {"column": "onset", "path": "$.data.onset"},
+  {"column": "expires", "path": "$.data.expires"},
+  {"column": "area_desc", "path": "$.data.area_desc"},
+  {"column": "geocodes", "path": "$.data.geocodes"}
+]
+```
+
+.alter table [Alert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'DE.DWD.Weather.Alert') | project['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = tostring(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['event'] = tostring(data.['event']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['effective'] = tostring(data.['effective']),['onset'] = tostring(data.['onset']),['expires'] = tostring(data.['expires']),['area_desc'] = tostring(data.['area_desc']),['geocodes'] = tostring(data.['geocodes']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```

@@ -1,0 +1,153 @@
+oh-my-posh: C:\Users\clemensv\OneDrive - Microsoft\Documents\PowerShell\Microsoft.PowerShell_profile.ps1:2:1
+Line |
+   2 |  oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\jandedobbeleer.o .
+     |  ~~~~~~~~~~
+     | The term 'oh-my-posh' is not recognized as a name of a cmdlet, function,
+     | script file, or executable program. Check the spelling of the name, or
+     | if a path was included, verify that the path is correct and try again.
+{
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot"
+      },
+      "apiVersion": "2021-04-01",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "location": "[resourceGroup().location]",
+      "name": "[variables('storageAccountName')]"
+    },
+    {
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      },
+      "apiVersion": "2021-04-01",
+      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('storageAccountName'), '/default/')]"
+    },
+    {
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "properties": {
+        "shareQuota": 5120
+      },
+      "apiVersion": "2021-04-01",
+      "location": "[resourceGroup().location]",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]"
+    },
+    {
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+      ],
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "properties": {
+        "containers": [
+          {
+            "properties": {
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 0.5
+                }
+              },
+              "environmentVariables": [
+                {
+                  "secureValue": "[parameters('connectionStringSecret')]",
+                  "name": "CONNECTION_STRING"
+                },
+                {
+                  "value": "/mnt/fileshare/dwd_state.json",
+                  "name": "STATE_FILE"
+                }
+              ],
+              "image": "[parameters('imageName')]",
+              "volumeMounts": [
+                {
+                  "mountPath": "/mnt/fileshare",
+                  "name": "azurefilevolume"
+                }
+              ]
+            },
+            "name": "[parameters('appName')]"
+          }
+        ],
+        "osType": "Linux",
+        "volumes": [
+          {
+            "azureFile": {
+              "storageAccountName": "[variables('storageAccountName')]",
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            },
+            "name": "azurefilevolume"
+          }
+        ],
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]",
+            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+          }
+        }
+      },
+      "apiVersion": "2021-09-01",
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('appName')]"
+    }
+  ],
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "variables": {
+    "fileShareName": "fileshare",
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]"
+  },
+  "parameters": {
+    "logAnalyticsWorkspaceKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      }
+    },
+    "connectionStringSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+      }
+    },
+    "imageName": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-dwd:latest",
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container image."
+      }
+    },
+    "appName": {
+      "maxLength": 64,
+      "defaultValue": "[resourceGroup().name]",
+      "type": "string",
+      "metadata": {
+        "description": "The name of the container instance."
+      }
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+      }
+    }
+  }
+}
