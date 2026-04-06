@@ -1,0 +1,740 @@
+{
+  "endpoints": {
+    "NL.NDW.Charging.Locations.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ndl-charging",
+          "key": "{location_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.Charging.Locations"
+      ]
+    },
+    "NL.NDW.Charging.Evse.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ndl-charging",
+          "key": "{location_id}/{evse_uid}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.Charging.Evse"
+      ]
+    },
+    "NL.NDW.Charging.Tariffs.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ndl-charging-tariffs",
+          "key": "{tariff_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.Charging.Tariffs"
+      ]
+    }
+  },
+  "messagegroups": {
+    "NL.NDW.Charging.Locations": {
+      "messages": {
+        "NL.NDW.Charging.ChargingLocation": {
+          "name": "ChargingLocation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Charging.ChargingLocation"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu"
+            },
+            "subject": {
+              "value": "{location_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{last_updated}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.Charging.jstruct/schemas/NL.NDW.Charging.ChargingLocation"
+        }
+      }
+    },
+    "NL.NDW.Charging.Evse": {
+      "messages": {
+        "NL.NDW.Charging.EvseStatus": {
+          "name": "EvseStatus",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Charging.EvseStatus"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu"
+            },
+            "subject": {
+              "value": "{location_id}/{evse_uid}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{last_updated}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.Charging.jstruct/schemas/NL.NDW.Charging.EvseStatus"
+        }
+      }
+    },
+    "NL.NDW.Charging.Tariffs": {
+      "messages": {
+        "NL.NDW.Charging.ChargingTariff": {
+          "name": "ChargingTariff",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Charging.ChargingTariff"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu"
+            },
+            "subject": {
+              "value": "{tariff_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{last_updated}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.Charging.jstruct/schemas/NL.NDW.Charging.ChargingTariff"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "NL.NDW.Charging.jstruct": {
+      "schemas": {
+        "NL.NDW.Charging.ChargingLocation": {
+          "name": "ChargingLocation",
+          "format": "JsonStructure/draft-02",
+          "description": "Reference data for an EV charging location from the Nationale Databank Laadinfrastructuur (NDL). Contains the static properties of an OCPI v2.2 Location object including address, coordinates, operator details, and aggregate counts of EVSEs and connectors. Source: https://opendata.ndw.nu/charging_point_locations_ocpi.json.gz",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/NL/NDW/Charging/ChargingLocation",
+                "definitions": {
+                  "StringList": {
+                    "name": "StringList",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Reusable array of strings."
+                  }
+                },
+                "type": "object",
+                "name": "ChargingLocation",
+                "additionalProperties": false,
+                "required": [
+                  "location_id",
+                  "country_code",
+                  "party_id",
+                  "publish",
+                  "address",
+                  "city",
+                  "country",
+                  "latitude",
+                  "longitude",
+                  "time_zone",
+                  "evse_count",
+                  "connector_count",
+                  "last_updated"
+                ],
+                "properties": {
+                  "location_id": {
+                    "type": "string",
+                    "description": "OCPI Location.id. Uniquely identifies the charging location within the CPO's platform. This field is the CloudEvents subject and Kafka key. OCPI type: CiString(36).",
+                    "altnames": { "ocpi": "id" }
+                  },
+                  "country_code": {
+                    "type": "string",
+                    "description": "ISO-3166 alpha-2 country code of the CPO that owns this Location. OCPI type: CiString(2).",
+                    "altnames": { "ocpi": "country_code" }
+                  },
+                  "party_id": {
+                    "type": "string",
+                    "description": "CPO party identifier following ISO-15118. Together with country_code this uniquely identifies the operator. OCPI type: CiString(3).",
+                    "altnames": { "ocpi": "party_id" }
+                  },
+                  "publish": {
+                    "type": "boolean",
+                    "description": "Whether the location may be published on websites or apps. When false, only tokens in publish_allowed_to may see this location. OCPI type: boolean."
+                  },
+                  "name": {
+                    "type": ["string", "null"],
+                    "description": "Display name of the location. OCPI type: string(255).",
+                    "altnames": { "ocpi": "name" }
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "Street/block name and house number if available. OCPI type: string(45).",
+                    "altnames": { "ocpi": "address" }
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "City or town. OCPI type: string(45).",
+                    "altnames": { "ocpi": "city" }
+                  },
+                  "postal_code": {
+                    "type": ["string", "null"],
+                    "description": "Postal code of the location. May be omitted when the location has no postal code, e.g. highway charging locations. OCPI type: string(10).",
+                    "altnames": { "ocpi": "postal_code" }
+                  },
+                  "state": {
+                    "type": ["string", "null"],
+                    "description": "State or province of the location, only used when relevant. OCPI type: string(20).",
+                    "altnames": { "ocpi": "state" }
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "ISO 3166-1 alpha-3 code for the country of this location. OCPI type: string(3).",
+                    "altnames": { "ocpi": "country" }
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude of the location in decimal degrees (WGS 84). Extracted from the OCPI GeoLocation coordinates object.",
+                    "altnames": { "ocpi": "coordinates.latitude" }
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude of the location in decimal degrees (WGS 84). Extracted from the OCPI GeoLocation coordinates object.",
+                    "altnames": { "ocpi": "coordinates.longitude" }
+                  },
+                  "parking_type": {
+                    "type": ["string", "null"],
+                    "enum": [
+                      "ALONG_MOTORWAY",
+                      "PARKING_GARAGE",
+                      "PARKING_LOT",
+                      "ON_DRIVEWAY",
+                      "ON_STREET",
+                      "UNDERGROUND_GARAGE",
+                      null
+                    ],
+                    "description": "General type of parking at the charge point location. OCPI ParkingType enum: ALONG_MOTORWAY (rest area along highway), PARKING_GARAGE (multistorey), PARKING_LOT (cleared area, e.g. supermarket), ON_DRIVEWAY (house/building driveway), ON_STREET (public street), UNDERGROUND_GARAGE (mainly underground).",
+                    "altnames": { "ocpi": "parking_type" }
+                  },
+                  "operator_name": {
+                    "type": ["string", "null"],
+                    "description": "Name of the charge point operator. Flattened from OCPI BusinessDetails operator.name. OCPI type: string(100).",
+                    "altnames": { "ocpi": "operator.name" }
+                  },
+                  "operator_website": {
+                    "type": ["string", "null"],
+                    "description": "URL to the operator's website. Flattened from OCPI BusinessDetails operator.website.",
+                    "altnames": { "ocpi": "operator.website" }
+                  },
+                  "suboperator_name": {
+                    "type": ["string", "null"],
+                    "description": "Name of the suboperator if available. Flattened from OCPI BusinessDetails suboperator.name. OCPI type: string(100).",
+                    "altnames": { "ocpi": "suboperator.name" }
+                  },
+                  "owner_name": {
+                    "type": ["string", "null"],
+                    "description": "Name of the location owner if available. Flattened from OCPI BusinessDetails owner.name. OCPI type: string(100).",
+                    "altnames": { "ocpi": "owner.name" }
+                  },
+                  "facilities": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Optional list of facilities at this charging location. OCPI Facility OpenEnum values include HOTEL, RESTAURANT, CAFE, MALL, SUPERMARKET, SPORT, RECREATION_AREA, NATURE, MUSEUM, BUS_STOP, TAXI_STAND, TRAIN_STATION, AIRPORT, PARKING_LOT, FUEL_STATION, WIFI, etc.",
+                    "altnames": { "ocpi": "facilities" }
+                  },
+                  "time_zone": {
+                    "type": "string",
+                    "description": "IANA TZ-value representing the time zone of the location, e.g. 'Europe/Amsterdam'. OCPI type: string(255).",
+                    "altnames": { "ocpi": "time_zone" }
+                  },
+                  "opening_times_twentyfourseven": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the location is open 24/7. Extracted from OCPI Hours.twentyfourseven field of the opening_times object.",
+                    "altnames": { "ocpi": "opening_times.twentyfourseven" }
+                  },
+                  "charging_when_closed": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether EVSEs continue charging outside opening hours, e.g. when a parking garage closes its barriers overnight. OCPI default is true.",
+                    "altnames": { "ocpi": "charging_when_closed" }
+                  },
+                  "energy_mix_is_green_energy": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether 100% of energy is from regenerative sources (CO2 and nuclear waste is zero). Flattened from OCPI EnergyMix.is_green_energy.",
+                    "altnames": { "ocpi": "energy_mix.is_green_energy" }
+                  },
+                  "energy_mix_supplier_name": {
+                    "type": ["string", "null"],
+                    "description": "Name of the energy supplier delivering energy for this location. Flattened from OCPI EnergyMix.supplier_name. OCPI type: string(64).",
+                    "altnames": { "ocpi": "energy_mix.supplier_name" }
+                  },
+                  "evse_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Total number of EVSEs at this location. Computed by the bridge from the length of the OCPI evses array."
+                  },
+                  "connector_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Total number of connectors across all EVSEs at this location. Computed by the bridge as the sum of all EVSE connector counts."
+                  },
+                  "last_updated": {
+                    "type": "datetime",
+                    "description": "Timestamp when this Location or one of its EVSEs or Connectors was last updated or created. OCPI type: DateTime (ISO 8601).",
+                    "altnames": { "ocpi": "last_updated" }
+                  }
+                },
+                "description": "Reference data for an EV charging location from the NDL. Contains the static properties of an OCPI v2.2 Location object including address, coordinates, operator details, and aggregate counts of EVSEs and connectors."
+              }
+            }
+          }
+        },
+        "NL.NDW.Charging.EvseStatus": {
+          "name": "EvseStatus",
+          "format": "JsonStructure/draft-02",
+          "description": "Telemetry event for an EVSE status change from the NDL. Emitted when the bridge detects that an EVSE's status field has changed compared to the previous poll. Contains the EVSE identification, current status, and a summary of its connectors. Source: https://opendata.ndw.nu/charging_point_locations_ocpi.json.gz",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/NL/NDW/Charging/EvseStatus",
+                "definitions": {
+                  "StringList": {
+                    "name": "StringList",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Reusable array of strings."
+                  },
+                  "ConnectorSummary": {
+                    "name": "ConnectorSummary",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["connector_id", "standard", "format", "power_type", "max_voltage", "max_amperage"],
+                    "properties": {
+                      "connector_id": {
+                        "type": "string",
+                        "description": "Identifier of the connector within the EVSE. OCPI type: CiString(36)."
+                      },
+                      "standard": {
+                        "type": "string",
+                        "description": "Connector standard. OCPI ConnectorType OpenEnum, common values: IEC_62196_T2 (Type 2 'Mennekes'), IEC_62196_T2_COMBO (CCS), CHADEMO, IEC_62196_T1 (J1772), IEC_62196_T1_COMBO, DOMESTIC_F (Schuko)."
+                      },
+                      "format": {
+                        "type": "string",
+                        "enum": ["SOCKET", "CABLE"],
+                        "description": "Whether the connector is a SOCKET (EV user brings a plug) or a CABLE (attached cable with fitting inlet). OCPI ConnectorFormat enum."
+                      },
+                      "power_type": {
+                        "type": "string",
+                        "enum": ["AC_1_PHASE", "AC_2_PHASE", "AC_2_PHASE_SPLIT", "AC_3_PHASE", "DC"],
+                        "description": "Power type delivered by this connector. OCPI PowerType enum: AC_1_PHASE, AC_2_PHASE, AC_2_PHASE_SPLIT, AC_3_PHASE, DC."
+                      },
+                      "max_voltage": {
+                        "type": "integer",
+                        "description": "Maximum voltage of the connector in volts (line to neutral for AC_3_PHASE). OCPI type: int."
+                      },
+                      "max_amperage": {
+                        "type": "integer",
+                        "description": "Maximum amperage of the connector in amperes. OCPI type: int."
+                      },
+                      "max_electric_power": {
+                        "type": ["integer", "null"],
+                        "description": "Maximum electric power in watts. Present when the actual max power is lower than voltage × amperage, e.g. a DC charger delivering up to 920V/400A but limited to 150kW. OCPI type: int."
+                      },
+                      "tariff_ids": {
+                        "type": [
+                          "null",
+                          { "$ref": "#/definitions/StringList" }
+                        ],
+                        "description": "Identifiers of the currently valid charging tariffs for this connector. References OCPI Tariff.id values. Multiple tariffs are possible but only one of each Tariff.type can be active at the same time."
+                      }
+                    },
+                    "description": "Summary of a single connector on an EVSE, carrying the OCPI Connector fields relevant for real-time status consumers."
+                  }
+                },
+                "type": "object",
+                "name": "EvseStatus",
+                "additionalProperties": false,
+                "required": [
+                  "location_id",
+                  "evse_uid",
+                  "status",
+                  "connectors",
+                  "last_updated"
+                ],
+                "properties": {
+                  "location_id": {
+                    "type": "string",
+                    "description": "OCPI Location.id of the parent location. Together with evse_uid forms the composite CloudEvents subject and Kafka key. OCPI type: CiString(36).",
+                    "altnames": { "ocpi": "location.id" }
+                  },
+                  "evse_uid": {
+                    "type": "string",
+                    "description": "OCPI EVSE.uid. Uniquely identifies the EVSE within the CPO's platform. This is the technical identifier, not the human-readable evse_id. OCPI type: CiString(36).",
+                    "altnames": { "ocpi": "uid" }
+                  },
+                  "evse_id": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable EVSE identifier compliant with eMI3 standard 'E-mobility ID-codes'. May be absent if the EVSE status is REMOVED. OCPI type: CiString(48).",
+                    "altnames": { "ocpi": "evse_id" }
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "AVAILABLE",
+                      "BLOCKED",
+                      "CHARGING",
+                      "INOPERATIVE",
+                      "OUTOFORDER",
+                      "PLANNED",
+                      "REMOVED",
+                      "RESERVED",
+                      "UNKNOWN"
+                    ],
+                    "description": "Current status of the EVSE. OCPI Status enum: AVAILABLE (ready for new session), BLOCKED (physical barrier e.g. parked car), CHARGING (in use), INOPERATIVE (temporarily unavailable but not broken), OUTOFORDER (broken/defect), PLANNED (not yet active), REMOVED (discontinued), RESERVED (reserved for a specific driver), UNKNOWN (no status info available or offline).",
+                    "altnames": { "ocpi": "status" }
+                  },
+                  "capabilities": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "List of functionalities the EVSE is capable of. OCPI Capability OpenEnum values include CHARGING_PROFILE_CAPABLE, CHIP_CARD_SUPPORT, CONTACTLESS_CARD_SUPPORT, CREDIT_CARD_PAYABLE, DEBIT_CARD_PAYABLE, PED_TERMINAL, REMOTE_START_STOP_CAPABLE, RESERVABLE, RFID_READER, UNLOCK_CAPABLE.",
+                    "altnames": { "ocpi": "capabilities" }
+                  },
+                  "floor_level": {
+                    "type": ["string", "null"],
+                    "description": "Level on which the EVSE is located in a garage building, in locally displayed numbering. OCPI type: string(4).",
+                    "altnames": { "ocpi": "floor_level" }
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude of the EVSE in decimal degrees (WGS 84) if different from the parent location. Extracted from OCPI EVSE.coordinates.",
+                    "altnames": { "ocpi": "coordinates.latitude" }
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude of the EVSE in decimal degrees (WGS 84) if different from the parent location. Extracted from OCPI EVSE.coordinates.",
+                    "altnames": { "ocpi": "coordinates.longitude" }
+                  },
+                  "physical_reference": {
+                    "type": ["string", "null"],
+                    "description": "A number/string printed on the outside of the EVSE for visual identification. OCPI type: string(16).",
+                    "altnames": { "ocpi": "physical_reference" }
+                  },
+                  "parking_restrictions": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Restrictions on who can charge at this EVSE. OCPI ParkingRestriction OpenEnum: CUSTOMERS, DISABLED, EMPLOYEES, EV_ONLY, MOTORCYCLES, PLUGGED, TAXIS, TENANTS.",
+                    "altnames": { "ocpi": "parking_restrictions" }
+                  },
+                  "connectors": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/ConnectorSummary" },
+                    "minItems": 1,
+                    "description": "List of connectors on this EVSE. Only one connector per EVSE can be used at any time. Each entry carries connector standard, format, power specs, and tariff references."
+                  },
+                  "last_updated": {
+                    "type": "datetime",
+                    "description": "Timestamp when this EVSE or one of its Connectors was last updated or created. OCPI type: DateTime (ISO 8601).",
+                    "altnames": { "ocpi": "last_updated" }
+                  }
+                },
+                "description": "Telemetry event for an EVSE status change from the NDL. Contains the EVSE identification, current status, and a summary of its connectors."
+              }
+            }
+          }
+        },
+        "NL.NDW.Charging.ChargingTariff": {
+          "name": "ChargingTariff",
+          "format": "JsonStructure/draft-02",
+          "description": "Reference data for an EV charging tariff from the NDL. Contains the OCPI v2.2 Tariff object fields including pricing elements, validity period, and tax information. Source: https://opendata.ndw.nu/charging_point_tariffs_ocpi.json.gz",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/NL/NDW/Charging/ChargingTariff",
+                "definitions": {
+                  "PriceComponent": {
+                    "name": "PriceComponent",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["type", "price", "step_size"],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["ENERGY", "FLAT", "PARKING_TIME", "TIME"],
+                        "description": "The dimension being priced. OCPI TariffDimensionType enum: ENERGY (per kWh, step_size in Wh), FLAT (one-time fee, step_size ignored), PARKING_TIME (idle time per hour, step_size in seconds), TIME (charging time per hour, step_size in seconds)."
+                      },
+                      "price": {
+                        "type": "double",
+                        "description": "Price per unit for this dimension. Including or excluding taxes per the tariff's tax_included field. OCPI type: number."
+                      },
+                      "vat": {
+                        "type": ["double", "null"],
+                        "description": "Applicable VAT percentage for this tariff dimension. If omitted, no VAT is applicable. OCPI type: number."
+                      },
+                      "step_size": {
+                        "type": "integer",
+                        "description": "Minimum amount billed per step. Consumed amounts are rounded up to the smallest multiple of step_size exceeding consumption. For ENERGY the multiplier is 1 Wh; for TIME and PARKING_TIME the multiplier is 1 second. OCPI type: int."
+                      }
+                    },
+                    "description": "A price component describing how usage of a dimension (energy, time, etc.) maps to cost. Part of an OCPI TariffElement."
+                  },
+                  "TariffRestrictions": {
+                    "name": "TariffRestrictions",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "start_time": {
+                        "type": ["string", "null"],
+                        "description": "Start time of day in local time (HH:MM, 24h format). Valid from this time. OCPI type: string(5)."
+                      },
+                      "end_time": {
+                        "type": ["string", "null"],
+                        "description": "End time of day in local time (HH:MM, 24h format). Valid until this time. If end_time < start_time, wraps to next day. OCPI type: string(5)."
+                      },
+                      "start_date": {
+                        "type": ["string", "null"],
+                        "description": "Start date in local time (YYYY-MM-DD). Valid from this day inclusive. OCPI type: string(10)."
+                      },
+                      "end_date": {
+                        "type": ["string", "null"],
+                        "description": "End date in local time (YYYY-MM-DD). Valid until this day exclusive. OCPI type: string(10)."
+                      },
+                      "min_kwh": {
+                        "type": ["double", "null"],
+                        "description": "Minimum consumed energy in kWh. Active from this amount inclusive. OCPI type: number."
+                      },
+                      "max_kwh": {
+                        "type": ["double", "null"],
+                        "description": "Maximum consumed energy in kWh. Active until this amount exclusive. OCPI type: number."
+                      },
+                      "min_current": {
+                        "type": ["double", "null"],
+                        "description": "Minimum current in amperes (sum over all phases). Element active when charging current is at or above this value. OCPI type: number."
+                      },
+                      "max_current": {
+                        "type": ["double", "null"],
+                        "description": "Maximum current in amperes (sum over all phases). Element active when charging current is below this value. OCPI type: number."
+                      },
+                      "min_power": {
+                        "type": ["double", "null"],
+                        "description": "Minimum power in kW. Element active when charging power is at or above this value. OCPI type: number."
+                      },
+                      "max_power": {
+                        "type": ["double", "null"],
+                        "description": "Maximum power in kW. Element active when charging power is below this value. OCPI type: number."
+                      },
+                      "min_duration": {
+                        "type": ["integer", "null"],
+                        "description": "Minimum session duration in seconds. Element active when session is at least this long. OCPI type: int."
+                      },
+                      "max_duration": {
+                        "type": ["integer", "null"],
+                        "description": "Maximum session duration in seconds. Element active when session is shorter than this. OCPI type: int."
+                      },
+                      "day_of_week": {
+                        "type": ["null", "array"],
+                        "items": {
+                          "type": "string",
+                          "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                        },
+                        "description": "Days of the week when this element is active. OCPI DayOfWeek enum."
+                      },
+                      "reservation": {
+                        "type": ["string", "null"],
+                        "enum": ["RESERVATION", "RESERVATION_EXPIRES", null],
+                        "description": "When present, the element describes reservation costs. RESERVATION for active reservations, RESERVATION_EXPIRES for expired ones. OCPI ReservationRestrictionType enum."
+                      }
+                    },
+                    "description": "Conditions under which a TariffElement's price components apply. Multiple restrictions are AND-combined. Part of an OCPI TariffElement."
+                  },
+                  "TariffElement": {
+                    "name": "TariffElement",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["price_components"],
+                    "properties": {
+                      "price_components": {
+                        "type": "array",
+                        "items": { "$ref": "#/definitions/PriceComponent" },
+                        "minItems": 1,
+                        "description": "List of price components that share these restrictions. Each describes pricing for one dimension (energy, time, etc.)."
+                      },
+                      "restrictions": {
+                        "type": ["null", { "$ref": "#/definitions/TariffRestrictions" }],
+                        "description": "Conditions under which these price components apply. When absent, the element acts as a default fallback for its dimensions."
+                      }
+                    },
+                    "description": "A group of price components that apply under shared conditions. First matching element per dimension wins. OCPI TariffElement class."
+                  }
+                },
+                "type": "object",
+                "name": "ChargingTariff",
+                "additionalProperties": false,
+                "required": [
+                  "tariff_id",
+                  "country_code",
+                  "party_id",
+                  "currency",
+                  "elements",
+                  "last_updated"
+                ],
+                "properties": {
+                  "tariff_id": {
+                    "type": "string",
+                    "description": "OCPI Tariff.id. Uniquely identifies the tariff within the CPO's platform. This field is the CloudEvents subject and Kafka key. OCPI type: CiString(36).",
+                    "altnames": { "ocpi": "id" }
+                  },
+                  "country_code": {
+                    "type": "string",
+                    "description": "ISO-3166 alpha-2 country code of the CPO that owns this Tariff. OCPI type: CiString(2).",
+                    "altnames": { "ocpi": "country_code" }
+                  },
+                  "party_id": {
+                    "type": "string",
+                    "description": "CPO party identifier following ISO-15118. OCPI type: CiString(3).",
+                    "altnames": { "ocpi": "party_id" }
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "ISO-4217 currency code for this tariff, e.g. 'EUR'. OCPI type: string(3).",
+                    "altnames": { "ocpi": "currency" }
+                  },
+                  "tariff_type": {
+                    "type": ["string", "null"],
+                    "enum": [
+                      "AD_HOC_PAYMENT",
+                      "PROFILE_CHEAP",
+                      "PROFILE_FAST",
+                      "PROFILE_GREEN",
+                      "REGULAR",
+                      null
+                    ],
+                    "description": "Type of tariff for distinguishing charging preferences. When omitted, valid for all sessions. OCPI TariffType enum: AD_HOC_PAYMENT (card terminal), PROFILE_CHEAP, PROFILE_FAST, PROFILE_GREEN, REGULAR (RFID or default).",
+                    "altnames": { "ocpi": "type" }
+                  },
+                  "tariff_alt_text": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable alternative tariff text. First available language variant from the OCPI DisplayText array, if any. OCPI type: DisplayText list.",
+                    "altnames": { "ocpi": "tariff_alt_text" }
+                  },
+                  "tariff_alt_url": {
+                    "type": ["string", "null"],
+                    "description": "URL to a web page with human-readable tariff explanation. OCPI type: URL.",
+                    "altnames": { "ocpi": "tariff_alt_url" }
+                  },
+                  "min_price_excl_vat": {
+                    "type": ["double", "null"],
+                    "description": "Minimum session cost excluding taxes. Flattened from OCPI PriceLimit min_price.before_taxes.",
+                    "altnames": { "ocpi": "min_price.before_taxes" }
+                  },
+                  "min_price_incl_vat": {
+                    "type": ["double", "null"],
+                    "description": "Minimum session cost including taxes. Flattened from OCPI PriceLimit min_price.after_taxes.",
+                    "altnames": { "ocpi": "min_price.after_taxes" }
+                  },
+                  "max_price_excl_vat": {
+                    "type": ["double", "null"],
+                    "description": "Maximum session cost excluding taxes. Flattened from OCPI PriceLimit max_price.before_taxes.",
+                    "altnames": { "ocpi": "max_price.before_taxes" }
+                  },
+                  "max_price_incl_vat": {
+                    "type": ["double", "null"],
+                    "description": "Maximum session cost including taxes. Flattened from OCPI PriceLimit max_price.after_taxes.",
+                    "altnames": { "ocpi": "max_price.after_taxes" }
+                  },
+                  "elements": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/TariffElement" },
+                    "minItems": 1,
+                    "description": "List of tariff elements. Each contains price components and optional restrictions. First element with a matching dimension and restriction wins. To define 'free of charge', use one element with FLAT type and price 0.00."
+                  },
+                  "start_date_time": {
+                    "type": ["datetime", "null"],
+                    "description": "When this tariff becomes active (UTC). Used for pre-announced tariffs at a location before they take effect. OCPI type: DateTime.",
+                    "altnames": { "ocpi": "start_date_time" }
+                  },
+                  "end_date_time": {
+                    "type": ["datetime", "null"],
+                    "description": "When this tariff ceases to be valid (UTC). Used when a tariff is being replaced by a new one. OCPI type: DateTime.",
+                    "altnames": { "ocpi": "end_date_time" }
+                  },
+                  "energy_mix_is_green_energy": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether 100% of energy supplied under this tariff is from regenerative sources. Flattened from OCPI EnergyMix.is_green_energy.",
+                    "altnames": { "ocpi": "energy_mix.is_green_energy" }
+                  },
+                  "last_updated": {
+                    "type": "datetime",
+                    "description": "Timestamp when this Tariff was last updated or created. OCPI type: DateTime (ISO 8601).",
+                    "altnames": { "ocpi": "last_updated" }
+                  }
+                },
+                "description": "Reference data for an EV charging tariff from the NDL. Contains the OCPI v2.2 Tariff object fields including pricing elements, validity period, and tax information."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

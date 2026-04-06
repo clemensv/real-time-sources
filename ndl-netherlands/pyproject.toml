@@ -1,0 +1,27 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "ndl-netherlands"
+version = "0.1.0"
+description = "Netherlands NDL EV charging infrastructure bridge"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "ndl_netherlands" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+aiohttp = ">=3.10.5"
+avro = ">=1.12.1"
+cloudevents = ">=1.11.0,<2.0.0"
+confluent-kafka = ">=2.5.3"
+dataclasses-json = ">=0.6.7"
+ndl_netherlands_producer_data = { path = "ndl_netherlands_producer/ndl_netherlands_producer_data" }
+ndl_netherlands_producer_kafka_producer = { path = "ndl_netherlands_producer/ndl_netherlands_producer_kafka_producer" }
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+testcontainers = ">=4.8.1"
+
+[tool.poetry.scripts]
+ndl-netherlands = "ndl_netherlands:main"
