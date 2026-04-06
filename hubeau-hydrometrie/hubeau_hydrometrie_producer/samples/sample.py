@@ -62,7 +62,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station = Station()
 
     # sends the 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station' event to Kafka topic.
-    await frgov_eaufrance_hub_eau_hydrometrie_event_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(data = _station)
+    await frgov_eaufrance_hub_eau_hydrometrie_event_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(_code_station = 'TODO: replace me', data = _station)
     print(f"Sent 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station' event: {_station.to_json()}")
 
     # ---- FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation ----
@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _observation = Observation()
 
     # sends the 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation' event to Kafka topic.
-    await frgov_eaufrance_hub_eau_hydrometrie_event_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(data = _observation)
+    await frgov_eaufrance_hub_eau_hydrometrie_event_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(_code_station = 'TODO: replace me', data = _observation)
     print(f"Sent 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation' event: {_observation.to_json()}")
 
 if __name__ == "__main__":

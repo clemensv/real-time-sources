@@ -9,12 +9,12 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicleposition_types_occupancystatus import Test_OccupancyStatus
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_tripdescriptor import Test_TripDescriptor
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicleposition_types_vehiclestopstatus import Test_VehicleStopStatus
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicleposition_types_congestionlevel import Test_CongestionLevel
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicledescriptor import Test_VehicleDescriptor
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_position import Test_Position
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicleposition_types_congestionlevel import Test_CongestionLevel
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_tripdescriptor import Test_TripDescriptor
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicledescriptor import Test_VehicleDescriptor
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_vehicle_vehicleposition_types_occupancystatus import Test_OccupancyStatus
 
 
 class Test_VehiclePosition(unittest.TestCase):
@@ -37,10 +37,10 @@ class Test_VehiclePosition(unittest.TestCase):
             trip=Test_TripDescriptor.create_instance(),
             vehicle=Test_VehicleDescriptor.create_instance(),
             position=Test_Position.create_instance(),
-            current_stop_sequence=int(18),
-            stop_id='dmamkasmbnmqnkkksnzj',
+            current_stop_sequence=int(86),
+            stop_id='foohcndiaclfezwdhtmp',
             current_status=Test_VehicleStopStatus.create_instance(),
-            timestamp=int(58),
+            timestamp=int(29),
             congestion_level=Test_CongestionLevel.create_instance(),
             occupancy_status=Test_OccupancyStatus.create_instance()
         )
@@ -75,7 +75,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test current_stop_sequence property
         """
-        test_value = int(18)
+        test_value = int(86)
         self.instance.current_stop_sequence = test_value
         self.assertEqual(self.instance.current_stop_sequence, test_value)
     
@@ -83,7 +83,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'dmamkasmbnmqnkkksnzj'
+        test_value = 'foohcndiaclfezwdhtmp'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     
@@ -99,7 +99,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(58)
+        test_value = int(29)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     

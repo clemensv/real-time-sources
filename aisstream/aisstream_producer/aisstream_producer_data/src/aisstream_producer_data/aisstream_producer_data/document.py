@@ -13,7 +13,6 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-from aisstream_producer_data.aisstream_producer_data.object import Object
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -26,22 +25,42 @@ class Document:
         RepeatIndicator (typing.Optional[int]): 
         UserID (int): 
         Valid (bool): 
+        UtcYear (typing.Optional[int]): 
+        UtcMonth (typing.Optional[int]): 
+        UtcDay (typing.Optional[int]): 
+        UtcHour (typing.Optional[int]): 
+        UtcMinute (typing.Optional[int]): 
+        UtcSecond (typing.Optional[int]): 
+        PositionAccuracy (typing.Optional[bool]): 
+        Longitude (float): 
+        Latitude (float): 
+        FixType (typing.Optional[int]): 
+        LongRangeEnable (typing.Optional[bool]): 
         Spare (typing.Optional[int]): 
-        Station1Msg1 (typing.Optional[Object]): 
-        Station1Msg2 (typing.Optional[Object]): 
-        Station2 (typing.Optional[Object]): """
+        Raim (typing.Optional[bool]): 
+        CommunicationState (typing.Optional[int]): """
     
     MessageID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="MessageID"))
     RepeatIndicator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="RepeatIndicator"))
     UserID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UserID"))
     Valid: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Valid"))
+    UtcYear: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UtcYear"))
+    UtcMonth: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UtcMonth"))
+    UtcDay: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UtcDay"))
+    UtcHour: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UtcHour"))
+    UtcMinute: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UtcMinute"))
+    UtcSecond: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UtcSecond"))
+    PositionAccuracy: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="PositionAccuracy"))
+    Longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Longitude"))
+    Latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Latitude"))
+    FixType: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="FixType"))
+    LongRangeEnable: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="LongRangeEnable"))
     Spare: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare"))
-    Station1Msg1: typing.Optional[Object]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Station1Msg1"))
-    Station1Msg2: typing.Optional[Object]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Station1Msg2"))
-    Station2: typing.Optional[Object]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Station2"))
+    Raim: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Raim"))
+    CommunicationState: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="CommunicationState"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"document\", \"fields\": [{\"name\": \"MessageID\", \"type\": \"int\"}, {\"name\": \"RepeatIndicator\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"UserID\", \"type\": \"int\"}, {\"name\": \"Valid\", \"type\": \"boolean\"}, {\"name\": \"Spare\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"Station1Msg1\", \"type\": [\"null\", \"object\"], \"default\": null}, {\"name\": \"Station1Msg2\", \"type\": [\"null\", \"object\"], \"default\": null}, {\"name\": \"Station2\", \"type\": [\"null\", \"object\"], \"default\": null}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"document\", \"fields\": [{\"name\": \"MessageID\", \"type\": \"int\"}, {\"name\": \"RepeatIndicator\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"UserID\", \"type\": \"int\"}, {\"name\": \"Valid\", \"type\": \"boolean\"}, {\"name\": \"UtcYear\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"UtcMonth\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"UtcDay\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"UtcHour\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"UtcMinute\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"UtcSecond\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"PositionAccuracy\", \"type\": [\"null\", \"boolean\"], \"default\": null}, {\"name\": \"Longitude\", \"type\": \"double\"}, {\"name\": \"Latitude\", \"type\": \"double\"}, {\"name\": \"FixType\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"LongRangeEnable\", \"type\": [\"null\", \"boolean\"], \"default\": null}, {\"name\": \"Spare\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"Raim\", \"type\": [\"null\", \"boolean\"], \"default\": null}, {\"name\": \"CommunicationState\", \"type\": [\"null\", \"int\"], \"default\": null}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -50,10 +69,20 @@ class Document:
         self.RepeatIndicator=int(self.RepeatIndicator) if self.RepeatIndicator else None
         self.UserID=int(self.UserID)
         self.Valid=bool(self.Valid)
+        self.UtcYear=int(self.UtcYear) if self.UtcYear else None
+        self.UtcMonth=int(self.UtcMonth) if self.UtcMonth else None
+        self.UtcDay=int(self.UtcDay) if self.UtcDay else None
+        self.UtcHour=int(self.UtcHour) if self.UtcHour else None
+        self.UtcMinute=int(self.UtcMinute) if self.UtcMinute else None
+        self.UtcSecond=int(self.UtcSecond) if self.UtcSecond else None
+        self.PositionAccuracy=bool(self.PositionAccuracy) if self.PositionAccuracy else None
+        self.Longitude=float(self.Longitude)
+        self.Latitude=float(self.Latitude)
+        self.FixType=int(self.FixType) if self.FixType else None
+        self.LongRangeEnable=bool(self.LongRangeEnable) if self.LongRangeEnable else None
         self.Spare=int(self.Spare) if self.Spare else None
-        self.Station1Msg1=self.Station1Msg1 if isinstance(self.Station1Msg1, Object) else Object.from_serializer_dict(self.Station1Msg1) if self.Station1Msg1 else None if self.Station1Msg1 else None
-        self.Station1Msg2=self.Station1Msg2 if isinstance(self.Station1Msg2, Object) else Object.from_serializer_dict(self.Station1Msg2) if self.Station1Msg2 else None if self.Station1Msg2 else None
-        self.Station2=self.Station2 if isinstance(self.Station2, Object) else Object.from_serializer_dict(self.Station2) if self.Station2 else None if self.Station2 else None
+        self.Raim=bool(self.Raim) if self.Raim else None
+        self.CommunicationState=int(self.CommunicationState) if self.CommunicationState else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Document':

@@ -68,6 +68,28 @@ class TestEmitEvent:
         assert result is True
         producer.send_fi_digitraffic_marine_ais_vessel_location.assert_called_once()
 
+    def test_location_event_passes_mmsi_placeholder(self):
+        producer = MagicMock()
+        payload = {
+            "time": 1775137137,
+            "sog": 10.7,
+            "cog": 326.6,
+            "navStat": 0,
+            "rot": 0,
+            "posAcc": True,
+            "raim": False,
+            "heading": 325,
+            "lon": 20.345818,
+            "lat": 60.03802,
+        }
+
+        _emit_event(producer, "location", 230629000, payload)
+
+        call = producer.send_fi_digitraffic_marine_ais_vessel_location.call_args
+        assert call.kwargs["_mmsi"] == "230629000"
+        assert call.kwargs["flush_producer"] is False
+        assert call.kwargs["key_mapper"] is _mmsi_key_mapper
+
     def test_metadata_event(self):
         producer = MagicMock()
         payload = {

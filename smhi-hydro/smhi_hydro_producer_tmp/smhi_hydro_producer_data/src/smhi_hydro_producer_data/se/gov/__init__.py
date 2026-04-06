@@ -1,3 +1,3 @@
-from .smhi import DischargeObservation, Station
+from .smhi import Station, DischargeObservation
 
-__all__ = ["DischargeObservation", "Station"]
+__all__ = ["Station", "DischargeObservation"]

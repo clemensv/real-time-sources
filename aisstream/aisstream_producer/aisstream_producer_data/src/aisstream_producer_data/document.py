@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from aisstream_producer_data.document import Document
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -24,24 +25,21 @@ class Document:
         RepeatIndicator (typing.Optional[int])
         UserID (int)
         Valid (bool)
-        Spare1 (typing.Optional[int])
-        Sog (typing.Optional[float])
+        Type (typing.Optional[int])
+        Name (typing.Optional[str])
         PositionAccuracy (typing.Optional[bool])
         Longitude (float)
         Latitude (float)
-        Cog (typing.Optional[float])
-        TrueHeading (typing.Optional[int])
+        Dimension (typing.Optional[Document])
+        Fixtype (typing.Optional[int])
         Timestamp (typing.Optional[int])
-        Spare2 (typing.Optional[int])
-        ClassBUnit (typing.Optional[bool])
-        ClassBDisplay (typing.Optional[bool])
-        ClassBDsc (typing.Optional[bool])
-        ClassBBand (typing.Optional[bool])
-        ClassBMsg22 (typing.Optional[bool])
-        AssignedMode (typing.Optional[bool])
+        OffPosition (typing.Optional[bool])
+        AtoN (typing.Optional[int])
         Raim (typing.Optional[bool])
-        CommunicationStateIsItdma (typing.Optional[bool])
-        CommunicationState (typing.Optional[int])
+        VirtualAtoN (typing.Optional[bool])
+        AssignedMode (typing.Optional[bool])
+        Spare (typing.Optional[bool])
+        NameExtension (typing.Optional[str])
     """
     
     
@@ -49,24 +47,21 @@ class Document:
     RepeatIndicator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="RepeatIndicator"))
     UserID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UserID"))
     Valid: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Valid"))
-    Spare1: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare1"))
-    Sog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Sog"))
+    Type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Type"))
+    Name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Name"))
     PositionAccuracy: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="PositionAccuracy"))
     Longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Longitude"))
     Latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Latitude"))
-    Cog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Cog"))
-    TrueHeading: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="TrueHeading"))
+    Dimension: typing.Optional[Document]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Dimension"))
+    Fixtype: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Fixtype"))
     Timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Timestamp"))
-    Spare2: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare2"))
-    ClassBUnit: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ClassBUnit"))
-    ClassBDisplay: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ClassBDisplay"))
-    ClassBDsc: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ClassBDsc"))
-    ClassBBand: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ClassBBand"))
-    ClassBMsg22: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ClassBMsg22"))
-    AssignedMode: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="AssignedMode"))
+    OffPosition: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="OffPosition"))
+    AtoN: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="AtoN"))
     Raim: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Raim"))
-    CommunicationStateIsItdma: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="CommunicationStateIsItdma"))
-    CommunicationState: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="CommunicationState"))
+    VirtualAtoN: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="VirtualAtoN"))
+    AssignedMode: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="AssignedMode"))
+    Spare: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare"))
+    NameExtension: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="NameExtension"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Document':
@@ -193,26 +188,23 @@ class Document:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(98),
-            RepeatIndicator=int(61),
-            UserID=int(57),
+            MessageID=int(75),
+            RepeatIndicator=int(11),
+            UserID=int(75),
             Valid=False,
-            Spare1=int(0),
-            Sog=float(75.33574414333576),
+            Type=int(28),
+            Name='kyiwyjkgpzdjdamrxubk',
             PositionAccuracy=True,
-            Longitude=float(72.44817311345284),
-            Latitude=float(27.793638048277437),
-            Cog=float(54.59374257727968),
-            TrueHeading=int(49),
-            Timestamp=int(79),
-            Spare2=int(36),
-            ClassBUnit=False,
-            ClassBDisplay=True,
-            ClassBDsc=False,
-            ClassBBand=False,
-            ClassBMsg22=True,
-            AssignedMode=False,
+            Longitude=float(98.6807738926553),
+            Latitude=float(52.90852322946497),
+            Dimension=None,
+            Fixtype=int(43),
+            Timestamp=int(43),
+            OffPosition=True,
+            AtoN=int(6),
             Raim=False,
-            CommunicationStateIsItdma=True,
-            CommunicationState=int(93)
+            VirtualAtoN=False,
+            AssignedMode=False,
+            Spare=True,
+            NameExtension='llwkmxtccrnhgcvksjmo'
         )

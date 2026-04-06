@@ -1,3 +1,3 @@
-from .ea import Station, Reading
+from .ea import Reading, Station
 
-__all__ = ["Station", "Reading"]
+__all__ = ["Reading", "Station"]

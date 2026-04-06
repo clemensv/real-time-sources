@@ -1,3 +1,3 @@
-from .nve import Station, WaterLevelObservation
+from .nve import WaterLevelObservation, Station
 
-__all__ = ["Station", "WaterLevelObservation"]
+__all__ = ["WaterLevelObservation", "Station"]

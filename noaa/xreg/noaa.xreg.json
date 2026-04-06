@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "noaa-tides-currents"
+          "topic": "noaa-tides-currents",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -61,6 +70,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -75,6 +88,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -89,6 +106,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -103,6 +124,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -117,6 +142,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -131,6 +160,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -145,6 +178,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -159,6 +196,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -179,8 +220,8 @@
               "required": true
             },
             "subject": {
-              "type": "string",
-              "required": true
+              "value": "{station_id}",
+              "type": "uritemplate"
             },
             "time": {
               "type": "string",
@@ -203,6 +244,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -217,6 +262,10 @@
             },
             "source": {
               "value": "https://api.tidesandcurrents.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",

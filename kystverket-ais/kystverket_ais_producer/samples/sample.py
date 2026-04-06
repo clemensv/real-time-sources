@@ -65,7 +65,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _position_report_class_a = PositionReportClassA()
 
     # sends the 'NO.Kystverket.AIS.PositionReportClassA' event to Kafka topic.
-    await nokystverket_aisevent_producer.send_no_kystverket_ais_position_report_class_a(data = _position_report_class_a)
+    await nokystverket_aisevent_producer.send_no_kystverket_ais_position_report_class_a(_mmsi = 'TODO: replace me', data = _position_report_class_a)
     print(f"Sent 'NO.Kystverket.AIS.PositionReportClassA' event: {_position_report_class_a.to_json()}")
 
     # ---- NO.Kystverket.AIS.StaticVoyageData ----
@@ -73,7 +73,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _static_voyage_data = StaticVoyageData()
 
     # sends the 'NO.Kystverket.AIS.StaticVoyageData' event to Kafka topic.
-    await nokystverket_aisevent_producer.send_no_kystverket_ais_static_voyage_data(data = _static_voyage_data)
+    await nokystverket_aisevent_producer.send_no_kystverket_ais_static_voyage_data(_mmsi = 'TODO: replace me', data = _static_voyage_data)
     print(f"Sent 'NO.Kystverket.AIS.StaticVoyageData' event: {_static_voyage_data.to_json()}")
 
     # ---- NO.Kystverket.AIS.PositionReportClassB ----
@@ -81,7 +81,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _position_report_class_b = PositionReportClassB()
 
     # sends the 'NO.Kystverket.AIS.PositionReportClassB' event to Kafka topic.
-    await nokystverket_aisevent_producer.send_no_kystverket_ais_position_report_class_b(data = _position_report_class_b)
+    await nokystverket_aisevent_producer.send_no_kystverket_ais_position_report_class_b(_mmsi = 'TODO: replace me', data = _position_report_class_b)
     print(f"Sent 'NO.Kystverket.AIS.PositionReportClassB' event: {_position_report_class_b.to_json()}")
 
     # ---- NO.Kystverket.AIS.StaticDataClassB ----
@@ -89,7 +89,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _static_data_class_b = StaticDataClassB()
 
     # sends the 'NO.Kystverket.AIS.StaticDataClassB' event to Kafka topic.
-    await nokystverket_aisevent_producer.send_no_kystverket_ais_static_data_class_b(data = _static_data_class_b)
+    await nokystverket_aisevent_producer.send_no_kystverket_ais_static_data_class_b(_mmsi = 'TODO: replace me', data = _static_data_class_b)
     print(f"Sent 'NO.Kystverket.AIS.StaticDataClassB' event: {_static_data_class_b.to_json()}")
 
     # ---- NO.Kystverket.AIS.AidToNavigation ----
@@ -97,7 +97,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _aid_to_navigation = AidToNavigation()
 
     # sends the 'NO.Kystverket.AIS.AidToNavigation' event to Kafka topic.
-    await nokystverket_aisevent_producer.send_no_kystverket_ais_aid_to_navigation(data = _aid_to_navigation)
+    await nokystverket_aisevent_producer.send_no_kystverket_ais_aid_to_navigation(_mmsi = 'TODO: replace me', data = _aid_to_navigation)
     print(f"Sent 'NO.Kystverket.AIS.AidToNavigation' event: {_aid_to_navigation.to_json()}")
 
 if __name__ == "__main__":

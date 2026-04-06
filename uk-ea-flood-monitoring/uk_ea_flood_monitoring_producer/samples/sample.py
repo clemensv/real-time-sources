@@ -62,7 +62,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station = Station()
 
     # sends the 'UK.Gov.Environment.EA.FloodMonitoring.Station' event to Kafka topic.
-    await ukgov_environment_eaflood_monitoring_event_producer.send_uk_gov_environment_ea_flood_monitoring_station(data = _station)
+    await ukgov_environment_eaflood_monitoring_event_producer.send_uk_gov_environment_ea_flood_monitoring_station(_station_reference = 'TODO: replace me', data = _station)
     print(f"Sent 'UK.Gov.Environment.EA.FloodMonitoring.Station' event: {_station.to_json()}")
 
     # ---- UK.Gov.Environment.EA.FloodMonitoring.Reading ----
@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _reading = Reading()
 
     # sends the 'UK.Gov.Environment.EA.FloodMonitoring.Reading' event to Kafka topic.
-    await ukgov_environment_eaflood_monitoring_event_producer.send_uk_gov_environment_ea_flood_monitoring_reading(data = _reading)
+    await ukgov_environment_eaflood_monitoring_event_producer.send_uk_gov_environment_ea_flood_monitoring_reading(_station_reference = 'TODO: replace me', data = _reading)
     print(f"Sent 'UK.Gov.Environment.EA.FloodMonitoring.Reading' event: {_reading.to_json()}")
 
 if __name__ == "__main__":

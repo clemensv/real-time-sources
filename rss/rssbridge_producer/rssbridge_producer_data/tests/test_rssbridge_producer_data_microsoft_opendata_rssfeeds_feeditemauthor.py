@@ -28,9 +28,9 @@ class Test_FeedItemAuthor(unittest.TestCase):
         Create instance of FeedItemAuthor for testing
         """
         instance = FeedItemAuthor(
-            name='qrkioweyqgchezhhuftc',
-            href='jpmzkxhyhndsmmxwvxzg',
-            email='lohvlkoxrbxdkhhemsdb'
+            name='vblszsvfxwpmjmvapvnh',
+            href='wpefjegdoagqifrptpzq',
+            email='nuhdrwzjrkjdtuqmjsci'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_FeedItemAuthor(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'qrkioweyqgchezhhuftc'
+        test_value = 'vblszsvfxwpmjmvapvnh'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -47,7 +47,7 @@ class Test_FeedItemAuthor(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'jpmzkxhyhndsmmxwvxzg'
+        test_value = 'wpefjegdoagqifrptpzq'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -55,7 +55,7 @@ class Test_FeedItemAuthor(unittest.TestCase):
         """
         Test email property
         """
-        test_value = 'lohvlkoxrbxdkhhemsdb'
+        test_value = 'nuhdrwzjrkjdtuqmjsci'
         self.instance.email = test_value
         self.assertEqual(self.instance.email, test_value)
     

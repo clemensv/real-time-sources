@@ -1,5 +1,5 @@
+from .planetarykindex import PlanetaryKIndex
 from .spaceweatheralert import SpaceWeatherAlert
 from .solarwindsummary import SolarWindSummary
-from .planetarykindex import PlanetaryKIndex
 
-__all__ = ["SpaceWeatherAlert", "SolarWindSummary", "PlanetaryKIndex"]
+__all__ = ["PlanetaryKIndex", "SpaceWeatherAlert", "SolarWindSummary"]

@@ -28,23 +28,18 @@ class Test_Document(unittest.TestCase):
         Create instance of Document for testing
         """
         instance = Document(
-            mmsi=int(75),
-            imo_number=int(15),
-            callsign='zlwflpymjpnpgdgzoxmm',
-            ship_name='idciymilqaqpifwxeksa',
-            ship_type=int(4),
-            dimension_to_bow=int(85),
-            dimension_to_stern=int(89),
-            dimension_to_port=int(44),
-            dimension_to_starboard=int(71),
-            draught=float(78.08654437265497),
-            destination='polvtuhfpmxpivdrmlkr',
-            eta_month=int(34),
-            eta_day=int(74),
-            eta_hour=int(14),
-            eta_minute=int(66),
-            timestamp='wdfurwsxrsebwebnzpzf',
-            station_id='ifysluvyfqasdnpefxmq'
+            mmsi=int(58),
+            navigation_status=int(3),
+            rate_of_turn=float(47.21346447973123),
+            speed_over_ground=float(44.566784747529475),
+            position_accuracy=int(9),
+            longitude=float(2.150071407184695),
+            latitude=float(20.375763135243762),
+            course_over_ground=float(42.43027928663985),
+            true_heading=int(34),
+            timestamp='knurrnjuxaaowllqgwse',
+            station_id='uqfumioqbqzsogpuhzzi',
+            msg_type=int(44)
         )
         return instance
 
@@ -53,127 +48,79 @@ class Test_Document(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(75)
+        test_value = int(58)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
-    def test_imo_number_property(self):
+    def test_navigation_status_property(self):
         """
-        Test imo_number property
+        Test navigation_status property
         """
-        test_value = int(15)
-        self.instance.imo_number = test_value
-        self.assertEqual(self.instance.imo_number, test_value)
+        test_value = int(3)
+        self.instance.navigation_status = test_value
+        self.assertEqual(self.instance.navigation_status, test_value)
     
-    def test_callsign_property(self):
+    def test_rate_of_turn_property(self):
         """
-        Test callsign property
+        Test rate_of_turn property
         """
-        test_value = 'zlwflpymjpnpgdgzoxmm'
-        self.instance.callsign = test_value
-        self.assertEqual(self.instance.callsign, test_value)
+        test_value = float(47.21346447973123)
+        self.instance.rate_of_turn = test_value
+        self.assertEqual(self.instance.rate_of_turn, test_value)
     
-    def test_ship_name_property(self):
+    def test_speed_over_ground_property(self):
         """
-        Test ship_name property
+        Test speed_over_ground property
         """
-        test_value = 'idciymilqaqpifwxeksa'
-        self.instance.ship_name = test_value
-        self.assertEqual(self.instance.ship_name, test_value)
+        test_value = float(44.566784747529475)
+        self.instance.speed_over_ground = test_value
+        self.assertEqual(self.instance.speed_over_ground, test_value)
     
-    def test_ship_type_property(self):
+    def test_position_accuracy_property(self):
         """
-        Test ship_type property
+        Test position_accuracy property
         """
-        test_value = int(4)
-        self.instance.ship_type = test_value
-        self.assertEqual(self.instance.ship_type, test_value)
+        test_value = int(9)
+        self.instance.position_accuracy = test_value
+        self.assertEqual(self.instance.position_accuracy, test_value)
     
-    def test_dimension_to_bow_property(self):
+    def test_longitude_property(self):
         """
-        Test dimension_to_bow property
+        Test longitude property
         """
-        test_value = int(85)
-        self.instance.dimension_to_bow = test_value
-        self.assertEqual(self.instance.dimension_to_bow, test_value)
+        test_value = float(2.150071407184695)
+        self.instance.longitude = test_value
+        self.assertEqual(self.instance.longitude, test_value)
     
-    def test_dimension_to_stern_property(self):
+    def test_latitude_property(self):
         """
-        Test dimension_to_stern property
+        Test latitude property
         """
-        test_value = int(89)
-        self.instance.dimension_to_stern = test_value
-        self.assertEqual(self.instance.dimension_to_stern, test_value)
+        test_value = float(20.375763135243762)
+        self.instance.latitude = test_value
+        self.assertEqual(self.instance.latitude, test_value)
     
-    def test_dimension_to_port_property(self):
+    def test_course_over_ground_property(self):
         """
-        Test dimension_to_port property
+        Test course_over_ground property
         """
-        test_value = int(44)
-        self.instance.dimension_to_port = test_value
-        self.assertEqual(self.instance.dimension_to_port, test_value)
+        test_value = float(42.43027928663985)
+        self.instance.course_over_ground = test_value
+        self.assertEqual(self.instance.course_over_ground, test_value)
     
-    def test_dimension_to_starboard_property(self):
+    def test_true_heading_property(self):
         """
-        Test dimension_to_starboard property
-        """
-        test_value = int(71)
-        self.instance.dimension_to_starboard = test_value
-        self.assertEqual(self.instance.dimension_to_starboard, test_value)
-    
-    def test_draught_property(self):
-        """
-        Test draught property
-        """
-        test_value = float(78.08654437265497)
-        self.instance.draught = test_value
-        self.assertEqual(self.instance.draught, test_value)
-    
-    def test_destination_property(self):
-        """
-        Test destination property
-        """
-        test_value = 'polvtuhfpmxpivdrmlkr'
-        self.instance.destination = test_value
-        self.assertEqual(self.instance.destination, test_value)
-    
-    def test_eta_month_property(self):
-        """
-        Test eta_month property
+        Test true_heading property
         """
         test_value = int(34)
-        self.instance.eta_month = test_value
-        self.assertEqual(self.instance.eta_month, test_value)
-    
-    def test_eta_day_property(self):
-        """
-        Test eta_day property
-        """
-        test_value = int(74)
-        self.instance.eta_day = test_value
-        self.assertEqual(self.instance.eta_day, test_value)
-    
-    def test_eta_hour_property(self):
-        """
-        Test eta_hour property
-        """
-        test_value = int(14)
-        self.instance.eta_hour = test_value
-        self.assertEqual(self.instance.eta_hour, test_value)
-    
-    def test_eta_minute_property(self):
-        """
-        Test eta_minute property
-        """
-        test_value = int(66)
-        self.instance.eta_minute = test_value
-        self.assertEqual(self.instance.eta_minute, test_value)
+        self.instance.true_heading = test_value
+        self.assertEqual(self.instance.true_heading, test_value)
     
     def test_timestamp_property(self):
         """
         Test timestamp property
         """
-        test_value = 'wdfurwsxrsebwebnzpzf'
+        test_value = 'knurrnjuxaaowllqgwse'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -181,9 +128,17 @@ class Test_Document(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ifysluvyfqasdnpefxmq'
+        test_value = 'uqfumioqbqzsogpuhzzi'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
+    
+    def test_msg_type_property(self):
+        """
+        Test msg_type property
+        """
+        test_value = int(44)
+        self.instance.msg_type = test_value
+        self.assertEqual(self.instance.msg_type, test_value)
     
     def test_to_byte_array_avro(self):
         """

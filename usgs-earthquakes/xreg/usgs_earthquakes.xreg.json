@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "usgs-earthquakes"
+          "topic": "usgs-earthquakes",
+          "key": "{net}/{code}"
         }
       },
       "messagegroups": [

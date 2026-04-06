@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "digitraffic-maritime"
+          "topic": "digitraffic-maritime",
+          "key": "{mmsi}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "wss://meri.digitraffic.fi/mqtt"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "wss://meri.digitraffic.fi/mqtt"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -116,7 +125,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/fi/digitraffic/marine/ais.schema.json",
+                "$id": "https://example.com/schemas/fi/digitraffic/marine/ais/VesselLocation",
                 "description": "AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update."
               }
             }
@@ -180,7 +189,7 @@
                     "type": "int32"
                   }
                 },
-                "$id": "https://example.com/fi/digitraffic/marine/ais.schema.json",
+                "$id": "https://example.com/schemas/fi/digitraffic/marine/ais/VesselMetadata",
                 "description": "AIS vessel static and voyage data from Digitraffic MQTT stream. Represents decoded AIS message type 5/24 data."
               }
             }

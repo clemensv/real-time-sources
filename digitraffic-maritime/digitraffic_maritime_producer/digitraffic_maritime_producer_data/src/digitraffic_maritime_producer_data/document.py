@@ -177,18 +177,18 @@ class Document:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(69),
-            timestamp=int(23),
-            name='xukwtpbhcyydbczlgqxd',
-            callSign='jsetipgypuphfmaiivfh',
-            imo=int(61),
-            type=int(40),
-            draught=int(62),
-            eta=int(44),
-            destination='aghswfmlmnsjkxthvqwy',
-            posType=int(74),
-            refA=int(6),
-            refB=int(34),
-            refC=int(89),
-            refD=int(30)
+            mmsi=int(60),
+            timestamp=int(62),
+            name='zniscuxegvxkoufvfmik',
+            callSign='jeqmgmhsscdddacvethb',
+            imo=int(15),
+            type=int(60),
+            draught=int(98),
+            eta=int(51),
+            destination='einoaivfdxaraavwwtkb',
+            posType=int(94),
+            refA=int(23),
+            refB=int(67),
+            refC=int(80),
+            refD=int(89)
         )

@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "rws-waterwebservices"
+          "topic": "rws-waterwebservices",
+          "key": "{station_code}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://waterwebservices.rijkswaterstaat.nl"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://waterwebservices.rijkswaterstaat.nl"
+            },
+            "subject": {
+              "value": "{station_code}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -92,7 +101,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/NL/RWS/Waterwebservices.schema.json",
+                "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/Station",
                 "description": "Station"
               }
             }
@@ -143,7 +152,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/NL/RWS/Waterwebservices.schema.json",
+                "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/WaterLevelObservation",
                 "description": "WaterLevelObservation"
               }
             }

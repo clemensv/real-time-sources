@@ -48,6 +48,25 @@ class TestEmitEvent:
         assert result is True
         producer.send_io_aisstream_position_report.assert_called_once()
 
+    def test_position_report_passes_mmsi_placeholder(self):
+        producer = MagicMock()
+        payload = {
+            "MessageID": 1, "RepeatIndicator": 0, "UserID": 311000255,
+            "Valid": True, "NavigationalStatus": 0, "RateOfTurn": 0,
+            "Sog": 14.9, "PositionAccuracy": True,
+            "Longitude": -45.678, "Latitude": 12.345,
+            "Cog": 260.5, "TrueHeading": 261, "Timestamp": 30,
+            "SpecialManoeuvreIndicator": 0, "Spare": 0,
+            "Raim": False, "CommunicationState": 0,
+        }
+
+        _emit_event(producer, "PositionReport", payload)
+
+        call = producer.send_io_aisstream_position_report.call_args
+        assert call.kwargs["_mmsi"] == "311000255"
+        assert call.kwargs["flush_producer"] is False
+        assert call.kwargs["key_mapper"] is _mmsi_key_mapper
+
     def test_ship_static_data(self):
         producer = MagicMock()
         payload = {

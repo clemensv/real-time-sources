@@ -28,10 +28,10 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         Create instance of PlanetaryKIndex for testing
         """
         instance = PlanetaryKIndex(
-            time_tag='ujeyxopuvpmoqpyccnat',
-            kp=float(4.1264733132581615),
-            a_running=float(85.68538516787305),
-            station_count=float(43.108818817154)
+            time_tag='ipceqmzwjtzjtjiopuia',
+            kp=float(45.17578591914736),
+            a_running=float(57.710944774903275),
+            station_count=float(91.55263446588499)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test time_tag property
         """
-        test_value = 'ujeyxopuvpmoqpyccnat'
+        test_value = 'ipceqmzwjtzjtjiopuia'
         self.instance.time_tag = test_value
         self.assertEqual(self.instance.time_tag, test_value)
     
@@ -48,7 +48,7 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test kp property
         """
-        test_value = float(4.1264733132581615)
+        test_value = float(45.17578591914736)
         self.instance.kp = test_value
         self.assertEqual(self.instance.kp, test_value)
     
@@ -56,7 +56,7 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test a_running property
         """
-        test_value = float(85.68538516787305)
+        test_value = float(57.710944774903275)
         self.instance.a_running = test_value
         self.assertEqual(self.instance.a_running, test_value)
     
@@ -64,7 +64,7 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test station_count property
         """
-        test_value = float(43.108818817154)
+        test_value = float(91.55263446588499)
         self.instance.station_count = test_value
         self.assertEqual(self.instance.station_count, test_value)
     

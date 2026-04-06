@@ -9,9 +9,9 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedrealtime.trip.tripupdate import TripUpdate
+from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeupdate import Test_StopTimeUpdate
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripdescriptor import Test_TripDescriptor
 from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_vehicledescriptor import Test_VehicleDescriptor
-from test_gtfs_rt_producer_data_generaltransitfeedrealtime_trip_tripupdate_types_stoptimeupdate import Test_StopTimeUpdate
 
 
 class Test_TripUpdate(unittest.TestCase):
@@ -34,8 +34,8 @@ class Test_TripUpdate(unittest.TestCase):
             trip=Test_TripDescriptor.create_instance(),
             vehicle=Test_VehicleDescriptor.create_instance(),
             stop_time_update=[Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance(), Test_StopTimeUpdate.create_instance()],
-            timestamp=int(13),
-            delay=int(35)
+            timestamp=int(67),
+            delay=int(39)
         )
         return instance
 
@@ -68,7 +68,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(13)
+        test_value = int(67)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -76,7 +76,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test delay property
         """
-        test_value = int(35)
+        test_value = int(39)
         self.instance.delay = test_value
         self.assertEqual(self.instance.delay, test_value)
     

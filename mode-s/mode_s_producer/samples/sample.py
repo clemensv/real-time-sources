@@ -61,7 +61,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _messages = Messages()
 
     # sends the 'Mode_S.Messages' event to Kafka topic.
-    await mode_sevent_producer.send_mode_s_messages(_stationid = 'TODO: replace me', data = _messages)
+    await mode_sevent_producer.send_mode_s_messages(_stationid = 'TODO: replace me', _stationid = 'TODO: replace me', data = _messages)
     print(f"Sent 'Mode_S.Messages' event: {_messages.to_json()}")
 
 if __name__ == "__main__":

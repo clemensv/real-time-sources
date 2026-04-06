@@ -29,16 +29,16 @@ class Test_WaterLevelObservation(unittest.TestCase):
         Create instance of WaterLevelObservation for testing
         """
         instance = WaterLevelObservation(
-            station_id='oxwiskukrngdxxacqaip',
-            provider='kltmlvlxeapchiflpnnk',
-            water_level=float(25.221002772403256),
-            water_level_unit='knhqtjzeqvyytxdkalfx',
+            station_id='aehuuaatqlknyyxzccho',
+            provider='yiotmvpvifhddgdyrzer',
+            water_level=float(90.71112163779087),
+            water_level_unit='icolvuuiluaybadgxyai',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(15.336133969421063),
-            discharge_unit='dreicktnhtbltrdhzdrj',
+            discharge=float(14.040679514173704),
+            discharge_unit='uuvccfeaxvgjswqgwkbc',
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            trend=int(79),
-            situation=int(4)
+            trend=int(66),
+            situation=int(65)
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'oxwiskukrngdxxacqaip'
+        test_value = 'aehuuaatqlknyyxzccho'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test provider property
         """
-        test_value = 'kltmlvlxeapchiflpnnk'
+        test_value = 'yiotmvpvifhddgdyrzer'
         self.instance.provider = test_value
         self.assertEqual(self.instance.provider, test_value)
     
@@ -63,7 +63,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level property
         """
-        test_value = float(25.221002772403256)
+        test_value = float(90.71112163779087)
         self.instance.water_level = test_value
         self.assertEqual(self.instance.water_level, test_value)
     
@@ -71,7 +71,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level_unit property
         """
-        test_value = 'knhqtjzeqvyytxdkalfx'
+        test_value = 'icolvuuiluaybadgxyai'
         self.instance.water_level_unit = test_value
         self.assertEqual(self.instance.water_level_unit, test_value)
     
@@ -87,7 +87,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(15.336133969421063)
+        test_value = float(14.040679514173704)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -95,7 +95,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge_unit property
         """
-        test_value = 'dreicktnhtbltrdhzdrj'
+        test_value = 'uuvccfeaxvgjswqgwkbc'
         self.instance.discharge_unit = test_value
         self.assertEqual(self.instance.discharge_unit, test_value)
     
@@ -111,7 +111,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test trend property
         """
-        test_value = int(79)
+        test_value = int(66)
         self.instance.trend = test_value
         self.assertEqual(self.instance.trend, test_value)
     
@@ -119,7 +119,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test situation property
         """
-        test_value = int(4)
+        test_value = int(65)
         self.instance.situation = test_value
         self.assertEqual(self.instance.situation, test_value)
     

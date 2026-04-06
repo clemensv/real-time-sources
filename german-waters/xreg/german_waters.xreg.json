@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "german-waters"
+          "topic": "german-waters",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://github.com/clemensv/real-time-sources/german-waters"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://github.com/clemensv/real-time-sources/german-waters"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -122,7 +131,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/DE/Waters/Hydrology.schema.json",
+                "$id": "https://example.com/schemas/DE/Waters/Hydrology/Station",
                 "description": "Station"
               }
             }
@@ -175,7 +184,7 @@
                     "type": "int32"
                   }
                 },
-                "$id": "https://example.com/DE/Waters/Hydrology.schema.json",
+                "$id": "https://example.com/schemas/DE/Waters/Hydrology/WaterLevelObservation",
                 "description": "WaterLevelObservation"
               }
             }

@@ -1,3 +1,3 @@
-from .se import DischargeObservation, Station
+from .se import Station, DischargeObservation
 
-__all__ = ["DischargeObservation", "Station"]
+__all__ = ["Station", "DischargeObservation"]

@@ -32,18 +32,20 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyEventProducer
+from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyByDomainEventProducer
+from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyByDomainPsrTypeEventProducer
+from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyCrossBorderEventProducer
 
 # imports for the data classes for each event
 
-from entsoe_producer_data.actualgenerationpertype import ActualGenerationPerType
 from entsoe_producer_data.dayaheadprices import DayAheadPrices
 from entsoe_producer_data.actualtotalload import ActualTotalLoad
-from entsoe_producer_data.windsolarforecast import WindSolarForecast
 from entsoe_producer_data.loadforecastmargin import LoadForecastMargin
 from entsoe_producer_data.generationforecast import GenerationForecast
 from entsoe_producer_data.reservoirfillinginformation import ReservoirFillingInformation
 from entsoe_producer_data.actualgeneration import ActualGeneration
+from entsoe_producer_data.actualgenerationpertype import ActualGenerationPerType
+from entsoe_producer_data.windsolarforecast import WindSolarForecast
 from entsoe_producer_data.windsolargeneration import WindSolarGeneration
 from entsoe_producer_data.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
 from entsoe_producer_data.crossborderphysicalflows import CrossBorderPhysicalFlows
@@ -60,26 +62,18 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        eu_entsoe_transparency_event_producer = EuEntsoeTransparencyEventProducer.from_connection_string(connection_string, topic, 'binary')
+        eu_entsoe_transparency_by_domain_event_producer = EuEntsoeTransparencyByDomainEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        eu_entsoe_transparency_event_producer = EuEntsoeTransparencyEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- eu.entsoe.transparency.ActualGenerationPerType ----
-    # TODO: Supply event data for the eu.entsoe.transparency.ActualGenerationPerType event
-    _actual_generation_per_type = ActualGenerationPerType()
-
-    # sends the 'eu.entsoe.transparency.ActualGenerationPerType' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_actual_generation_per_type(data = _actual_generation_per_type)
-    print(f"Sent 'eu.entsoe.transparency.ActualGenerationPerType' event: {_actual_generation_per_type.to_json()}")
+        eu_entsoe_transparency_by_domain_event_producer = EuEntsoeTransparencyByDomainEventProducer(kafka_producer, topic, 'binary')
 
     # ---- eu.entsoe.transparency.DayAheadPrices ----
     # TODO: Supply event data for the eu.entsoe.transparency.DayAheadPrices event
     _day_ahead_prices = DayAheadPrices()
 
     # sends the 'eu.entsoe.transparency.DayAheadPrices' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_day_ahead_prices(data = _day_ahead_prices)
+    await eu_entsoe_transparency_by_domain_event_producer.send_eu_entsoe_transparency_day_ahead_prices(_in_domain = 'TODO: replace me', data = _day_ahead_prices)
     print(f"Sent 'eu.entsoe.transparency.DayAheadPrices' event: {_day_ahead_prices.to_json()}")
 
     # ---- eu.entsoe.transparency.ActualTotalLoad ----
@@ -87,23 +81,15 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _actual_total_load = ActualTotalLoad()
 
     # sends the 'eu.entsoe.transparency.ActualTotalLoad' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_actual_total_load(data = _actual_total_load)
+    await eu_entsoe_transparency_by_domain_event_producer.send_eu_entsoe_transparency_actual_total_load(_in_domain = 'TODO: replace me', data = _actual_total_load)
     print(f"Sent 'eu.entsoe.transparency.ActualTotalLoad' event: {_actual_total_load.to_json()}")
-
-    # ---- eu.entsoe.transparency.WindSolarForecast ----
-    # TODO: Supply event data for the eu.entsoe.transparency.WindSolarForecast event
-    _wind_solar_forecast = WindSolarForecast()
-
-    # sends the 'eu.entsoe.transparency.WindSolarForecast' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_wind_solar_forecast(data = _wind_solar_forecast)
-    print(f"Sent 'eu.entsoe.transparency.WindSolarForecast' event: {_wind_solar_forecast.to_json()}")
 
     # ---- eu.entsoe.transparency.LoadForecastMargin ----
     # TODO: Supply event data for the eu.entsoe.transparency.LoadForecastMargin event
     _load_forecast_margin = LoadForecastMargin()
 
     # sends the 'eu.entsoe.transparency.LoadForecastMargin' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_load_forecast_margin(data = _load_forecast_margin)
+    await eu_entsoe_transparency_by_domain_event_producer.send_eu_entsoe_transparency_load_forecast_margin(_in_domain = 'TODO: replace me', data = _load_forecast_margin)
     print(f"Sent 'eu.entsoe.transparency.LoadForecastMargin' event: {_load_forecast_margin.to_json()}")
 
     # ---- eu.entsoe.transparency.GenerationForecast ----
@@ -111,7 +97,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _generation_forecast = GenerationForecast()
 
     # sends the 'eu.entsoe.transparency.GenerationForecast' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_generation_forecast(data = _generation_forecast)
+    await eu_entsoe_transparency_by_domain_event_producer.send_eu_entsoe_transparency_generation_forecast(_in_domain = 'TODO: replace me', data = _generation_forecast)
     print(f"Sent 'eu.entsoe.transparency.GenerationForecast' event: {_generation_forecast.to_json()}")
 
     # ---- eu.entsoe.transparency.ReservoirFillingInformation ----
@@ -119,7 +105,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _reservoir_filling_information = ReservoirFillingInformation()
 
     # sends the 'eu.entsoe.transparency.ReservoirFillingInformation' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_reservoir_filling_information(data = _reservoir_filling_information)
+    await eu_entsoe_transparency_by_domain_event_producer.send_eu_entsoe_transparency_reservoir_filling_information(_in_domain = 'TODO: replace me', data = _reservoir_filling_information)
     print(f"Sent 'eu.entsoe.transparency.ReservoirFillingInformation' event: {_reservoir_filling_information.to_json()}")
 
     # ---- eu.entsoe.transparency.ActualGeneration ----
@@ -127,15 +113,39 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _actual_generation = ActualGeneration()
 
     # sends the 'eu.entsoe.transparency.ActualGeneration' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_actual_generation(data = _actual_generation)
+    await eu_entsoe_transparency_by_domain_event_producer.send_eu_entsoe_transparency_actual_generation(_in_domain = 'TODO: replace me', data = _actual_generation)
     print(f"Sent 'eu.entsoe.transparency.ActualGeneration' event: {_actual_generation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        eu_entsoe_transparency_by_domain_psr_type_event_producer = EuEntsoeTransparencyByDomainPsrTypeEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        eu_entsoe_transparency_by_domain_psr_type_event_producer = EuEntsoeTransparencyByDomainPsrTypeEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- eu.entsoe.transparency.ActualGenerationPerType ----
+    # TODO: Supply event data for the eu.entsoe.transparency.ActualGenerationPerType event
+    _actual_generation_per_type = ActualGenerationPerType()
+
+    # sends the 'eu.entsoe.transparency.ActualGenerationPerType' event to Kafka topic.
+    await eu_entsoe_transparency_by_domain_psr_type_event_producer.send_eu_entsoe_transparency_actual_generation_per_type(_in_domain = 'TODO: replace me', _psr_type = 'TODO: replace me', data = _actual_generation_per_type)
+    print(f"Sent 'eu.entsoe.transparency.ActualGenerationPerType' event: {_actual_generation_per_type.to_json()}")
+
+    # ---- eu.entsoe.transparency.WindSolarForecast ----
+    # TODO: Supply event data for the eu.entsoe.transparency.WindSolarForecast event
+    _wind_solar_forecast = WindSolarForecast()
+
+    # sends the 'eu.entsoe.transparency.WindSolarForecast' event to Kafka topic.
+    await eu_entsoe_transparency_by_domain_psr_type_event_producer.send_eu_entsoe_transparency_wind_solar_forecast(_in_domain = 'TODO: replace me', _psr_type = 'TODO: replace me', data = _wind_solar_forecast)
+    print(f"Sent 'eu.entsoe.transparency.WindSolarForecast' event: {_wind_solar_forecast.to_json()}")
 
     # ---- eu.entsoe.transparency.WindSolarGeneration ----
     # TODO: Supply event data for the eu.entsoe.transparency.WindSolarGeneration event
     _wind_solar_generation = WindSolarGeneration()
 
     # sends the 'eu.entsoe.transparency.WindSolarGeneration' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_wind_solar_generation(data = _wind_solar_generation)
+    await eu_entsoe_transparency_by_domain_psr_type_event_producer.send_eu_entsoe_transparency_wind_solar_generation(_in_domain = 'TODO: replace me', _psr_type = 'TODO: replace me', data = _wind_solar_generation)
     print(f"Sent 'eu.entsoe.transparency.WindSolarGeneration' event: {_wind_solar_generation.to_json()}")
 
     # ---- eu.entsoe.transparency.InstalledGenerationCapacityPerType ----
@@ -143,15 +153,23 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _installed_generation_capacity_per_type = InstalledGenerationCapacityPerType()
 
     # sends the 'eu.entsoe.transparency.InstalledGenerationCapacityPerType' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_installed_generation_capacity_per_type(data = _installed_generation_capacity_per_type)
+    await eu_entsoe_transparency_by_domain_psr_type_event_producer.send_eu_entsoe_transparency_installed_generation_capacity_per_type(_in_domain = 'TODO: replace me', _psr_type = 'TODO: replace me', data = _installed_generation_capacity_per_type)
     print(f"Sent 'eu.entsoe.transparency.InstalledGenerationCapacityPerType' event: {_installed_generation_capacity_per_type.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        eu_entsoe_transparency_cross_border_event_producer = EuEntsoeTransparencyCrossBorderEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        eu_entsoe_transparency_cross_border_event_producer = EuEntsoeTransparencyCrossBorderEventProducer(kafka_producer, topic, 'binary')
 
     # ---- eu.entsoe.transparency.CrossBorderPhysicalFlows ----
     # TODO: Supply event data for the eu.entsoe.transparency.CrossBorderPhysicalFlows event
     _cross_border_physical_flows = CrossBorderPhysicalFlows()
 
     # sends the 'eu.entsoe.transparency.CrossBorderPhysicalFlows' event to Kafka topic.
-    await eu_entsoe_transparency_event_producer.send_eu_entsoe_transparency_cross_border_physical_flows(data = _cross_border_physical_flows)
+    await eu_entsoe_transparency_cross_border_event_producer.send_eu_entsoe_transparency_cross_border_physical_flows(_in_domain = 'TODO: replace me', _out_domain = 'TODO: replace me', data = _cross_border_physical_flows)
     print(f"Sent 'eu.entsoe.transparency.CrossBorderPhysicalFlows' event: {_cross_border_physical_flows.to_json()}")
 
 if __name__ == "__main__":

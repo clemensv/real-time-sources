@@ -22,64 +22,49 @@ class Document:
     A Document record.
     Attributes:
         mmsi (int): 
-        imo_number (typing.Optional[int]): 
-        callsign (typing.Optional[str]): 
-        ship_name (typing.Optional[str]): 
-        ship_type (typing.Optional[int]): 
-        dimension_to_bow (typing.Optional[int]): 
-        dimension_to_stern (typing.Optional[int]): 
-        dimension_to_port (typing.Optional[int]): 
-        dimension_to_starboard (typing.Optional[int]): 
-        draught (typing.Optional[float]): 
-        destination (typing.Optional[str]): 
-        eta_month (typing.Optional[int]): 
-        eta_day (typing.Optional[int]): 
-        eta_hour (typing.Optional[int]): 
-        eta_minute (typing.Optional[int]): 
+        navigation_status (typing.Optional[int]): 
+        rate_of_turn (typing.Optional[float]): 
+        speed_over_ground (typing.Optional[float]): 
+        position_accuracy (typing.Optional[int]): 
+        longitude (float): 
+        latitude (float): 
+        course_over_ground (typing.Optional[float]): 
+        true_heading (typing.Optional[int]): 
         timestamp (str): 
-        station_id (typing.Optional[str]): """
+        station_id (typing.Optional[str]): 
+        msg_type (typing.Optional[int]): """
     
     mmsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
-    imo_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imo_number"))
-    callsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
-    ship_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_name"))
-    ship_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
-    dimension_to_bow: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_bow"))
-    dimension_to_stern: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_stern"))
-    dimension_to_port: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_port"))
-    dimension_to_starboard: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_starboard"))
-    draught: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="draught"))
-    destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination"))
-    eta_month: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_month"))
-    eta_day: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_day"))
-    eta_hour: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_hour"))
-    eta_minute: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_minute"))
+    navigation_status: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="navigation_status"))
+    rate_of_turn: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rate_of_turn"))
+    speed_over_ground: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="speed_over_ground"))
+    position_accuracy: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position_accuracy"))
+    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    course_over_ground: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="course_over_ground"))
+    true_heading: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="true_heading"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    msg_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"document\", \"fields\": [{\"name\": \"mmsi\", \"type\": \"int\"}, {\"name\": \"imo_number\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"callsign\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"ship_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"ship_type\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"dimension_to_bow\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"dimension_to_stern\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"dimension_to_port\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"dimension_to_starboard\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"draught\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"destination\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"eta_month\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"eta_day\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"eta_hour\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"eta_minute\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"station_id\", \"type\": [\"null\", \"string\"], \"default\": null}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"document\", \"fields\": [{\"name\": \"mmsi\", \"type\": \"int\"}, {\"name\": \"navigation_status\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"rate_of_turn\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"speed_over_ground\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"position_accuracy\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"course_over_ground\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"true_heading\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"station_id\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"msg_type\", \"type\": [\"null\", \"int\"], \"default\": null}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.mmsi=int(self.mmsi)
-        self.imo_number=int(self.imo_number) if self.imo_number else None
-        self.callsign=str(self.callsign) if self.callsign else None
-        self.ship_name=str(self.ship_name) if self.ship_name else None
-        self.ship_type=int(self.ship_type) if self.ship_type else None
-        self.dimension_to_bow=int(self.dimension_to_bow) if self.dimension_to_bow else None
-        self.dimension_to_stern=int(self.dimension_to_stern) if self.dimension_to_stern else None
-        self.dimension_to_port=int(self.dimension_to_port) if self.dimension_to_port else None
-        self.dimension_to_starboard=int(self.dimension_to_starboard) if self.dimension_to_starboard else None
-        self.draught=float(self.draught) if self.draught else None
-        self.destination=str(self.destination) if self.destination else None
-        self.eta_month=int(self.eta_month) if self.eta_month else None
-        self.eta_day=int(self.eta_day) if self.eta_day else None
-        self.eta_hour=int(self.eta_hour) if self.eta_hour else None
-        self.eta_minute=int(self.eta_minute) if self.eta_minute else None
+        self.navigation_status=int(self.navigation_status) if self.navigation_status else None
+        self.rate_of_turn=float(self.rate_of_turn) if self.rate_of_turn else None
+        self.speed_over_ground=float(self.speed_over_ground) if self.speed_over_ground else None
+        self.position_accuracy=int(self.position_accuracy) if self.position_accuracy else None
+        self.longitude=float(self.longitude)
+        self.latitude=float(self.latitude)
+        self.course_over_ground=float(self.course_over_ground) if self.course_over_ground else None
+        self.true_heading=int(self.true_heading) if self.true_heading else None
         self.timestamp=str(self.timestamp)
         self.station_id=str(self.station_id) if self.station_id else None
+        self.msg_type=int(self.msg_type) if self.msg_type else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Document':

@@ -21,40 +21,22 @@ class Document:
     
     Attributes:
         mmsi (int)
-        imo_number (typing.Optional[int])
-        callsign (typing.Optional[str])
-        ship_name (typing.Optional[str])
-        ship_type (typing.Optional[int])
-        dimension_to_bow (typing.Optional[int])
-        dimension_to_stern (typing.Optional[int])
-        dimension_to_port (typing.Optional[int])
-        dimension_to_starboard (typing.Optional[int])
-        draught (typing.Optional[float])
-        destination (typing.Optional[str])
-        eta_month (typing.Optional[int])
-        eta_day (typing.Optional[int])
-        eta_hour (typing.Optional[int])
-        eta_minute (typing.Optional[int])
+        aid_type (typing.Optional[int])
+        name (typing.Optional[str])
+        position_accuracy (typing.Optional[int])
+        longitude (float)
+        latitude (float)
         timestamp (str)
         station_id (typing.Optional[str])
     """
     
     
     mmsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
-    imo_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imo_number"))
-    callsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
-    ship_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_name"))
-    ship_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
-    dimension_to_bow: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_bow"))
-    dimension_to_stern: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_stern"))
-    dimension_to_port: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_port"))
-    dimension_to_starboard: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_starboard"))
-    draught: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="draught"))
-    destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination"))
-    eta_month: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_month"))
-    eta_day: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_day"))
-    eta_hour: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_hour"))
-    eta_minute: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_minute"))
+    aid_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="aid_type"))
+    name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
+    position_accuracy: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position_accuracy"))
+    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
 
@@ -183,21 +165,12 @@ class Document:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(45),
-            imo_number=int(52),
-            callsign='siqlumvbfsrwqfdtpbwl',
-            ship_name='mkotblkxhyokkmduwval',
-            ship_type=int(94),
-            dimension_to_bow=int(41),
-            dimension_to_stern=int(41),
-            dimension_to_port=int(22),
-            dimension_to_starboard=int(15),
-            draught=float(2.818315309385855),
-            destination='iyzdwfzojlmvswycanwn',
-            eta_month=int(84),
-            eta_day=int(69),
-            eta_hour=int(71),
-            eta_minute=int(46),
-            timestamp='zibrrjligillqderpfsq',
-            station_id='xwqertajxcernouvjlhg'
+            mmsi=int(71),
+            aid_type=int(3),
+            name='rkmmvjbjbalmhvgaxeev',
+            position_accuracy=int(94),
+            longitude=float(71.07372936763016),
+            latitude=float(74.4421524617907),
+            timestamp='gvcyoddqnxlecpdsjsaq',
+            station_id='yazqurqqbpeoywjwjvhp'
         )

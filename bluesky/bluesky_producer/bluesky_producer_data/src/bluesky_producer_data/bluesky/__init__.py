@@ -1,5 +1,5 @@
-from .feed import Post, Repost, Like
-from .graph import Block, Follow
+from .feed import Like, Repost, Post
 from .actor import Profile
+from .graph import Block, Follow
 
-__all__ = ["Post", "Repost", "Like", "Block", "Follow", "Profile"]
+__all__ = ["Like", "Repost", "Post", "Profile", "Block", "Follow"]

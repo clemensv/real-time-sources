@@ -62,7 +62,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station = Station()
 
     # sends the 'FI.SYKE.Hydrology.Station' event to Kafka topic.
-    await fisykehydrology_event_producer.send_fi_syke_hydrology_station(data = _station)
+    await fisykehydrology_event_producer.send_fi_syke_hydrology_station(_station_id = 'TODO: replace me', data = _station)
     print(f"Sent 'FI.SYKE.Hydrology.Station' event: {_station.to_json()}")
 
     # ---- FI.SYKE.Hydrology.WaterLevelObservation ----
@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_level_observation = WaterLevelObservation()
 
     # sends the 'FI.SYKE.Hydrology.WaterLevelObservation' event to Kafka topic.
-    await fisykehydrology_event_producer.send_fi_syke_hydrology_water_level_observation(data = _water_level_observation)
+    await fisykehydrology_event_producer.send_fi_syke_hydrology_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
     print(f"Sent 'FI.SYKE.Hydrology.WaterLevelObservation' event: {_water_level_observation.to_json()}")
 
 if __name__ == "__main__":

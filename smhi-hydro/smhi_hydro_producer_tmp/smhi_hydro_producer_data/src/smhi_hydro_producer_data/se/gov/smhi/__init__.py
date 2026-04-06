@@ -1,3 +1,3 @@
-from .hydro import DischargeObservation, Station
+from .hydro import Station, DischargeObservation
 
-__all__ = ["DischargeObservation", "Station"]
+__all__ = ["Station", "DischargeObservation"]

@@ -1,5 +1,8 @@
 # Generate the Hub'Eau Hydrometrie producer using xrcg
 
+. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+Assert-XrcgVersion
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $xregFile = Join-Path $scriptDir "xreg\hubeau_hydrometrie.xreg.json"
 $outputDir = Join-Path $scriptDir "hubeau_hydrometrie_producer"

@@ -1,3 +1,3 @@
-from .opendata import SpaceWeatherAlert, SolarWindSummary, PlanetaryKIndex
+from .opendata import PlanetaryKIndex, SpaceWeatherAlert, SolarWindSummary
 
-__all__ = ["SpaceWeatherAlert", "SolarWindSummary", "PlanetaryKIndex"]
+__all__ = ["PlanetaryKIndex", "SpaceWeatherAlert", "SolarWindSummary"]

@@ -28,14 +28,14 @@ class Test_Document(unittest.TestCase):
         Create instance of Document for testing
         """
         instance = Document(
-            station_id='epkrdmnkxrcmdhxvgwat',
-            timestamp='cakyhqycntwbihwtjvtc',
-            quality_level=int(62),
-            pressure_station_level=float(96.6709845229215),
-            air_temperature_2m=float(7.876786973158245),
-            air_temperature_5cm=float(95.94722479199369),
-            relative_humidity=float(71.86058657688872),
-            dew_point_temperature=float(32.20480803120728)
+            station_id='ttbxtkwqjadqcwtahujc',
+            station_name='zcvbdbjnklgvesvllnch',
+            latitude=float(81.48765622764714),
+            longitude=float(15.748633719129323),
+            elevation=float(9.509222327381705),
+            state='gazjqoaahjjeqgauamlp',
+            from_date='axdrkdndupivzauyjsoh',
+            to_date='bxadqnbmlzdjkiwhsdxb'
         )
         return instance
 
@@ -44,65 +44,65 @@ class Test_Document(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'epkrdmnkxrcmdhxvgwat'
+        test_value = 'ttbxtkwqjadqcwtahujc'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
-    def test_timestamp_property(self):
+    def test_station_name_property(self):
         """
-        Test timestamp property
+        Test station_name property
         """
-        test_value = 'cakyhqycntwbihwtjvtc'
-        self.instance.timestamp = test_value
-        self.assertEqual(self.instance.timestamp, test_value)
+        test_value = 'zcvbdbjnklgvesvllnch'
+        self.instance.station_name = test_value
+        self.assertEqual(self.instance.station_name, test_value)
     
-    def test_quality_level_property(self):
+    def test_latitude_property(self):
         """
-        Test quality_level property
+        Test latitude property
         """
-        test_value = int(62)
-        self.instance.quality_level = test_value
-        self.assertEqual(self.instance.quality_level, test_value)
+        test_value = float(81.48765622764714)
+        self.instance.latitude = test_value
+        self.assertEqual(self.instance.latitude, test_value)
     
-    def test_pressure_station_level_property(self):
+    def test_longitude_property(self):
         """
-        Test pressure_station_level property
+        Test longitude property
         """
-        test_value = float(96.6709845229215)
-        self.instance.pressure_station_level = test_value
-        self.assertEqual(self.instance.pressure_station_level, test_value)
+        test_value = float(15.748633719129323)
+        self.instance.longitude = test_value
+        self.assertEqual(self.instance.longitude, test_value)
     
-    def test_air_temperature_2m_property(self):
+    def test_elevation_property(self):
         """
-        Test air_temperature_2m property
+        Test elevation property
         """
-        test_value = float(7.876786973158245)
-        self.instance.air_temperature_2m = test_value
-        self.assertEqual(self.instance.air_temperature_2m, test_value)
+        test_value = float(9.509222327381705)
+        self.instance.elevation = test_value
+        self.assertEqual(self.instance.elevation, test_value)
     
-    def test_air_temperature_5cm_property(self):
+    def test_state_property(self):
         """
-        Test air_temperature_5cm property
+        Test state property
         """
-        test_value = float(95.94722479199369)
-        self.instance.air_temperature_5cm = test_value
-        self.assertEqual(self.instance.air_temperature_5cm, test_value)
+        test_value = 'gazjqoaahjjeqgauamlp'
+        self.instance.state = test_value
+        self.assertEqual(self.instance.state, test_value)
     
-    def test_relative_humidity_property(self):
+    def test_from_date_property(self):
         """
-        Test relative_humidity property
+        Test from_date property
         """
-        test_value = float(71.86058657688872)
-        self.instance.relative_humidity = test_value
-        self.assertEqual(self.instance.relative_humidity, test_value)
+        test_value = 'axdrkdndupivzauyjsoh'
+        self.instance.from_date = test_value
+        self.assertEqual(self.instance.from_date, test_value)
     
-    def test_dew_point_temperature_property(self):
+    def test_to_date_property(self):
         """
-        Test dew_point_temperature property
+        Test to_date property
         """
-        test_value = float(32.20480803120728)
-        self.instance.dew_point_temperature = test_value
-        self.assertEqual(self.instance.dew_point_temperature, test_value)
+        test_value = 'bxadqnbmlzdjkiwhsdxb'
+        self.instance.to_date = test_value
+        self.assertEqual(self.instance.to_date, test_value)
     
     def test_to_byte_array_json(self):
         """

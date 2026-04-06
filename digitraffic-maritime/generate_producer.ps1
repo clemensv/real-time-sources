@@ -1,5 +1,8 @@
 # Generate the Digitraffic Maritime data producer using xrcg
 
+. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+Assert-XrcgVersion
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = $scriptDir
 $xregFile = Join-Path $projectRoot "xreg\digitraffic_maritime.xreg.json"

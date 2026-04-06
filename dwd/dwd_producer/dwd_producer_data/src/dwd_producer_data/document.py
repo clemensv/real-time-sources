@@ -17,28 +17,28 @@ import json
 @dataclass
 class Document:
     """
-    AirTemperature10Min
+    StationMetadata
     
     Attributes:
         station_id (str)
-        timestamp (str)
-        quality_level (typing.Optional[int])
-        pressure_station_level (typing.Optional[float])
-        air_temperature_2m (typing.Optional[float])
-        air_temperature_5cm (typing.Optional[float])
-        relative_humidity (typing.Optional[float])
-        dew_point_temperature (typing.Optional[float])
+        station_name (str)
+        latitude (float)
+        longitude (float)
+        elevation (float)
+        state (typing.Optional[str])
+        from_date (typing.Optional[str])
+        to_date (typing.Optional[str])
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
-    quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
-    pressure_station_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_station_level"))
-    air_temperature_2m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_2m"))
-    air_temperature_5cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_5cm"))
-    relative_humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
-    dew_point_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dew_point_temperature"))
+    station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
+    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    elevation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    from_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="from_date"))
+    to_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="to_date"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Document':
@@ -165,12 +165,12 @@ class Document:
             An instance of the dataclass.
         """
         return cls(
-            station_id='epkrdmnkxrcmdhxvgwat',
-            timestamp='cakyhqycntwbihwtjvtc',
-            quality_level=int(62),
-            pressure_station_level=float(96.6709845229215),
-            air_temperature_2m=float(7.876786973158245),
-            air_temperature_5cm=float(95.94722479199369),
-            relative_humidity=float(71.86058657688872),
-            dew_point_temperature=float(32.20480803120728)
+            station_id='ttbxtkwqjadqcwtahujc',
+            station_name='zcvbdbjnklgvesvllnch',
+            latitude=float(81.48765622764714),
+            longitude=float(15.748633719129323),
+            elevation=float(9.509222327381705),
+            state='gazjqoaahjjeqgauamlp',
+            from_date='axdrkdndupivzauyjsoh',
+            to_date='bxadqnbmlzdjkiwhsdxb'
         )

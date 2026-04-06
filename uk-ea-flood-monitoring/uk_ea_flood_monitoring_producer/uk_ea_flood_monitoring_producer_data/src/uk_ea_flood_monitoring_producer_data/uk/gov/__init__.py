@@ -1,3 +1,3 @@
-from .environment import Station, Reading
+from .environment import Reading, Station
 
-__all__ = ["Station", "Reading"]
+__all__ = ["Reading", "Station"]

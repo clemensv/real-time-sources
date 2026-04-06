@@ -13,9 +13,9 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
-from gtfs_rt_producer_data.generaltransitfeedstatic.continuousdropoff import ContinuousDropOff
-from gtfs_rt_producer_data.generaltransitfeedstatic.continuouspickup import ContinuousPickup
 from gtfs_rt_producer_data.generaltransitfeedstatic.routetype import RouteType
+from gtfs_rt_producer_data.generaltransitfeedstatic.continuouspickup import ContinuousPickup
+from gtfs_rt_producer_data.generaltransitfeedstatic.continuousdropoff import ContinuousDropOff
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)

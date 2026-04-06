@@ -24,7 +24,8 @@ class BEVlaanderenWaterinfoVMMEventProducer:
         self.topic = topic
         self.content_mode = content_mode
 
-    def __key_mapper(self, x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str]) -> str:
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
         """
         Maps a CloudEvent to a Kafka key
 
@@ -32,65 +33,73 @@ class BEVlaanderenWaterinfoVMMEventProducer:
             x (CloudEvent): The CloudEvent to map
             m (Any): The event data
             key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
         """
         if key_mapper:
             return key_mapper(x, m)
-        else:
-            return f'{str(x.get("type"))}:{str(x.get("source"))}{("-"+str(x.get("subject"))) if x.get("subject") else ""}'
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_be_vlaanderen_waterinfo_vmm_station(self,data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_be_vlaanderen_waterinfo_vmm_station(self,_station_no : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'BE.Vlaanderen.Waterinfo.VMM.Station' event to the Kafka topic
 
         Args:
+            _station_no(str):  Value for placeholder station_no in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
-                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+            key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_no}'
         """
+        kafka_key = "{station_no}".format(station_no=_station_no)
         attributes = {
              "type":"BE.Vlaanderen.Waterinfo.VMM.Station",
-             "source":"https://waterinfo.vlaanderen.be"
+             "source":"https://waterinfo.vlaanderen.be",
+             "subject":"{station_no}".format(station_no = _station_no)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_be_vlaanderen_waterinfo_vmm_water_level_reading(self,data: WaterLevelReading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevelReading], str]=None) -> None:
+    def send_be_vlaanderen_waterinfo_vmm_water_level_reading(self,_station_no : str, data: WaterLevelReading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevelReading], str]=None) -> None:
         """
         Sends the 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading' event to the Kafka topic
 
         Args:
+            _station_no(str):  Value for placeholder station_no in attribute subject
             data: (WaterLevelReading): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, WaterLevelReading], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
-                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+            key_mapper(Callable[[CloudEvent, WaterLevelReading], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_no}'
         """
+        kafka_key = "{station_no}".format(station_no=_station_no)
         attributes = {
              "type":"BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
-             "source":"https://waterinfo.vlaanderen.be"
+             "source":"https://waterinfo.vlaanderen.be",
+             "subject":"{station_no}".format(station_no = _station_no)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

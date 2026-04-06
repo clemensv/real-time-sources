@@ -1,5 +1,8 @@
 # Generate USGS Earthquakes producer from xRegistry definitions
 
+. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+Assert-XrcgVersion
+
 Write-Host "Generating USGS Earthquakes producer from xRegistry definitions..." -ForegroundColor Cyan
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path

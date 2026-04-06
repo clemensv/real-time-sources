@@ -53,6 +53,7 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
         ce['datacontenttype'] = 'application/json'
     return ce
 
+
 def test_microsoft_opendata_rssfeeds_microsoftopendatarssfeedsfeeditem(kafka_emulator):
     """Test the MicrosoftOpenDataRssFeedsFeedItem event from the Microsoft.OpenData.RssFeeds message group"""
 
@@ -85,7 +86,7 @@ def test_microsoft_opendata_rssfeeds_microsoftopendatarssfeedsfeeditem(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -93,7 +94,7 @@ def test_microsoft_opendata_rssfeeds_microsoftopendatarssfeedsfeeditem(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "Microsoft.OpenData.RssFeeds.FeedItem":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = MicrosoftOpenDataRssFeedsEventProducer(kafka_producer, topic, 'binary')
@@ -107,7 +108,10 @@ def test_microsoft_opendata_rssfeeds_microsoftopendatarssfeedsfeeditem(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{item_id}".format(item_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()

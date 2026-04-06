@@ -1,5 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
+. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+Assert-XrcgVersion
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $xregFile = Join-Path $scriptDir "xreg\syke_hydro.xreg.json"
 $outputDir = Join-Path $scriptDir "syke_hydro_producer"

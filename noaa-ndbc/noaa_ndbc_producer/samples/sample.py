@@ -62,7 +62,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _buoy_observation = BuoyObservation()
 
     # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation' event to Kafka topic.
-    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(data = _buoy_observation)
+    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(_station_id = 'TODO: replace me', data = _buoy_observation)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation' event: {_buoy_observation.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.NDBC.BuoyStation ----
@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _buoy_station = BuoyStation()
 
     # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation' event to Kafka topic.
-    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(data = _buoy_station)
+    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(_station_id = 'TODO: replace me', data = _buoy_station)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation' event: {_buoy_station.to_json()}")
 
 if __name__ == "__main__":

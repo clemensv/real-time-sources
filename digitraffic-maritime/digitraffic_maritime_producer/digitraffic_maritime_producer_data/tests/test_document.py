@@ -28,20 +28,20 @@ class Test_Document(unittest.TestCase):
         Create instance of Document for testing
         """
         instance = Document(
-            mmsi=int(69),
-            timestamp=int(23),
-            name='xukwtpbhcyydbczlgqxd',
-            callSign='jsetipgypuphfmaiivfh',
-            imo=int(61),
-            type=int(40),
-            draught=int(62),
-            eta=int(44),
-            destination='aghswfmlmnsjkxthvqwy',
-            posType=int(74),
-            refA=int(6),
-            refB=int(34),
-            refC=int(89),
-            refD=int(30)
+            mmsi=int(60),
+            timestamp=int(62),
+            name='zniscuxegvxkoufvfmik',
+            callSign='jeqmgmhsscdddacvethb',
+            imo=int(15),
+            type=int(60),
+            draught=int(98),
+            eta=int(51),
+            destination='einoaivfdxaraavwwtkb',
+            posType=int(94),
+            refA=int(23),
+            refB=int(67),
+            refC=int(80),
+            refD=int(89)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_Document(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(69)
+        test_value = int(60)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -58,7 +58,7 @@ class Test_Document(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(23)
+        test_value = int(62)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -66,7 +66,7 @@ class Test_Document(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'xukwtpbhcyydbczlgqxd'
+        test_value = 'zniscuxegvxkoufvfmik'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -74,7 +74,7 @@ class Test_Document(unittest.TestCase):
         """
         Test callSign property
         """
-        test_value = 'jsetipgypuphfmaiivfh'
+        test_value = 'jeqmgmhsscdddacvethb'
         self.instance.callSign = test_value
         self.assertEqual(self.instance.callSign, test_value)
     
@@ -82,7 +82,7 @@ class Test_Document(unittest.TestCase):
         """
         Test imo property
         """
-        test_value = int(61)
+        test_value = int(15)
         self.instance.imo = test_value
         self.assertEqual(self.instance.imo, test_value)
     
@@ -90,7 +90,7 @@ class Test_Document(unittest.TestCase):
         """
         Test type property
         """
-        test_value = int(40)
+        test_value = int(60)
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -98,7 +98,7 @@ class Test_Document(unittest.TestCase):
         """
         Test draught property
         """
-        test_value = int(62)
+        test_value = int(98)
         self.instance.draught = test_value
         self.assertEqual(self.instance.draught, test_value)
     
@@ -106,7 +106,7 @@ class Test_Document(unittest.TestCase):
         """
         Test eta property
         """
-        test_value = int(44)
+        test_value = int(51)
         self.instance.eta = test_value
         self.assertEqual(self.instance.eta, test_value)
     
@@ -114,7 +114,7 @@ class Test_Document(unittest.TestCase):
         """
         Test destination property
         """
-        test_value = 'aghswfmlmnsjkxthvqwy'
+        test_value = 'einoaivfdxaraavwwtkb'
         self.instance.destination = test_value
         self.assertEqual(self.instance.destination, test_value)
     
@@ -122,7 +122,7 @@ class Test_Document(unittest.TestCase):
         """
         Test posType property
         """
-        test_value = int(74)
+        test_value = int(94)
         self.instance.posType = test_value
         self.assertEqual(self.instance.posType, test_value)
     
@@ -130,7 +130,7 @@ class Test_Document(unittest.TestCase):
         """
         Test refA property
         """
-        test_value = int(6)
+        test_value = int(23)
         self.instance.refA = test_value
         self.assertEqual(self.instance.refA, test_value)
     
@@ -138,7 +138,7 @@ class Test_Document(unittest.TestCase):
         """
         Test refB property
         """
-        test_value = int(34)
+        test_value = int(67)
         self.instance.refB = test_value
         self.assertEqual(self.instance.refB, test_value)
     
@@ -146,7 +146,7 @@ class Test_Document(unittest.TestCase):
         """
         Test refC property
         """
-        test_value = int(89)
+        test_value = int(80)
         self.instance.refC = test_value
         self.assertEqual(self.instance.refC, test_value)
     
@@ -154,7 +154,7 @@ class Test_Document(unittest.TestCase):
         """
         Test refD property
         """
-        test_value = int(30)
+        test_value = int(89)
         self.instance.refD = test_value
         self.assertEqual(self.instance.refD, test_value)
     

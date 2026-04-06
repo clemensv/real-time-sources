@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer
+from dwd_producer_kafka_producer.producer import DEDWDWeatherEventProducer
 
 # imports for the data classes for each event
 
@@ -67,7 +68,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station_metadata = StationMetadata()
 
     # sends the 'DE.DWD.CDC.StationMetadata' event to Kafka topic.
-    await dedwdcdcevent_producer.send_de_dwd_cdc_station_metadata(data = _station_metadata)
+    await dedwdcdcevent_producer.send_de_dwd_cdc_station_metadata(_station_id = 'TODO: replace me', data = _station_metadata)
     print(f"Sent 'DE.DWD.CDC.StationMetadata' event: {_station_metadata.to_json()}")
 
     # ---- DE.DWD.CDC.AirTemperature10Min ----
@@ -75,7 +76,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _air_temperature10_min = AirTemperature10Min()
 
     # sends the 'DE.DWD.CDC.AirTemperature10Min' event to Kafka topic.
-    await dedwdcdcevent_producer.send_de_dwd_cdc_air_temperature10_min(data = _air_temperature10_min)
+    await dedwdcdcevent_producer.send_de_dwd_cdc_air_temperature10_min(_station_id = 'TODO: replace me', data = _air_temperature10_min)
     print(f"Sent 'DE.DWD.CDC.AirTemperature10Min' event: {_air_temperature10_min.to_json()}")
 
     # ---- DE.DWD.CDC.Precipitation10Min ----
@@ -83,7 +84,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _precipitation10_min = Precipitation10Min()
 
     # sends the 'DE.DWD.CDC.Precipitation10Min' event to Kafka topic.
-    await dedwdcdcevent_producer.send_de_dwd_cdc_precipitation10_min(data = _precipitation10_min)
+    await dedwdcdcevent_producer.send_de_dwd_cdc_precipitation10_min(_station_id = 'TODO: replace me', data = _precipitation10_min)
     print(f"Sent 'DE.DWD.CDC.Precipitation10Min' event: {_precipitation10_min.to_json()}")
 
     # ---- DE.DWD.CDC.Wind10Min ----
@@ -91,7 +92,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _wind10_min = Wind10Min()
 
     # sends the 'DE.DWD.CDC.Wind10Min' event to Kafka topic.
-    await dedwdcdcevent_producer.send_de_dwd_cdc_wind10_min(data = _wind10_min)
+    await dedwdcdcevent_producer.send_de_dwd_cdc_wind10_min(_station_id = 'TODO: replace me', data = _wind10_min)
     print(f"Sent 'DE.DWD.CDC.Wind10Min' event: {_wind10_min.to_json()}")
 
     # ---- DE.DWD.CDC.Solar10Min ----
@@ -99,7 +100,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _solar10_min = Solar10Min()
 
     # sends the 'DE.DWD.CDC.Solar10Min' event to Kafka topic.
-    await dedwdcdcevent_producer.send_de_dwd_cdc_solar10_min(data = _solar10_min)
+    await dedwdcdcevent_producer.send_de_dwd_cdc_solar10_min(_station_id = 'TODO: replace me', data = _solar10_min)
     print(f"Sent 'DE.DWD.CDC.Solar10Min' event: {_solar10_min.to_json()}")
 
     # ---- DE.DWD.CDC.HourlyObservation ----
@@ -107,15 +108,23 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _hourly_observation = HourlyObservation()
 
     # sends the 'DE.DWD.CDC.HourlyObservation' event to Kafka topic.
-    await dedwdcdcevent_producer.send_de_dwd_cdc_hourly_observation(data = _hourly_observation)
+    await dedwdcdcevent_producer.send_de_dwd_cdc_hourly_observation(_station_id = 'TODO: replace me', data = _hourly_observation)
     print(f"Sent 'DE.DWD.CDC.HourlyObservation' event: {_hourly_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        dedwdweather_event_producer = DEDWDWeatherEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        dedwdweather_event_producer = DEDWDWeatherEventProducer(kafka_producer, topic, 'binary')
 
     # ---- DE.DWD.Weather.Alert ----
     # TODO: Supply event data for the DE.DWD.Weather.Alert event
     _alert = Alert()
 
     # sends the 'DE.DWD.Weather.Alert' event to Kafka topic.
-    await dedwdcdcevent_producer.send_de_dwd_weather_alert(data = _alert)
+    await dedwdweather_event_producer.send_de_dwd_weather_alert(_identifier = 'TODO: replace me', data = _alert)
     print(f"Sent 'DE.DWD.Weather.Alert' event: {_alert.to_json()}")
 
 if __name__ == "__main__":

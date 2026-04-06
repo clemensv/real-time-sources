@@ -16,7 +16,7 @@ from dwd_producer_data.de.dwd.cdc.wind10min import Wind10Min
 from dwd_producer_data.de.dwd.cdc.solar10min import Solar10Min
 from dwd_producer_data.de.dwd.cdc.hourlyobservation import HourlyObservation
 from dwd_producer_data.de.dwd.cdc.alert import Alert
-from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer
+from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer, DEDWDWeatherEventProducer
 
 from dwd.modules.base import BaseModule
 from dwd.modules.station_metadata import StationMetadataModule
@@ -110,32 +110,34 @@ def _create_module(key: str, http_client: DWDHttpClient,
         raise ValueError(f"Unknown module: {key}")
 
 
-def _emit_event(event_producer: DEDWDCDCEventProducer, event: Dict[str, Any]) -> None:
+def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
+                weather_event_producer: DEDWDWeatherEventProducer,
+                event: Dict[str, Any]) -> None:
     """Send a single event through the typed Kafka producer."""
     etype = event["type"]
     data = event["data"]
 
     if etype == "station_metadata":
-        event_producer.send_de_dwd_cdc_station_metadata(
-            data=StationMetadata(**data), flush_producer=False)
+        cdc_event_producer.send_de_dwd_cdc_station_metadata(
+            _station_id=data["station_id"], data=StationMetadata(**data), flush_producer=False)
     elif etype == "air_temperature_10min":
-        event_producer.send_de_dwd_cdc_air_temperature10_min(
-            data=AirTemperature10Min(**data), flush_producer=False)
+        cdc_event_producer.send_de_dwd_cdc_air_temperature10_min(
+            _station_id=data["station_id"], data=AirTemperature10Min(**data), flush_producer=False)
     elif etype == "precipitation_10min":
-        event_producer.send_de_dwd_cdc_precipitation10_min(
-            data=Precipitation10Min(**data), flush_producer=False)
+        cdc_event_producer.send_de_dwd_cdc_precipitation10_min(
+            _station_id=data["station_id"], data=Precipitation10Min(**data), flush_producer=False)
     elif etype == "wind_10min":
-        event_producer.send_de_dwd_cdc_wind10_min(
-            data=Wind10Min(**data), flush_producer=False)
+        cdc_event_producer.send_de_dwd_cdc_wind10_min(
+            _station_id=data["station_id"], data=Wind10Min(**data), flush_producer=False)
     elif etype == "solar_10min":
-        event_producer.send_de_dwd_cdc_solar10_min(
-            data=Solar10Min(**data), flush_producer=False)
+        cdc_event_producer.send_de_dwd_cdc_solar10_min(
+            _station_id=data["station_id"], data=Solar10Min(**data), flush_producer=False)
     elif etype == "hourly_observation":
-        event_producer.send_de_dwd_cdc_hourly_observation(
-            data=HourlyObservation(**data), flush_producer=False)
+        cdc_event_producer.send_de_dwd_cdc_hourly_observation(
+            _station_id=data["station_id"], data=HourlyObservation(**data), flush_producer=False)
     elif etype == "weather_alert":
-        event_producer.send_de_dwd_weather_alert(
-            data=Alert(**data), flush_producer=False)
+        weather_event_producer.send_de_dwd_weather_alert(
+            _identifier=data["identifier"], data=Alert(**data), flush_producer=False)
     else:
         logger.warning("Unknown event type: %s", etype)
 
@@ -146,7 +148,8 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
     """Main feed loop: schedule modules and emit events."""
     full_state = load_state(state_file)
     kafka_producer = Producer(kafka_config)
-    event_producer = DEDWDCDCEventProducer(kafka_producer, kafka_topic)
+    cdc_event_producer = DEDWDCDCEventProducer(kafka_producer, kafka_topic)
+    weather_event_producer = DEDWDWeatherEventProducer(kafka_producer, kafka_topic)
 
     module_names = ", ".join(m.name for m in modules)
     logger.info("Starting DWD feed → topic=%s, bootstrap=%s, modules=[%s]",
@@ -172,7 +175,7 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
                     events = []
 
                 for ev in events:
-                    _emit_event(event_producer, ev)
+                    _emit_event(cdc_event_producer, weather_event_producer, ev)
                     total_events += 1
 
                 if events:

@@ -28,7 +28,7 @@ class Test_Products(unittest.TestCase):
         Create instance of Products for testing
         """
         instance = Products(
-            self_='oodjjqbwtghaettupajf'
+            self_='foeuytlmbiylvkdtyael'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Products(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'oodjjqbwtghaettupajf'
+        test_value = 'foeuytlmbiylvkdtyael'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

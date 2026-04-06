@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "mode-s"
+          "topic": "mode-s",
+          "key": "{stationid}"
         }
       },
       "messagegroups": [
@@ -55,6 +56,13 @@
               "required": true,
               "value": "{stationid}",
               "description": "Station Identifier"
+            },
+            "subject": {
+              "name": "subject",
+              "type": "uritemplate",
+              "value": "{stationid}",
+              "required": true,
+              "description": "Partition key subject"
             }
           }
         }

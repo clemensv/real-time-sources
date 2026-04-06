@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
-from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_link import Test_Link
 from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_feeditemauthor import Test_FeedItemAuthor
+from test_rssbridge_producer_data_microsoft_opendata_rssfeeds_link import Test_Link
 import datetime
 
 
@@ -31,17 +31,17 @@ class Test_FeedItemSource(unittest.TestCase):
         Create instance of FeedItemSource for testing
         """
         instance = FeedItemSource(
-            author='hrjeslfzjqglaragffua',
+            author='qccgalrpapzyapfhnncz',
             author_detail=Test_FeedItemAuthor.create_instance(),
-            contributors=[Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()],
-            icon='kvvaqsghlqmhwmmbohyr',
-            id='pvphejumwzldstntrmpd',
-            link='evgeuzqskcqwaomuyvnm',
-            links=[Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance()],
-            logo='vvlqyevnfjnerghuamqm',
-            rights='obrtxbdnpllptztpwinw',
-            subtitle='ksxfqtywbjjccgrprbmp',
-            title='jamxemwqnjvcrwwjbozs',
+            contributors=[Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()],
+            icon='rvyzqneuutogfiaxheuk',
+            id='rtfiqcfumvdwudndkuun',
+            link='jauodfldpfpyihlbmljn',
+            links=[Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance()],
+            logo='zixpldhjefleqkpujesr',
+            rights='taooqoatzpophvvvuuwb',
+            subtitle='qnpyljnqdfhxgtfzlmsv',
+            title='mpjbpkpzagaqwqbtugxp',
             updated=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
@@ -51,7 +51,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test author property
         """
-        test_value = 'hrjeslfzjqglaragffua'
+        test_value = 'qccgalrpapzyapfhnncz'
         self.instance.author = test_value
         self.assertEqual(self.instance.author, test_value)
     
@@ -67,7 +67,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test contributors property
         """
-        test_value = [Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()]
+        test_value = [Test_FeedItemAuthor.create_instance(), Test_FeedItemAuthor.create_instance()]
         self.instance.contributors = test_value
         self.assertEqual(self.instance.contributors, test_value)
     
@@ -75,7 +75,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'kvvaqsghlqmhwmmbohyr'
+        test_value = 'rvyzqneuutogfiaxheuk'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -83,7 +83,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'pvphejumwzldstntrmpd'
+        test_value = 'rtfiqcfumvdwudndkuun'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -91,7 +91,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test link property
         """
-        test_value = 'evgeuzqskcqwaomuyvnm'
+        test_value = 'jauodfldpfpyihlbmljn'
         self.instance.link = test_value
         self.assertEqual(self.instance.link, test_value)
     
@@ -99,7 +99,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test links property
         """
-        test_value = [Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance()]
+        test_value = [Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance(), Test_Link.create_instance()]
         self.instance.links = test_value
         self.assertEqual(self.instance.links, test_value)
     
@@ -107,7 +107,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test logo property
         """
-        test_value = 'vvlqyevnfjnerghuamqm'
+        test_value = 'zixpldhjefleqkpujesr'
         self.instance.logo = test_value
         self.assertEqual(self.instance.logo, test_value)
     
@@ -115,7 +115,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test rights property
         """
-        test_value = 'obrtxbdnpllptztpwinw'
+        test_value = 'taooqoatzpophvvvuuwb'
         self.instance.rights = test_value
         self.assertEqual(self.instance.rights, test_value)
     
@@ -123,7 +123,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'ksxfqtywbjjccgrprbmp'
+        test_value = 'qnpyljnqdfhxgtfzlmsv'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -131,7 +131,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'jamxemwqnjvcrwwjbozs'
+        test_value = 'mpjbpkpzagaqwqbtugxp'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     

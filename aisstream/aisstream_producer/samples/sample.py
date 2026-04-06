@@ -83,7 +83,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _position_report = PositionReport()
 
     # sends the 'IO.AISstream.PositionReport' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_position_report(data = _position_report)
+    await ioaisstream_event_producer.send_io_aisstream_position_report(_mmsi = 'TODO: replace me', data = _position_report)
     print(f"Sent 'IO.AISstream.PositionReport' event: {_position_report.to_json()}")
 
     # ---- IO.AISstream.ShipStaticData ----
@@ -91,7 +91,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _ship_static_data = ShipStaticData()
 
     # sends the 'IO.AISstream.ShipStaticData' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_ship_static_data(data = _ship_static_data)
+    await ioaisstream_event_producer.send_io_aisstream_ship_static_data(_mmsi = 'TODO: replace me', data = _ship_static_data)
     print(f"Sent 'IO.AISstream.ShipStaticData' event: {_ship_static_data.to_json()}")
 
     # ---- IO.AISstream.StandardClassBPositionReport ----
@@ -99,7 +99,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _standard_class_bposition_report = StandardClassBPositionReport()
 
     # sends the 'IO.AISstream.StandardClassBPositionReport' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_standard_class_bposition_report(data = _standard_class_bposition_report)
+    await ioaisstream_event_producer.send_io_aisstream_standard_class_bposition_report(_mmsi = 'TODO: replace me', data = _standard_class_bposition_report)
     print(f"Sent 'IO.AISstream.StandardClassBPositionReport' event: {_standard_class_bposition_report.to_json()}")
 
     # ---- IO.AISstream.ExtendedClassBPositionReport ----
@@ -107,7 +107,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _extended_class_bposition_report = ExtendedClassBPositionReport()
 
     # sends the 'IO.AISstream.ExtendedClassBPositionReport' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_extended_class_bposition_report(data = _extended_class_bposition_report)
+    await ioaisstream_event_producer.send_io_aisstream_extended_class_bposition_report(_mmsi = 'TODO: replace me', data = _extended_class_bposition_report)
     print(f"Sent 'IO.AISstream.ExtendedClassBPositionReport' event: {_extended_class_bposition_report.to_json()}")
 
     # ---- IO.AISstream.AidsToNavigationReport ----
@@ -115,7 +115,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _aids_to_navigation_report = AidsToNavigationReport()
 
     # sends the 'IO.AISstream.AidsToNavigationReport' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_aids_to_navigation_report(data = _aids_to_navigation_report)
+    await ioaisstream_event_producer.send_io_aisstream_aids_to_navigation_report(_mmsi = 'TODO: replace me', data = _aids_to_navigation_report)
     print(f"Sent 'IO.AISstream.AidsToNavigationReport' event: {_aids_to_navigation_report.to_json()}")
 
     # ---- IO.AISstream.StaticDataReport ----
@@ -123,7 +123,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _static_data_report = StaticDataReport()
 
     # sends the 'IO.AISstream.StaticDataReport' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_static_data_report(data = _static_data_report)
+    await ioaisstream_event_producer.send_io_aisstream_static_data_report(_mmsi = 'TODO: replace me', data = _static_data_report)
     print(f"Sent 'IO.AISstream.StaticDataReport' event: {_static_data_report.to_json()}")
 
     # ---- IO.AISstream.BaseStationReport ----
@@ -131,7 +131,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _base_station_report = BaseStationReport()
 
     # sends the 'IO.AISstream.BaseStationReport' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_base_station_report(data = _base_station_report)
+    await ioaisstream_event_producer.send_io_aisstream_base_station_report(_mmsi = 'TODO: replace me', data = _base_station_report)
     print(f"Sent 'IO.AISstream.BaseStationReport' event: {_base_station_report.to_json()}")
 
     # ---- IO.AISstream.SafetyBroadcastMessage ----
@@ -139,7 +139,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _safety_broadcast_message = SafetyBroadcastMessage()
 
     # sends the 'IO.AISstream.SafetyBroadcastMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_safety_broadcast_message(data = _safety_broadcast_message)
+    await ioaisstream_event_producer.send_io_aisstream_safety_broadcast_message(_mmsi = 'TODO: replace me', data = _safety_broadcast_message)
     print(f"Sent 'IO.AISstream.SafetyBroadcastMessage' event: {_safety_broadcast_message.to_json()}")
 
     # ---- IO.AISstream.StandardSearchAndRescueAircraftReport ----
@@ -147,7 +147,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _standard_search_and_rescue_aircraft_report = StandardSearchAndRescueAircraftReport()
 
     # sends the 'IO.AISstream.StandardSearchAndRescueAircraftReport' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_standard_search_and_rescue_aircraft_report(data = _standard_search_and_rescue_aircraft_report)
+    await ioaisstream_event_producer.send_io_aisstream_standard_search_and_rescue_aircraft_report(_mmsi = 'TODO: replace me', data = _standard_search_and_rescue_aircraft_report)
     print(f"Sent 'IO.AISstream.StandardSearchAndRescueAircraftReport' event: {_standard_search_and_rescue_aircraft_report.to_json()}")
 
     # ---- IO.AISstream.LongRangeAisBroadcastMessage ----
@@ -155,7 +155,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _long_range_ais_broadcast_message = LongRangeAisBroadcastMessage()
 
     # sends the 'IO.AISstream.LongRangeAisBroadcastMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_long_range_ais_broadcast_message(data = _long_range_ais_broadcast_message)
+    await ioaisstream_event_producer.send_io_aisstream_long_range_ais_broadcast_message(_mmsi = 'TODO: replace me', data = _long_range_ais_broadcast_message)
     print(f"Sent 'IO.AISstream.LongRangeAisBroadcastMessage' event: {_long_range_ais_broadcast_message.to_json()}")
 
     # ---- IO.AISstream.AddressedSafetyMessage ----
@@ -163,7 +163,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _addressed_safety_message = AddressedSafetyMessage()
 
     # sends the 'IO.AISstream.AddressedSafetyMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_addressed_safety_message(data = _addressed_safety_message)
+    await ioaisstream_event_producer.send_io_aisstream_addressed_safety_message(_mmsi = 'TODO: replace me', data = _addressed_safety_message)
     print(f"Sent 'IO.AISstream.AddressedSafetyMessage' event: {_addressed_safety_message.to_json()}")
 
     # ---- IO.AISstream.AddressedBinaryMessage ----
@@ -171,7 +171,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _addressed_binary_message = AddressedBinaryMessage()
 
     # sends the 'IO.AISstream.AddressedBinaryMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_addressed_binary_message(data = _addressed_binary_message)
+    await ioaisstream_event_producer.send_io_aisstream_addressed_binary_message(_mmsi = 'TODO: replace me', data = _addressed_binary_message)
     print(f"Sent 'IO.AISstream.AddressedBinaryMessage' event: {_addressed_binary_message.to_json()}")
 
     # ---- IO.AISstream.AssignedModeCommand ----
@@ -179,7 +179,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _assigned_mode_command = AssignedModeCommand()
 
     # sends the 'IO.AISstream.AssignedModeCommand' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_assigned_mode_command(data = _assigned_mode_command)
+    await ioaisstream_event_producer.send_io_aisstream_assigned_mode_command(_mmsi = 'TODO: replace me', data = _assigned_mode_command)
     print(f"Sent 'IO.AISstream.AssignedModeCommand' event: {_assigned_mode_command.to_json()}")
 
     # ---- IO.AISstream.BinaryAcknowledge ----
@@ -187,7 +187,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _binary_acknowledge = BinaryAcknowledge()
 
     # sends the 'IO.AISstream.BinaryAcknowledge' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_binary_acknowledge(data = _binary_acknowledge)
+    await ioaisstream_event_producer.send_io_aisstream_binary_acknowledge(_mmsi = 'TODO: replace me', data = _binary_acknowledge)
     print(f"Sent 'IO.AISstream.BinaryAcknowledge' event: {_binary_acknowledge.to_json()}")
 
     # ---- IO.AISstream.BinaryBroadcastMessage ----
@@ -195,7 +195,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _binary_broadcast_message = BinaryBroadcastMessage()
 
     # sends the 'IO.AISstream.BinaryBroadcastMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_binary_broadcast_message(data = _binary_broadcast_message)
+    await ioaisstream_event_producer.send_io_aisstream_binary_broadcast_message(_mmsi = 'TODO: replace me', data = _binary_broadcast_message)
     print(f"Sent 'IO.AISstream.BinaryBroadcastMessage' event: {_binary_broadcast_message.to_json()}")
 
     # ---- IO.AISstream.ChannelManagement ----
@@ -203,7 +203,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _channel_management = ChannelManagement()
 
     # sends the 'IO.AISstream.ChannelManagement' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_channel_management(data = _channel_management)
+    await ioaisstream_event_producer.send_io_aisstream_channel_management(_mmsi = 'TODO: replace me', data = _channel_management)
     print(f"Sent 'IO.AISstream.ChannelManagement' event: {_channel_management.to_json()}")
 
     # ---- IO.AISstream.CoordinatedUTCInquiry ----
@@ -211,7 +211,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _coordinated_utcinquiry = CoordinatedUTCInquiry()
 
     # sends the 'IO.AISstream.CoordinatedUTCInquiry' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_coordinated_utcinquiry(data = _coordinated_utcinquiry)
+    await ioaisstream_event_producer.send_io_aisstream_coordinated_utcinquiry(_mmsi = 'TODO: replace me', data = _coordinated_utcinquiry)
     print(f"Sent 'IO.AISstream.CoordinatedUTCInquiry' event: {_coordinated_utcinquiry.to_json()}")
 
     # ---- IO.AISstream.DataLinkManagementMessage ----
@@ -219,7 +219,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _data_link_management_message = DataLinkManagementMessage()
 
     # sends the 'IO.AISstream.DataLinkManagementMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_data_link_management_message(data = _data_link_management_message)
+    await ioaisstream_event_producer.send_io_aisstream_data_link_management_message(_mmsi = 'TODO: replace me', data = _data_link_management_message)
     print(f"Sent 'IO.AISstream.DataLinkManagementMessage' event: {_data_link_management_message.to_json()}")
 
     # ---- IO.AISstream.GnssBroadcastBinaryMessage ----
@@ -227,7 +227,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _gnss_broadcast_binary_message = GnssBroadcastBinaryMessage()
 
     # sends the 'IO.AISstream.GnssBroadcastBinaryMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_gnss_broadcast_binary_message(data = _gnss_broadcast_binary_message)
+    await ioaisstream_event_producer.send_io_aisstream_gnss_broadcast_binary_message(_mmsi = 'TODO: replace me', data = _gnss_broadcast_binary_message)
     print(f"Sent 'IO.AISstream.GnssBroadcastBinaryMessage' event: {_gnss_broadcast_binary_message.to_json()}")
 
     # ---- IO.AISstream.GroupAssignmentCommand ----
@@ -235,7 +235,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _group_assignment_command = GroupAssignmentCommand()
 
     # sends the 'IO.AISstream.GroupAssignmentCommand' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_group_assignment_command(data = _group_assignment_command)
+    await ioaisstream_event_producer.send_io_aisstream_group_assignment_command(_mmsi = 'TODO: replace me', data = _group_assignment_command)
     print(f"Sent 'IO.AISstream.GroupAssignmentCommand' event: {_group_assignment_command.to_json()}")
 
     # ---- IO.AISstream.Interrogation ----
@@ -243,7 +243,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _interrogation = Interrogation()
 
     # sends the 'IO.AISstream.Interrogation' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_interrogation(data = _interrogation)
+    await ioaisstream_event_producer.send_io_aisstream_interrogation(_mmsi = 'TODO: replace me', data = _interrogation)
     print(f"Sent 'IO.AISstream.Interrogation' event: {_interrogation.to_json()}")
 
     # ---- IO.AISstream.MultiSlotBinaryMessage ----
@@ -251,7 +251,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _multi_slot_binary_message = MultiSlotBinaryMessage()
 
     # sends the 'IO.AISstream.MultiSlotBinaryMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_multi_slot_binary_message(data = _multi_slot_binary_message)
+    await ioaisstream_event_producer.send_io_aisstream_multi_slot_binary_message(_mmsi = 'TODO: replace me', data = _multi_slot_binary_message)
     print(f"Sent 'IO.AISstream.MultiSlotBinaryMessage' event: {_multi_slot_binary_message.to_json()}")
 
     # ---- IO.AISstream.SingleSlotBinaryMessage ----
@@ -259,7 +259,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _single_slot_binary_message = SingleSlotBinaryMessage()
 
     # sends the 'IO.AISstream.SingleSlotBinaryMessage' event to Kafka topic.
-    await ioaisstream_event_producer.send_io_aisstream_single_slot_binary_message(data = _single_slot_binary_message)
+    await ioaisstream_event_producer.send_io_aisstream_single_slot_binary_message(_mmsi = 'TODO: replace me', data = _single_slot_binary_message)
     print(f"Sent 'IO.AISstream.SingleSlotBinaryMessage' event: {_single_slot_binary_message.to_json()}")
 
 if __name__ == "__main__":

@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "bluesky"
+          "topic": "bluesky",
+          "key": "{did}"
         }
       },
       "messagegroups": [
@@ -60,7 +61,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
-              "description": "Decentralized Identifier"
+              "description": "Decentralized Identifier",
+              "required": true
             }
           }
         },
@@ -99,7 +101,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
-              "description": "Decentralized Identifier"
+              "description": "Decentralized Identifier",
+              "required": true
             }
           }
         },
@@ -138,7 +141,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
-              "description": "Decentralized Identifier"
+              "description": "Decentralized Identifier",
+              "required": true
             }
           }
         },
@@ -177,7 +181,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
-              "description": "Decentralized Identifier"
+              "description": "Decentralized Identifier",
+              "required": true
             }
           }
         },
@@ -216,7 +221,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
-              "description": "Decentralized Identifier"
+              "description": "Decentralized Identifier",
+              "required": true
             }
           }
         },
@@ -255,7 +261,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
-              "description": "Decentralized Identifier"
+              "description": "Decentralized Identifier",
+              "required": true
             }
           }
         }

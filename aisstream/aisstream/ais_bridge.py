@@ -103,7 +103,8 @@ def _emit_event(event_producer: IOAISstreamEventProducer,
     try:
         data = data_class.from_serializer_dict(payload)
         send_fn = getattr(event_producer, send_method_name)
-        send_fn(data=data, flush_producer=False, key_mapper=_mmsi_key_mapper)
+        mmsi = _mmsi_key_mapper(None, data)
+        send_fn(_mmsi=mmsi, data=data, flush_producer=False, key_mapper=_mmsi_key_mapper)
         return True
     except Exception as e:
         logger.warning("Failed to emit %s: %s", message_type, e)

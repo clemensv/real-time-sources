@@ -1,5 +1,8 @@
 # Generate the NOAA NWS Weather Alerts producer using xrcg
 
+. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+Assert-XrcgVersion
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = $scriptDir
 $xregFile = Join-Path $projectRoot "xreg\noaa_nws.xreg.json"

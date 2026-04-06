@@ -1,6 +1,6 @@
 {
   "endpoints": {
-    "eu.entsoe.transparency.Kafka": {
+    "eu.entsoe.transparency.ByDomain.Kafka": {
       "usage": [
         "producer"
       ],
@@ -13,31 +13,60 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "entsoe-transparency"
+          "topic": "entsoe-transparency",
+          "key": "{inDomain}"
         }
       },
       "messagegroups": [
-        "#/messagegroups/eu.entsoe.transparency"
+        "#/messagegroups/eu.entsoe.transparency.ByDomain"
+      ]
+    },
+    "eu.entsoe.transparency.ByDomainPsrType.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "entsoe-transparency",
+          "key": "{inDomain}/{psrType}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType"
+      ]
+    },
+    "eu.entsoe.transparency.CrossBorder.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "entsoe-transparency",
+          "key": "{inDomain}/{outDomain}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/eu.entsoe.transparency.CrossBorder"
       ]
     }
   },
   "messagegroups": {
-    "eu.entsoe.transparency": {
+    "eu.entsoe.transparency.ByDomain": {
       "messages": {
-        "eu.entsoe.transparency.ActualGenerationPerType": {
-          "name": "ActualGenerationPerType",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "type": {
-              "value": "eu.entsoe.transparency.ActualGenerationPerType"
-            },
-            "source": {
-              "value": "https://transparency.entsoe.eu/api"
-            }
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ActualGenerationPerType"
-        },
         "eu.entsoe.transparency.DayAheadPrices": {
           "name": "DayAheadPrices",
           "envelope": "CloudEvents/1.0",
@@ -47,6 +76,10 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -61,24 +94,14 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ActualTotalLoad"
-        },
-        "eu.entsoe.transparency.WindSolarForecast": {
-          "name": "WindSolarForecast",
-          "envelope": "CloudEvents/1.0",
-          "envelopemetadata": {
-            "type": {
-              "value": "eu.entsoe.transparency.WindSolarForecast"
-            },
-            "source": {
-              "value": "https://transparency.entsoe.eu/api"
-            }
-          },
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarForecast"
         },
         "eu.entsoe.transparency.LoadForecastMargin": {
           "name": "LoadForecastMargin",
@@ -89,6 +112,10 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -103,6 +130,10 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -117,6 +148,10 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -131,10 +166,54 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ActualGeneration"
+        }
+      }
+    },
+    "eu.entsoe.transparency.ByDomainPsrType": {
+      "messages": {
+        "eu.entsoe.transparency.ActualGenerationPerType": {
+          "name": "ActualGenerationPerType",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "eu.entsoe.transparency.ActualGenerationPerType"
+            },
+            "source": {
+              "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}/{psrType}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ActualGenerationPerType"
+        },
+        "eu.entsoe.transparency.WindSolarForecast": {
+          "name": "WindSolarForecast",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "eu.entsoe.transparency.WindSolarForecast"
+            },
+            "source": {
+              "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}/{psrType}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarForecast"
         },
         "eu.entsoe.transparency.WindSolarGeneration": {
           "name": "WindSolarGeneration",
@@ -145,6 +224,10 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}/{psrType}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -159,11 +242,19 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}/{psrType}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType"
-        },
+        }
+      }
+    },
+    "eu.entsoe.transparency.CrossBorder": {
+      "messages": {
         "eu.entsoe.transparency.CrossBorderPhysicalFlows": {
           "name": "CrossBorderPhysicalFlows",
           "envelope": "CloudEvents/1.0",
@@ -173,6 +264,10 @@
             },
             "source": {
               "value": "https://transparency.entsoe.eu/api"
+            },
+            "subject": {
+              "value": "{inDomain}/{outDomain}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",

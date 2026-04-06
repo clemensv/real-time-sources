@@ -1,6 +1,6 @@
 {
   "endpoints": {
-    "Microsoft.OpenData.US.NOAA.SWPC.Kafka": {
+    "Microsoft.OpenData.US.NOAA.SWPC.Alerts.Kafka": {
       "usage": [
         "producer"
       ],
@@ -13,16 +13,38 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "noaa-goes"
+          "topic": "noaa-goes",
+          "key": "{product_id}"
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts"
+      ]
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.Observations.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-goes",
+          "key": "{observation_time}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations"
       ]
     }
   },
   "messagegroups": {
-    "Microsoft.OpenData.US.NOAA.SWPC": {
+    "Microsoft.OpenData.US.NOAA.SWPC.Alerts": {
       "messages": {
         "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
           "name": "SpaceWeatherAlert",
@@ -33,11 +55,19 @@
             },
             "source": {
               "value": "https://services.swpc.noaa.gov"
+            },
+            "subject": {
+              "value": "{product_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
-        },
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.Observations": {
+      "messages": {
         "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
           "name": "PlanetaryKIndex",
           "envelope": "CloudEvents/1.0",
@@ -47,6 +77,10 @@
             },
             "source": {
               "value": "https://services.swpc.noaa.gov"
+            },
+            "subject": {
+              "value": "{observation_time}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -61,6 +95,10 @@
             },
             "source": {
               "value": "https://services.swpc.noaa.gov"
+            },
+            "subject": {
+              "value": "{observation_time}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -99,7 +137,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/SWPC.schema.json",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/SWPC/SpaceWeatherAlert",
                 "description": "SpaceWeatherAlert"
               }
             }
@@ -136,7 +174,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/SWPC.schema.json",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/SWPC/PlanetaryKIndex",
                 "description": "PlanetaryKIndex"
               }
             }
@@ -173,7 +211,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/SWPC.schema.json",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindSummary",
                 "description": "SolarWindSummary"
               }
             }

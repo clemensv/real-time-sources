@@ -1,6 +1,6 @@
 {
   "endpoints": {
-    "USGS.InstantaneousValues.Kafka": {
+    "USGS.Sites.Kafka": {
       "usage": [
         "producer"
       ],
@@ -13,11 +13,33 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "usgs-iv"
+          "topic": "usgs-iv",
+          "key": "{agency_cd}/{site_no}"
         }
       },
       "messagegroups": [
-        "#/messagegroups/USGS.Sites",
+        "#/messagegroups/USGS.Sites"
+      ]
+    },
+    "USGS.Timeseries.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "usgs-iv",
+          "key": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/USGS.SiteTimeseries",
         "#/messagegroups/USGS.InstantaneousValues"
       ]
     }
@@ -44,7 +66,11 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/USGS.Sites.jstruct/schemas/USGS.Sites.Site"
-        },
+        }
+      }
+    },
+    "USGS.SiteTimeseries": {
+      "messages": {
         "USGS.Sites.SiteTimeseries": {
           "name": "SiteTimeseries",
           "envelope": "CloudEvents/1.0",

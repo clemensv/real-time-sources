@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "ais"
+          "topic": "ais",
+          "key": "{mmsi}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "urn:ais:kystverket:tcp"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "urn:ais:kystverket:tcp"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -61,6 +70,10 @@
             },
             "source": {
               "value": "urn:ais:kystverket:tcp"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -75,6 +88,10 @@
             },
             "source": {
               "value": "urn:ais:kystverket:tcp"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -89,6 +106,10 @@
             },
             "source": {
               "value": "urn:ais:kystverket:tcp"
+            },
+            "subject": {
+              "value": "{mmsi}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -155,7 +176,7 @@
                     "type": "int32"
                   }
                 },
-                "$id": "https://example.com/NO/Kystverket/AIS.schema.json"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/PositionReportClassA"
               }
             }
           }
@@ -228,7 +249,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/NO/Kystverket/AIS.schema.json"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticVoyageData"
               }
             }
           }
@@ -282,7 +303,7 @@
                     "type": "int32"
                   }
                 },
-                "$id": "https://example.com/NO/Kystverket/AIS.schema.json"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/PositionReportClassB"
               }
             }
           }
@@ -337,7 +358,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/NO/Kystverket/AIS.schema.json"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticDataClassB"
               }
             }
           }
@@ -385,7 +406,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/NO/Kystverket/AIS.schema.json"
+                "$id": "https://example.com/schemas/NO/Kystverket/AIS/AidToNavigation"
               }
             }
           }

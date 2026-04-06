@@ -1,3 +1,3 @@
-from .us import SpaceWeatherAlert, SolarWindSummary, PlanetaryKIndex
+from .us import PlanetaryKIndex, SpaceWeatherAlert, SolarWindSummary
 
-__all__ = ["SpaceWeatherAlert", "SolarWindSummary", "PlanetaryKIndex"]
+__all__ = ["PlanetaryKIndex", "SpaceWeatherAlert", "SolarWindSummary"]

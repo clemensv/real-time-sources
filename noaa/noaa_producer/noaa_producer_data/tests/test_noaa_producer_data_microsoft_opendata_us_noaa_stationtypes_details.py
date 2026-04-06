@@ -28,7 +28,7 @@ class Test_Details(unittest.TestCase):
         Create instance of Details for testing
         """
         instance = Details(
-            self_='tnhswvuxiivyirnltyut'
+            self_='nvlldpbnhyeygqtqsnpr'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Details(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'tnhswvuxiivyirnltyut'
+        test_value = 'nvlldpbnhyeygqtqsnpr'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

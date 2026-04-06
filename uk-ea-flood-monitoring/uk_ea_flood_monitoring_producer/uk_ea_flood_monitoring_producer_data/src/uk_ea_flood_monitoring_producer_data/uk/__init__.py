@@ -1,3 +1,3 @@
-from .gov import Station, Reading
+from .gov import Reading, Station
 
-__all__ = ["Station", "Reading"]
+__all__ = ["Reading", "Station"]

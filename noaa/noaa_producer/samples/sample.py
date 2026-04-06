@@ -73,7 +73,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_level = WaterLevel()
 
     # sends the 'Microsoft.OpenData.US.NOAA.WaterLevel' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_water_level(data = _water_level)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_water_level(_station_id = 'TODO: replace me', data = _water_level)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.WaterLevel' event: {_water_level.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Predictions ----
@@ -81,7 +81,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _predictions = Predictions()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Predictions' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_predictions(data = _predictions)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_predictions(_station_id = 'TODO: replace me', data = _predictions)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Predictions' event: {_predictions.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.AirPressure ----
@@ -89,7 +89,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _air_pressure = AirPressure()
 
     # sends the 'Microsoft.OpenData.US.NOAA.AirPressure' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_air_pressure(data = _air_pressure)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_air_pressure(_station_id = 'TODO: replace me', data = _air_pressure)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.AirPressure' event: {_air_pressure.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.AirTemperature ----
@@ -97,7 +97,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _air_temperature = AirTemperature()
 
     # sends the 'Microsoft.OpenData.US.NOAA.AirTemperature' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_air_temperature(data = _air_temperature)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_air_temperature(_station_id = 'TODO: replace me', data = _air_temperature)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.AirTemperature' event: {_air_temperature.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.WaterTemperature ----
@@ -105,7 +105,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_temperature = WaterTemperature()
 
     # sends the 'Microsoft.OpenData.US.NOAA.WaterTemperature' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_water_temperature(data = _water_temperature)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_water_temperature(_station_id = 'TODO: replace me', data = _water_temperature)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.WaterTemperature' event: {_water_temperature.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Wind ----
@@ -113,7 +113,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _wind = Wind()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Wind' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_wind(data = _wind)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_wind(_station_id = 'TODO: replace me', data = _wind)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Wind' event: {_wind.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Humidity ----
@@ -121,7 +121,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _humidity = Humidity()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Humidity' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_humidity(data = _humidity)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_humidity(_station_id = 'TODO: replace me', data = _humidity)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Humidity' event: {_humidity.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Conductivity ----
@@ -129,7 +129,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _conductivity = Conductivity()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Conductivity' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_conductivity(data = _conductivity)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_conductivity(_station_id = 'TODO: replace me', data = _conductivity)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Conductivity' event: {_conductivity.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Salinity ----
@@ -137,7 +137,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _salinity = Salinity()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Salinity' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_salinity(data = _salinity)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_salinity(_station_id = 'TODO: replace me', data = _salinity)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Salinity' event: {_salinity.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Station ----
@@ -145,7 +145,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station = Station()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Station' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_station(data = _station)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_station(_station_id = 'TODO: replace me', data = _station)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Station' event: {_station.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Visibility ----
@@ -153,7 +153,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _visibility = Visibility()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Visibility' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_visibility(_datacontenttype = 'TODO:replace',_subject = 'TODO:replace',_time = datetime.now().isoformat(),_dataschema = 'TODO:replace',data = _visibility)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_visibility(_datacontenttype = 'TODO:replace',_time = datetime.now().isoformat(),_dataschema = 'TODO:replace',_station_id = 'TODO: replace me', data = _visibility)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Visibility' event: {_visibility.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.Currents ----
@@ -161,7 +161,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _currents = Currents()
 
     # sends the 'Microsoft.OpenData.US.NOAA.Currents' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_currents(data = _currents)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_currents(_station_id = 'TODO: replace me', data = _currents)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.Currents' event: {_currents.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.CurrentPredictions ----
@@ -169,7 +169,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _current_predictions = CurrentPredictions()
 
     # sends the 'Microsoft.OpenData.US.NOAA.CurrentPredictions' event to Kafka topic.
-    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_current_predictions(data = _current_predictions)
+    await microsoft_open_data_usnoaaevent_producer.send_microsoft_open_data_us_noaa_current_predictions(_station_id = 'TODO: replace me', data = _current_predictions)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.CurrentPredictions' event: {_current_predictions.to_json()}")
 
 if __name__ == "__main__":

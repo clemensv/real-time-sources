@@ -53,6 +53,7 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
         ce['datacontenttype'] = 'application/json'
     return ce
 
+
 def test_modes_modesmessages(kafka_emulator):
     """Test the ModeSMessages event from the ModeS message group"""
 
@@ -85,7 +86,7 @@ def test_modes_modesmessages(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -93,7 +94,7 @@ def test_modes_modesmessages(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "Mode_S.Messages":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = ModeSEventProducer(kafka_producer, topic, 'binary')
@@ -102,12 +103,15 @@ def test_modes_modesmessages(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_messages(_stationid = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_messages(_stationid = f'test_{i}', _stationid = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{stationid}".format(stationid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()

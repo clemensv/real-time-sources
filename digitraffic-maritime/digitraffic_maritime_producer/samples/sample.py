@@ -62,7 +62,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _vessel_location = VesselLocation()
 
     # sends the 'fi.digitraffic.marine.ais.VesselLocation' event to Kafka topic.
-    await fi_digitraffic_marine_ais_event_producer.send_fi_digitraffic_marine_ais_vessel_location(data = _vessel_location)
+    await fi_digitraffic_marine_ais_event_producer.send_fi_digitraffic_marine_ais_vessel_location(_mmsi = 'TODO: replace me', data = _vessel_location)
     print(f"Sent 'fi.digitraffic.marine.ais.VesselLocation' event: {_vessel_location.to_json()}")
 
     # ---- fi.digitraffic.marine.ais.VesselMetadata ----
@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _vessel_metadata = VesselMetadata()
 
     # sends the 'fi.digitraffic.marine.ais.VesselMetadata' event to Kafka topic.
-    await fi_digitraffic_marine_ais_event_producer.send_fi_digitraffic_marine_ais_vessel_metadata(data = _vessel_metadata)
+    await fi_digitraffic_marine_ais_event_producer.send_fi_digitraffic_marine_ais_vessel_metadata(_mmsi = 'TODO: replace me', data = _vessel_metadata)
     print(f"Sent 'fi.digitraffic.marine.ais.VesselMetadata' event: {_vessel_metadata.to_json()}")
 
 if __name__ == "__main__":

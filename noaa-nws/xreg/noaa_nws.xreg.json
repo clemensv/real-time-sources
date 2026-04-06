@@ -1,6 +1,6 @@
 {
   "endpoints": {
-    "Microsoft.OpenData.US.NOAA.NWS.Kafka": {
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts.Kafka": {
       "usage": [
         "producer"
       ],
@@ -13,16 +13,38 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "noaa-nws"
+          "topic": "noaa-nws",
+          "key": "{alert_id}"
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts"
+      ]
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Zones.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-nws",
+          "key": "{zone_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones"
       ]
     }
   },
   "messagegroups": {
-    "Microsoft.OpenData.US.NOAA.NWS": {
+    "Microsoft.OpenData.US.NOAA.NWS.Alerts": {
       "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert": {
           "name": "WeatherAlert",
@@ -33,11 +55,19 @@
             },
             "source": {
               "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{alert_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
-        },
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Zones": {
+      "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.Zone": {
           "name": "Zone",
           "envelope": "CloudEvents/1.0",
@@ -47,6 +77,10 @@
             },
             "source": {
               "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{zone_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -176,7 +210,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/NWS.schema.json",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherAlert",
                 "description": "WeatherAlert"
               }
             }
@@ -221,7 +255,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/NWS.schema.json",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NWS/Zone",
                 "description": "Zone"
               }
             }

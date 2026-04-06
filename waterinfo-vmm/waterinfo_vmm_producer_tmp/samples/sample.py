@@ -62,7 +62,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station = Station()
 
     # sends the 'BE.Vlaanderen.Waterinfo.VMM.Station' event to Kafka topic.
-    await bevlaanderen_waterinfo_vmmevent_producer.send_be_vlaanderen_waterinfo_vmm_station(data = _station)
+    await bevlaanderen_waterinfo_vmmevent_producer.send_be_vlaanderen_waterinfo_vmm_station(_station_no = 'TODO: replace me', data = _station)
     print(f"Sent 'BE.Vlaanderen.Waterinfo.VMM.Station' event: {_station.to_json()}")
 
     # ---- BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading ----
@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_level_reading = WaterLevelReading()
 
     # sends the 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading' event to Kafka topic.
-    await bevlaanderen_waterinfo_vmmevent_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(data = _water_level_reading)
+    await bevlaanderen_waterinfo_vmmevent_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(_station_no = 'TODO: replace me', data = _water_level_reading)
     print(f"Sent 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading' event: {_water_level_reading.to_json()}")
 
 if __name__ == "__main__":

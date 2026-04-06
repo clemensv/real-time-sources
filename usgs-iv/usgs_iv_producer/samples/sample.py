@@ -33,6 +33,7 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer
+from usgs_iv_producer_kafka_producer.producer import USGSSiteTimeseriesEventProducer
 from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
 
 # imports for the data classes for each event
@@ -91,13 +92,21 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'USGS.Sites.Site' event to Kafka topic.
     await usgssites_event_producer.send_usgs_sites_site(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', data = _site)
     print(f"Sent 'USGS.Sites.Site' event: {_site.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgssite_timeseries_event_producer = USGSSiteTimeseriesEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgssite_timeseries_event_producer = USGSSiteTimeseriesEventProducer(kafka_producer, topic, 'binary')
 
     # ---- USGS.Sites.SiteTimeseries ----
     # TODO: Supply event data for the USGS.Sites.SiteTimeseries event
     _site_timeseries = SiteTimeseries()
 
     # sends the 'USGS.Sites.SiteTimeseries' event to Kafka topic.
-    await usgssites_event_producer.send_usgs_sites_site_timeseries(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _site_timeseries)
+    await usgssite_timeseries_event_producer.send_usgs_sites_site_timeseries(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _site_timeseries)
     print(f"Sent 'USGS.Sites.SiteTimeseries' event: {_site_timeseries.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal

@@ -27,7 +27,8 @@ class NOKystverketAISEventProducer:
         self.topic = topic
         self.content_mode = content_mode
 
-    def __key_mapper(self, x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str]) -> str:
+    @staticmethod
+    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
         """
         Maps a CloudEvent to a Kafka key
 
@@ -35,152 +36,169 @@ class NOKystverketAISEventProducer:
             x (CloudEvent): The CloudEvent to map
             m (Any): The event data
             key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
+            default_key (Optional[str]): The resolved key from the xRegistry model declaration
         """
         if key_mapper:
             return key_mapper(x, m)
-        else:
-            return f'{str(x.get("type"))}:{str(x.get("source"))}{("-"+str(x.get("subject"))) if x.get("subject") else ""}'
+        elif default_key is not None:
+            return default_key
+        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_no_kystverket_ais_position_report_class_a(self,data: PositionReportClassA, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PositionReportClassA], str]=None) -> None:
+    def send_no_kystverket_ais_position_report_class_a(self,_mmsi : str, data: PositionReportClassA, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PositionReportClassA], str]=None) -> None:
         """
         Sends the 'NO.Kystverket.AIS.PositionReportClassA' event to the Kafka topic
 
         Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
             data: (PositionReportClassA): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, PositionReportClassA], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
-                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+            key_mapper(Callable[[CloudEvent, PositionReportClassA], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{mmsi}'
         """
+        kafka_key = "{mmsi}".format(mmsi=_mmsi)
         attributes = {
              "type":"NO.Kystverket.AIS.PositionReportClassA",
-             "source":"urn:ais:kystverket:tcp"
+             "source":"urn:ais:kystverket:tcp",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_no_kystverket_ais_static_voyage_data(self,data: StaticVoyageData, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StaticVoyageData], str]=None) -> None:
+    def send_no_kystverket_ais_static_voyage_data(self,_mmsi : str, data: StaticVoyageData, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StaticVoyageData], str]=None) -> None:
         """
         Sends the 'NO.Kystverket.AIS.StaticVoyageData' event to the Kafka topic
 
         Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
             data: (StaticVoyageData): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, StaticVoyageData], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
-                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+            key_mapper(Callable[[CloudEvent, StaticVoyageData], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{mmsi}'
         """
+        kafka_key = "{mmsi}".format(mmsi=_mmsi)
         attributes = {
              "type":"NO.Kystverket.AIS.StaticVoyageData",
-             "source":"urn:ais:kystverket:tcp"
+             "source":"urn:ais:kystverket:tcp",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_no_kystverket_ais_position_report_class_b(self,data: PositionReportClassB, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PositionReportClassB], str]=None) -> None:
+    def send_no_kystverket_ais_position_report_class_b(self,_mmsi : str, data: PositionReportClassB, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PositionReportClassB], str]=None) -> None:
         """
         Sends the 'NO.Kystverket.AIS.PositionReportClassB' event to the Kafka topic
 
         Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
             data: (PositionReportClassB): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, PositionReportClassB], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
-                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+            key_mapper(Callable[[CloudEvent, PositionReportClassB], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{mmsi}'
         """
+        kafka_key = "{mmsi}".format(mmsi=_mmsi)
         attributes = {
              "type":"NO.Kystverket.AIS.PositionReportClassB",
-             "source":"urn:ais:kystverket:tcp"
+             "source":"urn:ais:kystverket:tcp",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_no_kystverket_ais_static_data_class_b(self,data: StaticDataClassB, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StaticDataClassB], str]=None) -> None:
+    def send_no_kystverket_ais_static_data_class_b(self,_mmsi : str, data: StaticDataClassB, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StaticDataClassB], str]=None) -> None:
         """
         Sends the 'NO.Kystverket.AIS.StaticDataClassB' event to the Kafka topic
 
         Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
             data: (StaticDataClassB): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, StaticDataClassB], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
-                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+            key_mapper(Callable[[CloudEvent, StaticDataClassB], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{mmsi}'
         """
+        kafka_key = "{mmsi}".format(mmsi=_mmsi)
         attributes = {
              "type":"NO.Kystverket.AIS.StaticDataClassB",
-             "source":"urn:ais:kystverket:tcp"
+             "source":"urn:ais:kystverket:tcp",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_no_kystverket_ais_aid_to_navigation(self,data: AidToNavigation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AidToNavigation], str]=None) -> None:
+    def send_no_kystverket_ais_aid_to_navigation(self,_mmsi : str, data: AidToNavigation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AidToNavigation], str]=None) -> None:
         """
         Sends the 'NO.Kystverket.AIS.AidToNavigation' event to the Kafka topic
 
         Args:
+            _mmsi(str):  Value for placeholder mmsi in attribute subject
             data: (AidToNavigation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, AidToNavigation], str]): A function to map the CloudEvent contents to a Kafka key (default: None). 
-                The default key mapper maps the CloudEvent type, source, and subject to the Kafka key
+            key_mapper(Callable[[CloudEvent, AidToNavigation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{mmsi}'
         """
+        kafka_key = "{mmsi}".format(mmsi=_mmsi)
         attributes = {
              "type":"NO.Kystverket.AIS.AidToNavigation",
-             "source":"urn:ais:kystverket:tcp"
+             "source":"urn:ais:kystverket:tcp",
+             "subject":"{mmsi}".format(mmsi = _mmsi)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper))
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "noaa-ndbc"
+          "topic": "noaa-ndbc",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://www.ndbc.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://www.ndbc.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -122,7 +131,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/NDBC.schema.json",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation",
                 "description": "BuoyObservation"
               }
             }
@@ -169,7 +178,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/Microsoft/OpenData/US/NOAA/NDBC.schema.json",
+                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation",
                 "description": "BuoyStation"
               }
             }

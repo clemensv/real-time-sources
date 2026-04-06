@@ -28,9 +28,9 @@ class Test_RouteNetworks(unittest.TestCase):
         Create instance of RouteNetworks for testing
         """
         instance = RouteNetworks(
-            routeNetworkId='yybbljgsisfqobkhluhs',
-            routeId='iypvvlmqjuzlynmavolr',
-            networkId='mcqwgxcciokaxrnvfzit'
+            routeNetworkId='lcbzhauwwnpqlsofvhos',
+            routeId='jsfpcqslsyvjtuanaiua',
+            networkId='ukwpnxqctnrhosksousb'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test routeNetworkId property
         """
-        test_value = 'yybbljgsisfqobkhluhs'
+        test_value = 'lcbzhauwwnpqlsofvhos'
         self.instance.routeNetworkId = test_value
         self.assertEqual(self.instance.routeNetworkId, test_value)
     
@@ -47,7 +47,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'iypvvlmqjuzlynmavolr'
+        test_value = 'jsfpcqslsyvjtuanaiua'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -55,7 +55,7 @@ class Test_RouteNetworks(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'mcqwgxcciokaxrnvfzit'
+        test_value = 'ukwpnxqctnrhosksousb'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     

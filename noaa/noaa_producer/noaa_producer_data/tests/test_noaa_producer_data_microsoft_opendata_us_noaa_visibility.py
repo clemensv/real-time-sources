@@ -28,12 +28,12 @@ class Test_Visibility(unittest.TestCase):
         Create instance of Visibility for testing
         """
         instance = Visibility(
-            timestamp='fhaxhrkwnwiyfvwyfrdi',
-            value=float(73.44268279116052),
-            max_visibility_exceeded=True,
-            min_visibility_exceeded=False,
+            timestamp='grnlbjmkxjotzcagmtlf',
+            value=float(36.94944708043616),
+            max_visibility_exceeded=False,
+            min_visibility_exceeded=True,
             rate_of_change_exceeded=True,
-            station_id='zblwljindrxibeuyqvar'
+            station_id='ecyreyqpfscumazwlwuw'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'fhaxhrkwnwiyfvwyfrdi'
+        test_value = 'grnlbjmkxjotzcagmtlf'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -50,7 +50,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(73.44268279116052)
+        test_value = float(36.94944708043616)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -58,7 +58,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test max_visibility_exceeded property
         """
-        test_value = True
+        test_value = False
         self.instance.max_visibility_exceeded = test_value
         self.assertEqual(self.instance.max_visibility_exceeded, test_value)
     
@@ -66,7 +66,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test min_visibility_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.min_visibility_exceeded = test_value
         self.assertEqual(self.instance.min_visibility_exceeded, test_value)
     
@@ -82,7 +82,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'zblwljindrxibeuyqvar'
+        test_value = 'ecyreyqpfscumazwlwuw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     

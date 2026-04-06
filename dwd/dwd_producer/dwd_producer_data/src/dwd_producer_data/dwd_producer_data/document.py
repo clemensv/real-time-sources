@@ -19,40 +19,40 @@ import avro.io
 @dataclass
 class Document:
     """
-    StationMetadata
+    AirTemperature10Min
     Attributes:
         station_id (str): 
-        station_name (str): 
-        latitude (float): 
-        longitude (float): 
-        elevation (float): 
-        state (typing.Optional[str]): 
-        from_date (typing.Optional[str]): 
-        to_date (typing.Optional[str]): """
+        timestamp (str): 
+        quality_level (typing.Optional[int]): 
+        pressure_station_level (typing.Optional[float]): 
+        air_temperature_2m (typing.Optional[float]): 
+        air_temperature_5cm (typing.Optional[float]): 
+        relative_humidity (typing.Optional[float]): 
+        dew_point_temperature (typing.Optional[float]): """
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    elevation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation"))
-    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
-    from_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="from_date"))
-    to_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="to_date"))
+    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
+    pressure_station_level: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_station_level"))
+    air_temperature_2m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_2m"))
+    air_temperature_5cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_5cm"))
+    relative_humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
+    dew_point_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dew_point_temperature"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"document\", \"doc\": \"StationMetadata\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"elevation\", \"type\": \"double\"}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"from_date\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"to_date\", \"type\": [\"null\", \"string\"], \"default\": null}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"document\", \"doc\": \"AirTemperature10Min\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"quality_level\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"pressure_station_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"air_temperature_2m\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"air_temperature_5cm\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"relative_humidity\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"dew_point_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
         self.station_id=str(self.station_id)
-        self.station_name=str(self.station_name)
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
-        self.elevation=float(self.elevation)
-        self.state=str(self.state) if self.state else None
-        self.from_date=str(self.from_date) if self.from_date else None
-        self.to_date=str(self.to_date) if self.to_date else None
+        self.timestamp=str(self.timestamp)
+        self.quality_level=int(self.quality_level) if self.quality_level else None
+        self.pressure_station_level=float(self.pressure_station_level) if self.pressure_station_level else None
+        self.air_temperature_2m=float(self.air_temperature_2m) if self.air_temperature_2m else None
+        self.air_temperature_5cm=float(self.air_temperature_5cm) if self.air_temperature_5cm else None
+        self.relative_humidity=float(self.relative_humidity) if self.relative_humidity else None
+        self.dew_point_temperature=float(self.dew_point_temperature) if self.dew_point_temperature else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Document':

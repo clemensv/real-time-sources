@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "gtfs"
+          "topic": "gtfs",
+          "key": "{agencyid}"
         }
       },
       "messagegroups": [
@@ -61,7 +62,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -100,7 +102,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -139,7 +142,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         }
@@ -186,7 +190,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -225,7 +230,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -264,7 +270,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -303,7 +310,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -342,7 +350,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -381,7 +390,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -420,7 +430,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -459,7 +470,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -498,7 +510,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -537,7 +550,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -576,7 +590,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -615,7 +630,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -654,7 +670,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -693,7 +710,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -732,7 +750,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -771,7 +790,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -810,7 +830,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -849,7 +870,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -888,7 +910,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -927,7 +950,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -966,7 +990,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -1005,7 +1030,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -1044,7 +1070,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -1083,7 +1110,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -1122,7 +1150,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -1161,7 +1190,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -1200,7 +1230,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         },
@@ -1239,7 +1270,8 @@
               "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
-              "description": "Provider name"
+              "description": "Provider name",
+              "required": true
             }
           }
         }
@@ -2760,7 +2792,7 @@
                         "agencyEmail": {
                           "type": "string",
                           "default": null,
-                          "description": "Email address actively monitored by the agency’s customer service department."
+                          "description": "Email address actively monitored by the agency\u2019s customer service department."
                         }
                       },
                       "required": [
@@ -3331,7 +3363,7 @@
                         "defaultLang": {
                           "type": "string",
                           "default": null,
-                          "description": "Specifies the language used when the data consumer doesn’t know the language of the user."
+                          "description": "Specifies the language used when the data consumer doesn\u2019t know the language of the user."
                         },
                         "feedStartDate": {
                           "type": "string",
@@ -3833,7 +3865,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                     },
                     "ContinuousDropOff": {
                       "name": "ContinuousDropOff",
@@ -3844,7 +3876,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                     },
                     "Routes": {
                       "name": "Routes",
@@ -3900,11 +3932,11 @@
                         },
                         "continuousPickup": {
                           "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup",
-                          "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path."
+                          "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path."
                         },
                         "continuousDropOff": {
                           "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff",
-                          "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path."
+                          "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path."
                         },
                         "networkId": {
                           "type": "string",
@@ -4195,7 +4227,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                     },
                     "ContinuousDropOff": {
                       "name": "ContinuousDropOff",
@@ -4206,7 +4238,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                     },
                     "Timepoint": {
                       "name": "Timepoint",
@@ -4831,7 +4863,7 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Email address actively monitored by the agency’s customer service department."
+                    "doc": "Email address actively monitored by the agency\u2019s customer service department."
                   }
                 ]
               },
@@ -5471,7 +5503,7 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Specifies the language used when the data consumer doesn’t know the language of the user."
+                    "doc": "Specifies the language used when the data consumer doesn\u2019t know the language of the user."
                   },
                   {
                     "name": "feedStartDate",
@@ -6068,9 +6100,9 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                      "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                     },
-                    "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path."
+                    "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path."
                   },
                   {
                     "name": "continuousDropOff",
@@ -6084,9 +6116,9 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                      "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                     },
-                    "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path."
+                    "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path."
                   },
                   {
                     "name": "networkId",
@@ -6466,7 +6498,7 @@
                           "PHONE_AGENCY",
                           "COORDINATE_WITH_DRIVER"
                         ],
-                        "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                        "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                       }
                     ],
                     "default": null,
@@ -6486,7 +6518,7 @@
                           "PHONE_AGENCY",
                           "COORDINATE_WITH_DRIVER"
                         ],
-                        "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                        "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                       }
                     ],
                     "default": null,

@@ -1,5 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
+. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+Assert-XrcgVersion
+
 $XREG_ROOT = Join-Path $PSScriptRoot "xreg"
 $SCHEMA_FILE = Join-Path $XREG_ROOT "rws_waterwebservices.xreg.json"
 $OUTPUT_DIR = Join-Path $PSScriptRoot "rws_waterwebservices_producer_tmp"

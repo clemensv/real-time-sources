@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "nve-hydro"
+          "topic": "nve-hydro",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://hydapi.nve.no"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://hydapi.nve.no"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -104,7 +113,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/NO/NVE/Hydrology.schema.json",
+                "$id": "https://example.com/schemas/NO/NVE/Hydrology/Station",
                 "description": "Station"
               }
             }
@@ -147,7 +156,7 @@
                     "type": "datetime"
                   }
                 },
-                "$id": "https://example.com/NO/NVE/Hydrology.schema.json",
+                "$id": "https://example.com/schemas/NO/NVE/Hydrology/WaterLevelObservation",
                 "description": "WaterLevelObservation"
               }
             }

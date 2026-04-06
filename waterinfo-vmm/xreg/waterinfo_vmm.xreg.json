@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "waterinfo-vmm"
+          "topic": "waterinfo-vmm",
+          "key": "{station_no}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://waterinfo.vlaanderen.be"
+            },
+            "subject": {
+              "value": "{station_no}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://waterinfo.vlaanderen.be"
+            },
+            "subject": {
+              "value": "{station_no}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -104,7 +113,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/BE/Vlaanderen/Waterinfo/VMM.schema.json",
+                "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/Station",
                 "description": "Station"
               }
             }
@@ -150,7 +159,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/BE/Vlaanderen/Waterinfo/VMM.schema.json",
+                "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/WaterLevelReading",
                 "description": "WaterLevelReading"
               }
             }

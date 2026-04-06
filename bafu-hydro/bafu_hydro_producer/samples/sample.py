@@ -62,7 +62,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _station = Station()
 
     # sends the 'CH.BAFU.Hydrology.Station' event to Kafka topic.
-    await chbafuhydrology_event_producer.send_ch_bafu_hydrology_station(data = _station)
+    await chbafuhydrology_event_producer.send_ch_bafu_hydrology_station(_station_id = 'TODO: replace me', data = _station)
     print(f"Sent 'CH.BAFU.Hydrology.Station' event: {_station.to_json()}")
 
     # ---- CH.BAFU.Hydrology.WaterLevelObservation ----
@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_level_observation = WaterLevelObservation()
 
     # sends the 'CH.BAFU.Hydrology.WaterLevelObservation' event to Kafka topic.
-    await chbafuhydrology_event_producer.send_ch_bafu_hydrology_water_level_observation(data = _water_level_observation)
+    await chbafuhydrology_event_producer.send_ch_bafu_hydrology_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
     print(f"Sent 'CH.BAFU.Hydrology.WaterLevelObservation' event: {_water_level_observation.to_json()}")
 
 if __name__ == "__main__":

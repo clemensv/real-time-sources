@@ -1,3 +1,3 @@
-from .floodmonitoring import Station, Reading
+from .floodmonitoring import Reading, Station
 
-__all__ = ["Station", "Reading"]
+__all__ = ["Reading", "Station"]

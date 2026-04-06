@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_rt_producer_data.generaltransitfeedstatic.timeframes import Timeframes
-from test_gtfs_rt_producer_data_generaltransitfeedstatic_calendardates import Test_CalendarDates
 from test_gtfs_rt_producer_data_generaltransitfeedstatic_calendar import Test_Calendar
+from test_gtfs_rt_producer_data_generaltransitfeedstatic_calendardates import Test_CalendarDates
 
 
 class Test_Timeframes(unittest.TestCase):
@@ -30,9 +30,9 @@ class Test_Timeframes(unittest.TestCase):
         Create instance of Timeframes for testing
         """
         instance = Timeframes(
-            timeframeGroupId='evxnfnpxidtqpnwdyjnr',
-            startTime='tzlgniozilsfpdlycbcs',
-            endTime='pxvjtaecqlvertghycmj',
+            timeframeGroupId='vqtwkvkiredzuhqhherd',
+            startTime='mqdxlxkwxijavfdekamq',
+            endTime='mbgxbuvmyniubpgeiiny',
             serviceDates=Test_Calendar.create_instance()
         )
         return instance
@@ -42,7 +42,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test timeframeGroupId property
         """
-        test_value = 'evxnfnpxidtqpnwdyjnr'
+        test_value = 'vqtwkvkiredzuhqhherd'
         self.instance.timeframeGroupId = test_value
         self.assertEqual(self.instance.timeframeGroupId, test_value)
     
@@ -50,7 +50,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'tzlgniozilsfpdlycbcs'
+        test_value = 'mqdxlxkwxijavfdekamq'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -58,7 +58,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'pxvjtaecqlvertghycmj'
+        test_value = 'mbgxbuvmyniubpgeiiny'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     

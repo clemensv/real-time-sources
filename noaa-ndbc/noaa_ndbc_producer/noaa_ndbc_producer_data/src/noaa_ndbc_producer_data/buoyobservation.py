@@ -181,19 +181,19 @@ class BuoyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='onrgzcnqixnsdiehjrin',
-            latitude=float(51.41970495174465),
-            longitude=float(51.73396501999111),
+            station_id='aqpwrrdnsgzlobcczmnb',
+            latitude=float(66.36136327904835),
+            longitude=float(79.90081147130117),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            wind_direction=float(53.80534775921595),
-            wind_speed=float(43.95319129528231),
-            gust=float(42.16110987928755),
-            wave_height=float(10.96773562953588),
-            dominant_wave_period=float(42.766965021097135),
-            average_wave_period=float(7.470909703106566),
-            mean_wave_direction=float(14.771020627243093),
-            pressure=float(33.13482433611593),
-            air_temperature=float(57.4573092128722),
-            water_temperature=float(86.3940281076599),
-            dewpoint=float(85.14631607891569)
+            wind_direction=float(84.96453892277474),
+            wind_speed=float(98.274057017316),
+            gust=float(53.29211784396175),
+            wave_height=float(0.5740357336467272),
+            dominant_wave_period=float(14.851750055791069),
+            average_wave_period=float(65.64416847858287),
+            mean_wave_direction=float(12.334910765791218),
+            pressure=float(21.606069872084287),
+            air_temperature=float(84.77833481357897),
+            water_temperature=float(85.03178523360602),
+            dewpoint=float(4.644239156158248)
         )

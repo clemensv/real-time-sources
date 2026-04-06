@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "hubeau-hydrometrie"
+          "topic": "hubeau-hydrometrie",
+          "key": "{code_station}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
+            },
+            "subject": {
+              "value": "{code_station}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
+            },
+            "subject": {
+              "value": "{code_station}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -107,7 +116,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/FR/Gov/Eaufrance/HubEau/Hydrometrie.schema.json",
+                "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Station",
                 "description": "Station"
               }
             }
@@ -150,7 +159,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/FR/Gov/Eaufrance/HubEau/Hydrometrie.schema.json",
+                "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Observation",
                 "description": "Observation"
               }
             }

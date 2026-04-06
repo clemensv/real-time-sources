@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "chmi-hydro"
+          "topic": "chmi-hydro",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://opendata.chmi.cz"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://opendata.chmi.cz"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -111,7 +120,7 @@
                     "type": "boolean"
                   }
                 },
-                "$id": "https://example.com/CZ/Gov/CHMI/Hydro.schema.json",
+                "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/Station",
                 "description": "Station"
               }
             }
@@ -161,7 +170,7 @@
                     "type": "datetime"
                   }
                 },
-                "$id": "https://example.com/CZ/Gov/CHMI/Hydro.schema.json",
+                "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/WaterLevelObservation",
                 "description": "WaterLevelObservation"
               }
             }

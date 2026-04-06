@@ -18,9 +18,10 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSEventProducer
+from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSAlertsEventProducer
 from noaa_nws_producer_data import WeatherAlert
 from test_noaa_nws_producer_data_weatheralert import Test_WeatherAlert
+from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSZonesEventProducer
 from noaa_nws_producer_data import Zone
 from test_noaa_nws_producer_data_zone import Test_Zone
 
@@ -55,8 +56,9 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
         ce['datacontenttype'] = 'application/json'
     return ce
 
-def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwsweatheralert(kafka_emulator):
-    """Test the MicrosoftOpenDataUSNOAANWSWeatherAlert event from the Microsoft.OpenData.US.NOAA.NWS message group"""
+
+def test_microsoft_opendata_us_noaa_nws_alerts_microsoftopendatausnoaanwsweatheralert(kafka_emulator):
+    """Test the MicrosoftOpenDataUSNOAANWSWeatherAlert event from the Microsoft.OpenData.US.NOAA.NWS.Alerts message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -64,7 +66,7 @@ def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwsweatheralert(k
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwsweatheralert',  # Unique group per test
+        'group.id': 'test_microsoft_opendata_us_noaa_nws_alerts_microsoftopendatausnoaanwsweatheralert',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -87,7 +89,7 @@ def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwsweatheralert(k
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -95,27 +97,31 @@ def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwsweatheralert(k
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = MicrosoftOpenDataUSNOAANWSEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = MicrosoftOpenDataUSNOAANWSAlertsEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_WeatherAlert.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_nws_weather_alert(data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_nws_weather_alert(_alert_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{alert_id}".format(alert_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
-def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwszone(kafka_emulator):
-    """Test the MicrosoftOpenDataUSNOAANWSZone event from the Microsoft.OpenData.US.NOAA.NWS message group"""
+
+def test_microsoft_opendata_us_noaa_nws_zones_microsoftopendatausnoaanwszone(kafka_emulator):
+    """Test the MicrosoftOpenDataUSNOAANWSZone event from the Microsoft.OpenData.US.NOAA.NWS.Zones message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -123,7 +129,7 @@ def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwszone(kafka_emu
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwszone',  # Unique group per test
+        'group.id': 'test_microsoft_opendata_us_noaa_nws_zones_microsoftopendatausnoaanwszone',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -146,7 +152,7 @@ def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwszone(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -154,21 +160,24 @@ def test_microsoft_opendata_us_noaa_nws_microsoftopendatausnoaanwszone(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.Zone":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = MicrosoftOpenDataUSNOAANWSEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = MicrosoftOpenDataUSNOAANWSZonesEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Zone.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_nws_zone(data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_nws_zone(_zone_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{zone_id}".format(zone_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()

@@ -1,3 +1,3 @@
-from .vmm import Station, WaterLevelReading
+from .vmm import WaterLevelReading, Station
 
-__all__ = ["Station", "WaterLevelReading"]
+__all__ = ["WaterLevelReading", "Station"]

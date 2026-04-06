@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "syke-hydro"
+          "topic": "syke-hydro",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://rajapinnat.ymparisto.fi"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://rajapinnat.ymparisto.fi"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -98,7 +107,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/FI/SYKE/Hydrology.schema.json",
+                "$id": "https://example.com/schemas/FI/SYKE/Hydrology/Station",
                 "description": "Station"
               }
             }
@@ -141,7 +150,7 @@
                     "type": "datetime"
                   }
                 },
-                "$id": "https://example.com/FI/SYKE/Hydrology.schema.json",
+                "$id": "https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation",
                 "description": "WaterLevelObservation"
               }
             }

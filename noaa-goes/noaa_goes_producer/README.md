@@ -15,7 +15,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - MicrosoftOpenDataUSNOAASWPCEventDispatcher
+3. [Quick Start](#quick-start)    - MicrosoftOpenDataUSNOAASWPCAlertsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    MicrosoftOpenDataUSNOAASWPCObservationsEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -38,7 +40,11 @@ methods to handle various types of events.
 
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
-- MicrosoftOpenDataUSNOAASWPCProducersolution for event-driven applications.
+- MicrosoftOpenDataUSNOAASWPCAlertsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- MicrosoftOpenDataUSNOAASWPCObservationsProducersolution for event-driven applications.
 
 
 
@@ -54,11 +60,12 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - **Provides durability** through log-based storage with configurable retention
 
-- **Scales horizontally** across multiple brokers and partitions### MicrosoftOpenDataUSNOAASWPCEventDispatcher
+- **Scales horizontally** across multiple brokers and partitions### MicrosoftOpenDataUSNOAASWPCAlertsEventDispatcher
 
 - **Enables pub/sub messaging** with topic-based routing
 
-`MicrosoftOpenDataUSNOAASWPCEventDispatcher` handles events for the Microsoft.OpenData.US.NOAA.SWPC message group.
+`MicrosoftOpenDataUSNOAASWPCAlertsEventDispatcher` handles events for the Microsoft.OpenData.US.NOAA.SWPC.Alerts message
+group.
 
 Use cases: Event streaming, log aggregation, real-time analytics, data integration.
 
@@ -86,13 +93,13 @@ Initializes the dispatcher.
 
 ```python
 
-from noaa-goes-producer import MicrosoftOpenDataUSNOAASWPCProducer```python
+from noaa-goes-producer import MicrosoftOpenDataUSNOAASWPCAlertsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
 # Create producer```
 
-producer = MicrosoftOpenDataUSNOAASWPCProducer(
+producer = MicrosoftOpenDataUSNOAASWPCAlertsProducer(
 
     bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
 
@@ -126,11 +133,11 @@ await producer.close()- `consumer`: The Kafka consumer.
 
 ### With SSL/SASL
 
-The MicrosoftOpenDataUSNOAASWPCEventDispatcher defines the following event handler hooks.
+The MicrosoftOpenDataUSNOAASWPCAlertsEventDispatcher defines the following event handler hooks.
 
 ```python
 
-producer = MicrosoftOpenDataUSNOAASWPCProducer(
+producer = MicrosoftOpenDataUSNOAASWPCAlertsProducer(
 
     bootstrap_servers='localhost:9093',
 
@@ -157,11 +164,12 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type `noaa_goes_producer_data.SpaceWeatherAlert`.
+### MicrosoftOpenDataUSNOAASWPCAlertsProducer- `data`: The event data of type
+`noaa_goes_producer_data.SpaceWeatherAlert`.
 
 
 
-Producer for `Microsoft.OpenData.US.NOAA.SWPC` message group.Example:
+Producer for `Microsoft.OpenData.US.NOAA.SWPC.Alerts` message group.Example:
 
 
 
@@ -172,7 +180,7 @@ data: SpaceWeatherAlert) -> None:
 
 ```python    # Process the event data
 
-MicrosoftOpenDataUSNOAASWPCProducer(    await some_processing_function(record, cloud_event, data)
+MicrosoftOpenDataUSNOAASWPCAlertsProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -185,58 +193,34 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-microsoft_open_data_us_noaa_swpc_dispatcher.microsoft_open_data_us_noaa_swpc_space_weather_alert_async =
+microsoft_open_data_us_noaa_swpc_alerts_dispatcher.microsoft_open_data_us_noaa_swpc_space_weather_alert_async =
 microsoft_open_data_us_noaa_swpc_space_weather_alert_event
 
 **Parameters:**```
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
-- `client_id`: Optional client identifier
-
-- `**kwargs`: Additional Kafka producer configuration
-
-    bootstrap_servers='localhost:9093',
-
-    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_swpc_planetary_kindex_async`
-
-    sasl_mechanism='PLAIN',
-
-    sasl_username='your-username',```python
-
-    sasl_password='your-password'microsoft_open_data_us_noaa_swpc_planetary_kindex_async:  Callable[[ConsumerRecord,
-CloudEvent, PlanetaryKIndex], Awaitable[None]]
-
-)```
-
-```
-
-Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex`:
-
-## Generated Producer Classes
-
-The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
-
-- `record`: The Kafka record.
+- `client_id`: Optional client identifier- `record`: The Kafka record.
 
 - `cloud_event`: The CloudEvent.
 
-### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type `noaa_goes_producer_data.PlanetaryKIndex`.
+### MicrosoftOpenDataUSNOAASWPCObservationsProducer- `data`: The event data of type
+`noaa_goes_producer_data.SpaceWeatherAlert`.
 
 
 
-Producer for `Microsoft.OpenData.US.NOAA.SWPC` message group.Example:
+Producer for `Microsoft.OpenData.US.NOAA.SWPC.Observations` message group.Example:
 
 
 
 #### Constructor```python
 
-async def microsoft_open_data_us_noaa_swpc_planetary_kindex_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-PlanetaryKIndex) -> None:
+async def microsoft_open_data_us_noaa_swpc_space_weather_alert_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: SpaceWeatherAlert) -> None:
 
 ```python    # Process the event data
 
-MicrosoftOpenDataUSNOAASWPCProducer(    await some_processing_function(record, cloud_event, data)
+MicrosoftOpenDataUSNOAASWPCObservationsProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -249,72 +233,8 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-microsoft_open_data_us_noaa_swpc_dispatcher.microsoft_open_data_us_noaa_swpc_planetary_kindex_async =
-microsoft_open_data_us_noaa_swpc_planetary_kindex_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier
-
-- `**kwargs`: Additional Kafka producer configuration
-
-    bootstrap_servers='localhost:9093',
-
-    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_swpc_solar_wind_summary_async`
-
-    sasl_mechanism='PLAIN',
-
-    sasl_username='your-username',```python
-
-    sasl_password='your-password'microsoft_open_data_us_noaa_swpc_solar_wind_summary_async:  Callable[[ConsumerRecord,
-CloudEvent, SolarWindSummary], Awaitable[None]]
-
-)```
-
-```
-
-Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary`:
-
-## Generated Producer Classes
-
-The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
-
-- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### MicrosoftOpenDataUSNOAASWPCProducer- `data`: The event data of type `noaa_goes_producer_data.SolarWindSummary`.
-
-
-
-Producer for `Microsoft.OpenData.US.NOAA.SWPC` message group.Example:
-
-
-
-#### Constructor```python
-
-async def microsoft_open_data_us_noaa_swpc_solar_wind_summary_event(record: ConsumerRecord, cloud_event: CloudEvent,
-data: SolarWindSummary) -> None:
-
-```python    # Process the event data
-
-MicrosoftOpenDataUSNOAASWPCProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-microsoft_open_data_us_noaa_swpc_dispatcher.microsoft_open_data_us_noaa_swpc_solar_wind_summary_async =
-microsoft_open_data_us_noaa_swpc_solar_wind_summary_event
+microsoft_open_data_us_noaa_swpc_observations_dispatcher.microsoft_open_data_us_noaa_swpc_space_weather_alert_async =
+microsoft_open_data_us_noaa_swpc_space_weather_alert_event
 
 **Parameters:**```
 
@@ -432,6 +352,311 @@ await producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert_batch(`
 ```
 
 Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions###
+MicrosoftOpenDataUSNOAASWPCObservationsEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`MicrosoftOpenDataUSNOAASWPCObservationsEventDispatcher` handles events for the
+Microsoft.OpenData.US.NOAA.SWPC.Observations message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from noaa-goes-producer import MicrosoftOpenDataUSNOAASWPCAlertsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = MicrosoftOpenDataUSNOAASWPCAlertsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(```python
+
+    data=SpaceWeatherAlert(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The MicrosoftOpenDataUSNOAASWPCObservationsEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = MicrosoftOpenDataUSNOAASWPCAlertsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_swpc_planetary_kindex_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_swpc_planetary_kindex_async:  Callable[[ConsumerRecord,
+CloudEvent, PlanetaryKIndex], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAASWPCAlertsProducer- `data`: The event data of type `noaa_goes_producer_data.PlanetaryKIndex`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.SWPC.Alerts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_swpc_planetary_kindex_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PlanetaryKIndex) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAASWPCAlertsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_swpc_alerts_dispatcher.microsoft_open_data_us_noaa_swpc_planetary_kindex_async =
+microsoft_open_data_us_noaa_swpc_planetary_kindex_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAASWPCObservationsProducer- `data`: The event data of type
+`noaa_goes_producer_data.PlanetaryKIndex`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.SWPC.Observations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_swpc_planetary_kindex_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PlanetaryKIndex) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAASWPCObservationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_swpc_observations_dispatcher.microsoft_open_data_us_noaa_swpc_planetary_kindex_async =
+microsoft_open_data_us_noaa_swpc_planetary_kindex_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `microsoft_open_data_us_noaa_swpc_solar_wind_summary_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'microsoft_open_data_us_noaa_swpc_solar_wind_summary_async:  Callable[[ConsumerRecord,
+CloudEvent, SolarWindSummary], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAASWPCAlertsProducer- `data`: The event data of type
+`noaa_goes_producer_data.SolarWindSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.SWPC.Alerts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_swpc_solar_wind_summary_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: SolarWindSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAASWPCAlertsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_swpc_alerts_dispatcher.microsoft_open_data_us_noaa_swpc_solar_wind_summary_async =
+microsoft_open_data_us_noaa_swpc_solar_wind_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### MicrosoftOpenDataUSNOAASWPCObservationsProducer- `data`: The event data of type
+`noaa_goes_producer_data.SolarWindSummary`.
+
+
+
+Producer for `Microsoft.OpenData.US.NOAA.SWPC.Observations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def microsoft_open_data_us_noaa_swpc_solar_wind_summary_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: SolarWindSummary) -> None:
+
+```python    # Process the event data
+
+MicrosoftOpenDataUSNOAASWPCObservationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+microsoft_open_data_us_noaa_swpc_observations_dispatcher.microsoft_open_data_us_noaa_swpc_solar_wind_summary_async =
+microsoft_open_data_us_noaa_swpc_solar_wind_summary_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
 
 ### Dispatchers
 

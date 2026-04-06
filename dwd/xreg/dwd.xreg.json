@@ -1,6 +1,6 @@
 {
   "endpoints": {
-    "DE.DWD.Kafka": {
+    "DE.DWD.CDC.Kafka": {
       "usage": [
         "producer"
       ],
@@ -13,11 +13,33 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "dwd"
+          "topic": "dwd",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
         "#/messagegroups/DE.DWD.CDC"
+      ]
+    },
+    "DE.DWD.Weather.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "dwd",
+          "key": "{identifier}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Weather"
       ]
     }
   },
@@ -33,6 +55,10 @@
             },
             "source": {
               "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +73,10 @@
             },
             "source": {
               "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -61,6 +91,10 @@
             },
             "source": {
               "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -75,6 +109,10 @@
             },
             "source": {
               "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -89,6 +127,10 @@
             },
             "source": {
               "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -103,11 +145,19 @@
             },
             "source": {
               "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.HourlyObservation"
-        },
+        }
+      }
+    },
+    "DE.DWD.Weather": {
+      "messages": {
         "DE.DWD.Weather.Alert": {
           "name": "Alert",
           "envelope": "CloudEvents/1.0",
@@ -117,6 +167,10 @@
             },
             "source": {
               "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -172,7 +226,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/DE/DWD/CDC.schema.json",
+                "$id": "https://example.com/schemas/DE/DWD/CDC/StationMetadata",
                 "description": "StationMetadata"
               }
             }
@@ -219,7 +273,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/DE/DWD/CDC.schema.json",
+                "$id": "https://example.com/schemas/DE/DWD/CDC/AirTemperature10Min",
                 "description": "AirTemperature10Min"
               }
             }
@@ -257,7 +311,7 @@
                     "type": "int32"
                   }
                 },
-                "$id": "https://example.com/DE/DWD/CDC.schema.json",
+                "$id": "https://example.com/schemas/DE/DWD/CDC/Precipitation10Min",
                 "description": "Precipitation10Min"
               }
             }
@@ -295,7 +349,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/DE/DWD/CDC.schema.json",
+                "$id": "https://example.com/schemas/DE/DWD/CDC/Wind10Min",
                 "description": "Wind10Min"
               }
             }
@@ -339,7 +393,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/DE/DWD/CDC.schema.json",
+                "$id": "https://example.com/schemas/DE/DWD/CDC/Solar10Min",
                 "description": "Solar10Min"
               }
             }
@@ -381,7 +435,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/DE/DWD/CDC.schema.json",
+                "$id": "https://example.com/schemas/DE/DWD/CDC/HourlyObservation",
                 "description": "HourlyObservation"
               }
             }

@@ -21,6 +21,7 @@ from testcontainers.kafka import KafkaContainer
 from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer
 from usgs_iv_producer_data import Site
 from test_usgs_iv_producer_data_site import Test_Site
+from usgs_iv_producer_kafka_producer.producer import USGSSiteTimeseriesEventProducer
 from usgs_iv_producer_data import SiteTimeseries
 from test_usgs_iv_producer_data_sitetimeseries import Test_SiteTimeseries
 from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
@@ -108,6 +109,7 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
         ce['datacontenttype'] = 'application/json'
     return ce
 
+
 def test_usgs_sites_usgssitessite(kafka_emulator):
     """Test the USGSSitesSite event from the USGS.Sites message group"""
 
@@ -140,7 +142,7 @@ def test_usgs_sites_usgssitessite(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -148,7 +150,7 @@ def test_usgs_sites_usgssitessite(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.Sites.Site":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSSitesEventProducer(kafka_producer, topic, 'binary')
@@ -162,13 +164,17 @@ def test_usgs_sites_usgssitessite(kafka_emulator):
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}".format(agency_cd=f'test_{i}', site_no=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
-def test_usgs_sites_usgssitessitetimeseries(kafka_emulator):
-    """Test the USGSSitesSiteTimeseries event from the USGS.Sites message group"""
+
+def test_usgs_sitetimeseries_usgssitessitetimeseries(kafka_emulator):
+    """Test the USGSSitesSiteTimeseries event from the USGS.SiteTimeseries message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -176,7 +182,7 @@ def test_usgs_sites_usgssitessitetimeseries(kafka_emulator):
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_usgs_sites_usgssitessitetimeseries',  # Unique group per test
+        'group.id': 'test_usgs_sitetimeseries_usgssitessitetimeseries',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -199,7 +205,7 @@ def test_usgs_sites_usgssitessitetimeseries(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -207,10 +213,10 @@ def test_usgs_sites_usgssitessitetimeseries(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.Sites.SiteTimeseries":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = USGSSitesEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = USGSSiteTimeseriesEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_SiteTimeseries.create_instance()
     
@@ -221,10 +227,14 @@ def test_usgs_sites_usgssitessitetimeseries(kafka_emulator):
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesotherparameter(kafka_emulator):
     """Test the USGSInstantaneousValuesOtherParameter event from the USGS.InstantaneousValues message group"""
@@ -258,7 +268,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesotherparameter(kafka_em
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -266,7 +276,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesotherparameter(kafka_em
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.OtherParameter":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -280,10 +290,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesotherparameter(kafka_em
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesprecipitation(kafka_emulator):
     """Test the USGSInstantaneousValuesPrecipitation event from the USGS.InstantaneousValues message group"""
@@ -317,7 +331,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesprecipitation(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -325,7 +339,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesprecipitation(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.Precipitation":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -339,10 +353,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesprecipitation(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_emulator):
     """Test the USGSInstantaneousValuesStreamflow event from the USGS.InstantaneousValues message group"""
@@ -376,7 +394,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -384,7 +402,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.Streamflow":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -398,10 +416,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesstreamflow(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgageheight(kafka_emulator):
     """Test the USGSInstantaneousValuesGageHeight event from the USGS.InstantaneousValues message group"""
@@ -435,7 +457,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgageheight(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -443,7 +465,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgageheight(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.GageHeight":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -457,10 +479,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgageheight(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatertemperature(kafka_emulator):
     """Test the USGSInstantaneousValuesWaterTemperature event from the USGS.InstantaneousValues message group"""
@@ -494,7 +520,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatertemperature(kafka_
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -502,7 +528,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatertemperature(kafka_
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.WaterTemperature":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -516,10 +542,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatertemperature(kafka_
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesdissolvedoxygen(kafka_emulator):
     """Test the USGSInstantaneousValuesDissolvedOxygen event from the USGS.InstantaneousValues message group"""
@@ -553,7 +583,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesdissolvedoxygen(kafka_e
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -561,7 +591,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesdissolvedoxygen(kafka_e
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.DissolvedOxygen":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -575,10 +605,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesdissolvedoxygen(kafka_e
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesph(kafka_emulator):
     """Test the USGSInstantaneousValuesPH event from the USGS.InstantaneousValues message group"""
@@ -612,7 +646,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesph(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -620,7 +654,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesph(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.pH":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -634,10 +668,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesph(kafka_emulator):
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesspecificconductance(kafka_emulator):
     """Test the USGSInstantaneousValuesSpecificConductance event from the USGS.InstantaneousValues message group"""
@@ -671,7 +709,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesspecificconductance(kaf
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -679,7 +717,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesspecificconductance(kaf
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.SpecificConductance":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -693,10 +731,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesspecificconductance(kaf
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidity(kafka_emulator):
     """Test the USGSInstantaneousValuesTurbidity event from the USGS.InstantaneousValues message group"""
@@ -730,7 +772,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidity(kafka_emulato
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -738,7 +780,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidity(kafka_emulato
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.Turbidity":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -752,10 +794,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidity(kafka_emulato
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesairtemperature(kafka_emulator):
     """Test the USGSInstantaneousValuesAirTemperature event from the USGS.InstantaneousValues message group"""
@@ -789,7 +835,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesairtemperature(kafka_em
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -797,7 +843,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesairtemperature(kafka_em
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.AirTemperature":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -811,10 +857,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesairtemperature(kafka_em
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswindspeed(kafka_emulator):
     """Test the USGSInstantaneousValuesWindSpeed event from the USGS.InstantaneousValues message group"""
@@ -848,7 +898,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswindspeed(kafka_emulato
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -856,7 +906,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswindspeed(kafka_emulato
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.WindSpeed":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -870,10 +920,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswindspeed(kafka_emulato
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswinddirection(kafka_emulator):
     """Test the USGSInstantaneousValuesWindDirection event from the USGS.InstantaneousValues message group"""
@@ -907,7 +961,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswinddirection(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -915,7 +969,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswinddirection(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.WindDirection":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -929,10 +983,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswinddirection(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesrelativehumidity(kafka_emulator):
     """Test the USGSInstantaneousValuesRelativeHumidity event from the USGS.InstantaneousValues message group"""
@@ -966,7 +1024,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesrelativehumidity(kafka_
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -974,7 +1032,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesrelativehumidity(kafka_
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.RelativeHumidity":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -988,10 +1046,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesrelativehumidity(kafka_
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesbarometricpressure(kafka_emulator):
     """Test the USGSInstantaneousValuesBarometricPressure event from the USGS.InstantaneousValues message group"""
@@ -1025,7 +1087,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesbarometricpressure(kafk
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1033,7 +1095,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesbarometricpressure(kafk
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.BarometricPressure":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1047,10 +1109,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesbarometricpressure(kafk
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidityfnu(kafka_emulator):
     """Test the USGSInstantaneousValuesTurbidityFNU event from the USGS.InstantaneousValues message group"""
@@ -1084,7 +1150,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidityfnu(kafka_emul
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1092,7 +1158,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidityfnu(kafka_emul
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.TurbidityFNU":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1106,10 +1172,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesturbidityfnu(kafka_emul
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesfdom(kafka_emulator):
     """Test the USGSInstantaneousValuesFDOM event from the USGS.InstantaneousValues message group"""
@@ -1143,7 +1213,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesfdom(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1151,7 +1221,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesfdom(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.fDOM":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1165,10 +1235,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesfdom(kafka_emulator):
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesreservoirstorage(kafka_emulator):
     """Test the USGSInstantaneousValuesReservoirStorage event from the USGS.InstantaneousValues message group"""
@@ -1202,7 +1276,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesreservoirstorage(kafka_
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1210,7 +1284,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesreservoirstorage(kafka_
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.ReservoirStorage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1224,10 +1298,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesreservoirstorage(kafka_
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationngvd29(kafka_emulator):
     """Test the USGSInstantaneousValuesLakeElevationNGVD29 event from the USGS.InstantaneousValues message group"""
@@ -1261,7 +1339,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationngvd29(kaf
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1269,7 +1347,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationngvd29(kaf
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.LakeElevationNGVD29":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1283,10 +1361,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationngvd29(kaf
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswaterdepth(kafka_emulator):
     """Test the USGSInstantaneousValuesWaterDepth event from the USGS.InstantaneousValues message group"""
@@ -1320,7 +1402,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswaterdepth(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1328,7 +1410,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswaterdepth(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.WaterDepth":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1342,10 +1424,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswaterdepth(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesequipmentstatus(kafka_emulator):
     """Test the USGSInstantaneousValuesEquipmentStatus event from the USGS.InstantaneousValues message group"""
@@ -1379,7 +1465,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesequipmentstatus(kafka_e
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1387,7 +1473,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesequipmentstatus(kafka_e
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.EquipmentStatus":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1401,10 +1487,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesequipmentstatus(kafka_e
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluestidallyfiltereddischarge(kafka_emulator):
     """Test the USGSInstantaneousValuesTidallyFilteredDischarge event from the USGS.InstantaneousValues message group"""
@@ -1438,7 +1528,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluestidallyfiltereddischarg
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1446,7 +1536,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluestidallyfiltereddischarg
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.TidallyFilteredDischarge":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1460,10 +1550,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluestidallyfiltereddischarg
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatervelocity(kafka_emulator):
     """Test the USGSInstantaneousValuesWaterVelocity event from the USGS.InstantaneousValues message group"""
@@ -1497,7 +1591,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatervelocity(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1505,7 +1599,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatervelocity(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.WaterVelocity":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1519,10 +1613,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueswatervelocity(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesestuaryelevationngvd29(kafka_emulator):
     """Test the USGSInstantaneousValuesEstuaryElevationNGVD29 event from the USGS.InstantaneousValues message group"""
@@ -1556,7 +1654,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesestuaryelevationngvd29(
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1564,7 +1662,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesestuaryelevationngvd29(
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.EstuaryElevationNGVD29":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1578,10 +1676,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesestuaryelevationngvd29(
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationnavd88(kafka_emulator):
     """Test the USGSInstantaneousValuesLakeElevationNAVD88 event from the USGS.InstantaneousValues message group"""
@@ -1615,7 +1717,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationnavd88(kaf
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1623,7 +1725,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationnavd88(kaf
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.LakeElevationNAVD88":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1637,10 +1739,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvalueslakeelevationnavd88(kaf
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluessalinity(kafka_emulator):
     """Test the USGSInstantaneousValuesSalinity event from the USGS.InstantaneousValues message group"""
@@ -1674,7 +1780,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluessalinity(kafka_emulator
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1682,7 +1788,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluessalinity(kafka_emulator
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.Salinity":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1696,10 +1802,14 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluessalinity(kafka_emulator
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgateopening(kafka_emulator):
     """Test the USGSInstantaneousValuesGateOpening event from the USGS.InstantaneousValues message group"""
@@ -1733,7 +1843,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgateopening(kafka_emula
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1741,7 +1851,7 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgateopening(kafka_emula
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "USGS.InstantaneousValues.GateOpening":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
@@ -1755,7 +1865,67 @@ def test_usgs_instantaneousvalues_usgsinstantaneousvaluesgateopening(kafka_emula
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=f'test_{i}', site_no=f'test_{i}', parameter_cd=f'test_{i}', timeseries_cd=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_usgs_instantaneousvalues_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in USGS.InstantaneousValues produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_usgs_instantaneousvalues_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = USGSInstantaneousValuesEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_OtherParameter.create_instance()
+    data2 = Test_Precipitation.create_instance()
+
+    producer_instance.send_usgs_instantaneous_values_other_parameter(_source_uri = shared_key_value, _agency_cd = shared_key_value, _site_no = shared_key_value, _parameter_cd = shared_key_value, _timeseries_cd = shared_key_value, _datetime = shared_key_value, data = data1)
+    producer_instance.send_usgs_instantaneous_values_precipitation(_source_uri = shared_key_value, _agency_cd = shared_key_value, _site_no = shared_key_value, _parameter_cd = shared_key_value, _timeseries_cd = shared_key_value, _datetime = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["USGS.InstantaneousValues.OtherParameter", "USGS.InstantaneousValues.Precipitation"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd=shared_key_value, site_no=shared_key_value, parameter_cd=shared_key_value, timeseries_cd=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

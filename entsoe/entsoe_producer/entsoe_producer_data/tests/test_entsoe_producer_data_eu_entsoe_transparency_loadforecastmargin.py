@@ -28,11 +28,11 @@ class Test_LoadForecastMargin(unittest.TestCase):
         Create instance of LoadForecastMargin for testing
         """
         instance = LoadForecastMargin(
-            inDomain='gfhqwliasjtvrzuxzjvm',
-            quantity=float(4.27015117141808),
-            resolution='siykkavzlxcwhnpuafxs',
-            documentType='fdmvuywqeitbecmjoqrf',
-            unitName='muzkdaeeaqkkukkrwczz'
+            inDomain='angfzlqvkhmfjoqpopnq',
+            quantity=float(32.33113321732842),
+            resolution='ibxfwijireowgnjijuvj',
+            documentType='ybttilvkbuaimoljlfgl',
+            unitName='sitxpcehackbufmlxqsm'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'gfhqwliasjtvrzuxzjvm'
+        test_value = 'angfzlqvkhmfjoqpopnq'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(4.27015117141808)
+        test_value = float(32.33113321732842)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'siykkavzlxcwhnpuafxs'
+        test_value = 'ibxfwijireowgnjijuvj'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'fdmvuywqeitbecmjoqrf'
+        test_value = 'ybttilvkbuaimoljlfgl'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -73,7 +73,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'muzkdaeeaqkkukkrwczz'
+        test_value = 'sitxpcehackbufmlxqsm'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     

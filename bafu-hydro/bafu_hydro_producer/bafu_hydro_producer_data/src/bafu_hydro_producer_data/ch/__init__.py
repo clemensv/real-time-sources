@@ -1,3 +1,3 @@
-from .bafu import Station, WaterLevelObservation
+from .bafu import WaterLevelObservation, Station
 
-__all__ = ["Station", "WaterLevelObservation"]
+__all__ = ["WaterLevelObservation", "Station"]

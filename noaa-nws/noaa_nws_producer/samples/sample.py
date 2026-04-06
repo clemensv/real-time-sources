@@ -32,7 +32,8 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSEventProducer
+from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSAlertsEventProducer
+from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSZonesEventProducer
 
 # imports for the data classes for each event
 
@@ -51,26 +52,34 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        microsoft_open_data_usnoaanwsevent_producer = MicrosoftOpenDataUSNOAANWSEventProducer.from_connection_string(connection_string, topic, 'binary')
+        microsoft_open_data_usnoaanwsalerts_event_producer = MicrosoftOpenDataUSNOAANWSAlertsEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        microsoft_open_data_usnoaanwsevent_producer = MicrosoftOpenDataUSNOAANWSEventProducer(kafka_producer, topic, 'binary')
+        microsoft_open_data_usnoaanwsalerts_event_producer = MicrosoftOpenDataUSNOAANWSAlertsEventProducer(kafka_producer, topic, 'binary')
 
     # ---- Microsoft.OpenData.US.NOAA.NWS.WeatherAlert ----
     # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NWS.WeatherAlert event
     _weather_alert = WeatherAlert()
 
     # sends the 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert' event to Kafka topic.
-    await microsoft_open_data_usnoaanwsevent_producer.send_microsoft_open_data_us_noaa_nws_weather_alert(data = _weather_alert)
+    await microsoft_open_data_usnoaanwsalerts_event_producer.send_microsoft_open_data_us_noaa_nws_weather_alert(_alert_id = 'TODO: replace me', data = _weather_alert)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert' event: {_weather_alert.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaanwszones_event_producer = MicrosoftOpenDataUSNOAANWSZonesEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaanwszones_event_producer = MicrosoftOpenDataUSNOAANWSZonesEventProducer(kafka_producer, topic, 'binary')
 
     # ---- Microsoft.OpenData.US.NOAA.NWS.Zone ----
     # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NWS.Zone event
     _zone = Zone()
 
     # sends the 'Microsoft.OpenData.US.NOAA.NWS.Zone' event to Kafka topic.
-    await microsoft_open_data_usnoaanwsevent_producer.send_microsoft_open_data_us_noaa_nws_zone(data = _zone)
+    await microsoft_open_data_usnoaanwszones_event_producer.send_microsoft_open_data_us_noaa_nws_zone(_zone_id = 'TODO: replace me', data = _zone)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NWS.Zone' event: {_zone.to_json()}")
 
 if __name__ == "__main__":

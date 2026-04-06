@@ -17,6 +17,8 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - USGSSitesEventDispatcher,
 
+4. [Generated Producer Classes](#generated-producer-classes)    USGSSiteTimeseriesEventDispatcher,
+
 4. [Generated Producer Classes](#generated-producer-classes)    USGSInstantaneousValuesEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
@@ -41,6 +43,10 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - USGSSitesProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- USGSSiteTimeseriesProducersolution for event-driven applications.
 
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
@@ -199,6 +205,43 @@ usgs_sites_dispatcher.usgs_sites_site_async = usgs_sites_site_event
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.Site`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_sites_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Site) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_sites_site_async = usgs_sites_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.Site`.
 
 
@@ -227,107 +270,6 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_instantaneous_values_dispatcher.usgs_sites_site_async = usgs_sites_site_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier
-
-- `**kwargs`: Additional Kafka producer configuration
-
-    bootstrap_servers='localhost:9093',
-
-    security_protocol='SASL_SSL',##### `usgs_sites_site_timeseries_async`
-
-    sasl_mechanism='PLAIN',
-
-    sasl_username='your-username',```python
-
-    sasl_password='your-password'usgs_sites_site_timeseries_async:  Callable[[ConsumerRecord, CloudEvent,
-SiteTimeseries], Awaitable[None]]
-
-)```
-
-```
-
-Asynchronous handler hook for `USGS.Sites.SiteTimeseries`: USGS site timeseries metadata.
-
-## Generated Producer Classes
-
-The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
-
-- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### USGSSitesProducer- `data`: The event data of type `usgs_iv_producer_data.SiteTimeseries`.
-
-
-
-Producer for `USGS.Sites` message group.Example:
-
-
-
-#### Constructor```python
-
-async def usgs_sites_site_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SiteTimeseries) ->
-None:
-
-```python    # Process the event data
-
-USGSSitesProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-usgs_sites_dispatcher.usgs_sites_site_timeseries_async = usgs_sites_site_timeseries_event
-
-**Parameters:**```
-
-- `bootstrap_servers`: Comma-separated list of broker addresses
-
-- `client_id`: Optional client identifier- `record`: The Kafka record.
-
-- `cloud_event`: The CloudEvent.
-
-### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.SiteTimeseries`.
-
-
-
-Producer for `USGS.InstantaneousValues` message group.Example:
-
-
-
-#### Constructor```python
-
-async def usgs_sites_site_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SiteTimeseries) ->
-None:
-
-```python    # Process the event data
-
-USGSInstantaneousValuesProducer(    await some_processing_function(record, cloud_event, data)
-
-    bootstrap_servers: str,```
-
-    client_id: Optional[str] = None,
-
-    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
-responsible for calling the appropriate handler function when a message is received. Example:
-
-) -> None
-
-``````python
-
-usgs_instantaneous_values_dispatcher.usgs_sites_site_timeseries_async = usgs_sites_site_timeseries_event
 
 **Parameters:**```
 
@@ -445,6 +387,239 @@ await producer.send_usgs_sites_site_batch(```
 ```
 
 Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### USGSSiteTimeseriesEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`USGSSiteTimeseriesEventDispatcher` handles events for the USGS.SiteTimeseries message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from usgs-iv-producer import USGSSitesProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = USGSSitesProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_usgs_sites_site(```python
+
+    data=Site(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The USGSSiteTimeseriesEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = USGSSitesProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `usgs_sites_site_timeseries_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'usgs_sites_site_timeseries_async:  Callable[[ConsumerRecord, CloudEvent,
+SiteTimeseries], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `USGS.Sites.SiteTimeseries`: USGS site timeseries metadata.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSitesProducer- `data`: The event data of type `usgs_iv_producer_data.SiteTimeseries`.
+
+
+
+Producer for `USGS.Sites` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_sites_site_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SiteTimeseries) ->
+None:
+
+```python    # Process the event data
+
+USGSSitesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_sites_dispatcher.usgs_sites_site_timeseries_async = usgs_sites_site_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.SiteTimeseries`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_sites_site_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SiteTimeseries) ->
+None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_sites_site_timeseries_async = usgs_sites_site_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.SiteTimeseries`.
+
+
+
+Producer for `USGS.InstantaneousValues` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_sites_site_timeseries_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SiteTimeseries) ->
+None:
+
+```python    # Process the event data
+
+USGSInstantaneousValuesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_instantaneous_values_dispatcher.usgs_sites_site_timeseries_async = usgs_sites_site_timeseries_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
 
 ### Dispatchers
 
@@ -700,6 +875,45 @@ usgs_sites_dispatcher.usgs_instantaneous_values_other_parameter_async = usgs_ins
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.OtherParameter`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_other_parameter_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+OtherParameter) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_other_parameter_async =
+usgs_instantaneous_values_other_parameter_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.OtherParameter`.
 
 
@@ -793,6 +1007,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_precipitation_async = usgs_instantaneous_values_precipitation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.Precipitation`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_precipitation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Precipitation) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_precipitation_async =
+usgs_instantaneous_values_precipitation_event
 
 **Parameters:**```
 
@@ -904,6 +1157,44 @@ usgs_sites_dispatcher.usgs_instantaneous_values_streamflow_async = usgs_instanta
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.Streamflow`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_streamflow_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Streamflow)
+-> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_streamflow_async = usgs_instantaneous_values_streamflow_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.Streamflow`.
 
 
@@ -997,6 +1288,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_gage_height_async = usgs_instantaneous_values_gage_height_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.GageHeight`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_gage_height_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GageHeight)
+-> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_gage_height_async =
+usgs_instantaneous_values_gage_height_event
 
 **Parameters:**```
 
@@ -1100,6 +1430,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_water_temperature_async =
+usgs_instantaneous_values_water_temperature_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.WaterTemperature`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_water_temperature_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterTemperature) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_water_temperature_async =
 usgs_instantaneous_values_water_temperature_event
 
 **Parameters:**```
@@ -1214,6 +1583,45 @@ usgs_instantaneous_values_dissolved_oxygen_event
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.DissolvedOxygen`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_dissolved_oxygen_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DissolvedOxygen) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_dissolved_oxygen_async =
+usgs_instantaneous_values_dissolved_oxygen_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.DissolvedOxygen`.
 
 
@@ -1315,6 +1723,43 @@ usgs_sites_dispatcher.usgs_instantaneous_values_p_h_async = usgs_instantaneous_v
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.PH`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_p_h_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PH) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_p_h_async = usgs_instantaneous_values_p_h_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.PH`.
 
 
@@ -1407,6 +1852,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_specific_conductance_async =
+usgs_instantaneous_values_specific_conductance_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.SpecificConductance`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_specific_conductance_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SpecificConductance) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_specific_conductance_async =
 usgs_instantaneous_values_specific_conductance_event
 
 **Parameters:**```
@@ -1519,6 +2003,44 @@ usgs_sites_dispatcher.usgs_instantaneous_values_turbidity_async = usgs_instantan
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.Turbidity`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_turbidity_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Turbidity) ->
+None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_turbidity_async = usgs_instantaneous_values_turbidity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.Turbidity`.
 
 
@@ -1622,6 +2144,45 @@ usgs_sites_dispatcher.usgs_instantaneous_values_air_temperature_async = usgs_ins
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.AirTemperature`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_air_temperature_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+AirTemperature) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_air_temperature_async =
+usgs_instantaneous_values_air_temperature_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.AirTemperature`.
 
 
@@ -1715,6 +2276,44 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_wind_speed_async = usgs_instantaneous_values_wind_speed_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.WindSpeed`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_wind_speed_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WindSpeed)
+-> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_wind_speed_async = usgs_instantaneous_values_wind_speed_event
 
 **Parameters:**```
 
@@ -1827,6 +2426,45 @@ usgs_sites_dispatcher.usgs_instantaneous_values_wind_direction_async = usgs_inst
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.WindDirection`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_wind_direction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WindDirection) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_wind_direction_async =
+usgs_instantaneous_values_wind_direction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.WindDirection`.
 
 
@@ -1921,6 +2559,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_relative_humidity_async =
+usgs_instantaneous_values_relative_humidity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.RelativeHumidity`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_relative_humidity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RelativeHumidity) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_relative_humidity_async =
 usgs_instantaneous_values_relative_humidity_event
 
 **Parameters:**```
@@ -2035,6 +2712,45 @@ usgs_instantaneous_values_barometric_pressure_event
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.BarometricPressure`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_barometric_pressure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BarometricPressure) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_barometric_pressure_async =
+usgs_instantaneous_values_barometric_pressure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.BarometricPressure`.
 
 
@@ -2128,6 +2844,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_turbidity_fnu_async = usgs_instantaneous_values_turbidity_fnu_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.TurbidityFNU`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_turbidity_fnu_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TurbidityFNU) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_turbidity_fnu_async =
+usgs_instantaneous_values_turbidity_fnu_event
 
 **Parameters:**```
 
@@ -2239,6 +2994,43 @@ usgs_sites_dispatcher.usgs_instantaneous_values_f_dom_async = usgs_instantaneous
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.FDOM`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_f_dom_event(record: ConsumerRecord, cloud_event: CloudEvent, data: FDOM) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_f_dom_async = usgs_instantaneous_values_f_dom_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.FDOM`.
 
 
@@ -2331,6 +3123,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_reservoir_storage_async =
+usgs_instantaneous_values_reservoir_storage_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.ReservoirStorage`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_reservoir_storage_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ReservoirStorage) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_reservoir_storage_async =
 usgs_instantaneous_values_reservoir_storage_event
 
 **Parameters:**```
@@ -2445,6 +3276,45 @@ usgs_instantaneous_values_lake_elevation_ngvd29_event
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.LakeElevationNGVD29`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_lake_elevation_ngvd29_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LakeElevationNGVD29) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_lake_elevation_ngvd29_async =
+usgs_instantaneous_values_lake_elevation_ngvd29_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.LakeElevationNGVD29`.
 
 
@@ -2538,6 +3408,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_water_depth_async = usgs_instantaneous_values_water_depth_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.WaterDepth`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_water_depth_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WaterDepth)
+-> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_water_depth_async =
+usgs_instantaneous_values_water_depth_event
 
 **Parameters:**```
 
@@ -2641,6 +3550,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_equipment_status_async =
+usgs_instantaneous_values_equipment_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.EquipmentStatus`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_equipment_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+EquipmentStatus) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_equipment_status_async =
 usgs_instantaneous_values_equipment_status_event
 
 **Parameters:**```
@@ -2755,6 +3703,45 @@ usgs_instantaneous_values_tidally_filtered_discharge_event
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.TidallyFilteredDischarge`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_tidally_filtered_discharge_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: TidallyFilteredDischarge) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_tidally_filtered_discharge_async =
+usgs_instantaneous_values_tidally_filtered_discharge_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.TidallyFilteredDischarge`.
 
 
@@ -2848,6 +3835,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_water_velocity_async = usgs_instantaneous_values_water_velocity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.WaterVelocity`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_water_velocity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterVelocity) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_water_velocity_async =
+usgs_instantaneous_values_water_velocity_event
 
 **Parameters:**```
 
@@ -2951,6 +3977,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_estuary_elevation_ngvd29_async =
+usgs_instantaneous_values_estuary_elevation_ngvd29_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.EstuaryElevationNGVD29`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_estuary_elevation_ngvd29_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: EstuaryElevationNGVD29) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_estuary_elevation_ngvd29_async =
 usgs_instantaneous_values_estuary_elevation_ngvd29_event
 
 **Parameters:**```
@@ -3065,6 +4130,45 @@ usgs_instantaneous_values_lake_elevation_navd88_event
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.LakeElevationNAVD88`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_lake_elevation_navd88_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+LakeElevationNAVD88) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_lake_elevation_navd88_async =
+usgs_instantaneous_values_lake_elevation_navd88_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.LakeElevationNAVD88`.
 
 
@@ -3167,6 +4271,44 @@ usgs_sites_dispatcher.usgs_instantaneous_values_salinity_async = usgs_instantane
 
 - `cloud_event`: The CloudEvent.
 
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.Salinity`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_salinity_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Salinity) ->
+None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_salinity_async = usgs_instantaneous_values_salinity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
 ### USGSInstantaneousValuesProducer- `data`: The event data of type `usgs_iv_producer_data.Salinity`.
 
 
@@ -3259,6 +4401,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_sites_dispatcher.usgs_instantaneous_values_gate_opening_async = usgs_instantaneous_values_gate_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSSiteTimeseriesProducer- `data`: The event data of type `usgs_iv_producer_data.GateOpening`.
+
+
+
+Producer for `USGS.SiteTimeseries` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_instantaneous_values_gate_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+GateOpening) -> None:
+
+```python    # Process the event data
+
+USGSSiteTimeseriesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_site_timeseries_dispatcher.usgs_instantaneous_values_gate_opening_async =
+usgs_instantaneous_values_gate_opening_event
 
 **Parameters:**```
 

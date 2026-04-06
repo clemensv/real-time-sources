@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "rss-feeds"
+          "topic": "rss-feeds",
+          "key": "{item_id}"
         }
       },
       "messagegroups": [
@@ -37,8 +38,8 @@
               "value": "{sourceurl}"
             },
             "subject": {
-              "type": "uritemplate",
-              "value": "{item_id}"
+              "value": "{item_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",

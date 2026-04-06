@@ -114,6 +114,7 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
         ce['datacontenttype'] = 'application/json'
     return ce
 
+
 def test_generaltransitfeedrealtime_generaltransitfeedrealtimevehiclevehicleposition(kafka_emulator):
     """Test the GeneralTransitFeedRealTimeVehicleVehiclePosition event from the GeneralTransitFeedRealTime message group"""
 
@@ -146,7 +147,7 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimevehiclevehicleposi
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -154,7 +155,7 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimevehiclevehicleposi
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedRealTime.Vehicle.VehiclePosition":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
@@ -168,10 +169,14 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimevehiclevehicleposi
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedrealtime_generaltransitfeedrealtimetriptripupdate(kafka_emulator):
     """Test the GeneralTransitFeedRealTimeTripTripUpdate event from the GeneralTransitFeedRealTime message group"""
@@ -205,7 +210,7 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimetriptripupdate(kaf
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -213,7 +218,7 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimetriptripupdate(kaf
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedRealTime.Trip.TripUpdate":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
@@ -227,10 +232,14 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimetriptripupdate(kaf
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedrealtime_generaltransitfeedrealtimealertalert(kafka_emulator):
     """Test the GeneralTransitFeedRealTimeAlertAlert event from the GeneralTransitFeedRealTime message group"""
@@ -264,7 +273,7 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimealertalert(kafka_e
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -272,7 +281,7 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimealertalert(kafka_e
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedRealTime.Alert.Alert":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
@@ -286,10 +295,14 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimealertalert(kafka_e
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticagency(kafka_emulator):
     """Test the GeneralTransitFeedStaticAgency event from the GeneralTransitFeedStatic message group"""
@@ -323,7 +336,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticagency(kafka_emulator)
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -331,7 +344,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticagency(kafka_emulator)
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Agency":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -345,10 +358,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticagency(kafka_emulator)
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticareas(kafka_emulator):
     """Test the GeneralTransitFeedStaticAreas event from the GeneralTransitFeedStatic message group"""
@@ -382,7 +399,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticareas(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -390,7 +407,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticareas(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Areas":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -404,10 +421,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticareas(kafka_emulator):
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticattributions(kafka_emulator):
     """Test the GeneralTransitFeedStaticAttributions event from the GeneralTransitFeedStatic message group"""
@@ -441,7 +462,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticattributions(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -449,7 +470,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticattributions(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Attributions":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -463,10 +484,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticattributions(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedbookingrules(kafka_emulator):
     """Test the GeneralTransitFeedBookingRules event from the GeneralTransitFeedStatic message group"""
@@ -500,7 +525,7 @@ def test_generaltransitfeedstatic_generaltransitfeedbookingrules(kafka_emulator)
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -508,7 +533,7 @@ def test_generaltransitfeedstatic_generaltransitfeedbookingrules(kafka_emulator)
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeed.BookingRules":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -522,10 +547,14 @@ def test_generaltransitfeedstatic_generaltransitfeedbookingrules(kafka_emulator)
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfareattributes(kafka_emulator):
     """Test the GeneralTransitFeedStaticFareAttributes event from the GeneralTransitFeedStatic message group"""
@@ -559,7 +588,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareattributes(kafka_e
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -567,7 +596,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareattributes(kafka_e
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.FareAttributes":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -581,10 +610,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareattributes(kafka_e
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfarelegrules(kafka_emulator):
     """Test the GeneralTransitFeedStaticFareLegRules event from the GeneralTransitFeedStatic message group"""
@@ -618,7 +651,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarelegrules(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -626,7 +659,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarelegrules(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.FareLegRules":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -640,10 +673,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarelegrules(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfaremedia(kafka_emulator):
     """Test the GeneralTransitFeedStaticFareMedia event from the GeneralTransitFeedStatic message group"""
@@ -677,7 +714,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaremedia(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -685,7 +722,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaremedia(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.FareMedia":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -699,10 +736,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaremedia(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfareproducts(kafka_emulator):
     """Test the GeneralTransitFeedStaticFareProducts event from the GeneralTransitFeedStatic message group"""
@@ -736,7 +777,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareproducts(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -744,7 +785,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareproducts(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.FareProducts":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -758,10 +799,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareproducts(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfarerules(kafka_emulator):
     """Test the GeneralTransitFeedStaticFareRules event from the GeneralTransitFeedStatic message group"""
@@ -795,7 +840,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarerules(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -803,7 +848,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarerules(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.FareRules":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -817,10 +862,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarerules(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfaretransferrules(kafka_emulator):
     """Test the GeneralTransitFeedStaticFareTransferRules event from the GeneralTransitFeedStatic message group"""
@@ -854,7 +903,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaretransferrules(kafk
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -862,7 +911,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaretransferrules(kafk
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.FareTransferRules":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -876,10 +925,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaretransferrules(kafk
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfeedinfo(kafka_emulator):
     """Test the GeneralTransitFeedStaticFeedInfo event from the GeneralTransitFeedStatic message group"""
@@ -913,7 +966,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfeedinfo(kafka_emulato
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -921,7 +974,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfeedinfo(kafka_emulato
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.FeedInfo":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -935,10 +988,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfeedinfo(kafka_emulato
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticfrequencies(kafka_emulator):
     """Test the GeneralTransitFeedStaticFrequencies event from the GeneralTransitFeedStatic message group"""
@@ -972,7 +1029,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfrequencies(kafka_emul
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -980,7 +1037,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfrequencies(kafka_emul
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Frequencies":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -994,10 +1051,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfrequencies(kafka_emul
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticlevels(kafka_emulator):
     """Test the GeneralTransitFeedStaticLevels event from the GeneralTransitFeedStatic message group"""
@@ -1031,7 +1092,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlevels(kafka_emulator)
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1039,7 +1100,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlevels(kafka_emulator)
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Levels":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1053,10 +1114,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlevels(kafka_emulator)
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgeojson(kafka_emulator):
     """Test the GeneralTransitFeedStaticLocationGeoJson event from the GeneralTransitFeedStatic message group"""
@@ -1090,7 +1155,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgeojson(kafka_
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1098,7 +1163,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgeojson(kafka_
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.LocationGeoJson":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1112,10 +1177,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgeojson(kafka_
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroups(kafka_emulator):
     """Test the GeneralTransitFeedStaticLocationGroups event from the GeneralTransitFeedStatic message group"""
@@ -1149,7 +1218,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroups(kafka_e
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1157,7 +1226,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroups(kafka_e
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.LocationGroups":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1171,10 +1240,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroups(kafka_e
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroupstores(kafka_emulator):
     """Test the GeneralTransitFeedStaticLocationGroupStores event from the GeneralTransitFeedStatic message group"""
@@ -1208,7 +1281,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroupstores(ka
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1216,7 +1289,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroupstores(ka
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.LocationGroupStores":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1230,10 +1303,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroupstores(ka
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticnetworks(kafka_emulator):
     """Test the GeneralTransitFeedStaticNetworks event from the GeneralTransitFeedStatic message group"""
@@ -1267,7 +1344,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticnetworks(kafka_emulato
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1275,7 +1352,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticnetworks(kafka_emulato
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Networks":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1289,10 +1366,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticnetworks(kafka_emulato
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticpathways(kafka_emulator):
     """Test the GeneralTransitFeedStaticPathways event from the GeneralTransitFeedStatic message group"""
@@ -1326,7 +1407,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticpathways(kafka_emulato
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1334,7 +1415,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticpathways(kafka_emulato
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Pathways":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1348,10 +1429,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticpathways(kafka_emulato
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticroutenetworks(kafka_emulator):
     """Test the GeneralTransitFeedStaticRouteNetworks event from the GeneralTransitFeedStatic message group"""
@@ -1385,7 +1470,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutenetworks(kafka_em
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1393,7 +1478,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutenetworks(kafka_em
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.RouteNetworks":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1407,10 +1492,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutenetworks(kafka_em
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticroutes(kafka_emulator):
     """Test the GeneralTransitFeedStaticRoutes event from the GeneralTransitFeedStatic message group"""
@@ -1444,7 +1533,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutes(kafka_emulator)
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1452,7 +1541,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutes(kafka_emulator)
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Routes":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1466,10 +1555,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutes(kafka_emulator)
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticshapes(kafka_emulator):
     """Test the GeneralTransitFeedStaticShapes event from the GeneralTransitFeedStatic message group"""
@@ -1503,7 +1596,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticshapes(kafka_emulator)
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1511,7 +1604,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticshapes(kafka_emulator)
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Shapes":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1525,10 +1618,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticshapes(kafka_emulator)
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticstopareas(kafka_emulator):
     """Test the GeneralTransitFeedStaticStopAreas event from the GeneralTransitFeedStatic message group"""
@@ -1562,7 +1659,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstopareas(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1570,7 +1667,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstopareas(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.StopAreas":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1584,10 +1681,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstopareas(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticstops(kafka_emulator):
     """Test the GeneralTransitFeedStaticStops event from the GeneralTransitFeedStatic message group"""
@@ -1621,7 +1722,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstops(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1629,7 +1730,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstops(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Stops":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1643,10 +1744,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstops(kafka_emulator):
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstaticstoptimes(kafka_emulator):
     """Test the GeneralTransitFeedStaticStopTimes event from the GeneralTransitFeedStatic message group"""
@@ -1680,7 +1785,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstoptimes(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1688,7 +1793,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstoptimes(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.StopTimes":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1702,10 +1807,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstoptimes(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstatictimeframes(kafka_emulator):
     """Test the GeneralTransitFeedStaticTimeframes event from the GeneralTransitFeedStatic message group"""
@@ -1739,7 +1848,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictimeframes(kafka_emula
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1747,7 +1856,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictimeframes(kafka_emula
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Timeframes":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1761,10 +1870,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictimeframes(kafka_emula
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstatictransfers(kafka_emulator):
     """Test the GeneralTransitFeedStaticTransfers event from the GeneralTransitFeedStatic message group"""
@@ -1798,7 +1911,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictransfers(kafka_emulat
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1806,7 +1919,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictransfers(kafka_emulat
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Transfers":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1820,10 +1933,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictransfers(kafka_emulat
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstatictranslations(kafka_emulator):
     """Test the GeneralTransitFeedStaticTranslations event from the GeneralTransitFeedStatic message group"""
@@ -1857,7 +1974,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictranslations(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1865,7 +1982,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictranslations(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Translations":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1879,10 +1996,14 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictranslations(kafka_emu
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_generaltransitfeedstatic_generaltransitfeedstatictrips(kafka_emulator):
     """Test the GeneralTransitFeedStaticTrips event from the GeneralTransitFeedStatic message group"""
@@ -1916,7 +2037,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictrips(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1924,7 +2045,7 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictrips(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "GeneralTransitFeedStatic.Trips":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
@@ -1938,7 +2059,123 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictrips(kafka_emulator):
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{agencyid}".format(agencyid=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_generaltransitfeedrealtime_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in GeneralTransitFeedRealTime produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_generaltransitfeedrealtime_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = GeneralTransitFeedRealTimeEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_VehiclePosition.create_instance()
+    data2 = Test_TripUpdate.create_instance()
+
+    producer_instance.send_general_transit_feed_real_time_vehicle_vehicle_position(_feedurl = shared_key_value, _agencyid = shared_key_value, data = data1)
+    producer_instance.send_general_transit_feed_real_time_trip_trip_update(_feedurl = shared_key_value, _agencyid = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["GeneralTransitFeedRealTime.Vehicle.VehiclePosition", "GeneralTransitFeedRealTime.Trip.TripUpdate"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{agencyid}".format(agencyid=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
+    consumer.close()
+
+def test_generaltransitfeedstatic_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in GeneralTransitFeedStatic produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_generaltransitfeedstatic_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = GeneralTransitFeedStaticEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_Agency.create_instance()
+    data2 = Test_Areas.create_instance()
+
+    producer_instance.send_general_transit_feed_static_agency(_feedurl = shared_key_value, _agencyid = shared_key_value, data = data1)
+    producer_instance.send_general_transit_feed_static_areas(_feedurl = shared_key_value, _agencyid = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["GeneralTransitFeedStatic.Agency", "GeneralTransitFeedStatic.Areas"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{agencyid}".format(agencyid=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

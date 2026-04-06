@@ -97,6 +97,7 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
         ce['datacontenttype'] = 'application/json'
     return ce
 
+
 def test_io_aisstream_ioaisstreampositionreport(kafka_emulator):
     """Test the IOAISstreamPositionReport event from the IO.AISstream message group"""
 
@@ -129,7 +130,7 @@ def test_io_aisstream_ioaisstreampositionreport(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -137,7 +138,7 @@ def test_io_aisstream_ioaisstreampositionreport(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.PositionReport":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -146,15 +147,19 @@ def test_io_aisstream_ioaisstreampositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_position_report(data = event_data)
+        producer_instance.send_io_aisstream_position_report(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamshipstaticdata(kafka_emulator):
     """Test the IOAISstreamShipStaticData event from the IO.AISstream message group"""
@@ -188,7 +193,7 @@ def test_io_aisstream_ioaisstreamshipstaticdata(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -196,7 +201,7 @@ def test_io_aisstream_ioaisstreamshipstaticdata(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.ShipStaticData":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -205,15 +210,19 @@ def test_io_aisstream_ioaisstreamshipstaticdata(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_ship_static_data(data = event_data)
+        producer_instance.send_io_aisstream_ship_static_data(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamstandardclassbpositionreport(kafka_emulator):
     """Test the IOAISstreamStandardClassBPositionReport event from the IO.AISstream message group"""
@@ -247,7 +256,7 @@ def test_io_aisstream_ioaisstreamstandardclassbpositionreport(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -255,7 +264,7 @@ def test_io_aisstream_ioaisstreamstandardclassbpositionreport(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.StandardClassBPositionReport":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -264,15 +273,19 @@ def test_io_aisstream_ioaisstreamstandardclassbpositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_standard_class_bposition_report(data = event_data)
+        producer_instance.send_io_aisstream_standard_class_bposition_report(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamextendedclassbpositionreport(kafka_emulator):
     """Test the IOAISstreamExtendedClassBPositionReport event from the IO.AISstream message group"""
@@ -306,7 +319,7 @@ def test_io_aisstream_ioaisstreamextendedclassbpositionreport(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -314,7 +327,7 @@ def test_io_aisstream_ioaisstreamextendedclassbpositionreport(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.ExtendedClassBPositionReport":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -323,15 +336,19 @@ def test_io_aisstream_ioaisstreamextendedclassbpositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_extended_class_bposition_report(data = event_data)
+        producer_instance.send_io_aisstream_extended_class_bposition_report(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamaidstonavigationreport(kafka_emulator):
     """Test the IOAISstreamAidsToNavigationReport event from the IO.AISstream message group"""
@@ -365,7 +382,7 @@ def test_io_aisstream_ioaisstreamaidstonavigationreport(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -373,7 +390,7 @@ def test_io_aisstream_ioaisstreamaidstonavigationreport(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.AidsToNavigationReport":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -382,15 +399,19 @@ def test_io_aisstream_ioaisstreamaidstonavigationreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_aids_to_navigation_report(data = event_data)
+        producer_instance.send_io_aisstream_aids_to_navigation_report(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamstaticdatareport(kafka_emulator):
     """Test the IOAISstreamStaticDataReport event from the IO.AISstream message group"""
@@ -424,7 +445,7 @@ def test_io_aisstream_ioaisstreamstaticdatareport(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -432,7 +453,7 @@ def test_io_aisstream_ioaisstreamstaticdatareport(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.StaticDataReport":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -441,15 +462,19 @@ def test_io_aisstream_ioaisstreamstaticdatareport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_static_data_report(data = event_data)
+        producer_instance.send_io_aisstream_static_data_report(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreambasestationreport(kafka_emulator):
     """Test the IOAISstreamBaseStationReport event from the IO.AISstream message group"""
@@ -483,7 +508,7 @@ def test_io_aisstream_ioaisstreambasestationreport(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -491,7 +516,7 @@ def test_io_aisstream_ioaisstreambasestationreport(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.BaseStationReport":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -500,15 +525,19 @@ def test_io_aisstream_ioaisstreambasestationreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_base_station_report(data = event_data)
+        producer_instance.send_io_aisstream_base_station_report(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamsafetybroadcastmessage(kafka_emulator):
     """Test the IOAISstreamSafetyBroadcastMessage event from the IO.AISstream message group"""
@@ -542,7 +571,7 @@ def test_io_aisstream_ioaisstreamsafetybroadcastmessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -550,7 +579,7 @@ def test_io_aisstream_ioaisstreamsafetybroadcastmessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.SafetyBroadcastMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -559,15 +588,19 @@ def test_io_aisstream_ioaisstreamsafetybroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_safety_broadcast_message(data = event_data)
+        producer_instance.send_io_aisstream_safety_broadcast_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamstandardsearchandrescueaircraftreport(kafka_emulator):
     """Test the IOAISstreamStandardSearchAndRescueAircraftReport event from the IO.AISstream message group"""
@@ -601,7 +634,7 @@ def test_io_aisstream_ioaisstreamstandardsearchandrescueaircraftreport(kafka_emu
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -609,7 +642,7 @@ def test_io_aisstream_ioaisstreamstandardsearchandrescueaircraftreport(kafka_emu
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.StandardSearchAndRescueAircraftReport":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -618,15 +651,19 @@ def test_io_aisstream_ioaisstreamstandardsearchandrescueaircraftreport(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_standard_search_and_rescue_aircraft_report(data = event_data)
+        producer_instance.send_io_aisstream_standard_search_and_rescue_aircraft_report(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamlongrangeaisbroadcastmessage(kafka_emulator):
     """Test the IOAISstreamLongRangeAisBroadcastMessage event from the IO.AISstream message group"""
@@ -660,7 +697,7 @@ def test_io_aisstream_ioaisstreamlongrangeaisbroadcastmessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -668,7 +705,7 @@ def test_io_aisstream_ioaisstreamlongrangeaisbroadcastmessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.LongRangeAisBroadcastMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -677,15 +714,19 @@ def test_io_aisstream_ioaisstreamlongrangeaisbroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_long_range_ais_broadcast_message(data = event_data)
+        producer_instance.send_io_aisstream_long_range_ais_broadcast_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamaddressedsafetymessage(kafka_emulator):
     """Test the IOAISstreamAddressedSafetyMessage event from the IO.AISstream message group"""
@@ -719,7 +760,7 @@ def test_io_aisstream_ioaisstreamaddressedsafetymessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -727,7 +768,7 @@ def test_io_aisstream_ioaisstreamaddressedsafetymessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.AddressedSafetyMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -736,15 +777,19 @@ def test_io_aisstream_ioaisstreamaddressedsafetymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_addressed_safety_message(data = event_data)
+        producer_instance.send_io_aisstream_addressed_safety_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamaddressedbinarymessage(kafka_emulator):
     """Test the IOAISstreamAddressedBinaryMessage event from the IO.AISstream message group"""
@@ -778,7 +823,7 @@ def test_io_aisstream_ioaisstreamaddressedbinarymessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -786,7 +831,7 @@ def test_io_aisstream_ioaisstreamaddressedbinarymessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.AddressedBinaryMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -795,15 +840,19 @@ def test_io_aisstream_ioaisstreamaddressedbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_addressed_binary_message(data = event_data)
+        producer_instance.send_io_aisstream_addressed_binary_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamassignedmodecommand(kafka_emulator):
     """Test the IOAISstreamAssignedModeCommand event from the IO.AISstream message group"""
@@ -837,7 +886,7 @@ def test_io_aisstream_ioaisstreamassignedmodecommand(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -845,7 +894,7 @@ def test_io_aisstream_ioaisstreamassignedmodecommand(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.AssignedModeCommand":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -854,15 +903,19 @@ def test_io_aisstream_ioaisstreamassignedmodecommand(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_assigned_mode_command(data = event_data)
+        producer_instance.send_io_aisstream_assigned_mode_command(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreambinaryacknowledge(kafka_emulator):
     """Test the IOAISstreamBinaryAcknowledge event from the IO.AISstream message group"""
@@ -896,7 +949,7 @@ def test_io_aisstream_ioaisstreambinaryacknowledge(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -904,7 +957,7 @@ def test_io_aisstream_ioaisstreambinaryacknowledge(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.BinaryAcknowledge":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -913,15 +966,19 @@ def test_io_aisstream_ioaisstreambinaryacknowledge(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_binary_acknowledge(data = event_data)
+        producer_instance.send_io_aisstream_binary_acknowledge(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreambinarybroadcastmessage(kafka_emulator):
     """Test the IOAISstreamBinaryBroadcastMessage event from the IO.AISstream message group"""
@@ -955,7 +1012,7 @@ def test_io_aisstream_ioaisstreambinarybroadcastmessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -963,7 +1020,7 @@ def test_io_aisstream_ioaisstreambinarybroadcastmessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.BinaryBroadcastMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -972,15 +1029,19 @@ def test_io_aisstream_ioaisstreambinarybroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_binary_broadcast_message(data = event_data)
+        producer_instance.send_io_aisstream_binary_broadcast_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamchannelmanagement(kafka_emulator):
     """Test the IOAISstreamChannelManagement event from the IO.AISstream message group"""
@@ -1014,7 +1075,7 @@ def test_io_aisstream_ioaisstreamchannelmanagement(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1022,7 +1083,7 @@ def test_io_aisstream_ioaisstreamchannelmanagement(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.ChannelManagement":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1031,15 +1092,19 @@ def test_io_aisstream_ioaisstreamchannelmanagement(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_channel_management(data = event_data)
+        producer_instance.send_io_aisstream_channel_management(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamcoordinatedutcinquiry(kafka_emulator):
     """Test the IOAISstreamCoordinatedUTCInquiry event from the IO.AISstream message group"""
@@ -1073,7 +1138,7 @@ def test_io_aisstream_ioaisstreamcoordinatedutcinquiry(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1081,7 +1146,7 @@ def test_io_aisstream_ioaisstreamcoordinatedutcinquiry(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.CoordinatedUTCInquiry":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1090,15 +1155,19 @@ def test_io_aisstream_ioaisstreamcoordinatedutcinquiry(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_coordinated_utcinquiry(data = event_data)
+        producer_instance.send_io_aisstream_coordinated_utcinquiry(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamdatalinkmanagementmessage(kafka_emulator):
     """Test the IOAISstreamDataLinkManagementMessage event from the IO.AISstream message group"""
@@ -1132,7 +1201,7 @@ def test_io_aisstream_ioaisstreamdatalinkmanagementmessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1140,7 +1209,7 @@ def test_io_aisstream_ioaisstreamdatalinkmanagementmessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.DataLinkManagementMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1149,15 +1218,19 @@ def test_io_aisstream_ioaisstreamdatalinkmanagementmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_data_link_management_message(data = event_data)
+        producer_instance.send_io_aisstream_data_link_management_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamgnssbroadcastbinarymessage(kafka_emulator):
     """Test the IOAISstreamGnssBroadcastBinaryMessage event from the IO.AISstream message group"""
@@ -1191,7 +1264,7 @@ def test_io_aisstream_ioaisstreamgnssbroadcastbinarymessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1199,7 +1272,7 @@ def test_io_aisstream_ioaisstreamgnssbroadcastbinarymessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.GnssBroadcastBinaryMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1208,15 +1281,19 @@ def test_io_aisstream_ioaisstreamgnssbroadcastbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_gnss_broadcast_binary_message(data = event_data)
+        producer_instance.send_io_aisstream_gnss_broadcast_binary_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamgroupassignmentcommand(kafka_emulator):
     """Test the IOAISstreamGroupAssignmentCommand event from the IO.AISstream message group"""
@@ -1250,7 +1327,7 @@ def test_io_aisstream_ioaisstreamgroupassignmentcommand(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1258,7 +1335,7 @@ def test_io_aisstream_ioaisstreamgroupassignmentcommand(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.GroupAssignmentCommand":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1267,15 +1344,19 @@ def test_io_aisstream_ioaisstreamgroupassignmentcommand(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_group_assignment_command(data = event_data)
+        producer_instance.send_io_aisstream_group_assignment_command(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreaminterrogation(kafka_emulator):
     """Test the IOAISstreamInterrogation event from the IO.AISstream message group"""
@@ -1309,7 +1390,7 @@ def test_io_aisstream_ioaisstreaminterrogation(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1317,7 +1398,7 @@ def test_io_aisstream_ioaisstreaminterrogation(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.Interrogation":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1326,15 +1407,19 @@ def test_io_aisstream_ioaisstreaminterrogation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_interrogation(data = event_data)
+        producer_instance.send_io_aisstream_interrogation(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreammultislotbinarymessage(kafka_emulator):
     """Test the IOAISstreamMultiSlotBinaryMessage event from the IO.AISstream message group"""
@@ -1368,7 +1453,7 @@ def test_io_aisstream_ioaisstreammultislotbinarymessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1376,7 +1461,7 @@ def test_io_aisstream_ioaisstreammultislotbinarymessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.MultiSlotBinaryMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1385,15 +1470,19 @@ def test_io_aisstream_ioaisstreammultislotbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_multi_slot_binary_message(data = event_data)
+        producer_instance.send_io_aisstream_multi_slot_binary_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
+
 
 def test_io_aisstream_ioaisstreamsingleslotbinarymessage(kafka_emulator):
     """Test the IOAISstreamSingleSlotBinaryMessage event from the IO.AISstream message group"""
@@ -1427,7 +1516,7 @@ def test_io_aisstream_ioaisstreamsingleslotbinarymessage(kafka_emulator):
         timeout = time.time() + 20  # 20 second timeout for CI robustness
         while True:
             if time.time() > timeout:
-                return False
+                return None
             msg = consumer.poll(1.0)
             if msg is None:
                 continue
@@ -1435,7 +1524,7 @@ def test_io_aisstream_ioaisstreamsingleslotbinarymessage(kafka_emulator):
                 continue
             cloudevent = parse_cloudevent(msg)
             if cloudevent['type'] == "IO.AISstream.SingleSlotBinaryMessage":
-                return True
+                return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
     producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
@@ -1444,12 +1533,72 @@ def test_io_aisstream_ioaisstreamsingleslotbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_single_slot_binary_message(data = event_data)
+        producer_instance.send_io_aisstream_single_slot_binary_message(_mmsi = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
-    # Verify all 5 messages received
+    # Verify all 5 messages received and assert Kafka key
     for i in range(5):
-        assert on_event(), f"Failed to receive message {i+1} of 5"
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_io_aisstream_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in IO.AISstream produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_io_aisstream_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = IOAISstreamEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_PositionReport.create_instance()
+    data2 = Test_ShipStaticData.create_instance()
+
+    producer_instance.send_io_aisstream_position_report(_mmsi = shared_key_value, data = data1)
+    producer_instance.send_io_aisstream_ship_static_data(_mmsi = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["IO.AISstream.PositionReport", "IO.AISstream.ShipStaticData"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{mmsi}".format(mmsi=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

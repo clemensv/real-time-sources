@@ -32,7 +32,8 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCAlertsEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCObservationsEventProducer
 
 # imports for the data classes for each event
 
@@ -52,26 +53,34 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        microsoft_open_data_usnoaaswpcevent_producer = MicrosoftOpenDataUSNOAASWPCEventProducer.from_connection_string(connection_string, topic, 'binary')
+        microsoft_open_data_usnoaaswpcalerts_event_producer = MicrosoftOpenDataUSNOAASWPCAlertsEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        microsoft_open_data_usnoaaswpcevent_producer = MicrosoftOpenDataUSNOAASWPCEventProducer(kafka_producer, topic, 'binary')
+        microsoft_open_data_usnoaaswpcalerts_event_producer = MicrosoftOpenDataUSNOAASWPCAlertsEventProducer(kafka_producer, topic, 'binary')
 
     # ---- Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert ----
     # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert event
     _space_weather_alert = SpaceWeatherAlert()
 
     # sends the 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert' event to Kafka topic.
-    await microsoft_open_data_usnoaaswpcevent_producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(data = _space_weather_alert)
+    await microsoft_open_data_usnoaaswpcalerts_event_producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(_product_id = 'TODO: replace me', data = _space_weather_alert)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert' event: {_space_weather_alert.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaaswpcobservations_event_producer = MicrosoftOpenDataUSNOAASWPCObservationsEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaaswpcobservations_event_producer = MicrosoftOpenDataUSNOAASWPCObservationsEventProducer(kafka_producer, topic, 'binary')
 
     # ---- Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex ----
     # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex event
     _planetary_kindex = PlanetaryKIndex()
 
     # sends the 'Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex' event to Kafka topic.
-    await microsoft_open_data_usnoaaswpcevent_producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(data = _planetary_kindex)
+    await microsoft_open_data_usnoaaswpcobservations_event_producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(_observation_time = 'TODO: replace me', data = _planetary_kindex)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex' event: {_planetary_kindex.to_json()}")
 
     # ---- Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary ----
@@ -79,7 +88,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _solar_wind_summary = SolarWindSummary()
 
     # sends the 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary' event to Kafka topic.
-    await microsoft_open_data_usnoaaswpcevent_producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(data = _solar_wind_summary)
+    await microsoft_open_data_usnoaaswpcobservations_event_producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(_observation_time = 'TODO: replace me', data = _solar_wind_summary)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary' event: {_solar_wind_summary.to_json()}")
 
 if __name__ == "__main__":

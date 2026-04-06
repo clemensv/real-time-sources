@@ -13,9 +13,37 @@ from entsoe.delta_state import load_state, save_state, get_last_polled, set_last
 from entsoe.entsoe import parse_connection_string, EntsoePoller
 
 
+def _utc_hour(dt: datetime) -> datetime:
+  return dt.astimezone(timezone.utc).replace(minute=0, second=0, microsecond=0)
+
+
+def _iso8601_z(dt: datetime) -> str:
+  return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+
+
+def _period_param(dt: datetime) -> str:
+  return dt.astimezone(timezone.utc).strftime("%Y%m%d%H%M")
+
+
+FIXTURE_NOW = _utc_hour(datetime.now(timezone.utc))
+GL_START = FIXTURE_NOW - timedelta(hours=12)
+GL_END = GL_START + timedelta(hours=1)
+PRICE_START = FIXTURE_NOW - timedelta(hours=36)
+PRICE_END = PRICE_START + timedelta(days=1)
+LOAD_START = FIXTURE_NOW - timedelta(hours=18)
+LOAD_END = LOAD_START + timedelta(hours=1)
+WIND_SOLAR_START = FIXTURE_NOW - timedelta(hours=10)
+WIND_SOLAR_END = WIND_SOLAR_START + timedelta(hours=1)
+CROSS_BORDER_START = FIXTURE_NOW - timedelta(hours=8)
+CROSS_BORDER_END = CROSS_BORDER_START + timedelta(hours=1)
+GENERATION_FORECAST_START = FIXTURE_NOW - timedelta(hours=6)
+GENERATION_FORECAST_END = GENERATION_FORECAST_START + timedelta(hours=2)
+STATE_TS = FIXTURE_NOW - timedelta(hours=1)
+
+
 # ===== Sample XML fixtures =====
 
-SAMPLE_GL_XML = """<?xml version="1.0" encoding="UTF-8"?>
+SAMPLE_GL_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
   <mRID>abc123</mRID>
   <type>A75</type>
@@ -29,8 +57,8 @@ SAMPLE_GL_XML = """<?xml version="1.0" encoding="UTF-8"?>
     </MktPSRType>
     <Period>
       <timeInterval>
-        <start>2026-04-01T00:00Z</start>
-        <end>2026-04-01T01:00Z</end>
+        <start>{_iso8601_z(GL_START)}</start>
+        <end>{_iso8601_z(GL_END)}</end>
       </timeInterval>
       <resolution>PT15M</resolution>
       <Point>
@@ -61,8 +89,8 @@ SAMPLE_GL_XML = """<?xml version="1.0" encoding="UTF-8"?>
     </MktPSRType>
     <Period>
       <timeInterval>
-        <start>2026-04-01T00:00Z</start>
-        <end>2026-04-01T01:00Z</end>
+        <start>{_iso8601_z(GL_START)}</start>
+        <end>{_iso8601_z(GL_END)}</end>
       </timeInterval>
       <resolution>PT15M</resolution>
       <Point>
@@ -77,7 +105,7 @@ SAMPLE_GL_XML = """<?xml version="1.0" encoding="UTF-8"?>
   </TimeSeries>
 </GL_MarketDocument>"""
 
-SAMPLE_PRICE_XML = """<?xml version="1.0" encoding="UTF-8"?>
+SAMPLE_PRICE_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Publication_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-3:publicationdocument:7:3">
   <mRID>price123</mRID>
   <type>A44</type>
@@ -89,8 +117,8 @@ SAMPLE_PRICE_XML = """<?xml version="1.0" encoding="UTF-8"?>
     <price_Measure_Unit.name>MWH</price_Measure_Unit.name>
     <Period>
       <timeInterval>
-        <start>2026-04-01T00:00Z</start>
-        <end>2026-04-02T00:00Z</end>
+        <start>{_iso8601_z(PRICE_START)}</start>
+        <end>{_iso8601_z(PRICE_END)}</end>
       </timeInterval>
       <resolution>PT60M</resolution>
       <Point>
@@ -109,7 +137,7 @@ SAMPLE_PRICE_XML = """<?xml version="1.0" encoding="UTF-8"?>
   </TimeSeries>
 </Publication_MarketDocument>"""
 
-SAMPLE_LOAD_XML = """<?xml version="1.0" encoding="UTF-8"?>
+SAMPLE_LOAD_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
   <mRID>load123</mRID>
   <type>A65</type>
@@ -121,8 +149,8 @@ SAMPLE_LOAD_XML = """<?xml version="1.0" encoding="UTF-8"?>
     <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
     <Period>
       <timeInterval>
-        <start>2026-04-01T06:00Z</start>
-        <end>2026-04-01T07:00Z</end>
+        <start>{_iso8601_z(LOAD_START)}</start>
+        <end>{_iso8601_z(LOAD_END)}</end>
       </timeInterval>
       <resolution>PT15M</resolution>
       <Point>
@@ -158,16 +186,15 @@ class TestXmlParser:
         assert p.document_type == "A75"
         assert p.unit_name == "MAW"
         assert p.business_type == "A01"
-        assert p.timestamp == datetime(2026, 4, 1, 0, 0, tzinfo=timezone.utc)
+        assert p.timestamp == GL_START
 
     def test_timestamp_computation(self):
         """Verify that timestamps are computed correctly from position and resolution."""
         points = parse_entsoe_xml(SAMPLE_GL_XML, "A75")
-        # B01 series: PT15M resolution starting at 00:00
-        assert points[0].timestamp == datetime(2026, 4, 1, 0, 0, tzinfo=timezone.utc)
-        assert points[1].timestamp == datetime(2026, 4, 1, 0, 15, tzinfo=timezone.utc)
-        assert points[2].timestamp == datetime(2026, 4, 1, 0, 30, tzinfo=timezone.utc)
-        assert points[3].timestamp == datetime(2026, 4, 1, 0, 45, tzinfo=timezone.utc)
+        assert points[0].timestamp == GL_START
+        assert points[1].timestamp == GL_START + timedelta(minutes=15)
+        assert points[2].timestamp == GL_START + timedelta(minutes=30)
+        assert points[3].timestamp == GL_START + timedelta(minutes=45)
 
     def test_parse_price_xml(self):
         """Parse A44 day-ahead prices XML."""
@@ -185,9 +212,9 @@ class TestXmlParser:
     def test_price_timestamps_hourly(self):
         """Verify hourly timestamps for price data."""
         points = parse_entsoe_xml(SAMPLE_PRICE_XML, "A44")
-        assert points[0].timestamp == datetime(2026, 4, 1, 0, 0, tzinfo=timezone.utc)
-        assert points[1].timestamp == datetime(2026, 4, 1, 1, 0, tzinfo=timezone.utc)
-        assert points[2].timestamp == datetime(2026, 4, 1, 2, 0, tzinfo=timezone.utc)
+        assert points[0].timestamp == PRICE_START
+        assert points[1].timestamp == PRICE_START + timedelta(hours=1)
+        assert points[2].timestamp == PRICE_START + timedelta(hours=2)
 
     def test_parse_load_xml(self):
         """Parse A65 actual total load XML."""
@@ -203,8 +230,8 @@ class TestXmlParser:
     def test_load_timestamps(self):
         """Verify timestamps for load data starting at offset."""
         points = parse_entsoe_xml(SAMPLE_LOAD_XML, "A65")
-        assert points[0].timestamp == datetime(2026, 4, 1, 6, 0, tzinfo=timezone.utc)
-        assert points[1].timestamp == datetime(2026, 4, 1, 6, 15, tzinfo=timezone.utc)
+        assert points[0].timestamp == LOAD_START
+        assert points[1].timestamp == LOAD_START + timedelta(minutes=15)
 
     def test_multiple_psr_types(self):
         """Verify that multiple time series with different PSR types are parsed."""
@@ -242,14 +269,14 @@ class TestBuildApiUrl:
             "test-token",
             "A75",
             "10YDE-AT-LU---Q",
-            datetime(2026, 4, 1, 0, 0, tzinfo=timezone.utc),
-            datetime(2026, 4, 1, 6, 0, tzinfo=timezone.utc),
+        GL_START,
+        GL_START + timedelta(hours=6),
         )
         assert "securityToken=test-token" in url
         assert "documentType=A75" in url
         assert "in_Domain=10YDE-AT-LU---Q" in url
-        assert "periodStart=202604010000" in url
-        assert "periodEnd=202604010600" in url
+        assert f"periodStart={_period_param(GL_START)}" in url
+        assert f"periodEnd={_period_param(GL_START + timedelta(hours=6))}" in url
 
     def test_url_with_psr_type(self):
         url = build_api_url(
@@ -257,8 +284,8 @@ class TestBuildApiUrl:
             "tok",
             "A75",
             "10YDE-AT-LU---Q",
-            datetime(2026, 4, 1, tzinfo=timezone.utc),
-            datetime(2026, 4, 2, tzinfo=timezone.utc),
+        GL_START,
+        GL_START + timedelta(days=1),
             psr_type="B01",
         )
         assert "psrType=B01" in url
@@ -281,7 +308,7 @@ class TestDeltaState:
             state_file = f.name
         try:
             state = {}
-            ts = datetime(2026, 4, 1, 12, 0, tzinfo=timezone.utc)
+            ts = STATE_TS
             set_last_polled(state, "A75", "10YDE-AT-LU---Q", ts)
             save_state(state_file, state)
 
@@ -293,22 +320,22 @@ class TestDeltaState:
 
     def test_get_last_polled_missing(self):
         """Missing key returns None."""
-        state = {"A75": {"10YDE-AT-LU---Q": "2026-04-01T00:00:00+00:00"}}
+        state = {"A75": {"10YDE-AT-LU---Q": GL_START.isoformat()}}
         assert get_last_polled(state, "A44", "10YDE-AT-LU---Q") is None
         assert get_last_polled(state, "A75", "10YFR-RTE------C") is None
 
     def test_set_last_polled_creates_nesting(self):
         """Setting a new doc_type/domain creates the nested structure."""
         state = {}
-        ts = datetime(2026, 4, 1, tzinfo=timezone.utc)
+        ts = PRICE_START
         set_last_polled(state, "A44", "10YFR-RTE------C", ts)
-        assert state["A44"]["10YFR-RTE------C"] == "2026-04-01T00:00:00+00:00"
+        assert state["A44"]["10YFR-RTE------C"] == PRICE_START.isoformat()
 
     def test_multiple_domains(self):
         """Multiple domains under one doc type."""
         state = {}
-        ts1 = datetime(2026, 4, 1, 6, 0, tzinfo=timezone.utc)
-        ts2 = datetime(2026, 4, 1, 7, 0, tzinfo=timezone.utc)
+        ts1 = LOAD_START
+        ts2 = LOAD_START + timedelta(hours=1)
         set_last_polled(state, "A75", "10YDE-AT-LU---Q", ts1)
         set_last_polled(state, "A75", "10YFR-RTE------C", ts2)
         assert get_last_polled(state, "A75", "10YDE-AT-LU---Q") == ts1
@@ -366,14 +393,13 @@ class TestEntsoePoller:
     @patch("entsoe.entsoe.requests.get")
     def test_poll_once_emits_events(self, mock_get, mock_producer, tmp_path):
         """A poll cycle with data emits events and advances checkpoint."""
-        # Use a large lookback so the fixture data (April 1) is always included
         poller = EntsoePoller(
             security_token="test-token",
             producer=mock_producer,
             state_file=str(tmp_path / "state.json"),
             domains=["10YDE-AT-LU---Q"],
             document_types=["A75"],
-            lookback_hours=720,
+        lookback_hours=24,
             polling_interval=60,
         )
         mock_response = Mock()
@@ -406,8 +432,7 @@ class TestEntsoePoller:
     @patch("entsoe.entsoe.requests.get")
     def test_delta_filtering(self, mock_get, poller, mock_producer):
         """Points before the checkpoint are filtered out."""
-        # Set checkpoint to 00:30 — only points after 00:30 should be emitted
-        checkpoint = datetime(2026, 4, 1, 0, 30, tzinfo=timezone.utc)
+        checkpoint = GL_START + timedelta(minutes=30)
         set_last_polled(poller.state, "A75", "10YDE-AT-LU---Q", checkpoint)
         save_state(poller.state_file, poller.state)
 
@@ -480,7 +505,7 @@ class TestEntsoePoller:
 
 # ===== New document type fixtures =====
 
-SAMPLE_WIND_SOLAR_FORECAST_XML = """<?xml version="1.0" encoding="UTF-8"?>
+SAMPLE_WIND_SOLAR_FORECAST_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
   <mRID>wsf123</mRID>
   <type>A69</type>
@@ -492,8 +517,8 @@ SAMPLE_WIND_SOLAR_FORECAST_XML = """<?xml version="1.0" encoding="UTF-8"?>
     <MktPSRType><psrType>B16</psrType></MktPSRType>
     <Period>
       <timeInterval>
-        <start>2026-04-01T00:00Z</start>
-        <end>2026-04-01T01:00Z</end>
+        <start>{_iso8601_z(WIND_SOLAR_START)}</start>
+        <end>{_iso8601_z(WIND_SOLAR_END)}</end>
       </timeInterval>
       <resolution>PT15M</resolution>
       <Point><position>1</position><quantity>0.0</quantity></Point>
@@ -503,7 +528,7 @@ SAMPLE_WIND_SOLAR_FORECAST_XML = """<?xml version="1.0" encoding="UTF-8"?>
   </TimeSeries>
 </GL_MarketDocument>"""
 
-SAMPLE_CROSS_BORDER_XML = """<?xml version="1.0" encoding="UTF-8"?>
+SAMPLE_CROSS_BORDER_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
   <mRID>cb123</mRID>
   <type>A11</type>
@@ -515,8 +540,8 @@ SAMPLE_CROSS_BORDER_XML = """<?xml version="1.0" encoding="UTF-8"?>
     <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
     <Period>
       <timeInterval>
-        <start>2026-04-01T00:00Z</start>
-        <end>2026-04-01T01:00Z</end>
+        <start>{_iso8601_z(CROSS_BORDER_START)}</start>
+        <end>{_iso8601_z(CROSS_BORDER_END)}</end>
       </timeInterval>
       <resolution>PT60M</resolution>
       <Point><position>1</position><quantity>1500.0</quantity></Point>
@@ -524,7 +549,7 @@ SAMPLE_CROSS_BORDER_XML = """<?xml version="1.0" encoding="UTF-8"?>
   </TimeSeries>
 </GL_MarketDocument>"""
 
-SAMPLE_GENERATION_FORECAST_XML = """<?xml version="1.0" encoding="UTF-8"?>
+SAMPLE_GENERATION_FORECAST_XML = f"""<?xml version="1.0" encoding="UTF-8"?>
 <GL_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:generationloaddocument:3:0">
   <mRID>gf123</mRID>
   <type>A71</type>
@@ -535,8 +560,8 @@ SAMPLE_GENERATION_FORECAST_XML = """<?xml version="1.0" encoding="UTF-8"?>
     <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
     <Period>
       <timeInterval>
-        <start>2026-04-01T00:00Z</start>
-        <end>2026-04-01T02:00Z</end>
+        <start>{_iso8601_z(GENERATION_FORECAST_START)}</start>
+        <end>{_iso8601_z(GENERATION_FORECAST_END)}</end>
       </timeInterval>
       <resolution>PT60M</resolution>
       <Point><position>1</position><quantity>45000.0</quantity></Point>
@@ -579,8 +604,8 @@ class TestNewDocumentTypeParsing:
         assert len(points) == 2
         assert points[0].quantity == 45000.0
         assert points[1].quantity == 44500.0
-        assert points[0].timestamp == datetime(2026, 4, 1, 0, 0, tzinfo=timezone.utc)
-        assert points[1].timestamp == datetime(2026, 4, 1, 1, 0, tzinfo=timezone.utc)
+        assert points[0].timestamp == GENERATION_FORECAST_START
+        assert points[1].timestamp == GENERATION_FORECAST_START + timedelta(hours=1)
 
 
 @pytest.mark.unit
@@ -607,8 +632,8 @@ class TestBuildApiUrlExtended:
         url = build_api_url(
             "https://web-api.tp.entsoe.eu/api", "tok", "A11",
             "10YFR-RTE------C",
-            datetime(2026, 4, 1, tzinfo=timezone.utc),
-            datetime(2026, 4, 2, tzinfo=timezone.utc),
+        CROSS_BORDER_START,
+        CROSS_BORDER_START + timedelta(days=1),
             out_domain="10YES-REE------0",
         )
         assert "documentType=A11" in url
@@ -620,8 +645,8 @@ class TestBuildApiUrlExtended:
         url = build_api_url(
             "https://web-api.tp.entsoe.eu/api", "tok", "A69",
             "10Y1001A1001A83F",
-            datetime(2026, 4, 1, tzinfo=timezone.utc),
-            datetime(2026, 4, 2, tzinfo=timezone.utc),
+        WIND_SOLAR_START,
+        WIND_SOLAR_START + timedelta(days=1),
         )
         assert "processType=A01" in url
 
@@ -629,8 +654,8 @@ class TestBuildApiUrlExtended:
         url = build_api_url(
             "https://web-api.tp.entsoe.eu/api", "tok", "A68",
             "10Y1001A1001A83F",
-            datetime(2026, 4, 1, tzinfo=timezone.utc),
-            datetime(2026, 4, 2, tzinfo=timezone.utc),
+        GENERATION_FORECAST_START,
+        GENERATION_FORECAST_START + timedelta(days=1),
         )
         assert "processType=A33" in url
 

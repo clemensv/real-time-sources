@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "imgw-hydro"
+          "topic": "imgw-hydro",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://danepubliczne.imgw.pl"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://danepubliczne.imgw.pl"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -93,7 +102,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/PL/Gov/IMGW/Hydro.schema.json",
+                "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/Station",
                 "description": "Station"
               }
             }
@@ -154,7 +163,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/PL/Gov/IMGW/Hydro.schema.json",
+                "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/WaterLevelObservation",
                 "description": "WaterLevelObservation"
               }
             }

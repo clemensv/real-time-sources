@@ -28,17 +28,17 @@ class Test_Document(unittest.TestCase):
         Create instance of Document for testing
         """
         instance = Document(
-            mmsi=int(77),
-            time=int(56),
-            sog=float(60.17937258509832),
-            cog=float(77.85176831544732),
-            navStat=int(40),
-            rot=int(26),
-            posAcc=False,
+            mmsi=int(68),
+            time=int(6),
+            sog=float(14.425277972372708),
+            cog=float(5.463576057937125),
+            navStat=int(45),
+            rot=int(96),
+            posAcc=True,
             raim=True,
-            heading=int(7),
-            lon=float(60.07703898858268),
-            lat=float(94.34496771354894)
+            heading=int(71),
+            lon=float(58.812145338454236),
+            lat=float(88.8983944618221)
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Document(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(77)
+        test_value = int(68)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -55,7 +55,7 @@ class Test_Document(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(56)
+        test_value = int(6)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -63,7 +63,7 @@ class Test_Document(unittest.TestCase):
         """
         Test sog property
         """
-        test_value = float(60.17937258509832)
+        test_value = float(14.425277972372708)
         self.instance.sog = test_value
         self.assertEqual(self.instance.sog, test_value)
     
@@ -71,7 +71,7 @@ class Test_Document(unittest.TestCase):
         """
         Test cog property
         """
-        test_value = float(77.85176831544732)
+        test_value = float(5.463576057937125)
         self.instance.cog = test_value
         self.assertEqual(self.instance.cog, test_value)
     
@@ -79,7 +79,7 @@ class Test_Document(unittest.TestCase):
         """
         Test navStat property
         """
-        test_value = int(40)
+        test_value = int(45)
         self.instance.navStat = test_value
         self.assertEqual(self.instance.navStat, test_value)
     
@@ -87,7 +87,7 @@ class Test_Document(unittest.TestCase):
         """
         Test rot property
         """
-        test_value = int(26)
+        test_value = int(96)
         self.instance.rot = test_value
         self.assertEqual(self.instance.rot, test_value)
     
@@ -95,7 +95,7 @@ class Test_Document(unittest.TestCase):
         """
         Test posAcc property
         """
-        test_value = False
+        test_value = True
         self.instance.posAcc = test_value
         self.assertEqual(self.instance.posAcc, test_value)
     
@@ -111,7 +111,7 @@ class Test_Document(unittest.TestCase):
         """
         Test heading property
         """
-        test_value = int(7)
+        test_value = int(71)
         self.instance.heading = test_value
         self.assertEqual(self.instance.heading, test_value)
     
@@ -119,7 +119,7 @@ class Test_Document(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(60.07703898858268)
+        test_value = float(58.812145338454236)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -127,7 +127,7 @@ class Test_Document(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(94.34496771354894)
+        test_value = float(88.8983944618221)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     

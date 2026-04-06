@@ -1,3 +1,3 @@
-from .uk import Station, Reading
+from .uk import Reading, Station
 
-__all__ = ["Station", "Reading"]
+__all__ = ["Reading", "Station"]

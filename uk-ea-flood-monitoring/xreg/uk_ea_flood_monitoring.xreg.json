@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "uk-ea-flood-monitoring"
+          "topic": "uk-ea-flood-monitoring",
+          "key": "{station_reference}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://environment.data.gov.uk/flood-monitoring"
+            },
+            "subject": {
+              "value": "{station_reference}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://environment.data.gov.uk/flood-monitoring"
+            },
+            "subject": {
+              "value": "{station_reference}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -108,7 +117,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/UK/Gov/Environment/EA/FloodMonitoring.schema.json",
+                "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Station",
                 "description": "Station"
               }
             }
@@ -145,7 +154,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/UK/Gov/Environment/EA/FloodMonitoring.schema.json",
+                "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Reading",
                 "description": "Reading"
               }
             }

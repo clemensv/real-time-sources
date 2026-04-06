@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "pegelonline"
+          "topic": "pegelonline",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [

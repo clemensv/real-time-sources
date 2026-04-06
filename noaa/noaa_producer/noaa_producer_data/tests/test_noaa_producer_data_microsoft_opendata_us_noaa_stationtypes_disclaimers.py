@@ -28,7 +28,7 @@ class Test_Disclaimers(unittest.TestCase):
         Create instance of Disclaimers for testing
         """
         instance = Disclaimers(
-            self_='ledotknvukbweuptsvrl'
+            self_='rnuxxdeybwshmhedipdm'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Disclaimers(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'ledotknvukbweuptsvrl'
+        test_value = 'rnuxxdeybwshmhedipdm'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

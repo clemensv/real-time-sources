@@ -28,15 +28,15 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_no='yzgftvzupdgvejtsrdkh',
-            station_name='jgukifvxwtmkxqmkdkag',
-            station_id='fmmgnxbgdlcivlvvmkhz',
-            station_latitude=float(20.22064347023369),
-            station_longitude=float(73.03147942126121),
-            river_name='hqxfkwftuffejiwsouki',
-            stationparameter_name='hdprbzceoxgzjxjvaspv',
-            ts_id='zmzmdfksrdbcnjaltope',
-            ts_unitname='zeppjirrbwuwmctbinea'
+            station_no='vhqszjszpqubexvvxzef',
+            station_name='ybekgouynfkvxyhkwjpo',
+            station_id='cvrxbgksbxbcwkalhbqt',
+            station_latitude=float(24.091889849300717),
+            station_longitude=float(0.8725221960915186),
+            river_name='bebgfyrsqeqvuettyzcj',
+            stationparameter_name='qyrxwsneybrjjutcuebu',
+            ts_id='zxunsiaxfiemuildftij',
+            ts_unitname='pkvxmpjdwytnxlukjswt'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_no property
         """
-        test_value = 'yzgftvzupdgvejtsrdkh'
+        test_value = 'vhqszjszpqubexvvxzef'
         self.instance.station_no = test_value
         self.assertEqual(self.instance.station_no, test_value)
     
@@ -53,7 +53,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'jgukifvxwtmkxqmkdkag'
+        test_value = 'ybekgouynfkvxyhkwjpo'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -61,7 +61,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'fmmgnxbgdlcivlvvmkhz'
+        test_value = 'cvrxbgksbxbcwkalhbqt'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -69,7 +69,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_latitude property
         """
-        test_value = float(20.22064347023369)
+        test_value = float(24.091889849300717)
         self.instance.station_latitude = test_value
         self.assertEqual(self.instance.station_latitude, test_value)
     
@@ -77,7 +77,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_longitude property
         """
-        test_value = float(73.03147942126121)
+        test_value = float(0.8725221960915186)
         self.instance.station_longitude = test_value
         self.assertEqual(self.instance.station_longitude, test_value)
     
@@ -85,7 +85,7 @@ class Test_Station(unittest.TestCase):
         """
         Test river_name property
         """
-        test_value = 'hqxfkwftuffejiwsouki'
+        test_value = 'bebgfyrsqeqvuettyzcj'
         self.instance.river_name = test_value
         self.assertEqual(self.instance.river_name, test_value)
     
@@ -93,7 +93,7 @@ class Test_Station(unittest.TestCase):
         """
         Test stationparameter_name property
         """
-        test_value = 'hdprbzceoxgzjxjvaspv'
+        test_value = 'qyrxwsneybrjjutcuebu'
         self.instance.stationparameter_name = test_value
         self.assertEqual(self.instance.stationparameter_name, test_value)
     
@@ -101,7 +101,7 @@ class Test_Station(unittest.TestCase):
         """
         Test ts_id property
         """
-        test_value = 'zmzmdfksrdbcnjaltope'
+        test_value = 'zxunsiaxfiemuildftij'
         self.instance.ts_id = test_value
         self.assertEqual(self.instance.ts_id, test_value)
     
@@ -109,7 +109,7 @@ class Test_Station(unittest.TestCase):
         """
         Test ts_unitname property
         """
-        test_value = 'zeppjirrbwuwmctbinea'
+        test_value = 'pkvxmpjdwytnxlukjswt'
         self.instance.ts_unitname = test_value
         self.assertEqual(self.instance.ts_unitname, test_value)
     

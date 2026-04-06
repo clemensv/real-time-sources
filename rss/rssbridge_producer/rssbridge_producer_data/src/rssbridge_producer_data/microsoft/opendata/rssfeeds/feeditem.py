@@ -14,14 +14,14 @@ from marshmallow import fields
 import avro.schema
 import avro.name
 import avro.io
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
 import datetime
 
 

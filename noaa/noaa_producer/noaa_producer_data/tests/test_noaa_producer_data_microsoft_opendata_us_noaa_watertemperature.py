@@ -28,12 +28,12 @@ class Test_WaterTemperature(unittest.TestCase):
         Create instance of WaterTemperature for testing
         """
         instance = WaterTemperature(
-            station_id='cmevmvutylkomhrpjdqu',
-            timestamp='yxritgwdsprwfbpouafx',
-            value=float(94.03660567543308),
+            station_id='zzekaccmmjjtqhogkpjt',
+            timestamp='xekvdidadcmucaybzkxf',
+            value=float(31.98828258385149),
             max_temp_exceeded=True,
-            min_temp_exceeded=False,
-            rate_of_change_exceeded=True
+            min_temp_exceeded=True,
+            rate_of_change_exceeded=False
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'cmevmvutylkomhrpjdqu'
+        test_value = 'zzekaccmmjjtqhogkpjt'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'yxritgwdsprwfbpouafx'
+        test_value = 'xekvdidadcmucaybzkxf'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(94.03660567543308)
+        test_value = float(31.98828258385149)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -74,7 +74,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test min_temp_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.min_temp_exceeded = test_value
         self.assertEqual(self.instance.min_temp_exceeded, test_value)
     
@@ -82,7 +82,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = True
+        test_value = False
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     

@@ -13,7 +13,8 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "smhi-hydro"
+          "topic": "smhi-hydro",
+          "key": "{station_id}"
         }
       },
       "messagegroups": [
@@ -33,6 +34,10 @@
             },
             "source": {
               "value": "https://opendata-download-hydroobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -47,6 +52,10 @@
             },
             "source": {
               "value": "https://opendata-download-hydroobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -107,7 +116,7 @@
                     "type": "double"
                   }
                 },
-                "$id": "https://example.com/SE/Gov/SMHI/Hydro.schema.json",
+                "$id": "https://example.com/schemas/SE/Gov/SMHI/Hydro/Station",
                 "description": "Station"
               }
             }
@@ -150,7 +159,7 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/SE/Gov/SMHI/Hydro.schema.json",
+                "$id": "https://example.com/schemas/SE/Gov/SMHI/Hydro/DischargeObservation",
                 "description": "DischargeObservation"
               }
             }

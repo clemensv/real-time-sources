@@ -28,12 +28,12 @@ class Test_Conductivity(unittest.TestCase):
         Create instance of Conductivity for testing
         """
         instance = Conductivity(
-            station_id='zbyvkuuoxkmjczchttwj',
-            timestamp='ceraerpexbmiafwtswgp',
-            value=float(66.54214445561276),
+            station_id='kadczllytjjzrvsoosmq',
+            timestamp='rokvdqmwdonwnvebkmgo',
+            value=float(12.596623045052835),
             max_conductivity_exceeded=False,
-            min_conductivity_exceeded=True,
-            rate_of_change_exceeded=False
+            min_conductivity_exceeded=False,
+            rate_of_change_exceeded=True
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'zbyvkuuoxkmjczchttwj'
+        test_value = 'kadczllytjjzrvsoosmq'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'ceraerpexbmiafwtswgp'
+        test_value = 'rokvdqmwdonwnvebkmgo'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(66.54214445561276)
+        test_value = float(12.596623045052835)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -74,7 +74,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test min_conductivity_exceeded property
         """
-        test_value = True
+        test_value = False
         self.instance.min_conductivity_exceeded = test_value
         self.assertEqual(self.instance.min_conductivity_exceeded, test_value)
     
@@ -82,7 +82,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
