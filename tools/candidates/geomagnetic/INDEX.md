@@ -60,3 +60,14 @@ The geomagnetic sources form a clear hierarchy:
 | **Alerts** | NOAA SWPC Alerts | Operational warnings for satellite operators, power grid, aviation |
 
 A complete space weather monitoring picture requires at least one source from each layer. The recommended build order covers all four.
+
+
+## Latin America  April 2026
+
+| Source | Region | Score | File | Status |
+|--------|--------|-------|------|--------|
+| **INPE EMBRACE** | Brazil / South Atlantic | **5/18** | [inpe-embrace-brazil.md](inpe-embrace-brazil.md) |  **Skip**  All endpoints unreachable; South Atlantic Anomaly monitoring |
+
+### Key Finding
+
+INPE's EMBRACE space weather program monitors the **South Atlantic Anomaly**  where Earth's inner radiation belt dips closest to the surface, centered over Brazil. This makes EMBRACE data uniquely valuable for satellite operations and GPS accuracy (equatorial ionospheric scintillation over Brazil is the worst on Earth). All endpoints were unreachable during testing. NOAA SWPC and INTERMAGNET provide complementary global data but lack Southern Hemisphere detail.

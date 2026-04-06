@@ -142,3 +142,14 @@ freely accessible — a model that other maritime nations have not replicated.
 | 14 | [Critical Chokepoints](critical-chokepoints-asia-mideast.md) | 16/18 | `critical-chokepoints-asia-mideast.md` | Malacca Strait, Bosphorus, Hormuz — AIS monitoring analysis |
 
 **Key finding**: Three of the world's most critical maritime chokepoints (Malacca, Bosphorus, Hormuz) are in the Asia/Middle East region. This document analyzes AIS data availability and monitoring approaches for each, connecting to existing AIS infrastructure (Digitraffic, Kystverket, AISstream) and identifying regional gaps.
+
+
+## Latin America  April 2026
+
+| # | Source | Region | Score | File | Status |
+|---|--------|--------|-------|------|--------|
+| 15 | **Panama Canal** | Panama | **4/18** | [panama-canal.md](panama-canal.md) |  **Skip**  No public API; commercially sensitive; 5% of world trade |
+
+### Key Finding
+
+The Panama Canal Authority does not provide public APIs for vessel transit data. This is commercially sensitive information (transit scheduling, draft restrictions, auction prices). AIS data from existing sources (Kystverket, AISHub, AISstream) provides vessel positions in the canal approaches. The most valuable single data point  Gatun Lake water level  would indicate canal capacity constraints (the 2023 drought forced transit cuts from 36 to 22 ships/day), but is not publicly available. The Strait of Magellan and major Latin American ports (Santos, Buenos Aires, Callao) are covered by global AIS aggregators.

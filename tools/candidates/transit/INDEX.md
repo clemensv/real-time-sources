@@ -157,3 +157,15 @@ These are not transit but are relevant real-time open data sources in the social
 
 ### Assessment
 The RSS bridge already covers most news sources (including HN via its RSS feed). Mastodon streaming is interesting as an ActivityPub/SSE source but overlaps with Bluesky's social feed niche. The HN Firebase API's SSE capability makes it a clean candidate for a small, focused bridge demonstrating Firebase SSE-to-CloudEvents conversion.
+
+
+## Latin America  April 2026
+
+| # | Source | City | Score | File | Status |
+|---|--------|------|-------|------|--------|
+| 28 | **Santiago RED/Metro** | Santiago, Chile | **11/18** | [santiago-red-metro.md](santiago-red-metro.md) |  **Maybe**  GTFS-RT likely exists; endpoints unreachable; largest electric bus fleet outside China |
+| 29 | **TransMilenio Bogotá** | Bogotá, Colombia | **8/18** | [bogota-transmilenio.md](bogota-transmilenio.md) |  **Skip**  Open data portal unreachable; THE reference BRT system |
+
+### Latin America Transit Summary
+
+SPTrans São Paulo (already documented, 11/18) remains the strongest Latin American transit candidate. Santiago's RED system likely has GTFS-RT (all 6,000+ buses have GPS; historical GTFS feeds known at gtfs.transantiago.cl), but endpoints were unreachable. TransMilenio Bogotá's open data portal was also down. Mexico City Metro and Buenos Aires SUBE were not tested. The region has extensive BRT networks (TransMilenio, Metropolitano Lima, RED Santiago, Metrobús CDMX) but open data APIs lag behind European and North American cities.

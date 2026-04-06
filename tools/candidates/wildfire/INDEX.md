@@ -68,3 +68,15 @@ Round 2 expands the wildfire monitoring architecture from satellite-only to a th
 ```
 
 The three layers provide: detection ("fire exists"), operational response ("fire is being managed"), and prediction ("conditions favor fire").
+
+
+## Latin America  April 2026
+
+| Source | Region | Score | File | Status |
+|--------|--------|-------|------|--------|
+| **INPE TerraBrasilis DETER** | Brazil (Amazon + Cerrado) | **17/18** | [inpe-terrabrasilis-deter.md](inpe-terrabrasilis-deter.md) |  **Build**  OGC WFS GeoJSON; 445K+ deforestation alerts; no auth |
+| **INPE BDQueimadas WFS** | Brazil (all biomes) | **14/18** | [inpe-bdqueimadas-wfs.md](inpe-bdqueimadas-wfs.md) |  **Build**  Same GeoServer as DETER; fire hotspot data via WFS |
+
+### Key Finding
+
+INPE's TerraBrasilis GeoServer at 	errabrasilis.dpi.inpe.br is a goldmine. It serves deforestation alerts (DETER), annual deforestation (PRODES), and fire data (queimadas) for **all six Brazilian biomes** through standard OGC WFS. A single WFS adapter handles everything  change the workspace and layer name. The DETER Amazon dataset alone has 445,966 features. This is arguably the most environmentally consequential open geospatial dataset on Earth.

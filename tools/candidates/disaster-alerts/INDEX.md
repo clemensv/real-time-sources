@@ -27,3 +27,16 @@ Twelve candidates covering global (GDACS, EM-DAT), European (Meteoalarm, EFAS, C
 | [rimes-asia-pacific](rimes-asia-pacific.md) | RIMES Asia-Pacific | 48 countries (S/SE Asia) | Unknown | Unknown | 7/18 |
 
 **Key finding**: India's National Disaster Management Authority publishes real-time CAP-format disaster alerts through the SACHET platform with no authentication. Confirmed working — returns JSON array of active alerts covering cyclones, floods, heat waves, and other natural hazards across India.
+
+
+## Latin America  April 2026
+
+| Slug | Source | Region | Protocol | Auth | Score |
+|------|--------|--------|----------|------|-------|
+| [cenapred-mexico](cenapred-mexico.md) | CENAPRED Mexico | Mexico | Unknown | N/A | 7/18 |
+| [senapred-chile](senapred-chile.md) | SENAPRED Chile | Chile | Unknown | N/A | 8/18 |
+| [alertario-rio](alertario-rio.md) | AlertaRio | Rio de Janeiro | REST + WebSocket | Unknown | 12/18 |
+
+### Latin America Disaster Alert Summary
+
+AlertaRio is the most promising  known REST API + WebSocket push for Rio de Janeiro's flood/weather alerts. All endpoints were unreachable during testing, but the WebSocket endpoint (websocket.alertario.rio.rj.gov.br) confirms genuine push capability. CENAPRED Mexico (unreachable, UNAM servers) has the Popocatépetl volcanic traffic light  structured alert data for 25M+ exposed population. SENAPRED Chile's multi-hazard alerts (earthquake, tsunami, volcano, wildfire) would be high-value if accessible. GDACS already provides partial coverage of Latin American disasters.

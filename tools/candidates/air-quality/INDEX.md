@@ -100,3 +100,16 @@ Scouted: 2026-04-06
 - **Satellite data is complementary**: CAMS and Sentinel-5P provide global coverage but require scientific data formats (GRIB, NetCDF). Not simple JSON.
 - **Pollen is a unique niche**: DWD Pollenflug is the only open JSON pollen forecast API found. CAMS also provides modelled pollen for Europe.
 - **Greenhouse gas monitoring** (NOAA GML) is reference-grade but monthly — a different use case from urban air quality.
+
+
+## Latin America Expansion  April 2026
+
+| # | Source | Region | Score | File | Status |
+|---|--------|--------|-------|------|--------|
+| 31 | **CETESB São Paulo** | Brazil (São Paulo State) | **10/18** | [cetesb-saopaulo.md](cetesb-saopaulo.md) |  **Maybe**  Registration wall; largest Southern Hemisphere city; check OpenAQ |
+| 32 | **SIATA Medellín** | Colombia (Valle de Aburrá) | **7/18** | [siata-medellin.md](siata-medellin.md) |  **Skip**  No API; unique comprehensive urban monitoring (air + hydro + weather) |
+| 33 | **CDMX SIMAT** | Mexico (Mexico City) | **9/18** | [cdmx-simat.md](cdmx-simat.md) |  **Maybe**  Server unreachable; API known to exist; volcanic SO2 from Popocatépetl |
+
+### Latin America Air Quality Summary
+
+Latin American air quality APIs remain elusive. Mexico SINAICA (already documented) and Chile SINCA (already documented) are the existing candidates. New findings: CETESB São Paulo requires registration (CPF barrier), CDMX SIMAT servers were unreachable, SIATA Medellín has no API despite being a sophisticated monitoring system. OpenAQ likely already ingests data from several of these networks  check OpenAQ coverage before building direct integrations.

@@ -57,3 +57,14 @@ Seven cargo bike share systems publish GBFS: carvelo (CH), Beryl Hackney (London
 - **Asia**: Japan (Tokyo Docomo — GBFS), **Taiwan (YouBike — proprietary)**, **South Korea (Seoul — proprietary)**
 - **Micromobility**: Dott, Bird, Lime, Bolt, Voi — 500+ city feeds via GBFS catalog
 - **Not in GBFS**: TIER (despite owning nextbike), Helsinki City Bikes (discontinued 2023)
+
+
+## Latin America  April 2026
+
+| Source | City | Score | File | Status |
+|--------|------|-------|------|--------|
+| **ECOBICI CDMX** | Mexico City | **17/18** | [ecobici-cdmx.md](ecobici-cdmx.md) |  **Build**  Standard GBFS via Lyft; 10s TTL; largest city in Western Hemisphere |
+
+### Key Finding
+
+ECOBICI Mexico City is a confirmed, fully functional GBFS feed hosted by Lyft infrastructure (gbfs.mex.lyftbikes.com). Same adapter pattern as Citi Bike, Vélib', etc. The 10-second TTL confirms genuine real-time data. This is the first Latin American GBFS feed fully verified in this survey. Additional feeds likely exist for Buenos Aires, Santiago, São Paulo, and Bogotá (Tembici operates in Brazilian cities, but gbfs.tembici.com.br was unreachable).
