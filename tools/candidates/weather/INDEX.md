@@ -163,6 +163,29 @@ Research conducted: April 2026 (Deep Dive Round 2: April 2026)
 | Windy API | Global | Primarily visualization; limited data API |
 | EUMETNET OPERA | Europe | Radar composites available through member NMHSs |
 
+### Deep Dive Round 5 — Central Asia, South Asia, SE Asia, Middle East
+
+| # | Source | File | Country | Score | Protocol | Auth | Highlights |
+|---|--------|------|---------|-------|----------|------|------------|
+| 41 | [Israel IMS](israel-ims.md) | `israel-ims.md` | Israel | 15/18 | HTTP XML polling | **None** | 10-min obs, solar radiation data, no auth |
+| 42 | [Turkey MGM](turkey-mgm.md) | `turkey-mgm.md` | Turkey | 12/18 | REST (JSON) | API Key | ~400 stations; API exists but returns 500 without auth |
+| 43 | [Thailand TMD](thailand-tmd.md) | `thailand-tmd.md` | Thailand | 13/18 | REST (JSON) | API Key (free) | Documented API; English docs; complements Thaiwater |
+| 44 | [PAGASA Philippines](pagasa-philippines.md) | `pagasa-philippines.md` | Philippines | 9/18 | Web only | N/A | 20 typhoons/year; no public API despite critical need |
+| 45 | [Pakistan PMD](pakistan-pmd.md) | `pakistan-pmd.md` | Pakistan | 6/18 | Web (403) | N/A | 230M people; all endpoints return 403 |
+| 46 | [Bangladesh BMD](bangladesh-bmd.md) | `bangladesh-bmd.md` | Bangladesh | 7/18 | Web only | N/A | Cyclone-critical; 170M people; no API |
+| 47 | [Kazakhstan Kazhydromet](kazakhstan-kazhydromet.md) | `kazakhstan-kazhydromet.md` | Kazakhstan | 6/18 | Web only | N/A | Central Asia's largest country; Aral Sea; zero API |
+| 48 | [Uzbekistan Uzhydromet](uzbekistan-uzhydromet.md) | `uzbekistan-uzhydromet.md` | Uzbekistan | 5/18 | Web only | N/A | Aral Sea monitoring; transboundary water |
+| 49 | [Mongolia NAMEM](mongolia-namem.md) | `mongolia-namem.md` | Mongolia | 5/18 | Web only | N/A | Extreme continental; dust storms; dzud |
+| 50 | [UAE NCMS](uae-ncms.md) | `uae-ncms.md` | UAE | 9/18 | Web (conn. fail) | N/A | Well-funded; mobile app exists; web inaccessible |
+| 51 | [Iran IRIMO](iran-irimo.md) | `iran-irimo.md` | Iran | 5/18 | Web (conn. fail) | N/A | 85M people; extreme heat; connectivity issues |
+| 52 | [Vietnam NCHMF](vietnam-nchmf.md) | `vietnam-nchmf.md` | Vietnam | 6/18 | Web only | N/A | 100M people; typhoon/Mekong; no API |
+| 53 | [Sri Lanka DoM](sri-lanka-dom.md) | `sri-lanka-dom.md` | Sri Lanka | 5/18 | Web only | N/A | Island nation; monsoon/cyclone |
+| 54 | [Jordan JMD](jordan-jmd.md) | `jordan-jmd.md` | Jordan | 4/18 | Web only | N/A | Small network; water-scarce |
+| 55 | [Saudi NCM](saudi-ncm.md) | `saudi-ncm.md` | Saudi Arabia | 5/18 | Web only | N/A | Extreme heat; Hajj weather; data.gov.sa inaccessible |
+| 56 | [Qatar Met](qatar-met.md) | `qatar-met.md` | Qatar | 4/18 | Web only | N/A | Small; aviation data available through standard channels |
+| 57 | [Myanmar DMH](myanmar-dmh.md) | `myanmar-dmh.md` | Myanmar | 4/18 | Web only | N/A | Cyclone Nargis precedent; political instability |
+| 58 | [Malaysia MetMalaysia](malaysia-metmalaysia.md) | `malaysia-metmalaysia.md` | Malaysia | 8/18 | Web (conn. fail) | N/A | Strait of Malacca; monsoon floods; FWIS system |
+
 ## Geographic Coverage Map
 
 ```
@@ -174,8 +197,12 @@ Europe Central: GeoSphere Austria (17), MeteoSwiss (14), IMGW Poland (14),
                [DWD — already integrated]
 Europe South:  AEMET Spain (16), IPMA Portugal (14)
 Asia East:     JMA Japan (17), HKO Hong Kong (17), CWA Taiwan (17), KMA S.Korea (14)
-Asia Southeast: Singapore NEA (17), BMKG Indonesia (16)
-Asia South:    IMD India (11)
+Asia Southeast: Singapore NEA (17), BMKG Indonesia (16), Thailand TMD (13),
+               PAGASA Philippines (9), Malaysia MetMalaysia (8), Vietnam (6), Myanmar (4)
+Asia South:    IMD India (11), Pakistan PMD (6), Bangladesh BMD (7), Sri Lanka (5)
+Asia Central:  Kazakhstan (6), Uzbekistan (5), Mongolia (5)
+Middle East:   Israel IMS (15), Turkey MGM (12), UAE NCMS (9), Saudi NCM (5),
+               Jordan (4), Qatar (4), Iran IRIMO (5)
 Oceania:       BOM Australia (17)
 Africa:        African METAR (16), Open-Meteo Africa (16), CAP Alerts (13),
                TAHMO (12), CHIRPS (12), Rwanda (9), ICPAC (8), SADC (7)
@@ -183,3 +210,18 @@ Global:        ECMWF (16), Synoptic Data (16), Open-Meteo (15), Copernicus CDS (
                EUMETSAT (14), OGIMET (13), Netatmo (12),
                IEM Mesonet (17, US-focused)
 ```
+
+
+## Latin America Expansion  April 2026
+
+| # | Source | Country | Score | File | Status |
+|---|--------|---------|-------|------|--------|
+| 59 | **Colombia IDEAM Weather** | Colombia | **14/18** | [colombia-ideam-weather.md](colombia-ideam-weather.md) |  **Build**  Socrata API; atmospheric pressure + temperature |
+| 60 | **INMET Brazil Expanded** | Brazil | **15/18** | [inmet-brazil-expanded.md](inmet-brazil-expanded.md) |  **Build**  Station metadata + forecast APIs confirmed |
+| 61 | **SENAMHI Peru** | Peru | **7/18** | [senamhi-peru.md](senamhi-peru.md) |  **Skip**  Under maintenance; El Niño ground zero |
+| 62 | **SMN Mexico / CONAGUA** | Mexico | **6/18** | [smn-mexico.md](smn-mexico.md) |  **Skip**  Server unreachable; dual-ocean hurricane exposure |
+| 63 | **INPE CPTEC Satellite** | Brazil | **11/18** | [inpe-cptec-satellite.md](inpe-cptec-satellite.md) |  **Maybe**  GOES-16 FTP accessible; low additive over NOAA |
+
+### Latin America Weather Summary
+
+Colombia IDEAM (via datos.gov.co Socrata) is the new top find  confirmed near-real-time pressure and temperature data with standard API. INMET Brazil's expanded endpoints (station metadata with WMO codes, municipal forecasts) enhance the existing candidate. Mexico and Peru are blocked/down. Argentina's SMN (already documented) and Brazil's INMET remain the strongest Latin American weather sources.

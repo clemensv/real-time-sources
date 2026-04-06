@@ -179,10 +179,36 @@ Sources investigated in depth but lacking public API: Italy (8), Slovakia (8), M
 
 ### Protocol Patterns
 
-- **REST/JSON (no auth)**: Lithuania, Thailand, Taiwan, Ireland, Canada, Slovenia
+- **REST/JSON (no auth)**: Lithuania, Thailand, Taiwan, Ireland, Canada, Slovenia, Nepal (BIPAD)
 - **Kisters WISKI**: Australia, Scotland (shared adapter possible)
 - **OGC API Features**: Canada (gold standard), Denmark (met only)
 - **STAC/CDS**: GloFAS, EFAS (batch processing, auth required)
 - **OpenSearch XML**: WMO WHOS
 - **SOAP/XML**: Brazil, New Zealand
 - **HTML scraping only**: Hungary, Spain, Italy, most dismissed sources
+
+### Deep Dive Round 3 — South Asia, SE Asia, Middle East
+
+| Source | Country | Score | Status | File |
+|--------|---------|-------|--------|------|
+| Nepal BIPAD Hydrology | Nepal | 16/18 | ✅ CONFIRMED WORKING | [nepal-bipad-hydrology.md](nepal-bipad-hydrology.md) |
+| Nepal DHM / BIPAD | Nepal | 16/18 | Research complete | [nepal-dhm-hydrology.md](nepal-dhm-hydrology.md) |
+| MRC Mekong (re-probe) | Mekong Basin | 11/18 | SPA still blocks API | [mekong-river-commission-update.md](mekong-river-commission-update.md) |
+| ICIMOD HKH Mountains | Hindu Kush-Himalaya | 10/18 | Research data, no real-time API | [icimod-hkh-mountains.md](icimod-hkh-mountains.md) |
+| Turkey DSI Transboundary | Turkey | 9/18 | Euphrates-Tigris context | [turkey-dsi-transboundary.md](turkey-dsi-transboundary.md) |
+| Cambodia/Laos Mekong Gap | Cambodia/Laos | 3/18 | Gap documentation | [cambodia-laos-mekong-gap.md](cambodia-laos-mekong-gap.md) |
+
+**Key finding**: Nepal's BIPAD portal is a breakthrough — a working Django REST API with real-time river water levels in GeoJSON format, no auth required. This is the first confirmed public hydrology API in South Asia.
+
+
+## Latin America Expansion  April 2026
+
+| Source | Country | Score | File | Status |
+|--------|---------|-------|------|--------|
+| **Colombia IDEAM Hydro** | Colombia | **15/18** | [colombia-ideam-hydro.md](colombia-ideam-hydro.md) |  **Build**  Socrata API on datos.gov.co; near-real-time precipitation; 5 major basins |
+| **Colombia IDEAM Inventory** | Colombia | 15/18 | [colombia-ideam-inventory.md](colombia-ideam-inventory.md) |  Multi-dataset survey (precip + pressure + temp) |
+| **Brazil ANA SNIRH** | Brazil | **12/18** | [brazil-ana-snirh-expanded.md](brazil-ana-snirh-expanded.md) |  **Maybe**  REST endpoint pattern found but not returning data; complements existing ANA candidate |
+
+### Key Finding: Colombia IDEAM via Socrata
+
+The datos.gov.co Socrata API is the breakthrough for Colombia. Three IDEAM datasets (precipitation, atmospheric pressure, temperature) with near-real-time data confirmed (2026-04-05 23:59). Standard SoQL queries, no authentication, well-documented Socrata platform. A single Socrata adapter handles all three datasets with different resource IDs. Colombia's hydrographic zones span Amazon, Orinoco, Magdalena-Cauca, and the wettest place on Earth (Chocó/Pacific coast).

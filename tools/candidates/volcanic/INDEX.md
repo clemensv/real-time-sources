@@ -46,6 +46,17 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | Candidate | Reason |
 |-----------|--------|
 | **SERNAGEOMIN Chile** | `rnvv.sernageomin.cl` connection timeout. Chilean volcanic monitoring unreachable. |
+
+### Round 3 — SE Asia (Deep Dive Round 5)
+
+| Source | Region | Protocol | Auth | Freshness | Total | Status |
+|--------|--------|----------|------|-----------|-------|--------|
+| [PHIVOLCS Volcanic](phivolcs-volcanic.md) | Philippines (24 active) | Web only | N/A | Event-driven | **8/18** | ⏭️ Connection failed |
+
+**Key finding**: The Philippines has 24 active volcanoes monitored by PHIVOLCS but the website is consistently unreachable from outside the Philippines. This represents a significant Ring of Fire gap in programmatic volcanic monitoring data.
+
+| Candidate | Reason |
+|-----------|--------|
 | **WOVO** | Website loads but is now "Oculus Group" — appears to have changed mission. No data API. |
 | **Montserrat MVO** | Website loads (WordPress/LiteSpeed) but no data API found. |
 | **HVO Hawaii** | Part of USGS Volcano Hazards Program — covered by USGS HANS. |
@@ -61,3 +72,16 @@ Volcanic monitoring data is inherently event-driven — APIs may return minimal 
 ### The VAAC Landscape
 
 The deep dive surveyed all 9 Volcanic Ash Advisory Centers worldwide. Key finding: **only the Washington VAAC provides machine-readable data feeds** (XML/KML). The other 8 VAACs serve HTML websites with no public APIs. This is an ICAO/aviation industry data distribution problem — the real-time ash data flows through aviation weather wire services (SADIS/ISCS), not public web APIs. The Washington VAAC is the exception because NOAA follows US open data mandates.
+
+
+## Latin America  April 2026
+
+| Source | Region | Score | File | Status |
+|--------|--------|-------|------|--------|
+| **IGEPN Ecuador** | Ecuador + Galápagos | **5/18** | [igepn-ecuador.md](igepn-ecuador.md) |  **Skip**  403 on all endpoints; Galápagos uniqueness |
+| **OVSICORI Costa Rica** | Costa Rica | **4/18** | [ovsicori-costa-rica.md](ovsicori-costa-rica.md) |  **Skip**  No working endpoints; 5 active volcanoes |
+| **SERNAGEOMIN Chile** | Chile | **5/18** | [sernageomin-chile.md](sernageomin-chile.md) |  **Skip**  Server unreachable; 90 active volcanoes |
+
+### Latin America Volcanic Summary
+
+Latin America has 200+ active volcanoes across the Pacific Ring of Fire  but zero programmatic access. Ecuador (Galápagos!), Costa Rica (5 active volcanoes near San José), and Chile (90 volcanoes including Villarrica's lava lake) all monitor extensively, but none provide public APIs. MIROVA satellite thermal monitoring, Smithsonian GVP, and VAAC ash advisories provide partial coverage. The CENAPRED volcanic traffic light for Popocatépetl (Mexico) is documented in disaster-alerts/.

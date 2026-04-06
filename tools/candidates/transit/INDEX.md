@@ -118,6 +118,15 @@ Deep-dive round 3 covered platforms that index, aggregate, or abstract over indi
 |-----------|---------|--------|
 | Indian Railways (IRCTC) | 🇮🇳 India | No verified open real-time API; third-party scrapers exist but no official open feed |
 | Oxyfi Train Positions | 🇸🇪 Sweden | WebSocket + NMEA GPS — interesting but niche (subset of Swedish trains only) |
+
+### Tier 7 — Asia & Middle East (Deep Dive Round 5)
+
+| # | Candidate | Country | Protocol | Score | File |
+|---|-----------|---------|----------|-------|------|
+| 28 | [Israel MOT Transit](israel-mot-transit.md) | 🇮🇱 Israel | CKAN + SIRI real-time | **17/18** | `israel-mot-transit.md` |
+| 29 | [Indian Railways](indian-railways.md) | 🇮🇳 India | REST (commercial/third-party) | **14/18** | `indian-railways.md` |
+
+**Key finding**: Israel's Ministry of Transport publishes 180 transportation datasets through a CKAN data portal at data.gov.il with SIRI real-time bus feeds. This is a top-tier discovery — no auth for CKAN, SIRI for real-time. Indian Railways lacks any official open API despite being the world's 4th largest rail network.
 | NDOV Loket (NL) | 🇳🇱 Netherlands | Raw KV6/KV17 feeds — complex Dutch-specific protocols, lower priority |
 | ÖBB (Austria) | 🇦🇹 Austria | ScottyMobile web endpoint works but no documented public API; HAFAS-based like DB |
 | RENFE / TMB / EMT Madrid | 🇪🇸 Spain | Fragmented — no single national API; individual city APIs exist but poorly documented |

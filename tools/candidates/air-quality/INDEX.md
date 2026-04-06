@@ -35,6 +35,14 @@ Scouted: 2026-04-06
 | 25 | [Japan SORAMAME](japan-soramame.md) | Japan | ❌ Web only | N/A | Hourly | 7/18 | 🔴 LOW |
 | 26 | [India CPCB](india-cpcb.md) | India | ❌ Web only | N/A | 15-min | 7/18 | 🔴 LOW |
 
+### Asia/Middle East — Deep Dive Round 5
+
+| # | Source | Region | API? | Auth | Freshness | Total Score | Priority |
+|---|--------|--------|------|------|-----------|-------------|----------|
+| 27 | [India CPCB via data.gov.in](india-cpcb-datagov.md) | India | ✅ REST | API Key (free) | Hourly | 14/18 | 🟡 MEDIUM |
+| 28 | [Malaysia APIMS/MyEQMS](malaysia-apims.md) | Malaysia | ⚠️ SPA hidden | N/A | Hourly | 10/18 | 🔴 LOW |
+| 29 | [South Korea AirKorea Context](south-korea-airkorea-context.md) | South Korea | ✅ REST | API Key | Hourly | 13/18 | 🟡 MEDIUM |
+
 ### Africa-Focused Sources
 
 | # | Source | Region | API? | Auth | Freshness | Total Score | Priority |
@@ -85,6 +93,8 @@ Scouted: 2026-04-06
 - **Citizen science fills gaps**: Sensor.Community and PurpleAir provide hyper-local, near-real-time data in areas where government monitors are sparse.
 - **License matters**: OpenAQ (CC BY 4.0), Defra (OGL), UBA (dl-de), Luchtmeetnet (CC0), and AirNow (US Public Domain) are the most permissive. PurpleAir and AQICN restrict commercial use.
 - **Asia-Pacific has strong APIs**: Singapore, Taiwan, Hong Kong, and South Korea all provide structured data. Japan and India remain web-only.
+- **India breakthrough via data.gov.in**: The existing CPCB web dashboard has no API, but India's open data platform at data.gov.in exposes the same CPCB data through a proper REST API (14/18). See [india-cpcb-datagov.md](india-cpcb-datagov.md).
+- **Malaysia APIMS hidden behind SPA**: MyEQMS portal at apims.doe.gov.my has a modern Quasar SPA with undocumented backend API (10/18). See [malaysia-apims.md](malaysia-apims.md).
 - **Latin America lags in APIs**: Mexico (SINAICA) and Chile (SINCA) lack documented public APIs. Use OpenAQ as intermediary.
 - **Forecasts are rare but growing**: AirNow, AQICN, CAMS, and Canada AQHI provide forecasts. DWD Pollenflug provides pollen forecasts.
 - **Satellite data is complementary**: CAMS and Sentinel-5P provide global coverage but require scientific data formats (GRIB, NetCDF). Not simple JSON.

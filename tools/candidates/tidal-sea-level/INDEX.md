@@ -37,3 +37,11 @@ Research candidates for real-time tidal and sea level monitoring APIs.
 **Reference dataset**: PSMSL (13/18) is not real-time but is the authoritative global archive for sea level change analysis. PSMSL station IDs are the de facto standard for identifying tide gauge locations worldwide.
 
 **Worth noting**: Most of these stations also report through the IOC SLSMF. The direct national sources add value through datum-referenced data, better QC, station-specific metadata, and forecast data that the IOC aggregator doesn't carry.
+
+### Asia — Deep Dive Round 5
+
+| Slug | Source | Country/Region | Score | Key Strength |
+|------|--------|---------------|-------|-------------|
+| [incois-india-ocean](incois-india-ocean.md) | INCOIS India | Indian Ocean | **11/18** | Tsunami warning center; 404 on tested API endpoints; high-value gap |
+
+**Key finding**: India's INCOIS operates the Indian Ocean tsunami early warning system — a critical function for 2.7 billion coastal residents. The documented API endpoints returned 404 during testing. The data exists behind government web portals but lacks a stable public REST API.

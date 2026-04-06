@@ -134,3 +134,11 @@ for 20+ countries. Key conclusions:
 The Nordic countries (Norway, Finland) remain the global leaders in open maritime AIS data
 accessibility. BarentsWatch and Digitraffic are both government-backed, well-documented, and
 freely accessible — a model that other maritime nations have not replicated.
+
+### Asia & Middle East — Deep Dive Round 5
+
+| # | Source | Score | File | Key Value |
+|---|--------|-------|------|-----------|
+| 14 | [Critical Chokepoints](critical-chokepoints-asia-mideast.md) | 16/18 | `critical-chokepoints-asia-mideast.md` | Malacca Strait, Bosphorus, Hormuz — AIS monitoring analysis |
+
+**Key finding**: Three of the world's most critical maritime chokepoints (Malacca, Bosphorus, Hormuz) are in the Asia/Middle East region. This document analyzes AIS data availability and monitoring approaches for each, connecting to existing AIS infrastructure (Digitraffic, Kystverket, AISstream) and identifying regional gaps.

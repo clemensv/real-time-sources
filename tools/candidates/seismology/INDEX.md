@@ -57,6 +57,15 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | **FUNVISIS Venezuela** | Website loads but redirects; no API found. |
 | **RSN Costa Rica** | Website loads (Joomla CMS); RSS/Atom feeds listed but no JSON API. |
 
+### Round 4 — South Asia, SE Asia, Middle East
+
+| # | Candidate | File | Score | Coverage | Verdict |
+|---|-----------|------|-------|----------|---------|
+| 19 | **AFAD Turkey (Deep Dive)** | [afad-turkey-deep-dive.md](afad-turkey-deep-dive.md) | **15/18** | Turkey | ✅ **Build** — Confirmed M5.2 Van event; date-range filter works; score revised up |
+| 20 | **Nepal BIPAD Earthquakes** | [nepal-bipad-seismology.md](nepal-bipad-seismology.md) | **13/18** | Nepal / HKH | ⚠️ **Maybe** — Historical catalog via BIPAD Django REST; same API as hydrology |
+| 21 | **PHIVOLCS Philippines** | [phivolcs-philippines.md](phivolcs-philippines.md) | **7/18** | Philippines | ⏭️ **Skip** — Connection timeout consistently; Ring of Fire gap |
+| 22 | **Iran IIEES (FDSN)** | [iran-iiees.md](iran-iiees.md) | **10/18** | Iran | ⚠️ **Maybe** — FDSN endpoint documented but unverified due to connectivity |
+
 ## Architecture Notes
 
 ### The FDSN Opportunity — Expanded
@@ -102,3 +111,20 @@ Seven nodes, one adapter. The FDSN text format is identical:
 | USGS (existing) | Poll GeoJSON | ~60 seconds |
 
 Only EMSC provides genuine push delivery. All others require polling.
+
+## Latin America Deep Dive — April 2026
+
+Scouted: 2026-04-06 (Latin America research round)
+
+| # | Candidate | File | Score | Coverage | Verdict |
+|---|-----------|------|-------|----------|---------|
+| 19 | **CSN Chile** (api.xor.cl) | [chile-csn.md](chile-csn.md) | **16/18** | Chile (national) | ✅ **Build** — Clean JSON API; 20-40+ quakes/day; world's most seismically active country |
+| 20 | **RSN Costa Rica** | [rsn-costa-rica.md](rsn-costa-rica.md) | **9/18** | Costa Rica | ⚠️ **Maybe** — Joomla HTML; parseable article titles; Ring of Fire + volcanoes |
+| 21 | **SGC Colombia** | [sgc-colombia.md](sgc-colombia.md) | **7/18** | Colombia | ⏭️ **Skip** — FDSN 403; React SPA; covered by USGS/EMSC for M4+ |
+| 22 | **SSN Mexico** | [ssn-mexico.md](ssn-mexico.md) | **6/18** | Mexico | ⏭️ **Skip** — Server unreachable; UNAM infrastructure issues |
+| 23 | **IGEPN Ecuador** | [igepn-ecuador.md](igepn-ecuador.md) | **5/18** | Ecuador + Galápagos | ⏭️ **Skip** — 403 on all endpoints |
+| 24 | **LatAm FDSN Survey** | [latam-fdsn-survey.md](latam-fdsn-survey.md) | N/A | Regional survey | 📋 Survey — Zero working FDSN nodes in Latin America |
+
+### Latin America Seismology Summary
+
+Chile's CSN (via api.xor.cl community API) is the standout — clean JSON, no auth, high throughput. The rest of Latin America is a FDSN desert: not a single working node despite the region sitting on the Pacific Ring of Fire. USGS with geographic filtering provides M4+ coverage for the entire region.

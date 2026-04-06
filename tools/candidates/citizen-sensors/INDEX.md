@@ -21,3 +21,11 @@ iNaturalist is the new standout — a perfect 18/18 score for a planet-scale bio
 Sensor.Community remains the leader for open air quality monitoring. PurpleAir and Smart Citizen offer complementary sensor coverage — Smart Citizen's multi-sensor approach (air quality + noise + weather) from Barcelona's Fab Lab is particularly interesting. Netatmo adds unmatched urban weather station density, especially in European cities, though its OAuth2 requirement and anonymized stations are friction points.
 
 openSenseMap, Safecast, and CWOP/MADIS round out the category with flexible platforms, radiation data, and legacy ham radio weather infrastructure respectively.
+
+### Commodity Markets — Deep Dive Round 5
+
+| Source | Protocol | Auth | Freshness | Total Score |
+|--------|----------|------|-----------|-------------|
+| [India Mandi Commodity Prices](india-mandi-commodity-prices.md) | REST | API Key (free) | Daily | 14/18 |
+
+**Key finding**: India's data.gov.in platform exposes daily commodity prices from 17,833+ agricultural mandis (markets) nationwide. This is a unique "citizen sensor" analog — thousands of physical markets reporting prices daily for crops, vegetables, and other commodities. Confirmed working with 17,833 records in a single API call.

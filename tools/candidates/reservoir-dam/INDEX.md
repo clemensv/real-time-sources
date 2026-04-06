@@ -34,3 +34,11 @@ Research candidates for real-time reservoir and dam storage monitoring APIs.
 **International — data-rich but API-poor**: Japan (13/18) has world-class 10-minute telemetry but no public API. India (10/18), South Africa (10/18), and Turkey (9/18) all monitor critical infrastructure but expose data only through web portals and bulletins. These represent the biggest gap between data importance and data accessibility in the reservoir domain.
 
 **Geopolitical significance**: Turkey's DSI data is diplomatically sensitive — Euphrates-Tigris dam operations directly affect Syria and Iraq. India's CWC bulletin moves agricultural markets during monsoon season. South Africa's dam levels made global headlines during Cape Town's "Day Zero" crisis.
+
+### Central Asia — Deep Dive Round 5
+
+| Slug | Source | Country/Region | Score | Key Strength |
+|------|--------|---------------|-------|-------------|
+| [kyrgyzstan-toktogul-central-asia](kyrgyzstan-toktogul-central-asia.md) | Kyrgyzstan Toktogul / Central Asia | Central Asia (5 countries) | **3/18** | Water-energy nexus; geopolitical flashpoint; no data available |
+
+**Key finding**: Central Asian transboundary water management (Toktogul dam, Syr Darya, Amu Darya) is one of the most geopolitically sensitive resource management challenges on the planet, yet produces zero publicly accessible data APIs. This gap document catalogs why.

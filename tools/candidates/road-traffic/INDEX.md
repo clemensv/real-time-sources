@@ -71,3 +71,11 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 - **Cycling**: Paris (141 Eco-Compteur stations — reusable pattern for dozens of cities)
 - **Key standard**: DATEX II v3 — used by NDW, Trafikverket, Digitraffic, French DIR, and many other EU data publishers
 - **Best protocol variety**: REST, MQTT (Digitraffic), GraphQL (vegvesen), custom query (Trafikverket), file download (NDW), OData (Singapore), XML (Madrid)
+
+### Asia & Middle East — Deep Dive Round 5
+
+| Candidate | Region | Score | Protocol | Key Value |
+|-----------|--------|-------|----------|-----------|
+| [Istanbul IBB Traffic](istanbul-ibb-traffic.md) | Turkey — Istanbul | **15/18** | CKAN REST | Confirmed CKAN API; traffic + transit datasets; 16M city |
+
+**Key finding**: Istanbul's IBB data portal runs a standard CKAN API. Verified working with traffic and transit datasets. This is the first confirmed open data traffic API in the Middle East/Turkey region.

@@ -18,3 +18,12 @@
 
 ## Summary
 Twelve candidates covering global (GDACS, EM-DAT), European (Meteoalarm, EFAS, Copernicus EMS), German (NINA/BBK), US (NWS), Pacific (PTWC), and now **four African sources**. GDACS Africa returns verified GeoJSON for floods, droughts, earthquakes, and cyclones affecting African countries — the drought in Ethiopia/Kenya/Somalia and floods in Mozambique/South Africa/Zimbabwe were confirmed live. ReliefWeb provides humanitarian crisis reports for every African country. ACLED covers armed conflict and political violence across all 54 African states with precise geolocation. open.africa serves as a discovery platform for additional African open datasets.
+
+### Asia — Deep Dive Round 5
+
+| Slug | Source | Region | Protocol | Auth | Score |
+|------|--------|--------|----------|------|-------|
+| [india-ndma-sachet](india-ndma-sachet.md) | India NDMA SACHET | India | REST/JSON (CAP-format) | **None** | 15/18 |
+| [rimes-asia-pacific](rimes-asia-pacific.md) | RIMES Asia-Pacific | 48 countries (S/SE Asia) | Unknown | Unknown | 7/18 |
+
+**Key finding**: India's National Disaster Management Authority publishes real-time CAP-format disaster alerts through the SACHET platform with no authentication. Confirmed working — returns JSON array of active alerts covering cyclones, floods, heat waves, and other natural hazards across India.

@@ -47,6 +47,8 @@ This index covers real-time electricity generation, load, pricing, and grid data
 | 35 | [electricity-maps-africa](electricity-maps-africa.md) | Electricity Maps — African Zones | Pan-African (30+ countries) | Hourly | API key | **13/18** | ★☆☆ |
 | 36 | [global-solar-atlas-africa](global-solar-atlas-africa.md) | Global Solar Atlas — Africa | Pan-African | Static | No auth | **10/18** | ☆☆☆ |
 | 37 | [morocco-onee-renewable](morocco-onee-renewable.md) | Morocco ONEE/Masen Renewables | Morocco | Unknown | Unknown | **5/18** | ☆☆☆ |
+| 38 | [india-grid-india](india-grid-india.md) | Grid-India (POSOCO) | India | 5-15 min | Geo-restricted | **10/18** | ☆☆☆ |
+| 39 | [gccia-gulf-grid](gccia-gulf-grid.md) | GCCIA Gulf Interconnection | GCC (6 countries) | N/A | No data published | **4/18** | ☆☆☆ |
 
 ## Tier 1 — Implement First
 
@@ -201,3 +203,17 @@ Global:       Electricity Maps (aggregator), WattTime (emissions),
 10. **watttime** — Marginal emissions for carbon-aware applications ★ NEW
 11. **ember-climate** — Global reference dataset for context ★ NEW
 12. Remaining candidates as needed for specific regional coverage
+
+
+## Latin America Expansion  April 2026
+
+| # | Slug | Source | Region | Score | Status |
+|---|------|--------|--------|-------|--------|
+| 35 | [cammesa-argentina](cammesa-argentina.md) | CAMMESA | Argentina | **7/18** |  **Skip**  All API endpoints 404; nuclear + Vaca Muerta shale + Patagonian wind |
+| 36 | [coordinador-chile](coordinador-chile.md) | CEN / Coordinador | Chile | **9/18** |  **Maybe**  403/WAF blocked; Atacama solar (world-class); energiaabierta.cl unreachable |
+| 37 | [ute-uruguay](ute-uruguay.md) | UTE Uruguay | Uruguay | **5/18** |  **Skip**  No API; 97% renewable grid (world-leading) |
+| 38 | [ice-costa-rica](ice-costa-rica.md) | ICE Costa Rica | Costa Rica | **5/18** |  **Skip**  No API; 98-99% renewable; volcano-geothermal link |
+
+### Latin America Energy Summary
+
+Brazil's ONS (16/18, already documented) remains the standout Latin American energy source. The region has four compelling energy stories  Argentina (nuclear + shale + Patagonian wind), Chile (Atacama solar + green hydrogen), Uruguay (97% renewable), and Costa Rica (98-99% renewable + volcano-geothermal)  but none have accessible APIs. XM Colombia (13/18) and CENACE Mexico (12/18) were previously documented. COES Peru (11/18) rounds out existing coverage.
