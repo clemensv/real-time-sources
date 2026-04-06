@@ -18,6 +18,29 @@ Use the technical vocabulary that data publishers actually put in their docs:
 | Transit | GTFS, GTFS-RT, real-time transit, bus/train position | SIRI, vehicle location, arrival prediction |
 | Energy | electricity generation, grid load, energy market, balancing | day-ahead, cross-border flow, generation mix |
 | Air quality | air quality, PM2.5, ozone, NO2, monitoring station | AQI, pollutant, ambient air, hourly measurement |
+| Radiation | gamma dose rate, radiation monitoring, ODL, dosimetry | nuclear, Sievert, nSv/h, ambient dose |
+| Wildfire | fire detection, hotspot, thermal anomaly, active fire | FIRMS, VIIRS, MODIS, fire radiative power, FRP |
+| Lightning | lightning detection, stroke, flash, thunderstorm | Blitzortung, sferic, peak current, CG/IC |
+| Tidal/sea level | tide gauge, sea level, tidal prediction, storm surge | IOC, GLOSS, residual, harmonic |
+| Bikeshare | GBFS, bikeshare, bike availability, micromobility | docking station, e-scooter, free-floating |
+| EV charging | charging station, OCPI, EV charger, connector status | EVSE, availability, CCS, CHAdeMO |
+| Reservoir/dam | reservoir storage, dam level, pool elevation, inflow | acre-feet, capacity, Bureau of Reclamation, CDEC |
+| Water quality | dissolved oxygen, turbidity, conductance, pH, water quality | continuous monitoring, WFD, NWIS, probe |
+| Wikimedia | Wikipedia edits, Wikidata, EventStreams, recent changes | SSE, revision, page create, bot edit |
+| OSM | OpenStreetMap, changeset, minutely diff, map edit | node, way, relation, replication |
+| Parking | parking availability, garage occupancy, parking guidance | DATEX II, free spaces, parking lot |
+| Road traffic | traffic flow, speed sensor, road weather, RWIS | DATEX II, incident, travel time, road surface |
+| Volcano | volcanic eruption, ash advisory, VAAC, alert level | VONA, thermal anomaly, SO2, Smithsonian GVP |
+| Snow/avalanche | snow depth, SWE, avalanche danger, SNOTEL | snow water equivalent, avalanche bulletin, danger level |
+| Geomagnetic | geomagnetic, INTERMAGNET, Kp index, magnetic field | observatory, H/D/Z components, storm, aurora |
+| Radio propagation | PSKReporter, WSPR, HF propagation, DX cluster | amateur radio, SNR, gridsquare, ionospheric |
+| Coral/marine bio | coral bleaching, sea surface temperature, reef monitoring | degree heating weeks, Coral Reef Watch, chlorophyll |
+| Citizen sensors | Sensor.Community, PurpleAir, Safecast, citizen science | crowdsourced, low-cost sensor, personal weather station |
+| Noise | noise monitoring, LAeq, decibel, environmental noise | airport noise, traffic noise, sound level |
+| Border crossing | border wait time, customs, checkpoint, crossing delay | CBP, lane, pedestrian, commercial |
+| Power outage | power outage, utility, service disruption, restoration | customers affected, outage map, electric |
+| Disaster alert | CAP, early warning, tsunami, flood forecast | GDACS, EFAS, Meteoalarm, alert level |
+| Space/orbital | TLE, satellite tracking, conjunction, space debris | CelesTrak, two-line element, orbit, NEO |
 
 ### Data-Access Indicators
 
@@ -40,14 +63,74 @@ For country-level searches, use both English and native-language terms:
 ### Example Queries
 
 ```
+# Hydrology
 "water level" OR "discharge" API real-time JSON site:*.gov.au
 KNMI API "open data" weather observations
+
+# Air quality
+OpenAQ API "air quality" real-time
+"Sensor.Community" OR "Luftdaten" API JSON "open data"
+EPA AirNow API documentation
+
+# Radiation
+"gamma dose rate" API real-time open data
+EURDEP "radiological" data download API
+BfS ODL Messnetz Schnittstelle API
+"radiation monitoring" JSON API site:*.go.jp
+
+# Wildfire
+NASA FIRMS API "active fire" near-real-time
+EFFIS "fire" API "open data" Copernicus
+"wildfire" "hotspot" API JSON real-time
+
+# Lightning
+Blitzortung API WebSocket lightning real-time
+"lightning" "detection" open data API JSON
+
+# Tidal / sea level
+IOC "sea level" monitoring API real-time
+"tide gauge" API JSON open data -NOAA
+UHSLC "fast delivery" tide data
+
+# Bikeshare / GBFS
+GBFS "gbfs.json" auto-discovery bikeshare
+"bike share" OR "bikeshare" GBFS feed URL
+MobilityData GBFS catalog
+
+# EV charging
+"open charge map" API documentation
+OCPI "charging station" availability API
+NOBIL "ladestasjoner" API
+
+# Reservoir
+"reservoir storage" API real-time "Bureau of Reclamation"
+CDEC "reservoir" California data API
+
+# Geomagnetic
+INTERMAGNET real-time data API download
+"geomagnetic" "observatory" real-time data format
+
+# Snow / avalanche
+SNOTEL API "snow depth" real-time NRCS
+SLF "avalanche" bulletin API Schweiz
+avalanche.org API data
+
+# Wiki
+stream.wikimedia.org EventStreams documentation
+"recent changes" stream API Wikimedia
+
+# Miscellaneous
 "datos abiertos" calidad aire API tiempo real España
 "open data" earthquake API real-time -USGS
 AIS vessel tracking open data API -MarineTraffic -VesselFinder
-국가수자원관리 종합정보시스템 API (Korean water resources)
+국가수자원관리 종합정보시스템 API
 GTFS-RT feed URL transit real-time
 "electricity generation" API real-time open data
+"border wait time" API CBP JSON
+"parking" "availability" API real-time open data DATEX
+"power outage" API real-time utility
+PSKReporter API "propagation" amateur radio
+"coral reef watch" API "sea surface temperature"
 ```
 
 ## Probing a Candidate
