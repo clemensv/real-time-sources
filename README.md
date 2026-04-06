@@ -28,6 +28,7 @@ information. The supported authentication scheme for the Kafka endpoint is
 The container image documentation provides detailed information:
 
 * [AISStream - Global AIS vessel tracking](aisstream/CONTAINER.md)
+* [Autobahn - German motorway traffic events](autobahn/CONTAINER.md)
 * [Bluesky Firehose - Social media posts and interactions](bluesky/CONTAINER.md)
 * [CHMI Hydro - Czech hydrological observations](chmi-hydro/CONTAINER.md)
 * [Digitraffic Maritime - Finnish AIS vessel tracking](digitraffic-maritime/CONTAINER.md)
@@ -73,6 +74,14 @@ WebSocket API and streams real-time AIS vessel tracking data from ships
 worldwide. Coverage extends approximately 200 km from shore. The bridge
 publishes 23 AIS message types as CloudEvents to Kafka. Note that the free
 AISStream service can be unreliable and may have frequent outages.
+
+### Autobahn - German motorway traffic events
+
+The [Autobahn bridge](autobahn/README.md) polls the German Autobahn API for
+current roadworks, warnings, closures, parking areas, charging stations, and
+webcams and emits change events as CloudEvents to Kafka. The bridge uses ETags
+and local state to detect appeared, updated, and resolved items across the
+network.
 
 ### Bluesky Firehose - Social media posts and interactions
 

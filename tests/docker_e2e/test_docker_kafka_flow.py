@@ -2,7 +2,8 @@
 
 These tests build the Docker image, start the container alongside a real
 Kafka broker on a shared Docker network, and verify that CloudEvents
-messages arrive on the expected topic.
+messages arrive on the expected topic with correct Kafka keys and payloads
+that conform to the source xRegistry JsonStructure schemas.
 
 Each test validates that the container emits **both** reference data
 (station / zone / site definitions) **and** telemetry data (observations,
@@ -13,6 +14,9 @@ Projects use plain (non-SASL) Kafka connections via
 ``CONNECTION_STRING=BootstrapServer=host:port;EntityPath=topic``.
 
 Run with:  pytest tests/docker_e2e/test_docker_kafka_flow.py -v --timeout=600
+
+To persist consumed Kafka messages and container logs for manual verification,
+pass ``--kafka-artifacts-dir <path>``.
 """
 
 import json
@@ -29,10 +33,13 @@ if _this_dir not in sys.path:
     sys.path.insert(0, _this_dir)
 
 from helpers import (
-    assert_cloudevents,
+    assert_kafka_contract,
     build_image,
+    ConsumedKafkaMessage,
+    project_dir_from_image,
     run_container_detached,
     wait_for_container_logs,
+    write_kafka_artifacts,
     KafkaFixture,
 )
 
@@ -109,6 +116,10 @@ def syke_image():
 def bafu_image():
     return build_image('bafu-hydro')
 
+@pytest.fixture(scope='module')
+def autobahn_image():
+    return build_image('autobahn')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -125,7 +136,7 @@ def _run_kafka_flow_test(
     min_messages: int = 5,
     timeout: int = 300,
 ):
-    """Run a container against a plain Kafka broker and validate event types.
+    """Run a container against Kafka and validate keys, schemas, and event types.
 
     Consumes messages until both reference and telemetry events have been
     observed (or *timeout* is reached).  Many projects emit all station
@@ -143,7 +154,8 @@ def _run_kafka_flow_test(
         min_messages: Minimum total messages to consume.
         timeout: Seconds to wait for all expected event categories.
     """
-    kafka.create_topic(topic)
+    project_dir = project_dir_from_image(image)
+    kafka.create_topic(topic, partitions=4)
     env = {
         'CONNECTION_STRING': f'BootstrapServer={kafka.internal_address};EntityPath={topic}',
         'KAFKA_ENABLE_TLS': 'false',
@@ -160,7 +172,7 @@ def _run_kafka_flow_test(
             'auto.offset.reset': 'earliest',
         })
         consumer.subscribe([topic])
-        messages: List[bytes] = []
+        records: List[ConsumedKafkaMessage] = []
         observed_types: Set[str] = set()
         deadline = time.time() + timeout
 
@@ -175,12 +187,19 @@ def _run_kafka_flow_test(
 
         try:
             while time.time() < deadline:
-                if len(messages) >= min_messages and _types_satisfied():
+                if len(records) >= min_messages and _types_satisfied():
                     break
                 msg = consumer.poll(1.0)
                 if msg and not msg.error():
                     raw = msg.value()
-                    messages.append(raw)
+                    records.append(
+                        ConsumedKafkaMessage(
+                            key=msg.key(),
+                            value=raw,
+                            partition=msg.partition(),
+                            offset=msg.offset(),
+                        )
+                    )
                     try:
                         ev = json.loads(raw)
                         if 'type' in ev:
@@ -190,12 +209,11 @@ def _run_kafka_flow_test(
         finally:
             consumer.close()
 
-        assert len(messages) >= min_messages, (
-            f'Expected >={min_messages} messages, got {len(messages)}.\n'
+        assert len(records) >= min_messages, (
+            f'Expected >={min_messages} messages, got {len(records)}.\n'
             f'Container logs:\n{container.logs().decode()}'
         )
-        # Re-validate all messages as proper CloudEvents
-        assert_cloudevents(messages)
+        assert_kafka_contract(project_dir, records)
 
         # --- Validate reference data ---
         if reference_types is not None:
@@ -219,6 +237,8 @@ def _run_kafka_flow_test(
                 f'Container logs:\n{container.logs().decode()}'
             )
     finally:
+        container_logs = container.logs().decode('utf-8', errors='replace')
+        write_kafka_artifacts(project_dir, topic, records, container_logs)
         container.stop(timeout=5)
         container.remove(force=True)
 
@@ -302,6 +322,36 @@ class TestNOAAGoesDockerFlow:
             reference_types=None,
             telemetry_types=['SpaceWeatherAlert', 'PlanetaryKIndex', 'SolarWindSummary'],
             min_messages=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Autobahn (Germany - motorway traffic events)
+# ---------------------------------------------------------------------------
+
+class TestAutobahnDockerFlow:
+    TOPIC = 'test-autobahn'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, autobahn_image):
+        _run_kafka_flow_test(
+            kafka, autobahn_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=[
+                'Roadwork',
+                'ShortTermRoadwork',
+                'Closure',
+                'EntryExitClosure',
+                'ParkingLorry',
+                'ElectricChargingStation',
+                'StrongElectricChargingStation',
+            ],
+            extra_env={
+                'KAFKA_TOPIC': self.TOPIC,
+                'AUTOBAHN_POLL_INTERVAL': '5',
+                'AUTOBAHN_ROADS': 'A1',
+                'AUTOBAHN_RESOURCES': 'roadworks,closure,parking_lorry,electric_charging_station',
+            },
+            min_messages=3,
         )
 
 

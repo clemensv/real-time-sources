@@ -1,5 +1,6 @@
 docker
 confluent-kafka
 testcontainers[kafka]
+json-structure>=0.6.1
 pytest
 pytest-timeout

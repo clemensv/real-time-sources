@@ -1,0 +1,1839 @@
+{
+  "endpoints": {
+    "DE.Autobahn.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "autobahn",
+          "key": "{identifier}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.Autobahn"
+      ]
+    }
+  },
+  "messagegroups": {
+    "DE.Autobahn": {
+      "messages": {
+        "DE.Autobahn.RoadworkAppeared": {
+          "name": "RoadworkAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.RoadworkAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.RoadworkUpdated": {
+          "name": "RoadworkUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.RoadworkUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.RoadworkResolved": {
+          "name": "RoadworkResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.RoadworkResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkAppeared": {
+          "name": "ShortTermRoadworkAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ShortTermRoadworkAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkUpdated": {
+          "name": "ShortTermRoadworkUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ShortTermRoadworkUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ShortTermRoadworkResolved": {
+          "name": "ShortTermRoadworkResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ShortTermRoadworkResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WarningAppeared": {
+          "name": "WarningAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WarningAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.WarningUpdated": {
+          "name": "WarningUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WarningUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.WarningResolved": {
+          "name": "WarningResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WarningResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent"
+        },
+        "DE.Autobahn.ClosureAppeared": {
+          "name": "ClosureAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ClosureAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ClosureUpdated": {
+          "name": "ClosureUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ClosureUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ClosureResolved": {
+          "name": "ClosureResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ClosureResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureAppeared": {
+          "name": "EntryExitClosureAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.EntryExitClosureAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureUpdated": {
+          "name": "EntryExitClosureUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.EntryExitClosureUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.EntryExitClosureResolved": {
+          "name": "EntryExitClosureResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.EntryExitClosureResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionAppeared": {
+          "name": "WeightLimit35RestrictionAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WeightLimit35RestrictionAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionUpdated": {
+          "name": "WeightLimit35RestrictionUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WeightLimit35RestrictionUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.WeightLimit35RestrictionResolved": {
+          "name": "WeightLimit35RestrictionResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WeightLimit35RestrictionResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent"
+        },
+        "DE.Autobahn.ParkingLorryAppeared": {
+          "name": "ParkingLorryAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ParkingLorryAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ParkingLorryUpdated": {
+          "name": "ParkingLorryUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ParkingLorryUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ParkingLorryResolved": {
+          "name": "ParkingLorryResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ParkingLorryResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ParkingLorry"
+        },
+        "DE.Autobahn.ElectricChargingStationAppeared": {
+          "name": "ElectricChargingStationAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ElectricChargingStationAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.ElectricChargingStationUpdated": {
+          "name": "ElectricChargingStationUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ElectricChargingStationUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.ElectricChargingStationResolved": {
+          "name": "ElectricChargingStationResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.ElectricChargingStationResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationAppeared": {
+          "name": "StrongElectricChargingStationAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.StrongElectricChargingStationAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationUpdated": {
+          "name": "StrongElectricChargingStationUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.StrongElectricChargingStationUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.StrongElectricChargingStationResolved": {
+          "name": "StrongElectricChargingStationResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.StrongElectricChargingStationResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation"
+        },
+        "DE.Autobahn.WebcamAppeared": {
+          "name": "WebcamAppeared",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WebcamAppeared"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.WebcamUpdated": {
+          "name": "WebcamUpdated",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WebcamUpdated"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam"
+        },
+        "DE.Autobahn.WebcamResolved": {
+          "name": "WebcamResolved",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.Autobahn.WebcamResolved"
+            },
+            "source": {
+              "value": "https://verkehr.autobahn.de/o/autobahn"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.Webcam"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "DE.Autobahn.jstruct": {
+      "schemas": {
+        "DE.Autobahn.RoadEvent": {
+          "name": "RoadEvent",
+          "format": "JsonStructure/draft-02",
+          "description": "Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/DE/Autobahn/RoadEvent",
+                "definitions": {
+                  "StringList": {
+                    "name": "StringList",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
+                  }
+                },
+                "type": "object",
+                "name": "RoadEvent",
+                "additionalProperties": false,
+                "required": [
+                  "identifier",
+                  "road_ids",
+                  "event_time",
+                  "display_type"
+                ],
+                "properties": {
+                  "identifier": {
+                    "type": "string",
+                    "description": "Stable Autobahn item identifier used for the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "autobahn-api": "identifier"
+                    }
+                  },
+                  "road_ids": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families."
+                  },
+                  "event_time": {
+                    "type": "datetime",
+                    "description": "CloudEvents event time for the emitted record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp."
+                  },
+                  "display_type": {
+                    "type": "string",
+                    "enum": [
+                      "ROADWORKS",
+                      "SHORT_TERM_ROADWORKS",
+                      "CLOSURE",
+                      "CLOSURE_ENTRY_EXIT",
+                      "WEIGHT_LIMIT_35"
+                    ],
+                    "description": "Autobahn API display_type value that identifies the road-event subtype.",
+                    "altnames": {
+                      "autobahn-api": "display_type"
+                    }
+                  },
+                  "title": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable title from the Autobahn API item."
+                  },
+                  "subtitle": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable subtitle from the Autobahn API item."
+                  },
+                  "description_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Description lines from the Autobahn API description array.",
+                    "altnames": {
+                      "autobahn-api": "description"
+                    }
+                  },
+                  "future": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the item as a future event.",
+                    "altnames": {
+                      "autobahn-api": "future"
+                    }
+                  },
+                  "is_blocked": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the affected road segment as blocked.",
+                    "altnames": {
+                      "autobahn-api": "isBlocked"
+                    }
+                  },
+                  "icon": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API icon identifier for the item.",
+                    "altnames": {
+                      "autobahn-api": "icon"
+                    }
+                  },
+                  "start_lc_position": {
+                    "type": ["integer", "null"],
+                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the affected segment.",
+                    "altnames": {
+                      "autobahn-api": "startLcPosition"
+                    }
+                  },
+                  "start_timestamp": {
+                    "type": ["datetime", "null"],
+                    "description": "startTimestamp value from the Autobahn API when the item includes a scheduled or known start time.",
+                    "altnames": {
+                      "autobahn-api": "startTimestamp"
+                    }
+                  },
+                  "extent": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API extent text for the affected road segment.",
+                    "altnames": {
+                      "autobahn-api": "extent"
+                    }
+                  },
+                  "point": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API point text that identifies the affected point on the road segment.",
+                    "altnames": {
+                      "autobahn-api": "point"
+                    }
+                  },
+                  "coordinate_lat": {
+                    "type": ["double", "null"],
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.lat"
+                    }
+                  },
+                  "coordinate_lon": {
+                    "type": ["double", "null"],
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.long"
+                    }
+                  },
+                  "geometry_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized Autobahn API geometry object for the affected road segment.",
+                    "altnames": {
+                      "autobahn-api": "geometry"
+                    }
+                  },
+                  "impact_lower": {
+                    "type": ["string", "null"],
+                    "description": "Lower bound from the Autobahn API impact object.",
+                    "altnames": {
+                      "autobahn-api": "impact.lower"
+                    }
+                  },
+                  "impact_upper": {
+                    "type": ["string", "null"],
+                    "description": "Upper bound from the Autobahn API impact object.",
+                    "altnames": {
+                      "autobahn-api": "impact.upper"
+                    }
+                  },
+                  "impact_symbols": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Impact symbols from the Autobahn API impact.symbols array.",
+                    "altnames": {
+                      "autobahn-api": "impact.symbols"
+                    }
+                  },
+                  "route_recommendation_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available.",
+                    "altnames": {
+                      "autobahn-api": "routeRecommendation"
+                    }
+                  },
+                  "footer_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Footer lines from the Autobahn API footer array.",
+                    "altnames": {
+                      "autobahn-api": "footer"
+                    }
+                  }
+                },
+                "description": "Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WarningEvent": {
+          "name": "WarningEvent",
+          "format": "JsonStructure/draft-02",
+          "description": "Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/DE/Autobahn/WarningEvent",
+                "definitions": {
+                  "StringList": {
+                    "name": "StringList",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
+                  }
+                },
+                "type": "object",
+                "name": "WarningEvent",
+                "additionalProperties": false,
+                "required": [
+                  "identifier",
+                  "road_ids",
+                  "event_time",
+                  "display_type"
+                ],
+                "properties": {
+                  "identifier": {
+                    "type": "string",
+                    "description": "Stable Autobahn warning identifier used for the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "autobahn-api": "identifier"
+                    }
+                  },
+                  "road_ids": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Autobahn road identifiers for the road query that yielded this warning item."
+                  },
+                  "event_time": {
+                    "type": "datetime",
+                    "description": "CloudEvents event time for the emitted warning record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp."
+                  },
+                  "display_type": {
+                    "type": "string",
+                    "enum": ["WARNING"],
+                    "description": "Autobahn API display_type for warning items.",
+                    "altnames": {
+                      "autobahn-api": "display_type"
+                    }
+                  },
+                  "title": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable title from the Autobahn API warning item."
+                  },
+                  "subtitle": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable subtitle from the Autobahn API warning item."
+                  },
+                  "description_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Description lines from the Autobahn API description array.",
+                    "altnames": {
+                      "autobahn-api": "description"
+                    }
+                  },
+                  "future": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the warning as a future event.",
+                    "altnames": {
+                      "autobahn-api": "future"
+                    }
+                  },
+                  "is_blocked": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the warning segment as blocked.",
+                    "altnames": {
+                      "autobahn-api": "isBlocked"
+                    }
+                  },
+                  "icon": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API icon identifier for the warning item.",
+                    "altnames": {
+                      "autobahn-api": "icon"
+                    }
+                  },
+                  "start_lc_position": {
+                    "type": ["integer", "null"],
+                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the warning segment.",
+                    "altnames": {
+                      "autobahn-api": "startLcPosition"
+                    }
+                  },
+                  "start_timestamp": {
+                    "type": ["datetime", "null"],
+                    "description": "startTimestamp value from the Autobahn API when the warning includes a scheduled or known start time.",
+                    "altnames": {
+                      "autobahn-api": "startTimestamp"
+                    }
+                  },
+                  "extent": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API extent text for the affected road segment.",
+                    "altnames": {
+                      "autobahn-api": "extent"
+                    }
+                  },
+                  "point": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API point text that identifies the affected point on the road segment.",
+                    "altnames": {
+                      "autobahn-api": "point"
+                    }
+                  },
+                  "coordinate_lat": {
+                    "type": ["double", "null"],
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.lat"
+                    }
+                  },
+                  "coordinate_lon": {
+                    "type": ["double", "null"],
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.long"
+                    }
+                  },
+                  "geometry_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized Autobahn API geometry object for the affected road segment.",
+                    "altnames": {
+                      "autobahn-api": "geometry"
+                    }
+                  },
+                  "impact_lower": {
+                    "type": ["string", "null"],
+                    "description": "Lower bound from the Autobahn API impact object.",
+                    "altnames": {
+                      "autobahn-api": "impact.lower"
+                    }
+                  },
+                  "impact_upper": {
+                    "type": ["string", "null"],
+                    "description": "Upper bound from the Autobahn API impact object.",
+                    "altnames": {
+                      "autobahn-api": "impact.upper"
+                    }
+                  },
+                  "impact_symbols": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Impact symbols from the Autobahn API impact.symbols array.",
+                    "altnames": {
+                      "autobahn-api": "impact.symbols"
+                    }
+                  },
+                  "route_recommendation_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available.",
+                    "altnames": {
+                      "autobahn-api": "routeRecommendation"
+                    }
+                  },
+                  "footer_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Footer lines from the Autobahn API footer array.",
+                    "altnames": {
+                      "autobahn-api": "footer"
+                    }
+                  },
+                  "delay_minutes": {
+                    "type": ["integer", "null"],
+                    "minimum": 0,
+                    "unit": "min",
+                    "description": "delayTimeValue from the Autobahn warning item, expressed in minutes.",
+                    "altnames": {
+                      "autobahn-api": "delayTimeValue"
+                    }
+                  },
+                  "average_speed_kmh": {
+                    "type": ["integer", "null"],
+                    "minimum": 0,
+                    "unit": "km/h",
+                    "description": "averageSpeed from the Autobahn warning item, expressed in kilometers per hour.",
+                    "altnames": {
+                      "autobahn-api": "averageSpeed"
+                    }
+                  },
+                  "abnormal_traffic_type": {
+                    "type": ["string", "null"],
+                    "description": "abnormalTrafficType code from the Autobahn warning item.",
+                    "altnames": {
+                      "autobahn-api": "abnormalTrafficType"
+                    }
+                  },
+                  "source_name": {
+                    "type": ["string", "null"],
+                    "description": "source value from the Autobahn warning item that identifies the origin of the warning.",
+                    "altnames": {
+                      "autobahn-api": "source"
+                    }
+                  }
+                },
+                "description": "Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorry": {
+          "name": "ParkingLorry",
+          "format": "JsonStructure/draft-02",
+          "description": "Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/DE/Autobahn/ParkingLorry",
+                "definitions": {
+                  "StringList": {
+                    "name": "StringList",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
+                  }
+                },
+                "type": "object",
+                "name": "ParkingLorry",
+                "additionalProperties": false,
+                "required": [
+                  "identifier",
+                  "road_ids",
+                  "event_time",
+                  "display_type"
+                ],
+                "properties": {
+                  "identifier": {
+                    "type": "string",
+                    "description": "Stable Autobahn parking identifier used for the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "autobahn-api": "identifier"
+                    }
+                  },
+                  "road_ids": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Autobahn road identifiers for the road query that yielded this parking item."
+                  },
+                  "event_time": {
+                    "type": "datetime",
+                    "description": "CloudEvents event time for the emitted parking record. The bridge uses the poll timestamp because parking items do not expose startTimestamp in the normalized payload."
+                  },
+                  "display_type": {
+                    "type": "string",
+                    "enum": ["PARKING"],
+                    "description": "Autobahn API display_type for lorry parking items.",
+                    "altnames": {
+                      "autobahn-api": "display_type"
+                    }
+                  },
+                  "title": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable title from the Autobahn API parking item."
+                  },
+                  "subtitle": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable subtitle from the Autobahn API parking item."
+                  },
+                  "description_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Description lines from the Autobahn API description array.",
+                    "altnames": {
+                      "autobahn-api": "description"
+                    }
+                  },
+                  "future": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the parking item as a future entry.",
+                    "altnames": {
+                      "autobahn-api": "future"
+                    }
+                  },
+                  "is_blocked": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the parking site as blocked.",
+                    "altnames": {
+                      "autobahn-api": "isBlocked"
+                    }
+                  },
+                  "icon": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API icon identifier for the parking item.",
+                    "altnames": {
+                      "autobahn-api": "icon"
+                    }
+                  },
+                  "start_lc_position": {
+                    "type": ["integer", "null"],
+                    "description": "Numeric startLcPosition value emitted by the Autobahn API for the parking site location.",
+                    "altnames": {
+                      "autobahn-api": "startLcPosition"
+                    }
+                  },
+                  "extent": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API extent text for the parking site.",
+                    "altnames": {
+                      "autobahn-api": "extent"
+                    }
+                  },
+                  "point": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API point text that identifies the parking site location.",
+                    "altnames": {
+                      "autobahn-api": "point"
+                    }
+                  },
+                  "coordinate_lat": {
+                    "type": ["double", "null"],
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.lat"
+                    }
+                  },
+                  "coordinate_lon": {
+                    "type": ["double", "null"],
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.long"
+                    }
+                  },
+                  "route_recommendation_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the parking location.",
+                    "altnames": {
+                      "autobahn-api": "routeRecommendation"
+                    }
+                  },
+                  "footer_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Footer lines from the Autobahn API footer array.",
+                    "altnames": {
+                      "autobahn-api": "footer"
+                    }
+                  },
+                  "amenity_descriptions": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities.",
+                    "altnames": {
+                      "autobahn-api": "lorryParkingFeatureIcons[].description"
+                    }
+                  },
+                  "car_space_count": {
+                    "type": ["integer", "null"],
+                    "minimum": 0,
+                    "description": "Number of passenger-car spaces parsed from description lines that contain PKW Stellplätze."
+                  },
+                  "lorry_space_count": {
+                    "type": ["integer", "null"],
+                    "minimum": 0,
+                    "description": "Number of lorry spaces parsed from description lines that contain LKW Stellplätze."
+                  }
+                },
+                "description": "Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ChargingStation": {
+          "name": "ChargingStation",
+          "format": "JsonStructure/draft-02",
+          "description": "Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/DE/Autobahn/ChargingStation",
+                "definitions": {
+                  "StringList": {
+                    "name": "StringList",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
+                  }
+                },
+                "type": "object",
+                "name": "ChargingStation",
+                "additionalProperties": false,
+                "required": [
+                  "identifier",
+                  "road_ids",
+                  "event_time",
+                  "display_type"
+                ],
+                "properties": {
+                  "identifier": {
+                    "type": "string",
+                    "description": "Stable Autobahn charging-station identifier used for the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "autobahn-api": "identifier"
+                    }
+                  },
+                  "road_ids": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Autobahn road identifiers for the road query that yielded this charging station item."
+                  },
+                  "event_time": {
+                    "type": "datetime",
+                    "description": "CloudEvents event time for the emitted charging-station record. The bridge uses the poll timestamp because charging station items do not expose startTimestamp in the normalized payload."
+                  },
+                  "display_type": {
+                    "type": "string",
+                    "enum": [
+                      "ELECTRIC_CHARGING_STATION",
+                      "STRONG_ELECTRIC_CHARGING_STATION"
+                    ],
+                    "description": "Autobahn API display_type for charging-station items.",
+                    "altnames": {
+                      "autobahn-api": "display_type"
+                    }
+                  },
+                  "title": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable title from the Autobahn API charging-station item."
+                  },
+                  "subtitle": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable subtitle from the Autobahn API charging-station item."
+                  },
+                  "description_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Description lines from the Autobahn API description array.",
+                    "altnames": {
+                      "autobahn-api": "description"
+                    }
+                  },
+                  "future": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the charging station item as a future entry.",
+                    "altnames": {
+                      "autobahn-api": "future"
+                    }
+                  },
+                  "is_blocked": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the charging station site as blocked.",
+                    "altnames": {
+                      "autobahn-api": "isBlocked"
+                    }
+                  },
+                  "icon": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API icon identifier for the charging station item.",
+                    "altnames": {
+                      "autobahn-api": "icon"
+                    }
+                  },
+                  "extent": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API extent text for the charging station site.",
+                    "altnames": {
+                      "autobahn-api": "extent"
+                    }
+                  },
+                  "point": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API point text that identifies the charging station site.",
+                    "altnames": {
+                      "autobahn-api": "point"
+                    }
+                  },
+                  "coordinate_lat": {
+                    "type": ["double", "null"],
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.lat"
+                    }
+                  },
+                  "coordinate_lon": {
+                    "type": ["double", "null"],
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.long"
+                    }
+                  },
+                  "address_line": {
+                    "type": ["string", "null"],
+                    "description": "Address line parsed from the first Autobahn API description line for the charging station site."
+                  },
+                  "charging_point_count": {
+                    "type": ["integer", "null"],
+                    "minimum": 0,
+                    "description": "Number of parsed charging point entries derived from the Autobahn API description lines."
+                  },
+                  "charging_points_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized array of normalized charging point entries parsed from the Autobahn API description lines."
+                  },
+                  "route_recommendation_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the charging station site.",
+                    "altnames": {
+                      "autobahn-api": "routeRecommendation"
+                    }
+                  },
+                  "footer_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Footer lines from the Autobahn API footer array.",
+                    "altnames": {
+                      "autobahn-api": "footer"
+                    }
+                  }
+                },
+                "description": "Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station."
+              }
+            }
+          }
+        },
+        "DE.Autobahn.Webcam": {
+          "name": "Webcam",
+          "format": "JsonStructure/draft-02",
+          "description": "Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/DE/Autobahn/Webcam",
+                "definitions": {
+                  "StringList": {
+                    "name": "StringList",
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Reusable array of strings for Autobahn list-valued text and symbol fields."
+                  }
+                },
+                "type": "object",
+                "name": "Webcam",
+                "additionalProperties": false,
+                "required": [
+                  "identifier",
+                  "road_ids",
+                  "event_time",
+                  "display_type"
+                ],
+                "properties": {
+                  "identifier": {
+                    "type": "string",
+                    "description": "Stable Autobahn webcam identifier used for the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "autobahn-api": "identifier"
+                    }
+                  },
+                  "road_ids": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Autobahn road identifiers for the road query that yielded this webcam item."
+                  },
+                  "event_time": {
+                    "type": "datetime",
+                    "description": "CloudEvents event time for the emitted webcam record. The bridge uses the poll timestamp because webcam items do not expose startTimestamp in the normalized payload."
+                  },
+                  "display_type": {
+                    "type": "string",
+                    "enum": ["WEBCAM"],
+                    "description": "Autobahn API display_type for webcam items.",
+                    "altnames": {
+                      "autobahn-api": "display_type"
+                    }
+                  },
+                  "title": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable title from the Autobahn API webcam item."
+                  },
+                  "subtitle": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable subtitle from the Autobahn API webcam item."
+                  },
+                  "description_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Description lines from the Autobahn API description array.",
+                    "altnames": {
+                      "autobahn-api": "description"
+                    }
+                  },
+                  "future": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the webcam item as a future entry.",
+                    "altnames": {
+                      "autobahn-api": "future"
+                    }
+                  },
+                  "is_blocked": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the Autobahn API marks the webcam location as blocked.",
+                    "altnames": {
+                      "autobahn-api": "isBlocked"
+                    }
+                  },
+                  "icon": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API icon identifier for the webcam item.",
+                    "altnames": {
+                      "autobahn-api": "icon"
+                    }
+                  },
+                  "extent": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API extent text for the webcam location.",
+                    "altnames": {
+                      "autobahn-api": "extent"
+                    }
+                  },
+                  "point": {
+                    "type": ["string", "null"],
+                    "description": "Autobahn API point text that identifies the webcam location.",
+                    "altnames": {
+                      "autobahn-api": "point"
+                    }
+                  },
+                  "coordinate_lat": {
+                    "type": ["double", "null"],
+                    "minimum": -90,
+                    "maximum": 90,
+                    "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.lat"
+                    }
+                  },
+                  "coordinate_lon": {
+                    "type": ["double", "null"],
+                    "minimum": -180,
+                    "maximum": 180,
+                    "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+                    "altnames": {
+                      "autobahn-api": "coordinate.long"
+                    }
+                  },
+                  "route_recommendation_json": {
+                    "type": ["string", "null"],
+                    "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the webcam location.",
+                    "altnames": {
+                      "autobahn-api": "routeRecommendation"
+                    }
+                  },
+                  "footer_lines": {
+                    "type": [
+                      "null",
+                      { "$ref": "#/definitions/StringList" }
+                    ],
+                    "description": "Footer lines from the Autobahn API footer array.",
+                    "altnames": {
+                      "autobahn-api": "footer"
+                    }
+                  },
+                  "operator_name": {
+                    "type": ["string", "null"],
+                    "description": "operator value from the Autobahn API webcam item.",
+                    "altnames": {
+                      "autobahn-api": "operator"
+                    }
+                  },
+                  "image_url": {
+                    "type": ["uri", "null"],
+                    "description": "imageurl value from the Autobahn API webcam item for the still image.",
+                    "altnames": {
+                      "autobahn-api": "imageurl"
+                    }
+                  },
+                  "stream_url": {
+                    "type": ["uri", "null"],
+                    "description": "linkurl value from the Autobahn API webcam item for the linked stream or detail page.",
+                    "altnames": {
+                      "autobahn-api": "linkurl"
+                    }
+                  }
+                },
+                "description": "Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam."
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.Autobahn.avro": {
+      "schemas": {
+        "DE.Autobahn.RoadEvent": {
+          "name": "RoadEvent",
+          "format": "Avro/1.11.3",
+          "description": "Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "RoadEvent",
+                "namespace": "DE.Autobahn",
+                "doc": "Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.",
+                "fields": [
+                  { "name": "identifier", "type": "string" },
+                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
+                  { "name": "event_time", "type": "string" },
+                  { "name": "display_type", "type": "string" },
+                  { "name": "title", "type": ["null", "string"], "default": null },
+                  { "name": "subtitle", "type": ["null", "string"], "default": null },
+                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "future", "type": ["null", "boolean"], "default": null },
+                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
+                  { "name": "icon", "type": ["null", "string"], "default": null },
+                  { "name": "start_lc_position", "type": ["null", "int"], "default": null },
+                  { "name": "start_timestamp", "type": ["null", "string"], "default": null },
+                  { "name": "extent", "type": ["null", "string"], "default": null },
+                  { "name": "point", "type": ["null", "string"], "default": null },
+                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
+                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
+                  { "name": "geometry_json", "type": ["null", "string"], "default": null },
+                  { "name": "impact_lower", "type": ["null", "string"], "default": null },
+                  { "name": "impact_upper", "type": ["null", "string"], "default": null },
+                  { "name": "impact_symbols", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
+                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null }
+                ]
+              }
+            }
+          }
+        },
+        "DE.Autobahn.WarningEvent": {
+          "name": "WarningEvent",
+          "format": "Avro/1.11.3",
+          "description": "Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WarningEvent",
+                "namespace": "DE.Autobahn",
+                "doc": "Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.",
+                "fields": [
+                  { "name": "identifier", "type": "string" },
+                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
+                  { "name": "event_time", "type": "string" },
+                  { "name": "display_type", "type": "string" },
+                  { "name": "title", "type": ["null", "string"], "default": null },
+                  { "name": "subtitle", "type": ["null", "string"], "default": null },
+                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "future", "type": ["null", "boolean"], "default": null },
+                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
+                  { "name": "icon", "type": ["null", "string"], "default": null },
+                  { "name": "start_lc_position", "type": ["null", "int"], "default": null },
+                  { "name": "start_timestamp", "type": ["null", "string"], "default": null },
+                  { "name": "extent", "type": ["null", "string"], "default": null },
+                  { "name": "point", "type": ["null", "string"], "default": null },
+                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
+                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
+                  { "name": "geometry_json", "type": ["null", "string"], "default": null },
+                  { "name": "impact_lower", "type": ["null", "string"], "default": null },
+                  { "name": "impact_upper", "type": ["null", "string"], "default": null },
+                  { "name": "impact_symbols", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
+                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "delay_minutes", "type": ["null", "int"], "default": null },
+                  { "name": "average_speed_kmh", "type": ["null", "int"], "default": null },
+                  { "name": "abnormal_traffic_type", "type": ["null", "string"], "default": null },
+                  { "name": "source_name", "type": ["null", "string"], "default": null }
+                ]
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ParkingLorry": {
+          "name": "ParkingLorry",
+          "format": "Avro/1.11.3",
+          "description": "Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "ParkingLorry",
+                "namespace": "DE.Autobahn",
+                "doc": "Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.",
+                "fields": [
+                  { "name": "identifier", "type": "string" },
+                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
+                  { "name": "event_time", "type": "string" },
+                  { "name": "display_type", "type": "string" },
+                  { "name": "title", "type": ["null", "string"], "default": null },
+                  { "name": "subtitle", "type": ["null", "string"], "default": null },
+                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "future", "type": ["null", "boolean"], "default": null },
+                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
+                  { "name": "icon", "type": ["null", "string"], "default": null },
+                  { "name": "start_lc_position", "type": ["null", "int"], "default": null },
+                  { "name": "extent", "type": ["null", "string"], "default": null },
+                  { "name": "point", "type": ["null", "string"], "default": null },
+                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
+                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
+                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
+                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "amenity_descriptions", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "car_space_count", "type": ["null", "int"], "default": null },
+                  { "name": "lorry_space_count", "type": ["null", "int"], "default": null }
+                ]
+              }
+            }
+          }
+        },
+        "DE.Autobahn.ChargingStation": {
+          "name": "ChargingStation",
+          "format": "Avro/1.11.3",
+          "description": "Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "ChargingStation",
+                "namespace": "DE.Autobahn",
+                "doc": "Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.",
+                "fields": [
+                  { "name": "identifier", "type": "string" },
+                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
+                  { "name": "event_time", "type": "string" },
+                  { "name": "display_type", "type": "string" },
+                  { "name": "title", "type": ["null", "string"], "default": null },
+                  { "name": "subtitle", "type": ["null", "string"], "default": null },
+                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "future", "type": ["null", "boolean"], "default": null },
+                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
+                  { "name": "icon", "type": ["null", "string"], "default": null },
+                  { "name": "extent", "type": ["null", "string"], "default": null },
+                  { "name": "point", "type": ["null", "string"], "default": null },
+                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
+                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
+                  { "name": "address_line", "type": ["null", "string"], "default": null },
+                  { "name": "charging_point_count", "type": ["null", "int"], "default": null },
+                  { "name": "charging_points_json", "type": ["null", "string"], "default": null },
+                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
+                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null }
+                ]
+              }
+            }
+          }
+        },
+        "DE.Autobahn.Webcam": {
+          "name": "Webcam",
+          "format": "Avro/1.11.3",
+          "description": "Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Webcam",
+                "namespace": "DE.Autobahn",
+                "doc": "Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.",
+                "fields": [
+                  { "name": "identifier", "type": "string" },
+                  { "name": "road_ids", "type": { "type": "array", "items": "string" } },
+                  { "name": "event_time", "type": "string" },
+                  { "name": "display_type", "type": "string" },
+                  { "name": "title", "type": ["null", "string"], "default": null },
+                  { "name": "subtitle", "type": ["null", "string"], "default": null },
+                  { "name": "description_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "future", "type": ["null", "boolean"], "default": null },
+                  { "name": "is_blocked", "type": ["null", "boolean"], "default": null },
+                  { "name": "icon", "type": ["null", "string"], "default": null },
+                  { "name": "extent", "type": ["null", "string"], "default": null },
+                  { "name": "point", "type": ["null", "string"], "default": null },
+                  { "name": "coordinate_lat", "type": ["null", "double"], "default": null },
+                  { "name": "coordinate_lon", "type": ["null", "double"], "default": null },
+                  { "name": "route_recommendation_json", "type": ["null", "string"], "default": null },
+                  { "name": "footer_lines", "type": ["null", { "type": "array", "items": "string" }], "default": null },
+                  { "name": "operator_name", "type": ["null", "string"], "default": null },
+                  { "name": "image_url", "type": ["null", "string"], "default": null },
+                  { "name": "stream_url", "type": ["null", "string"], "default": null }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
