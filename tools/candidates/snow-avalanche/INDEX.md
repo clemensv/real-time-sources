@@ -3,9 +3,12 @@
 | Slug | Source | Region | Protocol | Auth | Score |
 |------|--------|--------|----------|------|-------|
 | [snotel](snotel.md) | SNOTEL | US West | REST/CSV | None | 17/18 |
-| [slf-avalanche](slf-avalanche.md) | SLF Avalanche Bulletins | Switzerland | REST/CAAML | None | 15/18 |
+| [eaws-albina](eaws-albina.md) | EAWS/ALBINA Avalanche Bulletins | European Alps | HTTP/CAAMLv6 JSON | None | 17/18 |
 | [nve-avalanche](nve-avalanche.md) | NVE Avalanche (Varsom) | Norway | REST/JSON | None | 16/18 |
+| [slf-avalanche](slf-avalanche.md) | SLF Avalanche Bulletins | Switzerland | REST/CAAML | None | 15/18 |
 | [avalanche-org](avalanche-org.md) | Avalanche.org | US | REST/JSON | None | 12/18 |
+| [avalanche-canada](avalanche-canada.md) | Avalanche Canada | Canada | Web portal | None | 12/18 |
+| [sais-scotland](sais-scotland.md) | SAIS (Scottish Avalanche) | Scotland | Web (API planned) | None | 12/18 |
 
 ## Summary
-Four candidates covering US snowpack telemetry (SNOTEL), Swiss avalanche science (SLF), Norwegian avalanche warnings (NVE/Varsom), and US-wide avalanche forecast aggregation (Avalanche.org). SNOTEL is the strongest with 900+ automated stations reporting hourly. NVE provides clean JSON with Swagger docs. SLF uses the CAAML international standard. Avalanche.org is the weakest due to API reliability concerns.
+Seven candidates covering US snowpack telemetry (SNOTEL), European Alps bulletins (EAWS/ALBINA), Norwegian warnings (NVE/Varsom), Swiss avalanche science (SLF), US-wide aggregation (Avalanche.org), Canadian forecasts (Avalanche Canada), and Scottish highlands (SAIS). The EAWS/ALBINA system is a major addition — daily CAAMLv6 JSON bulletins for Tirol, South Tyrol, Trentino, and Vorarlberg in the international standard format, served as browsable files with no auth required. Avalanche Canada and SAIS lack public APIs but are important national services. SAIS has API infrastructure provisioned (api.sais.gov.uk) suggesting an API launch is imminent.
