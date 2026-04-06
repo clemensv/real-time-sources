@@ -57,3 +57,12 @@ Excellent. Data updates approximately every second. The unfiltered nature means 
 - The feeder community is large and growing
 - Data is noisier than curated sources (FlightAware, FR24) but more complete
 - Consider combining with OpenSky for academic/non-commercial use cases
+- **2026 update**: ADS-B Exchange has fully transitioned to a commercial model. The previous
+  community-accessible API tiers have been replaced with commercial licensing. All API access
+  — including individual use — requires a paid agreement or RapidAPI subscription.
+- **Commercial use explicitly requires written authorization** from ADS-B Exchange, including
+  for non-profit organizations. Contact required for pricing.
+- The RapidAPI integration (`rapidapi.com/adsbx/api/adsbx-flight-sim-traffic`) provides a
+  marketplace-based access model with pay-per-request pricing.
+- For open-source/academic projects, OpenSky Network (CC BY-NC) or ADSBHub (reciprocal
+  sharing) are more accessible alternatives.

@@ -1,12 +1,17 @@
 # Maritime AIS Vessel Tracking — Candidate Sources
 
-Research date: 2026-04-06
+Research date: 2026-04-06 (updated — Round 2 deep dive)
 
 ## Summary
 
 Scouted for real-time or near-real-time AIS vessel tracking APIs beyond the three already
-covered in this repository. Found **6 confirmed candidates** and **1 investigation report**
-(Denmark DMA — no public API discovered).
+covered in this repository. Found **6 confirmed candidates**, **2 aggregate intelligence sources**,
+**1 consolidated government survey** (20+ countries), and **1 investigation report** (Denmark DMA).
+
+The Round 2 deep dive investigated government AIS programs across 20+ countries, alternative
+marine data sources (vessel density, port statistics, satellite AIS), and regional marine
+data networks. Key finding: Norway and Finland remain the only countries with truly open
+real-time AIS APIs. All other investigated governments restrict AIS data to operational use.
 
 ## Already Covered in Repository
 
@@ -37,16 +42,24 @@ covered in this repository. Found **6 confirmed candidates** and **1 investigati
 | # | Source | Score | File | Key Advantage |
 |---|---|---|---|---|
 | 3 | [Spire/Kpler Maritime](spire-kpler-maritime.md) | 15/18 | `spire-kpler-maritime.md` | Global satellite AIS, GraphQL, but commercial |
-| 4 | [AISHub](aishub.md) | 13/18 | `aishub.md` | Global community network, 860+ stations |
-| 5 | [MyShipTracking](myshiptracking.md) | 13/18 | `myshiptracking.md` | Vessels-in-zone queries, fleet management |
-| 6 | [aprs.fi AIS](aprs-fi-ais.md) | 12/18 | `aprs-fi-ais.md` | Free, but lookup-only (no area monitoring) |
-| 7 | [Datalastic](datalastic.md) | 12/18 | `datalastic.md` | Detailed vessel type taxonomy |
+| 4 | [EMODnet Human Activities](emodnet-human-activities.md) | 13/18 | `emodnet-human-activities.md` | EU vessel density WMS/WFS, port traffic stats |
+| 5 | [AISHub](aishub.md) | 13/18 | `aishub.md` | Global community network, 860+ stations |
+| 6 | [MyShipTracking](myshiptracking.md) | 13/18 | `myshiptracking.md` | Vessels-in-zone queries, fleet management |
+| 7 | [aprs.fi AIS](aprs-fi-ais.md) | 12/18 | `aprs-fi-ais.md` | Free, but lookup-only (no area monitoring) |
+| 8 | [Datalastic](datalastic.md) | 12/18 | `datalastic.md` | Detailed vessel type taxonomy |
 
-### Tier 3: Investigation Needed
+### Tier 3: Aggregate Intelligence (not real-time)
+
+| # | Source | Score | File | Key Value |
+|---|---|---|---|---|
+| 9 | [HELCOM Shipping Data](helcom-shipping.md) | 11/18 | `helcom-shipping.md` | Baltic Sea traffic intensity, accident data |
+
+### Tier 4: Investigation Reports
 
 | # | Source | Score | File | Status |
 |---|---|---|---|---|
-| 8 | [Denmark DMA AIS](denmark-dma-ais.md) | 2/18 | `denmark-dma-ais.md` | No public API found; system transferred to DEMA |
+| 10 | [Denmark DMA AIS](denmark-dma-ais.md) | 2/18 | `denmark-dma-ais.md` | No public API found; system transferred to DEMA |
+| 11 | [Government AIS Programs](government-ais-programs.md) | — | `government-ais-programs.md` | Survey of 20+ countries — none offer public AIS APIs |
 
 ## Recommendations
 
@@ -68,30 +81,48 @@ covered in this repository. Found **6 confirmed candidates** and **1 investigati
    sharing model means you must contribute to access, but the global coverage from 860+ stations
    is unique among non-commercial sources.
 
+4. **EMODnet Human Activities** — Not real-time, but the vessel density WMS/WFS services are
+   valuable as contextual layers. Port vessel statistics by type and tonnage provide useful
+   aggregate intelligence. No auth required.
+
 ### Commercial benchmarks:
 
-4. **Spire/Kpler Maritime** — The GraphQL API is the gold standard for AIS API design. Worth
+5. **Spire/Kpler Maritime** — The GraphQL API is the gold standard for AIS API design. Worth
    studying for API design patterns even if the commercial license makes it unsuitable for
    open-data projects. Trial available.
 
 ### Not recommended for immediate action:
 
-5. **MyShipTracking**, **Datalastic**, **aprs.fi** — All require paid subscriptions or have
+6. **MyShipTracking**, **Datalastic**, **aprs.fi** — All require paid subscriptions or have
    significant limitations. Their value proposition overlaps with the open government sources
    that score higher on openness.
 
-## Countries/Regions Not Yet Covered (Further Research Needed)
+7. **HELCOM Shipping** — Useful for Baltic research context but not real-time data integration.
 
-These were investigated but no accessible public AIS API was found:
+## Countries/Regions Investigated — No Public AIS API Found
 
-- **Sweden (Sjöfartsverket)** — No open data portal or AIS API discovered. The Swedish Maritime
-  Administration website does not list AIS data as an open service.
-- **Estonia (Transpordiamet)** — No public AIS API found. Transport Administration site is
-  focused on road transport.
-- **Latvia, Lithuania** — No public AIS APIs found.
-- **Singapore (MPA)** — No public vessel tracking API found on data.gov.sg.
-- **Japan, Australia, Italy** — No public AIS APIs found during search.
-- **Canada (CCG)** — CCG website unreachable; no API found on open.canada.ca.
+The [government-ais-programs.md](government-ais-programs.md) survey documents detailed findings
+for 20+ countries. Key conclusions:
+
+- **Every maritime nation operates shore-based AIS** — the infrastructure is universal.
+- **Almost none provide public API access** — AIS is treated as operational/security data.
+- **Norway and Finland are global outliers** in open maritime AIS data.
+- **No new government AIS APIs were discovered** in Round 2 despite investigating:
+  Sweden, Denmark, Estonia, Latvia, Lithuania, Canada, Singapore, Japan, South Korea,
+  Australia, New Zealand, India, Brazil, South Africa, Italy, Greece, Turkey.
+
+### Satellite AIS (commercial):
+- **Spire/Kpler**: Global coverage, GraphQL API, commercial licensing. Already documented.
+- **exactEarth**: Acquired by Kpler — merged into Kpler AIS platform.
+- **ORBCOMM**: Satellite AIS via OG2 constellation, enterprise-only API.
+- **Academic access**: Some providers offer academic/research programs (Spire, historically
+  exactEarth), but these require institutional agreements and are not self-service APIs.
+
+### Regional marine data:
+- **EMODnet**: EU vessel density and port statistics. Documented above.
+- **HELCOM**: Baltic Sea AIS-derived aggregate data. Documented above.
+- **Arctic vessel tracking**: No dedicated public API found. Polar vessel monitoring relies on
+  satellite AIS (commercial) and national AIS within coastal range.
 
 The Nordic countries (Norway, Finland) remain the global leaders in open maritime AIS data
 accessibility. BarentsWatch and Digitraffic are both government-backed, well-documented, and
