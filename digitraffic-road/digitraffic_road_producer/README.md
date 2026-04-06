@@ -19,7 +19,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficRoadMessagesEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficRoadMaintenanceEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficRoadMaintenanceEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficRoadStationsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficRoadMaintenanceTasksEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -51,6 +55,14 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - FiDigitrafficRoadMaintenanceProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- FiDigitrafficRoadStationsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- FiDigitrafficRoadMaintenanceTasksProducersolution for event-driven applications.
 
 
 
@@ -282,6 +294,85 @@ fi_digitraffic_road_sensors_tms_sensor_data_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type `digitraffic_road_producer_data.TmsSensorData`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_sensors_tms_sensor_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TmsSensorData) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_sensors_tms_sensor_data_async =
+fi_digitraffic_road_sensors_tms_sensor_data_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.TmsSensorData`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_sensors_tms_sensor_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TmsSensorData) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_sensors_tms_sensor_data_async =
+fi_digitraffic_road_sensors_tms_sensor_data_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -420,6 +511,86 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 fi_digitraffic_road_maintenance_dispatcher.fi_digitraffic_road_sensors_weather_sensor_data_async =
+fi_digitraffic_road_sensors_weather_sensor_data_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type
+`digitraffic_road_producer_data.WeatherSensorData`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_sensors_weather_sensor_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherSensorData) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_sensors_weather_sensor_data_async =
+fi_digitraffic_road_sensors_weather_sensor_data_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.WeatherSensorData`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_sensors_weather_sensor_data_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherSensorData) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_sensors_weather_sensor_data_async =
 fi_digitraffic_road_sensors_weather_sensor_data_event
 
 **Parameters:**```
@@ -869,6 +1040,85 @@ fi_digitraffic_road_messages_traffic_announcement_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type `digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_traffic_announcement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_messages_traffic_announcement_async =
+fi_digitraffic_road_messages_traffic_announcement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_traffic_announcement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_messages_traffic_announcement_async =
+fi_digitraffic_road_messages_traffic_announcement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1006,6 +1256,85 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 fi_digitraffic_road_maintenance_dispatcher.fi_digitraffic_road_messages_road_work_async =
+fi_digitraffic_road_messages_road_work_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type `digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_road_work_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_messages_road_work_async =
+fi_digitraffic_road_messages_road_work_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_road_work_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_messages_road_work_async =
 fi_digitraffic_road_messages_road_work_event
 
 **Parameters:**```
@@ -1155,6 +1484,85 @@ fi_digitraffic_road_messages_weight_restriction_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type `digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_weight_restriction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_messages_weight_restriction_async =
+fi_digitraffic_road_messages_weight_restriction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_weight_restriction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_messages_weight_restriction_async =
+fi_digitraffic_road_messages_weight_restriction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1292,6 +1700,85 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 fi_digitraffic_road_maintenance_dispatcher.fi_digitraffic_road_messages_exempted_transport_async =
+fi_digitraffic_road_messages_exempted_transport_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type `digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_exempted_transport_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_messages_exempted_transport_async =
+fi_digitraffic_road_messages_exempted_transport_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.TrafficMessage`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_messages_exempted_transport_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficMessage) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_messages_exempted_transport_async =
 fi_digitraffic_road_messages_exempted_transport_event
 
 **Parameters:**```
@@ -1949,6 +2436,86 @@ fi_digitraffic_road_maintenance_maintenance_tracking_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type
+`digitraffic_road_producer_data.MaintenanceTracking`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_maintenance_maintenance_tracking_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: MaintenanceTracking) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_maintenance_maintenance_tracking_async =
+fi_digitraffic_road_maintenance_maintenance_tracking_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.MaintenanceTracking`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_maintenance_maintenance_tracking_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: MaintenanceTracking) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_maintenance_maintenance_tracking_async =
+fi_digitraffic_road_maintenance_maintenance_tracking_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -2051,6 +2618,1173 @@ await producer.send_fi_digitraffic_road_maintenance_maintenance_tracking_batch(`
         MaintenanceTracking(...),
 
         MaintenanceTracking(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### FiDigitrafficRoadStationsEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`FiDigitrafficRoadStationsEventDispatcher` handles events for the fi.digitraffic.road.stations message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from digitraffic-road-producer import FiDigitrafficRoadSensorsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = FiDigitrafficRoadSensorsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_fi_digitraffic_road_sensors_tms_sensor_data(```python
+
+    data=TmsSensorData(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The FiDigitrafficRoadStationsEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = FiDigitrafficRoadSensorsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `fi_digitraffic_road_stations_tms_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'fi_digitraffic_road_stations_tms_station_async:  Callable[[ConsumerRecord, CloudEvent,
+TmsStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `fi.digitraffic.road.stations.TmsStation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadSensorsProducer- `data`: The event data of type `digitraffic_road_producer_data.TmsStation`.
+
+
+
+Producer for `fi.digitraffic.road.sensors` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_tms_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TmsStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadSensorsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_sensors_dispatcher.fi_digitraffic_road_stations_tms_station_async =
+fi_digitraffic_road_stations_tms_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMessagesProducer- `data`: The event data of type `digitraffic_road_producer_data.TmsStation`.
+
+
+
+Producer for `fi.digitraffic.road.messages` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_tms_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TmsStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMessagesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_messages_dispatcher.fi_digitraffic_road_stations_tms_station_async =
+fi_digitraffic_road_stations_tms_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceProducer- `data`: The event data of type `digitraffic_road_producer_data.TmsStation`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_tms_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TmsStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_dispatcher.fi_digitraffic_road_stations_tms_station_async =
+fi_digitraffic_road_stations_tms_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type `digitraffic_road_producer_data.TmsStation`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_tms_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TmsStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_stations_tms_station_async =
+fi_digitraffic_road_stations_tms_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.TmsStation`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_tms_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TmsStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_stations_tms_station_async =
+fi_digitraffic_road_stations_tms_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `fi_digitraffic_road_stations_weather_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'fi_digitraffic_road_stations_weather_station_async:  Callable[[ConsumerRecord,
+CloudEvent, WeatherStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `fi.digitraffic.road.stations.WeatherStation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadSensorsProducer- `data`: The event data of type `digitraffic_road_producer_data.WeatherStation`.
+
+
+
+Producer for `fi.digitraffic.road.sensors` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadSensorsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_sensors_dispatcher.fi_digitraffic_road_stations_weather_station_async =
+fi_digitraffic_road_stations_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMessagesProducer- `data`: The event data of type `digitraffic_road_producer_data.WeatherStation`.
+
+
+
+Producer for `fi.digitraffic.road.messages` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMessagesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_messages_dispatcher.fi_digitraffic_road_stations_weather_station_async =
+fi_digitraffic_road_stations_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceProducer- `data`: The event data of type
+`digitraffic_road_producer_data.WeatherStation`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_dispatcher.fi_digitraffic_road_stations_weather_station_async =
+fi_digitraffic_road_stations_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type `digitraffic_road_producer_data.WeatherStation`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_stations_weather_station_async =
+fi_digitraffic_road_stations_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.WeatherStation`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_stations_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherStation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_stations_weather_station_async =
+fi_digitraffic_road_stations_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_fi_digitraffic_road_stations_tms_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_fi_digitraffic_road_stations_tms_station(
+
+    self,##### `_process_event`
+
+    data: TmsStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `fi.digitraffic.road.stations.TmsStation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TmsStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_fi_digitraffic_road_stations_tms_station(
+
+    data=TmsStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `fi.digitraffic.road.stations.TmsStation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_fi_digitraffic_road_stations_tms_station_batch(```
+
+    messages=[
+
+        TmsStation(...),Initializes the runner with a Kafka consumer.
+
+        TmsStation(...),
+
+        TmsStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_fi_digitraffic_road_stations_weather_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_fi_digitraffic_road_stations_weather_station(
+
+    self,##### `_process_event`
+
+    data: WeatherStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `fi.digitraffic.road.stations.WeatherStation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_fi_digitraffic_road_stations_weather_station(
+
+    data=WeatherStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `fi.digitraffic.road.stations.WeatherStation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_fi_digitraffic_road_stations_weather_station_batch(```
+
+    messages=[
+
+        WeatherStation(...),Initializes the runner with a Kafka consumer.
+
+        WeatherStation(...),
+
+        WeatherStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### FiDigitrafficRoadMaintenanceTasksEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`FiDigitrafficRoadMaintenanceTasksEventDispatcher` handles events for the fi.digitraffic.road.maintenance.tasks message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from digitraffic-road-producer import FiDigitrafficRoadSensorsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = FiDigitrafficRoadSensorsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_fi_digitraffic_road_sensors_tms_sensor_data(```python
+
+    data=TmsSensorData(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The FiDigitrafficRoadMaintenanceTasksEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = FiDigitrafficRoadSensorsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `fi_digitraffic_road_maintenance_tasks_maintenance_task_type_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'fi_digitraffic_road_maintenance_tasks_maintenance_task_type_async:
+Callable[[ConsumerRecord, CloudEvent, MaintenanceTaskType], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadSensorsProducer- `data`: The event data of type
+`digitraffic_road_producer_data.MaintenanceTaskType`.
+
+
+
+Producer for `fi.digitraffic.road.sensors` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: MaintenanceTaskType) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadSensorsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_sensors_dispatcher.fi_digitraffic_road_maintenance_tasks_maintenance_task_type_async =
+fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMessagesProducer- `data`: The event data of type
+`digitraffic_road_producer_data.MaintenanceTaskType`.
+
+
+
+Producer for `fi.digitraffic.road.messages` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: MaintenanceTaskType) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMessagesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_messages_dispatcher.fi_digitraffic_road_maintenance_tasks_maintenance_task_type_async =
+fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceProducer- `data`: The event data of type
+`digitraffic_road_producer_data.MaintenanceTaskType`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: MaintenanceTaskType) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_dispatcher.fi_digitraffic_road_maintenance_tasks_maintenance_task_type_async =
+fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadStationsProducer- `data`: The event data of type
+`digitraffic_road_producer_data.MaintenanceTaskType`.
+
+
+
+Producer for `fi.digitraffic.road.stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: MaintenanceTaskType) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_stations_dispatcher.fi_digitraffic_road_maintenance_tasks_maintenance_task_type_async =
+fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficRoadMaintenanceTasksProducer- `data`: The event data of type
+`digitraffic_road_producer_data.MaintenanceTaskType`.
+
+
+
+Producer for `fi.digitraffic.road.maintenance.tasks` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: MaintenanceTaskType) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficRoadMaintenanceTasksProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_road_maintenance_tasks_dispatcher.fi_digitraffic_road_maintenance_tasks_maintenance_task_type_async =
+fi_digitraffic_road_maintenance_tasks_maintenance_task_type_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type`Dispatchers have the following protected
+methods:
+
+
+
+```python### Methods:
+
+async def send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type(
+
+    self,##### `_process_event`
+
+    data: MaintenanceTaskType,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MaintenanceTaskType`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type(
+
+    data=MaintenanceTaskType(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type_batch(```
+
+    messages=[
+
+        MaintenanceTaskType(...),Initializes the runner with a Kafka consumer.
+
+        MaintenanceTaskType(...),
+
+        MaintenanceTaskType(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

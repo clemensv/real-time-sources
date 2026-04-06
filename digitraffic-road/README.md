@@ -1,21 +1,33 @@
 # Digitraffic Road — Finnish Road Traffic Data
 
 Real-time road traffic data from the Finnish national road network operated by
-Fintraffic. Data is streamed via the Digitraffic MQTT service at
+Fintraffic. Telemetry is streamed via the Digitraffic MQTT service at
 `wss://tie.digitraffic.fi/mqtt` and includes TMS sensor readings, road weather
 sensor readings, traffic messages (incidents, road works, weight restrictions,
-exempted transports), and maintenance vehicle tracking.
+exempted transports), and maintenance vehicle tracking. Station metadata and
+maintenance task type catalogs are fetched as reference data from the
+Digitraffic REST API at startup.
 
 ## Data Source
 
 - **Publisher**: Fintraffic
 - **Documentation**: https://www.digitraffic.fi/en/road-traffic/
-- **Protocol**: MQTT over WebSocket
+- **Protocol**: MQTT over WebSocket (telemetry), REST (reference data)
 - **Auth**: None
 - **License**: Creative Commons 4.0 BY
-- **Update Frequency**: Real-time (sub-second via MQTT)
+- **Update Frequency**: Real-time (sub-second via MQTT); reference data at startup
 
 ## Event Types
+
+### Reference Data (emitted at startup from REST API)
+
+| Type | Description |
+|---|---|
+| `fi.digitraffic.road.stations.TmsStation` | TMS station metadata (location, road address, sensors, free-flow speeds) |
+| `fi.digitraffic.road.stations.WeatherStation` | Road weather station metadata (location, road address, sensors, collection interval) |
+| `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` | Maintenance task type catalog (multilingual names) |
+
+### Telemetry (streamed continuously from MQTT)
 
 | Type | Description |
 |---|---|

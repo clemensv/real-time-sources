@@ -366,10 +366,14 @@ class TestAutobahnDockerFlow:
 class TestDigitrafficRoadDockerFlow:
     TOPIC = 'test-digitraffic-road'
 
-    def test_emits_telemetry(self, kafka: KafkaFixture, digitraffic_road_image):
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, digitraffic_road_image):
         _run_kafka_flow_test(
             kafka, digitraffic_road_image, self.TOPIC,
-            reference_types=None,
+            reference_types=[
+                'TmsStation',
+                'WeatherStation',
+                'MaintenanceTaskType',
+            ],
             telemetry_types=[
                 'TmsSensorData',
                 'WeatherSensorData',

@@ -1,20 +1,31 @@
 # Digitraffic Road — Finnish Road Traffic Events
 
 The bridge emits CloudEvents in structured JSON format to Kafka-compatible
-endpoints. Data is streamed in real time from the Digitraffic MQTT service at
-`wss://tie.digitraffic.fi/mqtt`.
+endpoints. Telemetry is streamed in real time from the Digitraffic MQTT service
+at `wss://tie.digitraffic.fi/mqtt`. Reference data — station metadata and
+maintenance task type catalogs — is fetched from the Digitraffic REST API at
+startup and emitted before the telemetry stream begins.
 
 ## Endpoints & Kafka Topics
 
-| Kafka topic | Key template | Message group |
-|---|---|---|
-| `digitraffic-road-sensors` | `{station_id}/{sensor_id}` | Sensor readings (TMS + weather) |
-| `digitraffic-road-messages` | `{situation_id}` | Traffic messages (announcements, road works, restrictions) |
-| `digitraffic-road-maintenance` | `{domain}` | Maintenance vehicle tracking |
+| Kafka topic | Key template | Message group | Data kind |
+|---|---|---|---|
+| `digitraffic-road-sensors` | `{station_id}/{sensor_id}` | Sensor readings (TMS + weather) | Telemetry |
+| `digitraffic-road-sensors` | `{station_id}` | Station metadata (TMS + weather) | Reference |
+| `digitraffic-road-messages` | `{situation_id}` | Traffic messages (announcements, road works, restrictions) | Telemetry |
+| `digitraffic-road-maintenance` | `{domain}` | Maintenance vehicle tracking | Telemetry |
+| `digitraffic-road-maintenance` | `{task_id}` | Maintenance task type catalog | Reference |
 
 ## Event Types
 
-### Sensors
+### Station Reference Data
+
+| Event type | Payload schema | REST source |
+|---|---|---|
+| `fi.digitraffic.road.stations.TmsStation` | `TmsStation` | `/api/tms/v1/stations` |
+| `fi.digitraffic.road.stations.WeatherStation` | `WeatherStation` | `/api/weather/v1/stations` |
+
+### Sensor Telemetry
 
 | Event type | Payload schema | MQTT source topic |
 |---|---|---|
@@ -30,13 +41,105 @@ endpoints. Data is streamed in real time from the Digitraffic MQTT service at
 | `fi.digitraffic.road.messages.WeightRestriction` | `TrafficMessage` | `traffic-message-v3/simple/WEIGHT_RESTRICTION` |
 | `fi.digitraffic.road.messages.ExemptedTransport` | `TrafficMessage` | `traffic-message-v3/simple/EXEMPTED_TRANSPORT` |
 
-### Maintenance
+### Maintenance Telemetry
 
 | Event type | Payload schema | MQTT source topic |
 |---|---|---|
 | `fi.digitraffic.road.maintenance.MaintenanceTracking` | `MaintenanceTracking` | `maintenance-v2/routes/{domain}` |
 
+### Maintenance Reference Data
+
+| Event type | Payload schema | REST source |
+|---|---|---|
+| `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` | `MaintenanceTaskType` | `/api/maintenance/v1/tracking/tasks` |
+
 ## Payload Shapes
+
+### TmsStation (reference)
+
+TMS station metadata. Over 500 TMS stations measure traffic volumes and
+speeds across the Finnish road network. Contextualizes TmsSensorData telemetry.
+
+| Field | Type | Description |
+|---|---|---|
+| `station_id` | int | TMS station identifier |
+| `name` | string | Internal station name |
+| `tms_number` | int or null | Legacy TMS numbering |
+| `names_fi` | string | Finnish display name |
+| `names_sv` | string or null | Swedish display name |
+| `names_en` | string or null | English display name |
+| `longitude` | double | WGS84 longitude |
+| `latitude` | double | WGS84 latitude |
+| `altitude` | double or null | Altitude (meters) |
+| `municipality` | string | Municipality name |
+| `municipality_code` | int | Finnish municipality code |
+| `province` | string | Province name |
+| `province_code` | int | Province code |
+| `road_number` | int | Road number |
+| `road_section` | int | Road section number |
+| `distance_from_section_start` | int | Distance from section start (meters) |
+| `carriageway` | string or null | Carriageway type |
+| `side` | string or null | Road side |
+| `station_type` | string | Hardware type code (e.g. `DSL_6`) |
+| `collection_status` | string | `GATHERING`, `REMOVED_TEMPORARILY`, or `REMOVED_PERMANENTLY` |
+| `state` | string or null | Operational state (`OK`, `FAULT`, `DISABLED`) |
+| `free_flow_speed_1` | double or null | Direction 1 free-flow speed (km/h) |
+| `free_flow_speed_2` | double or null | Direction 2 free-flow speed (km/h) |
+| `bearing` | int or null | Road bearing (degrees) |
+| `start_time` | string | ISO 8601 data collection start date |
+| `livi_id` | string or null | Legacy Fintraffic identifier |
+| `sensors` | array of int | Available sensor identifiers |
+| `data_updated_time` | string or null | ISO 8601 last metadata update |
+
+### WeatherStation (reference)
+
+Road weather station metadata. Over 350 stations measure atmospheric and road
+surface conditions. Contextualizes WeatherSensorData telemetry.
+
+| Field | Type | Description |
+|---|---|---|
+| `station_id` | int | Weather station identifier |
+| `name` | string | Internal station name |
+| `names_fi` | string | Finnish display name |
+| `names_sv` | string or null | Swedish display name |
+| `names_en` | string or null | English display name |
+| `longitude` | double | WGS84 longitude |
+| `latitude` | double | WGS84 latitude |
+| `altitude` | double or null | Altitude (meters) |
+| `municipality` | string | Municipality name |
+| `municipality_code` | int | Finnish municipality code |
+| `province` | string | Province name |
+| `province_code` | int | Province code |
+| `road_number` | int | Road number |
+| `road_section` | int | Road section number |
+| `distance_from_section_start` | int | Distance from section start (meters) |
+| `carriageway` | string or null | Carriageway type |
+| `side` | string or null | Road side |
+| `contract_area` | string or null | Maintenance contract area name |
+| `contract_area_code` | int or null | Contract area code |
+| `station_type` | string | Hardware type code (e.g. `RWS_200`) |
+| `master` | boolean | Whether this is the primary station |
+| `collection_status` | string | Data collection status |
+| `collection_interval` | int | Collection interval (seconds) |
+| `state` | string or null | Operational state |
+| `start_time` | string | ISO 8601 data collection start date |
+| `livi_id` | string or null | Legacy Fintraffic identifier |
+| `sensors` | array of int | Available sensor identifiers |
+| `data_updated_time` | string or null | ISO 8601 last metadata update |
+
+### MaintenanceTaskType (reference)
+
+Maintenance task type definition with multilingual names. Approximately 40
+task types classify road maintenance activities. Contextualizes the `tasks`
+array in MaintenanceTracking telemetry.
+
+| Field | Type | Description |
+|---|---|---|
+| `task_id` | string | Task type identifier (e.g. `PLOUGHING_AND_SLUSH_REMOVAL`) |
+| `name_fi` | string | Finnish name |
+| `name_en` | string | English name |
+| `name_sv` | string | Swedish name |
+| `data_updated_time` | string or null | ISO 8601 last update timestamp |
 
 ### TmsSensorData
 

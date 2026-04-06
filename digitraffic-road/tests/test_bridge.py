@@ -1,13 +1,17 @@
 """Tests for the Digitraffic Road bridge logic."""
 
 import json
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from digitraffic_road.bridge import (
     _emit_sensor_event,
     _emit_traffic_message,
     _emit_maintenance,
     _flatten_traffic_message,
+    _flatten_station,
+    fetch_and_emit_tms_stations,
+    fetch_and_emit_weather_stations,
+    fetch_and_emit_maintenance_tasks,
     parse_connection_string,
     DigitrafficRoadBridge,
 )
@@ -452,3 +456,287 @@ class TestMQTTSource:
         assert len(results) == 1
         assert results[0][0] == "maintenance"
         assert results[0][1] == {"domain": "state-roads"}
+
+
+class TestFlattenStation:
+    SAMPLE_TMS_FEATURE = {
+        "type": "Feature",
+        "id": 23001,
+        "geometry": {"type": "Point", "coordinates": [25.689529, 60.417002, 0.0]},
+        "properties": {
+            "id": 23001,
+            "name": "vt7_Rita",
+            "tmsNumber": 1,
+            "names": {"fi": "Tie 7 Porvoo, Rita", "sv": "Väg 7 Borgå, Rita", "en": "Road 7 Porvoo, Rita"},
+            "municipality": "Porvoo",
+            "municipalityCode": 638,
+            "province": "Uusimaa",
+            "provinceCode": 1,
+            "roadAddress": {
+                "roadNumber": 7,
+                "roadSection": 10,
+                "distanceFromRoadSectionStart": 950,
+                "carriageway": "DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION",
+                "side": "LEFT",
+            },
+            "stationType": "DSL_6",
+            "collectionStatus": "GATHERING",
+            "state": "OK",
+            "freeFlowSpeed1": 105.0,
+            "freeFlowSpeed2": 95.0,
+            "bearing": 60,
+            "startTime": "2001-11-07T00:00:00Z",
+            "liviId": "Livi968639",
+            "sensors": [5054, 5055, 5056],
+            "dataUpdatedTime": "2024-01-15T10:00:00Z",
+        },
+    }
+
+    SAMPLE_WEATHER_FEATURE = {
+        "type": "Feature",
+        "id": 1012,
+        "geometry": {"type": "Point", "coordinates": [24.667305, 60.153507, 0.0]},
+        "properties": {
+            "id": 1012,
+            "name": "kt51_Espoo_Kivenlahti",
+            "names": {"fi": "Tie 51 Espoo, Kivenlahti", "sv": "Väg 51 Esbo, Stensvik", "en": "Road 51 Espoo, Kivenlahti"},
+            "municipality": "Espoo",
+            "municipalityCode": 49,
+            "province": "Uusimaa",
+            "provinceCode": 1,
+            "roadAddress": {
+                "roadNumber": 51,
+                "roadSection": 6,
+                "distanceFromRoadSectionStart": 2237,
+                "carriageway": "DUAL_CARRIAGEWAY_LEFT_IN_INCREASING_DIRECTION",
+                "side": "LEFT",
+                "contractArea": "Espoo 19-24",
+                "contractAreaCode": 142,
+            },
+            "stationType": "RWS_200",
+            "master": True,
+            "collectionStatus": "GATHERING",
+            "collectionInterval": 300,
+            "state": None,
+            "startTime": "1995-06-02T00:00:00Z",
+            "liviId": "Livi1090115",
+            "sensors": [1, 2, 3],
+            "dataUpdatedTime": "2024-07-06T03:06:05Z",
+        },
+    }
+
+    def test_flattens_tms_station(self):
+        flat = _flatten_station(self.SAMPLE_TMS_FEATURE)
+        assert flat["station_id"] == 23001
+        assert flat["name"] == "vt7_Rita"
+        assert flat["tms_number"] == 1
+        assert flat["names_fi"] == "Tie 7 Porvoo, Rita"
+        assert flat["names_sv"] == "Väg 7 Borgå, Rita"
+        assert flat["longitude"] == 25.689529
+        assert flat["latitude"] == 60.417002
+        assert flat["municipality"] == "Porvoo"
+        assert flat["municipality_code"] == 638
+        assert flat["province"] == "Uusimaa"
+        assert flat["province_code"] == 1
+        assert flat["road_number"] == 7
+        assert flat["road_section"] == 10
+        assert flat["distance_from_section_start"] == 950
+        assert flat["carriageway"] == "DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION"
+        assert flat["side"] == "LEFT"
+        assert flat["station_type"] == "DSL_6"
+        assert flat["collection_status"] == "GATHERING"
+        assert flat["state"] == "OK"
+        assert flat["free_flow_speed_1"] == 105.0
+        assert flat["free_flow_speed_2"] == 95.0
+        assert flat["bearing"] == 60
+        assert flat["start_time"] == "2001-11-07T00:00:00Z"
+        assert flat["livi_id"] == "Livi968639"
+        assert flat["sensors"] == [5054, 5055, 5056]
+        assert flat["data_updated_time"] == "2024-01-15T10:00:00Z"
+
+    def test_flattens_weather_station(self):
+        flat = _flatten_station(self.SAMPLE_WEATHER_FEATURE)
+        assert flat["station_id"] == 1012
+        assert flat["name"] == "kt51_Espoo_Kivenlahti"
+        assert flat["master"] is True
+        assert flat["collection_interval"] == 300
+        assert flat["contract_area"] == "Espoo 19-24"
+        assert flat["contract_area_code"] == 142
+        assert flat["state"] is None
+
+    def test_altitude_zero_becomes_none(self):
+        flat = _flatten_station(self.SAMPLE_TMS_FEATURE)
+        assert flat["altitude"] is None
+
+    def test_altitude_nonzero_preserved(self):
+        feature = dict(self.SAMPLE_TMS_FEATURE)
+        feature["geometry"] = {"type": "Point", "coordinates": [25.0, 60.0, 42.5]}
+        flat = _flatten_station(feature)
+        assert flat["altitude"] == 42.5
+
+
+class TestFetchAndEmitStations:
+    TMS_API_RESPONSE = {
+        "type": "FeatureCollection",
+        "features": [TestFlattenStation.SAMPLE_TMS_FEATURE],
+    }
+    WEATHER_API_RESPONSE = {
+        "type": "FeatureCollection",
+        "features": [TestFlattenStation.SAMPLE_WEATHER_FEATURE],
+    }
+
+    @patch("digitraffic_road.bridge.requests.get")
+    def test_fetch_tms_stations(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = self.TMS_API_RESPONSE
+        mock_get.return_value = mock_resp
+        producer = MagicMock()
+
+        count = fetch_and_emit_tms_stations(producer)
+        assert count == 1
+        producer.send_fi_digitraffic_road_stations_tms_station.assert_called_once()
+        call_kwargs = producer.send_fi_digitraffic_road_stations_tms_station.call_args.kwargs
+        assert call_kwargs["_station_id"] == "23001"
+        assert call_kwargs["flush_producer"] is False
+
+    @patch("digitraffic_road.bridge.requests.get")
+    def test_fetch_weather_stations(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = self.WEATHER_API_RESPONSE
+        mock_get.return_value = mock_resp
+        producer = MagicMock()
+
+        count = fetch_and_emit_weather_stations(producer)
+        assert count == 1
+        producer.send_fi_digitraffic_road_stations_weather_station.assert_called_once()
+        call_kwargs = producer.send_fi_digitraffic_road_stations_weather_station.call_args.kwargs
+        assert call_kwargs["_station_id"] == "1012"
+
+    @patch("digitraffic_road.bridge.requests.get")
+    def test_tms_station_data_fields(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = self.TMS_API_RESPONSE
+        mock_get.return_value = mock_resp
+        producer = MagicMock()
+
+        fetch_and_emit_tms_stations(producer)
+        data = producer.send_fi_digitraffic_road_stations_tms_station.call_args.kwargs["data"]
+        assert data.station_id == 23001
+        assert data.name == "vt7_Rita"
+        assert data.municipality == "Porvoo"
+        assert data.sensors == [5054, 5055, 5056]
+
+    @patch("digitraffic_road.bridge.requests.get")
+    def test_weather_station_data_fields(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = self.WEATHER_API_RESPONSE
+        mock_get.return_value = mock_resp
+        producer = MagicMock()
+
+        fetch_and_emit_weather_stations(producer)
+        data = producer.send_fi_digitraffic_road_stations_weather_station.call_args.kwargs["data"]
+        assert data.station_id == 1012
+        assert data.master is True
+        assert data.collection_interval == 300
+
+
+class TestFetchAndEmitMaintenanceTasks:
+    TASKS_API_RESPONSE = [
+        {
+            "id": "BRUSHING",
+            "nameFi": "Harjaus",
+            "nameEn": "Brushing",
+            "nameSv": "Borstning",
+            "dataUpdatedTime": "2020-03-30T00:00:00Z",
+        },
+        {
+            "id": "SALTING",
+            "nameFi": "Suolaus",
+            "nameEn": "Salting",
+            "nameSv": "Saltning",
+            "dataUpdatedTime": "2020-03-30T00:00:00Z",
+        },
+    ]
+
+    @patch("digitraffic_road.bridge.requests.get")
+    def test_fetch_tasks(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = self.TASKS_API_RESPONSE
+        mock_get.return_value = mock_resp
+        producer = MagicMock()
+
+        count = fetch_and_emit_maintenance_tasks(producer)
+        assert count == 2
+        assert producer.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type.call_count == 2
+
+    @patch("digitraffic_road.bridge.requests.get")
+    def test_task_data_fields(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = self.TASKS_API_RESPONSE
+        mock_get.return_value = mock_resp
+        producer = MagicMock()
+
+        fetch_and_emit_maintenance_tasks(producer)
+        first_call = producer.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type.call_args_list[0]
+        assert first_call.kwargs["_task_id"] == "BRUSHING"
+        data = first_call.kwargs["data"]
+        assert data.task_id == "BRUSHING"
+        assert data.name_fi == "Harjaus"
+        assert data.name_en == "Brushing"
+        assert data.name_sv == "Borstning"
+        assert data.data_updated_time == "2020-03-30T00:00:00Z"
+
+    @patch("digitraffic_road.bridge.requests.get")
+    def test_flush_producer_false(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = self.TASKS_API_RESPONSE
+        mock_get.return_value = mock_resp
+        producer = MagicMock()
+
+        fetch_and_emit_maintenance_tasks(producer)
+        for call in producer.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type.call_args_list:
+            assert call.kwargs["flush_producer"] is False
+
+
+class TestBridgeReferenceDataEmission:
+    @patch("digitraffic_road.bridge.fetch_and_emit_maintenance_tasks", return_value=3)
+    @patch("digitraffic_road.bridge.fetch_and_emit_weather_stations", return_value=5)
+    @patch("digitraffic_road.bridge.fetch_and_emit_tms_stations", return_value=10)
+    def test_emit_reference_data_calls_all(self, mock_tms, mock_weather, mock_tasks):
+        mqtt = MagicMock()
+        kafka = MagicMock()
+        stations = MagicMock()
+        tasks = MagicMock()
+        bridge = DigitrafficRoadBridge(
+            mqtt, kafka,
+            stations_producer=stations,
+            tasks_producer=tasks,
+        )
+        bridge._start_time = 1000.0
+        bridge._emit_reference_data()
+
+        mock_tms.assert_called_once_with(stations)
+        mock_weather.assert_called_once_with(stations)
+        mock_tasks.assert_called_once_with(tasks)
+        kafka.flush.assert_called_once()
+        assert bridge._total == 18  # 10 + 5 + 3
+
+    @patch("digitraffic_road.bridge.fetch_and_emit_weather_stations", return_value=0)
+    @patch("digitraffic_road.bridge.fetch_and_emit_tms_stations", return_value=0)
+    def test_emit_reference_data_no_flush_when_zero(self, mock_tms, mock_weather):
+        mqtt = MagicMock()
+        kafka = MagicMock()
+        stations = MagicMock()
+        bridge = DigitrafficRoadBridge(mqtt, kafka, stations_producer=stations)
+        bridge._start_time = 1000.0
+        bridge._emit_reference_data()
+        kafka.flush.assert_not_called()
+
+    def test_emit_reference_data_skips_without_producers(self):
+        mqtt = MagicMock()
+        kafka = MagicMock()
+        bridge = DigitrafficRoadBridge(mqtt, kafka)
+        bridge._start_time = 1000.0
+        bridge._emit_reference_data()
+        kafka.flush.assert_not_called()
+        assert bridge._total == 0

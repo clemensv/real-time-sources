@@ -8,17 +8,23 @@ import sys
 import time
 from typing import Any, Dict, Optional, Set
 
+import requests
 from confluent_kafka import Producer
 from digitraffic_road_producer_data import (
+    MaintenanceTaskType,
     MaintenanceTracking,
     TmsSensorData,
+    TmsStation,
     TrafficMessage,
     WeatherSensorData,
+    WeatherStation,
 )
 from digitraffic_road_producer_kafka_producer.producer import (
     FiDigitrafficRoadMaintenanceEventProducer,
+    FiDigitrafficRoadMaintenanceTasksEventProducer,
     FiDigitrafficRoadMessagesEventProducer,
     FiDigitrafficRoadSensorsEventProducer,
+    FiDigitrafficRoadStationsEventProducer,
 )
 
 from digitraffic_road.mqtt_source import MQTTSource
@@ -45,6 +51,127 @@ _SITUATION_TYPE_LABELS = {
     "WEIGHT_RESTRICTION": "weight restriction",
     "EXEMPTED_TRANSPORT": "exempted transport",
 }
+
+_TMS_STATIONS_URL = "https://tie.digitraffic.fi/api/tms/v1/stations"
+_WEATHER_STATIONS_URL = "https://tie.digitraffic.fi/api/weather/v1/stations"
+_MAINTENANCE_TASKS_URL = "https://tie.digitraffic.fi/api/maintenance/v1/tracking/tasks"
+
+
+def _flatten_station(feature: Dict[str, Any]) -> Dict[str, Any]:
+    """Flatten a GeoJSON Feature from the Digitraffic stations REST API into a flat dict."""
+    props = feature.get("properties", {})
+    coords = feature.get("geometry", {}).get("coordinates", [0.0, 0.0, 0.0])
+    names = props.get("names", {})
+    road = props.get("roadAddress", {})
+    return {
+        "station_id": props.get("id", 0),
+        "name": props.get("name", ""),
+        "tms_number": props.get("tmsNumber"),
+        "names_fi": names.get("fi", ""),
+        "names_sv": names.get("sv"),
+        "names_en": names.get("en"),
+        "longitude": coords[0] if len(coords) > 0 else 0.0,
+        "latitude": coords[1] if len(coords) > 1 else 0.0,
+        "altitude": coords[2] if len(coords) > 2 and coords[2] != 0.0 else None,
+        "municipality": props.get("municipality", ""),
+        "municipality_code": props.get("municipalityCode", 0),
+        "province": props.get("province", ""),
+        "province_code": props.get("provinceCode", 0),
+        "road_number": road.get("roadNumber", 0),
+        "road_section": road.get("roadSection", 0),
+        "distance_from_section_start": road.get("distanceFromRoadSectionStart", 0),
+        "carriageway": road.get("carriageway"),
+        "side": road.get("side"),
+        "contract_area": road.get("contractArea"),
+        "contract_area_code": road.get("contractAreaCode"),
+        "station_type": props.get("stationType", ""),
+        "master": props.get("master"),
+        "collection_status": props.get("collectionStatus", ""),
+        "collection_interval": props.get("collectionInterval"),
+        "state": props.get("state"),
+        "free_flow_speed_1": props.get("freeFlowSpeed1"),
+        "free_flow_speed_2": props.get("freeFlowSpeed2"),
+        "bearing": props.get("bearing"),
+        "start_time": props.get("startTime", ""),
+        "livi_id": props.get("liviId"),
+        "sensors": props.get("sensors", []),
+        "data_updated_time": props.get("dataUpdatedTime"),
+    }
+
+
+def fetch_and_emit_tms_stations(
+    stations_producer: "FiDigitrafficRoadStationsEventProducer",
+) -> int:
+    """Fetch all TMS stations from the REST API and emit as reference events. Returns count."""
+    resp = requests.get(_TMS_STATIONS_URL, timeout=60)
+    resp.raise_for_status()
+    features = resp.json().get("features", [])
+    count = 0
+    for feature in features:
+        try:
+            flat = _flatten_station(feature)
+            data = TmsStation.from_serializer_dict(flat)
+            stations_producer.send_fi_digitraffic_road_stations_tms_station(
+                _station_id=str(flat["station_id"]),
+                data=data,
+                flush_producer=False,
+            )
+            count += 1
+        except Exception as e:
+            logger.warning("Failed to emit TMS station %s: %s", feature.get("id"), e)
+    return count
+
+
+def fetch_and_emit_weather_stations(
+    stations_producer: "FiDigitrafficRoadStationsEventProducer",
+) -> int:
+    """Fetch all weather stations from the REST API and emit as reference events. Returns count."""
+    resp = requests.get(_WEATHER_STATIONS_URL, timeout=60)
+    resp.raise_for_status()
+    features = resp.json().get("features", [])
+    count = 0
+    for feature in features:
+        try:
+            flat = _flatten_station(feature)
+            data = WeatherStation.from_serializer_dict(flat)
+            stations_producer.send_fi_digitraffic_road_stations_weather_station(
+                _station_id=str(flat["station_id"]),
+                data=data,
+                flush_producer=False,
+            )
+            count += 1
+        except Exception as e:
+            logger.warning("Failed to emit weather station %s: %s", feature.get("id"), e)
+    return count
+
+
+def fetch_and_emit_maintenance_tasks(
+    tasks_producer: "FiDigitrafficRoadMaintenanceTasksEventProducer",
+) -> int:
+    """Fetch all maintenance task types from the REST API and emit as reference events. Returns count."""
+    resp = requests.get(_MAINTENANCE_TASKS_URL, timeout=30)
+    resp.raise_for_status()
+    tasks = resp.json()
+    count = 0
+    for task in tasks:
+        try:
+            flat = {
+                "task_id": task.get("id", ""),
+                "name_fi": task.get("nameFi", ""),
+                "name_en": task.get("nameEn", ""),
+                "name_sv": task.get("nameSv", ""),
+                "data_updated_time": task.get("dataUpdatedTime"),
+            }
+            data = MaintenanceTaskType.from_serializer_dict(flat)
+            tasks_producer.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type(
+                _task_id=flat["task_id"],
+                data=data,
+                flush_producer=False,
+            )
+            count += 1
+        except Exception as e:
+            logger.warning("Failed to emit maintenance task type %s: %s", task.get("id"), e)
+    return count
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -214,6 +341,8 @@ class DigitrafficRoadBridge:
         sensors_producer: Optional[FiDigitrafficRoadSensorsEventProducer] = None,
         messages_producer: Optional[FiDigitrafficRoadMessagesEventProducer] = None,
         maintenance_producer: Optional[FiDigitrafficRoadMaintenanceEventProducer] = None,
+        stations_producer: Optional[FiDigitrafficRoadStationsEventProducer] = None,
+        tasks_producer: Optional[FiDigitrafficRoadMaintenanceTasksEventProducer] = None,
         flush_interval: int = 1000,
     ):
         self._mqtt = mqtt_source
@@ -221,6 +350,8 @@ class DigitrafficRoadBridge:
         self._sensors_producer = sensors_producer
         self._messages_producer = messages_producer
         self._maintenance_producer = maintenance_producer
+        self._stations_producer = stations_producer
+        self._tasks_producer = tasks_producer
         self._flush_interval = flush_interval
         self._count = 0
         self._total = 0
@@ -228,10 +359,39 @@ class DigitrafficRoadBridge:
         self._start_time = 0.0
 
     def run(self) -> None:
-        """Start the bridge — blocks forever."""
+        """Start the bridge — emits reference data, then streams telemetry. Blocks forever."""
         self._start_time = time.time()
-        logger.info("Starting Digitraffic Road bridge")
+        self._emit_reference_data()
+        logger.info("Starting Digitraffic Road MQTT telemetry stream")
         self._mqtt.stream(self._on_message)
+
+    def _emit_reference_data(self) -> None:
+        """Fetch and emit reference data from REST APIs before starting telemetry."""
+        ref_total = 0
+        if self._stations_producer:
+            try:
+                n = fetch_and_emit_tms_stations(self._stations_producer)
+                ref_total += n
+                logger.info("Emitted %d TMS station reference events", n)
+            except Exception as e:
+                logger.error("Failed to fetch TMS stations: %s", e)
+            try:
+                n = fetch_and_emit_weather_stations(self._stations_producer)
+                ref_total += n
+                logger.info("Emitted %d weather station reference events", n)
+            except Exception as e:
+                logger.error("Failed to fetch weather stations: %s", e)
+        if self._tasks_producer:
+            try:
+                n = fetch_and_emit_maintenance_tasks(self._tasks_producer)
+                ref_total += n
+                logger.info("Emitted %d maintenance task type reference events", n)
+            except Exception as e:
+                logger.error("Failed to fetch maintenance task types: %s", e)
+        if ref_total > 0:
+            self._kafka.flush()
+            logger.info("Reference data flush complete (%d events)", ref_total)
+            self._total += ref_total
 
     def _on_message(self, data_type: str, metadata: Dict[str, Any], payload: Dict[str, Any]) -> None:
         """Handle a single MQTT message."""
@@ -408,12 +568,22 @@ def main() -> None:
             kafka_producer, args.kafka_topic_maintenance,
         ) if sub_maintenance else None
 
+        stations_prod = FiDigitrafficRoadStationsEventProducer(
+            kafka_producer, args.kafka_topic_sensors,
+        ) if sub_tms or sub_weather else None
+
+        tasks_prod = FiDigitrafficRoadMaintenanceTasksEventProducer(
+            kafka_producer, args.kafka_topic_maintenance,
+        ) if sub_maintenance else None
+
         bridge = DigitrafficRoadBridge(
             mqtt_source=mqtt_source,
             kafka_producer=kafka_producer,
             sensors_producer=sensors_prod,
             messages_producer=messages_prod,
             maintenance_producer=maintenance_prod,
+            stations_producer=stations_prod,
+            tasks_producer=tasks_prod,
             flush_interval=args.flush_interval,
         )
 

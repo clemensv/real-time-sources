@@ -1,4 +1,4 @@
-""" WeatherSensorData dataclass. """
+""" MaintenanceTaskType dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,25 +15,27 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class WeatherSensorData:
+class MaintenanceTaskType:
     """
-    Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Over 350 road weather stations measure parameters including air temperature (ILMA), road surface temperature (TIE_1), ground temperature (MAA_1), dew point (KASTEPISTE), freezing point (JÄÄTYMISPISTE_1), wind speed (KESKITUULI, MAKSIMITUULI), humidity (ILMAN_KOSTEUS), and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.
+    Maintenance task type reference from the Finnish road maintenance system operated by Fintraffic. Each task type classifies a specific road maintenance activity such as ploughing, salting, or brush clearing. Task type identifiers appear in the tasks array of MaintenanceTracking telemetry events. This reference data provides multilingual human-readable names for each task identifier and is fetched from the Digitraffic REST API at https://tie.digitraffic.fi/api/maintenance/v1/tracking/tasks. Approximately 40 task types are defined. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.
     
     Attributes:
-        station_id (int)
-        sensor_id (int)
-        value (float)
-        time (int)
+        task_id (str)
+        name_fi (str)
+        name_en (str)
+        name_sv (str)
+        data_updated_time (typing.Optional[str])
     """
     
     
-    station_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    sensor_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sensor_id"))
-    value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    time: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
+    task_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="task_id"))
+    name_fi: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name_fi"))
+    name_en: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name_en"))
+    name_sv: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name_sv"))
+    data_updated_time: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_updated_time"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'WeatherSensorData':
+    def from_serializer_dict(cls, data: dict) -> 'MaintenanceTaskType':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -106,7 +108,7 @@ class WeatherSensorData:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['WeatherSensorData']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['MaintenanceTaskType']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -143,13 +145,13 @@ class WeatherSensorData:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return WeatherSensorData.from_serializer_dict(_record)
+                return MaintenanceTaskType.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'WeatherSensorData':
+    def create_instance(cls) -> 'MaintenanceTaskType':
         """
         Creates an instance of the dataclass with test values.
         
@@ -157,8 +159,9 @@ class WeatherSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(5),
-            sensor_id=int(50),
-            value=float(60.048798334014386),
-            time=int(5)
+            task_id='cdgtqpstjmfnmoemjxwe',
+            name_fi='mmswdnxivzueryxfktoh',
+            name_en='izvreaqxlrufakxopkks',
+            name_sv='thwmdxtwxquwzsgtcnfo',
+            data_updated_time='wbpybxbifwxqdsmxxuuv'
         )

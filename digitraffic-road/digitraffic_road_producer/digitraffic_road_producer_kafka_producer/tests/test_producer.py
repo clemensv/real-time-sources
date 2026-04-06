@@ -29,6 +29,14 @@ from test_digitraffic_road_producer_data_trafficmessage import Test_TrafficMessa
 from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadMaintenanceEventProducer
 from digitraffic_road_producer_data import MaintenanceTracking
 from test_digitraffic_road_producer_data_maintenancetracking import Test_MaintenanceTracking
+from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadStationsEventProducer
+from digitraffic_road_producer_data import TmsStation
+from test_digitraffic_road_producer_data_tmsstation import Test_TmsStation
+from digitraffic_road_producer_data import WeatherStation
+from test_digitraffic_road_producer_data_weatherstation import Test_WeatherStation
+from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadMaintenanceTasksEventProducer
+from digitraffic_road_producer_data import MaintenanceTaskType
+from test_digitraffic_road_producer_data_maintenancetasktype import Test_MaintenanceTaskType
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -503,6 +511,195 @@ def test_fi_digitraffic_road_maintenance_fidigitrafficroadmaintenancemaintenance
     consumer.close()
 
 
+def test_fi_digitraffic_road_stations_fidigitrafficroadstationstmsstation(kafka_emulator):
+    """Test the FiDigitrafficRoadStationsTmsStation event from the Fi.Digitraffic.Road.Stations message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_fi_digitraffic_road_stations_fidigitrafficroadstationstmsstation',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "fi.digitraffic.road.stations.TmsStation":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = FiDigitrafficRoadStationsEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_TmsStation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_fi_digitraffic_road_stations_tms_station(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{station_id}".format(station_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_fi_digitraffic_road_stations_fidigitrafficroadstationsweatherstation(kafka_emulator):
+    """Test the FiDigitrafficRoadStationsWeatherStation event from the Fi.Digitraffic.Road.Stations message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_fi_digitraffic_road_stations_fidigitrafficroadstationsweatherstation',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "fi.digitraffic.road.stations.WeatherStation":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = FiDigitrafficRoadStationsEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_WeatherStation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_fi_digitraffic_road_stations_weather_station(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{station_id}".format(station_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_fi_digitraffic_road_maintenance_tasks_fidigitrafficroadmaintenancetasksmaintenancetasktype(kafka_emulator):
+    """Test the FiDigitrafficRoadMaintenanceTasksMaintenanceTaskType event from the Fi.Digitraffic.Road.Maintenance.Tasks message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_fi_digitraffic_road_maintenance_tasks_fidigitrafficroadmaintenancetasksmaintenancetasktype',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = FiDigitrafficRoadMaintenanceTasksEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_MaintenanceTaskType.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type(_task_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{task_id}".format(task_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
 def test_fi_digitraffic_road_sensors_cross_event_type_kafka_key(kafka_emulator):
     """Test that different event types in Fi.Digitraffic.Road.Sensors produce the same Kafka key for the same placeholder values"""
 
@@ -611,6 +808,62 @@ def test_fi_digitraffic_road_messages_cross_event_type_kafka_key(kafka_emulator)
     assert collected_keys[0] == collected_keys[1], \
         f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
     expected_key = "{situation_id}".format(situation_id=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
+    consumer.close()
+
+def test_fi_digitraffic_road_stations_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in Fi.Digitraffic.Road.Stations produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_fi_digitraffic_road_stations_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = FiDigitrafficRoadStationsEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_TmsStation.create_instance()
+    data2 = Test_WeatherStation.create_instance()
+
+    producer_instance.send_fi_digitraffic_road_stations_tms_station(_station_id = shared_key_value, data = data1)
+    producer_instance.send_fi_digitraffic_road_stations_weather_station(_station_id = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["fi.digitraffic.road.stations.TmsStation", "fi.digitraffic.road.stations.WeatherStation"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{station_id}".format(station_id=shared_key_value)
     assert collected_keys[0] == expected_key, \
         f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()
