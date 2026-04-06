@@ -61,6 +61,13 @@ real-time AIS APIs. All other investigated governments restrict AIS data to oper
 | 10 | [Denmark DMA AIS](denmark-dma-ais.md) | 2/18 | `denmark-dma-ais.md` | No public API found; system transferred to DEMA |
 | 11 | [Government AIS Programs](government-ais-programs.md) | — | `government-ais-programs.md` | Survey of 20+ countries — none offer public AIS APIs |
 
+### Africa-Focused
+
+| # | Source | Score | File | Key Value |
+|---|---|---|---|---|
+| 12 | [ASAM Africa Piracy](asam-africa-piracy.md) | 14/18 | `asam-africa-piracy.md` | NGA anti-piracy data for Gulf of Guinea, Horn of Africa |
+| 13 | [Africa AIS Coastal](africa-ais-coastal.md) | 12/18 | `africa-ais-coastal.md` | AIS coverage for Suez Canal, Cape route, Gulf of Guinea |
+
 ## Recommendations
 
 ### For immediate integration:

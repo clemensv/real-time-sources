@@ -44,6 +44,9 @@ This index covers real-time electricity generation, load, pricing, and grid data
 | 32 | [nldc-india](nldc-india.md) | Grid-India / NLDC | India | 5-15 min | Geo-restricted? | **11/18** | ☆☆☆ |
 | 33 | [bc-hydro-hq](bc-hydro-hq.md) | BC Hydro / Hydro-Québec | BC + Quebec, Canada | 5-15 min | Dashboard only | **11/18** | ☆☆☆ |
 | 34 | [coes-peru](coes-peru.md) | COES SINAC | Peru | Hourly | Portal only | **11/18** | ☆☆☆ |
+| 35 | [electricity-maps-africa](electricity-maps-africa.md) | Electricity Maps — African Zones | Pan-African (30+ countries) | Hourly | API key | **13/18** | ★☆☆ |
+| 36 | [global-solar-atlas-africa](global-solar-atlas-africa.md) | Global Solar Atlas — Africa | Pan-African | Static | No auth | **10/18** | ☆☆☆ |
+| 37 | [morocco-onee-renewable](morocco-onee-renewable.md) | Morocco ONEE/Masen Renewables | Morocco | Unknown | Unknown | **5/18** | ☆☆☆ |
 
 ## Tier 1 — Implement First
 

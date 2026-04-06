@@ -78,6 +78,12 @@ Deep-dive round 2 covered the most data-rich transit APIs outside Europe.
 | 23 | [Canadian Transit (TTC/TransLink/STM)](canadian-transit.md) | 🇨🇦 Canada | GTFS-RT | **15/18** | `canadian-transit.md` |
 | 24 | [Dubai RTA](dubai-rta.md) | 🇦🇪 UAE | REST/JSON (CKAN) | **9/18** | `dubai-rta.md` |
 
+### Africa
+
+| # | Candidate | Country | Protocol | Score | File |
+|---|-----------|---------|----------|-------|------|
+| 25 | [Nairobi Digital Matatus](nairobi-digital-matatus.md) | 🇰🇪 Kenya | GTFS (static) | **10/18** | `nairobi-digital-matatus.md` |
+
 **Recommendation**: Taiwan TDX is the standout in this tier — clean OData API, bilingual output, live train delays confirmed working without auth. Hong Kong's zero-auth KMB/MTR APIs are excellent for prototyping. ODPT Japan's JSON-LD approach is architecturally unique. TfNSW's SIRI-FM (elevator/escalator status) is a rare accessibility data source.
 
 ### Tier 6 — Aggregators, Discovery, and Meta-Sources

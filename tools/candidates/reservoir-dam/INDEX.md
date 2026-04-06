@@ -18,6 +18,8 @@ Research candidates for real-time reservoir and dam storage monitoring APIs.
 | [india-cwc](india-cwc.md) | India CWC Reservoir Bulletin | India (130+ reservoirs) | **10/18** | 3rd largest dam inventory globally; monsoon-critical |
 | [south-africa-dws](south-africa-dws.md) | South Africa DWS Dam Levels | South Africa (~250 dams) | **10/18** | Water-scarce nation; "Day Zero" context; critical indicator |
 | [turkey-dsi](turkey-dsi.md) | Turkey DSI State Hydraulic Works | Turkey (~860 dams) | **9/18** | Euphrates-Tigris geopolitics; GAP project; no API |
+| [south-africa-dws-dams](south-africa-dws-dams.md) | SA DWS Dam Levels (detailed) | South Africa (~250 dams) | **10/18** | Provincial/WMA views; Day Zero context; HTML scraping required |
+| [lake-victoria-levels](lake-victoria-levels.md) | Lake Victoria Water Levels | East Africa (KE/UG/TZ) | **11/18** | World's largest tropical lake; Nile source; satellite altimetry |
 
 ## Recommendation
 

@@ -99,6 +99,14 @@
 | Mekong River Commission | Mekong basin | 9/18 | Research complete | [mekong-river-commission.md](mekong-river-commission.md) |
 | Google Flood Hub | Global | 10/18 | Research complete | [google-flood-hub.md](google-flood-hub.md) |
 
+### Africa
+
+| Source | Country | Score | Status | File |
+|--------|---------|-------|--------|------|
+| South Africa DWS Rivers | South Africa | 9/18 | Research complete | [south-africa-dws-rivers.md](south-africa-dws-rivers.md) |
+| GloFAS Africa Flood Forecast | Pan-African | 13/18 | Research complete | [glofas-africa-flood-forecast.md](glofas-africa-flood-forecast.md) |
+| Nile Basin Water Monitoring | East/North Africa (11 countries) | 11/18 | Research complete | [nile-basin-water-monitoring.md](nile-basin-water-monitoring.md) |
+
 ## Summary
 
 ### Deep Dive Results

@@ -120,6 +120,19 @@ Research conducted: April 2026 (Deep Dive Round 2: April 2026)
 - **IMD India** *(new)*: 1.4 billion people, monsoon monitoring, cyclone RSMC. No modern API — significant access barriers.
 - **Veðurstofa Íslands** *(new)*: Volcanic monitoring. Legacy API deprecated — watch for reconstruction.
 
+### Deep Dive Round 4 — Africa
+
+| # | Source | File | Country | Score | Protocol | Auth | Highlights |
+|---|--------|------|---------|-------|----------|------|------------|
+| 33 | [African METAR Stations](africa-metar-aviation.md) | `africa-metar-aviation.md` | Pan-African | 16/18 | REST (JSON/GeoJSON) | **None** | Hundreds of African airports, verified live for FAOR/HKJK/DNMM/GMMN |
+| 34 | [Open-Meteo Africa](open-meteo-africa.md) | `open-meteo-africa.md` | Pan-African | 16/18 | REST (JSON) | **None** | Any African location, 15-min updates, soil moisture, UV index |
+| 35 | [TAHMO Africa](tahmo-africa-weather.md) | `tahmo-africa-weather.md` | Pan-African (20+ countries) | 12/18 | REST (JSON/CSV) | API Key (academic) | 600+ stations, 5-min data, Africa's densest ground network |
+| 36 | [CAP Alerts Africa](cap-alerts-africa.md) | `cap-alerts-africa.md` | Pan-African | 13/18 | ArcGIS REST / CAP XML | **None** | WMO-standard severe weather warnings from African met services |
+| 37 | [CHIRPS Africa Rainfall](chirps-africa-rainfall.md) | `chirps-africa-rainfall.md` | Pan-African | 12/18 | HTTP file download | **None** | Gold-standard satellite rainfall, 0.05° resolution, 40+ year record |
+| 38 | [ICPAC East Africa](icpac-east-africa-climate.md) | `icpac-east-africa-climate.md` | East Africa (11 countries) | 8/18 | REST (unverified) | Unknown | WMO Regional Climate Centre, seasonal forecasts |
+| 39 | [SADC Climate Services](sadc-climate-services.md) | `sadc-climate-services.md` | Southern Africa (16 countries) | 7/18 | HTTP (web portal) | None | Regional seasonal outlooks, drought monitoring |
+| 40 | [Rwanda Open Data](rwanda-open-data.md) | `rwanda-open-data.md` | Rwanda | 9/18 | REST (Next.js) | None | Africa's most digitally progressive government portal |
+
 ## Sources Considered but Not Researched in Detail
 
 | Source | Country | Reason |
@@ -164,6 +177,8 @@ Asia East:     JMA Japan (17), HKO Hong Kong (17), CWA Taiwan (17), KMA S.Korea 
 Asia Southeast: Singapore NEA (17), BMKG Indonesia (16)
 Asia South:    IMD India (11)
 Oceania:       BOM Australia (17)
+Africa:        African METAR (16), Open-Meteo Africa (16), CAP Alerts (13),
+               TAHMO (12), CHIRPS (12), Rwanda (9), ICPAC (8), SADC (7)
 Global:        ECMWF (16), Synoptic Data (16), Open-Meteo (15), Copernicus CDS (14),
                EUMETSAT (14), OGIMET (13), Netatmo (12),
                IEM Mesonet (17, US-focused)

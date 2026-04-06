@@ -11,5 +11,10 @@
 | [efas](efas.md) | EFAS (European Flood Awareness) | Europe | CDS API/WMS | Account | 14/18 |
 | [copernicus-ems](copernicus-ems.md) | Copernicus EMS Rapid Mapping | Global (EU) | Web portal | None | 14/18 |
 
+| [gdacs-africa](gdacs-africa.md) | GDACS Africa Disaster Alerts | Pan-African | REST/GeoJSON | None | 15/18 |
+| [reliefweb-africa](reliefweb-africa.md) | OCHA ReliefWeb Africa | Pan-African | REST/JSON | None | 14/18 |
+| [acled-africa-conflict](acled-africa-conflict.md) | ACLED Conflict Events (Africa) | Pan-African | REST/JSON | API Key | 14/18 |
+| [open-africa-data-platform](open-africa-data-platform.md) | open.africa Data Platform | Pan-African | REST/JSON (CKAN) | None | 11/18 |
+
 ## Summary
-Eight candidates covering global (GDACS, EM-DAT), European (Meteoalarm, EFAS, Copernicus EMS), German (NINA/BBK), US (NWS), and Pacific (PTWC) disaster alerting. NINA/BBK is a standout addition — Germany's official multi-source warning system aggregating six providers (MoWaS, DWD, KATWARN, BIWAPP, LHP, Police) into a single unauthenticated REST API with CAP-aligned JSON and 8-language support. EM-DAT adds the world's most comprehensive disaster impact database via GraphQL. Copernicus EMS provides unique satellite-derived rapid mapping but lacks a proper API.
+Twelve candidates covering global (GDACS, EM-DAT), European (Meteoalarm, EFAS, Copernicus EMS), German (NINA/BBK), US (NWS), Pacific (PTWC), and now **four African sources**. GDACS Africa returns verified GeoJSON for floods, droughts, earthquakes, and cyclones affecting African countries — the drought in Ethiopia/Kenya/Somalia and floods in Mozambique/South Africa/Zimbabwe were confirmed live. ReliefWeb provides humanitarian crisis reports for every African country. ACLED covers armed conflict and political violence across all 54 African states with precise geolocation. open.africa serves as a discovery platform for additional African open datasets.

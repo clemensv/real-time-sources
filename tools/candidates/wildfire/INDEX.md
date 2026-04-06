@@ -17,6 +17,7 @@ Research completed: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — European, Aust
 | [CWFIS Canada](cwfis-canada.md) | Canada | File download | None | Daily (seasonal) | **12/18** | ⚠️ Limited API |
 | [INPE Queimadas](inpe-queimadas-brazil.md) | Brazil/S.America | Web portal | None | Daily | **10/18** | ⚠️ No REST API |
 | [CAL FIRE](calfire-california.md) | California | Internal API | Blocked (403) | Near real-time | **8/18** | ❌ Dismissed |
+| [Africa MODIS/VIIRS Hotspots](africa-modis-viirs-hotspots.md) | Pan-African | ArcGIS REST | None | Last 48h | **15/18** | ✅ Recommended |
 
 ### Investigated But Not Catalogued
 

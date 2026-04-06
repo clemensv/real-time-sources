@@ -22,6 +22,7 @@ Research candidates for real-time tidal and sea level monitoring APIs.
 | [psmsl](psmsl.md) | Permanent Service for Mean Sea Level | Global (~1,500 stations) | **13/18** | 300+ year records; the global reference for sea level trends |
 | [bodc-uk-tide-gauges](bodc-uk-tide-gauges.md) | BODC UK Tide Gauge Network | UK (43 gauges) | **12/18** | Century-long records; near-real-time raw + QC'd processed |
 | [bom-sea-level](bom-sea-level.md) | BOM ABSLMP | Australia (14 stations) | **12/18** | Geodetic-quality; co-located met data; CC BY license |
+| [ioc-africa-tide-gauges](ioc-africa-tide-gauges.md) | IOC Africa Tide Gauges | Pan-African coastal | **14/18** | African coast coverage; tsunami warning; 1-15 min updates |
 
 ## Recommendation
 

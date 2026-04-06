@@ -13,6 +13,7 @@ Research completed: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — satellite-base
 | [CLDN Canada](cldn-canada.md) | Canada | OGC WMS | None | 10-min density | **14/18** | ✅ Viable |
 | [Earth Networks ENTLN](earth-networks-entln.md) | Global | REST (Azure APIM) | Commercial | Real-time | **13/18** | ❌ Dismissed (commercial) |
 | [DWD Lightning](dwd-lightning.md) | Germany/Europe | File download | None | ~10 min files | **13/18** | ✅ Viable |
+| [Blitzortung Africa](blitzortung-africa.md) | Pan-African | WebSocket | Community | Real-time | **11/18** | ⚠️ Limited coverage |
 | [WWLLN](wwlln.md) | Global | Academic | Agreement required | Delayed | **8/18** | ❌ Dismissed (restricted) |
 
 ### Investigated But Not Catalogued (No Public Data)

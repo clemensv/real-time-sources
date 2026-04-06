@@ -35,6 +35,14 @@ Scouted: 2026-04-06
 | 25 | [Japan SORAMAME](japan-soramame.md) | Japan | ❌ Web only | N/A | Hourly | 7/18 | 🔴 LOW |
 | 26 | [India CPCB](india-cpcb.md) | India | ❌ Web only | N/A | 15-min | 7/18 | 🔴 LOW |
 
+### Africa-Focused Sources
+
+| # | Source | Region | API? | Auth | Freshness | Total Score | Priority |
+|---|--------|--------|------|------|-----------|-------------|----------|
+| A1 | [OpenAQ Africa](openaq-africa.md) | Pan-African | ✅ REST v3 | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
+| A2 | [WAQI Africa](waqi-africa-stations.md) | Pan-African | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
+| A3 | [AirQo Uganda](airqo-uganda.md) | Uganda (Kampala) | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
+
 ### Tier 2 — Satellite & Modelled Data
 
 | # | Source | Region | API? | Auth | Freshness | Total Score | Priority |

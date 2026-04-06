@@ -29,6 +29,13 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | 15 | **BGS UK** | [bgs-uk.md](bgs-uk.md) | **10/18** | UK | ⏭️ **Skip** — RSS only; very low seismicity; UK in EMSC already |
 | 16 | **Geoscience Australia** | [geoscience-australia.md](geoscience-australia.md) | **9/18** | Australia | ⏭️ **Skip** — No public API; low seismicity; data in USGS/EMSC |
 
+### Round 3 — Africa
+
+| # | Candidate | File | Score | Coverage | Verdict |
+|---|-----------|------|-------|----------|---------|
+| 17 | **East Africa Rift (EMSC)** | [east-africa-rift-seismicity.md](east-africa-rift-seismicity.md) | **16/18** | East Africa / S. Africa | ✅ **Build** — FDSN standard, EMSC+SASN data, verified M3.6–4.5 events |
+| 18 | **USGS Africa Bounding Box** | [usgs-africa-earthquakes.md](usgs-africa-earthquakes.md) | **17/18** | Pan-African | ✅ **Build** — Same as existing USGS bridge with Africa bounding box |
+
 ## Candidates Not Reachable / Dismissed
 
 | Candidate | Reason |

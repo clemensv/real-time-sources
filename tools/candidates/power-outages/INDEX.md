@@ -7,6 +7,8 @@
 | [uk-power-networks](uk-power-networks.md) | UK Power Networks | UK (SE/E/London) | Web/JSON | None | 12/18 |
 | [poweroutage-us](poweroutage-us.md) | PowerOutage.us | US | Web (scraping) | N/A | 11/18 |
 | [eskom-loadshedding](eskom-loadshedding.md) | Eskom Direct Loadshedding | South Africa | HTTP/plain text | None | 10/18 |
+| [eskom-loadshedding-api](eskom-loadshedding-api.md) | Eskom Loadshedding Status API (raw) | South Africa | REST/plain text | None | 11/18 |
+| [eskomsepush-africa](eskomsepush-africa.md) | EskomSePush (Africa context) | South Africa | REST/JSON | API Key | 14/18 |
 
 ## Summary
-Five candidates covering South African loadshedding (EskomSePush + Eskom Direct), Québec (Hydro-Québec), UK regional (UK Power Networks), and US-wide aggregation (PowerOutage.us). EskomSePush is the domain's first confirmed production REST API — returning proper JSON with area-level loadshedding schedules, though it requires a paid API key. The complementary free Eskom endpoint returns the national stage as a single integer. Hydro-Québec serves 4.4 million customers through an Angular SPA with structured data behind JavaScript. The power outage domain remains challenging — utilities treat outage data as operational rather than developer-facing, but South Africa's loadshedding crisis has forced API innovation.
+Seven candidates covering South African loadshedding (EskomSePush + Eskom Direct + raw API), Québec (Hydro-Québec), UK regional (UK Power Networks), and US-wide aggregation (PowerOutage.us). The Eskom raw API provides the most upstream signal — a single integer representing the current loadshedding stage, polled in real-time with no authentication. EskomSePush adds area-specific schedules and richer metadata. South Africa's loadshedding crisis has produced Africa's most innovative power outage APIs, making it a standout for the continent.
