@@ -47,24 +47,82 @@ These are high-value sources with proprietary REST APIs that provide data not av
 
 **Recommendation**: TfL is the easiest to start with — works without authentication, returns clean JSON, and covers a massive multimodal network. DB Timetables is the only source for German rail real-time. MTA's bus SIRI feeds are notable as a US-based SIRI deployment.
 
+### Tier 4 — European Expansion (Nordic + Central Europe)
+
+Deep-dive round 1 added coverage across Scandinavia, Central Europe, and the Alpine region.
+
+| # | Candidate | Country | Protocol | Score | File |
+|---|-----------|---------|----------|-------|------|
+| 10 | [Entur Norway](entur-norway.md) | 🇳🇴 Norway | SIRI 2.0 + GTFS-RT + GraphQL | **18/18** | `entur-norway.md` |
+| 11 | [Digitransit Finland](digitransit-finland.md) | 🇫🇮 Finland | OTP2 GraphQL + GTFS-RT | **16/18** | `digitransit-finland.md` |
+| 12 | [SBB / Open Transport CH](sbb-opentransport.md) | 🇨🇭 Switzerland | REST/JSON + SIRI-SX + OJP | **15/18** | `sbb-opentransport.md` |
+| 13 | [BKK Budapest](bkk-budapest.md) | 🇭🇺 Hungary | GTFS-RT + REST/JSON (Futár) | **14/18** | `bkk-budapest.md` |
+| 14 | [Rejseplanen Denmark](rejseplanen-denmark.md) | 🇩🇰 Denmark | REST/JSON (HAFAS) | **11/18** | `rejseplanen-denmark.md` |
+| 15 | [HSL MQTT Helsinki](hsl-mqtt.md) | 🇫🇮 Finland | MQTT 3.1.1 (push, ~1 Hz) | **18/18** | `hsl-mqtt.md` |
+
+**Recommendation**: Entur is a standout — 18/18, no auth needed, native SIRI with pub/sub, full national coverage. It pairs perfectly with Trafiklab for a Nordic SIRI bridge. HSL's MQTT stream is a dream for an MQTT-to-CloudEvents bridge — high-frequency push telemetry with zero authentication friction.
+
+### Tier 5 — Asia-Pacific and Americas (High-Value Global Sources)
+
+Deep-dive round 2 covered the most data-rich transit APIs outside Europe.
+
+| # | Candidate | Country | Protocol | Score | File |
+|---|-----------|---------|----------|-------|------|
+| 16 | [Taiwan TDX](taiwan-tdx.md) | 🇹🇼 Taiwan | REST/JSON (OData) | **16/18** | `taiwan-tdx.md` |
+| 17 | [Hong Kong Transit](hk-transit.md) | 🇭🇰 Hong Kong | REST/JSON (KMB + MTR) | **14/18** | `hk-transit.md` |
+| 18 | [Transport for NSW](tfnsw-australia.md) | 🇦🇺 Australia | GTFS-RT + REST + SIRI-FM | **16/18** | `tfnsw-australia.md` |
+| 19 | [Singapore LTA DataMall](singapore-lta.md) | 🇸🇬 Singapore | REST/JSON (OData) | **14/18** | `singapore-lta.md` |
+| 20 | [Seoul TOPIS](seoul-topis.md) | 🇰🇷 South Korea | REST/XML + JSON | **14/18** | `seoul-topis.md` |
+| 21 | [ODPT Japan](odpt-japan.md) | 🇯🇵 Japan | REST/JSON-LD (Linked Data) | **16/18** | `odpt-japan.md` |
+| 22 | [SPTrans São Paulo](sptrans-saopaulo.md) | 🇧🇷 Brazil | REST/JSON (session auth) | **11/18** | `sptrans-saopaulo.md` |
+| 23 | [Canadian Transit (TTC/TransLink/STM)](canadian-transit.md) | 🇨🇦 Canada | GTFS-RT | **15/18** | `canadian-transit.md` |
+| 24 | [Dubai RTA](dubai-rta.md) | 🇦🇪 UAE | REST/JSON (CKAN) | **9/18** | `dubai-rta.md` |
+
+**Recommendation**: Taiwan TDX is the standout in this tier — clean OData API, bilingual output, live train delays confirmed working without auth. Hong Kong's zero-auth KMB/MTR APIs are excellent for prototyping. ODPT Japan's JSON-LD approach is architecturally unique. TfNSW's SIRI-FM (elevator/escalator status) is a rare accessibility data source.
+
+### Tier 6 — Aggregators, Discovery, and Meta-Sources
+
+Deep-dive round 3 covered platforms that index, aggregate, or abstract over individual feeds.
+
+| # | Candidate | Country | Protocol | Score | File |
+|---|-----------|---------|----------|-------|------|
+| 25 | [Transitland](transitland.md) | 🌍 Global | REST + GraphQL | **15/18** | `transitland.md` |
+| 26 | [Navitia](navitia.md) | 🌍 Global (France+) | REST/JSON (HAL hypermedia) | **14/18** | `navitia.md` |
+| 27 | [MobilityData Catalog](mobilitydata-catalog.md) | 🌍 Global | CSV catalog + API | **15/18** | `mobilitydata-catalog.md` |
+
+**Recommendation**: MobilityData's catalog and Transitland's Atlas are essential discovery tools — they tell us where every GTFS-RT feed is worldwide. Use them as configuration sources for automated GTFS-RT bridge deployment. Navitia's open-source engine and HAL hypermedia API are architecturally interesting.
+
 ## Priority Order for Implementation
 
-1. **Generic SIRI Bridge** — using Trafiklab as dev target, then deploy against UK BODS, France PAN, MTA Bus
+1. **Generic SIRI Bridge** — using Trafiklab as dev target, then deploy against UK BODS, France PAN, Entur Norway, MTA Bus, Swiss SIRI-SX
 2. **DARWIN STOMP Bridge** — push-based GB rail (pairs with BODS for full UK coverage)
-3. **TfL Unified API Bridge** — low barrier, high data value, clean JSON
-4. **MBTA SSE Bridge** — demonstrates SSE-to-CloudEvents pattern
-5. **DB Timetables Bridge** — German rail, unique XML format
-6. **NS API Bridge** — Dutch rail (lower priority due to licensing)
+3. **HSL MQTT Bridge** — MQTT-to-CloudEvents: ~1 Hz vehicle telemetry, zero-auth, push-native 🆕
+4. **TfL Unified API Bridge** — low barrier, high data value, clean JSON
+5. **MBTA SSE Bridge** — demonstrates SSE-to-CloudEvents pattern
+6. **Entur Pub/Sub Bridge** — SIRI with webhook-style push delivery, national Norwegian coverage 🆕
+7. **Taiwan TDX Bridge** — OData REST, bilingual, excellent real-time — best Asian transit API 🆕
+8. **DB Timetables Bridge** — German rail, unique XML format
+9. **NS API Bridge** — Dutch rail (lower priority due to licensing)
+10. **Hong Kong Transit Bridge** — zero-auth, trilingual, KMB + MTR combined 🆕
+11. **GTFS-RT Bridge Curated Feeds** — use MobilityData/Transitland catalogs to auto-discover feeds for BKK Budapest, Canadian cities, TfNSW, and 800+ other agencies 🆕
 
 ## Candidates Not Pursued (Yet)
 
 | Candidate | Country | Reason |
 |-----------|---------|--------|
-| Japan train APIs (ODPT) | 🇯🇵 Japan | Tokyo Open Data Challenge had APIs but current public access is unclear; registration appears closed or Japan-only |
-| Indian Railways | 🇮🇳 India | No verified open real-time API found; third-party scrapers exist but no official open feed |
-| Oxyfi Train Positions | 🇸🇪 Sweden | WebSocket + NMEA GPS — interesting but very niche (subset of Swedish trains only) |
+| Indian Railways (IRCTC) | 🇮🇳 India | No verified open real-time API; third-party scrapers exist but no official open feed |
+| Oxyfi Train Positions | 🇸🇪 Sweden | WebSocket + NMEA GPS — interesting but niche (subset of Swedish trains only) |
 | NDOV Loket (NL) | 🇳🇱 Netherlands | Raw KV6/KV17 feeds — complex Dutch-specific protocols, lower priority |
-| Swiss Transport API | 🇨🇭 Switzerland | Unofficial wrapper around search.ch; limited real-time; official data on opendata.swiss as GTFS |
+| ÖBB (Austria) | 🇦🇹 Austria | ScottyMobile web endpoint works but no documented public API; HAFAS-based like DB |
+| RENFE / TMB / EMT Madrid | 🇪🇸 Spain | Fragmented — no single national API; individual city APIs exist but poorly documented |
+| Trenitalia / ATAC Roma | 🇮🇹 Italy | No open real-time API found; Trenitalia has a mobile API but undocumented/unofficial |
+| PKP / ZTM (Poland) | 🇵🇱 Poland | ZTM Warsaw has GTFS-RT; PKP national rail has limited open data; covered by GTFS-RT bridge |
+| DPP Prague | 🇨🇿 Czech Republic | GTFS-RT available through Golemio (Prague data platform); covered by GTFS-RT bridge |
+| STIB/MIVB (Brussels) | 🇧🇪 Belgium | GTFS-RT available; De Lijn has open data; covered by GTFS-RT bridge |
+| Mexico City Metrobús | 🇲🇽 Mexico | GTFS-RT published but feed quality is variable |
+| Dubai RTA | 🇦🇪 UAE | Documented but currently more static than real-time; platform endpoint was unreachable |
+| OneBusAway instances | 🌍 Various | BKK Budapest and several US cities use OBA; covered by GTFS-RT bridge |
+| OpenTripPlanner instances | 🌍 Various | Entur and Digitransit are the premier OTP2 deployments; covered in their own candidates |
 
 ## See Also — Social / News / Wiki Feeds
 
