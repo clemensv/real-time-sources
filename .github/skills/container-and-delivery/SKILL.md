@@ -1,78 +1,38 @@
 ---
 name: container-and-delivery
-description: Use this skill when packaging or finishing a source for merge in this repo. Covers Dockerfile patterns, CONTAINER.md authoring, Azure Container Instance templates, optional Fabric and KQL assets, EVENTS.md generation, root README updates, and repo-level validation before commit or PR.
-argument-hint: Describe the source, its runtime package, required environment variables, deployment target, and whether it needs Azure ACI, Fabric, or KQL artifacts.
-user-invocable: true
+description: "Use when packaging or finishing a source for merge in this repo. Covers Dockerfile patterns, CONTAINER.md authoring, Azure Container Instance templates, optional Fabric or KQL assets, EVENTS.md generation, and repo-level delivery checks."
+argument-hint: "Describe the source, its runtime package, required environment variables, deployment target, and whether it needs Azure ACI, Fabric, or KQL artifacts."
 ---
 
-In this repo, a source is not done when the Python bridge runs locally. It is done when it is packaged, documented, and testable like the rest of the catalog.
+# Container And Delivery
 
-Minimum delivery set for a mergeable source:
+## When to Use
 
-- `Dockerfile`
-- `CONTAINER.md`
-- `EVENTS.md`
-- source-local tests
-- root `README.md` entry if the source is new
+- Package a new source for Docker-based use.
+- Bring a source up to repo merge quality.
+- Add Azure Container Instance, Fabric, or KQL delivery assets.
 
-Common additional delivery assets:
+## Inputs
 
-- `azure-template.json`
-- `generate-template.ps1`
-- `kql/<source>.kql`
-- `fabric/README.md`
+- source name and runtime package
+- required environment variables and credentials model
+- target deployment path, including Docker, ACI, Event Hubs, Fabric, or KQL
 
-Dockerfile guidance:
+## Procedure
 
-- Follow the existing source folders rather than inventing a new image pattern.
-- Use a slim Python base unless the source needs something else.
-- Set OCI labels for source, title, description, documentation, and license.
-- Point the documentation label at the source `CONTAINER.md` file in the repo.
-- Ensure the container starts the bridge directly and relies on environment variables for configuration.
+1. Add or update the Dockerfile using the delivery patterns in [delivery checklist](references/delivery-checklist.md).
+2. Write or update `CONTAINER.md` so the deployment contract matches the runtime behavior.
+3. Add `azure-template.json`, `generate-template.ps1`, `kql/`, or `fabric/` assets when the source needs them.
+4. Refresh `EVENTS.md` from the xreg manifest.
+5. Update the source `README.md` and add the source to the root catalog when it is new.
+6. Run the delivery validation checklist before commit or PR.
 
-`CONTAINER.md` should cover:
+## Outputs
 
-- What the upstream source is and why it matters.
-- What the bridge emits.
-- That events are CloudEvents and where `EVENTS.md` lives.
-- Required and optional environment variables.
-- `docker pull` and `docker run` examples.
-- Kafka broker usage.
-- Azure Event Hubs and Fabric Event Streams usage through connection strings.
-- Azure Container Instance deployment, usually with `az deployment group create --template-file azure-template.json`.
-- Database and analytics follow-on guidance when relevant, often pointing at `DATABASE.md`, `kql/`, or `fabric/` assets.
+- a containerized source with deployment docs
+- updated delivery assets
+- documentation and validation aligned with repo expectations
 
-Azure and Fabric conventions:
+## References
 
-- If the source should be deployable to Azure Container Instances, add or update `azure-template.json`.
-- If the source has richer Fabric guidance, mirror the pattern used by `kystverket-ais/fabric/README.md`.
-- If the source feeds Eventhouse or ADX, add KQL assets under `kql/`.
-
-Documentation workflow:
-
-1. Keep `README.md` focused on the source, local usage, configuration, and behavior.
-2. Keep `CONTAINER.md` focused on packaging and deployment.
-3. Generate `EVENTS.md` from xreg instead of hand-writing schema docs.
-4. If the source is new, add it to the root catalog in `README.md`.
-
-Validation before commit:
-
-- Run the source-local test suite.
-- Build the Docker image.
-- If the source should participate in the shared Docker tests, make sure it works with the plain Kafka connection-string flow used by `tests/docker_e2e/test_docker_kafka_flow.py`.
-- Ensure no secrets are committed. Credentials belong in env vars or deployment parameters only.
-- Make sure generated producer code, runtime wrapper code, and docs all describe the same subject and key behavior.
-
-Good delivery references:
-
-- Azure template plus container docs: `chmi-hydro`, `hubeau-hydrometrie`, `pegelonline`, `uk-ea-flood-monitoring`
-- Fabric-focused example: `kystverket-ais/fabric/README.md`
-- Events doc generation script: `tools/generate-events-md.ps1`
-- Repo-wide container build behavior: `.github/workflows/build_containers.yml`
-
-Avoid these mistakes:
-
-- Shipping a new source without container docs.
-- Leaving `EVENTS.md` stale after changing xreg.
-- Adding a Dockerfile that does not match the env var contract described in the docs.
-- Forgetting to expose the source through the root `README.md` catalog when it is a new addition.
+- [Delivery checklist](references/delivery-checklist.md)
