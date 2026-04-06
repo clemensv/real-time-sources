@@ -120,6 +120,10 @@ def bafu_image():
 def autobahn_image():
     return build_image('autobahn')
 
+@pytest.fixture(scope='module')
+def digitraffic_road_image():
+    return build_image('digitraffic-road')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -350,6 +354,28 @@ class TestAutobahnDockerFlow:
                 'AUTOBAHN_POLL_INTERVAL': '5',
                 'AUTOBAHN_ROADS': 'A1',
                 'AUTOBAHN_RESOURCES': 'roadworks,closure,parking_lorry,electric_charging_station',
+            },
+            min_messages=3,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Digitraffic Road (Finland — TMS and road weather sensors)
+# ---------------------------------------------------------------------------
+
+class TestDigitrafficRoadDockerFlow:
+    TOPIC = 'test-digitraffic-road'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, digitraffic_road_image):
+        _run_kafka_flow_test(
+            kafka, digitraffic_road_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=[
+                'TmsSensorData',
+                'WeatherSensorData',
+            ],
+            extra_env={
+                'KAFKA_TOPIC': self.TOPIC,
             },
             min_messages=3,
         )

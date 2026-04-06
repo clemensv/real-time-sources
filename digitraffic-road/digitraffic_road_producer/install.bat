@@ -1,0 +1,2 @@
+pip install .\digitraffic_road_producer_data
+pip install .\digitraffic_road_producer_kafka_producer

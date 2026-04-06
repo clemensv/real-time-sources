@@ -1,0 +1,169 @@
+{
+  "endpoints": {
+    "fi.digitraffic.road.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "digitraffic-road",
+          "key": "{station_id}/{sensor_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.digitraffic.road.sensors"
+      ]
+    }
+  },
+  "messagegroups": {
+    "fi.digitraffic.road.sensors": {
+      "messages": {
+        "fi.digitraffic.road.sensors.TmsSensorData": {
+          "name": "TmsSensorData",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.digitraffic.road.sensors.TmsSensorData"
+            },
+            "source": {
+              "value": "wss://tie.digitraffic.fi/mqtt"
+            },
+            "subject": {
+              "value": "{station_id}/{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.road.sensors.jstruct/schemas/fi.digitraffic.road.sensors.TmsSensorData"
+        },
+        "fi.digitraffic.road.sensors.WeatherSensorData": {
+          "name": "WeatherSensorData",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.digitraffic.road.sensors.WeatherSensorData"
+            },
+            "source": {
+              "value": "wss://tie.digitraffic.fi/mqtt"
+            },
+            "subject": {
+              "value": "{station_id}/{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.road.sensors.jstruct/schemas/fi.digitraffic.road.sensors.WeatherSensorData"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "fi.digitraffic.road.sensors.jstruct": {
+      "schemas": {
+        "fi.digitraffic.road.sensors.TmsSensorData": {
+          "name": "TmsSensorData",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/sensors/TmsSensorData",
+                "type": "object",
+                "name": "TmsSensorData",
+                "description": "Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.",
+                "required": [
+                  "station_id",
+                  "sensor_id",
+                  "value",
+                  "time"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "int32",
+                    "description": "TMS station numeric identifier as assigned by Fintraffic. There are over 500 TMS stations across the Finnish road network. Example: 23001."
+                  },
+                  "sensor_id": {
+                    "type": "int32",
+                    "description": "Computational sensor identifier within the TMS station. Each sensor measures a specific traffic parameter in a given direction and time window. Common sensors include OHITUKSET (vehicle passings, unit kpl/h), KESKINOPEUS (average speed, unit km/h), and LIUKUVA_NOPEUS (rolling speed per lane, unit km/h)."
+                  },
+                  "value": {
+                    "type": "double",
+                    "description": "Measured value in the sensor's native unit. Units vary by sensor: kpl/h for vehicle passings, km/h for speed measurements, and dimensionless ratios for traffic situation indicators."
+                  },
+                  "time": {
+                    "type": "int32",
+                    "description": "Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken or last updated."
+                  },
+                  "start": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Start of the fixed time window for windowed aggregate sensors (e.g. 5-minute or 60-minute fixed windows), as Unix epoch seconds (UTC). Present for fixed-window sensors such as OHITUKSET_5MIN_KIINTEA and KESKINOPEUS_60MIN_KIINTEA. Null or absent for rolling-window and per-lane sensors."
+                  },
+                  "end": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "End of the fixed time window for windowed aggregate sensors, as Unix epoch seconds (UTC). Present for fixed-window sensors. Null or absent for rolling-window and per-lane sensors."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.sensors.WeatherSensorData": {
+          "name": "WeatherSensorData",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/sensors/WeatherSensorData",
+                "type": "object",
+                "name": "WeatherSensorData",
+                "description": "Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Road weather stations measure parameters such as air temperature, road surface temperature, wind speed, humidity, dew point, and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.",
+                "required": [
+                  "station_id",
+                  "sensor_id",
+                  "value",
+                  "time"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "int32",
+                    "description": "Road weather station numeric identifier as assigned by Fintraffic. There are over 350 road weather stations on the Finnish road network. Example: 1012."
+                  },
+                  "sensor_id": {
+                    "type": "int32",
+                    "description": "Sensor identifier within the road weather station. Each sensor measures a specific weather or road surface parameter. Common sensors include ILMA (air temperature, unit °C), TIE_1 (road surface temperature, unit °C), KESKITUULI (average wind speed, unit m/s), KASTEPISTE (dew point, unit °C), and ILMAN_KOSTEUS (relative humidity, unit %)."
+                  },
+                  "value": {
+                    "type": "double",
+                    "description": "Measured value in the sensor's native unit. Units vary by sensor: °C for temperatures, m/s for wind speed, % for relative humidity, mm for precipitation."
+                  },
+                  "time": {
+                    "type": "int32",
+                    "description": "Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
