@@ -1,4 +1,4 @@
-""" TmsSensorData dataclass. """
+""" MaintenanceTracking dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,29 +15,31 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class TmsSensorData:
+class MaintenanceTracking:
     """
-    Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows. Over 500 stations across the Finnish road network report data every minute. See https://www.digitraffic.fi/en/road-traffic/ and the TMS documentation at https://www.digitraffic.fi/en/road-traffic/lam/ for full sensor descriptions.
+    Road maintenance vehicle tracking update from the Finnish national road network operated by Fintraffic. Each message represents a position and task report from a maintenance vehicle, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic maintenance-v2/routes/{domain}. Data originates from the Finnish Transport Infrastructure Agency's Harja system for state roads and from municipal systems for other domains. Updates arrive approximately every minute. A new tracking event is created when the vehicle's task changes, the gap between consecutive positions exceeds 5 minutes, or the calculated speed exceeds 140 km/h. See https://www.digitraffic.fi/en/road-traffic/ for the full API documentation and task type taxonomy at /api/maintenance/v1/tracking/tasks.
     
     Attributes:
-        station_id (int)
-        sensor_id (int)
-        value (float)
+        domain (str)
         time (int)
-        start (typing.Optional[int])
-        end (typing.Optional[int])
+        source (typing.Optional[str])
+        tasks (typing.List[str])
+        x (float)
+        y (float)
+        direction (typing.Optional[float])
     """
     
     
-    station_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    sensor_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sensor_id"))
-    value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
+    domain: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="domain"))
     time: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
-    start: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start"))
-    end: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end"))
+    source: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source"))
+    tasks: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tasks"))
+    x: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="x"))
+    y: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="y"))
+    direction: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="direction"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'TmsSensorData':
+    def from_serializer_dict(cls, data: dict) -> 'MaintenanceTracking':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -110,7 +112,7 @@ class TmsSensorData:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['TmsSensorData']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['MaintenanceTracking']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -147,13 +149,13 @@ class TmsSensorData:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return TmsSensorData.from_serializer_dict(_record)
+                return MaintenanceTracking.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'TmsSensorData':
+    def create_instance(cls) -> 'MaintenanceTracking':
         """
         Creates an instance of the dataclass with test values.
         
@@ -161,10 +163,11 @@ class TmsSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(85),
-            sensor_id=int(68),
-            value=float(30.360440536366383),
-            time=int(27),
-            start=int(45),
-            end=int(21)
+            domain='bwtapldokovlatfqhzha',
+            time=int(77),
+            source='ihmutoxfkjhptsskspbc',
+            tasks=['uewvmahztupupenqqmyv', 'lqpukoteypafjhuiqivn'],
+            x=float(33.57340532392892),
+            y=float(19.31559529805018),
+            direction=float(61.36299862820105)
         )

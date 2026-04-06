@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "digitraffic-road"
 version = "0.1.0"
-description = "Finnish road traffic sensor data bridge (TMS and weather) via Digitraffic MQTT"
+description = "Finnish road traffic data bridge (sensors, traffic messages, maintenance tracking) via Digitraffic MQTT"
 authors = ["Clemens Vasters <clemensv@microsoft.com>"]
 packages = [{ include = "digitraffic_road" }]
 

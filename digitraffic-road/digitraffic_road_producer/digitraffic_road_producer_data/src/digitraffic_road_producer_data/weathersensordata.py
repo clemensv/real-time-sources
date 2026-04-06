@@ -17,7 +17,7 @@ import json
 @dataclass
 class WeatherSensorData:
     """
-    Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Road weather stations measure parameters such as air temperature, road surface temperature, wind speed, humidity, dew point, and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.
+    Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Over 350 road weather stations measure parameters including air temperature (ILMA), road surface temperature (TIE_1), ground temperature (MAA_1), dew point (KASTEPISTE), freezing point (JÄÄTYMISPISTE_1), wind speed (KESKITUULI, MAKSIMITUULI), humidity (ILMAN_KOSTEUS), and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.
     
     Attributes:
         station_id (int)
@@ -158,7 +158,7 @@ class WeatherSensorData:
         """
         return cls(
             station_id=int(61),
-            sensor_id=int(44),
-            value=float(95.12617953096377),
-            time=int(20)
+            sensor_id=int(28),
+            value=float(6.07450504321152),
+            time=int(96)
         )

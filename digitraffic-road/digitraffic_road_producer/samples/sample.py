@@ -33,11 +33,15 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadSensorsEventProducer
+from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadMessagesEventProducer
+from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadMaintenanceEventProducer
 
 # imports for the data classes for each event
 
 from digitraffic_road_producer_data.tmssensordata import TmsSensorData
 from digitraffic_road_producer_data.weathersensordata import WeatherSensorData
+from digitraffic_road_producer_data.trafficmessage import TrafficMessage
+from digitraffic_road_producer_data.maintenancetracking import MaintenanceTracking
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,6 +76,62 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'fi.digitraffic.road.sensors.WeatherSensorData' event to Kafka topic.
     await fi_digitraffic_road_sensors_event_producer.send_fi_digitraffic_road_sensors_weather_sensor_data(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _weather_sensor_data)
     print(f"Sent 'fi.digitraffic.road.sensors.WeatherSensorData' event: {_weather_sensor_data.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_digitraffic_road_messages_event_producer = FiDigitrafficRoadMessagesEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_digitraffic_road_messages_event_producer = FiDigitrafficRoadMessagesEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.digitraffic.road.messages.TrafficAnnouncement ----
+    # TODO: Supply event data for the fi.digitraffic.road.messages.TrafficAnnouncement event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.messages.TrafficAnnouncement' event to Kafka topic.
+    await fi_digitraffic_road_messages_event_producer.send_fi_digitraffic_road_messages_traffic_announcement(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.messages.TrafficAnnouncement' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.messages.RoadWork ----
+    # TODO: Supply event data for the fi.digitraffic.road.messages.RoadWork event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.messages.RoadWork' event to Kafka topic.
+    await fi_digitraffic_road_messages_event_producer.send_fi_digitraffic_road_messages_road_work(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.messages.RoadWork' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.messages.WeightRestriction ----
+    # TODO: Supply event data for the fi.digitraffic.road.messages.WeightRestriction event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.messages.WeightRestriction' event to Kafka topic.
+    await fi_digitraffic_road_messages_event_producer.send_fi_digitraffic_road_messages_weight_restriction(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.messages.WeightRestriction' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.messages.ExemptedTransport ----
+    # TODO: Supply event data for the fi.digitraffic.road.messages.ExemptedTransport event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.messages.ExemptedTransport' event to Kafka topic.
+    await fi_digitraffic_road_messages_event_producer.send_fi_digitraffic_road_messages_exempted_transport(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.messages.ExemptedTransport' event: {_traffic_message.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_digitraffic_road_maintenance_event_producer = FiDigitrafficRoadMaintenanceEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_digitraffic_road_maintenance_event_producer = FiDigitrafficRoadMaintenanceEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.digitraffic.road.maintenance.MaintenanceTracking ----
+    # TODO: Supply event data for the fi.digitraffic.road.maintenance.MaintenanceTracking event
+    _maintenance_tracking = MaintenanceTracking()
+
+    # sends the 'fi.digitraffic.road.maintenance.MaintenanceTracking' event to Kafka topic.
+    await fi_digitraffic_road_maintenance_event_producer.send_fi_digitraffic_road_maintenance_maintenance_tracking(_domain = 'TODO: replace me', data = _maintenance_tracking)
+    print(f"Sent 'fi.digitraffic.road.maintenance.MaintenanceTracking' event: {_maintenance_tracking.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

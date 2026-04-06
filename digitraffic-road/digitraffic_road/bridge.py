@@ -1,6 +1,7 @@
-"""Digitraffic Road bridge — Finnish road TMS and weather sensor data to Kafka as CloudEvents."""
+"""Digitraffic Road bridge — Finnish road traffic data to Kafka as CloudEvents."""
 
 import argparse
+import json
 import logging
 import os
 import sys
@@ -8,8 +9,17 @@ import time
 from typing import Any, Dict, Optional, Set
 
 from confluent_kafka import Producer
-from digitraffic_road_producer_data import TmsSensorData, WeatherSensorData
-from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadSensorsEventProducer
+from digitraffic_road_producer_data import (
+    MaintenanceTracking,
+    TmsSensorData,
+    TrafficMessage,
+    WeatherSensorData,
+)
+from digitraffic_road_producer_kafka_producer.producer import (
+    FiDigitrafficRoadMaintenanceEventProducer,
+    FiDigitrafficRoadMessagesEventProducer,
+    FiDigitrafficRoadSensorsEventProducer,
+)
 
 from digitraffic_road.mqtt_source import MQTTSource
 
@@ -19,6 +29,22 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+# Maps MQTT situation type values to producer send methods
+_SITUATION_TYPE_SENDERS = {
+    "TRAFFIC_ANNOUNCEMENT": "send_fi_digitraffic_road_messages_traffic_announcement",
+    "ROAD_WORK": "send_fi_digitraffic_road_messages_road_work",
+    "WEIGHT_RESTRICTION": "send_fi_digitraffic_road_messages_weight_restriction",
+    "EXEMPTED_TRANSPORT": "send_fi_digitraffic_road_messages_exempted_transport",
+}
+
+# Maps MQTT situation type to human-readable situation_type field values
+_SITUATION_TYPE_LABELS = {
+    "TRAFFIC_ANNOUNCEMENT": "traffic announcement",
+    "ROAD_WORK": "road work",
+    "WEIGHT_RESTRICTION": "weight restriction",
+    "EXEMPTED_TRANSPORT": "exempted transport",
+}
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -46,24 +72,20 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
     return config_dict
 
 
-def _emit_event(
+def _emit_sensor_event(
     event_producer: FiDigitrafficRoadSensorsEventProducer,
     data_type: str,
     station_id: int,
     sensor_id: int,
     payload: Dict[str, Any],
 ) -> bool:
-    """Send a decoded MQTT sensor message through the typed Kafka producer.
-
-    Returns True if emitted, False if the data type is unknown.
-    """
+    """Send a sensor message through the typed Kafka producer. Returns True on success."""
     enriched = dict(payload)
     enriched["station_id"] = station_id
     enriched["sensor_id"] = sensor_id
 
     try:
         if data_type == "tms":
-            # TMS payloads may have optional start/end for windowed sensors
             if "start" not in enriched:
                 enriched["start"] = None
             if "end" not in enriched:
@@ -86,13 +108,99 @@ def _emit_event(
             )
             return True
         else:
-            logger.debug("Skipping unknown data type: %s", data_type)
             return False
     except Exception as e:
-        logger.warning(
-            "Failed to emit %s for station %d sensor %d: %s",
-            data_type, station_id, sensor_id, e,
+        logger.warning("Failed to emit %s for station %d sensor %d: %s", data_type, station_id, sensor_id, e)
+        return False
+
+
+def _flatten_traffic_message(situation_type_mqtt: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Flatten a Digitraffic traffic-message GeoJSON Feature into the TrafficMessage schema."""
+    props = payload.get("properties", payload)
+    announcement = {}
+    announcements = props.get("announcements", [])
+    if announcements:
+        announcement = announcements[0]
+
+    situation_type_label = _SITUATION_TYPE_LABELS.get(situation_type_mqtt, situation_type_mqtt)
+
+    td = announcement.get("timeAndDuration", {})
+    location = announcement.get("location", {})
+    contact = props.get("contact", {})
+    geometry = payload.get("geometry", {})
+
+    return {
+        "situation_id": props.get("situationId", ""),
+        "situation_type": situation_type_label,
+        "traffic_announcement_type": props.get("trafficAnnouncementType"),
+        "version": props.get("version", 0),
+        "release_time": props.get("releaseTime", ""),
+        "version_time": props.get("versionTime", ""),
+        "title": announcement.get("title"),
+        "language": announcement.get("language"),
+        "sender": announcement.get("sender"),
+        "location_description": location.get("description"),
+        "start_time": td.get("startTime"),
+        "end_time": td.get("endTime"),
+        "features_json": json.dumps(announcement.get("features")) if announcement.get("features") else None,
+        "road_work_phases_json": json.dumps(announcement.get("roadWorkPhases")) if announcement.get("roadWorkPhases") else None,
+        "comment": announcement.get("comment"),
+        "additional_information": announcement.get("additionalInformation"),
+        "contact_phone": contact.get("phone"),
+        "contact_email": contact.get("email"),
+        "announcements_json": json.dumps(announcements) if announcements else None,
+        "geometry_type": geometry.get("type"),
+        "geometry_coordinates_json": json.dumps(geometry.get("coordinates")) if geometry.get("coordinates") else None,
+    }
+
+
+def _emit_traffic_message(
+    event_producer: FiDigitrafficRoadMessagesEventProducer,
+    situation_type_mqtt: str,
+    payload: Dict[str, Any],
+) -> bool:
+    """Send a traffic message through the typed Kafka producer. Returns True on success."""
+    sender_name = _SITUATION_TYPE_SENDERS.get(situation_type_mqtt)
+    if not sender_name:
+        logger.debug("Unknown situation type for emission: %s", situation_type_mqtt)
+        return False
+    try:
+        flat = _flatten_traffic_message(situation_type_mqtt, payload)
+        data = TrafficMessage.from_serializer_dict(flat)
+        sender = getattr(event_producer, sender_name)
+        sender(
+            _situation_id=flat["situation_id"],
+            data=data,
+            flush_producer=False,
         )
+        return True
+    except Exception as e:
+        logger.warning("Failed to emit traffic message (%s): %s", situation_type_mqtt, e)
+        return False
+
+
+def _emit_maintenance(
+    event_producer: FiDigitrafficRoadMaintenanceEventProducer,
+    domain: str,
+    payload: Dict[str, Any],
+) -> bool:
+    """Send a maintenance tracking event. Returns True on success."""
+    try:
+        enriched = dict(payload)
+        enriched["domain"] = domain
+        if "direction" not in enriched:
+            enriched["direction"] = None
+        if "source" not in enriched:
+            enriched["source"] = None
+        data = MaintenanceTracking.from_serializer_dict(enriched)
+        event_producer.send_fi_digitraffic_road_maintenance_maintenance_tracking(
+            _domain=domain,
+            data=data,
+            flush_producer=False,
+        )
+        return True
+    except Exception as e:
+        logger.warning("Failed to emit maintenance (%s): %s", domain, e)
         return False
 
 
@@ -103,14 +211,16 @@ class DigitrafficRoadBridge:
         self,
         mqtt_source: MQTTSource,
         kafka_producer: Producer,
-        event_producer: FiDigitrafficRoadSensorsEventProducer,
-        station_filter: Optional[Set[int]] = None,
+        sensors_producer: Optional[FiDigitrafficRoadSensorsEventProducer] = None,
+        messages_producer: Optional[FiDigitrafficRoadMessagesEventProducer] = None,
+        maintenance_producer: Optional[FiDigitrafficRoadMaintenanceEventProducer] = None,
         flush_interval: int = 1000,
     ):
         self._mqtt = mqtt_source
         self._kafka = kafka_producer
-        self._event_producer = event_producer
-        self._station_filter = station_filter
+        self._sensors_producer = sensors_producer
+        self._messages_producer = messages_producer
+        self._maintenance_producer = maintenance_producer
         self._flush_interval = flush_interval
         self._count = 0
         self._total = 0
@@ -123,9 +233,32 @@ class DigitrafficRoadBridge:
         logger.info("Starting Digitraffic Road bridge")
         self._mqtt.stream(self._on_message)
 
-    def _on_message(self, data_type: str, station_id: int, sensor_id: int, payload: Dict[str, Any]) -> None:
+    def _on_message(self, data_type: str, metadata: Dict[str, Any], payload: Dict[str, Any]) -> None:
         """Handle a single MQTT message."""
-        if _emit_event(self._event_producer, data_type, station_id, sensor_id, payload):
+        emitted = False
+
+        if data_type in ("tms", "weather") and self._sensors_producer:
+            emitted = _emit_sensor_event(
+                self._sensors_producer,
+                data_type,
+                metadata["station_id"],
+                metadata["sensor_id"],
+                payload,
+            )
+        elif data_type in ("traffic-announcement", "road-work", "weight-restriction", "exempted-transport") and self._messages_producer:
+            emitted = _emit_traffic_message(
+                self._messages_producer,
+                metadata["situation_type"],
+                payload,
+            )
+        elif data_type == "maintenance" and self._maintenance_producer:
+            emitted = _emit_maintenance(
+                self._maintenance_producer,
+                metadata["domain"],
+                payload,
+            )
+
+        if emitted:
             self._count += 1
             self._total += 1
         else:
@@ -144,18 +277,27 @@ class DigitrafficRoadBridge:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Digitraffic Road bridge — Finnish road sensor data to Kafka",
+        description="Digitraffic Road bridge — Finnish road traffic data to Kafka",
     )
     subparsers = parser.add_subparsers(dest="command")
 
     # --- stream ---
-    stream_p = subparsers.add_parser("stream", help="Stream sensor data to Kafka")
+    stream_p = subparsers.add_parser("stream", help="Stream traffic data to Kafka")
     stream_p.add_argument(
         "--kafka-bootstrap-servers", type=str,
         default=os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
     )
     stream_p.add_argument(
-        "--kafka-topic", type=str, default=os.getenv("KAFKA_TOPIC"),
+        "--kafka-topic-sensors", type=str,
+        default=os.getenv("KAFKA_TOPIC_SENSORS", "digitraffic-road-sensors"),
+    )
+    stream_p.add_argument(
+        "--kafka-topic-messages", type=str,
+        default=os.getenv("KAFKA_TOPIC_MESSAGES", "digitraffic-road-messages"),
+    )
+    stream_p.add_argument(
+        "--kafka-topic-maintenance", type=str,
+        default=os.getenv("KAFKA_TOPIC_MAINTENANCE", "digitraffic-road-maintenance"),
     )
     stream_p.add_argument(
         "--sasl-username", type=str, default=os.getenv("SASL_USERNAME"),
@@ -169,13 +311,13 @@ def main() -> None:
     )
     stream_p.add_argument(
         "--subscribe", type=str,
-        default=os.getenv("DIGITRAFFIC_ROAD_SUBSCRIBE", "tms,weather"),
-        help="Comma-separated: tms,weather (default: both)",
+        default=os.getenv("DIGITRAFFIC_ROAD_SUBSCRIBE", "tms,weather,traffic-messages,maintenance"),
+        help="Comma-separated: tms,weather,traffic-messages,maintenance",
     )
     stream_p.add_argument(
         "--station-filter", type=str,
         default=os.getenv("DIGITRAFFIC_ROAD_STATION_FILTER"),
-        help="Comma-separated station IDs to include (default: all)",
+        help="Comma-separated station IDs to include (sensors only, default: all)",
     )
     stream_p.add_argument(
         "--flush-interval", type=int,
@@ -187,13 +329,13 @@ def main() -> None:
     probe_p = subparsers.add_parser("probe", help="Connect to MQTT and print messages")
     probe_p.add_argument(
         "--subscribe", type=str,
-        default=os.getenv("DIGITRAFFIC_ROAD_SUBSCRIBE", "tms,weather"),
-        help="Comma-separated: tms,weather (default: both)",
+        default=os.getenv("DIGITRAFFIC_ROAD_SUBSCRIBE", "tms,weather,traffic-messages,maintenance"),
+        help="Comma-separated families to subscribe to",
     )
     probe_p.add_argument(
         "--station-filter", type=str,
         default=os.getenv("DIGITRAFFIC_ROAD_STATION_FILTER"),
-        help="Comma-separated station IDs to include",
+        help="Comma-separated station IDs to include (sensors only)",
     )
     probe_p.add_argument(
         "--duration", type=int, default=15,
@@ -210,24 +352,21 @@ def main() -> None:
         subs = [s.strip() for s in args.subscribe.split(",")]
         sub_tms = "tms" in subs
         sub_weather = "weather" in subs
+        sub_messages = "traffic-messages" in subs
+        sub_maintenance = "maintenance" in subs
 
         if args.connection_string:
             cfg = parse_connection_string(args.connection_string)
             bootstrap = cfg.get("bootstrap.servers")
-            topic = cfg.get("kafka_topic")
             sasl_user = cfg.get("sasl.username")
             sasl_pw = cfg.get("sasl.password")
         else:
             bootstrap = args.kafka_bootstrap_servers
-            topic = args.kafka_topic
             sasl_user = args.sasl_username
             sasl_pw = args.sasl_password
 
         if not bootstrap:
             print("Error: Kafka bootstrap servers required (--kafka-bootstrap-servers or -c).")
-            sys.exit(1)
-        if not topic:
-            print("Error: Kafka topic required (--kafka-topic or -c).")
             sys.exit(1)
 
         tls_enabled = os.getenv("KAFKA_ENABLE_TLS", "true").lower() not in ("false", "0", "no")
@@ -251,16 +390,30 @@ def main() -> None:
         mqtt_source = MQTTSource(
             subscribe_tms=sub_tms,
             subscribe_weather=sub_weather,
+            subscribe_traffic_messages=sub_messages,
+            subscribe_maintenance=sub_maintenance,
             station_filter=station_filter_set,
         )
         kafka_producer = Producer(kafka_config)
-        event_producer = FiDigitrafficRoadSensorsEventProducer(kafka_producer, topic)
+
+        sensors_prod = FiDigitrafficRoadSensorsEventProducer(
+            kafka_producer, args.kafka_topic_sensors,
+        ) if sub_tms or sub_weather else None
+
+        messages_prod = FiDigitrafficRoadMessagesEventProducer(
+            kafka_producer, args.kafka_topic_messages,
+        ) if sub_messages else None
+
+        maintenance_prod = FiDigitrafficRoadMaintenanceEventProducer(
+            kafka_producer, args.kafka_topic_maintenance,
+        ) if sub_maintenance else None
 
         bridge = DigitrafficRoadBridge(
             mqtt_source=mqtt_source,
             kafka_producer=kafka_producer,
-            event_producer=event_producer,
-            station_filter=station_filter_set,
+            sensors_producer=sensors_prod,
+            messages_producer=messages_prod,
+            maintenance_producer=maintenance_prod,
             flush_interval=args.flush_interval,
         )
 
@@ -283,6 +436,8 @@ def _run_probe(args) -> None:
     subs = [s.strip() for s in args.subscribe.split(",")]
     sub_tms = "tms" in subs
     sub_weather = "weather" in subs
+    sub_messages = "traffic-messages" in subs
+    sub_maintenance = "maintenance" in subs
 
     station_filter_set = None
     if args.station_filter:
@@ -293,6 +448,8 @@ def _run_probe(args) -> None:
     mqtt_src = MQTTSource(
         subscribe_tms=sub_tms,
         subscribe_weather=sub_weather,
+        subscribe_traffic_messages=sub_messages,
+        subscribe_maintenance=sub_maintenance,
         station_filter=station_filter_set,
     )
 
@@ -300,16 +457,13 @@ def _run_probe(args) -> None:
     start = time.time()
     sample_count: Dict[str, int] = {}
 
-    def on_message(data_type: str, station_id: int, sensor_id: int, payload: Dict[str, Any]) -> None:
+    def on_message(data_type: str, metadata: Dict[str, Any], payload: Dict[str, Any]) -> None:
         counter[data_type] += 1
 
         shown = sample_count.get(data_type, 0)
         if shown < 3:
             sample_count[data_type] = shown + 1
-            print(
-                f"[{data_type}] station={station_id} sensor={sensor_id} "
-                f"{_json.dumps(payload)[:200]}"
-            )
+            print(f"[{data_type}] {_json.dumps(metadata)} {_json.dumps(payload)[:200]}")
 
         if time.time() - start > args.duration:
             raise KeyboardInterrupt("Probe timeout")

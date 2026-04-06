@@ -1,9 +1,7 @@
 {
   "endpoints": {
-    "fi.digitraffic.road.Kafka": {
-      "usage": [
-        "producer"
-      ],
+    "fi.digitraffic.road.sensors.Kafka": {
+      "usage": ["producer"],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -13,13 +11,45 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "digitraffic-road",
+          "topic": "digitraffic-road-sensors",
           "key": "{station_id}/{sensor_id}"
         }
       },
-      "messagegroups": [
-        "#/messagegroups/fi.digitraffic.road.sensors"
-      ]
+      "messagegroups": ["#/messagegroups/fi.digitraffic.road.sensors"]
+    },
+    "fi.digitraffic.road.messages.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "digitraffic-road-messages",
+          "key": "{situation_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/fi.digitraffic.road.messages"]
+    },
+    "fi.digitraffic.road.maintenance.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "digitraffic-road-maintenance",
+          "key": "{domain}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/fi.digitraffic.road.maintenance"]
     }
   },
   "messagegroups": {
@@ -29,16 +59,9 @@
           "name": "TmsSensorData",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {
-              "value": "fi.digitraffic.road.sensors.TmsSensorData"
-            },
-            "source": {
-              "value": "wss://tie.digitraffic.fi/mqtt"
-            },
-            "subject": {
-              "value": "{station_id}/{sensor_id}",
-              "type": "uritemplate"
-            }
+            "type": { "value": "fi.digitraffic.road.sensors.TmsSensorData" },
+            "source": { "value": "wss://tie.digitraffic.fi/mqtt" },
+            "subject": { "value": "{station_id}/{sensor_id}", "type": "uritemplate" }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/fi.digitraffic.road.sensors.jstruct/schemas/fi.digitraffic.road.sensors.TmsSensorData"
@@ -47,19 +70,75 @@
           "name": "WeatherSensorData",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {
-              "value": "fi.digitraffic.road.sensors.WeatherSensorData"
-            },
-            "source": {
-              "value": "wss://tie.digitraffic.fi/mqtt"
-            },
-            "subject": {
-              "value": "{station_id}/{sensor_id}",
-              "type": "uritemplate"
-            }
+            "type": { "value": "fi.digitraffic.road.sensors.WeatherSensorData" },
+            "source": { "value": "wss://tie.digitraffic.fi/mqtt" },
+            "subject": { "value": "{station_id}/{sensor_id}", "type": "uritemplate" }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/fi.digitraffic.road.sensors.jstruct/schemas/fi.digitraffic.road.sensors.WeatherSensorData"
+        }
+      }
+    },
+    "fi.digitraffic.road.messages": {
+      "messages": {
+        "fi.digitraffic.road.messages.TrafficAnnouncement": {
+          "name": "TrafficAnnouncement",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "fi.digitraffic.road.messages.TrafficAnnouncement" },
+            "source": { "value": "wss://tie.digitraffic.fi/mqtt" },
+            "subject": { "value": "{situation_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.road.messages.jstruct/schemas/fi.digitraffic.road.messages.TrafficMessage"
+        },
+        "fi.digitraffic.road.messages.RoadWork": {
+          "name": "RoadWork",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "fi.digitraffic.road.messages.RoadWork" },
+            "source": { "value": "wss://tie.digitraffic.fi/mqtt" },
+            "subject": { "value": "{situation_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.road.messages.jstruct/schemas/fi.digitraffic.road.messages.TrafficMessage"
+        },
+        "fi.digitraffic.road.messages.WeightRestriction": {
+          "name": "WeightRestriction",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "fi.digitraffic.road.messages.WeightRestriction" },
+            "source": { "value": "wss://tie.digitraffic.fi/mqtt" },
+            "subject": { "value": "{situation_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.road.messages.jstruct/schemas/fi.digitraffic.road.messages.TrafficMessage"
+        },
+        "fi.digitraffic.road.messages.ExemptedTransport": {
+          "name": "ExemptedTransport",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "fi.digitraffic.road.messages.ExemptedTransport" },
+            "source": { "value": "wss://tie.digitraffic.fi/mqtt" },
+            "subject": { "value": "{situation_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.road.messages.jstruct/schemas/fi.digitraffic.road.messages.TrafficMessage"
+        }
+      }
+    },
+    "fi.digitraffic.road.maintenance": {
+      "messages": {
+        "fi.digitraffic.road.maintenance.MaintenanceTracking": {
+          "name": "MaintenanceTracking",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "fi.digitraffic.road.maintenance.MaintenanceTracking" },
+            "source": { "value": "wss://tie.digitraffic.fi/mqtt" },
+            "subject": { "value": "{domain}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.road.maintenance.jstruct/schemas/fi.digitraffic.road.maintenance.MaintenanceTracking"
         }
       }
     }
@@ -79,43 +158,32 @@
                 "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/sensors/TmsSensorData",
                 "type": "object",
                 "name": "TmsSensorData",
-                "description": "Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.",
-                "required": [
-                  "station_id",
-                  "sensor_id",
-                  "value",
-                  "time"
-                ],
+                "description": "Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows. Over 500 stations across the Finnish road network report data every minute. See https://www.digitraffic.fi/en/road-traffic/ and the TMS documentation at https://www.digitraffic.fi/en/road-traffic/lam/ for full sensor descriptions.",
+                "required": ["station_id", "sensor_id", "value", "time"],
                 "properties": {
                   "station_id": {
                     "type": "int32",
-                    "description": "TMS station numeric identifier as assigned by Fintraffic. There are over 500 TMS stations across the Finnish road network. Example: 23001."
+                    "description": "TMS station numeric identifier as assigned by Fintraffic. Each station is located at a fixed point on the Finnish road network and identified by a unique integer (e.g. 23001). Station metadata including road address, municipality, and free-flow speeds is available from the /api/tms/v1/stations REST endpoint."
                   },
                   "sensor_id": {
                     "type": "int32",
-                    "description": "Computational sensor identifier within the TMS station. Each sensor measures a specific traffic parameter in a given direction and time window. Common sensors include OHITUKSET (vehicle passings, unit kpl/h), KESKINOPEUS (average speed, unit km/h), and LIUKUVA_NOPEUS (rolling speed per lane, unit km/h)."
+                    "description": "Computational sensor identifier within the TMS station. Each sensor measures a specific traffic parameter in a given direction and time window. Common sensor families include OHITUKSET (vehicle passings, unit kpl/h), KESKINOPEUS (average speed, unit km/h), and LIUKUVA_NOPEUS (rolling speed per lane, unit km/h). Sensor metadata is available from /api/tms/v1/sensors."
                   },
                   "value": {
                     "type": "double",
-                    "description": "Measured value in the sensor's native unit. Units vary by sensor: kpl/h for vehicle passings, km/h for speed measurements, and dimensionless ratios for traffic situation indicators."
+                    "description": "Measured value in the sensor's native unit. Units vary by sensor family: kpl/h (vehicles per hour) for OHITUKSET passings sensors, km/h for KESKINOPEUS and LIUKUVA_NOPEUS speed sensors, and dimensionless percentage ratios for traffic situation indicators (VVAPAAS, MS suffixed sensors)."
                   },
                   "time": {
                     "type": "int32",
-                    "description": "Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken or last updated."
+                    "description": "Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken or the aggregation period was last updated."
                   },
                   "start": {
-                    "type": [
-                      "int32",
-                      "null"
-                    ],
-                    "description": "Start of the fixed time window for windowed aggregate sensors (e.g. 5-minute or 60-minute fixed windows), as Unix epoch seconds (UTC). Present for fixed-window sensors such as OHITUKSET_5MIN_KIINTEA and KESKINOPEUS_60MIN_KIINTEA. Null or absent for rolling-window and per-lane sensors."
+                    "type": ["int32", "null"],
+                    "description": "Start of the fixed time window as Unix epoch seconds (UTC). Present for fixed-window aggregate sensors such as OHITUKSET_5MIN_KIINTEA (5-minute fixed passings), KESKINOPEUS_60MIN_KIINTEA (60-minute fixed average speed), and OHITUKSET_60MIN_KIINTEA. Null or absent for rolling-window sensors (LIUKUVA suffix) and per-lane sensors."
                   },
                   "end": {
-                    "type": [
-                      "int32",
-                      "null"
-                    ],
-                    "description": "End of the fixed time window for windowed aggregate sensors, as Unix epoch seconds (UTC). Present for fixed-window sensors. Null or absent for rolling-window and per-lane sensors."
+                    "type": ["int32", "null"],
+                    "description": "End of the fixed time window as Unix epoch seconds (UTC). Present for fixed-window aggregate sensors. Null or absent for rolling-window and per-lane sensors."
                   }
                 }
               }
@@ -134,29 +202,185 @@
                 "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/sensors/WeatherSensorData",
                 "type": "object",
                 "name": "WeatherSensorData",
-                "description": "Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Road weather stations measure parameters such as air temperature, road surface temperature, wind speed, humidity, dew point, and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.",
-                "required": [
-                  "station_id",
-                  "sensor_id",
-                  "value",
-                  "time"
-                ],
+                "description": "Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Over 350 road weather stations measure parameters including air temperature (ILMA), road surface temperature (TIE_1), ground temperature (MAA_1), dew point (KASTEPISTE), freezing point (JÄÄTYMISPISTE_1), wind speed (KESKITUULI, MAKSIMITUULI), humidity (ILMAN_KOSTEUS), and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.",
+                "required": ["station_id", "sensor_id", "value", "time"],
                 "properties": {
                   "station_id": {
                     "type": "int32",
-                    "description": "Road weather station numeric identifier as assigned by Fintraffic. There are over 350 road weather stations on the Finnish road network. Example: 1012."
+                    "description": "Road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). Station metadata including road address, municipality, and available sensors is available from the /api/weather/v1/stations REST endpoint."
                   },
                   "sensor_id": {
                     "type": "int32",
-                    "description": "Sensor identifier within the road weather station. Each sensor measures a specific weather or road surface parameter. Common sensors include ILMA (air temperature, unit °C), TIE_1 (road surface temperature, unit °C), KESKITUULI (average wind speed, unit m/s), KASTEPISTE (dew point, unit °C), and ILMAN_KOSTEUS (relative humidity, unit %)."
+                    "description": "Sensor identifier within the road weather station. Each sensor measures a specific weather or road surface parameter. Common sensors: ILMA (id 1, air temperature °C), ILMA_DERIVAATTA (id 2, air temp derivative °C/h), TIE_1 (id 3, road surface temp °C), MAA_1 (id 7, ground temp °C), KASTEPISTE (id 9, dew point °C), JÄÄTYMISPISTE_1 (id 10, freezing point °C), KESKITUULI (id 16, avg wind m/s), MAKSIMITUULI (id 17, max wind m/s), ILMAN_KOSTEUS (id 19, relative humidity %). Full sensor list at /api/weather/v1/sensors."
                   },
                   "value": {
                     "type": "double",
-                    "description": "Measured value in the sensor's native unit. Units vary by sensor: °C for temperatures, m/s for wind speed, % for relative humidity, mm for precipitation."
+                    "description": "Measured value in the sensor's native unit. Units vary by sensor: °C for temperatures and dew/freezing points, °C/h for temperature derivatives, m/s for wind speed, % for relative humidity, mm for precipitation amounts."
                   },
                   "time": {
                     "type": "int32",
                     "description": "Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.road.messages.jstruct": {
+      "schemas": {
+        "fi.digitraffic.road.messages.TrafficMessage": {
+          "name": "TrafficMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/messages/TrafficMessage",
+                "type": "object",
+                "name": "TrafficMessage",
+                "description": "Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail. The MQTT payload is gzip-compressed and base64-encoded Simple JSON derived from the GeoJSON-based Digitraffic traffic-message API. See https://www.digitraffic.fi/en/road-traffic/ for the full API documentation and situation type taxonomy.",
+                "required": ["situation_id", "situation_type", "version", "release_time", "version_time"],
+                "properties": {
+                  "situation_id": {
+                    "type": "string",
+                    "description": "Unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). Stable across all version updates for a given situation."
+                  },
+                  "situation_type": {
+                    "type": "string",
+                    "description": "Situation category as defined by Fintraffic. Values: 'traffic announcement' (incidents, lane closures, ramp closures), 'road work' (planned and active road works with phases), 'weight restriction' (load-bearing limits on roads or bridges), 'exempted transport' (oversize or heavy transports requiring advance notice). Mapped from the MQTT topic situationType segment."
+                  },
+                  "traffic_announcement_type": {
+                    "type": ["string", "null"],
+                    "description": "Sub-classification for traffic announcements. Values include 'preliminary accident report', 'accident report', 'general', 'unconfirmed observation', and others. Present only when situation_type is 'traffic announcement'; null otherwise."
+                  },
+                  "version": {
+                    "type": "int32",
+                    "description": "Monotonically increasing version counter for this situation. Starts at 1 and increments with each update to the situation's announcements, timing, or status."
+                  },
+                  "release_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when the first version of this situation was released (e.g. '2025-10-22T06:39:54.787Z')."
+                  },
+                  "version_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this version of the situation was published (e.g. '2025-10-22T07:09:57.237Z')."
+                  },
+                  "title": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable title from the first announcement, typically identifying the road, municipality, and situation type in Finnish (e.g. 'Tie 4, eli Ivalontie, Sodankylä. Ensitiedote liikenneonnettomuudesta.')."
+                  },
+                  "language": {
+                    "type": ["string", "null"],
+                    "description": "ISO 639-1 language code for the announcement text. Typically 'fi' (Finnish)."
+                  },
+                  "sender": {
+                    "type": ["string", "null"],
+                    "description": "Traffic management center that issued the announcement (e.g. 'Fintraffic Tieliikennekeskus Tampere', 'Fintraffic Tieliikennekeskus Helsinki')."
+                  },
+                  "location_description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable location description from the first announcement's location object, typically including road number, section, and municipality in Finnish."
+                  },
+                  "start_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp for the start of the situation's time-and-duration window from the first announcement. Null if no time window is specified."
+                  },
+                  "end_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp for the expected end of the situation. Null if the end time is unknown or the situation is open-ended."
+                  },
+                  "features_json": {
+                    "type": ["string", "null"],
+                    "description": "JSON-serialized array of feature objects from the first announcement. Features describe traffic impacts such as lane closures, detours, or speed reductions. Null if no features are listed."
+                  },
+                  "road_work_phases_json": {
+                    "type": ["string", "null"],
+                    "description": "JSON-serialized array of road work phase objects from the first announcement. Each phase includes work types, restrictions (speed limits, lane narrowing), severity, and independent time windows. Present only for 'road work' situations; null otherwise."
+                  },
+                  "comment": {
+                    "type": ["string", "null"],
+                    "description": "Free-text comment from the first announcement, providing additional context such as detour instructions or situation details."
+                  },
+                  "additional_information": {
+                    "type": ["string", "null"],
+                    "description": "Supplementary information text from the first announcement, often including a link to the Fintraffic traffic situation portal."
+                  },
+                  "contact_phone": {
+                    "type": ["string", "null"],
+                    "description": "Contact telephone number for the issuing traffic management center (e.g. '02002100')."
+                  },
+                  "contact_email": {
+                    "type": ["string", "null"],
+                    "description": "Contact email address for the issuing traffic management center."
+                  },
+                  "announcements_json": {
+                    "type": ["string", "null"],
+                    "description": "JSON-serialized array of all announcement objects in the situation, preserving the full upstream structure including nested location details, road addresses, ALERT-C codes, road work phases, restrictions, and work types. Provided for consumers needing the complete upstream detail beyond the flattened first-announcement fields."
+                  },
+                  "geometry_type": {
+                    "type": ["string", "null"],
+                    "description": "GeoJSON geometry type of the situation's spatial extent (e.g. 'Point', 'LineString', 'MultiLineString'). Null if no geometry is available."
+                  },
+                  "geometry_coordinates_json": {
+                    "type": ["string", "null"],
+                    "description": "JSON-serialized GeoJSON coordinates array for the situation's spatial extent. Coordinates are in [longitude, latitude] order per the GeoJSON specification (WGS84). Null if no geometry is available."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.road.maintenance.jstruct": {
+      "schemas": {
+        "fi.digitraffic.road.maintenance.MaintenanceTracking": {
+          "name": "MaintenanceTracking",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/maintenance/MaintenanceTracking",
+                "type": "object",
+                "name": "MaintenanceTracking",
+                "description": "Road maintenance vehicle tracking update from the Finnish national road network operated by Fintraffic. Each message represents a position and task report from a maintenance vehicle, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic maintenance-v2/routes/{domain}. Data originates from the Finnish Transport Infrastructure Agency's Harja system for state roads and from municipal systems for other domains. Updates arrive approximately every minute. A new tracking event is created when the vehicle's task changes, the gap between consecutive positions exceeds 5 minutes, or the calculated speed exceeds 140 km/h. See https://www.digitraffic.fi/en/road-traffic/ for the full API documentation and task type taxonomy at /api/maintenance/v1/tracking/tasks.",
+                "required": ["domain", "time", "tasks", "x", "y"],
+                "properties": {
+                  "domain": {
+                    "type": "string",
+                    "description": "Data domain identifying the source system. Primary domain is 'state-roads' for data from the Finnish Transport Infrastructure Agency's Harja system. Other domains include municipal systems such as 'autori-kuopio', 'autori-oulu', and 'paikannin-kuopio'. The domain value comes from the MQTT topic path."
+                  },
+                  "time": {
+                    "type": "int32",
+                    "description": "Tracking timestamp as Unix epoch seconds (UTC). Indicates when the position and task were recorded by the vehicle."
+                  },
+                  "source": {
+                    "type": ["string", "null"],
+                    "description": "Name of the source system that produced the tracking data (e.g. 'Harja/Väylävirasto' for the state road maintenance system). May be null if the source system is not identified."
+                  },
+                  "tasks": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Array of maintenance task type identifiers being performed by the vehicle at this position. Task types follow the Fintraffic taxonomy, e.g. 'BRUSHING', 'SALTING', 'PLOUGHING_AND_SLUSH_REMOVAL', 'LEVELLING_GRAVEL_ROAD_SURFACE'. Full task type list with Finnish, English, and Swedish names is available at /api/maintenance/v1/tracking/tasks."
+                  },
+                  "x": {
+                    "type": "double",
+                    "description": "Longitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees."
+                  },
+                  "y": {
+                    "type": "double",
+                    "description": "Latitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees."
+                  },
+                  "direction": {
+                    "type": ["double", "null"],
+                    "description": "Vehicle heading in degrees (0-360, clockwise from north). May be null or absent if heading information is not available from the tracking device."
                   }
                 }
               }

@@ -360,7 +360,7 @@ class TestAutobahnDockerFlow:
 
 
 # ---------------------------------------------------------------------------
-# Digitraffic Road (Finland — TMS and road weather sensors)
+# Digitraffic Road (Finland — road traffic: sensors, messages, maintenance)
 # ---------------------------------------------------------------------------
 
 class TestDigitrafficRoadDockerFlow:
@@ -373,9 +373,16 @@ class TestDigitrafficRoadDockerFlow:
             telemetry_types=[
                 'TmsSensorData',
                 'WeatherSensorData',
+                'TrafficAnnouncement',
+                'RoadWork',
+                'WeightRestriction',
+                'ExemptedTransport',
+                'MaintenanceTracking',
             ],
             extra_env={
-                'KAFKA_TOPIC': self.TOPIC,
+                'KAFKA_TOPIC_SENSORS': self.TOPIC,
+                'KAFKA_TOPIC_MESSAGES': self.TOPIC,
+                'KAFKA_TOPIC_MAINTENANCE': self.TOPIC,
             },
             min_messages=3,
         )

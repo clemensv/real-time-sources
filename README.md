@@ -32,7 +32,7 @@ The container image documentation provides detailed information:
 * [Bluesky Firehose - Social media posts and interactions](bluesky/CONTAINER.md)
 * [CHMI Hydro - Czech hydrological observations](chmi-hydro/CONTAINER.md)
 * [Digitraffic Maritime - Finnish AIS vessel tracking](digitraffic-maritime/CONTAINER.md)
-* [Digitraffic Road - Finnish road TMS and weather sensors](digitraffic-road/CONTAINER.md)
+* [Digitraffic Road - Finnish road traffic data (sensors, messages, maintenance)](digitraffic-road/CONTAINER.md)
 * [DWD - German weather observations and alerts](dwd/CONTAINER.md)
 * [ENTSO-E - European electricity market data](entsoe/CONTAINER.md)
 * [German Waters - German state water level observations](german-waters/README.md)
@@ -110,14 +110,15 @@ positions and metadata from the Finnish coastal zone and Baltic Sea. The data is
 open (CC 4.0 BY), requires no API key, and produces approximately 35 messages
 per second.
 
-### Digitraffic Road - Finnish road TMS and weather sensors
+### Digitraffic Road - Finnish road traffic data
 
 The [Digitraffic Road bridge](digitraffic-road/README.md) connects to Finland's
-Digitraffic Road MQTT stream and forwards real-time TMS (traffic measurement
-system) sensor data and road weather station data from the Finnish national road
-network. Over 500 TMS stations report vehicle counts and speeds, and over 350
-weather stations report temperatures, wind, humidity, and precipitation. The data
-is open (CC 4.0 BY) and requires no API key.
+Digitraffic Road MQTT stream and forwards real-time data from the Finnish national
+road network: TMS sensor readings (vehicle counts and speeds from 500+ stations),
+road weather measurements (temperature, wind, humidity from 350+ stations),
+traffic messages (incidents, road works, weight restrictions, exempted transports),
+and maintenance vehicle tracking. Events are emitted to three Kafka topics with
+distinct key models. The data is open (CC 4.0 BY) and requires no API key.
 
 ### DWD - German weather observations and alerts
 
