@@ -18,6 +18,7 @@
 **/*.py[cod]
 **/venv/
 **/env/
+**/htmlcov/
 
 
 mode-s/kql/aircraft.csv
