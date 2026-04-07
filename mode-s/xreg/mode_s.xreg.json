@@ -54,8 +54,8 @@
               "name": "source",
               "type": "uritemplate",
               "required": true,
-              "value": "{stationid}",
-              "description": "Station Identifier"
+              "value": "{feedurl}",
+              "description": "URL of the feed"
             },
             "subject": {
               "name": "subject",

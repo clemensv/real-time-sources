@@ -42,6 +42,7 @@ class ADSBClient(TcpClient):
         self.ref_lon = ref_lon
         self.producer = producer
         self.stationid = stationid
+        self.feedurl = f"dump1090://{host}:{port}"
         self.messages_since_last_flush = 0
         self.records_since_last_flush = 0
         self.task_queue = deque()
@@ -160,6 +161,7 @@ class ADSBClient(TcpClient):
                         messages_since_last_log += 1
                         records_since_last_log += len(bundle.messages)
                         await self.producer.send_mode_s_messages(
+                            _feedurl=self.feedurl,
                             _stationid=self.stationid,
                             data=bundle,
                             content_type="application/json",

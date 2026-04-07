@@ -7,7 +7,7 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timezone
 from noaa.noaa import NOAADataPoller
-from noaa.noaa_producer.microsoft.opendata.us.noaa.station import Station
+from noaa_producer_data.microsoft.opendata.us.noaa.station import Station
 
 
 @pytest.mark.unit

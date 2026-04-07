@@ -40,12 +40,12 @@ class ModeSEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_mode_s_messages(self,_stationid : str, _stationid : str, data: Messages, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Messages], str]=None) -> None:
+    def send_mode_s_messages(self,_feedurl : str, _stationid : str, data: Messages, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Messages], str]=None) -> None:
         """
         Sends the 'Mode_S.Messages' event to the Kafka topic
 
         Args:
-            _stationid(str):  Value for placeholder stationid in attribute source
+            _feedurl(str):  Value for placeholder feedurl in attribute source
             _stationid(str):  Value for placeholder stationid in attribute subject
             data: (Messages): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
@@ -57,7 +57,7 @@ class ModeSEventProducer:
         attributes = {
              "specversion":"1.0",
              "type":"Mode_S.Messages",
-             "source":"{stationid}".format(stationid = _stationid),
+             "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{stationid}".format(stationid = _stationid)
         }
         attributes["datacontenttype"] = content_type

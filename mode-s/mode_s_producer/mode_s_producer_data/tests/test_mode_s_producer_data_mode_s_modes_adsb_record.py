@@ -30,39 +30,39 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         instance = ModeS_ADSB_Record(
             ts=datetime.datetime.now(datetime.timezone.utc),
-            icao='zlztxaaqochegbffzqgg',
-            df=int(89),
-            tc=int(43),
-            bcode='mnonugupqcnhqrtzvxym',
-            alt=int(38),
-            cs='mgckkyfgweotrvoaucek',
-            sq='cmqowbsbgolblasfuztw',
-            lat=float(59.80068139835269),
-            lon=float(90.69177834880803),
-            spd=float(21.03358238939461),
-            ang=float(32.37406585871273),
-            vr=int(14),
-            spd_type='ekbcyumwbmapagaqswin',
-            dir_src='twzdlmxzeqldmafjqlcu',
-            vr_src='wuzfgccbvxoeqpffyhni',
-            ws=int(95),
-            wd=int(78),
-            at=float(86.01691328228745),
-            ap=float(14.727706740879952),
-            hm=float(9.192367879662445),
-            roll=float(73.6874615249422),
-            trak=float(75.2291912431659),
-            gs=float(66.98818373201738),
-            tas=float(95.77046789457498),
-            hd=float(29.62614555523999),
-            ias=float(16.364399040561473),
-            m=float(78.80793215619025),
-            vrb=float(81.79692269182215),
-            vri=float(73.92618150619205),
-            rssi=float(8.728881757053596),
-            emst='ofwgvukltvphwstzjrzz',
-            tgt='sahemnfdoxmxampstvxy',
-            opst='lgwhtkfvfuuctujiqgld'
+            icao='mrbxgxxplfiircoxxmuw',
+            df=int(36),
+            tc=int(58),
+            bcode='taopsnfocwhrxzfbqqxx',
+            alt=int(31),
+            cs='xapnlteegutkfehadrtf',
+            sq='xpyblmiruncfbtcmfckh',
+            lat=float(28.840026047183642),
+            lon=float(58.19052096576263),
+            spd=float(67.35765641282823),
+            ang=float(49.933950063730315),
+            vr=int(33),
+            spd_type='xoycpkeebvgwrxllsauw',
+            dir_src='jfcnkbuhdcltxuaukhye',
+            vr_src='jeogodhrfngyumgydsik',
+            ws=int(97),
+            wd=int(53),
+            at=float(93.89991067422939),
+            ap=float(96.76339786773988),
+            hm=float(64.0142721435048),
+            roll=float(46.442451022699174),
+            trak=float(60.7394976908569),
+            gs=float(3.1062373764380258),
+            tas=float(83.25603058629343),
+            hd=float(71.70552052147983),
+            ias=float(92.32979141156184),
+            m=float(79.4401280693102),
+            vrb=float(37.528840725158005),
+            vri=float(86.79150966786084),
+            rssi=float(66.61719564397717),
+            emst='bumkabdpphrzywognflh',
+            tgt='wwmcopzycbyyfbzpnyfb',
+            opst='gurqpqiguvtwklctmmko'
         )
         return instance
 
@@ -79,7 +79,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test icao property
         """
-        test_value = 'zlztxaaqochegbffzqgg'
+        test_value = 'mrbxgxxplfiircoxxmuw'
         self.instance.icao = test_value
         self.assertEqual(self.instance.icao, test_value)
     
@@ -87,7 +87,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test df property
         """
-        test_value = int(89)
+        test_value = int(36)
         self.instance.df = test_value
         self.assertEqual(self.instance.df, test_value)
     
@@ -95,7 +95,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test tc property
         """
-        test_value = int(43)
+        test_value = int(58)
         self.instance.tc = test_value
         self.assertEqual(self.instance.tc, test_value)
     
@@ -103,7 +103,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test bcode property
         """
-        test_value = 'mnonugupqcnhqrtzvxym'
+        test_value = 'taopsnfocwhrxzfbqqxx'
         self.instance.bcode = test_value
         self.assertEqual(self.instance.bcode, test_value)
     
@@ -111,7 +111,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test alt property
         """
-        test_value = int(38)
+        test_value = int(31)
         self.instance.alt = test_value
         self.assertEqual(self.instance.alt, test_value)
     
@@ -119,7 +119,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test cs property
         """
-        test_value = 'mgckkyfgweotrvoaucek'
+        test_value = 'xapnlteegutkfehadrtf'
         self.instance.cs = test_value
         self.assertEqual(self.instance.cs, test_value)
     
@@ -127,7 +127,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test sq property
         """
-        test_value = 'cmqowbsbgolblasfuztw'
+        test_value = 'xpyblmiruncfbtcmfckh'
         self.instance.sq = test_value
         self.assertEqual(self.instance.sq, test_value)
     
@@ -135,7 +135,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(59.80068139835269)
+        test_value = float(28.840026047183642)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -143,7 +143,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(90.69177834880803)
+        test_value = float(58.19052096576263)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -151,7 +151,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test spd property
         """
-        test_value = float(21.03358238939461)
+        test_value = float(67.35765641282823)
         self.instance.spd = test_value
         self.assertEqual(self.instance.spd, test_value)
     
@@ -159,7 +159,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test ang property
         """
-        test_value = float(32.37406585871273)
+        test_value = float(49.933950063730315)
         self.instance.ang = test_value
         self.assertEqual(self.instance.ang, test_value)
     
@@ -167,7 +167,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test vr property
         """
-        test_value = int(14)
+        test_value = int(33)
         self.instance.vr = test_value
         self.assertEqual(self.instance.vr, test_value)
     
@@ -175,7 +175,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test spd_type property
         """
-        test_value = 'ekbcyumwbmapagaqswin'
+        test_value = 'xoycpkeebvgwrxllsauw'
         self.instance.spd_type = test_value
         self.assertEqual(self.instance.spd_type, test_value)
     
@@ -183,7 +183,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test dir_src property
         """
-        test_value = 'twzdlmxzeqldmafjqlcu'
+        test_value = 'jfcnkbuhdcltxuaukhye'
         self.instance.dir_src = test_value
         self.assertEqual(self.instance.dir_src, test_value)
     
@@ -191,7 +191,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test vr_src property
         """
-        test_value = 'wuzfgccbvxoeqpffyhni'
+        test_value = 'jeogodhrfngyumgydsik'
         self.instance.vr_src = test_value
         self.assertEqual(self.instance.vr_src, test_value)
     
@@ -199,7 +199,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test ws property
         """
-        test_value = int(95)
+        test_value = int(97)
         self.instance.ws = test_value
         self.assertEqual(self.instance.ws, test_value)
     
@@ -207,7 +207,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test wd property
         """
-        test_value = int(78)
+        test_value = int(53)
         self.instance.wd = test_value
         self.assertEqual(self.instance.wd, test_value)
     
@@ -215,7 +215,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test at property
         """
-        test_value = float(86.01691328228745)
+        test_value = float(93.89991067422939)
         self.instance.at = test_value
         self.assertEqual(self.instance.at, test_value)
     
@@ -223,7 +223,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test ap property
         """
-        test_value = float(14.727706740879952)
+        test_value = float(96.76339786773988)
         self.instance.ap = test_value
         self.assertEqual(self.instance.ap, test_value)
     
@@ -231,7 +231,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test hm property
         """
-        test_value = float(9.192367879662445)
+        test_value = float(64.0142721435048)
         self.instance.hm = test_value
         self.assertEqual(self.instance.hm, test_value)
     
@@ -239,7 +239,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test roll property
         """
-        test_value = float(73.6874615249422)
+        test_value = float(46.442451022699174)
         self.instance.roll = test_value
         self.assertEqual(self.instance.roll, test_value)
     
@@ -247,7 +247,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test trak property
         """
-        test_value = float(75.2291912431659)
+        test_value = float(60.7394976908569)
         self.instance.trak = test_value
         self.assertEqual(self.instance.trak, test_value)
     
@@ -255,7 +255,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test gs property
         """
-        test_value = float(66.98818373201738)
+        test_value = float(3.1062373764380258)
         self.instance.gs = test_value
         self.assertEqual(self.instance.gs, test_value)
     
@@ -263,7 +263,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test tas property
         """
-        test_value = float(95.77046789457498)
+        test_value = float(83.25603058629343)
         self.instance.tas = test_value
         self.assertEqual(self.instance.tas, test_value)
     
@@ -271,7 +271,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test hd property
         """
-        test_value = float(29.62614555523999)
+        test_value = float(71.70552052147983)
         self.instance.hd = test_value
         self.assertEqual(self.instance.hd, test_value)
     
@@ -279,7 +279,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test ias property
         """
-        test_value = float(16.364399040561473)
+        test_value = float(92.32979141156184)
         self.instance.ias = test_value
         self.assertEqual(self.instance.ias, test_value)
     
@@ -287,7 +287,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test m property
         """
-        test_value = float(78.80793215619025)
+        test_value = float(79.4401280693102)
         self.instance.m = test_value
         self.assertEqual(self.instance.m, test_value)
     
@@ -295,7 +295,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test vrb property
         """
-        test_value = float(81.79692269182215)
+        test_value = float(37.528840725158005)
         self.instance.vrb = test_value
         self.assertEqual(self.instance.vrb, test_value)
     
@@ -303,7 +303,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test vri property
         """
-        test_value = float(73.92618150619205)
+        test_value = float(86.79150966786084)
         self.instance.vri = test_value
         self.assertEqual(self.instance.vri, test_value)
     
@@ -311,7 +311,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test rssi property
         """
-        test_value = float(8.728881757053596)
+        test_value = float(66.61719564397717)
         self.instance.rssi = test_value
         self.assertEqual(self.instance.rssi, test_value)
     
@@ -319,7 +319,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test emst property
         """
-        test_value = 'ofwgvukltvphwstzjrzz'
+        test_value = 'bumkabdpphrzywognflh'
         self.instance.emst = test_value
         self.assertEqual(self.instance.emst, test_value)
     
@@ -327,7 +327,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test tgt property
         """
-        test_value = 'sahemnfdoxmxampstvxy'
+        test_value = 'wwmcopzycbyyfbzpnyfb'
         self.instance.tgt = test_value
         self.assertEqual(self.instance.tgt, test_value)
     
@@ -335,7 +335,7 @@ class Test_ModeS_ADSB_Record(unittest.TestCase):
         """
         Test opst property
         """
-        test_value = 'lgwhtkfvfuuctujiqgld'
+        test_value = 'gurqpqiguvtwklctmmko'
         self.instance.opst = test_value
         self.assertEqual(self.instance.opst, test_value)
     

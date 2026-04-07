@@ -103,7 +103,7 @@ def test_modes_modesmessages(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_messages(_stationid = f'test_{i}', _stationid = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_messages(_feedurl = f'test_{i}', _stationid = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
