@@ -90,7 +90,7 @@
                     "type": "string"
                   },
                   "dbc": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "station_name": {
                     "type": "string"
@@ -105,16 +105,16 @@
                     "type": "double"
                   },
                   "flood_level_1": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "flood_level_2": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "flood_level_3": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "flood_level_4": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "has_forecast": {
                     "type": ["boolean", "null"]
@@ -149,25 +149,25 @@
                     "type": "string"
                   },
                   "stream_name": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "water_level": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "water_level_timestamp": {
-                    "type": "datetime"
+                    "type": ["datetime", "null"]
                   },
                   "discharge": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "discharge_timestamp": {
-                    "type": "datetime"
+                    "type": ["datetime", "null"]
                   },
                   "water_temperature": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "water_temperature_timestamp": {
-                    "type": "datetime"
+                    "type": ["datetime", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/WaterLevelObservation",

@@ -90,16 +90,16 @@
                     "type": "string"
                   },
                   "river": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "voivodeship": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/Station",
@@ -133,10 +133,10 @@
                     "type": "string"
                   },
                   "river": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "voivodeship": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "water_level": {
                     "type": "double"
@@ -145,22 +145,22 @@
                     "type": "datetime"
                   },
                   "water_temperature": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "water_temperature_timestamp": {
-                    "type": "datetime"
+                    "type": ["datetime", "null"]
                   },
                   "discharge": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "discharge_timestamp": {
-                    "type": "datetime"
+                    "type": ["datetime", "null"]
                   },
                   "ice_phenomenon_code": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "overgrowth_code": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/WaterLevelObservation",

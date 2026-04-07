@@ -92,7 +92,7 @@
                     "type": "string"
                   },
                   "code_site": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "longitude_station": {
                     "type": "double"
@@ -101,19 +101,19 @@
                     "type": "double"
                   },
                   "libelle_cours_eau": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "libelle_commune": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "code_departement": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "en_service": {
                     "type": ["boolean", "null"]
                   },
                   "date_ouverture_station": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Station",
@@ -153,10 +153,10 @@
                     "type": "string"
                   },
                   "libelle_methode_obs": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "libelle_qualification_obs": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Observation",

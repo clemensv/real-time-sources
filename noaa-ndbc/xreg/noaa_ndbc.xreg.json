@@ -98,10 +98,10 @@
                     "type": "datetime"
                   },
                   "wind_direction": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "wind_speed": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "gust": {
                     "type": ["double", "null"]
@@ -119,16 +119,16 @@
                     "type": ["double", "null"]
                   },
                   "pressure": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "air_temperature": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "water_temperature": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "dewpoint": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation",
@@ -157,10 +157,10 @@
                     "type": "string"
                   },
                   "owner": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "station_type": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "hull": {
                     "type": ["string", "null"]
@@ -169,10 +169,10 @@
                     "type": "string"
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "timezone": {
                     "type": ["string", "null"]
