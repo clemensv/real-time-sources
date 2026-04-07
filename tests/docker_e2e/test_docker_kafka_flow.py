@@ -468,6 +468,7 @@ class TestUSGSIVDockerFlow:
 # USGS Earthquakes (telemetry only)
 # ---------------------------------------------------------------------------
 
+@pytest.mark.skip(reason="Flaky: depends on real seismic activity during test window")
 class TestUSGSEarthquakesDockerFlow:
     TOPIC = 'test-usgs-earthquakes'
 
