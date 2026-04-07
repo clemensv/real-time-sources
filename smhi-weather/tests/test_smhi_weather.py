@@ -13,12 +13,22 @@ from smhi_weather.smhi_weather import (
     _merge_observations,
     _load_state,
     _save_state,
+    ALL_PARAMS,
     PARAM_AIR_TEMP,
     PARAM_WIND_GUST,
     PARAM_DEW_POINT,
     PARAM_PRESSURE,
     PARAM_HUMIDITY,
     PARAM_PRECIP,
+    PARAM_WIND_DIR,
+    PARAM_WIND_SPEED,
+    PARAM_MAX_WIND_SPEED,
+    PARAM_VISIBILITY,
+    PARAM_CLOUD_COVER,
+    PARAM_PRESENT_WX,
+    PARAM_SUNSHINE,
+    PARAM_IRRADIANCE,
+    PARAM_PRECIP_INTENSITY,
 )
 
 
@@ -80,6 +90,46 @@ SAMPLE_BULK_WIND = {
             "key": "98210",
             "name": "Kiruna Flygplats",
             "value": [{"date": 1712505600000, "value": "12.5", "quality": "G"}]
+        }
+    ]
+}
+
+SAMPLE_BULK_WIND_DIR = {
+    "station": [
+        {
+            "key": "98210",
+            "name": "Kiruna Flygplats",
+            "value": [{"date": 1712505600000, "value": "225", "quality": "G"}]
+        }
+    ]
+}
+
+SAMPLE_BULK_WIND_SPEED = {
+    "station": [
+        {
+            "key": "98210",
+            "name": "Kiruna Flygplats",
+            "value": [{"date": 1712505600000, "value": "6.3", "quality": "G"}]
+        }
+    ]
+}
+
+SAMPLE_BULK_VISIBILITY = {
+    "station": [
+        {
+            "key": "98210",
+            "name": "Kiruna Flygplats",
+            "value": [{"date": 1712505600000, "value": "30.0", "quality": "G"}]
+        }
+    ]
+}
+
+SAMPLE_BULK_CLOUD = {
+    "station": [
+        {
+            "key": "98210",
+            "name": "Kiruna Flygplats",
+            "value": [{"date": 1712505600000, "value": "6", "quality": "G"}]
         }
     ]
 }
@@ -174,6 +224,38 @@ class TestMergeObservations:
         assert len(obs_list) == 1
         assert obs_list[0].wind_gust == 8.0
         assert obs_list[0].air_temperature is None
+
+    def test_merge_new_parameters(self):
+        temp_data = SMHIWeatherAPI.parse_bulk_observations(SAMPLE_BULK_RESPONSE)
+        wind_dir_data = SMHIWeatherAPI.parse_bulk_observations(SAMPLE_BULK_WIND_DIR)
+        wind_speed_data = SMHIWeatherAPI.parse_bulk_observations(SAMPLE_BULK_WIND_SPEED)
+        vis_data = SMHIWeatherAPI.parse_bulk_observations(SAMPLE_BULK_VISIBILITY)
+        cloud_data = SMHIWeatherAPI.parse_bulk_observations(SAMPLE_BULK_CLOUD)
+        param_data = {
+            PARAM_AIR_TEMP: temp_data,
+            PARAM_WIND_DIR: wind_dir_data,
+            PARAM_WIND_SPEED: wind_speed_data,
+            PARAM_VISIBILITY: vis_data,
+            PARAM_CLOUD_COVER: cloud_data,
+        }
+        obs_list = _merge_observations(param_data)
+        kiruna = [o for o in obs_list if o.station_id == "98210"][0]
+        assert kiruna.air_temperature == -5.2
+        assert kiruna.wind_direction == 225.0
+        assert kiruna.wind_speed == 6.3
+        assert kiruna.visibility == 30.0
+        assert kiruna.total_cloud_cover == 6
+        # Station 97280 only has temperature, so new fields should be None
+        lulea = [o for o in obs_list if o.station_id == "97280"][0]
+        assert lulea.air_temperature == 2.1
+        assert lulea.wind_direction is None
+        assert lulea.wind_speed is None
+
+    def test_all_params_list_complete(self):
+        assert len(ALL_PARAMS) == 15
+        assert PARAM_AIR_TEMP in ALL_PARAMS
+        assert PARAM_WIND_DIR in ALL_PARAMS
+        assert PARAM_PRECIP_INTENSITY in ALL_PARAMS
 
     def test_merge_empty(self):
         obs_list = _merge_observations({})

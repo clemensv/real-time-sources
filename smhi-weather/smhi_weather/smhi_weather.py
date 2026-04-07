@@ -23,8 +23,24 @@ PARAM_AIR_TEMP = 1        # Lufttemperatur, momentanvärde, 1 gång/tim
 PARAM_WIND_GUST = 21      # Byvind, max 1 gång/tim
 PARAM_DEW_POINT = 39      # Daggpunktstemperatur, momentanvärde
 PARAM_PRESSURE = 9        # Lufttryck reducerat havsytans nivå
-PARAM_HUMIDITY = 6        # Relativ Luftfuktighet 
+PARAM_HUMIDITY = 6        # Relativ Luftfuktighet
 PARAM_PRECIP = 7          # Nederbördsmängd, summa 1 timme
+PARAM_WIND_DIR = 3        # Vindriktning
+PARAM_WIND_SPEED = 4      # Vindhastighet
+PARAM_MAX_WIND_SPEED = 25 # Max av MedelVindhastighet
+PARAM_VISIBILITY = 12     # Sikt
+PARAM_CLOUD_COVER = 16    # Total molnmängd
+PARAM_PRESENT_WX = 13     # Rådande väder (WMO ww code)
+PARAM_SUNSHINE = 10       # Solskenstid
+PARAM_IRRADIANCE = 11     # Global Irradians
+PARAM_PRECIP_INTENSITY = 38  # Nederbördsintensitet
+
+ALL_PARAMS = [
+    PARAM_AIR_TEMP, PARAM_WIND_GUST, PARAM_DEW_POINT, PARAM_PRESSURE,
+    PARAM_HUMIDITY, PARAM_PRECIP, PARAM_WIND_DIR, PARAM_WIND_SPEED,
+    PARAM_MAX_WIND_SPEED, PARAM_VISIBILITY, PARAM_CLOUD_COVER,
+    PARAM_PRESENT_WX, PARAM_SUNSHINE, PARAM_IRRADIANCE, PARAM_PRECIP_INTENSITY,
+]
 
 
 class SMHIWeatherAPI:
@@ -143,6 +159,15 @@ def _merge_observations(param_data: dict[int, dict[str, dict]]) -> list[WeatherO
             air_pressure=param_data.get(PARAM_PRESSURE, {}).get(sid, {}).get("value"),
             relative_humidity=_to_int(param_data.get(PARAM_HUMIDITY, {}).get(sid, {}).get("value")),
             precipitation_last_hour=param_data.get(PARAM_PRECIP, {}).get(sid, {}).get("value"),
+            wind_direction=param_data.get(PARAM_WIND_DIR, {}).get(sid, {}).get("value"),
+            wind_speed=param_data.get(PARAM_WIND_SPEED, {}).get(sid, {}).get("value"),
+            max_wind_speed=param_data.get(PARAM_MAX_WIND_SPEED, {}).get(sid, {}).get("value"),
+            visibility=param_data.get(PARAM_VISIBILITY, {}).get(sid, {}).get("value"),
+            total_cloud_cover=_to_int(param_data.get(PARAM_CLOUD_COVER, {}).get(sid, {}).get("value")),
+            present_weather=_to_int(param_data.get(PARAM_PRESENT_WX, {}).get(sid, {}).get("value")),
+            sunshine_duration=param_data.get(PARAM_SUNSHINE, {}).get(sid, {}).get("value"),
+            global_irradiance=param_data.get(PARAM_IRRADIANCE, {}).get(sid, {}).get("value"),
+            precipitation_intensity=param_data.get(PARAM_PRECIP_INTENSITY, {}).get(sid, {}).get("value"),
             quality=temp_data.get("quality", ""),
         )
         observations.append(obs)
@@ -228,8 +253,7 @@ def feed_observations(api: SMHIWeatherAPI, producer: SEGovSMHIWeatherEventProduc
                       previous_readings: dict) -> int:
     """Fetch latest observations for all parameters and emit merged observations."""
     param_data: dict[int, dict[str, dict]] = {}
-    for param_id in [PARAM_AIR_TEMP, PARAM_WIND_GUST, PARAM_DEW_POINT, PARAM_PRESSURE,
-                     PARAM_HUMIDITY, PARAM_PRECIP]:
+    for param_id in ALL_PARAMS:
         try:
             bulk = api.get_bulk_latest(param_id)
             param_data[param_id] = api.parse_bulk_observations(bulk)

@@ -119,7 +119,7 @@
                 "$id": "https://opendata-download-metobs.smhi.se/schemas/SE/Gov/SMHI/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind gust, dew point, pressure, humidity, and precipitation.",
+                "description": "Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind, pressure, humidity, precipitation, visibility, cloud cover, irradiance, and present weather.",
                 "required": ["station_id", "station_name", "observation_time"],
                 "properties": {
                   "station_id": {
@@ -169,6 +169,58 @@
                     "description": "Total precipitation in the last hour, reported hourly (SMHI parameter 7).",
                     "unit": "mm",
                     "symbol": "mm"
+                  },
+                  "wind_direction": {
+                    "type": ["double", "null"],
+                    "description": "Wind direction in degrees from which the wind is blowing, measured at 10 m height, reported hourly (SMHI parameter 3).",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "wind_speed": {
+                    "type": ["double", "null"],
+                    "description": "Mean wind speed over 10 minutes measured at 10 m height, reported hourly (SMHI parameter 4).",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "max_wind_speed": {
+                    "type": ["double", "null"],
+                    "description": "Maximum of 10-minute mean wind speed during the hour, measured at 10 m height (SMHI parameter 25).",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "visibility": {
+                    "type": ["double", "null"],
+                    "description": "Horizontal visibility, reported hourly (SMHI parameter 12).",
+                    "unit": "km",
+                    "symbol": "km"
+                  },
+                  "total_cloud_cover": {
+                    "type": ["int32", "null"],
+                    "description": "Total cloud cover in oktas (eighths of sky covered), reported hourly (SMHI parameter 16).",
+                    "unit": "okta",
+                    "symbol": "okta"
+                  },
+                  "present_weather": {
+                    "type": ["int32", "null"],
+                    "description": "WMO present weather code (ww table 4677) describing current weather phenomena at the time of observation (SMHI parameter 13). Values range from 0 (clear) to 99 (thunderstorm with hail)."
+                  },
+                  "sunshine_duration": {
+                    "type": ["double", "null"],
+                    "description": "Duration of sunshine during the last hour in seconds (SMHI parameter 10).",
+                    "unit": "s",
+                    "symbol": "s"
+                  },
+                  "global_irradiance": {
+                    "type": ["double", "null"],
+                    "description": "Global solar irradiance (direct + diffuse), average over the hour, measured by pyranometer (SMHI parameter 11).",
+                    "unit": "W/m2",
+                    "symbol": "W/m²"
+                  },
+                  "precipitation_intensity": {
+                    "type": ["double", "null"],
+                    "description": "Instantaneous precipitation intensity measured by optical or weighing gauge (SMHI parameter 38).",
+                    "unit": "mm/h",
+                    "symbol": "mm/h"
                   },
                   "quality": {
                     "type": "string",

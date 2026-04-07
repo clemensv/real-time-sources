@@ -1,3 +1,5 @@
-from .microsoft import WeatherAlert, Zone
+from .microsoft import Zone, WeatherAlert
+from .observationstation import ObservationStation
+from .weatherobservation import WeatherObservation
 
-__all__ = ["WeatherAlert", "Zone"]
+__all__ = ["Zone", "WeatherAlert", "ObservationStation", "WeatherObservation"]

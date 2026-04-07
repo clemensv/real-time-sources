@@ -13,7 +13,8 @@ from bom_australia.bom_australia import (
     _parse_station_list,
     _load_state,
     _save_state,
-    DEFAULT_STATIONS,
+    FALLBACK_STATIONS,
+    STATE_TO_PRODUCT,
 )
 
 
@@ -209,7 +210,67 @@ class TestStationList:
         assert _parse_station_list("") == []
 
     def test_default_stations_non_empty(self):
-        assert len(DEFAULT_STATIONS) >= 7
+        assert len(FALLBACK_STATIONS) >= 7
+
+    def test_fallback_stations_have_correct_canberra_product(self):
+        canberra = [s for s in FALLBACK_STATIONS if s[1] == 94926]
+        assert len(canberra) == 1
+        assert canberra[0][0] == "IDC60901"
+
+
+class TestStationDiscovery:
+    SAMPLE_STATIONS_TXT = (
+        "Bureau of Meteorology product IDCJMC0014.                                       Produced: 07 Apr 2026\r\n"
+        "\r\n"
+        "   Site  Dist  Site name                                 Start     End      Lat       Lon Source         STA Height (m)   Bar_ht    WMO\r\n"
+        "------- ----- ---------------------------------------- ------- ------- -------- --------- -------------- --- ---------- -------- ------\r\n"
+        " 066037 66    SYDNEY AIRPORT AMO                          1929      .. -33.9461  151.1731 GPS            NSW        6.0      6.4  94767\r\n"
+        " 086282 08    MELBOURNE AIRPORT                           1970      .. -37.6655  144.8321 GPS            VIC      113.4    113.4  94866\r\n"
+        " 001006 01    WYNDHAM AERO                                1951      .. -15.5100  128.1503 GPS            WA         3.8      4.2  95214\r\n"
+        " 001000 01    KARUNJIE                                    1940    1983 -16.2919  127.1956 .....          WA       320.0       ..     ..\r\n"
+        " 005097 05    LEARMONTH SOLAR OBSERVATORY                 2013      .. -22.2183  114.1031 GPS            NSW         ..       ..     ..\r\n"
+    )
+
+    def test_discover_all_active(self):
+        api = BOMAustraliaAPI()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = self.SAMPLE_STATIONS_TXT
+        mock_resp.raise_for_status = MagicMock()
+        with patch.object(api.session, "get", return_value=mock_resp):
+            stations = api.discover_stations()
+        # 3 active with WMO (Sydney, Melbourne, Wyndham); old closed and no-WMO excluded
+        assert len(stations) == 3
+        wmos = [s[1] for s in stations]
+        assert 94767 in wmos
+        assert 94866 in wmos
+        assert 95214 in wmos
+
+    def test_discover_with_state_filter(self):
+        api = BOMAustraliaAPI()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = self.SAMPLE_STATIONS_TXT
+        mock_resp.raise_for_status = MagicMock()
+        with patch.object(api.session, "get", return_value=mock_resp):
+            stations = api.discover_stations(state_filter="NSW")
+        assert len(stations) == 1
+        assert stations[0] == ("IDN60901", 94767)
+
+    def test_discover_fallback_on_error(self):
+        api = BOMAustraliaAPI()
+        with patch.object(api.session, "get", side_effect=Exception("network error")):
+            stations = api.discover_stations()
+        assert stations == FALLBACK_STATIONS
+
+    def test_state_to_product_covers_all(self):
+        assert "NSW" in STATE_TO_PRODUCT
+        assert "VIC" in STATE_TO_PRODUCT
+        assert "QLD" in STATE_TO_PRODUCT
+        assert "WA" in STATE_TO_PRODUCT
+        assert "SA" in STATE_TO_PRODUCT
+        assert "TAS" in STATE_TO_PRODUCT
+        assert "NT" in STATE_TO_PRODUCT
 
 
 class TestSendStations:

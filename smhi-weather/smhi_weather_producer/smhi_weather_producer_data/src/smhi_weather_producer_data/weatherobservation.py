@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WeatherObservation:
     """
-    Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind gust, dew point, pressure, humidity, and precipitation.
+    Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind, pressure, humidity, precipitation, visibility, cloud cover, irradiance, and present weather.
     
     Attributes:
         station_id (str)
@@ -31,6 +31,15 @@ class WeatherObservation:
         air_pressure (typing.Optional[float])
         relative_humidity (typing.Optional[int])
         precipitation_last_hour (typing.Optional[float])
+        wind_direction (typing.Optional[float])
+        wind_speed (typing.Optional[float])
+        max_wind_speed (typing.Optional[float])
+        visibility (typing.Optional[float])
+        total_cloud_cover (typing.Optional[int])
+        present_weather (typing.Optional[int])
+        sunshine_duration (typing.Optional[float])
+        global_irradiance (typing.Optional[float])
+        precipitation_intensity (typing.Optional[float])
         quality (typing.Optional[str])
     """
     
@@ -44,6 +53,15 @@ class WeatherObservation:
     air_pressure: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_pressure"))
     relative_humidity: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
     precipitation_last_hour: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_last_hour"))
+    wind_direction: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction"))
+    wind_speed: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
+    max_wind_speed: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="max_wind_speed"))
+    visibility: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="visibility"))
+    total_cloud_cover: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="total_cloud_cover"))
+    present_weather: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="present_weather"))
+    sunshine_duration: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
+    global_irradiance: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_irradiance"))
+    precipitation_intensity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_intensity"))
     quality: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
 
     @classmethod
@@ -171,14 +189,23 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='cytofthribfeubwnvsrq',
-            station_name='jcwvjgphvimwuwudiqij',
+            station_id='fthtuzcwncrnkclzqqme',
+            station_name='sqsktssbwgquawfamgdc',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(52.267471900119325),
-            wind_gust=float(96.17209030919165),
-            dew_point=float(61.65280329476486),
-            air_pressure=float(27.604101933561076),
-            relative_humidity=int(36),
-            precipitation_last_hour=float(17.95785577552075),
-            quality='otfyiommdpxwleilakza'
+            air_temperature=float(64.5441699428818),
+            wind_gust=float(38.23184509675938),
+            dew_point=float(54.93410678058955),
+            air_pressure=float(6.359459132231793),
+            relative_humidity=int(76),
+            precipitation_last_hour=float(17.581222680062623),
+            wind_direction=float(85.53436150630421),
+            wind_speed=float(5.24440973321052),
+            max_wind_speed=float(50.16910145375015),
+            visibility=float(43.69004223271664),
+            total_cloud_cover=int(37),
+            present_weather=int(81),
+            sunshine_duration=float(97.76537147210188),
+            global_irradiance=float(34.07089640340112),
+            precipitation_intensity=float(86.4539701294217),
+            quality='inosktkrsfusrscvvmfv'
         )

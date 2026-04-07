@@ -17,7 +17,7 @@ import json
 @dataclass
 class Zone:
     """
-    Zone
+    NWS forecast zone reference data. Zones partition the US into geographic areas for which forecasts and warnings are issued.
     
     Attributes:
         zone_id (str)
@@ -163,11 +163,11 @@ class Zone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='dykicrclojzlbjnpidut',
-            name='giiprhwzphdlrhnsnsco',
-            type='uidyoyadzcyrznamljmw',
-            state='mmltaekbpczjwiekedaw',
-            forecast_office='euuanbnpahyvagayejaw',
-            timezone='wnayqwnebftzzyrecqrp',
-            radar_station='tzdagjbiijsyhieitewa'
+            zone_id='yygrkejxwuhgonilplva',
+            name='qdajloadgqeumloglnca',
+            type='fdtrgkgihzrqxiuzrnyp',
+            state='txbhqzpjtcmkmnhavhsq',
+            forecast_office='rcfjittcwbowmjekftik',
+            timezone='cuzdcgjvhocenkzmhxeq',
+            radar_station='gzzwxcmfsxakiefoqnwm'
         )

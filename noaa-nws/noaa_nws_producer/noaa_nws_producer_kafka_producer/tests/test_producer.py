@@ -24,6 +24,11 @@ from test_noaa_nws_producer_data_weatheralert import Test_WeatherAlert
 from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSZonesEventProducer
 from noaa_nws_producer_data import Zone
 from test_noaa_nws_producer_data_zone import Test_Zone
+from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSObservationsEventProducer
+from noaa_nws_producer_data import ObservationStation
+from test_noaa_nws_producer_data_observationstation import Test_ObservationStation
+from noaa_nws_producer_data import WeatherObservation
+from test_noaa_nws_producer_data_weatherobservation import Test_WeatherObservation
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -180,4 +185,187 @@ def test_microsoft_opendata_us_noaa_nws_zones_microsoftopendatausnoaanwszone(kaf
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{zone_id}".format(zone_id=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_microsoft_opendata_us_noaa_nws_observations_microsoftopendatausnoaanwsobservationstation(kafka_emulator):
+    """Test the MicrosoftOpenDataUSNOAANWSObservationStation event from the Microsoft.OpenData.US.NOAA.NWS.Observations message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_microsoft_opendata_us_noaa_nws_observations_microsoftopendatausnoaanwsobservationstation',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.ObservationStation":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = MicrosoftOpenDataUSNOAANWSObservationsEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_ObservationStation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_microsoft_open_data_us_noaa_nws_observation_station(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{station_id}".format(station_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_microsoft_opendata_us_noaa_nws_observations_microsoftopendatausnoaanwsweatherobservation(kafka_emulator):
+    """Test the MicrosoftOpenDataUSNOAANWSWeatherObservation event from the Microsoft.OpenData.US.NOAA.NWS.Observations message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_microsoft_opendata_us_noaa_nws_observations_microsoftopendatausnoaanwsweatherobservation',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = MicrosoftOpenDataUSNOAANWSObservationsEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_WeatherObservation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_microsoft_open_data_us_noaa_nws_weather_observation(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{station_id}".format(station_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_microsoft_opendata_us_noaa_nws_observations_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in Microsoft.OpenData.US.NOAA.NWS.Observations produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_microsoft_opendata_us_noaa_nws_observations_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = MicrosoftOpenDataUSNOAANWSObservationsEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_ObservationStation.create_instance()
+    data2 = Test_WeatherObservation.create_instance()
+
+    producer_instance.send_microsoft_open_data_us_noaa_nws_observation_station(_station_id = shared_key_value, data = data1)
+    producer_instance.send_microsoft_open_data_us_noaa_nws_weather_observation(_station_id = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["Microsoft.OpenData.US.NOAA.NWS.ObservationStation", "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{station_id}".format(station_id=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

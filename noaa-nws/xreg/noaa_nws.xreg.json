@@ -41,6 +41,27 @@
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Zones"
       ]
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-nws",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations"
+      ]
     }
   },
   "messagegroups": {
@@ -85,6 +106,46 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.Zone"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Observations": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.ObservationStation": {
+          "name": "ObservationStation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation": {
+          "name": "WeatherObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
         }
       }
     }
@@ -210,8 +271,8 @@
                     "type": "string"
                   }
                 },
-                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherAlert",
-                "description": "WeatherAlert"
+                "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherAlert",
+                "description": "Active weather alert from the NWS Common Alerting Protocol (CAP) feed. Alerts cover severe weather warnings, watches, advisories, and statements issued by NWS Weather Forecast Offices."
               }
             }
           }
@@ -234,29 +295,184 @@
                 "name": "Zone",
                 "properties": {
                   "zone_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "NWS zone identifier, e.g. 'NYZ072' for New York City."
                   },
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable zone name."
                   },
                   "type": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'."
                   },
                   "state": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Two-letter US state or territory abbreviation."
                   },
                   "forecast_office": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "NWS Weather Forecast Office (WFO) responsible for this zone, e.g. 'OKX'."
                   },
                   "timezone": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "IANA timezone name for the zone, e.g. 'America/New_York'."
                   },
                   "radar_station": {
-                    "type": ["string", "null"]
+                    "type": ["string", "null"],
+                    "description": "Nearest NEXRAD radar station identifier, or null if none assigned."
                   }
                 },
-                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NWS/Zone",
-                "description": "Zone"
+                "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/Zone",
+                "description": "NWS forecast zone reference data. Zones partition the US into geographic areas for which forecasts and warnings are issued."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.ObservationStation": {
+          "name": "ObservationStation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": ["station_id", "name"],
+                "name": "ObservationStation",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable station name, e.g. 'New York, Kennedy International Airport'."
+                  },
+                  "elevation_m": {
+                    "type": ["double", "null"],
+                    "description": "Station elevation above mean sea level.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "time_zone": {
+                    "type": ["string", "null"],
+                    "description": "IANA timezone of the station, e.g. 'America/New_York'."
+                  },
+                  "forecast_zone": {
+                    "type": ["string", "null"],
+                    "description": "NWS forecast zone identifier associated with this station."
+                  },
+                  "county": {
+                    "type": ["string", "null"],
+                    "description": "NWS county zone identifier for the station's location."
+                  },
+                  "fire_weather_zone": {
+                    "type": ["string", "null"],
+                    "description": "NWS fire weather zone identifier for the station's location."
+                  }
+                },
+                "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/ObservationStation",
+                "description": "NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": ["station_id", "timestamp"],
+                "name": "WeatherObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "ICAO or cooperative observer station identifier."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "UTC timestamp of the observation."
+                  },
+                  "text_description": {
+                    "type": ["string", "null"],
+                    "description": "Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'."
+                  },
+                  "temperature": {
+                    "type": ["double", "null"],
+                    "description": "Air temperature at the time of observation.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "dewpoint": {
+                    "type": ["double", "null"],
+                    "description": "Dew point temperature.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "wind_direction": {
+                    "type": ["double", "null"],
+                    "description": "Wind direction in degrees from which the wind is blowing.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "wind_speed": {
+                    "type": ["double", "null"],
+                    "description": "Sustained wind speed.",
+                    "unit": "km/h",
+                    "symbol": "km/h"
+                  },
+                  "wind_gust": {
+                    "type": ["double", "null"],
+                    "description": "Peak wind gust speed, null if no gusts observed.",
+                    "unit": "km/h",
+                    "symbol": "km/h"
+                  },
+                  "barometric_pressure": {
+                    "type": ["double", "null"],
+                    "description": "Station barometric pressure (not reduced to sea level).",
+                    "unit": "Pa",
+                    "symbol": "Pa"
+                  },
+                  "sea_level_pressure": {
+                    "type": ["double", "null"],
+                    "description": "Atmospheric pressure reduced to mean sea level.",
+                    "unit": "Pa",
+                    "symbol": "Pa"
+                  },
+                  "visibility": {
+                    "type": ["double", "null"],
+                    "description": "Horizontal visibility.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "relative_humidity": {
+                    "type": ["double", "null"],
+                    "description": "Relative humidity percentage.",
+                    "unit": "percent",
+                    "symbol": "%"
+                  },
+                  "wind_chill": {
+                    "type": ["double", "null"],
+                    "description": "Calculated wind chill temperature, null when conditions do not warrant it.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "heat_index": {
+                    "type": ["double", "null"],
+                    "description": "Calculated heat index temperature, null when conditions do not warrant it.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  }
+                },
+                "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherObservation",
+                "description": "Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl)."
               }
             }
           }

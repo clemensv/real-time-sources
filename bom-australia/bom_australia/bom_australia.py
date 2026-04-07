@@ -17,9 +17,22 @@ from bom_australia_producer_data import Station, WeatherObservation
 logger = logging.getLogger(__name__)
 
 BOM_BASE_URL = "http://reg.bom.gov.au/fwo"
+BOM_STATIONS_URL = "http://www.bom.gov.au/climate/data/lists_by_element/stations.txt"
 
-# Default station catalog: product_id, wmo_id pairs covering all state capital airports
-DEFAULT_STATIONS = [
+# Mapping from state abbreviation (in stations.txt) to BOM product ID prefix
+STATE_TO_PRODUCT = {
+    "NSW": "IDN60901",
+    "VIC": "IDV60901",
+    "QLD": "IDQ60901",
+    "WA": "IDW60901",
+    "SA": "IDS60901",
+    "TAS": "IDT60901",
+    "NT": "IDD60901",
+    "ANT": "IDT60901",  # Antarctic stations routed through Tasmania product
+}
+
+# Fallback capital-city stations used only when station discovery fails
+FALLBACK_STATIONS = [
     ("IDN60901", 94767),   # Sydney Airport, NSW
     ("IDV60901", 94866),   # Melbourne Airport, VIC
     ("IDQ60901", 94576),   # Brisbane Airport, QLD
@@ -27,7 +40,7 @@ DEFAULT_STATIONS = [
     ("IDS60901", 94648),   # Adelaide (West Terrace), SA
     ("IDT60901", 94970),   # Hobart Airport, TAS
     ("IDD60901", 94120),   # Darwin Airport, NT
-    ("IDN60901", 94926),   # Canberra Airport, ACT
+    ("IDC60901", 94926),   # Canberra Airport, ACT
 ]
 
 
@@ -39,6 +52,59 @@ class BOMAustraliaAPI:
         self.polling_interval = polling_interval
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": "real-time-sources-bom-bridge/1.0"})
+
+    def discover_stations(self, state_filter: typing.Optional[str] = None) -> list[tuple[str, int]]:
+        """Discover active BOM stations from the bureau station list.
+
+        Downloads the fixed-width stations.txt and returns (product_id, wmo_id) pairs
+        for all active stations that have a WMO number. Optionally filters by state.
+        """
+        try:
+            response = self.session.get(BOM_STATIONS_URL, timeout=60)
+            response.raise_for_status()
+        except Exception as e:
+            logger.warning("Station discovery failed, using fallback list: %s", e)
+            return FALLBACK_STATIONS
+
+        stations: list[tuple[str, int]] = []
+        allowed_states = None
+        if state_filter:
+            allowed_states = {s.strip().upper() for s in state_filter.split(",")}
+
+        lines = response.text.strip().split("\n")
+        for line in lines[4:]:  # skip header rows
+            if len(line) < 131:
+                continue
+            try:
+                end_year = line[63:71].strip()
+                wmo_str = line[130:].strip().replace("\r", "")
+                state = line[105:110].strip()
+
+                # Active = end year is empty/.. or >= current year - 1
+                is_active = (end_year in ("", "..") or
+                             (end_year.isdigit() and int(end_year) >= 2025))
+                has_wmo = wmo_str not in ("", "..") and wmo_str.isdigit()
+
+                if not is_active or not has_wmo:
+                    continue
+
+                if allowed_states and state not in allowed_states:
+                    continue
+
+                product_id = STATE_TO_PRODUCT.get(state)
+                if not product_id:
+                    continue
+
+                stations.append((product_id, int(wmo_str)))
+            except (ValueError, IndexError):
+                continue
+
+        if not stations:
+            logger.warning("No stations discovered, using fallback list")
+            return FALLBACK_STATIONS
+
+        logger.info("Discovered %d active stations with WMO numbers", len(stations))
+        return stations
 
     def get_station_observations(self, product_id: str, wmo_id: int) -> dict:
         """Fetch the 72-hour observation product for a single station."""
@@ -259,15 +325,20 @@ def main():
     parser.add_argument("--state-file", type=str,
                         default=os.environ.get("STATE_FILE", os.path.expanduser("~/.bom_australia_state.json")))
     parser.add_argument("--stations", type=str, default=os.environ.get("BOM_STATIONS", ""),
-                        help="Comma-separated product_id:wmo_id pairs (default: capital city airports)")
+                        help="Comma-separated product_id:wmo_id pairs (overrides station discovery)")
+    parser.add_argument("--state-filter", type=str, default=os.environ.get("BOM_STATE_FILTER", ""),
+                        help="Comma-separated state abbreviations to filter (e.g. NSW,VIC)")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List configured stations")
     subparsers.add_parser("feed", help="Feed data to Kafka")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
 
-    station_list = _parse_station_list(args.stations) if args.stations else DEFAULT_STATIONS
     api = BOMAustraliaAPI(polling_interval=args.polling_interval)
+    if args.stations:
+        station_list = _parse_station_list(args.stations)
+    else:
+        station_list = api.discover_stations(args.state_filter or None)
 
     if args.command == "list":
         for product_id, wmo_id in station_list:

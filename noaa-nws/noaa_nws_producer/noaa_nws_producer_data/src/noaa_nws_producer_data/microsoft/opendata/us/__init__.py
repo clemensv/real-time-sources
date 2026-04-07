@@ -1,3 +1,3 @@
-from .noaa import WeatherAlert, Zone
+from .noaa import Zone, WeatherAlert
 
-__all__ = ["WeatherAlert", "Zone"]
+__all__ = ["Zone", "WeatherAlert"]

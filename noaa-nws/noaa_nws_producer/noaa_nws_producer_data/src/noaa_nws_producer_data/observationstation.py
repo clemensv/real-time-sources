@@ -1,4 +1,4 @@
-""" Station dataclass. """
+""" ObservationStation dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,33 +15,31 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Station:
+class ObservationStation:
     """
-    Reference metadata for a SMHI meteorological observation station. Stations report hourly surface observations of temperature, wind, pressure, humidity, precipitation, and other parameters across Sweden.
+    NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US.
     
     Attributes:
         station_id (str)
         name (str)
-        owner (typing.Optional[str])
-        owner_category (typing.Optional[str])
-        measuring_stations (typing.Optional[str])
-        height (typing.Optional[float])
-        latitude (float)
-        longitude (float)
+        elevation_m (typing.Optional[float])
+        time_zone (typing.Optional[str])
+        forecast_zone (typing.Optional[str])
+        county (typing.Optional[str])
+        fire_weather_zone (typing.Optional[str])
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    owner: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner"))
-    owner_category: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="owner_category"))
-    measuring_stations: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="measuring_stations"))
-    height: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="height"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    elevation_m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation_m"))
+    time_zone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_zone"))
+    forecast_zone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_zone"))
+    county: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="county"))
+    fire_weather_zone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fire_weather_zone"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Station':
+    def from_serializer_dict(cls, data: dict) -> 'ObservationStation':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -114,7 +112,7 @@ class Station:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Station']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['ObservationStation']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -151,13 +149,13 @@ class Station:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Station.from_serializer_dict(_record)
+                return ObservationStation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Station':
+    def create_instance(cls) -> 'ObservationStation':
         """
         Creates an instance of the dataclass with test values.
         
@@ -165,12 +163,11 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rhqxiqgfefynbsfqbtwq',
-            name='qoiubugicyyejwetcotj',
-            owner='itbtxaobaqlmsbkxohlk',
-            owner_category='dcjtbrcxclhumeuqvsya',
-            measuring_stations='kczrgupefmfsblogonee',
-            height=float(72.27969248732532),
-            latitude=float(87.40102019339265),
-            longitude=float(21.749264861459274)
+            station_id='teosoypnomrnxghabtnv',
+            name='fqrojcvftgiwaceecexk',
+            elevation_m=float(81.15610428049982),
+            time_zone='fjkskdvjlpambrizwjvx',
+            forecast_zone='batljwxvvqktmfpnpodz',
+            county='rbqekzpmyvfcmrazmyhl',
+            fire_weather_zone='ajhrkbuohfwocjoacqxc'
         )
