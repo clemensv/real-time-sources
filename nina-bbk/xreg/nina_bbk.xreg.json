@@ -1,0 +1,250 @@
+{
+  "endpoints": {
+    "NINA.Warnings.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "nina-bbk",
+          "key": "{warning_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NINA.Warnings"
+      ]
+    }
+  },
+  "messagegroups": {
+    "NINA.Warnings": {
+      "messages": {
+        "NINA.CivilWarning": {
+          "name": "CivilWarning",
+          "description": "A civil protection warning from Germany's NINA/BBK warning system. Aggregates warnings from MOWAS (federal), KATWARN (municipal), BIWAPP (municipal), DWD (weather service), LHP (flood centers), and police services. Each warning follows the CAP (Common Alerting Protocol) structure with multi-language support.",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NINA.CivilWarning"
+            },
+            "source": {
+              "value": "https://warnung.bund.de"
+            },
+            "subject": {
+              "value": "{warning_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NINA.jstruct/schemas/NINA.CivilWarning"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "NINA.jstruct": {
+      "schemas": {
+        "NINA.CivilWarning": {
+          "name": "CivilWarning",
+          "description": "A civil protection warning from Germany's NINA/BBK system. Contains CAP-structured alert data with multi-language info blocks, BBK event codes, and German administrative area geocodes (Verwaltungsbereiche).",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://warnung.bund.de/schemas/NINA/CivilWarning",
+                "name": "CivilWarning",
+                "type": "object",
+                "description": "A civil protection warning from Germany's NINA/BBK system. Contains CAP-structured alert data with multi-language info blocks, BBK event codes, and German administrative area geocodes (Verwaltungsbereiche).",
+                "required": [
+                  "warning_id",
+                  "provider",
+                  "sender",
+                  "sent",
+                  "status",
+                  "msg_type",
+                  "scope",
+                  "event",
+                  "severity",
+                  "urgency",
+                  "certainty"
+                ],
+                "properties": {
+                  "warning_id": {
+                    "type": "string",
+                    "description": "The unique warning identifier assigned by the NINA/BBK system (e.g., 'mow.DE-HE-DA-W184-20240723-000')."
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "The NINA provider that issued the warning.",
+                    "enum": [
+                      "mowas",
+                      "katwarn",
+                      "biwapp",
+                      "dwd",
+                      "lhp",
+                      "police"
+                    ]
+                  },
+                  "version": {
+                    "type": "integer",
+                    "description": "The version number of this warning, incremented with each update."
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "The identifier of the issuing authority (e.g., 'DE-HE-DA-W184')."
+                  },
+                  "sender_name": {
+                    "type": "string",
+                    "description": "The human-readable long name of the issuing authority (e.g., 'Integrierte Leitstelle Stadt Darmstadt')."
+                  },
+                  "sent": {
+                    "type": "datetime",
+                    "description": "The date and time when the warning was issued, in ISO-8601 format."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "The CAP alert status.",
+                    "enum": [
+                      "Actual",
+                      "Exercise",
+                      "System",
+                      "Test",
+                      "Draft"
+                    ]
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "description": "The CAP message type indicating the nature of the warning.",
+                    "enum": [
+                      "Alert",
+                      "Update",
+                      "Cancel",
+                      "Ack",
+                      "Error"
+                    ],
+                    "altnames": {
+                      "json": "msgType"
+                    }
+                  },
+                  "scope": {
+                    "type": "string",
+                    "description": "The CAP scope of the warning. Typically 'Public'.",
+                    "enum": [
+                      "Public",
+                      "Restricted",
+                      "Private"
+                    ]
+                  },
+                  "references": {
+                    "type": "string",
+                    "description": "CAP references to prior related warnings, in the format 'sender,identifier,sent'."
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "The event type description (e.g., 'Gefahreninformation', 'Hochwasserinformation')."
+                  },
+                  "event_code": {
+                    "type": "string",
+                    "description": "The BBK event code identifying the hazard type (e.g., 'BBK-EVC-067' for animal disease, 'BBK-EVC-045' for flood)."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "The CAP alert category.",
+                    "enum": [
+                      "Met",
+                      "Geo",
+                      "Safety",
+                      "Security",
+                      "Rescue",
+                      "Fire",
+                      "Health",
+                      "Env",
+                      "Transport",
+                      "Infra",
+                      "CBRNE",
+                      "Other"
+                    ]
+                  },
+                  "severity": {
+                    "type": "string",
+                    "description": "The CAP severity level.",
+                    "enum": [
+                      "Extreme",
+                      "Severe",
+                      "Moderate",
+                      "Minor",
+                      "Unknown"
+                    ]
+                  },
+                  "urgency": {
+                    "type": "string",
+                    "description": "The CAP urgency level.",
+                    "enum": [
+                      "Immediate",
+                      "Expected",
+                      "Future",
+                      "Past",
+                      "Unknown"
+                    ]
+                  },
+                  "certainty": {
+                    "type": "string",
+                    "description": "The CAP certainty level.",
+                    "enum": [
+                      "Observed",
+                      "Likely",
+                      "Possible",
+                      "Unlikely",
+                      "Unknown"
+                    ]
+                  },
+                  "headline": {
+                    "type": "string",
+                    "description": "A brief human-readable headline summarizing the warning."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A detailed description of the warning situation."
+                  },
+                  "instruction": {
+                    "type": "string",
+                    "description": "Recommended protective actions for the public."
+                  },
+                  "web": {
+                    "type": "string",
+                    "description": "A URL to further information about the warning."
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "Contact information for the issuing authority."
+                  },
+                  "area_desc": {
+                    "type": "string",
+                    "description": "A textual description of the affected geographic area."
+                  },
+                  "verwaltungsbereiche": {
+                    "type": "string",
+                    "description": "Comma-separated German administrative area codes (Amtliche Gemeindeschlüssel) affected by the warning."
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "The language of the info block used to populate this event (e.g., 'de', 'EN')."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "endpoints": {
+    "PTWC.Bulletins.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ptwc-tsunami",
+          "key": "{bulletin_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/PTWC.Bulletins"
+      ]
+    }
+  },
+  "messagegroups": {
+    "PTWC.Bulletins": {
+      "messages": {
+        "PTWC.TsunamiBulletin": {
+          "name": "TsunamiBulletin",
+          "description": "A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov.",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "PTWC.TsunamiBulletin"
+            },
+            "source": {
+              "value": "https://www.tsunami.gov"
+            },
+            "subject": {
+              "value": "{bulletin_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/PTWC.jstruct/schemas/PTWC.TsunamiBulletin"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "PTWC.jstruct": {
+      "schemas": {
+        "PTWC.TsunamiBulletin": {
+          "name": "TsunamiBulletin",
+          "description": "A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://www.tsunami.gov/schemas/PTWC/TsunamiBulletin",
+                "name": "TsunamiBulletin",
+                "type": "object",
+                "description": "A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.",
+                "required": [
+                  "bulletin_id",
+                  "title",
+                  "updated",
+                  "feed"
+                ],
+                "properties": {
+                  "bulletin_id": {
+                    "type": "string",
+                    "description": "The unique bulletin identifier as a URN UUID from the Atom entry (e.g., 'urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9')."
+                  },
+                  "feed": {
+                    "type": "string",
+                    "description": "The feed this bulletin was obtained from.",
+                    "enum": [
+                      "PAAQ",
+                      "PHEB"
+                    ]
+                  },
+                  "center": {
+                    "type": "string",
+                    "description": "The issuing tsunami warning center name (e.g., 'NWS National Tsunami Warning Center Palmer AK', 'NWS PACIFIC TSUNAMI WARNING CENTER HONOLULU HI')."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "The title of the bulletin, typically the location of the seismic event (e.g., '60 miles SW of Buldir I., Alaska')."
+                  },
+                  "updated": {
+                    "type": "datetime",
+                    "description": "The date and time when the bulletin was last updated, in ISO-8601 format."
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "The latitude of the seismic event epicenter in decimal degrees."
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "The longitude of the seismic event epicenter in decimal degrees."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "The tsunami bulletin category indicating the level of threat.",
+                    "enum": [
+                      "Warning",
+                      "Advisory",
+                      "Watch",
+                      "Information"
+                    ]
+                  },
+                  "magnitude": {
+                    "type": "string",
+                    "description": "The preliminary earthquake magnitude and type (e.g., '5.2(mb)', '7.1(Mw)')."
+                  },
+                  "affected_region": {
+                    "type": "string",
+                    "description": "The affected region description from the bulletin summary."
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": "Additional notes from the bulletin (e.g., 'There is NO tsunami danger from this earthquake.')."
+                  },
+                  "bulletin_url": {
+                    "type": "string",
+                    "description": "URL to the full text bulletin on tsunami.gov."
+                  },
+                  "cap_url": {
+                    "type": "string",
+                    "description": "URL to the CAP XML document for this bulletin."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

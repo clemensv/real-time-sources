@@ -1,0 +1,1 @@
+from .meteoalarm import main

@@ -1,0 +1,241 @@
+{
+  "endpoints": {
+    "NWS.Alerts.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "nws-alerts",
+          "key": "{alert_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NWS.Alerts"
+      ]
+    }
+  },
+  "messagegroups": {
+    "NWS.Alerts": {
+      "messages": {
+        "NWS.WeatherAlert": {
+          "name": "WeatherAlert",
+          "description": "A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "NWS.WeatherAlert"
+            },
+            "source": {
+              "value": "https://api.weather.gov"
+            },
+            "subject": {
+              "value": "{alert_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NWS.jstruct/schemas/NWS.WeatherAlert"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "NWS.jstruct": {
+      "schemas": {
+        "NWS.WeatherAlert": {
+          "name": "WeatherAlert",
+          "description": "A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.weather.gov/schemas/NWS/WeatherAlert",
+                "name": "WeatherAlert",
+                "type": "object",
+                "description": "A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.",
+                "required": [
+                  "alert_id",
+                  "event",
+                  "severity",
+                  "urgency",
+                  "certainty",
+                  "sent",
+                  "status",
+                  "message_type"
+                ],
+                "properties": {
+                  "alert_id": {
+                    "type": "string",
+                    "description": "The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert.",
+                    "altnames": {
+                      "json": "id"
+                    }
+                  },
+                  "area_desc": {
+                    "type": "string",
+                    "description": "A textual description of the affected geographic area (e.g., county names).",
+                    "altnames": {
+                      "json": "areaDesc"
+                    }
+                  },
+                  "same_codes": {
+                    "type": "string",
+                    "description": "Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS)."
+                  },
+                  "ugc_codes": {
+                    "type": "string",
+                    "description": "Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001')."
+                  },
+                  "sent": {
+                    "type": "datetime",
+                    "description": "The date and time when the alert was sent, in ISO-8601 format."
+                  },
+                  "effective": {
+                    "type": "datetime",
+                    "description": "The date and time when the alert becomes effective."
+                  },
+                  "onset": {
+                    "type": "datetime",
+                    "description": "The expected date and time of onset of the weather event."
+                  },
+                  "expires": {
+                    "type": "datetime",
+                    "description": "The date and time when the alert expires."
+                  },
+                  "ends": {
+                    "type": "datetime",
+                    "description": "The expected end time of the weather event."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "The CAP alert status.",
+                    "enum": [
+                      "Actual",
+                      "Exercise",
+                      "System",
+                      "Test",
+                      "Draft"
+                    ]
+                  },
+                  "message_type": {
+                    "type": "string",
+                    "description": "The CAP message type.",
+                    "enum": [
+                      "Alert",
+                      "Update",
+                      "Cancel",
+                      "Ack",
+                      "Error"
+                    ],
+                    "altnames": {
+                      "json": "messageType"
+                    }
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "The CAP alert category (e.g., 'Met' for meteorological)."
+                  },
+                  "severity": {
+                    "type": "string",
+                    "description": "The CAP severity level.",
+                    "enum": [
+                      "Extreme",
+                      "Severe",
+                      "Moderate",
+                      "Minor",
+                      "Unknown"
+                    ]
+                  },
+                  "certainty": {
+                    "type": "string",
+                    "description": "The CAP certainty level.",
+                    "enum": [
+                      "Observed",
+                      "Likely",
+                      "Possible",
+                      "Unlikely",
+                      "Unknown"
+                    ]
+                  },
+                  "urgency": {
+                    "type": "string",
+                    "description": "The CAP urgency level.",
+                    "enum": [
+                      "Immediate",
+                      "Expected",
+                      "Future",
+                      "Past",
+                      "Unknown"
+                    ]
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory')."
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "The email address or identifier of the alert sender."
+                  },
+                  "sender_name": {
+                    "type": "string",
+                    "description": "The human-readable name of the sender (e.g., 'NWS Tulsa OK').",
+                    "altnames": {
+                      "json": "senderName"
+                    }
+                  },
+                  "headline": {
+                    "type": "string",
+                    "description": "A brief headline summarizing the alert."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "The full textual description of the alert."
+                  },
+                  "instruction": {
+                    "type": "string",
+                    "description": "Recommended protective actions."
+                  },
+                  "response": {
+                    "type": "string",
+                    "description": "The recommended response type (e.g., 'Shelter', 'Evacuate', 'None')."
+                  },
+                  "scope": {
+                    "type": "string",
+                    "description": "The CAP scope of the alert."
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "The IPAWS code (e.g., 'IPAWSv1.0')."
+                  },
+                  "nws_headline": {
+                    "type": "string",
+                    "description": "The NWS-specific headline from the parameters block."
+                  },
+                  "vtec": {
+                    "type": "string",
+                    "description": "The P-VTEC (Valid Time Event Code) string for NWS event tracking."
+                  },
+                  "web": {
+                    "type": "string",
+                    "description": "A URL to the full alert details."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

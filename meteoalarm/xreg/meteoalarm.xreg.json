@@ -1,0 +1,246 @@
+{
+  "endpoints": {
+    "Meteoalarm.Warnings.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "meteoalarm",
+          "key": "{identifier}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Meteoalarm.Warnings"
+      ]
+    }
+  },
+  "messagegroups": {
+    "Meteoalarm.Warnings": {
+      "messages": {
+        "Meteoalarm.WeatherWarning": {
+          "name": "WeatherWarning",
+          "description": "A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Meteoalarm.WeatherWarning"
+            },
+            "source": {
+              "value": "https://feeds.meteoalarm.org"
+            },
+            "subject": {
+              "value": "{identifier}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Meteoalarm.jstruct": {
+      "schemas": {
+        "Meteoalarm.WeatherWarning": {
+          "name": "WeatherWarning",
+          "description": "A severe weather warning from the EUMETNET Meteoalarm system. Contains CAP-structured alert data with awareness level and type, geographic area with EMMA/NUTS geocodes, and multilingual info blocks.",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://meteoalarm.org/schemas/Meteoalarm/WeatherWarning",
+                "name": "WeatherWarning",
+                "type": "object",
+                "description": "A severe weather warning from the EUMETNET Meteoalarm system. Contains CAP-structured alert data with awareness level and type, geographic area with EMMA/NUTS geocodes, and multilingual info blocks.",
+                "required": [
+                  "identifier",
+                  "sender",
+                  "sent",
+                  "status",
+                  "msg_type",
+                  "scope",
+                  "event",
+                  "severity",
+                  "urgency",
+                  "certainty",
+                  "area_desc"
+                ],
+                "properties": {
+                  "identifier": {
+                    "type": "string",
+                    "description": "The unique CAP alert identifier assigned by the issuing national meteorological service."
+                  },
+                  "sender": {
+                    "type": "string",
+                    "description": "The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de')."
+                  },
+                  "sent": {
+                    "type": "datetime",
+                    "description": "The date and time when the warning was issued, in ISO-8601 format."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.",
+                    "enum": [
+                      "Actual",
+                      "Exercise",
+                      "System",
+                      "Test",
+                      "Draft"
+                    ]
+                  },
+                  "msg_type": {
+                    "type": "string",
+                    "description": "The CAP message type indicating the nature of the alert.",
+                    "enum": [
+                      "Alert",
+                      "Update",
+                      "Cancel",
+                      "Ack",
+                      "Error"
+                    ],
+                    "altnames": {
+                      "json": "msgType"
+                    }
+                  },
+                  "scope": {
+                    "type": "string",
+                    "description": "The CAP scope of the alert. Typically 'Public' for weather warnings.",
+                    "enum": [
+                      "Public",
+                      "Restricted",
+                      "Private"
+                    ]
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "The country where the warning applies, derived from the feed name (e.g., 'germany', 'france')."
+                  },
+                  "event": {
+                    "type": "string",
+                    "description": "The weather event description, typically in the national language of the issuing service (e.g., 'STURMBÖEN', 'Thunderstorm')."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "The CAP alert category. 'Met' for meteorological warnings.",
+                    "enum": [
+                      "Met",
+                      "Geo",
+                      "Safety",
+                      "Security",
+                      "Rescue",
+                      "Fire",
+                      "Health",
+                      "Env",
+                      "Transport",
+                      "Infra",
+                      "CBRNE",
+                      "Other"
+                    ]
+                  },
+                  "severity": {
+                    "type": "string",
+                    "description": "The CAP severity level indicating the intensity of the weather event.",
+                    "enum": [
+                      "Extreme",
+                      "Severe",
+                      "Moderate",
+                      "Minor",
+                      "Unknown"
+                    ]
+                  },
+                  "urgency": {
+                    "type": "string",
+                    "description": "The CAP urgency level indicating the time-frame for protective action.",
+                    "enum": [
+                      "Immediate",
+                      "Expected",
+                      "Future",
+                      "Past",
+                      "Unknown"
+                    ]
+                  },
+                  "certainty": {
+                    "type": "string",
+                    "description": "The CAP certainty level indicating the confidence in the forecast.",
+                    "enum": [
+                      "Observed",
+                      "Likely",
+                      "Possible",
+                      "Unlikely",
+                      "Unknown"
+                    ]
+                  },
+                  "headline": {
+                    "type": "string",
+                    "description": "A brief human-readable headline summarizing the warning, often in the national language."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A detailed description of the weather warning, often in the national language."
+                  },
+                  "instruction": {
+                    "type": "string",
+                    "description": "Recommended protective actions for the public."
+                  },
+                  "effective": {
+                    "type": "datetime",
+                    "description": "The date and time when the warning becomes effective, in ISO-8601 format."
+                  },
+                  "onset": {
+                    "type": "datetime",
+                    "description": "The expected date and time of onset of the weather event, in ISO-8601 format."
+                  },
+                  "expires": {
+                    "type": "datetime",
+                    "description": "The date and time when the warning expires, in ISO-8601 format."
+                  },
+                  "web": {
+                    "type": "string",
+                    "description": "A URL to the full warning details on the issuing service's website."
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "Contact information for the issuing meteorological service."
+                  },
+                  "awareness_level": {
+                    "type": "string",
+                    "description": "The Meteoalarm awareness level as a string combining the numeric level and color, e.g., '2; yellow; Moderate'. Values range from '1; green' (no significant weather) to '4; red' (very dangerous)."
+                  },
+                  "awareness_type": {
+                    "type": "string",
+                    "description": "The Meteoalarm awareness type code identifying the hazard, e.g., '1; Wind', '2; Snow/Ice', '3; Thunderstorm', '4; Fog', '5; Extreme high temperature', '6; Extreme low temperature', '7; Coastal Event', '8; Forestfire', '9; Avalanches', '10; Rain', '11; Flooding', '12; Rain-Flood', '13; Coastalevent'."
+                  },
+                  "area_desc": {
+                    "type": "string",
+                    "description": "A textual description of the affected geographic area."
+                  },
+                  "geocodes": {
+                    "type": "string",
+                    "description": "A semicolon-separated list of geocode values (EMMA_ID or WARNCELLID) identifying the specific warning zones."
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB')."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
