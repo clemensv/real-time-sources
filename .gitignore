@@ -19,6 +19,7 @@
 **/venv/
 **/env/
 **/htmlcov/
+*.log
 
 
 mode-s/kql/aircraft.csv
