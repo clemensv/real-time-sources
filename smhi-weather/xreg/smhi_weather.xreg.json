@@ -1,0 +1,185 @@
+{
+  "endpoints": {
+    "SE.Gov.SMHI.Weather.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "smhi-weather",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/SE.Gov.SMHI.Weather"]
+    }
+  },
+  "messagegroups": {
+    "SE.Gov.SMHI.Weather": {
+      "messages": {
+        "SE.Gov.SMHI.Weather.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {"value": "SE.Gov.SMHI.Weather.Station"},
+            "source": {"value": "https://opendata-download-metobs.smhi.se"},
+            "subject": {"value": "{station_id}", "type": "uritemplate"}
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.jstruct/schemas/SE.Gov.SMHI.Weather.Station"
+        },
+        "SE.Gov.SMHI.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {"value": "SE.Gov.SMHI.Weather.WeatherObservation"},
+            "source": {"value": "https://opendata-download-metobs.smhi.se"},
+            "subject": {"value": "{station_id}", "type": "uritemplate"}
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SE.Gov.SMHI.Weather.jstruct/schemas/SE.Gov.SMHI.Weather.WeatherObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "SE.Gov.SMHI.Weather.jstruct": {
+      "schemas": {
+        "SE.Gov.SMHI.Weather.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata-download-metobs.smhi.se/schemas/SE/Gov/SMHI/Weather/Station",
+                "type": "object",
+                "name": "Station",
+                "description": "Reference metadata for a SMHI meteorological observation station. Stations report hourly surface observations of temperature, wind, pressure, humidity, precipitation, and other parameters across Sweden.",
+                "required": ["station_id", "name", "latitude", "longitude"],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "SMHI numeric station identifier, unique within the SMHI observation network."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable station name as assigned by SMHI, e.g. 'Abisko Aut' or 'Stockholm-Arlanda'."
+                  },
+                  "owner": {
+                    "type": "string",
+                    "description": "Organization or entity that owns and operates the station, e.g. 'SMHI' or 'Polarforskningssekretariatet'."
+                  },
+                  "owner_category": {
+                    "type": "string",
+                    "description": "Category of station ownership, e.g. 'CLIMATE' for long-running climate stations or 'AVIATION' for airport stations."
+                  },
+                  "measuring_stations": {
+                    "type": "string",
+                    "description": "Station classification within SMHI's measuring station network, e.g. 'CORE' for primary network stations."
+                  },
+                  "height": {
+                    "type": "double",
+                    "description": "Sensor height above ground in meters.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "Geographic latitude of the station in decimal degrees.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Geographic longitude of the station in decimal degrees.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "SE.Gov.SMHI.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata-download-metobs.smhi.se/schemas/SE/Gov/SMHI/Weather/WeatherObservation",
+                "type": "object",
+                "name": "WeatherObservation",
+                "description": "Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind gust, dew point, pressure, humidity, and precipitation.",
+                "required": ["station_id", "station_name", "observation_time"],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "SMHI station identifier for the reporting station."
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Human-readable name of the reporting station."
+                  },
+                  "observation_time": {
+                    "type": "datetime",
+                    "description": "Timestamp of the observation in UTC, derived from the SMHI epoch millisecond value."
+                  },
+                  "air_temperature": {
+                    "type": ["double", "null"],
+                    "description": "Instantaneous air temperature, reported hourly (SMHI parameter 1).",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "wind_gust": {
+                    "type": ["double", "null"],
+                    "description": "Maximum wind gust speed, reported hourly (SMHI parameter 21).",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "dew_point": {
+                    "type": ["double", "null"],
+                    "description": "Dew point temperature, reported hourly (SMHI parameter 39).",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "air_pressure": {
+                    "type": ["double", "null"],
+                    "description": "Atmospheric pressure reduced to mean sea level, reported hourly (SMHI parameter 9).",
+                    "unit": "hPa",
+                    "symbol": "hPa"
+                  },
+                  "relative_humidity": {
+                    "type": ["int32", "null"],
+                    "description": "Relative humidity as a percentage, reported hourly (SMHI parameter 6).",
+                    "unit": "percent",
+                    "symbol": "%"
+                  },
+                  "precipitation_last_hour": {
+                    "type": ["double", "null"],
+                    "description": "Total precipitation in the last hour, reported hourly (SMHI parameter 7).",
+                    "unit": "mm",
+                    "symbol": "mm"
+                  },
+                  "quality": {
+                    "type": "string",
+                    "description": "Quality flag for the observation as assigned by SMHI: 'G' for approved, 'Y' for suspect."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

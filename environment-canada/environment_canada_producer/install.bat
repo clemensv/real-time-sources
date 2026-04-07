@@ -1,0 +1,2 @@
+pip install .\environment_canada_producer_data
+pip install .\environment_canada_producer_kafka_producer

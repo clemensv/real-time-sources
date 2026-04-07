@@ -1,0 +1,2 @@
+pip install .\hko_hong_kong_producer_data
+pip install .\hko_hong_kong_producer_kafka_producer

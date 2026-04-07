@@ -1,0 +1,165 @@
+{
+  "endpoints": {
+    "SG.Gov.NEA.Weather.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "singapore-nea",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/SG.Gov.NEA.Weather"]
+    }
+  },
+  "messagegroups": {
+    "SG.Gov.NEA.Weather": {
+      "messages": {
+        "SG.Gov.NEA.Weather.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {"value": "SG.Gov.NEA.Weather.Station"},
+            "source": {"value": "https://api.data.gov.sg"},
+            "subject": {"value": "{station_id}", "type": "uritemplate"}
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.Station"
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {"value": "SG.Gov.NEA.Weather.WeatherObservation"},
+            "source": {"value": "https://api.data.gov.sg"},
+            "subject": {"value": "{station_id}", "type": "uritemplate"}
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.WeatherObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "SG.Gov.NEA.Weather.jstruct": {
+      "schemas": {
+        "SG.Gov.NEA.Weather.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/Weather/Station",
+                "type": "object",
+                "name": "Station",
+                "description": "Reference data for a Singapore NEA weather observation station. Stations are identified by a stable device ID (e.g. S109) and include location coordinates. The data_types field indicates which parameters this station reports.",
+                "required": ["station_id", "name", "latitude", "longitude"],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NEA station identifier, e.g. 'S109', 'S50'. Matches the device_id field in the NEA API metadata."
+                  },
+                  "device_id": {
+                    "type": "string",
+                    "description": "Device identifier, typically identical to station_id."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable station name describing the location, e.g. 'Ang Mo Kio Avenue 5', 'Changi'."
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "WGS84 latitude of the station.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "WGS84 longitude of the station.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "data_types": {
+                    "type": "string",
+                    "description": "Comma-separated list of observation types this station reports. Values: 'air_temperature', 'rainfall', 'relative_humidity', 'wind_speed', 'wind_direction'."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/Weather/WeatherObservation",
+                "type": "object",
+                "name": "WeatherObservation",
+                "description": "Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity/wind every minute. Fields are null when the station does not report that parameter.",
+                "required": ["station_id", "station_name", "observation_time"],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NEA station identifier."
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Station location name."
+                  },
+                  "observation_time": {
+                    "type": "datetime",
+                    "description": "Timestamp of the observation in ISO 8601 with Singapore timezone (+08:00)."
+                  },
+                  "air_temperature": {
+                    "type": ["double", "null"],
+                    "description": "Air temperature from the air-temperature endpoint.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "rainfall": {
+                    "type": ["double", "null"],
+                    "description": "Rainfall amount in the last 5 minutes from the rainfall endpoint.",
+                    "unit": "mm",
+                    "symbol": "mm"
+                  },
+                  "relative_humidity": {
+                    "type": ["double", "null"],
+                    "description": "Relative humidity from the relative-humidity endpoint.",
+                    "unit": "percent",
+                    "symbol": "%"
+                  },
+                  "wind_speed": {
+                    "type": ["double", "null"],
+                    "description": "Wind speed from the wind-speed endpoint.",
+                    "unit": "kn",
+                    "symbol": "kn"
+                  },
+                  "wind_direction": {
+                    "type": ["double", "null"],
+                    "description": "Wind direction in degrees clockwise from true north, from the wind-direction endpoint.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

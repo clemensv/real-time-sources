@@ -52,11 +52,16 @@ documentation, and the README in each project directory has full details.
 
 | Source | Coverage | Link |
 |---|---|---|
+| BOM Australia | Australia (~8 capital city airports, half-hourly obs) | [Container](bom-australia/CONTAINER.md) |
 | DWD | Germany (~1,450 stations, observations and CAP alerts) | [Container](dwd/CONTAINER.md) |
+| Environment Canada | Canada (~963 SWOB stations, hourly obs) | [Container](environment-canada/CONTAINER.md) |
+| HKO Hong Kong | Hong Kong (27 temp stations, 18 rainfall districts) | [Container](hko-hong-kong/CONTAINER.md) |
 | Meteoalarm | Europe (37 countries, severe weather warnings) | [Container](meteoalarm/CONTAINER.md) |
 | NOAA NWS | United States (weather alerts, CAP) | [Container](noaa-nws/CONTAINER.md) |
 | NWS CAP Alerts | United States (active alerts via api.weather.gov) | [Container](nws-alerts/CONTAINER.md) |
 | NOAA GOES / SWPC | Global (space weather, solar wind, K-index) | [Container](noaa-goes/CONTAINER.md) |
+| Singapore NEA | Singapore (62 stations, temp/rainfall/wind/forecast) | [Container](singapore-nea/CONTAINER.md) |
+| SMHI Weather | Sweden (~232 stations, hourly obs) | [Container](smhi-weather/CONTAINER.md) |
 
 ### Disaster Alerts and Civil Protection
 
@@ -172,9 +177,21 @@ quantity data for over 1.5 million US stations. Updated every 15 minutes.
 
 ### Weather and Meteorology
 
+**[BOM Australia](bom-australia/README.md)** -- Australian Bureau of Meteorology.
+Half-hourly weather observations from capital city airports: temperature, wind,
+pressure, humidity, rainfall, cloud cover, visibility.
+
 **[DWD](dwd/README.md)** -- German Weather Service. ~1,450 stations with
 10-minute observations (temperature, precipitation, wind) plus CAP weather
 alerts.
+
+**[Environment Canada](environment-canada/README.md)** -- Environment and
+Climate Change Canada (ECCC). ~963 SWOB stations via OGC API with hourly
+temperature, humidity, dew point, pressure, wind, and precipitation.
+
+**[HKO Hong Kong](hko-hong-kong/README.md)** -- Hong Kong Observatory. 27
+temperature stations, 18 rainfall districts, humidity, and UV index. Updated
+hourly.
 
 **[Meteoalarm](meteoalarm/README.md)** -- EUMETNET Meteoalarm. Severe weather
 warnings aggregated from 37 European national meteorological services.
@@ -189,6 +206,14 @@ and VTEC codes.
 **[NOAA GOES / SWPC](noaa-goes/README.md)** -- NOAA Space Weather Prediction
 Center. Space weather alerts, planetary K-index, and solar wind data. Polled
 every 60 seconds.
+
+**[Singapore NEA](singapore-nea/README.md)** -- National Environment Agency of
+Singapore. 62 weather stations with temperature, rainfall, wind speed, wind
+direction, and 2-hour area forecasts.
+
+**[SMHI Weather](smhi-weather/README.md)** -- Swedish Meteorological and
+Hydrological Institute (SMHI). ~232 stations with hourly temperature, wind gust,
+dew point, pressure, humidity, and precipitation.
 
 ### Disaster Alerts and Civil Protection
 

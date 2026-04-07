@@ -124,6 +124,26 @@ def autobahn_image():
 def digitraffic_road_image():
     return build_image('digitraffic-road')
 
+@pytest.fixture(scope='module')
+def bom_australia_image():
+    return build_image('bom-australia')
+
+@pytest.fixture(scope='module')
+def smhi_weather_image():
+    return build_image('smhi-weather')
+
+@pytest.fixture(scope='module')
+def hko_image():
+    return build_image('hko-hong-kong')
+
+@pytest.fixture(scope='module')
+def singapore_nea_image():
+    return build_image('singapore-nea')
+
+@pytest.fixture(scope='module')
+def environment_canada_image():
+    return build_image('environment-canada')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -576,4 +596,79 @@ class TestBAFUHydroDockerFlow:
             kafka, bafu_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['WaterLevelObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# BOM Australia (weather observations)
+# ---------------------------------------------------------------------------
+
+class TestBOMAustraliaDockerFlow:
+    TOPIC = 'test-bom-australia'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, bom_australia_image):
+        _run_kafka_flow_test(
+            kafka, bom_australia_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WeatherObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# SMHI Weather (Sweden – meteorological observations)
+# ---------------------------------------------------------------------------
+
+class TestSMHIWeatherDockerFlow:
+    TOPIC = 'test-smhi-weather'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, smhi_weather_image):
+        _run_kafka_flow_test(
+            kafka, smhi_weather_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WeatherObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# HKO Hong Kong (weather observations)
+# ---------------------------------------------------------------------------
+
+class TestHKODockerFlow:
+    TOPIC = 'test-hko-hong-kong'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, hko_image):
+        _run_kafka_flow_test(
+            kafka, hko_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WeatherObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# Singapore NEA (weather observations)
+# ---------------------------------------------------------------------------
+
+class TestSingaporeNEADockerFlow:
+    TOPIC = 'test-singapore-nea'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, singapore_nea_image):
+        _run_kafka_flow_test(
+            kafka, singapore_nea_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WeatherObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# Environment Canada (SWOB weather observations)
+# ---------------------------------------------------------------------------
+
+class TestEnvironmentCanadaDockerFlow:
+    TOPIC = 'test-environment-canada'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, environment_canada_image):
+        _run_kafka_flow_test(
+            kafka, environment_canada_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WeatherObservation'],
         )
