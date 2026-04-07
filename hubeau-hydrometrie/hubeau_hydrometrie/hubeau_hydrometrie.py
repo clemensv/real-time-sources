@@ -14,9 +14,9 @@ from datetime import datetime, timezone, timedelta
 from typing import Dict, List, Any
 import argparse
 import requests
-from hubeau_hydrometrie.hubeau_hydrometrie_producer.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
-from hubeau_hydrometrie.hubeau_hydrometrie_producer.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
-from .hubeau_hydrometrie_producer.producer_client import FRGovEaufranceHubEauHydrometrieEventProducer
+from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
+from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
