@@ -25,37 +25,84 @@ Apache Kafka compatible server or service, as long as you provide required
 information. The supported authentication scheme for the Kafka endpoint is
 `SASL/PLAIN`.
 
-The container image documentation provides detailed information:
+The sources are organized by domain below. Each entry links to the container
+documentation, and the README in each project directory has full details.
 
-* [AISStream - Global AIS vessel tracking](aisstream/CONTAINER.md)
-* [Autobahn - German motorway traffic events](autobahn/CONTAINER.md)
-* [Bluesky Firehose - Social media posts and interactions](bluesky/CONTAINER.md)
-* [CHMI Hydro - Czech hydrological observations](chmi-hydro/CONTAINER.md)
-* [Digitraffic Maritime - Finnish AIS vessel tracking](digitraffic-maritime/CONTAINER.md)
-* [Digitraffic Road - Finnish road traffic data (sensors, messages, maintenance)](digitraffic-road/CONTAINER.md)
-* [DWD - German weather observations and alerts](dwd/CONTAINER.md)
-* [ENTSO-E - European electricity market data](entsoe/CONTAINER.md)
-* [German Waters - German state water level observations](german-waters/README.md)
-* [GTFS Realtime - Public transport data](gtfs/CONTAINER.md)
-* [Hub'Eau Hydrometrie - French hydrometric observations](hubeau-hydrometrie/CONTAINER.md)
-* [IMGW Hydro - Polish hydrological observations](imgw-hydro/CONTAINER.md)
-* [Kystverket AIS - Norwegian AIS vessel tracking](kystverket-ais/CONTAINER.md)
-* [Mode-S - ADS-B and Mode-S aircraft telemetry](mode-s/CONTAINER.md)
-* [NOAA Tides and Currents - Water level and current data](noaa/CONTAINER.md)
-* [NOAA GOES and SWPC - Space weather and alert feeds](noaa-goes/CONTAINER.md)
-* [NOAA NDBC - Buoy observations](noaa-ndbc/CONTAINER.md)
-* [NOAA NWS - Weather alerts](noaa-nws/CONTAINER.md)
-* [Pegelonline - Water level and current data](pegelonline/CONTAINER.md)
-* [RSS Feeds - News and blog posts](rss/CONTAINER.md)
-* [RWS Waterwebservices - Dutch water observations](rws-waterwebservices/CONTAINER.md)
-* [SMHI Hydro - Swedish hydrological observations](smhi-hydro/CONTAINER.md)
-* [UK EA Flood Monitoring - English flood and river data](uk-ea-flood-monitoring/CONTAINER.md)
-* [USGS Earthquakes - Seismic event feeds](usgs-earthquakes/CONTAINER.md)
-* [USGS Instantaneous Values - Water quality and quantity data](usgs-iv/CONTAINER.md)
-* [Waterinfo VMM - Flemish water observations](waterinfo-vmm/CONTAINER.md)
+### Hydrology and Water Monitoring
 
-Details about the tools and the data sources are provided in the respective
-README files.
+| Source | Coverage | Link |
+|---|---|---|
+| BAFU Hydro | Switzerland (~300 stations, FOEN) | [README](bafu-hydro/README.md) |
+| CHMI Hydro | Czech Republic (CHMU) | [Container](chmi-hydro/CONTAINER.md) |
+| German Waters | Germany (12 state portals, ~2,724 stations) | [README](german-waters/README.md) |
+| Hub'Eau Hydrometrie | France (~6,300 stations) | [Container](hubeau-hydrometrie/CONTAINER.md) |
+| IMGW Hydro | Poland (IMGW-PIB) | [Container](imgw-hydro/CONTAINER.md) |
+| NOAA Tides and Currents | United States (~3,000 stations) | [Container](noaa/CONTAINER.md) |
+| NOAA NDBC | United States (buoy observations) | [Container](noaa-ndbc/CONTAINER.md) |
+| NVE Hydro | Norway (NVE) | [README](nve-hydro/README.md) |
+| Pegelonline | Germany (federal waterways, ~3,000 stations) | [Container](pegelonline/CONTAINER.md) |
+| RWS Waterwebservices | Netherlands (~785 stations) | [Container](rws-waterwebservices/CONTAINER.md) |
+| SMHI Hydro | Sweden (SMHI) | [Container](smhi-hydro/CONTAINER.md) |
+| SYKE Hydro | Finland (SYKE) | [README](syke-hydro/README.md) |
+| UK EA Flood Monitoring | England (~4,000 stations) | [Container](uk-ea-flood-monitoring/CONTAINER.md) |
+| USGS Instantaneous Values | United States (~1.5M stations) | [Container](usgs-iv/CONTAINER.md) |
+| Waterinfo VMM | Belgium / Flanders (~1,785 stations) | [Container](waterinfo-vmm/CONTAINER.md) |
+
+### Weather and Meteorology
+
+| Source | Coverage | Link |
+|---|---|---|
+| DWD | Germany (~1,450 stations, observations and CAP alerts) | [Container](dwd/CONTAINER.md) |
+| Meteoalarm | Europe (37 countries, severe weather warnings) | [Container](meteoalarm/CONTAINER.md) |
+| NOAA NWS | United States (weather alerts, CAP) | [Container](noaa-nws/CONTAINER.md) |
+| NWS CAP Alerts | United States (active alerts via api.weather.gov) | [Container](nws-alerts/CONTAINER.md) |
+| NOAA GOES / SWPC | Global (space weather, solar wind, K-index) | [Container](noaa-goes/CONTAINER.md) |
+
+### Disaster Alerts and Civil Protection
+
+| Source | Coverage | Link |
+|---|---|---|
+| GDACS | Global (earthquakes, floods, cyclones, volcanoes, droughts) | [Container](gdacs/CONTAINER.md) |
+| NINA/BBK | Germany (MOWAS, KATWARN, BIWAPP, DWD, LHP, Police) | [Container](nina-bbk/CONTAINER.md) |
+| PTWC Tsunami | Pacific and Atlantic (NOAA tsunami bulletins) | [Container](ptwc-tsunami/CONTAINER.md) |
+| USGS Earthquakes | Global (seismic events) | [Container](usgs-earthquakes/CONTAINER.md) |
+
+### Maritime and Vessel Tracking
+
+| Source | Coverage | Link |
+|---|---|---|
+| AISStream | Global (AIS via WebSocket, ~200 km from shore) | [Container](aisstream/CONTAINER.md) |
+| Digitraffic Maritime | Finland / Baltic Sea (AIS via MQTT) | [Container](digitraffic-maritime/CONTAINER.md) |
+| Kystverket AIS | Norway / Svalbard (raw TCP AIS, ~34 msg/s) | [Container](kystverket-ais/CONTAINER.md) |
+
+### Aviation
+
+| Source | Coverage | Link |
+|---|---|---|
+| Mode-S | Local (ADS-B via dump1090 receivers) | [Container](mode-s/CONTAINER.md) |
+
+### Road Transport
+
+| Source | Coverage | Link |
+|---|---|---|
+| Autobahn | Germany (roadworks, warnings, closures, webcams) | [Container](autobahn/CONTAINER.md) |
+| Digitraffic Road | Finland (TMS sensors, road weather, traffic messages) | [Container](digitraffic-road/CONTAINER.md) |
+| GTFS Realtime | Global (1,000+ transit agencies, vehicles, trips, alerts) | [Container](gtfs/CONTAINER.md) |
+| Nextbus | North America (public transit arrivals) | [README](nextbus/README.md) |
+
+### Energy and Infrastructure
+
+| Source | Coverage | Link |
+|---|---|---|
+| ENTSO-E | Europe (electricity generation, prices, load, flows) | [Container](entsoe/CONTAINER.md) |
+| NDL Netherlands | Netherlands (EV charging stations, EVSE status, tariffs) | [Container](ndl-netherlands/CONTAINER.md) |
+
+### Social Media and News
+
+| Source | Coverage | Link |
+|---|---|---|
+| Bluesky Firehose | Global (posts, likes, reposts, follows) | [Container](bluesky/CONTAINER.md) |
+| RSS Feeds | Any (configurable RSS/Atom feed URLs or OPML files) | [Container](rss/CONTAINER.md) |
 
 ## Code Generation
 
@@ -68,225 +115,157 @@ refreshes the generated client package from that definition.
 
 ## Command Line Tools
 
-### AISStream - Global AIS vessel tracking
+Detailed descriptions of each data source, its API, update frequency, and
+configuration options are in the per-project README files linked in the tables
+above.
 
-The [AISStream bridge](aisstream/README.md) connects to the AISStream.io
-WebSocket API and streams real-time AIS vessel tracking data from ships
-worldwide. Coverage extends approximately 200 km from shore. The bridge
-publishes 23 AIS message types as CloudEvents to Kafka. Note that the free
-AISStream service can be unreliable and may have frequent outages.
+### Hydrology and Water Monitoring
 
-### Autobahn - German motorway traffic events
+**[BAFU Hydro](bafu-hydro/README.md)** -- Swiss Federal Office for the
+Environment (BAFU/FOEN) hydrological monitoring network. Forwards water level,
+discharge, and temperature observations from approximately 300 stations.
 
-The [Autobahn bridge](autobahn/README.md) polls the German Autobahn API for
-current roadworks, warnings, closures, parking areas, charging stations, and
-webcams and emits change events as CloudEvents to Kafka. The bridge uses ETags
-and local state to detect appeared, updated, and resolved items across the
-network.
+**[CHMI Hydro](chmi-hydro/README.md)** -- Czech Hydrometeorological Institute.
+Real-time water level, discharge, and temperature. Polled every 10 minutes.
 
-### Bluesky Firehose - Social media posts and interactions
+**[German Waters](german-waters/README.md)** -- Aggregates water level and
+discharge data from 12 German state open data portals (~2,724 stations). Polled
+every 15 minutes.
 
-The [Bluesky Firehose tool](bluesky/README.md) is a command line tool that
-connects to the Bluesky AT Protocol firehose and streams real-time events
-from the Bluesky social network. The tool captures posts, likes, reposts,
-follows, blocks, and profile updates, formatting them as CloudEvents for
-standardized event processing. The data can be sent to Kafka topics,
-Azure Event Hubs, or Microsoft Fabric Event Streams. The tool supports
-selective filtering, cursor management for resuming after restarts, and
-is optimized for high-throughput event processing.
+**[Hub'Eau Hydrometrie](hubeau-hydrometrie/README.md)** -- French Hub'Eau
+Hydrométrie API, covering ~6,300 stations across France.
 
-### CHMI Hydro - Czech hydrological observations
+**[IMGW Hydro](imgw-hydro/README.md)** -- Polish Institute of Meteorology and
+Water Management (IMGW-PIB). Polled every 10 minutes.
 
-The [CHMI Hydro bridge](chmi-hydro/README.md) fetches real-time water level,
-discharge, and temperature data from the Czech Hydrometeorological Institute
-(ČHMÚ) and publishes the observations to Kafka as CloudEvents. The data is
-polled every 10 minutes by default.
+**[NOAA Tides and Currents](noaa/README.md)** -- NOAA NOS water level and
+current data for over 3,000 US stations. Updated every 6 minutes.
 
-### Digitraffic Maritime - Finnish AIS vessel tracking
+**[NOAA NDBC](noaa-ndbc/README.md)** -- National Data Buoy Center buoy
+observations across the United States. Polled every 5 minutes.
 
-The [Digitraffic Maritime bridge](digitraffic-maritime/README.md) connects to
-Finland's Digitraffic Marine MQTT stream and forwards real-time AIS vessel
-positions and metadata from the Finnish coastal zone and Baltic Sea. The data is
-open (CC 4.0 BY), requires no API key, and produces approximately 35 messages
-per second.
+**[NVE Hydro](nve-hydro/README.md)** -- Norwegian Water Resources and Energy
+Directorate (NVE). Water level and discharge observations. Requires a free API
+key.
 
-### Digitraffic Road - Finnish road traffic data
+**[Pegelonline](pegelonline/README.md)** -- German Federal Waterways and
+Shipping Administration (WSV). Over 3,000 stations, updated every 15 minutes.
 
-The [Digitraffic Road bridge](digitraffic-road/README.md) connects to Finland's
-Digitraffic Road MQTT stream and forwards real-time data from the Finnish national
-road network: TMS sensor readings (vehicle counts and speeds from 500+ stations),
-road weather measurements (temperature, wind, humidity from 350+ stations),
-traffic messages (incidents, road works, weight restrictions, exempted transports),
-and maintenance vehicle tracking. Events are emitted to three Kafka topics with
-distinct key models. The data is open (CC 4.0 BY) and requires no API key.
+**[RWS Waterwebservices](rws-waterwebservices/README.md)** -- Dutch
+Rijkswaterstaat water level data from ~785 stations. Polled every 10 minutes.
 
-### DWD - German weather observations and alerts
+**[SMHI Hydro](smhi-hydro/README.md)** -- Swedish Meteorological and
+Hydrological Institute (SMHI). Discharge data for hundreds of stations. Polled
+every 15 minutes.
 
-The [DWD bridge](dwd/README.md) fetches real-time weather observations and
-alerts from the German Weather Service (Deutscher Wetterdienst). It covers
-approximately 1,450 stations reporting 10-minute observations for temperature,
-precipitation, wind, and other parameters, plus CAP weather alerts. The data is
-published to Kafka as CloudEvents.
+**[SYKE Hydro](syke-hydro/README.md)** -- Finnish Environment Institute (SYKE).
+Water level and discharge observations.
 
-### ENTSO-E - European electricity market data
+**[UK EA Flood Monitoring](uk-ea-flood-monitoring/README.md)** -- UK Environment
+Agency. ~4,000 stations across England. Polled every 15 minutes.
 
-The [ENTSO-E bridge](entsoe/README.md) retrieves European electricity market
-data from the ENTSO-E Transparency Platform, including generation output,
-day-ahead prices, load data, forecasts, installed capacity, reservoir filling,
-and cross-border flows across multiple European bidding zones. The data is
-published to Kafka as CloudEvents.
+**[USGS Instantaneous Values](usgs-iv/README.md)** -- USGS water quality and
+quantity data for over 1.5 million US stations. Updated every 15 minutes.
 
-### German Waters - German state water level observations
+**[Waterinfo VMM](waterinfo-vmm/README.md)** -- Belgian Waterinfo.be KIWIS API,
+~1,785 stations across Flanders. Polled every 15 minutes.
 
-The [German Waters bridge](german-waters/README.md) aggregates real-time water
-level and discharge data from 12 German state open data portals, covering
-approximately 2,724 monitoring stations, and publishes the observations to Kafka
-as CloudEvents. The data is polled every 15 minutes by default.
+### Weather and Meteorology
 
-### GTFS Realtime - Public transport data
+**[DWD](dwd/README.md)** -- German Weather Service. ~1,450 stations with
+10-minute observations (temperature, precipitation, wind) plus CAP weather
+alerts.
 
-The [GTFS Realtime Bridge](gtfs/README.md) is a command line tool that retrieves
-schedules, real-time vehicle positions, real-time trip updates (live
-predictions of arrivals/departures), and alerts from practically any GTFS and
-GTFS-RT service. Over 1000 public transport agencies worldwide publish their
-data in GTFS format, and many of them also provide real-time data in GTFS-RT
-format.
+**[Meteoalarm](meteoalarm/README.md)** -- EUMETNET Meteoalarm. Severe weather
+warnings aggregated from 37 European national meteorological services.
 
-In terms of sheer data volume, the feeds related to the New York City
-Metropolitan Transportation Authority (MTA) will produce over 50 Gigabytes of
-data each day.
+**[NOAA NWS](noaa-nws/README.md)** -- National Weather Service active weather
+alerts across the United States. Polled every 60 seconds.
 
-### Hub'Eau Hydrometrie - French hydrometric observations
+**[NWS CAP Alerts](nws-alerts/README.md)** -- US National Weather Service
+active alerts via the api.weather.gov GeoJSON endpoint with SAME/UGC geocodes
+and VTEC codes.
 
-The [Hub'Eau Hydrometrie bridge](hubeau-hydrometrie/README.md) retrieves
-real-time water level and flow data from the French Hub'Eau Hydrométrie API,
-covering approximately 6,300 monitoring stations across France, and publishes
-the observations to Kafka as CloudEvents.
+**[NOAA GOES / SWPC](noaa-goes/README.md)** -- NOAA Space Weather Prediction
+Center. Space weather alerts, planetary K-index, and solar wind data. Polled
+every 60 seconds.
 
-### IMGW Hydro - Polish hydrological observations
+### Disaster Alerts and Civil Protection
 
-The [IMGW Hydro bridge](imgw-hydro/README.md) fetches real-time hydrological
-data from the Polish Institute of Meteorology and Water Management (IMGW-PIB)
-and forwards the observations to Kafka as CloudEvents. The data is polled every
-10 minutes by default.
+**[GDACS](gdacs/README.md)** -- Global Disaster Alert and Coordination System.
+Earthquake, tropical cyclone, flood, volcano, flash flood, and drought alerts
+from the GDACS RSS feed.
 
-### Kystverket AIS - Norwegian AIS vessel tracking
+**[NINA/BBK](nina-bbk/README.md)** -- German Federal Office of Civil Protection
+(BBK) NINA warning system. Aggregates warnings from six providers: MOWAS
+(federal), KATWARN, BIWAPP, DWD, LHP (flood centers), and Police.
 
-The [Kystverket AIS bridge](kystverket-ais/README.md) connects to the Norwegian
-Coastal Administration's raw TCP AIS stream and decodes NMEA AIS sentences from
-50+ terrestrial and offshore stations covering the Norwegian economic zone,
-Svalbard, and Jan Mayen. The stream produces approximately 34 messages per
-second (~2.9 million per day) and publishes them to Kafka as CloudEvents.
+**[PTWC Tsunami](ptwc-tsunami/README.md)** -- NOAA National Tsunami Warning
+Center (NTWC) and Pacific Tsunami Warning Center (PTWC). Tsunami bulletins from
+two Atom XML feeds covering the Pacific, Atlantic, and Caribbean.
 
-### Mode-S - ADS-B and Mode-S aircraft telemetry
+**[USGS Earthquakes](usgs-earthquakes/README.md)** -- Real-time earthquake
+events from the USGS GeoJSON feeds with deduplication. Polled every 60 seconds.
 
-The [Mode-S data poller](mode-s/README.md) retrieves real-time ADS-B aircraft
-position and telemetry data from dump1090 receivers and publishes the data to
-Kafka as CloudEvents. The data is polled every 60 seconds by default.
+### Maritime and Vessel Tracking
 
-### NOAA Tides and Currents - Water level and current data
+**[AISStream](aisstream/README.md)** -- AISStream.io WebSocket API. Real-time
+AIS vessel tracking from ships worldwide (~200 km from shore). Publishes 23 AIS
+message types. Requires API key. The free service can be unreliable.
 
-The [NOAA data poller](noaa/README.md) is a command line tool that can be used
-to retrieve real-time water level and current data from NOAA's National Ocean
-Service (NOS) Tides and Currents API. The data is available for over 3000
-stations in the United States and its territories. The NOAA data is updated
-every 6 minutes, and the data volume is relatively low.
+**[Digitraffic Maritime](digitraffic-maritime/README.md)** -- Finland's
+Digitraffic Marine MQTT stream. AIS vessel positions and metadata from the
+Finnish coastal zone and Baltic Sea. ~35 messages/second. Open data (CC 4.0 BY).
 
-### NOAA GOES and SWPC - Space weather and alert feeds
+**[Kystverket AIS](kystverket-ais/README.md)** -- Norwegian Coastal
+Administration raw TCP AIS stream. NMEA sentences from 50+ stations covering the
+Norwegian economic zone, Svalbard, and Jan Mayen. ~34 messages/second (~2.9M/day).
 
-The [NOAA GOES/SWPC poller](noaa-goes/README.md) polls the NOAA Space Weather
-Prediction Center for space weather alerts, planetary K-index, and solar wind
-data, publishing the observations to Kafka as CloudEvents. The data is polled
-every 60 seconds by default.
+### Aviation
 
-### NOAA NDBC - Buoy observations
+**[Mode-S](mode-s/README.md)** -- ADS-B aircraft position and telemetry data
+from dump1090 receivers. Polled every 60 seconds.
 
-The [NOAA NDBC poller](noaa-ndbc/README.md) polls the National Data Buoy Center
-for the latest buoy observations across the United States and publishes the data
-to Kafka as CloudEvents. The data is polled every 5 minutes by default.
+### Road Transport
 
-### NOAA NWS - Weather alerts
+**[Autobahn](autobahn/README.md)** -- German Autobahn API. Roadworks, warnings,
+closures, parking areas, charging stations, and webcams. Uses ETags and local
+state to detect changes.
 
-The [NOAA NWS poller](noaa-nws/README.md) polls the National Weather Service for
-active weather alerts across the United States and publishes them to Kafka as
-CloudEvents. The data is polled every 60 seconds by default.
+**[Digitraffic Road](digitraffic-road/README.md)** -- Finland's Digitraffic Road
+MQTT stream. TMS sensor readings (vehicle counts and speeds from 500+ stations),
+road weather measurements (350+ stations), traffic messages, and maintenance
+vehicle tracking. Open data (CC 4.0 BY).
 
-### RSS Feeds - News and blog posts
+**[GTFS Realtime](gtfs/README.md)** -- GTFS and GTFS-RT data from 1,000+ public
+transport agencies worldwide. Vehicle positions, trip updates, and alerts. MTA
+feeds alone produce over 50 GB/day.
 
-The [RSS feed poller](rss/README.md) is a command line tool that can be used to
-retrieve real-time news and blog posts from any RSS feed. The tool can be
-configured with a list of RSS feed URLs or OPML files, and it will poll the
-feeds at a configurable interval. The RSS client will only forward new items
-from the feeds.
+**[Nextbus](nextbus/README.md)** -- Public transit arrivals from the Nextbus
+service.
 
-### Pegelonline - Water level and current data
+### Energy and Infrastructure
 
-The [Pegelonline data poller](pegelonline/README.md) is a command line tool that
-can be used to retrieve real-time water level and current data from the German
-Federal Waterways and Shipping Administration (WSV) Pegelonline API. The data is
-available for over 3000 stations in Germany. The Pegelonline data is updated
-every 15 minutes, and the data volume is relatively low.
+**[ENTSO-E](entsoe/README.md)** -- European electricity market data from the
+ENTSO-E Transparency Platform. Generation output, day-ahead prices, load,
+forecasts, installed capacity, reservoir filling, and cross-border flows.
 
-### RWS Waterwebservices - Dutch water observations
+**[NDL Netherlands](ndl-netherlands/README.md)** -- Dutch Nationale Databank
+Laadinfrastructuur. EV charging station locations, EVSE connector status changes,
+and tariff data via OCPI.
 
-The [RWS Waterwebservices bridge](rws-waterwebservices/README.md) retrieves
-water level data from the Dutch Rijkswaterstaat Waterwebservices API, covering
-approximately 785 water monitoring stations, and publishes the observations to
-Kafka as CloudEvents. The data is polled every 10 minutes by default.
+### Social Media and News
 
-### SMHI Hydro - Swedish hydrological observations
+**[Bluesky Firehose](bluesky/README.md)** -- Bluesky AT Protocol firehose.
+Posts, likes, reposts, follows, blocks, and profile updates. Supports selective
+filtering and cursor management for resumable streaming.
 
-The [SMHI Hydro bridge](smhi-hydro/README.md) fetches real-time discharge data
-from the Swedish Meteorological and Hydrological Institute (SMHI) for hundreds
-of monitoring stations and publishes the observations to Kafka as CloudEvents.
-The data is polled every 15 minutes by default.
+**[RSS Feeds](rss/README.md)** -- Configurable RSS/Atom feed poller. Supports
+feed URLs or OPML files. Only forwards new items.
 
-### UK EA Flood Monitoring - English flood and river data
+### External
 
-The [UK EA Flood Monitoring bridge](uk-ea-flood-monitoring/README.md) retrieves
-real-time water level and flow data from the UK Environment Agency Flood
-Monitoring API, covering approximately 4,000 stations across England, and
-publishes the observations to Kafka as CloudEvents. The data is polled every
-15 minutes by default.
-
-### USGS Earthquakes - Seismic event feeds
-
-The [USGS Earthquakes tool](usgs-earthquakes/README.md) fetches real-time
-earthquake events from the USGS GeoJSON feeds with deduplication and publishes
-them to Kafka as CloudEvents. The data is polled every 60 seconds by default.
-
-### USGS Instantaneous Values - Water quality and quantity data
-
-The [USGS Instantaneous Values tool](usgs-iv/README.md) is a command line tool that
-can be used to retrieve real-time water quality and quantity data from the
-United States Geological Survey (USGS) Instantaneous Values API. The data is
-available for over 1.5 million stations in the United States and its territories.
-The USGS data is updated every 15 minutes, and the data volume is relatively low.
-
-### Waterinfo VMM - Flemish water observations
-
-The [Waterinfo VMM bridge](waterinfo-vmm/README.md) retrieves real-time water
-level data from the Belgian Waterinfo.be KIWIS API, covering approximately
-1,785 monitoring stations across Flanders, and publishes the observations to
-Kafka as CloudEvents. The data is polled every 15 minutes by default.
-
-### Nextbus - Public transport data
-
-The [Nextbus tool](nextbus/README.md) is a command line tool that can be used to
-retrieve real-time data from the [Nextbus](https://www.nextbus.com/) service and
-feed that data into Azure Event Hubs and Microsoft Fabric Event Streams. The tool
-can also be used to query the Nextbus service interactively.
-
-
-### Forza Motorsport PC - Racing game telemetry data
-
-The
-[Forza Motorsports telemetry bridge](https://github.com/clemensv/forza-telemetry-bridge)
-is hosted in a separate repository. The bridge app is designed to capture and
-forward Forza Motorsports telemetry data to Microsoft Azure Event Hubs or
-Microsoft Fabric Event Streams. It utilizes UDP to listen for telemetry data
-sent from Forza Motorsport games and forwards this data after processing and
-formatting into cloud event streams. The game is compatible with the XBox and PC
-games. For XBox, it requires a separate computer to run the bridge app. While
-there is no containerized version, there is a binary release in a ZIP file
-[available from the releases page](https://github.com/clemensv/forza-telemetry-bridge/releases).
+**[Forza Motorsport PC](https://github.com/clemensv/forza-telemetry-bridge)** --
+Racing game telemetry bridge (separate repository). Captures UDP telemetry from
+Forza Motorsport games and forwards to Event Hubs or Fabric Event Streams.
+Binary release available.
