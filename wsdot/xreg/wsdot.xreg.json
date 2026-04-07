@@ -1,0 +1,811 @@
+{
+  "endpoints": {
+    "us.wa.wsdot.traffic.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{flow_data_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.traffic"]
+    },
+    "us.wa.wsdot.traveltimes.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{travel_time_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.traveltimes"]
+    },
+    "us.wa.wsdot.mountainpass.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{mountain_pass_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.mountainpass"]
+    },
+    "us.wa.wsdot.weather.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.weather"]
+    },
+    "us.wa.wsdot.tolls.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{trip_name}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.tolls"]
+    },
+    "us.wa.wsdot.cvrestrictions.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{state_route_id}/{bridge_number}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.cvrestrictions"]
+    },
+    "us.wa.wsdot.border.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{crossing_name}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.border"]
+    },
+    "us.wa.wsdot.ferries.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{vessel_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/us.wa.wsdot.ferries"]
+    }
+  },
+  "messagegroups": {
+    "us.wa.wsdot.traffic": {
+      "messages": {
+        "us.wa.wsdot.traffic.TrafficFlowStation": {
+          "name": "TrafficFlowStation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Metadata for a traffic flow sensor station in the Washington State DOT network. WSDOT deploys approximately 1,400 inductive loop sensors embedded in highway pavement across four geographic regions.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.traffic.TrafficFlowStation" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{flow_data_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.jstruct/schemas/us.wa.wsdot.traffic.TrafficFlowStation"
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading": {
+          "name": "TrafficFlowReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "A traffic flow reading from a WSDOT sensor station. Updated approximately every 90 seconds, each reading reports the current Level of Service.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.traffic.TrafficFlowReading" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{flow_data_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traffic.jstruct/schemas/us.wa.wsdot.traffic.TrafficFlowReading"
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes": {
+      "messages": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute": {
+          "name": "TravelTimeRoute",
+          "envelope": "CloudEvents/1.0",
+          "description": "A named travel time route monitored by WSDOT. Each route has fixed start and end points on Washington State highways with historical average and current real-time travel times.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.traveltimes.TravelTimeRoute" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{travel_time_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.traveltimes.jstruct/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute"
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass": {
+      "messages": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition": {
+          "name": "MountainPassCondition",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current conditions at a Washington State mountain pass including temperature, weather, road conditions, travel advisories, and directional restrictions.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.mountainpass.MountainPassCondition" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{mountain_pass_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.mountainpass.jstruct/schemas/us.wa.wsdot.mountainpass.MountainPassCondition"
+        }
+      }
+    },
+    "us.wa.wsdot.weather": {
+      "messages": {
+        "us.wa.wsdot.weather.WeatherStation": {
+          "name": "WeatherStation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Metadata for a WSDOT road weather information system (RWIS) station. WSDOT operates approximately 134 stations across Washington State highways.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.weather.WeatherStation" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{station_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.jstruct/schemas/us.wa.wsdot.weather.WeatherStation"
+        },
+        "us.wa.wsdot.weather.WeatherReading": {
+          "name": "WeatherReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.weather.WeatherReading" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{station_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.weather.jstruct/schemas/us.wa.wsdot.weather.WeatherReading"
+        }
+      }
+    },
+    "us.wa.wsdot.tolls": {
+      "messages": {
+        "us.wa.wsdot.tolls.TollRate": {
+          "name": "TollRate",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.tolls.TollRate" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{trip_name}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.tolls.jstruct/schemas/us.wa.wsdot.tolls.TollRate"
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions": {
+      "messages": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction": {
+          "name": "CommercialVehicleRestriction",
+          "envelope": "CloudEvents/1.0",
+          "description": "A commercial vehicle restriction on a Washington State highway bridge or road segment. Restrictions limit vehicle weight, height, length, or width.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{state_route_id}/{bridge_number}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cvrestrictions.jstruct/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction"
+        }
+      }
+    },
+    "us.wa.wsdot.border": {
+      "messages": {
+        "us.wa.wsdot.border.BorderCrossing": {
+          "name": "BorderCrossing",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.border.BorderCrossing" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{crossing_name}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.border.jstruct/schemas/us.wa.wsdot.border.BorderCrossing"
+        }
+      }
+    },
+    "us.wa.wsdot.ferries": {
+      "messages": {
+        "us.wa.wsdot.ferries.VesselLocation": {
+          "name": "VesselLocation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Real-time location and status of a Washington State Ferries vessel. WSF operates approximately 21 vessels across Puget Sound routes.",
+          "envelopemetadata": {
+            "type": { "value": "us.wa.wsdot.ferries.VesselLocation" },
+            "source": { "value": "{feedurl}", "type": "uritemplate" },
+            "subject": { "value": "{vessel_id}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferries.jstruct/schemas/us.wa.wsdot.ferries.VesselLocation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "us.wa.wsdot.traffic.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.traffic.TrafficFlowStation": {
+          "name": "TrafficFlowStation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/traffic/TrafficFlowStation",
+                "name": "TrafficFlowStation",
+                "$root": "#/definitions/us/wa/wsdot/traffic/TrafficFlowStation",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "traffic": {
+                    "TrafficFlowStation": {
+                      "name": "TrafficFlowStation",
+                      "type": "object",
+                      "description": "Metadata for a traffic flow sensor station in the WSDOT network. Each sensor is identified by a unique FlowDataID integer.",
+                      "properties": {
+                        "flow_data_id": { "type": "string", "description": "Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.", "altnames": { "json": "FlowDataID" } },
+                        "station_name": { "type": "string", "description": "Descriptive name of the flow sensor station.", "altnames": { "json": "StationName" } },
+                        "region": { "type": "string", "description": "WSDOT geographic coverage region.", "altnames": { "json": "Region" }, "enum": ["Eastern", "Northwest", "Olympic", "Southwest"] },
+                        "description": { "type": ["string", "null"], "description": "Location description. Null if not provided.", "altnames": { "json": "Description" } },
+                        "road_name": { "type": "string", "description": "Road designation where the sensor is installed.", "altnames": { "json": "RoadName" } },
+                        "direction": { "type": ["string", "null"], "description": "Direction of travel monitored. Examples: NB, SB, EB, WB.", "altnames": { "json": "Direction" } },
+                        "milepost": { "type": ["double", "null"], "description": "Milepost marker along the roadway.", "altnames": { "json": "MilePost" } },
+                        "latitude": { "type": "double", "description": "Latitude in WGS84 decimal degrees.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Latitude" } },
+                        "longitude": { "type": "double", "description": "Longitude in WGS84 decimal degrees.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Longitude" } }
+                      },
+                      "required": ["flow_data_id", "station_name", "region", "description", "road_name", "direction", "milepost", "latitude", "longitude"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading": {
+          "name": "TrafficFlowReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/traffic/TrafficFlowReading",
+                "name": "TrafficFlowReading",
+                "$root": "#/definitions/us/wa/wsdot/traffic/TrafficFlowReading",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "traffic": {
+                    "TrafficFlowReading": {
+                      "name": "TrafficFlowReading",
+                      "type": "object",
+                      "description": "A traffic flow reading from a WSDOT sensor station.",
+                      "properties": {
+                        "flow_data_id": { "type": "string", "description": "Sensor station identifier, stringified from upstream FlowDataID.", "altnames": { "json": "FlowDataID" } },
+                        "station_name": { "type": "string", "description": "Station name.", "altnames": { "json": "StationName" } },
+                        "region": { "type": "string", "description": "WSDOT region.", "altnames": { "json": "Region" }, "enum": ["Eastern", "Northwest", "Olympic", "Southwest"] },
+                        "flow_reading": { "type": "string", "description": "Current traffic Level of Service. Converted from upstream FlowReadingValue byte.", "enum": ["Unknown", "WideOpen", "Moderate", "Heavy", "StopAndGo", "NoData"], "altenums": { "upstream_byte": { "Unknown": "0", "WideOpen": "1", "Moderate": "2", "Heavy": "3", "StopAndGo": "4", "NoData": "5" } } },
+                        "reading_time": { "type": "string", "description": "ISO 8601 UTC timestamp of the reading.", "altnames": { "json": "Time" } }
+                      },
+                      "required": ["flow_data_id", "station_name", "region", "flow_reading", "reading_time"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute": {
+          "name": "TravelTimeRoute",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/traveltimes/TravelTimeRoute",
+                "name": "TravelTimeRoute",
+                "$root": "#/definitions/us/wa/wsdot/traveltimes/TravelTimeRoute",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "traveltimes": {
+                    "TravelTimeRoute": {
+                      "name": "TravelTimeRoute",
+                      "type": "object",
+                      "description": "A named travel time route monitored by WSDOT with historical average and current real-time travel times in minutes.",
+                      "properties": {
+                        "travel_time_id": { "type": "string", "description": "Unique route identifier, stringified from upstream TravelTimeID.", "altnames": { "json": "TravelTimeID" } },
+                        "name": { "type": "string", "description": "Short route segment name.", "altnames": { "json": "Name" } },
+                        "description": { "type": "string", "description": "Longer description including lane type.", "altnames": { "json": "Description" } },
+                        "distance": { "type": "double", "description": "Route distance in miles.", "unit": "mi", "symbol": "mi", "altnames": { "json": "Distance" } },
+                        "average_time": { "type": "int32", "description": "Historical average travel time in minutes.", "unit": "min", "symbol": "min", "altnames": { "json": "AverageTime" } },
+                        "current_time": { "type": "int32", "description": "Current real-time travel time in minutes.", "unit": "min", "symbol": "min", "altnames": { "json": "CurrentTime" } },
+                        "time_updated": { "type": "string", "description": "ISO 8601 UTC timestamp of last update.", "altnames": { "json": "TimeUpdated" } },
+                        "start_description": { "type": ["string", "null"], "description": "Start point description." },
+                        "start_road_name": { "type": ["string", "null"], "description": "Road at start point." },
+                        "start_direction": { "type": ["string", "null"], "description": "Direction at start point." },
+                        "start_milepost": { "type": ["double", "null"], "description": "Milepost at start." },
+                        "start_latitude": { "type": "double", "description": "Start latitude in WGS84.", "unit": "deg", "symbol": "\u00b0" },
+                        "start_longitude": { "type": "double", "description": "Start longitude in WGS84.", "unit": "deg", "symbol": "\u00b0" },
+                        "end_description": { "type": ["string", "null"], "description": "End point description." },
+                        "end_road_name": { "type": ["string", "null"], "description": "Road at end point." },
+                        "end_direction": { "type": ["string", "null"], "description": "Direction at end point." },
+                        "end_milepost": { "type": ["double", "null"], "description": "Milepost at end." },
+                        "end_latitude": { "type": "double", "description": "End latitude in WGS84.", "unit": "deg", "symbol": "\u00b0" },
+                        "end_longitude": { "type": "double", "description": "End longitude in WGS84.", "unit": "deg", "symbol": "\u00b0" }
+                      },
+                      "required": ["travel_time_id", "name", "description", "distance", "average_time", "current_time", "time_updated", "start_description", "start_road_name", "start_direction", "start_milepost", "start_latitude", "start_longitude", "end_description", "end_road_name", "end_direction", "end_milepost", "end_latitude", "end_longitude"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition": {
+          "name": "MountainPassCondition",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/mountainpass/MountainPassCondition",
+                "name": "MountainPassCondition",
+                "$root": "#/definitions/us/wa/wsdot/mountainpass/MountainPassCondition",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "mountainpass": {
+                    "MountainPassCondition": {
+                      "name": "MountainPassCondition",
+                      "type": "object",
+                      "description": "Current conditions at a Washington State mountain pass. WSDOT monitors 16 mountain passes reporting temperature, weather, road conditions, travel advisories, and directional restrictions.",
+                      "properties": {
+                        "mountain_pass_id": { "type": "string", "description": "Unique pass identifier, stringified from upstream MountainPassId.", "altnames": { "json": "MountainPassId" } },
+                        "mountain_pass_name": { "type": "string", "description": "Pass name with highway designation.", "altnames": { "json": "MountainPassName" } },
+                        "elevation_in_feet": { "type": "int32", "description": "Summit elevation in feet above sea level.", "unit": "ft", "symbol": "ft", "altnames": { "json": "ElevationInFeet" } },
+                        "latitude": { "type": "double", "description": "Latitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Latitude" } },
+                        "longitude": { "type": "double", "description": "Longitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Longitude" } },
+                        "temperature_in_fahrenheit": { "type": ["int32", "null"], "description": "Temperature at the summit in Fahrenheit. Null if not reporting.", "unit": "degF", "symbol": "\u00b0F", "altnames": { "json": "TemperatureInFahrenheit" } },
+                        "weather_condition": { "type": "string", "description": "Current weather condition text. Examples: Clear, Rain, Snow, Fog.", "altnames": { "json": "WeatherCondition" } },
+                        "road_condition": { "type": "string", "description": "Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice.", "altnames": { "json": "RoadCondition" } },
+                        "travel_advisory_active": { "type": "boolean", "description": "True if a travel advisory is in effect.", "altnames": { "json": "TravelAdvisoryActive" } },
+                        "restriction_one_direction": { "type": ["string", "null"], "description": "Direction for first restriction." },
+                        "restriction_one_text": { "type": ["string", "null"], "description": "First restriction text." },
+                        "restriction_two_direction": { "type": ["string", "null"], "description": "Direction for second restriction." },
+                        "restriction_two_text": { "type": ["string", "null"], "description": "Second restriction text." },
+                        "date_updated": { "type": "string", "description": "ISO 8601 UTC timestamp of last update.", "altnames": { "json": "DateUpdated" } }
+                      },
+                      "required": ["mountain_pass_id", "mountain_pass_name", "elevation_in_feet", "latitude", "longitude", "temperature_in_fahrenheit", "weather_condition", "road_condition", "travel_advisory_active", "restriction_one_direction", "restriction_one_text", "restriction_two_direction", "restriction_two_text", "date_updated"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.weather.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.weather.WeatherStation": {
+          "name": "WeatherStation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/weather/WeatherStation",
+                "name": "WeatherStation",
+                "$root": "#/definitions/us/wa/wsdot/weather/WeatherStation",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "weather": {
+                    "WeatherStation": {
+                      "name": "WeatherStation",
+                      "type": "object",
+                      "description": "Metadata for a WSDOT RWIS station.",
+                      "properties": {
+                        "station_id": { "type": "string", "description": "Station identifier from upstream StationCode.", "altnames": { "json": "StationCode" } },
+                        "station_name": { "type": "string", "description": "Station name with highway and milepost.", "altnames": { "json": "StationName" } },
+                        "latitude": { "type": "double", "description": "Latitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Latitude" } },
+                        "longitude": { "type": "double", "description": "Longitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Longitude" } }
+                      },
+                      "required": ["station_id", "station_name", "latitude", "longitude"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        },
+        "us.wa.wsdot.weather.WeatherReading": {
+          "name": "WeatherReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/weather/WeatherReading",
+                "name": "WeatherReading",
+                "$root": "#/definitions/us/wa/wsdot/weather/WeatherReading",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "weather": {
+                    "WeatherReading": {
+                      "name": "WeatherReading",
+                      "type": "object",
+                      "description": "A current weather reading from a WSDOT RWIS station.",
+                      "properties": {
+                        "station_id": { "type": "string", "description": "Station identifier from upstream StationID.", "altnames": { "json": "StationID" } },
+                        "station_name": { "type": "string", "description": "Station name.", "altnames": { "json": "StationName" } },
+                        "reading_time": { "type": "string", "description": "ISO 8601 UTC timestamp.", "altnames": { "json": "ReadingTime" } },
+                        "temperature_in_fahrenheit": { "type": ["double", "null"], "description": "Air temperature in Fahrenheit.", "unit": "degF", "symbol": "\u00b0F", "altnames": { "json": "TemperatureInFahrenheit" } },
+                        "precipitation_in_inches": { "type": ["double", "null"], "description": "Precipitation in inches.", "unit": "in", "symbol": "in", "altnames": { "json": "PrecipitationInInches" } },
+                        "wind_speed_in_mph": { "type": ["double", "null"], "description": "Wind speed in mph.", "unit": "mi/h", "symbol": "mph", "altnames": { "json": "WindSpeedInMPH" } },
+                        "wind_gust_speed_in_mph": { "type": ["double", "null"], "description": "Wind gust speed in mph.", "unit": "mi/h", "symbol": "mph", "altnames": { "json": "WindGustSpeedInMPH" } },
+                        "wind_direction": { "type": ["int32", "null"], "description": "Wind direction in degrees from true north.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "WindDirection" } },
+                        "wind_direction_cardinal": { "type": ["string", "null"], "description": "Wind direction as cardinal abbreviation.", "altnames": { "json": "WindDirectionCardinal" } },
+                        "barometric_pressure": { "type": ["double", "null"], "description": "Barometric pressure in hPa.", "unit": "hPa", "symbol": "hPa", "altnames": { "json": "BarometricPressure" } },
+                        "relative_humidity": { "type": ["int32", "null"], "description": "Relative humidity percentage.", "unit": "%", "symbol": "%", "altnames": { "json": "RelativeHumidity" } },
+                        "visibility": { "type": ["double", "null"], "description": "Visibility distance.", "altnames": { "json": "Visibility" } },
+                        "sky_coverage": { "type": ["string", "null"], "description": "Sky coverage description.", "altnames": { "json": "SkyCoverage" } },
+                        "latitude": { "type": "double", "description": "Latitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Latitude" } },
+                        "longitude": { "type": "double", "description": "Longitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Longitude" } }
+                      },
+                      "required": ["station_id", "station_name", "reading_time", "temperature_in_fahrenheit", "precipitation_in_inches", "wind_speed_in_mph", "wind_gust_speed_in_mph", "wind_direction", "wind_direction_cardinal", "barometric_pressure", "relative_humidity", "visibility", "sky_coverage", "latitude", "longitude"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.tolls.TollRate": {
+          "name": "TollRate",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/tolls/TollRate",
+                "name": "TollRate",
+                "$root": "#/definitions/us/wa/wsdot/tolls/TollRate",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "tolls": {
+                    "TollRate": {
+                      "name": "TollRate",
+                      "type": "object",
+                      "description": "Current toll rate for a WSDOT tolled route segment with dynamic pricing.",
+                      "properties": {
+                        "trip_name": { "type": "string", "description": "Tolled route segment identifier.", "altnames": { "json": "TripName" } },
+                        "state_route": { "type": "string", "description": "State route number.", "altnames": { "json": "StateRoute" } },
+                        "travel_direction": { "type": "string", "description": "Travel direction: N, S, E, W.", "altnames": { "json": "TravelDirection" } },
+                        "current_toll": { "type": "int32", "description": "Current toll in cents.", "altnames": { "json": "CurrentToll" } },
+                        "current_message": { "type": ["string", "null"], "description": "Optional status message.", "altnames": { "json": "CurrentMessage" } },
+                        "time_updated": { "type": "string", "description": "ISO 8601 UTC timestamp.", "altnames": { "json": "TimeUpdated" } },
+                        "start_location_name": { "type": "string", "description": "Start location name.", "altnames": { "json": "StartLocationName" } },
+                        "start_latitude": { "type": "double", "description": "Start latitude.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "StartLatitude" } },
+                        "start_longitude": { "type": "double", "description": "Start longitude.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "StartLongitude" } },
+                        "start_milepost": { "type": "double", "description": "Start milepost.", "altnames": { "json": "StartMilepost" } },
+                        "end_location_name": { "type": "string", "description": "End location name.", "altnames": { "json": "EndLocationName" } },
+                        "end_latitude": { "type": "double", "description": "End latitude.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "EndLatitude" } },
+                        "end_longitude": { "type": "double", "description": "End longitude.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "EndLongitude" } },
+                        "end_milepost": { "type": "double", "description": "End milepost.", "altnames": { "json": "EndMilepost" } }
+                      },
+                      "required": ["trip_name", "state_route", "travel_direction", "current_toll", "current_message", "time_updated", "start_location_name", "start_latitude", "start_longitude", "start_milepost", "end_location_name", "end_latitude", "end_longitude", "end_milepost"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction": {
+          "name": "CommercialVehicleRestriction",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/cvrestrictions/CommercialVehicleRestriction",
+                "name": "CommercialVehicleRestriction",
+                "$root": "#/definitions/us/wa/wsdot/cvrestrictions/CommercialVehicleRestriction",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "cvrestrictions": {
+                    "CommercialVehicleRestriction": {
+                      "name": "CommercialVehicleRestriction",
+                      "type": "object",
+                      "description": "A commercial vehicle restriction on a Washington State highway bridge or road segment.",
+                      "properties": {
+                        "state_route_id": { "type": "string", "description": "State route identifier, first part of composite key.", "altnames": { "json": "StateRouteID" } },
+                        "bridge_number": { "type": "string", "description": "Bridge or structure number, second part of composite key.", "altnames": { "json": "BridgeNumber" } },
+                        "bridge_name": { "type": ["string", "null"], "description": "Bridge or structure name.", "altnames": { "json": "BridgeName" } },
+                        "location_name": { "type": ["string", "null"], "description": "Location relative to landmarks.", "altnames": { "json": "LocationName" } },
+                        "location_description": { "type": ["string", "null"], "description": "Detailed location description.", "altnames": { "json": "LocationDescription" } },
+                        "latitude": { "type": "double", "description": "Latitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Latitude" } },
+                        "longitude": { "type": "double", "description": "Longitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Longitude" } },
+                        "state": { "type": ["string", "null"], "description": "State abbreviation, typically WA.", "altnames": { "json": "State" } },
+                        "restriction_type": { "type": ["string", "null"], "description": "Type: BridgeRestriction, RoadRestriction.", "altnames": { "json": "RestrictionType" } },
+                        "vehicle_type": { "type": ["string", "null"], "description": "Affected vehicle type.", "altnames": { "json": "VehicleType" } },
+                        "restriction_weight_in_pounds": { "type": ["int32", "null"], "description": "Axle weight limit in pounds.", "unit": "lb", "symbol": "lbs", "altnames": { "json": "RestrictionWeightInPounds" } },
+                        "maximum_gross_vehicle_weight_in_pounds": { "type": ["int32", "null"], "description": "GVW limit in pounds.", "unit": "lb", "symbol": "lbs", "altnames": { "json": "MaximumGrossVehicleWeightInPounds" } },
+                        "restriction_height_in_inches": { "type": ["int32", "null"], "description": "Height limit in inches.", "unit": "in", "symbol": "in", "altnames": { "json": "RestrictionHeightInInches" } },
+                        "restriction_width_in_inches": { "type": ["int32", "null"], "description": "Width limit in inches.", "unit": "in", "symbol": "in", "altnames": { "json": "RestrictionWidthInInches" } },
+                        "restriction_length_in_inches": { "type": ["int32", "null"], "description": "Length limit in inches.", "unit": "in", "symbol": "in", "altnames": { "json": "RestrictionLengthInInches" } },
+                        "is_permanent_restriction": { "type": "boolean", "description": "True if permanent.", "altnames": { "json": "IsPermanentRestriction" } },
+                        "is_warning": { "type": "boolean", "description": "True if warning only.", "altnames": { "json": "IsWarning" } },
+                        "is_detour_available": { "type": "boolean", "description": "True if detour exists.", "altnames": { "json": "IsDetourAvailable" } },
+                        "is_exceptions_allowed": { "type": "boolean", "description": "True if permits available.", "altnames": { "json": "IsExceptionsAllowed" } },
+                        "restriction_comment": { "type": ["string", "null"], "description": "Additional details.", "altnames": { "json": "RestrictionComment" } },
+                        "date_posted": { "type": ["string", "null"], "description": "ISO 8601 UTC date posted.", "altnames": { "json": "DatePosted" } },
+                        "date_effective": { "type": ["string", "null"], "description": "ISO 8601 UTC date effective.", "altnames": { "json": "DateEffective" } },
+                        "date_expires": { "type": ["string", "null"], "description": "ISO 8601 UTC date expires.", "altnames": { "json": "DateExpires" } }
+                      },
+                      "required": ["state_route_id", "bridge_number", "bridge_name", "location_name", "location_description", "latitude", "longitude", "state", "restriction_type", "vehicle_type", "restriction_weight_in_pounds", "maximum_gross_vehicle_weight_in_pounds", "restriction_height_in_inches", "restriction_width_in_inches", "restriction_length_in_inches", "is_permanent_restriction", "is_warning", "is_detour_available", "is_exceptions_allowed", "restriction_comment", "date_posted", "date_effective", "date_expires"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.border.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.border.BorderCrossing": {
+          "name": "BorderCrossing",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/border/BorderCrossing",
+                "name": "BorderCrossing",
+                "$root": "#/definitions/us/wa/wsdot/border/BorderCrossing",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "border": {
+                    "BorderCrossing": {
+                      "name": "BorderCrossing",
+                      "type": "object",
+                      "description": "US-Canada border crossing wait time in Washington State.",
+                      "properties": {
+                        "crossing_name": { "type": "string", "description": "Crossing lane identifier.", "altnames": { "json": "CrossingName" } },
+                        "wait_time": { "type": ["int32", "null"], "description": "Wait time in minutes.", "unit": "min", "symbol": "min", "altnames": { "json": "WaitTime" } },
+                        "time": { "type": "string", "description": "ISO 8601 UTC measurement timestamp.", "altnames": { "json": "Time" } },
+                        "description": { "type": ["string", "null"], "description": "Lane description." },
+                        "road_name": { "type": ["string", "null"], "description": "Road designation." },
+                        "latitude": { "type": "double", "description": "Latitude in WGS84.", "unit": "deg", "symbol": "\u00b0" },
+                        "longitude": { "type": "double", "description": "Longitude in WGS84.", "unit": "deg", "symbol": "\u00b0" }
+                      },
+                      "required": ["crossing_name", "wait_time", "time", "description", "road_name", "latitude", "longitude"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.ferries.VesselLocation": {
+          "name": "VesselLocation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/ferries/VesselLocation",
+                "name": "VesselLocation",
+                "$root": "#/definitions/us/wa/wsdot/ferries/VesselLocation",
+                "definitions": {
+                  "us": { "wa": { "wsdot": { "ferries": {
+                    "VesselLocation": {
+                      "name": "VesselLocation",
+                      "type": "object",
+                      "description": "Real-time location and status of a Washington State Ferries vessel.",
+                      "properties": {
+                        "vessel_id": { "type": "string", "description": "Vessel identifier, stringified from upstream VesselID.", "altnames": { "json": "VesselID" } },
+                        "vessel_name": { "type": "string", "description": "Ferry vessel name.", "altnames": { "json": "VesselName" } },
+                        "mmsi": { "type": ["int32", "null"], "description": "Maritime Mobile Service Identity for AIS.", "altnames": { "json": "Mmsi" } },
+                        "in_service": { "type": "boolean", "description": "True if in active service.", "altnames": { "json": "InService" } },
+                        "at_dock": { "type": "boolean", "description": "True if docked.", "altnames": { "json": "AtDock" } },
+                        "latitude": { "type": "double", "description": "Latitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Latitude" } },
+                        "longitude": { "type": "double", "description": "Longitude in WGS84.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Longitude" } },
+                        "speed": { "type": ["double", "null"], "description": "Speed in knots.", "unit": "kn", "symbol": "kn", "altnames": { "json": "Speed" } },
+                        "heading": { "type": ["int32", "null"], "description": "Heading in degrees.", "unit": "deg", "symbol": "\u00b0", "altnames": { "json": "Heading" } },
+                        "departing_terminal_id": { "type": ["int32", "null"], "description": "Departure terminal ID.", "altnames": { "json": "DepartingTerminalID" } },
+                        "departing_terminal_name": { "type": ["string", "null"], "description": "Departure terminal name.", "altnames": { "json": "DepartingTerminalName" } },
+                        "departing_terminal_abbrev": { "type": ["string", "null"], "description": "Departure terminal abbreviation.", "altnames": { "json": "DepartingTerminalAbbrev" } },
+                        "arriving_terminal_id": { "type": ["int32", "null"], "description": "Arrival terminal ID.", "altnames": { "json": "ArrivingTerminalID" } },
+                        "arriving_terminal_name": { "type": ["string", "null"], "description": "Arrival terminal name.", "altnames": { "json": "ArrivingTerminalName" } },
+                        "arriving_terminal_abbrev": { "type": ["string", "null"], "description": "Arrival terminal abbreviation.", "altnames": { "json": "ArrivingTerminalAbbrev" } },
+                        "scheduled_departure": { "type": ["string", "null"], "description": "ISO 8601 UTC scheduled departure.", "altnames": { "json": "ScheduledDeparture" } },
+                        "left_dock": { "type": ["string", "null"], "description": "ISO 8601 UTC actual departure.", "altnames": { "json": "LeftDock" } },
+                        "eta": { "type": ["string", "null"], "description": "ISO 8601 UTC estimated arrival.", "altnames": { "json": "Eta" } },
+                        "eta_basis": { "type": ["string", "null"], "description": "ETA calculation description.", "altnames": { "json": "EtaBasis" } },
+                        "route_abbreviation": { "type": ["string", "null"], "description": "Current route abbreviation." },
+                        "timestamp": { "type": "string", "description": "ISO 8601 UTC position timestamp.", "altnames": { "json": "TimeStamp" } }
+                      },
+                      "required": ["vessel_id", "vessel_name", "mmsi", "in_service", "at_dock", "latitude", "longitude", "speed", "heading", "departing_terminal_id", "departing_terminal_name", "departing_terminal_abbrev", "arriving_terminal_id", "arriving_terminal_name", "arriving_terminal_abbrev", "scheduled_departure", "left_dock", "eta", "eta_basis", "route_abbreviation", "timestamp"]
+                    }
+                  }}}}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.traffic.avro": {
+      "schemas": {
+        "us.wa.wsdot.traffic.TrafficFlowStation": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "TrafficFlowStation", "namespace": "us.wa.wsdot.traffic", "doc": "Traffic flow sensor station metadata.", "fields": [{"name": "flow_data_id", "type": "string"}, {"name": "station_name", "type": "string"}, {"name": "region", "type": "string"}, {"name": "description", "type": ["null", "string"], "default": null}, {"name": "road_name", "type": "string"}, {"name": "direction", "type": ["null", "string"], "default": null}, {"name": "milepost", "type": ["null", "double"], "default": null}, {"name": "latitude", "type": "double"}, {"name": "longitude", "type": "double"}]}}}
+        },
+        "us.wa.wsdot.traffic.TrafficFlowReading": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "TrafficFlowReading", "namespace": "us.wa.wsdot.traffic", "doc": "Traffic flow reading.", "fields": [{"name": "flow_data_id", "type": "string"}, {"name": "station_name", "type": "string"}, {"name": "region", "type": "string"}, {"name": "flow_reading", "type": "string"}, {"name": "reading_time", "type": "string"}]}}}
+        }
+      }
+    },
+    "us.wa.wsdot.traveltimes.avro": {
+      "schemas": {
+        "us.wa.wsdot.traveltimes.TravelTimeRoute": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "TravelTimeRoute", "namespace": "us.wa.wsdot.traveltimes", "doc": "Travel time route.", "fields": [{"name": "travel_time_id", "type": "string"}, {"name": "name", "type": "string"}, {"name": "description", "type": "string"}, {"name": "distance", "type": "double"}, {"name": "average_time", "type": "int"}, {"name": "current_time", "type": "int"}, {"name": "time_updated", "type": "string"}, {"name": "start_description", "type": ["null", "string"], "default": null}, {"name": "start_road_name", "type": ["null", "string"], "default": null}, {"name": "start_direction", "type": ["null", "string"], "default": null}, {"name": "start_milepost", "type": ["null", "double"], "default": null}, {"name": "start_latitude", "type": "double"}, {"name": "start_longitude", "type": "double"}, {"name": "end_description", "type": ["null", "string"], "default": null}, {"name": "end_road_name", "type": ["null", "string"], "default": null}, {"name": "end_direction", "type": ["null", "string"], "default": null}, {"name": "end_milepost", "type": ["null", "double"], "default": null}, {"name": "end_latitude", "type": "double"}, {"name": "end_longitude", "type": "double"}]}}}
+        }
+      }
+    },
+    "us.wa.wsdot.mountainpass.avro": {
+      "schemas": {
+        "us.wa.wsdot.mountainpass.MountainPassCondition": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "MountainPassCondition", "namespace": "us.wa.wsdot.mountainpass", "doc": "Mountain pass conditions.", "fields": [{"name": "mountain_pass_id", "type": "string"}, {"name": "mountain_pass_name", "type": "string"}, {"name": "elevation_in_feet", "type": "int"}, {"name": "latitude", "type": "double"}, {"name": "longitude", "type": "double"}, {"name": "temperature_in_fahrenheit", "type": ["null", "int"], "default": null}, {"name": "weather_condition", "type": "string"}, {"name": "road_condition", "type": "string"}, {"name": "travel_advisory_active", "type": "boolean"}, {"name": "restriction_one_direction", "type": ["null", "string"], "default": null}, {"name": "restriction_one_text", "type": ["null", "string"], "default": null}, {"name": "restriction_two_direction", "type": ["null", "string"], "default": null}, {"name": "restriction_two_text", "type": ["null", "string"], "default": null}, {"name": "date_updated", "type": "string"}]}}}
+        }
+      }
+    },
+    "us.wa.wsdot.weather.avro": {
+      "schemas": {
+        "us.wa.wsdot.weather.WeatherStation": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "WeatherStation", "namespace": "us.wa.wsdot.weather", "doc": "WSDOT weather station metadata.", "fields": [{"name": "station_id", "type": "string"}, {"name": "station_name", "type": "string"}, {"name": "latitude", "type": "double"}, {"name": "longitude", "type": "double"}]}}}
+        },
+        "us.wa.wsdot.weather.WeatherReading": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "WeatherReading", "namespace": "us.wa.wsdot.weather", "doc": "Weather reading.", "fields": [{"name": "station_id", "type": "string"}, {"name": "station_name", "type": "string"}, {"name": "reading_time", "type": "string"}, {"name": "temperature_in_fahrenheit", "type": ["null", "double"], "default": null}, {"name": "precipitation_in_inches", "type": ["null", "double"], "default": null}, {"name": "wind_speed_in_mph", "type": ["null", "double"], "default": null}, {"name": "wind_gust_speed_in_mph", "type": ["null", "double"], "default": null}, {"name": "wind_direction", "type": ["null", "int"], "default": null}, {"name": "wind_direction_cardinal", "type": ["null", "string"], "default": null}, {"name": "barometric_pressure", "type": ["null", "double"], "default": null}, {"name": "relative_humidity", "type": ["null", "int"], "default": null}, {"name": "visibility", "type": ["null", "double"], "default": null}, {"name": "sky_coverage", "type": ["null", "string"], "default": null}, {"name": "latitude", "type": "double"}, {"name": "longitude", "type": "double"}]}}}
+        }
+      }
+    },
+    "us.wa.wsdot.tolls.avro": {
+      "schemas": {
+        "us.wa.wsdot.tolls.TollRate": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "TollRate", "namespace": "us.wa.wsdot.tolls", "doc": "Toll rate.", "fields": [{"name": "trip_name", "type": "string"}, {"name": "state_route", "type": "string"}, {"name": "travel_direction", "type": "string"}, {"name": "current_toll", "type": "int"}, {"name": "current_message", "type": ["null", "string"], "default": null}, {"name": "time_updated", "type": "string"}, {"name": "start_location_name", "type": "string"}, {"name": "start_latitude", "type": "double"}, {"name": "start_longitude", "type": "double"}, {"name": "start_milepost", "type": "double"}, {"name": "end_location_name", "type": "string"}, {"name": "end_latitude", "type": "double"}, {"name": "end_longitude", "type": "double"}, {"name": "end_milepost", "type": "double"}]}}}
+        }
+      }
+    },
+    "us.wa.wsdot.cvrestrictions.avro": {
+      "schemas": {
+        "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "CommercialVehicleRestriction", "namespace": "us.wa.wsdot.cvrestrictions", "doc": "Commercial vehicle restriction.", "fields": [{"name": "state_route_id", "type": "string"}, {"name": "bridge_number", "type": "string"}, {"name": "bridge_name", "type": ["null", "string"], "default": null}, {"name": "location_name", "type": ["null", "string"], "default": null}, {"name": "location_description", "type": ["null", "string"], "default": null}, {"name": "latitude", "type": "double"}, {"name": "longitude", "type": "double"}, {"name": "state", "type": ["null", "string"], "default": null}, {"name": "restriction_type", "type": ["null", "string"], "default": null}, {"name": "vehicle_type", "type": ["null", "string"], "default": null}, {"name": "restriction_weight_in_pounds", "type": ["null", "int"], "default": null}, {"name": "maximum_gross_vehicle_weight_in_pounds", "type": ["null", "int"], "default": null}, {"name": "restriction_height_in_inches", "type": ["null", "int"], "default": null}, {"name": "restriction_width_in_inches", "type": ["null", "int"], "default": null}, {"name": "restriction_length_in_inches", "type": ["null", "int"], "default": null}, {"name": "is_permanent_restriction", "type": "boolean"}, {"name": "is_warning", "type": "boolean"}, {"name": "is_detour_available", "type": "boolean"}, {"name": "is_exceptions_allowed", "type": "boolean"}, {"name": "restriction_comment", "type": ["null", "string"], "default": null}, {"name": "date_posted", "type": ["null", "string"], "default": null}, {"name": "date_effective", "type": ["null", "string"], "default": null}, {"name": "date_expires", "type": ["null", "string"], "default": null}]}}}
+        }
+      }
+    },
+    "us.wa.wsdot.border.avro": {
+      "schemas": {
+        "us.wa.wsdot.border.BorderCrossing": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "BorderCrossing", "namespace": "us.wa.wsdot.border", "doc": "Border crossing wait time.", "fields": [{"name": "crossing_name", "type": "string"}, {"name": "wait_time", "type": ["null", "int"], "default": null}, {"name": "time", "type": "string"}, {"name": "description", "type": ["null", "string"], "default": null}, {"name": "road_name", "type": ["null", "string"], "default": null}, {"name": "latitude", "type": "double"}, {"name": "longitude", "type": "double"}]}}}
+        }
+      }
+    },
+    "us.wa.wsdot.ferries.avro": {
+      "schemas": {
+        "us.wa.wsdot.ferries.VesselLocation": {
+          "format": "Avro/1.11.3",
+          "versions": { "1": { "format": "Avro/1.11.3", "schema": { "type": "record", "name": "VesselLocation", "namespace": "us.wa.wsdot.ferries", "doc": "WSF vessel location.", "fields": [{"name": "vessel_id", "type": "string"}, {"name": "vessel_name", "type": "string"}, {"name": "mmsi", "type": ["null", "int"], "default": null}, {"name": "in_service", "type": "boolean"}, {"name": "at_dock", "type": "boolean"}, {"name": "latitude", "type": "double"}, {"name": "longitude", "type": "double"}, {"name": "speed", "type": ["null", "double"], "default": null}, {"name": "heading", "type": ["null", "int"], "default": null}, {"name": "departing_terminal_id", "type": ["null", "int"], "default": null}, {"name": "departing_terminal_name", "type": ["null", "string"], "default": null}, {"name": "departing_terminal_abbrev", "type": ["null", "string"], "default": null}, {"name": "arriving_terminal_id", "type": ["null", "int"], "default": null}, {"name": "arriving_terminal_name", "type": ["null", "string"], "default": null}, {"name": "arriving_terminal_abbrev", "type": ["null", "string"], "default": null}, {"name": "scheduled_departure", "type": ["null", "string"], "default": null}, {"name": "left_dock", "type": ["null", "string"], "default": null}, {"name": "eta", "type": ["null", "string"], "default": null}, {"name": "eta_basis", "type": ["null", "string"], "default": null}, {"name": "route_abbreviation", "type": ["null", "string"], "default": null}, {"name": "timestamp", "type": "string"}]}}}
+        }
+      }
+    }
+  }
+}

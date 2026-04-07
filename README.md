@@ -100,6 +100,13 @@ documentation, and the README in each project directory has full details.
 | Digitraffic Road | Finland (TMS sensors, road weather, traffic messages) | [Container](digitraffic-road/CONTAINER.md) |
 | GTFS Realtime | Global (1,000+ transit agencies, vehicles, trips, alerts) | [Container](gtfs/CONTAINER.md) |
 | Nextbus | North America (public transit arrivals) | [README](nextbus/README.md) |
+| WSDOT | Washington State (~1,000 traffic flow sensors, LOS readings) | [Container](wsdot/CONTAINER.md) |
+
+### Railway
+
+| Source | Coverage | Link |
+|---|---|---|
+| iRail | Belgium (~600 NMBS/SNCB stations, departures, delays) | [Container](irail/CONTAINER.md) |
 
 ### Energy and Infrastructure
 
@@ -283,6 +290,17 @@ feeds alone produce over 50 GB/day.
 
 **[Nextbus](nextbus/README.md)** -- Public transit arrivals from the Nextbus
 service.
+
+**[WSDOT](wsdot/README.md)** -- Washington State DOT traffic flow data from
+approximately 1,000 inductive loop sensors across five regions. Level of Service
+readings updated every 90 seconds. Requires a free API access code.
+
+### Railway
+
+**[iRail](irail/README.md)** -- Belgian railway real-time data from the iRail
+API. Station metadata and departure boards for approximately 600 NMBS/SNCB
+stations, including delays, platform assignments, cancellations, and occupancy.
+No authentication. Rate-limited to 3 requests/second; full cycle ~3–4 minutes.
 
 ### Energy and Infrastructure
 

@@ -31,6 +31,7 @@ jobs:
           - { dir: bluesky, module: bluesky }
           - { dir: bfs-odl, module: bfs_odl }
           - { dir: chmi-hydro, module: chmi_hydro }
+          - { dir: irail, module: irail }
           - { dir: gtfs, module: gtfs_rt_bridge }
           - { dir: hubeau-hydrometrie, module: hubeau_hydrometrie }
           - { dir: imgw-hydro, module: imgw_hydro }
@@ -47,6 +48,7 @@ jobs:
           - { dir: usgs-earthquakes, module: usgs_earthquakes }
           - { dir: usgs-iv, module: usgs_iv }
           - { dir: waterinfo-vmm, module: waterinfo_vmm }
+          - { dir: wsdot, module: wsdot }
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -82,6 +84,7 @@ jobs:
           - { dir: usgs-earthquakes, test_class: TestUSGSEarthquakesDockerFlow }
           - { dir: usgs-iv, test_class: TestUSGSIVDockerFlow }
           - { dir: waterinfo-vmm, test_class: TestWaterinfoVMMDockerFlow }
+          - { dir: wsdot, test_class: TestWSDOTDockerFlow }
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -106,3 +109,5 @@ jobs:
             -k "${{ matrix.project.test_class }}" \
             --tb=long
         timeout-minutes: 10
+        env:
+          WSDOT_ACCESS_CODE: ${{ secrets.WSDOT_ACCESS_CODE }}

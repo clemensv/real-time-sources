@@ -10,6 +10,7 @@ Research candidates for real-time and continuous water quality monitoring APIs.
 |------|--------|---------------|-------|-------------|
 | [usgs-nwis-wq](usgs-nwis-wq.md) | USGS NWIS Water Quality (IV) | USA (3,000+ sites) | **18/18** | Same proven API as usgs-iv; just different parameter codes |
 | [hubeau-france](hubeau-france.md) | Hub'Eau France Water Quality | France (25K+ stations) | **17/18** | Superb REST API; 265M analyses; drinking water included; no auth |
+| [nanoos-puget-sound-erddap](nanoos-puget-sound-erddap.md) | NANOOS / ORCA Puget Sound ERDDAP | USA (Puget Sound) | **16/18** | Near-real-time marine water quality; ERDDAP; unique Puget Sound moorings |
 | [copernicus-marine-wq](copernicus-marine-wq.md) | Copernicus Marine Service WQ Products | Global (satellite/model) | **16/18** | Satellite ocean color; HAB detection; global coverage; Python client |
 | [neon-water-quality](neon-water-quality.md) | NEON Water Quality | USA (34 aquatic sites) | **15/18** | Continuous multi-parameter sensors; 30-year NSF commitment; CC0 |
 | [eea-waterbase](eea-waterbase.md) | EEA Waterbase / WISE | EU (39 countries) | **14/18** | Pan-European; WFD-standardized; annual not real-time |
@@ -25,6 +26,8 @@ Research candidates for real-time and continuous water quality monitoring APIs.
 **Top pick**: USGS NWIS Water Quality (18/18) — this is the obvious winner. It uses the exact same API already integrated in usgs-iv/, just requesting water quality parameter codes (dissolved oxygen, temperature, pH, conductivity, turbidity, continuous nitrate). The extension is trivial and the data is gold-standard.
 
 **Best European API**: Hub'Eau France (17/18) — a model for how national water quality data should be exposed. Clean REST, JSON/GeoJSON/CSV, no auth, 25K+ stations with 265M analyses. Includes both surface water and drinking water quality through the same platform. Covers French overseas territories (Caribbean, Indian Ocean, South America).
+
+**Best Puget Sound candidate**: NANOOS / ORCA ERDDAP (16/18) — near-real-time marine observations from University of Washington moorings. This is the standout if we want marine water quality instead of another river-monitoring source.
 
 **Satellite/model approach**: Copernicus Marine Service (16/18) is complementary to all in-situ sources — provides spatially continuous ocean water quality (chlorophyll, turbidity, HAB detection) from satellite and model data. Different use case, different strengths.
 

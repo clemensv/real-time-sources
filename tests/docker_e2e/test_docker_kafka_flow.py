@@ -152,6 +152,14 @@ def wikimedia_eventstreams_image():
 def bfs_odl_image():
     return build_image('bfs-odl')
 
+@pytest.fixture(scope='module')
+def irail_image():
+    return build_image('irail')
+
+@pytest.fixture(scope='module')
+def wsdot_image():
+    return build_image('wsdot')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -560,6 +568,48 @@ class TestRWSDockerFlow:
             kafka, rws_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['WaterLevelObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# iRail (Belgian railway departures)
+# ---------------------------------------------------------------------------
+
+class TestIRailDockerFlow:
+    TOPIC = 'test-irail'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, irail_image):
+        _run_kafka_flow_test(
+            kafka, irail_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['StationBoard'],
+            extra_env={'STATION_FILTER': '008814001,008821006'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# WSDOT (Washington State traffic flow)
+# ---------------------------------------------------------------------------
+
+class TestWSDOTDockerFlow:
+    TOPIC = 'test-wsdot'
+
+    @pytest.fixture(autouse=True)
+    def _require_access_code(self):
+        code = os.environ.get('WSDOT_ACCESS_CODE', '')
+        if not code:
+            pytest.skip('WSDOT_ACCESS_CODE not set')
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, wsdot_image):
+        _run_kafka_flow_test(
+            kafka, wsdot_image, self.TOPIC,
+            reference_types=['TrafficFlowStation', 'WeatherStation'],
+            telemetry_types=['TrafficFlowReading', 'TravelTimeRoute', 'MountainPassCondition',
+                             'WeatherReading', 'TollRate', 'BorderCrossing', 'VesselLocation'],
+            extra_env={
+                'WSDOT_ACCESS_CODE': os.environ['WSDOT_ACCESS_CODE'],
+                'REGION_FILTER': 'Eastern',
+            },
         )
 
 

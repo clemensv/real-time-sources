@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "wsdot"
+version = "0.1.0"
+description = "WSDOT traffic flow bridge to Apache Kafka"
+authors = []
+readme = "README.md"
+packages = [{ include = "wsdot" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+wsdot_producer_data = {path = "wsdot_producer/wsdot_producer_data"}
+wsdot_producer_kafka_producer = {path = "wsdot_producer/wsdot_producer_kafka_producer"}

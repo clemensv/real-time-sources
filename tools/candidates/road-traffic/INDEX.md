@@ -18,6 +18,7 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 | [Statens vegvesen Norway](vegvesen-norway.md) | Norway | 16/18 | GraphQL + REST | Traffic volumes via GraphQL; NVDB road database |
 | [National Highways England](national-highways-england.md) | UK — England | 16/18 | REST | WebTRIS traffic counts and speeds; strategic road network |
 | [511 SF Bay Area](511-sf-bay-area.md) | US — Bay Area | 16/18 | REST | Traffic events, work zones (WZDx), tolls; representative US 511 system |
+| [WSDOT Traveler API](wsdot-washington.md) | US — Washington State | 17/18 | REST + SOAP | Ferries, mountain passes, alerts, weather, border waits in one official platform |
 | [TomTom Traffic](tomtom-traffic.md) | **Global** | 16/18 | REST | Flow + incidents; free tier 2,500 req/day; OpenLR references |
 | [HERE Traffic](here-traffic.md) | **Global** | 15/18 | REST | Flow + incidents; free tier 1,000 req/month; jam factor metric |
 
@@ -37,17 +38,19 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 
 7. **Build a French Road Traffic bridge** — DATEX II format means the same parser built for NDW works here. Adds French national road network to the European traffic data coverage.
 
-8. **511 SF Bay Area** — representative US 511 system with WZDx work zone standard. Building WZDx support enables integration with other US state DOTs.
+8. **WSDOT Traveler API** — rare US state platform combining ferries, traffic, passes, weather, and border crossings. Washington is especially valuable because Puget Sound ferry operations make the feed more than a generic DOT API.
 
-9. **TomTom / HERE** — commercial providers documented as reference. Free tiers useful for validation and gap-filling. Global coverage with OpenLR/TMC references enables cross-provider data fusion.
+9. **511 SF Bay Area** — representative US 511 system with WZDx work zone standard. Building WZDx support enables integration with other US state DOTs.
 
-10. **Paris Bicycle Counters** — different traffic modality (cycling). Eco-Compteur pattern reusable for dozens of cities worldwide. J-1 daily freshness.
+10. **TomTom / HERE** — commercial providers documented as reference. Free tiers useful for validation and gap-filling. Global coverage with OpenLR/TMC references enables cross-provider data fusion.
 
-11. **Statens vegvesen (Norway)** — interesting for the GraphQL API pattern but hourly aggregates are less fresh than other sources.
+11. **Paris Bicycle Counters** — different traffic modality (cycling). Eco-Compteur pattern reusable for dozens of cities worldwide. J-1 daily freshness.
 
-12. **National Highways (England)** — solid data but the query-by-date model is better suited for analytics than real-time streaming.
+12. **Statens vegvesen (Norway)** — interesting for the GraphQL API pattern but hourly aggregates are less fresh than other sources.
 
-13. **Autobahn (Germany)** — already implemented. No additional work needed.
+13. **National Highways (England)** — solid data but the query-by-date model is better suited for analytics than real-time streaming.
+
+14. **Autobahn (Germany)** — already implemented. No additional work needed.
 
 ## Sources Investigated but Not Viable
 
@@ -66,7 +69,7 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 - **Nordic countries**: Finland (Digitraffic), Sweden (Trafikverket), Norway (vegvesen)
 - **Western Europe**: Netherlands (NDW), Germany (Autobahn — done), UK (TfL London + National Highways), France (DIR via DATEX II), Spain (Madrid)
 - **Asia-Pacific**: Singapore (LTA DataMall — comprehensive)
-- **Americas**: US (511 SF Bay Area, Autobahn-style state DOTs)
+- **Americas**: US (511 SF Bay Area, WSDOT Washington, Autobahn-style state DOTs)
 - **Global commercial**: TomTom (2,500/day free), HERE (1,000/month free)
 - **Cycling**: Paris (141 Eco-Compteur stations — reusable pattern for dozens of cities)
 - **Key standard**: DATEX II v3 — used by NDW, Trafikverket, Digitraffic, French DIR, and many other EU data publishers

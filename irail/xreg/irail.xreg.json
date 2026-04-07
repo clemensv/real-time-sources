@@ -1,0 +1,479 @@
+{
+  "endpoints": {
+    "be.irail.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "irail",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/be.irail"
+      ]
+    }
+  },
+  "messagegroups": {
+    "be.irail": {
+      "messages": {
+        "be.irail.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Metadata for a Belgian railway station in the NMBS/SNCB network as provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has a unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.",
+          "envelopemetadata": {
+            "type": {
+              "value": "be.irail.Station"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/be.irail.jstruct/schemas/be.irail.Station"
+        },
+        "be.irail.StationBoard": {
+          "name": "StationBoard",
+          "envelope": "CloudEvents/1.0",
+          "description": "A real-time departure board snapshot for a Belgian railway station from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event replaces the previous board state for the same station.",
+          "envelopemetadata": {
+            "type": {
+              "value": "be.irail.StationBoard"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/be.irail.jstruct/schemas/be.irail.StationBoard"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "be.irail.jstruct": {
+      "schemas": {
+        "be.irail.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/be/irail/Station",
+                "name": "Station",
+                "$root": "#/definitions/be/irail/Station",
+                "definitions": {
+                  "be": {
+                    "irail": {
+                      "Station": {
+                        "name": "Station",
+                        "type": "object",
+                        "description": "Metadata for a Belgian railway station in the NMBS/SNCB (Nationale Maatschappij der Belgische Spoorwegen / Société Nationale des Chemins de fer Belges) network. Station identifiers follow the UIC (Union Internationale des Chemins de fer) numbering scheme with a Belgian country prefix of 0088. The iRail API provides these as nine-digit codes prefixed with 'BE.NMBS.'.",
+                        "properties": {
+                          "station_id": {
+                            "type": "string",
+                            "description": "Nine-digit UIC-derived numeric station identifier assigned by NMBS. Extracted from the iRail id field by stripping the 'BE.NMBS.' prefix. Example: '008814001' for Brussels-South (Bruxelles-Midi / Brussel-Zuid).",
+                            "altnames": {
+                              "json": "id"
+                            }
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Default display name of the station in the requested language. Example: 'Brussels-South'."
+                          },
+                          "standard_name": {
+                            "type": "string",
+                            "description": "Consistent official station name that does not vary by language, typically using the primary local name. Example: 'Bruxelles-Midi / Brussel-Zuid'.",
+                            "altnames": {
+                              "json": "standardname"
+                            }
+                          },
+                          "longitude": {
+                            "type": "double",
+                            "description": "Longitude of the station in WGS84 decimal degrees. Sourced from the iRail locationX field.",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "altnames": {
+                              "json": "locationX"
+                            }
+                          },
+                          "latitude": {
+                            "type": "double",
+                            "description": "Latitude of the station in WGS84 decimal degrees. Sourced from the iRail locationY field.",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "altnames": {
+                              "json": "locationY"
+                            }
+                          },
+                          "uri": {
+                            "type": "string",
+                            "description": "Stable linked-data URI identifying this station in the iRail namespace. Example: 'http://irail.be/stations/NMBS/008814001'.",
+                            "altnames": {
+                              "json": "@id"
+                            }
+                          }
+                        },
+                        "required": [
+                          "station_id",
+                          "name",
+                          "standard_name",
+                          "longitude",
+                          "latitude",
+                          "uri"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "be.irail.StationBoard": {
+          "name": "StationBoard",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/be/irail/StationBoard",
+                "name": "StationBoard",
+                "$root": "#/definitions/be/irail/StationBoard",
+                "definitions": {
+                  "be": {
+                    "irail": {
+                      "Departure": {
+                        "name": "Departure",
+                        "type": "object",
+                        "description": "A single scheduled departure from a Belgian railway station with real-time status. Represents a train service leaving the station at a scheduled time, possibly with a delay. The departure is identified by the combination of origin station, date, and vehicle identifier encoded in the departure connection URI.",
+                        "properties": {
+                          "destination_station_id": {
+                            "type": "string",
+                            "description": "Nine-digit UIC-derived numeric identifier of the destination station, extracted from the stationinfo.id field by stripping the 'BE.NMBS.' prefix. Example: '008821006' for Antwerp-Central."
+                          },
+                          "destination_name": {
+                            "type": "string",
+                            "description": "Display name of the destination station. Example: 'Antwerp-Central'."
+                          },
+                          "scheduled_time": {
+                            "type": "string",
+                            "description": "Scheduled departure time in ISO 8601 UTC format, converted from the iRail Unix timestamp. Example: '2026-04-07T14:00:00Z'."
+                          },
+                          "delay_seconds": {
+                            "type": "int32",
+                            "description": "Current delay in seconds relative to the scheduled departure time. 0 indicates the train is on time. Negative values do not occur."
+                          },
+                          "is_canceled": {
+                            "type": "boolean",
+                            "description": "True if this departure has been canceled by NMBS/SNCB. Converted from the iRail 'canceled' field where '1' means canceled."
+                          },
+                          "has_left": {
+                            "type": "boolean",
+                            "description": "True if the train has already departed from this station. Converted from the iRail 'left' field where '1' means departed."
+                          },
+                          "is_extra_stop": {
+                            "type": "boolean",
+                            "description": "True if this stop was added to the original schedule by traffic control and is not part of the normal timetable. Converted from the iRail 'isExtra' field."
+                          },
+                          "vehicle_id": {
+                            "type": "string",
+                            "description": "Full iRail vehicle identifier including the NMBS prefix. Example: 'BE.NMBS.IC2117'. Encodes the train type and number."
+                          },
+                          "vehicle_short_name": {
+                            "type": "string",
+                            "description": "Human-readable short name of the train service. Example: 'IC 2117'. Includes the service type abbreviation and number separated by a space."
+                          },
+                          "vehicle_type": {
+                            "type": "string",
+                            "description": "NMBS/SNCB train service type abbreviation. Common values: 'IC' (InterCity), 'S' (S-trein/suburban), 'L' (Local), 'P' (Peak-hour), 'THA' (Thalys), 'EUR' (Eurostar), 'EXT' (Extra)."
+                          },
+                          "vehicle_number": {
+                            "type": "string",
+                            "description": "Numeric part of the vehicle identifier. Example: '2117' for IC 2117."
+                          },
+                          "platform": {
+                            "type": ["string", "null"],
+                            "description": "Platform number or name from which the train departs. Null if platform has not been assigned yet."
+                          },
+                          "is_normal_platform": {
+                            "type": "boolean",
+                            "description": "True if the assigned platform is the normally scheduled platform for this service. False indicates a platform change. Converted from the iRail platforminfo.normal field where '1' means normal."
+                          },
+                          "occupancy": {
+                            "type": "string",
+                            "description": "Crowd-sourced occupancy estimate for this train. Based on aggregated user feedback submitted through the iRail occupancy API.",
+                            "enum": ["low", "medium", "high", "unknown"]
+                          },
+                          "departure_connection_uri": {
+                            "type": "string",
+                            "description": "Stable linked-data URI uniquely identifying this departure. Composed of the origin station UIC code, date, and vehicle short name. Example: 'http://irail.be/connections/8814001/20260407/IC2117'. This URI can be used to post occupancy feedback."
+                          }
+                        },
+                        "required": [
+                          "destination_station_id",
+                          "destination_name",
+                          "scheduled_time",
+                          "delay_seconds",
+                          "is_canceled",
+                          "has_left",
+                          "is_extra_stop",
+                          "vehicle_id",
+                          "vehicle_short_name",
+                          "vehicle_type",
+                          "vehicle_number",
+                          "platform",
+                          "is_normal_platform",
+                          "occupancy",
+                          "departure_connection_uri"
+                        ]
+                      },
+                      "StationBoard": {
+                        "name": "StationBoard",
+                        "type": "object",
+                        "description": "Real-time departure board for a Belgian railway station. Contains all currently visible departures from the station as returned by the iRail liveboard API. The board reflects the current state of the departure display at the station, including delays, cancellations, and platform assignments. Typically shows the next 30-50 departures within a rolling time window.",
+                        "properties": {
+                          "station_id": {
+                            "type": "string",
+                            "description": "Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema."
+                          },
+                          "station_name": {
+                            "type": "string",
+                            "description": "Display name of the station this board belongs to."
+                          },
+                          "retrieved_at": {
+                            "type": "string",
+                            "description": "ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field."
+                          },
+                          "departure_count": {
+                            "type": "int32",
+                            "description": "Number of departures in this board snapshot. Matches the length of the departures array."
+                          },
+                          "departures": {
+                            "type": "array",
+                            "items": {
+                              "type": {
+                                "$ref": "#/definitions/be/irail/Departure"
+                              }
+                            },
+                            "description": "Array of departure entries currently shown on the station's departure board. Each entry represents a train service scheduled to depart from this station, enriched with real-time delay and cancellation information."
+                          }
+                        },
+                        "required": [
+                          "station_id",
+                          "station_name",
+                          "retrieved_at",
+                          "departure_count",
+                          "departures"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "be.irail.avro": {
+      "schemas": {
+        "be.irail.Station": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "be.irail",
+                "doc": "Metadata for a Belgian railway station in the NMBS/SNCB network.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit UIC-derived numeric station identifier assigned by NMBS."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Default display name of the station."
+                  },
+                  {
+                    "name": "standard_name",
+                    "type": "string",
+                    "doc": "Consistent official station name."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "Stable linked-data URI identifying this station."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        },
+        "be.irail.StationBoard": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "StationBoard",
+                "namespace": "be.irail",
+                "doc": "Real-time departure board for a Belgian railway station.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit UIC-derived numeric identifier of the station."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Display name of the station."
+                  },
+                  {
+                    "name": "retrieved_at",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp when this board was retrieved."
+                  },
+                  {
+                    "name": "departure_count",
+                    "type": "int",
+                    "doc": "Number of departures in this board snapshot."
+                  },
+                  {
+                    "name": "departures",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "Departure",
+                        "doc": "A single scheduled departure from a Belgian railway station with real-time status.",
+                        "fields": [
+                          {
+                            "name": "destination_station_id",
+                            "type": "string",
+                            "doc": "Nine-digit UIC-derived numeric identifier of the destination station."
+                          },
+                          {
+                            "name": "destination_name",
+                            "type": "string",
+                            "doc": "Display name of the destination station."
+                          },
+                          {
+                            "name": "scheduled_time",
+                            "type": "string",
+                            "doc": "Scheduled departure time in ISO 8601 UTC."
+                          },
+                          {
+                            "name": "delay_seconds",
+                            "type": "int",
+                            "doc": "Current delay in seconds."
+                          },
+                          {
+                            "name": "is_canceled",
+                            "type": "boolean",
+                            "doc": "True if this departure has been canceled."
+                          },
+                          {
+                            "name": "has_left",
+                            "type": "boolean",
+                            "doc": "True if the train has already departed."
+                          },
+                          {
+                            "name": "is_extra_stop",
+                            "type": "boolean",
+                            "doc": "True if this stop is not part of the original schedule."
+                          },
+                          {
+                            "name": "vehicle_id",
+                            "type": "string",
+                            "doc": "Full iRail vehicle identifier."
+                          },
+                          {
+                            "name": "vehicle_short_name",
+                            "type": "string",
+                            "doc": "Human-readable short name of the train service."
+                          },
+                          {
+                            "name": "vehicle_type",
+                            "type": "string",
+                            "doc": "NMBS train service type abbreviation."
+                          },
+                          {
+                            "name": "vehicle_number",
+                            "type": "string",
+                            "doc": "Numeric part of the vehicle identifier."
+                          },
+                          {
+                            "name": "platform",
+                            "type": ["null", "string"],
+                            "doc": "Platform number. Null if not assigned.",
+                            "default": null
+                          },
+                          {
+                            "name": "is_normal_platform",
+                            "type": "boolean",
+                            "doc": "True if the platform is the normally scheduled one."
+                          },
+                          {
+                            "name": "occupancy",
+                            "type": "string",
+                            "doc": "Crowd-sourced occupancy estimate: low, medium, high, or unknown."
+                          },
+                          {
+                            "name": "departure_connection_uri",
+                            "type": "string",
+                            "doc": "Stable linked-data URI uniquely identifying this departure."
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "Array of departure entries on the station board."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}

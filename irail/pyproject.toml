@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "irail"
+version = "0.1.0"
+description = "iRail Belgian railway real-time bridge to Apache Kafka"
+authors = []
+readme = "README.md"
+packages = [{ include = "irail" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+irail_producer_data = {path = "irail_producer/irail_producer_data"}
+irail_producer_kafka_producer = {path = "irail_producer/irail_producer_kafka_producer"}
