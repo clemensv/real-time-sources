@@ -1,0 +1,390 @@
+{
+  "endpoints": {
+    "de.bfs.odl.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "bfs-odl",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/de.bfs.odl"
+      ]
+    }
+  },
+  "messagegroups": {
+    "de.bfs.odl": {
+      "messages": {
+        "de.bfs.odl.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Metadata for an ODL (Ortsdosisleistung) measuring station in the BfS gamma dose rate monitoring network. The BfS operates approximately 1,700 stationary probes across Germany that continuously measure ambient gamma dose rate. Station metadata includes the geographic position, elevation above sea level, postal code, and operational status of each probe.",
+          "envelopemetadata": {
+            "type": {
+              "value": "de.bfs.odl.Station"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.jstruct/schemas/de.bfs.odl.Station"
+        },
+        "de.bfs.odl.DoseRateMeasurement": {
+          "name": "DoseRateMeasurement",
+          "envelope": "CloudEvents/1.0",
+          "description": "A one-hour averaged ambient gamma dose rate measurement from the BfS ODL monitoring network. Each measurement reports the gross gamma dose rate in microsieverts per hour (µSv/h), optionally split into cosmic and terrestrial components. The cosmic component originates from secondary cosmic radiation and depends primarily on altitude; the terrestrial component originates from naturally occurring radionuclides in the ground and varies with local geology.",
+          "envelopemetadata": {
+            "type": {
+              "value": "de.bfs.odl.DoseRateMeasurement"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/de.bfs.odl.jstruct/schemas/de.bfs.odl.DoseRateMeasurement"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "de.bfs.odl.jstruct": {
+      "schemas": {
+        "de.bfs.odl.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/de/bfs/odl/Station",
+                "name": "Station",
+                "$root": "#/definitions/de/bfs/odl/Station",
+                "definitions": {
+                  "de": {
+                    "bfs": {
+                      "odl": {
+                        "Station": {
+                          "name": "Station",
+                          "type": "object",
+                          "description": "Metadata for a BfS ODL gamma dose rate monitoring station. Each station is a stationary probe in the IMIS (Integrated Measuring and Information System) network operated by the German Federal Office for Radiation Protection (Bundesamt für Strahlenschutz). Stations continuously measure ambient gamma dose rate and report hourly averaged values.",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "Nine-digit station identifier (Kennziffer) assigned by BfS in the IMIS network. Composed of the official municipality key (AGS) prefix and a station sequence number. Example: '033510091'. This is the stable key used for timeseries retrieval.",
+                              "altnames": {
+                                "json": "kenn"
+                              }
+                            },
+                            "station_code": {
+                              "type": "string",
+                              "description": "Short alphanumeric station code assigned by BfS, consisting of a 'DEZ' prefix followed by a four-digit number. Example: 'DEZ0305'. Used in the BfS web interface and download area.",
+                              "altnames": {
+                                "json": "id"
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Human-readable name of the station location, typically a German municipality or locality name. Example: 'Flensburg'."
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "description": "German postal code (Postleitzahl / PLZ) of the station location. Five digits as a string.",
+                              "altnames": {
+                                "json": "plz"
+                              }
+                            },
+                            "site_status": {
+                              "type": "int32",
+                              "description": "Numeric operational status code. 1 = in operation (in Betrieb), 0 or other values indicate the station is decommissioned or under maintenance.",
+                              "altnames": {
+                                "json": "site_status"
+                              }
+                            },
+                            "site_status_text": {
+                              "type": "string",
+                              "description": "Human-readable German text describing the operational status. Example: 'in Betrieb' (in operation)."
+                            },
+                            "kid": {
+                              "type": "int32",
+                              "description": "Numeric region identifier (Kreis-ID) used internally by BfS to group stations into geographic regions."
+                            },
+                            "height_above_sea": {
+                              "type": ["double", "null"],
+                              "description": "Elevation of the station above mean sea level in meters (Normalhöhennull / NHN). Determines the cosmic radiation component. Null if unknown.",
+                              "unit": "m",
+                              "symbol": "m"
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates.",
+                              "unit": "deg",
+                              "symbol": "°"
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates.",
+                              "unit": "deg",
+                              "symbol": "°"
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "station_code",
+                            "name",
+                            "postal_code",
+                            "site_status",
+                            "site_status_text",
+                            "kid",
+                            "height_above_sea",
+                            "longitude",
+                            "latitude"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "de.bfs.odl.DoseRateMeasurement": {
+          "name": "DoseRateMeasurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/de/bfs/odl/DoseRateMeasurement",
+                "name": "DoseRateMeasurement",
+                "$root": "#/definitions/de/bfs/odl/DoseRateMeasurement",
+                "definitions": {
+                  "de": {
+                    "bfs": {
+                      "odl": {
+                        "DoseRateMeasurement": {
+                          "name": "DoseRateMeasurement",
+                          "type": "object",
+                          "description": "A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station. The gross dose rate value is the total ambient dose equivalent rate H*(10) at 1 meter above ground, expressed in microsieverts per hour (µSv/h). It may be decomposed into a cosmic component (secondary cosmic radiation, altitude-dependent) and a terrestrial component (naturally occurring radionuclides in soil, geology-dependent). Normal background levels in Germany range from approximately 0.05 to 0.18 µSv/h depending on local geology and altitude.",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema.",
+                              "altnames": {
+                                "json": "kenn"
+                              }
+                            },
+                            "start_measure": {
+                              "type": "string",
+                              "description": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'."
+                            },
+                            "end_measure": {
+                              "type": "string",
+                              "description": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'."
+                            },
+                            "value": {
+                              "type": ["double", "null"],
+                              "description": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval.",
+                              "unit": "uSv/h",
+                              "symbol": "µSv/h"
+                            },
+                            "value_cosmic": {
+                              "type": ["double", "null"],
+                              "description": "Cosmic radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Estimated from the station's altitude using a standard model. Null when the BfS system has not yet computed the decomposition for this measurement.",
+                              "unit": "uSv/h",
+                              "symbol": "µSv/h"
+                            },
+                            "value_terrestrial": {
+                              "type": ["double", "null"],
+                              "description": "Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available.",
+                              "unit": "uSv/h",
+                              "symbol": "µSv/h"
+                            },
+                            "validated": {
+                              "type": "int32",
+                              "description": "Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated."
+                            },
+                            "nuclide": {
+                              "type": "string",
+                              "description": "Nuclide identifier describing the type of radiation measured. For standard ODL probes this is always 'Gamma-ODL-Brutto' (gross gamma ambient dose rate)."
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "start_measure",
+                            "end_measure",
+                            "value",
+                            "value_cosmic",
+                            "value_terrestrial",
+                            "validated",
+                            "nuclide"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "de.bfs.odl.avro": {
+      "schemas": {
+        "de.bfs.odl.Station": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "de.bfs.odl",
+                "doc": "Metadata for a BfS ODL gamma dose rate monitoring station in the IMIS network.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit station identifier (Kennziffer) assigned by BfS."
+                  },
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "Short alphanumeric station code (DEZ prefix + four digits)."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station location name."
+                  },
+                  {
+                    "name": "postal_code",
+                    "type": "string",
+                    "doc": "German postal code (PLZ) of the station location."
+                  },
+                  {
+                    "name": "site_status",
+                    "type": "int",
+                    "doc": "Numeric operational status code. 1 = in operation."
+                  },
+                  {
+                    "name": "site_status_text",
+                    "type": "string",
+                    "doc": "Human-readable German operational status text."
+                  },
+                  {
+                    "name": "kid",
+                    "type": "int",
+                    "doc": "Numeric region identifier (Kreis-ID)."
+                  },
+                  {
+                    "name": "height_above_sea",
+                    "type": ["null", "double"],
+                    "doc": "Elevation above sea level in meters. Null if unknown.",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84 decimal degrees."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        },
+        "de.bfs.odl.DoseRateMeasurement": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DoseRateMeasurement",
+                "namespace": "de.bfs.odl",
+                "doc": "A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Nine-digit station identifier (Kennziffer) of the measuring probe."
+                  },
+                  {
+                    "name": "start_measure",
+                    "type": "string",
+                    "doc": "Start of the measurement period in ISO 8601 UTC."
+                  },
+                  {
+                    "name": "end_measure",
+                    "type": "string",
+                    "doc": "End of the measurement period in ISO 8601 UTC."
+                  },
+                  {
+                    "name": "value",
+                    "type": ["null", "double"],
+                    "doc": "Gross ambient gamma dose rate in µSv/h. Null if not reported.",
+                    "default": null
+                  },
+                  {
+                    "name": "value_cosmic",
+                    "type": ["null", "double"],
+                    "doc": "Cosmic radiation component in µSv/h. Null when not computed.",
+                    "default": null
+                  },
+                  {
+                    "name": "value_terrestrial",
+                    "type": ["null", "double"],
+                    "doc": "Terrestrial radiation component in µSv/h. Null when not computed.",
+                    "default": null
+                  },
+                  {
+                    "name": "validated",
+                    "type": "int",
+                    "doc": "Data validation flag. 1 = validated, 0 = preliminary."
+                  },
+                  {
+                    "name": "nuclide",
+                    "type": "string",
+                    "doc": "Nuclide identifier, typically 'Gamma-ODL-Brutto'."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}

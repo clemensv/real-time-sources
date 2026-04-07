@@ -148,6 +148,10 @@ def environment_canada_image():
 def wikimedia_eventstreams_image():
     return build_image('wikimedia-eventstreams')
 
+@pytest.fixture(scope='module')
+def bfs_odl_image():
+    return build_image('bfs-odl')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -694,4 +698,19 @@ class TestEnvironmentCanadaDockerFlow:
             kafka, environment_canada_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['WeatherObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# BfS ODL (German gamma dose rate monitoring)
+# ---------------------------------------------------------------------------
+
+class TestBfsOdlDockerFlow:
+    TOPIC = 'test-bfs-odl'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, bfs_odl_image):
+        _run_kafka_flow_test(
+            kafka, bfs_odl_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['DoseRateMeasurement'],
         )

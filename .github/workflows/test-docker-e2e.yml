@@ -29,6 +29,7 @@ jobs:
       matrix:
         project:
           - { dir: bluesky, module: bluesky }
+          - { dir: bfs-odl, module: bfs_odl }
           - { dir: chmi-hydro, module: chmi_hydro }
           - { dir: gtfs, module: gtfs_rt_bridge }
           - { dir: hubeau-hydrometrie, module: hubeau_hydrometrie }

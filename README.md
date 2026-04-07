@@ -72,6 +72,12 @@ documentation, and the README in each project directory has full details.
 | PTWC Tsunami | Pacific and Atlantic (NOAA tsunami bulletins) | [Container](ptwc-tsunami/CONTAINER.md) |
 | USGS Earthquakes | Global (seismic events) | [Container](usgs-earthquakes/CONTAINER.md) |
 
+### Radiation Monitoring
+
+| Source | Coverage | Link |
+|---|---|---|
+| BfS ODL | Germany (~1,700 stations, hourly gamma dose rate) | [Container](bfs-odl/CONTAINER.md) |
+
 ### Maritime and Vessel Tracking
 
 | Source | Coverage | Link |
@@ -232,6 +238,14 @@ two Atom XML feeds covering the Pacific, Atlantic, and Caribbean.
 
 **[USGS Earthquakes](usgs-earthquakes/README.md)** -- Real-time earthquake
 events from the USGS GeoJSON feeds with deduplication. Polled every 60 seconds.
+
+### Radiation Monitoring
+
+**[BfS ODL](bfs-odl/README.md)** -- German Federal Office for Radiation
+Protection (BfS) ODL ambient gamma dose rate monitoring network. Approximately
+1,700 stationary probes measuring hourly averaged gamma dose rates in µSv/h,
+with cosmic and terrestrial decomposition. Open WFS data interface, no auth.
+Polled hourly.
 
 ### Maritime and Vessel Tracking
 
