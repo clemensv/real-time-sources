@@ -15,8 +15,8 @@ confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
-syke_hydro_producer_data = {path = "syke_hydro_producer_data"}
-syke_hydro_producer_kafka_producer = {path = "syke_hydro_producer_kafka_producer"}
+syke_hydro_producer_data = {path = "syke_hydro_producer/syke_hydro_producer_data"}
+syke_hydro_producer_kafka_producer = {path = "syke_hydro_producer/syke_hydro_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"
