@@ -56,8 +56,10 @@ class ECWeatherAPI:
         return all_stations
 
     def get_recent_observations(self) -> list[dict]:
-        """Fetch recent SWOB realtime observations."""
+        """Fetch recent SWOB realtime observations (last 2 hours)."""
         url = f"{self.base_url}/swob-realtime/items"
+        from datetime import timedelta
+        two_hours_ago = (datetime.now(timezone.utc) - timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ")
         all_obs = []
         offset = 0
         while True:
@@ -66,7 +68,7 @@ class ECWeatherAPI:
                     "f": "json",
                     "limit": self.obs_limit,
                     "offset": offset,
-                    "sortby": "-datetime",
+                    "datetime": f"{two_hours_ago}/..",
                 },
                 timeout=60,
             )
