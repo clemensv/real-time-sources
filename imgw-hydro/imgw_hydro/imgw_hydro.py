@@ -1,6 +1,7 @@
 """IMGW-PIB Hydrological Data Bridge - fetches water level data from the Polish Institute of Meteorology and Water Management."""
 
 import argparse
+import datetime
 import json
 import sys
 import os
@@ -81,11 +82,11 @@ class IMGWHydroAPI:
             river=record.get("rzeka", "") or "",
             voivodeship=record.get("wojewodztwo", "") or "",
             water_level=water_level,
-            water_level_timestamp=record.get("stan_wody_data_pomiaru", "") or "",
+            water_level_timestamp=datetime.datetime.fromisoformat(record.get("stan_wody_data_pomiaru", "")) if record.get("stan_wody_data_pomiaru") else datetime.datetime.now(datetime.timezone.utc),
             water_temperature=water_temp,
-            water_temperature_timestamp=record.get("temperatura_wody_data_pomiaru"),
+            water_temperature_timestamp=datetime.datetime.fromisoformat(record["temperatura_wody_data_pomiaru"]) if record.get("temperatura_wody_data_pomiaru") else None,
             discharge=discharge,
-            discharge_timestamp=record.get("przeplyw_data"),
+            discharge_timestamp=datetime.datetime.fromisoformat(record["przeplyw_data"]) if record.get("przeplyw_data") else None,
             ice_phenomenon_code=record.get("zjawisko_lodowe"),
             overgrowth_code=record.get("zjawisko_zarastania"),
         )
@@ -148,10 +149,9 @@ def send_stations(api: IMGWHydroAPI, producer: PLGovIMGWHydroEventProducer) -> i
     for record in records:
         station = api.parse_station(record)
         producer.send_pl_gov_imgw_hydro_station(
-            station.id_stacji,
+            station.station_id,
             station,
             flush_producer=False,
-            key_mapper=lambda ce, s: f"PL.Gov.IMGW.Hydro.Station:{s.id_stacji}"
         )
         sent_count += 1
     producer.producer.flush()
@@ -173,7 +173,6 @@ def feed_observations(api: IMGWHydroAPI, producer: PLGovIMGWHydroEventProducer, 
                 observation.station_id,
                 observation,
                 flush_producer=False,
-                key_mapper=lambda ce, o: f"PL.Gov.IMGW.Hydro.WaterLevelObservation:{o.station_id}"
             )
             sent_count += 1
             previous_readings[reading_key] = observation.water_level_timestamp

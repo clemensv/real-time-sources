@@ -204,7 +204,7 @@
                     "type": "string"
                   },
                   "headline": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "description": {
                     "type": "string"

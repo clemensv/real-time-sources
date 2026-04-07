@@ -28,12 +28,12 @@ class Test_Visibility(unittest.TestCase):
         Create instance of Visibility for testing
         """
         instance = Visibility(
-            timestamp='grnlbjmkxjotzcagmtlf',
-            value=float(36.94944708043616),
+            timestamp='karorgerblgeyznnxjrz',
+            value=float(26.454340921361606),
             max_visibility_exceeded=False,
             min_visibility_exceeded=True,
-            rate_of_change_exceeded=True,
-            station_id='ecyreyqpfscumazwlwuw'
+            rate_of_change_exceeded=False,
+            station_id='cktupstougnvuzkistzp'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'grnlbjmkxjotzcagmtlf'
+        test_value = 'karorgerblgeyznnxjrz'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -50,7 +50,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(36.94944708043616)
+        test_value = float(26.454340921361606)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -74,7 +74,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = True
+        test_value = False
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -82,7 +82,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ecyreyqpfscumazwlwuw'
+        test_value = 'cktupstougnvuzkistzp'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     

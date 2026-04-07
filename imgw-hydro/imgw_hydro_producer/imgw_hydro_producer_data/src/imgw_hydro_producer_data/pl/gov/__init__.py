@@ -1,3 +1,3 @@
-from .imgw import WaterLevelObservation, Station
+from .imgw import Station, WaterLevelObservation
 
-__all__ = ["WaterLevelObservation", "Station"]
+__all__ = ["Station", "WaterLevelObservation"]

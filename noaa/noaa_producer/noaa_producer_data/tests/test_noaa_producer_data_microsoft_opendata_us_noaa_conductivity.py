@@ -28,12 +28,12 @@ class Test_Conductivity(unittest.TestCase):
         Create instance of Conductivity for testing
         """
         instance = Conductivity(
-            station_id='kadczllytjjzrvsoosmq',
-            timestamp='rokvdqmwdonwnvebkmgo',
-            value=float(12.596623045052835),
-            max_conductivity_exceeded=False,
-            min_conductivity_exceeded=False,
-            rate_of_change_exceeded=True
+            station_id='rpplzhvoypslqxzozjny',
+            timestamp='wjtwypmaffepgiyuicrv',
+            value=float(40.33585096410079),
+            max_conductivity_exceeded=True,
+            min_conductivity_exceeded=True,
+            rate_of_change_exceeded=False
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'kadczllytjjzrvsoosmq'
+        test_value = 'rpplzhvoypslqxzozjny'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'rokvdqmwdonwnvebkmgo'
+        test_value = 'wjtwypmaffepgiyuicrv'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(12.596623045052835)
+        test_value = float(40.33585096410079)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -66,7 +66,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test max_conductivity_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.max_conductivity_exceeded = test_value
         self.assertEqual(self.instance.max_conductivity_exceeded, test_value)
     
@@ -74,7 +74,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test min_conductivity_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.min_conductivity_exceeded = test_value
         self.assertEqual(self.instance.min_conductivity_exceeded, test_value)
     
@@ -82,7 +82,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = True
+        test_value = False
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     

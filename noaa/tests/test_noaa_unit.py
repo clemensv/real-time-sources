@@ -29,7 +29,7 @@ class TestNOAADataPoller:
     def mock_station(self):
         """Fixture for a mock NOAA station"""
         station = Mock(spec=Station)
-        station.id = "8454000"
+        station.station_id = "8454000"
         station.name = "Providence"
         station.state = "RI"
         station.tideType = "Harmonic"
@@ -76,7 +76,7 @@ class TestNOAADataPoller:
 
         # Mock Station.schema().load() to return Station objects
         with patch('noaa.noaa.Station.schema') as mock_schema:
-            mock_station = Mock(id='8454000', name='Providence', state='RI', tideType='Harmonic')
+            mock_station = Mock(station_id='8454000', name='Providence', state='RI', tideType='Harmonic')
             mock_schema.return_value.load.return_value = [mock_station]
 
             # Initialize poller with specific station
@@ -91,7 +91,7 @@ class TestNOAADataPoller:
             assert poller.kafka_topic == 'test-topic'
             assert poller.last_polled_file == '/tmp/test_last_polled.json'
             assert poller.station is not None
-            assert poller.station.id == '8454000'
+            assert poller.station.station_id == '8454000'
             mock_producer_class.assert_called_once_with(mock_kafka_config)
             mock_event_producer.assert_called_once_with(mock_kafka_producer, 'test-topic')
 
@@ -132,8 +132,8 @@ class TestNOAADataPoller:
 
         with patch('noaa.noaa.Station.schema') as mock_schema:
             mock_stations = [
-                Mock(id='8454000', name='Providence'),
-                Mock(id='9414290', name='San Francisco')
+                Mock(station_id='8454000', name='Providence'),
+                Mock(station_id='9414290', name='San Francisco')
             ]
             mock_schema.return_value.load.return_value = mock_stations
 
@@ -179,8 +179,8 @@ class TestNOAADataPoller:
         with patch('noaa.noaa.Station.schema') as mock_schema:
             # Create mock stations with different tide types
             mock_stations = [
-                Mock(id='8454000', tideType='Harmonic'),
-                Mock(id='9087031', tideType='Great Lakes')
+                Mock(station_id='8454000', tideType='Harmonic'),
+                Mock(station_id='9087031', tideType='Great Lakes')
             ]
             mock_schema.return_value.load.return_value = mock_stations
 

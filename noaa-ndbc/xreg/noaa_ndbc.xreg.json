@@ -104,19 +104,19 @@
                     "type": "double"
                   },
                   "gust": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "wave_height": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "dominant_wave_period": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "average_wave_period": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "mean_wave_direction": {
-                    "type": "double"
+                    "type": ["double", "null"]
                   },
                   "pressure": {
                     "type": "double"

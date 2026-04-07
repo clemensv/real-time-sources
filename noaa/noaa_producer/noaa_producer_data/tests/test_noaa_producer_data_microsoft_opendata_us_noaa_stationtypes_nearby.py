@@ -28,7 +28,7 @@ class Test_Nearby(unittest.TestCase):
         Create instance of Nearby for testing
         """
         instance = Nearby(
-            self_='drforqumstefqzfqotms'
+            self_='kokkgtjcysieyqrkijua'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Nearby(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'drforqumstefqzfqotms'
+        test_value = 'kokkgtjcysieyqrkijua'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

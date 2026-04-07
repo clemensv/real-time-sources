@@ -68,7 +68,7 @@ class NOAADataPoller:
         self.producer = MicrosoftOpenDataUSNOAAEventProducer(kafka_producer, kafka_topic)
         self.stations = self.fetch_all_stations()
         if station:
-            self.station = next((s for s in self.stations if s.id == station), None)
+            self.station = next((s for s in self.stations if s.station_id == station), None)
             if not self.station:
                 print(f"Station {station} not found.")
                 sys.exit(1)
@@ -91,6 +91,7 @@ class NOAADataPoller:
             for s in raw_stations:
                 if s.get('portscode') is None:
                     s['portscode'] = ''
+                s['station_id'] = s.pop('id', '')
 # pylint: disable=no-member
             stations = Station.schema().load(raw_stations, many=True)
 # pylint: enable=no-member
@@ -109,7 +110,7 @@ class NOAADataPoller:
         Returns:
             str: The datum value (either "MLLW" or "IGLD").
         """
-        station_info: Station = next((station for station in self.stations if station.id == station_id), {})
+        station_info: Station = next((station for station in self.stations if station.station_id == station_id), {})
         tide_type = station_info.tideType
         return "IGLD" if tide_type == "Great Lakes" else "MLLW"
 
@@ -229,12 +230,12 @@ class NOAADataPoller:
         last_polled_times = self.load_last_polled_times()
 
         for station in self.stations:
-            self.producer.send_microsoft_open_data_us_noaa_station(station.id, station, flush_producer=False)
+            self.producer.send_microsoft_open_data_us_noaa_station(station.station_id, station, flush_producer=False)
         self.producer.producer.flush()
 
         while True:
             for station in self.stations if not self.station else [self.station]:
-                station_id = station.id
+                station_id = station.station_id
                 for product in self.PRODUCTS:
                     print(f"Polling {product} data for station {station_id}: {station.name}:", end='')
                     last_polled_time = last_polled_times.get(product, {}).get(

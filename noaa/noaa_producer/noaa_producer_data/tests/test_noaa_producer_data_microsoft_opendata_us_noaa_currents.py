@@ -28,11 +28,11 @@ class Test_Currents(unittest.TestCase):
         Create instance of Currents for testing
         """
         instance = Currents(
-            station_id='pthicyhyfcikmriixvit',
-            timestamp='caxyleviyhipetaecybs',
-            speed=float(83.26435511157058),
-            direction_degrees=float(54.041736768374534),
-            bin='lriajiemobvwocwufpoq'
+            station_id='ugswvhekjyxcyyeglymg',
+            timestamp='sbfxjgzalahcupjyitus',
+            speed=float(48.350003729325955),
+            direction_degrees=float(58.606897692893675),
+            bin='mqyjrgwdqbrwitufcvpn'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'pthicyhyfcikmriixvit'
+        test_value = 'ugswvhekjyxcyyeglymg'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'caxyleviyhipetaecybs'
+        test_value = 'sbfxjgzalahcupjyitus'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(83.26435511157058)
+        test_value = float(48.350003729325955)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -65,7 +65,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test direction_degrees property
         """
-        test_value = float(54.041736768374534)
+        test_value = float(58.606897692893675)
         self.instance.direction_degrees = test_value
         self.assertEqual(self.instance.direction_degrees, test_value)
     
@@ -73,7 +73,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test bin property
         """
-        test_value = 'lriajiemobvwocwufpoq'
+        test_value = 'mqyjrgwdqbrwitufcvpn'
         self.instance.bin = test_value
         self.assertEqual(self.instance.bin, test_value)
     

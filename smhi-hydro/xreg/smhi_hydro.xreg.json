@@ -101,7 +101,7 @@
                     "type": "int32"
                   },
                   "catchment_name": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "catchment_number": {
                     "type": "int32"
@@ -147,7 +147,7 @@
                     "type": "string"
                   },
                   "catchment_name": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "timestamp": {
                     "type": "datetime"

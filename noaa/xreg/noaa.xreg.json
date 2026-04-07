@@ -1140,7 +1140,7 @@
                                 "type": "boolean",
                                 "description": "{\"description\": \"Indicates whether the station is non-navigational.\"}"
                               },
-                              "id": {
+                              "station_id": {
                                 "type": "string",
                                 "description": "{\"description\": \"Unique identifier for the station.\"}"
                               },
@@ -1215,7 +1215,7 @@
                               "outlook",
                               "HTFhistorical",
                               "nonNavigational",
-                              "id",
+                              "station_id",
                               "name",
                               "lat",
                               "lng",
@@ -2120,7 +2120,7 @@
                     "doc": "{\"description\": \"Indicates whether the station is non-navigational.\"}"
                   },
                   {
-                    "name": "id",
+                    "name": "station_id",
                     "type": "string",
                     "doc": "{\"description\": \"Unique identifier for the station.\"}"
                   },

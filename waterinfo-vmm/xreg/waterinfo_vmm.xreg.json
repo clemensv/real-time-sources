@@ -101,16 +101,16 @@
                     "type": "double"
                   },
                   "river_name": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "stationparameter_name": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "ts_id": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "ts_unitname": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/Station",

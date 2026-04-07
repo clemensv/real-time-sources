@@ -135,7 +135,7 @@ class PegelOnlineAPI:
         stations = self.list_stations()
         for station in stations:
             station_data = Station(
-                uuid=station.get('uuid'),
+                station_id=station.get('uuid'),
                 number=station.get('number'),
                 shortname=station.get('shortname'),
                 longname=station.get('longname'),
@@ -169,7 +169,7 @@ class PegelOnlineAPI:
                                 _feedurl=f"https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations/{station_id}/W/currentmeasurement.json",
                                 _station_id=station_id,
                                 data=CurrentMeasurement(
-                                    station_uuid=station_id,
+                                    station_id=station_id,
                                     timestamp=measurement['timestamp'],
                                     value=measurement['value'],
                                     stateMnwMhw=measurement['stateMnwMhw'],

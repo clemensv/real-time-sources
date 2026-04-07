@@ -110,7 +110,7 @@
                           "name": "Station",
                           "type": "object",
                           "properties": {
-                            "uuid": {
+                            "station_id": {
                               "type": "string",
                               "description": "Unique immutable identifier of the station."
                             },
@@ -149,7 +149,7 @@
                             }
                           },
                           "required": [
-                            "uuid",
+                            "station_id",
                             "number",
                             "shortname",
                             "longname",
@@ -189,7 +189,7 @@
                           "name": "CurrentMeasurement",
                           "type": "object",
                           "properties": {
-                            "station_uuid": {
+                            "station_id": {
                               "type": "string",
                               "description": "Unique immutable identifier of the station."
                             },
@@ -211,7 +211,7 @@
                             }
                           },
                           "required": [
-                            "station_uuid",
+                            "station_id",
                             "timestamp",
                             "value",
                             "stateMnwMhw",
@@ -242,7 +242,7 @@
                 "doc": "Schema representing a PEGELONLINE station with location and water body information.",
                 "fields": [
                   {
-                    "name": "uuid",
+                    "name": "station_id",
                     "type": "string",
                     "doc": "Unique immutable identifier of the station."
                   },
@@ -318,7 +318,7 @@
                 "doc": "Schema representing the current measurement for a PEGELONLINE station.",
                 "fields": [
                   {
-                    "name": "station_uuid",
+                    "name": "station_id",
                     "type": "string",
                     "doc": "Unique immutable identifier of the station."
                   },

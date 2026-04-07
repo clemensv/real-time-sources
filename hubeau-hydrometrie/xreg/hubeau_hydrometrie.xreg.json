@@ -110,7 +110,7 @@
                     "type": "string"
                   },
                   "en_service": {
-                    "type": "boolean"
+                    "type": ["boolean", "null"]
                   },
                   "date_ouverture_station": {
                     "type": "string"

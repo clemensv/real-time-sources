@@ -22,7 +22,7 @@ class Station:
     """
     Schema representing a PEGELONLINE station with location and water body information.
     Attributes:
-        uuid (str): Unique immutable identifier of the station.
+        station_id (str): Unique immutable identifier of the station.
         number (str): Station number representing the unique code of the station.
         shortname (str): Short name of the station (maximum 40 characters).
         longname (str): Full name of the station (maximum 255 characters).
@@ -32,7 +32,7 @@ class Station:
         latitude (float): Latitude coordinate of the station in WGS84 decimal notation.
         water (Water): """
     
-    uuid: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uuid"))
+    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="number"))
     shortname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortname"))
     longname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longname"))
@@ -43,12 +43,12 @@ class Station:
     water: Water=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing a PEGELONLINE station with location and water body information.\", \"fields\": [{\"name\": \"uuid\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"number\", \"type\": \"string\", \"doc\": \"Station number representing the unique code of the station.\"}, {\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the station (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the station (maximum 255 characters).\"}, {\"name\": \"km\", \"type\": \"double\", \"doc\": \"River kilometer marking of the station location.\"}, {\"name\": \"agency\", \"type\": \"string\", \"doc\": \"Waterways and Shipping Office responsible for the station.\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Longitude coordinate of the station in WGS84 decimal notation.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Latitude coordinate of the station in WGS84 decimal notation.\"}, {\"name\": \"water\", \"type\": {\"type\": \"record\", \"name\": \"Water\", \"doc\": \"Details of the water body associated with the station.\", \"fields\": [{\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the water body (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the water body (maximum 255 characters).\"}]}}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing a PEGELONLINE station with location and water body information.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"number\", \"type\": \"string\", \"doc\": \"Station number representing the unique code of the station.\"}, {\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the station (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the station (maximum 255 characters).\"}, {\"name\": \"km\", \"type\": \"double\", \"doc\": \"River kilometer marking of the station location.\"}, {\"name\": \"agency\", \"type\": \"string\", \"doc\": \"Waterways and Shipping Office responsible for the station.\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Longitude coordinate of the station in WGS84 decimal notation.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Latitude coordinate of the station in WGS84 decimal notation.\"}, {\"name\": \"water\", \"type\": {\"type\": \"record\", \"name\": \"Water\", \"doc\": \"Details of the water body associated with the station.\", \"fields\": [{\"name\": \"shortname\", \"type\": \"string\", \"doc\": \"Short name of the water body (maximum 40 characters).\"}, {\"name\": \"longname\", \"type\": \"string\", \"doc\": \"Full name of the water body (maximum 255 characters).\"}]}}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.uuid=str(self.uuid)
+        self.station_id=str(self.station_id)
         self.number=str(self.number)
         self.shortname=str(self.shortname)
         self.longname=str(self.longname)

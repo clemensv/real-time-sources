@@ -117,7 +117,7 @@
                     "type": "double"
                   },
                   "has_forecast": {
-                    "type": "boolean"
+                    "type": ["boolean", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/Station",

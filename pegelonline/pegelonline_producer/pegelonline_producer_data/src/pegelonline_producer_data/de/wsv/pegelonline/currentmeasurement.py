@@ -21,25 +21,25 @@ class CurrentMeasurement:
     """
     Schema representing the current measurement for a PEGELONLINE station.
     Attributes:
-        station_uuid (str): Unique immutable identifier of the station.
+        station_id (str): Unique immutable identifier of the station.
         timestamp (str): Timestamp of the current measurement encoded in ISO_8601 format.
         value (float): Current measured value as a decimal number in the unit defined by the station's timeseries.
         stateMnwMhw (str): State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.
         stateNswHsw (str): State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'."""
     
-    station_uuid: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_uuid"))
+    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     stateMnwMhw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateMnwMhw"))
     stateNswHsw: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stateNswHsw"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"CurrentMeasurement\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing the current measurement for a PEGELONLINE station.\", \"fields\": [{\"name\": \"station_uuid\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"timestamp\", \"type\": \"string\", \"doc\": \"Timestamp of the current measurement encoded in ISO_8601 format.\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"Current measured value as a decimal number in the unit defined by the station's timeseries.\"}, {\"name\": \"stateMnwMhw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}, {\"name\": \"stateNswHsw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"CurrentMeasurement\", \"namespace\": \"de.wsv.pegelonline\", \"doc\": \"Schema representing the current measurement for a PEGELONLINE station.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Unique immutable identifier of the station.\"}, {\"name\": \"timestamp\", \"type\": \"string\", \"doc\": \"Timestamp of the current measurement encoded in ISO_8601 format.\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"Current measured value as a decimal number in the unit defined by the station's timeseries.\"}, {\"name\": \"stateMnwMhw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to mean low water (MNW) and mean high water (MHW). Possible values: 'low', 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}, {\"name\": \"stateNswHsw\", \"type\": \"string\", \"doc\": \"State of the current water level compared to the highest navigable water level (HSW). Possible values: 'normal', 'high', 'unknown', 'commented', 'out-dated'.\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_uuid=str(self.station_uuid)
+        self.station_id=str(self.station_id)
         self.timestamp=str(self.timestamp)
         self.value=float(self.value)
         self.stateMnwMhw=str(self.stateMnwMhw)
