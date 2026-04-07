@@ -1,0 +1,2 @@
+pip install .\wikimedia_eventstreams_producer_data
+pip install .\wikimedia_eventstreams_producer_kafka_producer

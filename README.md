@@ -108,6 +108,7 @@ documentation, and the README in each project directory has full details.
 |---|---|---|
 | Bluesky Firehose | Global (posts, likes, reposts, follows) | [Container](bluesky/CONTAINER.md) |
 | RSS Feeds | Any (configurable RSS/Atom feed URLs or OPML files) | [Container](rss/CONTAINER.md) |
+| Wikimedia EventStreams | Global (Wikipedia, Wikidata, Commons recent changes) | [Container](wikimedia-eventstreams/CONTAINER.md) |
 
 ## Code Generation
 
@@ -287,6 +288,10 @@ filtering and cursor management for resumable streaming.
 
 **[RSS Feeds](rss/README.md)** -- Configurable RSS/Atom feed poller. Supports
 feed URLs or OPML files. Only forwards new items.
+
+**[Wikimedia EventStreams](wikimedia-eventstreams/README.md)** -- Wikimedia's
+public recentchange stream for edits, page creations, and log actions across
+Wikipedia, Wikidata, Commons, and sister projects.
 
 ### External
 

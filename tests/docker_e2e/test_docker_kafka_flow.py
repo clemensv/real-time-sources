@@ -144,6 +144,10 @@ def singapore_nea_image():
 def environment_canada_image():
     return build_image('environment-canada')
 
+@pytest.fixture(scope='module')
+def wikimedia_eventstreams_image():
+    return build_image('wikimedia-eventstreams')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -473,6 +477,24 @@ class TestUSGSEarthquakesDockerFlow:
             reference_types=None,
             telemetry_types=['Earthquakes.Event'],
             min_messages=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Wikimedia EventStreams (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestWikimediaEventStreamsDockerFlow:
+    TOPIC = 'test-wikimedia-eventstreams'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, wikimedia_eventstreams_image):
+        _run_kafka_flow_test(
+            kafka, wikimedia_eventstreams_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['RecentChange'],
+            extra_env={'KAFKA_TOPIC': self.TOPIC},
+            min_messages=1,
+            timeout=180,
         )
 
 
