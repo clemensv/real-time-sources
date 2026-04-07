@@ -9,6 +9,10 @@
 - If event families use different identity shapes, split them into separate message groups or endpoints.
 - JsonStructure schema `$id` values must be globally unique.
 - Regenerate with `xrcg` `0.10.1` after changing subject or key modeling.
+- **`$ref` must be nested inside the `type` attribute.** Write `"type": {"$ref": "..."}`, never a bare `"$ref"` at the property level. json-structure 0.6.1+ enforces `SCHEMA_REF_NOT_IN_TYPE` and Docker E2E schema validation will reject bare `$ref`.
+- **Nullable fields must use type unions.** If the upstream can send `null` for a field, declare it as a union: `"type": ["string", "null"]` or `"type": ["double", "null"]`. The JsonStructure type must match the Avro schema's nullable unions. The Docker E2E suite validates every emitted payload against the JsonStructure schema — a single upstream `null` in a non-nullable field fails the test.
+- **Key/subject template variables must match schema field names exactly.** If the key template is `{station_id}`, the data payload must contain a field literally named `station_id`. The E2E harness resolves templates from `dict(event) | dict(data)` — if the schema names the field `id` or `uuid` but the template says `{station_id}`, the test fails with "Could not resolve template". When upstream JSON uses a different name (e.g. `id`), rename the schema field to match the template variable and map the upstream name in the bridge code.
+- **Schema field names must be English.** When the upstream API uses non-English field names (e.g. Polish `id_stacji`, French `code_departement`), the xreg schema must use English equivalents (`station_id`). The bridge maps upstream names to English schema fields.
 - **Enumerate all upstream data channels before deciding which families to model.** Walk the full API index, MQTT topic namespace, or OpenAPI tag list. Missing event families because the audit stopped too early is a contract failure.
 - **Model reference data as event types when upstream provides metadata endpoints.** If the upstream exposes station lists, sensor catalogs, zone definitions, route tables, vessel registries, or task type catalogs, model those as named reference event types in the same message group as the telemetry they contextualize. Reference and telemetry events share the same key model and Kafka topic. Do not omit reference data just because it updates slowly.
 
@@ -53,5 +57,9 @@
 - Reusing one schema `$id` across multiple event types.
 - Hand-editing generated producer code instead of fixing the manifest and regenerating.
 - Leaving the runtime wrapper on an older producer contract after a key change.
+- **Using bare `$ref` instead of `"type": {"$ref": ...}`.** json-structure 0.6.1 rejects bare `$ref` at the property level. Always nest inside `type`.
+- **Declaring non-nullable types for fields the upstream can send as `null`.** If any upstream record can have a `null` value for a field, the JsonStructure type must be a union like `["double", "null"]`. Check the Avro schema — if it uses `["null", "double"]`, the JsonStructure side must also allow null.
+- **Template variable names that don't match schema field names.** The E2E harness resolves `{station_id}` by looking for a key `station_id` in the data dict. If the schema field is named `id` or `uuid`, the template resolution fails.
+- **Not regenerating producers after schema field renames.** After renaming a field (e.g. `uuid` → `station_id`), the generated data classes still have the old name until `generate_producer.ps1` is re-run. The bridge will crash with `AttributeError` at runtime.
 - **Omitting reference data event types.** If the upstream has station lists, sensor catalogs, or entity metadata, those must be modeled as events. Omitting them forces consumers to fetch context out-of-band, breaking temporal consistency.
 - **Stopping the upstream audit after the first few obvious families.** Walk every API doc subsection, every MQTT topic tree, every REST collection. Missing families is a contract failure.

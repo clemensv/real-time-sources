@@ -40,6 +40,9 @@ argument-hint: "Describe the transport, auth, polling or reconnect behavior, res
 3. Parse source configuration and Kafka configuration from CLI args and environment variables.
 4. **Emit reference data first.** If the contract defines reference event types, fetch the metadata via REST at startup and emit it as CloudEvents before entering the telemetry loop. Track when reference data was last emitted and re-fetch periodically (interval depends on the source's metadata volatility). Reference events use the same producer topic and key model as the related telemetry.
 5. Normalize upstream payloads into the correct generated data classes per family and pass subject or key placeholders explicitly, matching the xreg-declared shape and nullability rules, while consuming the generated producer packages unchanged.
+   - **Map upstream field names to English schema field names.** If the upstream JSON uses `id`, `uuid`, or non-English names (e.g. `id_stacji`), remap to the schema name (e.g. `station_id`) before constructing data classes.
+   - **Parse datetime strings with `datetime.datetime.fromisoformat()`.** Do not pass raw strings to datetime-typed fields.
+   - **Never use `key_mapper` lambdas.** Pass key template values as positional arguments to the generated producer send methods. Custom key mappers bypass contract validation and cause E2E key-format failures.
 6. Add state, dedupe, reconnect, and emit-order behavior where the source requires it without erasing family-specific meaning.
 7. Add unit and integration tests, and keep Docker compatibility in mind if the source should join the repo-wide container tests.
 8. **Update Docker E2E test to validate both reference and telemetry event types.** Use `reference_types` and `telemetry_types` parameters in `_run_kafka_flow_test` to verify both categories are emitted.
