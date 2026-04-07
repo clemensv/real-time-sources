@@ -340,7 +340,9 @@
                                 "description": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
                               },
                               "quality": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/QualityLevel"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/QualityLevel"
+                                }
                               }
                             },
                             "required": [
@@ -1053,31 +1055,49 @@
                                 "description": "{\"description\": \"Standard Hydrologic Exchange Format code for the station.\"}"
                               },
                               "details": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/details"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/details"
+                                }
                               },
                               "sensors": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/sensors"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/sensors"
+                                }
                               },
                               "floodlevels": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/floodlevels"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/floodlevels"
+                                }
                               },
                               "datums": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/datums"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/datums"
+                                }
                               },
                               "supersededdatums": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/supersededdatums"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/supersededdatums"
+                                }
                               },
                               "harmonicConstituents": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/harmonicConstituents"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/harmonicConstituents"
+                                }
                               },
                               "benchmarks": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/benchmarks"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/benchmarks"
+                                }
                               },
                               "tidePredOffsets": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/tidePredOffsets"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/tidePredOffsets"
+                                }
                               },
                               "ofsMapOffsets": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/ofsMapOffsets"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/ofsMapOffsets"
+                                }
                               },
                               "state": {
                                 "type": "string",
@@ -1100,7 +1120,9 @@
                                 "description": "{\"description\": \"Indicates whether the station measures storm surge data.\"}"
                               },
                               "nearby": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/nearby"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/nearby"
+                                }
                               },
                               "forecast": {
                                 "type": "boolean",
@@ -1143,13 +1165,19 @@
                                 "description": "{\"description\": \"PORTS code for the station.\"}"
                               },
                               "products": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/products"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/products"
+                                }
                               },
                               "disclaimers": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/disclaimers"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/disclaimers"
+                                }
                               },
                               "notices": {
-                                "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/notices"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/US/NOAA/StationTypes/notices"
+                                }
                               },
                               "self": {
                                 "type": "string",

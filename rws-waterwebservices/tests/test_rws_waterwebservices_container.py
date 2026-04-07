@@ -56,7 +56,7 @@ class TestRWSContainerIntegration:
 
             # Send a mock water level observation
             observation = WaterLevelObservation(
-                location_code="HOlv",
+                station_code="HOlv",
                 location_name="Hoek van Holland",
                 timestamp="2026-03-25T10:00:00.000+01:00",
                 value=123.0,
@@ -70,7 +70,7 @@ class TestRWSContainerIntegration:
 
             # Send a mock station
             station = Station(
-                code="HOlv",
+                station_code="HOlv",
                 name="Hoek van Holland",
                 latitude=51.979,
                 longitude=4.120,
@@ -94,11 +94,11 @@ class TestRWSContainerIntegration:
 
                 if ce_type == "NL.RWS.Waterwebservices.WaterLevelObservation":
                     data = payload["data"]
-                    assert data["location_code"] == "HOlv"
+                    assert data["station_code"] == "HOlv"
                     assert data["value"] == 123.0
                 elif ce_type == "NL.RWS.Waterwebservices.Station":
                     data = payload["data"]
-                    assert data["code"] == "HOlv"
+                    assert data["station_code"] == "HOlv"
 
             assert "NL.RWS.Waterwebservices.WaterLevelObservation" in types_found
             assert "NL.RWS.Waterwebservices.Station" in types_found
@@ -122,7 +122,7 @@ class TestRWSLiveContainerIntegration:
             sent = 0
             for loc in stations[:5]:
                 station = Station(
-                    code=loc.get("Code", ""),
+                    station_code=loc.get("Code", ""),
                     name=loc.get("Naam", ""),
                     latitude=float(loc.get("Lat", 0) or 0),
                     longitude=float(loc.get("Lon", 0) or 0),
@@ -140,7 +140,7 @@ class TestRWSLiveContainerIntegration:
                 payload = json.loads(msg.value())
                 assert payload["type"] == "NL.RWS.Waterwebservices.Station"
                 data = payload["data"]
-                assert data["code"] != ""
+                assert data["station_code"] != ""
                 assert data["name"] != ""
 
     def test_live_observations_to_kafka(self):
@@ -166,7 +166,7 @@ class TestRWSLiveContainerIntegration:
                         continue
 
                     obs = WaterLevelObservation(
-                        location_code=loc.get("Code", ""),
+                        station_code=loc.get("Code", ""),
                         location_name=loc.get("Naam", ""),
                         timestamp=tijdstip,
                         value=float(waarde),

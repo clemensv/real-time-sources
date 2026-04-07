@@ -22,7 +22,7 @@ class WaterLevelObservation:
     WaterLevelObservation
     
     Attributes:
-        location_code (str)
+        station_code (str)
         location_name (typing.Optional[str])
         timestamp (datetime.datetime)
         value (float)
@@ -34,7 +34,7 @@ class WaterLevelObservation:
     """
     
     
-    location_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location_code"))
+    station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     location_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location_name"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
@@ -169,13 +169,13 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            location_code='uszksnchainndapnapty',
-            location_name='cbdkekiamgqfrcxchywf',
+            station_code='xtetepzafviwfeqoqumo',
+            location_name='jurcjqrllvratiafssoy',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(50.00323699227476),
-            unit='lelcgwvezounanpvokob',
-            quality_code='caykqxabyamstokjdhwj',
-            status='xqxlxyittumuwwckvmgx',
-            compartment='qaefgmtaimthzoewwyba',
-            parameter='okwndknurifbvwayzgei'
+            value=float(76.02611782746551),
+            unit='wcnworycdvloclwyceqm',
+            quality_code='hmbmyjuhhhwibytgdpoo',
+            status='nvohulmuvjtqebhakcig',
+            compartment='fgubowumjrvfqaphplrx',
+            parameter='arolxalmxwbwbohcbqyu'
         )

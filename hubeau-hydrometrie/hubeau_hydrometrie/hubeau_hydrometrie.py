@@ -151,8 +151,8 @@ class HubEauHydrometrieAPI:
                 en_service=station.get("en_service", False) or False,
                 date_ouverture_station=station.get("date_ouverture_station", "") or ""
             )
-            hubeau_producer.send_fr_gov_eaufrance_hubeau_hydrometrie_station(
-                station_data, flush_producer=False)
+            hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(
+                station_data.code_station, station_data, flush_producer=False)
         producer.flush()
         logging.info("Sent %d stations as reference data", len(stations))
 
@@ -186,8 +186,8 @@ class HubEauHydrometrieAPI:
                     )
 
                     try:
-                        hubeau_producer.send_fr_gov_eaufrance_hubeau_hydrometrie_observation(
-                            obs_data, flush_producer=False)
+                        hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(
+                            obs_data.code_station, obs_data, flush_producer=False)
                         count += 1
                     # pylint: disable=broad-except
                     except Exception as e:

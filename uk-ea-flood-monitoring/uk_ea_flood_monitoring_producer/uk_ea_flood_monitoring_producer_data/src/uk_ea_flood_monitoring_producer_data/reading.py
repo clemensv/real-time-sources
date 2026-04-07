@@ -159,8 +159,8 @@ class Reading:
             An instance of the dataclass.
         """
         return cls(
-            station_reference='otxuwmjwzmkzpqoefcqs',
+            station_reference='xjvhvrlcpbgeleasvlhu',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            measure='crhqhnxgjbzypkptwwrk',
-            value=float(96.5254097356516)
+            measure='jmtjznljhxtqezkdbobf',
+            value=float(0.8807012543097792)
         )

@@ -143,7 +143,9 @@
                               "description": "Latitude coordinate of the station in WGS84 decimal notation."
                             },
                             "water": {
-                              "$ref": "#/definitions/de/wsv/pegelonline/Water"
+                              "type": {
+                                "$ref": "#/definitions/de/wsv/pegelonline/Water"
+                              }
                             }
                           },
                           "required": [

@@ -219,7 +219,6 @@ def send_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer) -> t
             station.station_id,
             station,
             flush_producer=False,
-            key_mapper=lambda ce, s: f"CZ.Gov.CHMI.Hydro.Station:{s.station_id}"
         )
         sent_count += 1
 
@@ -248,7 +247,6 @@ def feed_observations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer,
                 observation.station_id,
                 observation,
                 flush_producer=False,
-                key_mapper=lambda ce, o: f"CZ.Gov.CHMI.Hydro.WaterLevelObservation:{o.station_id}"
             )
             sent_count += 1
             previous_readings[reading_key] = observation.water_level_timestamp or ''

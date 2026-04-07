@@ -107,19 +107,19 @@
                             "description": "Link to GeoJSON detail feed for this event."
                           },
                           "felt": {
-                            "type": "int32",
+                            "type": ["int32", "null"],
                             "description": "Number of felt reports submitted to the DYFI system."
                           },
                           "cdi": {
-                            "type": "double",
+                            "type": ["double", "null"],
                             "description": "Maximum reported community determined intensity (DYFI)."
                           },
                           "mmi": {
-                            "type": "double",
+                            "type": ["double", "null"],
                             "description": "Maximum estimated instrumental intensity (ShakeMap)."
                           },
                           "alert": {
-                            "type": "string",
+                            "type": ["string", "null"],
                             "description": "PAGER alert level (green, yellow, orange, red)."
                           },
                           "status": {

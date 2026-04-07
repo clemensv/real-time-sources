@@ -21,30 +21,30 @@ class Station:
     """
     Station
     Attributes:
-        id_stacji (str): 
-        stacja (str): 
-        rzeka (typing.Optional[str]): 
-        wojewodztwo (typing.Optional[str]): 
+        station_id (str): 
+        station_name (str): 
+        river (typing.Optional[str]): 
+        voivodeship (typing.Optional[str]): 
         longitude (typing.Optional[float]): 
         latitude (typing.Optional[float]): """
     
-    id_stacji: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="id_stacji"))
-    stacja: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stacja"))
-    rzeka: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rzeka"))
-    wojewodztwo: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wojewodztwo"))
+    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
+    river: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river"))
+    voivodeship: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="voivodeship"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"id_stacji\", \"type\": \"string\"}, {\"name\": \"stacja\", \"type\": \"string\"}, {\"name\": \"rzeka\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"wojewodztwo\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"PL.Gov.IMGW.Hydro\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"river\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"voivodeship\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"PL.Gov.IMGW.Hydro\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.id_stacji=str(self.id_stacji)
-        self.stacja=str(self.stacja)
-        self.rzeka=str(self.rzeka) if self.rzeka else None
-        self.wojewodztwo=str(self.wojewodztwo) if self.wojewodztwo else None
+        self.station_id=str(self.station_id)
+        self.station_name=str(self.station_name)
+        self.river=str(self.river) if self.river else None
+        self.voivodeship=str(self.voivodeship) if self.voivodeship else None
         self.longitude=float(self.longitude) if self.longitude else None
         self.latitude=float(self.latitude) if self.latitude else None
 

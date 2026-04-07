@@ -78,21 +78,21 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "required": [
-                  "id_stacji",
-                  "stacja"
+                  "station_id",
+                  "station_name"
                 ],
                 "name": "Station",
                 "properties": {
-                  "id_stacji": {
+                  "station_id": {
                     "type": "string"
                   },
-                  "stacja": {
+                  "station_name": {
                     "type": "string"
                   },
-                  "rzeka": {
+                  "river": {
                     "type": "string"
                   },
-                  "wojewodztwo": {
+                  "voivodeship": {
                     "type": "string"
                   },
                   "longitude": {
@@ -186,15 +186,15 @@
                 "doc": "Station",
                 "fields": [
                   {
-                    "name": "id_stacji",
+                    "name": "station_id",
                     "type": "string"
                   },
                   {
-                    "name": "stacja",
+                    "name": "station_name",
                     "type": "string"
                   },
                   {
-                    "name": "rzeka",
+                    "name": "river",
                     "type": [
                       "null",
                       "string"
@@ -202,7 +202,7 @@
                     "default": null
                   },
                   {
-                    "name": "wojewodztwo",
+                    "name": "voivodeship",
                     "type": [
                       "null",
                       "string"

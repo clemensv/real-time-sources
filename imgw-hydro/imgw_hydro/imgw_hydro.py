@@ -42,10 +42,10 @@ class IMGWHydroAPI:
     def parse_station(record: dict) -> Station:
         """Parse an API record into a Station object."""
         return Station(
-            id_stacji=record.get("id_stacji", ""),
-            stacja=record.get("stacja", ""),
-            rzeka=record.get("rzeka", "") or "",
-            wojewodztwo=record.get("wojewodztwo", "") or "",
+            station_id=record.get("id_stacji", ""),
+            station_name=record.get("stacja", ""),
+            river=record.get("rzeka", "") or "",
+            voivodeship=record.get("wojewodztwo", "") or "",
             longitude=float(record["lon"]) if record.get("lon") else 0.0,
             latitude=float(record["lat"]) if record.get("lat") else 0.0,
         )

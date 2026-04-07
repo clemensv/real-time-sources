@@ -20,7 +20,7 @@ class Station:
     Station
     
     Attributes:
-        code (str)
+        station_code (str)
         name (str)
         latitude (float)
         longitude (float)
@@ -28,7 +28,7 @@ class Station:
     """
     
     
-    code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code"))
+    station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
@@ -159,9 +159,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            code='xvdccjrzlgnscghoqqhg',
-            name='adcxekcjsjrsjaxnsynz',
-            latitude=float(25.852582173320073),
-            longitude=float(39.12273297455007),
-            coordinate_system='ciyvcjbdnkjxofanaqry'
+            station_code='ivwpcvoxttsesnplhldv',
+            name='ecfhumwkxmawakbgrqxa',
+            latitude=float(41.83911597856172),
+            longitude=float(85.78972503000698),
+            coordinate_system='ytoqrvbnsncsxpxykcaf'
         )

@@ -252,7 +252,7 @@
                     "type": "string"
                   },
                   "radar_station": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NWS/Zone",

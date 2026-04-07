@@ -92,19 +92,19 @@ class TestDataClasses:
 
     def test_station_creation(self):
         station = Station(
-            code="HOlv",
+            station_code="HOlv",
             name="Hoek van Holland",
             latitude=51.979,
             longitude=4.120,
             coordinate_system="25831",
         )
-        assert station.code == "HOlv"
+        assert station.station_code == "HOlv"
         assert station.name == "Hoek van Holland"
         assert station.latitude == 51.979
 
     def test_station_json_roundtrip(self):
         station = Station(
-            code="DELF",
+            station_code="DELF",
             name="Delfzijl",
             latitude=53.326,
             longitude=6.933,
@@ -113,12 +113,12 @@ class TestDataClasses:
         json_str = station.to_json()
         data = json.loads(json_str)
         restored = Station.from_dict(data)
-        assert restored.code == station.code
+        assert restored.station_code == station.station_code
         assert restored.latitude == station.latitude
 
     def test_water_level_observation_creation(self):
         obs = WaterLevelObservation(
-            location_code="HOlv",
+            station_code="HOlv",
             location_name="Hoek van Holland",
             timestamp="2026-03-25T10:00:00.000+01:00",
             value=123.0,
@@ -128,13 +128,13 @@ class TestDataClasses:
             compartment="OW",
             parameter="WATHTE",
         )
-        assert obs.location_code == "HOlv"
+        assert obs.station_code == "HOlv"
         assert obs.value == 123.0
         assert obs.unit == "cm"
 
     def test_water_level_observation_json_roundtrip(self):
         obs = WaterLevelObservation(
-            location_code="DELF",
+            station_code="DELF",
             location_name="Delfzijl",
             timestamp="2026-03-25T10:00:00.000+01:00",
             value=456.0,
@@ -146,13 +146,13 @@ class TestDataClasses:
         )
         json_str = obs.to_json()
         restored = WaterLevelObservation.from_data(json_str, "application/json")
-        assert restored.location_code == obs.location_code
+        assert restored.station_code == obs.station_code
         assert restored.value == obs.value
         assert restored.timestamp == obs.timestamp
 
     def test_station_to_byte_array(self):
         station = Station(
-            code="TEST",
+            station_code="TEST",
             name="Test Station",
             latitude=52.0,
             longitude=5.0,
@@ -161,12 +161,12 @@ class TestDataClasses:
         data = station.to_byte_array("application/json")
         assert isinstance(data, (bytes, str))
         parsed = json.loads(data)
-        assert parsed["code"] == "TEST"
+        assert parsed["station_code"] == "TEST"
 
     def test_observation_from_data(self):
-        json_str = '{"location_code": "HOlv", "location_name": "Hoek van Holland", "timestamp": "2026-01-01T00:00:00Z", "value": 100.0, "unit": "cm", "quality_code": "", "status": "", "compartment": "OW", "parameter": "WATHTE"}'
+        json_str = '{"station_code": "HOlv", "location_name": "Hoek van Holland", "timestamp": "2026-01-01T00:00:00Z", "value": 100.0, "unit": "cm", "quality_code": "", "status": "", "compartment": "OW", "parameter": "WATHTE"}'
         obs = WaterLevelObservation.from_data(json_str, "application/json")
-        assert obs.location_code == "HOlv"
+        assert obs.station_code == "HOlv"
         assert obs.value == 100.0
 
 

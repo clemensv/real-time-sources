@@ -78,14 +78,14 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "required": [
-                  "code",
+                  "station_code",
                   "name",
                   "latitude",
                   "longitude"
                 ],
                 "name": "Station",
                 "properties": {
-                  "code": {
+                  "station_code": {
                     "type": "string"
                   },
                   "name": {
@@ -118,13 +118,13 @@
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "type": "object",
                 "required": [
-                  "location_code",
+                  "station_code",
                   "timestamp",
                   "value"
                 ],
                 "name": "WaterLevelObservation",
                 "properties": {
-                  "location_code": {
+                  "station_code": {
                     "type": "string"
                   },
                   "location_name": {
@@ -175,7 +175,7 @@
                 "doc": "Station",
                 "fields": [
                   {
-                    "name": "code",
+                    "name": "station_code",
                     "type": "string"
                   },
                   {
@@ -217,7 +217,7 @@
                 "doc": "WaterLevelObservation",
                 "fields": [
                   {
-                    "name": "location_code",
+                    "name": "station_code",
                     "type": "string"
                   },
                   {

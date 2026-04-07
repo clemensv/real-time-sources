@@ -20,19 +20,19 @@ class Station:
     Station
     
     Attributes:
-        id_stacji (str)
-        stacja (str)
-        rzeka (typing.Optional[str])
-        wojewodztwo (typing.Optional[str])
+        station_id (str)
+        station_name (str)
+        river (typing.Optional[str])
+        voivodeship (typing.Optional[str])
         longitude (typing.Optional[float])
         latitude (typing.Optional[float])
     """
     
     
-    id_stacji: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="id_stacji"))
-    stacja: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stacja"))
-    rzeka: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rzeka"))
-    wojewodztwo: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wojewodztwo"))
+    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
+    river: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river"))
+    voivodeship: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="voivodeship"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
 
@@ -161,10 +161,10 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            id_stacji='xqrktabkwkuralfvdrya',
-            stacja='jhxzbsnggqiikjwckcmc',
-            rzeka='svlwiikefauydespepbg',
-            wojewodztwo='lowhgloyeogrlhpsywml',
-            longitude=float(66.84017725065847),
-            latitude=float(84.5939805870382)
+            station_id='nedofnybvexlckqwbcia',
+            station_name='merjrvjtgirfqsrbwqja',
+            river='tbaxijwtgswmszocnatp',
+            voivodeship='qqmgppimtncajbuzxyyv',
+            longitude=float(8.926200835098165),
+            latitude=float(12.558509242751192)
         )

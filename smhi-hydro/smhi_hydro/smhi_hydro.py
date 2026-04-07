@@ -139,7 +139,6 @@ def send_stations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer) -> i
             station.station_id,
             station,
             flush_producer=False,
-            key_mapper=lambda ce, s: f"SE.Gov.SMHI.Hydro.Station:{s.station_id}"
         )
         sent_count += 1
 
@@ -164,7 +163,6 @@ def feed_observations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer, 
                 observation.station_id,
                 observation,
                 flush_producer=False,
-                key_mapper=lambda ce, o: f"SE.Gov.SMHI.Hydro.DischargeObservation:{o.station_id}"
             )
             sent_count += 1
             previous_readings[reading_key] = observation.timestamp

@@ -163,7 +163,7 @@
                     "type": "string"
                   },
                   "hull": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "name": {
                     "type": "string"
@@ -175,7 +175,7 @@
                     "type": "double"
                   },
                   "timezone": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation",

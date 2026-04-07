@@ -200,7 +200,7 @@ class RWSWaterwebservicesAPI:
         for loc in water_level_stations:
             code = loc.get("Code", "")
             station = Station(
-                code=code,
+                station_code=code,
                 name=loc.get("Naam", ""),
                 latitude=float(loc.get("Lat", 0) or 0),
                 longitude=float(loc.get("Lon", 0) or 0),
@@ -240,7 +240,7 @@ class RWSWaterwebservicesAPI:
 
                         metadata = meting.get("WaarnemingMetadata", {})
                         observation = WaterLevelObservation(
-                            location_code=location_code,
+                            station_code=location_code,
                             location_name=locatie.get("Naam", ""),
                             timestamp=tijdstip,
                             value=float(waarde),

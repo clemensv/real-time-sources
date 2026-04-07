@@ -207,9 +207,11 @@
                               "description": "The name of the original author."
                             },
                             "author_detail": {
-                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor",
                               "default": null,
-                              "description": "Detailed information about the original author."
+                              "description": "Detailed information about the original author.",
+                              "type": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                              }
                             },
                             "contributors": {
                               "type": "array",
@@ -328,29 +330,39 @@
                           "type": "object",
                           "properties": {
                             "author": {
-                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor",
                               "default": null,
-                              "description": "Information about the feed item's author."
+                              "description": "Information about the feed item's author.",
+                              "type": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                              }
                             },
                             "publisher": {
-                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemPublisher",
                               "default": null,
-                              "description": "Information about the feed item's publisher."
+                              "description": "Information about the feed item's publisher.",
+                              "type": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemPublisher"
+                              }
                             },
                             "summary": {
-                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemSummary",
                               "default": null,
-                              "description": "A short summary of the feed item."
+                              "description": "A short summary of the feed item.",
+                              "type": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemSummary"
+                              }
                             },
                             "title": {
-                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemTitle",
                               "default": null,
-                              "description": "The feed item's title."
+                              "description": "The feed item's title.",
+                              "type": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemTitle"
+                              }
                             },
                             "source": {
-                              "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemSource",
                               "default": null,
-                              "description": "Information about the source feed of the item."
+                              "description": "Information about the source feed of the item.",
+                              "type": {
+                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemSource"
+                              }
                             },
                             "content": {
                               "type": "array",

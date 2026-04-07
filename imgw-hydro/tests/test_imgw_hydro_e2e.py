@@ -27,8 +27,8 @@ class TestIMGWHydroE2E:
         stations = [api.parse_station(r) for r in records]
         assert len(stations) == len(records)
         for s in stations:
-            assert s.id_stacji
-            assert s.stacja
+            assert s.station_id
+            assert s.station_name
 
     def test_parse_all_observations(self, api):
         """Test that records can be parsed into observations."""

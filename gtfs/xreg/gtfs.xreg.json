@@ -1337,7 +1337,9 @@
                             "description": "Must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where a vehicle that is one hour late is not considered to be related to schedule anymore. In YYYYMMDD format."
                           },
                           "schedule_relationship": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/TripDescriptor_types/ScheduleRelationship"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/TripDescriptor_types/ScheduleRelationship"
+                            }
                           }
                         },
                         "required": [],
@@ -1436,16 +1438,22 @@
                         "type": "object",
                         "properties": {
                           "trip": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/TripDescriptor",
-                            "description": "The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance."
+                            "description": "The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance.",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/TripDescriptor"
+                            }
                           },
                           "vehicle": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehicleDescriptor",
-                            "description": "Additional information on the vehicle that is serving this trip."
+                            "description": "Additional information on the vehicle that is serving this trip.",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehicleDescriptor"
+                            }
                           },
                           "position": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/Position",
-                            "description": "Current position of this vehicle. The stop sequence index of the current stop. The meaning of"
+                            "description": "Current position of this vehicle. The stop sequence index of the current stop. The meaning of",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/Position"
+                            }
                           },
                           "current_stop_sequence": {
                             "type": "int32",
@@ -1456,18 +1464,24 @@
                             "description": "the corresponding GTFS feed."
                           },
                           "current_status": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehiclePosition_types/VehicleStopStatus",
-                            "description": "The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time"
+                            "description": "The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehiclePosition_types/VehicleStopStatus"
+                            }
                           },
                           "timestamp": {
                             "type": "int64",
                             "description": "(i.e., number of seconds since January 1st 1970 00:00:00 UTC)."
                           },
                           "congestion_level": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehiclePosition_types/CongestionLevel"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehiclePosition_types/CongestionLevel"
+                            }
                           },
                           "occupancy_status": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehiclePosition_types/OccupancyStatus"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Vehicle/VehiclePosition_types/OccupancyStatus"
+                            }
                           }
                         },
                         "required": [],
@@ -1533,7 +1547,9 @@
                             "description": "Must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where a vehicle that is one hour late is not considered to be related to schedule anymore. In YYYYMMDD format."
                           },
                           "schedule_relationship": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripDescriptor_types/ScheduleRelationship"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripDescriptor_types/ScheduleRelationship"
+                            }
                           }
                         },
                         "required": [],
@@ -1605,13 +1621,19 @@
                               "description": "Must be the same as in stops.txt in the corresponding GTFS feed."
                             },
                             "arrival": {
-                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeEvent"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeEvent"
+                              }
                             },
                             "departure": {
-                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeEvent"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeEvent"
+                              }
                             },
                             "schedule_relationship": {
-                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeUpdate_types/ScheduleRelationship"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeUpdate_types/ScheduleRelationship"
+                              }
                             }
                           },
                           "required": [],
@@ -1623,12 +1645,16 @@
                         "type": "object",
                         "properties": {
                           "trip": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripDescriptor",
-                            "description": "The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule."
+                            "description": "The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule.",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripDescriptor"
+                            }
                           },
                           "vehicle": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/VehicleDescriptor",
-                            "description": "Additional information on the vehicle that is serving this trip."
+                            "description": "Additional information on the vehicle that is serving this trip.",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/VehicleDescriptor"
+                            }
                           },
                           "stop_time_update": {
                             "type": "array",
@@ -1728,7 +1754,9 @@
                             "description": "Must be provided to disambiguate trips that are so late as to collide with a scheduled trip on a next day. For example, for a train that departs 8:00 and 20:00 every day, and is 12 hours late, there would be two distinct trips on the same time. This field can be provided but is not mandatory for schedules in which such collisions are impossible - for example, a service running on hourly schedule where a vehicle that is one hour late is not considered to be related to schedule anymore. In YYYYMMDD format."
                           },
                           "schedule_relationship": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TripDescriptor_types/ScheduleRelationship"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TripDescriptor_types/ScheduleRelationship"
+                            }
                           }
                         },
                         "required": [],
@@ -1750,7 +1778,9 @@
                             "description": "corresponds to route_type in GTFS."
                           },
                           "trip": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TripDescriptor"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TripDescriptor"
+                            }
                           },
                           "stop_id": {
                             "type": "string"
@@ -1851,22 +1881,32 @@
                             "description": "Entities whose users we should notify of this alert."
                           },
                           "cause": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/Alert_types/Cause"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/Alert_types/Cause"
+                            }
                           },
                           "effect": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/Alert_types/Effect"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/Alert_types/Effect"
+                            }
                           },
                           "url": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString",
-                            "description": "The URL which provides additional information about the alert."
+                            "description": "The URL which provides additional information about the alert.",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString"
+                            }
                           },
                           "header_text": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString",
-                            "description": "Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the"
+                            "description": "Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString"
+                            }
                           },
                           "description_text": {
-                            "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString",
-                            "description": "description should add to the information of the header."
+                            "description": "description should add to the information of the header.",
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString"
+                            }
                           }
                         },
                         "required": [
@@ -2792,7 +2832,7 @@
                         "agencyEmail": {
                           "type": "string",
                           "default": null,
-                          "description": "Email address actively monitored by the agency\u2019s customer service department."
+                          "description": "Email address actively monitored by the agency’s customer service department."
                         }
                       },
                       "required": [
@@ -3363,7 +3403,7 @@
                         "defaultLang": {
                           "type": "string",
                           "default": null,
-                          "description": "Specifies the language used when the data consumer doesn\u2019t know the language of the user."
+                          "description": "Specifies the language used when the data consumer doesn’t know the language of the user."
                         },
                         "feedStartDate": {
                           "type": "string",
@@ -3865,7 +3905,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                     },
                     "ContinuousDropOff": {
                       "name": "ContinuousDropOff",
@@ -3876,7 +3916,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                     },
                     "Routes": {
                       "name": "Routes",
@@ -3907,8 +3947,10 @@
                           "description": "Description of a route that provides useful, quality information."
                         },
                         "routeType": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/RouteType",
-                          "description": "Indicates the type of transportation used on a route."
+                          "description": "Indicates the type of transportation used on a route.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/RouteType"
+                          }
                         },
                         "routeUrl": {
                           "type": "string",
@@ -3931,12 +3973,16 @@
                           "description": "Orders the routes in a way which is ideal for presentation to customers."
                         },
                         "continuousPickup": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup",
-                          "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path."
+                          "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup"
+                          }
                         },
                         "continuousDropOff": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff",
-                          "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path."
+                          "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff"
+                          }
                         },
                         "networkId": {
                           "type": "string",
@@ -4141,8 +4187,10 @@
                           "description": "URL of a web page about the location."
                         },
                         "locationType": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/LocationType",
-                          "description": "Location type."
+                          "description": "Location type.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/LocationType"
+                          }
                         },
                         "parentStation": {
                           "type": "string",
@@ -4155,8 +4203,10 @@
                           "description": "Timezone of the location."
                         },
                         "wheelchairBoarding": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairBoarding",
-                          "description": "Indicates whether wheelchair boardings are possible from the location."
+                          "description": "Indicates whether wheelchair boardings are possible from the location.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairBoarding"
+                          }
                         },
                         "levelId": {
                           "type": "string",
@@ -4227,7 +4277,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                      "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                     },
                     "ContinuousDropOff": {
                       "name": "ContinuousDropOff",
@@ -4238,7 +4288,7 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                      "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                     },
                     "Timepoint": {
                       "name": "Timepoint",
@@ -4282,22 +4332,30 @@
                           "description": "Text that appears on signage identifying the trip's destination to riders."
                         },
                         "pickupType": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/PickupType",
-                          "description": "Indicates pickup method."
+                          "description": "Indicates pickup method.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/PickupType"
+                          }
                         },
                         "dropOffType": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/DropOffType",
-                          "description": "Indicates drop off method."
+                          "description": "Indicates drop off method.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/DropOffType"
+                          }
                         },
                         "continuousPickup": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup",
                           "default": null,
-                          "description": "Indicates continuous stopping pickup."
+                          "description": "Indicates continuous stopping pickup.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousPickup"
+                          }
                         },
                         "continuousDropOff": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff",
                           "default": null,
-                          "description": "Indicates continuous stopping drop off."
+                          "description": "Indicates continuous stopping drop off.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ContinuousDropOff"
+                          }
                         },
                         "shapeDistTraveled": {
                           "type": "double",
@@ -4305,8 +4363,10 @@
                           "description": "Actual distance traveled along the shape from the first stop to the stop specified in this record."
                         },
                         "timepoint": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/Timepoint",
-                          "description": "Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times."
+                          "description": "Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/Timepoint"
+                          }
                         }
                       },
                       "required": [
@@ -4356,32 +4416,46 @@
                           "description": "Identifies a set of dates when service is available for one or more routes."
                         },
                         "monday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Mondays in the date range specified."
+                          "description": "Indicates whether the service operates on all Mondays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "tuesday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Tuesdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Tuesdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "wednesday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Wednesdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Wednesdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "thursday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Thursdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Thursdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "friday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Fridays in the date range specified."
+                          "description": "Indicates whether the service operates on all Fridays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "saturday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Saturdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Saturdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "sunday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Sundays in the date range specified."
+                          "description": "Indicates whether the service operates on all Sundays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "startDate": {
                           "type": "string",
@@ -4427,8 +4501,10 @@
                           "description": "Date when service exception occurs."
                         },
                         "exceptionType": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType",
-                          "description": "Indicates whether service is available on the date specified."
+                          "description": "Indicates whether service is available on the date specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType"
+                          }
                         }
                       },
                       "required": [
@@ -4610,32 +4686,46 @@
                           "description": "Identifies a set of dates when service is available for one or more routes."
                         },
                         "monday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Mondays in the date range specified."
+                          "description": "Indicates whether the service operates on all Mondays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "tuesday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Tuesdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Tuesdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "wednesday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Wednesdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Wednesdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "thursday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Thursdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Thursdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "friday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Fridays in the date range specified."
+                          "description": "Indicates whether the service operates on all Fridays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "saturday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Saturdays in the date range specified."
+                          "description": "Indicates whether the service operates on all Saturdays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "sunday": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability",
-                          "description": "Indicates whether the service operates on all Sundays in the date range specified."
+                          "description": "Indicates whether the service operates on all Sundays in the date range specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+                          }
                         },
                         "startDate": {
                           "type": "string",
@@ -4681,8 +4771,10 @@
                           "description": "Date when service exception occurs."
                         },
                         "exceptionType": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType",
-                          "description": "Indicates whether service is available on the date specified."
+                          "description": "Indicates whether service is available on the date specified.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/ExceptionType"
+                          }
                         }
                       },
                       "required": [
@@ -4729,7 +4821,9 @@
                           "description": "Identifies a route."
                         },
                         "serviceDates": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/Calendar"
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/Calendar"
+                          }
                         },
                         "serviceExceptions": {
                           "type": "array",
@@ -4752,8 +4846,10 @@
                           "description": "Public facing text used to identify the trip to riders."
                         },
                         "directionId": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/DirectionId",
-                          "description": "Indicates the direction of travel for a trip."
+                          "description": "Indicates the direction of travel for a trip.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/DirectionId"
+                          }
                         },
                         "blockId": {
                           "type": "string",
@@ -4766,12 +4862,16 @@
                           "description": "Identifies a geospatial shape describing the vehicle travel path for a trip."
                         },
                         "wheelchairAccessible": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairAccessible",
-                          "description": "Indicates wheelchair accessibility."
+                          "description": "Indicates wheelchair accessibility.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/WheelchairAccessible"
+                          }
                         },
                         "bikesAllowed": {
-                          "$ref": "#/definitions/GeneralTransitFeedStatic/BikesAllowed",
-                          "description": "Indicates whether bikes are allowed."
+                          "description": "Indicates whether bikes are allowed.",
+                          "type": {
+                            "$ref": "#/definitions/GeneralTransitFeedStatic/BikesAllowed"
+                          }
                         }
                       },
                       "required": [
@@ -4863,7 +4963,7 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Email address actively monitored by the agency\u2019s customer service department."
+                    "doc": "Email address actively monitored by the agency’s customer service department."
                   }
                 ]
               },
@@ -5503,7 +5603,7 @@
                       "string"
                     ],
                     "default": null,
-                    "doc": "Specifies the language used when the data consumer doesn\u2019t know the language of the user."
+                    "doc": "Specifies the language used when the data consumer doesn’t know the language of the user."
                   },
                   {
                     "name": "feedStartDate",
@@ -6100,9 +6200,9 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                      "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                     },
-                    "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path."
+                    "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path."
                   },
                   {
                     "name": "continuousDropOff",
@@ -6116,9 +6216,9 @@
                         "PHONE_AGENCY",
                         "COORDINATE_WITH_DRIVER"
                       ],
-                      "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                      "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                     },
-                    "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path."
+                    "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path."
                   },
                   {
                     "name": "networkId",
@@ -6498,7 +6598,7 @@
                           "PHONE_AGENCY",
                           "COORDINATE_WITH_DRIVER"
                         ],
-                        "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
+                        "doc": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup."
                       }
                     ],
                     "default": null,
@@ -6518,7 +6618,7 @@
                           "PHONE_AGENCY",
                           "COORDINATE_WITH_DRIVER"
                         ],
-                        "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
+                        "doc": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off."
                       }
                     ],
                     "default": null,

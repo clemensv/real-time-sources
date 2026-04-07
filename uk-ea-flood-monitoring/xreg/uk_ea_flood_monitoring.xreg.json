@@ -93,13 +93,13 @@
                     "type": "string"
                   },
                   "river_name": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "catchment_name": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "town": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "lat": {
                     "type": "double"
@@ -111,10 +111,10 @@
                     "type": "string"
                   },
                   "status": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "date_opened": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   }
                 },
                 "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Station",

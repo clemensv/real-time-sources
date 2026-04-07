@@ -1,3 +1,3 @@
-from .microsoft import Zone, WeatherAlert
+from .microsoft import WeatherAlert, Zone
 
-__all__ = ["Zone", "WeatherAlert"]
+__all__ = ["WeatherAlert", "Zone"]

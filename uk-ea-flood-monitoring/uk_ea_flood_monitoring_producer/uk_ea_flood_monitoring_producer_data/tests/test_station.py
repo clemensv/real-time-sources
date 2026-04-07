@@ -28,16 +28,16 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_reference='okqnqbgbouoqtlhhnltg',
-            label='aicafrzoxesfcykhsxdf',
-            river_name='krovgbljspyuxsdfjlma',
-            catchment_name='ugiweelnkgknaekinlrd',
-            town='njabxoiwcjkpwimodufb',
-            lat=float(25.503903368378168),
-            long=float(42.11580792369946),
-            notation='nvsnobikkhrjcfzjmgmg',
-            status='aufnsvpqjgrjbphnlcht',
-            date_opened='wedyremtcdidtlznhxbw'
+            station_reference='bomajynkjouptoiilmfg',
+            label='ddrcznbvadxpctiodtyk',
+            river_name='xdgfxdudpvwmfcgtkurr',
+            catchment_name='njupsaigbvtoevhcgcgt',
+            town='liuohlbrutgnmnkybrrp',
+            lat=float(66.33429490664604),
+            long=float(76.3818183102153),
+            notation='uruukykebtpgzuknsuzs',
+            status='reuewycdrtbsvropzuvl',
+            date_opened='kiouwbomipnbpziunesh'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_reference property
         """
-        test_value = 'okqnqbgbouoqtlhhnltg'
+        test_value = 'bomajynkjouptoiilmfg'
         self.instance.station_reference = test_value
         self.assertEqual(self.instance.station_reference, test_value)
     
@@ -54,7 +54,7 @@ class Test_Station(unittest.TestCase):
         """
         Test label property
         """
-        test_value = 'aicafrzoxesfcykhsxdf'
+        test_value = 'ddrcznbvadxpctiodtyk'
         self.instance.label = test_value
         self.assertEqual(self.instance.label, test_value)
     
@@ -62,7 +62,7 @@ class Test_Station(unittest.TestCase):
         """
         Test river_name property
         """
-        test_value = 'krovgbljspyuxsdfjlma'
+        test_value = 'xdgfxdudpvwmfcgtkurr'
         self.instance.river_name = test_value
         self.assertEqual(self.instance.river_name, test_value)
     
@@ -70,7 +70,7 @@ class Test_Station(unittest.TestCase):
         """
         Test catchment_name property
         """
-        test_value = 'ugiweelnkgknaekinlrd'
+        test_value = 'njupsaigbvtoevhcgcgt'
         self.instance.catchment_name = test_value
         self.assertEqual(self.instance.catchment_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_Station(unittest.TestCase):
         """
         Test town property
         """
-        test_value = 'njabxoiwcjkpwimodufb'
+        test_value = 'liuohlbrutgnmnkybrrp'
         self.instance.town = test_value
         self.assertEqual(self.instance.town, test_value)
     
@@ -86,7 +86,7 @@ class Test_Station(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(25.503903368378168)
+        test_value = float(66.33429490664604)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -94,7 +94,7 @@ class Test_Station(unittest.TestCase):
         """
         Test long property
         """
-        test_value = float(42.11580792369946)
+        test_value = float(76.3818183102153)
         self.instance.long = test_value
         self.assertEqual(self.instance.long, test_value)
     
@@ -102,7 +102,7 @@ class Test_Station(unittest.TestCase):
         """
         Test notation property
         """
-        test_value = 'nvsnobikkhrjcfzjmgmg'
+        test_value = 'uruukykebtpgzuknsuzs'
         self.instance.notation = test_value
         self.assertEqual(self.instance.notation, test_value)
     
@@ -110,7 +110,7 @@ class Test_Station(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'aufnsvpqjgrjbphnlcht'
+        test_value = 'reuewycdrtbsvropzuvl'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -118,7 +118,7 @@ class Test_Station(unittest.TestCase):
         """
         Test date_opened property
         """
-        test_value = 'wedyremtcdidtlznhxbw'
+        test_value = 'kiouwbomipnbpziunesh'
         self.instance.date_opened = test_value
         self.assertEqual(self.instance.date_opened, test_value)
     
