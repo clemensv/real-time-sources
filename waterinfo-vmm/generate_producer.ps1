@@ -5,7 +5,7 @@ Assert-XrcgVersion
 
 $XREG_ROOT = Join-Path $PSScriptRoot "xreg"
 $SCHEMA_FILE = Join-Path $XREG_ROOT "waterinfo_vmm.xreg.json"
-$OUTPUT_DIR = Join-Path $PSScriptRoot "waterinfo_vmm_producer_tmp"
+$OUTPUT_DIR = Join-Path $PSScriptRoot "waterinfo_vmm_producer"
 
 Write-Host "Generating producer from $SCHEMA_FILE"
 xrcg generate `

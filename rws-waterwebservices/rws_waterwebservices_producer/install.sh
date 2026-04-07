@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./rws_waterwebservices_producer_data
+pip install ./rws_waterwebservices_producer_kafka_producer

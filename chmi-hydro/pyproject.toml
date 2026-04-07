@@ -15,8 +15,8 @@ confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
-chmi_hydro_producer_data = {path = "chmi_hydro_producer_tmp/chmi_hydro_producer_data"}
-chmi_hydro_producer_kafka_producer = {path = "chmi_hydro_producer_tmp/chmi_hydro_producer_kafka_producer"}
+chmi_hydro_producer_data = {path = "chmi_hydro_producer/chmi_hydro_producer_data"}
+chmi_hydro_producer_kafka_producer = {path = "chmi_hydro_producer/chmi_hydro_producer_kafka_producer"}
 
 [tool.poetry.scripts]
 chmi-hydro = "chmi_hydro:main"

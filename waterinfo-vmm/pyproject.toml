@@ -14,8 +14,8 @@ requests = ">=2.32.3"
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
-waterinfo_vmm_producer_data = {path = "waterinfo_vmm_producer_tmp/waterinfo_vmm_producer_data"}
-waterinfo_vmm_producer_kafka_producer = {path = "waterinfo_vmm_producer_tmp/waterinfo_vmm_producer_kafka_producer"}
+waterinfo_vmm_producer_data = {path = "waterinfo_vmm_producer/waterinfo_vmm_producer_data"}
+waterinfo_vmm_producer_kafka_producer = {path = "waterinfo_vmm_producer/waterinfo_vmm_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"

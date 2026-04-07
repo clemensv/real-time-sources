@@ -15,8 +15,8 @@ confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
-imgw_hydro_producer_data = {path = "imgw_hydro_producer_tmp/imgw_hydro_producer_data"}
-imgw_hydro_producer_kafka_producer = {path = "imgw_hydro_producer_tmp/imgw_hydro_producer_kafka_producer"}
+imgw_hydro_producer_data = {path = "imgw_hydro_producer/imgw_hydro_producer_data"}
+imgw_hydro_producer_kafka_producer = {path = "imgw_hydro_producer/imgw_hydro_producer_kafka_producer"}
 
 [tool.poetry.scripts]
 imgw-hydro = "imgw_hydro:main"
