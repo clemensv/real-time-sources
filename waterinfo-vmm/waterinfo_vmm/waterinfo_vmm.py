@@ -14,9 +14,9 @@ from datetime import datetime, timezone
 from typing import Dict, List, Any
 import argparse
 import requests
-from waterinfo_vmm.waterinfo_vmm_producer.be.vlaanderen.waterinfo.vmm.station import Station
-from waterinfo_vmm.waterinfo_vmm_producer.be.vlaanderen.waterinfo.vmm.water_level_reading import WaterLevelReading
-from .waterinfo_vmm_producer.producer_client import BEVlaanderenWaterinfoVMMEventProducer
+from waterinfo_vmm_producer_data import Station
+from waterinfo_vmm_producer_data import WaterLevelReading
+from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMEventProducer
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -145,7 +145,7 @@ class WaterinfoVMMAPI:
                 ts_unitname="",
             )
             waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(
-                station, flush_producer=False)
+                station.station_no, station, flush_producer=False)
             station_count += 1
         producer.flush()
         logging.info("Sent %d stations as reference data", station_count)
@@ -181,7 +181,7 @@ class WaterinfoVMMAPI:
 
                     try:
                         waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(
-                            reading, flush_producer=False)
+                            reading.station_no, reading, flush_producer=False)
                         count += 1
                     # pylint: disable=broad-except
                     except Exception as e:

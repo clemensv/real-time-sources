@@ -9,9 +9,9 @@ from testcontainers.kafka import KafkaContainer
 from confluent_kafka import Producer, Consumer, KafkaError
 
 from waterinfo_vmm.waterinfo_vmm import WaterinfoVMMAPI
-from waterinfo_vmm.waterinfo_vmm_producer.producer_client import BEVlaanderenWaterinfoVMMEventProducer
-from waterinfo_vmm.waterinfo_vmm_producer.be.vlaanderen.waterinfo.vmm.station import Station
-from waterinfo_vmm.waterinfo_vmm_producer.be.vlaanderen.waterinfo.vmm.water_level_reading import WaterLevelReading
+from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMEventProducer
+from waterinfo_vmm_producer_data import Station
+from waterinfo_vmm_producer_data import WaterLevelReading
 
 
 KAFKA_TOPIC = "test-waterinfo-vmm"

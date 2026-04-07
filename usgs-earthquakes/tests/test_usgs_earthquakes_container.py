@@ -17,8 +17,8 @@ from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 
-from usgs_earthquakes.usgs_earthquakes_producer.usgs.earthquakes.event import Event
-from usgs_earthquakes.usgs_earthquakes_producer.producer_client import USGSEarthquakesEventProducer
+from usgs_earthquakes_producer_data.usgs.earthquakes.event import Event
+from usgs_earthquakes_producer_kafka_producer.producer import USGSEarthquakesEventProducer
 from usgs_earthquakes.usgs_earthquakes import USGSEarthquakePoller
 
 

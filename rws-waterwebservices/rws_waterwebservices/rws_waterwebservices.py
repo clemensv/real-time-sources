@@ -15,9 +15,9 @@ from datetime import datetime, timezone
 from typing import Dict, List, Any
 import argparse
 import requests
-from rws_waterwebservices.rws_waterwebservices_producer.nl.rws.waterwebservices.station import Station
-from rws_waterwebservices.rws_waterwebservices_producer.nl.rws.waterwebservices.water_level_observation import WaterLevelObservation
-from .rws_waterwebservices_producer.producer_client import NLRWSWaterwebservicesEventProducer
+from rws_waterwebservices_producer_data import Station
+from rws_waterwebservices_producer_data import WaterLevelObservation
+from rws_waterwebservices_producer_kafka_producer.producer import NLRWSWaterwebservicesEventProducer
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -206,7 +206,7 @@ class RWSWaterwebservicesAPI:
                 longitude=float(loc.get("Lon", 0) or 0),
                 coordinate_system=loc.get("Coordinatenstelsel", ""),
             )
-            rws_producer.send_nl_rws_waterwebservices_station(station, flush_producer=False)
+            rws_producer.send_nl_rws_waterwebservices_station(code, station, flush_producer=False)
             station_codes.append(code)
             station_count += 1
         producer.flush()
@@ -253,7 +253,7 @@ class RWSWaterwebservicesAPI:
 
                         try:
                             rws_producer.send_nl_rws_waterwebservices_water_level_observation(
-                                observation, flush_producer=False)
+                                location_code, observation, flush_producer=False)
                             count += 1
                         # pylint: disable=broad-except
                         except Exception as e:

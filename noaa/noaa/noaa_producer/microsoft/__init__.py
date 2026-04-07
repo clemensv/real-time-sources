@@ -1,3 +1,0 @@
-from .opendata import Details, Sensors, Floodlevels, Datums, Supersededdatums, HarmonicConstituents, Benchmarks, TidePredOffsets, OfsMapOffsets, Nearby, Products, Disclaimers, Notices, Station, AirTemperature, Conductivity, WaterTemperature, Salinity, Currents, Predictions, Wind, QualityLevel, WaterLevel, Visibility, CurrentPredictions, Humidity, AirPressure
-
-__all__ = ["Details", "Sensors", "Floodlevels", "Datums", "Supersededdatums", "HarmonicConstituents", "Benchmarks", "TidePredOffsets", "OfsMapOffsets", "Nearby", "Products", "Disclaimers", "Notices", "Station", "AirTemperature", "Conductivity", "WaterTemperature", "Salinity", "Currents", "Predictions", "Wind", "QualityLevel", "WaterLevel", "Visibility", "CurrentPredictions", "Humidity", "AirPressure"]

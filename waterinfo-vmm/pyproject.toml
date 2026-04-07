@@ -1,29 +1,28 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
-name = "waterinfo_vmm"
+[tool.poetry]
+name = "waterinfo-vmm"
 version = "0.1.0"
-requires-python = ">=3.9"
-dependencies = [
-    "confluent_kafka",
-    "cloudevents>=1.11.0,<2.0.0",
-    "requests",
-    "dataclasses-json",
-]
+description = "Belgian Waterinfo VMM (Flanders) bridge to Apache Kafka"
+authors = ["Clemens Vasters"]
 
-[project.optional-dependencies]
-dev = [
-    "pytest",
-    "pytest-cov",
-    "pytest-asyncio",
-    "requests-mock",
-    "testcontainers[kafka]",
-]
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+waterinfo_vmm_producer_data = {path = "waterinfo_vmm_producer_tmp/waterinfo_vmm_producer_data"}
+waterinfo_vmm_producer_kafka_producer = {path = "waterinfo_vmm_producer_tmp/waterinfo_vmm_producer_kafka_producer"}
 
-[project.scripts]
-waterinfo_vmm = "waterinfo_vmm.waterinfo_vmm:main"
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+pytest-cov = ">=5.0.0"
+pytest-asyncio = ">=0.23.0"
+testcontainers = ">=4.8.1"
+requests-mock = ">=1.12.1"
 
-[tool.setuptools.packages.find]
-include = ["waterinfo_vmm*"]
+[tool.poetry.scripts]
+waterinfo-vmm = "waterinfo_vmm.waterinfo_vmm:main"

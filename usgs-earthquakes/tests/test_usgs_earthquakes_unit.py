@@ -255,7 +255,7 @@ class TestEventDataClass:
 
     def test_event_to_json(self):
         """Test Event serialization to JSON."""
-        from usgs_earthquakes.usgs_earthquakes_producer.usgs.earthquakes.event import Event
+        from usgs_earthquakes_producer_data.usgs.earthquakes.event import Event
 
         event = Event(
             id="us7000test",
@@ -294,7 +294,7 @@ class TestEventDataClass:
 
     def test_event_to_avro(self):
         """Test Event serialization to Avro binary."""
-        from usgs_earthquakes.usgs_earthquakes_producer.usgs.earthquakes.event import Event
+        from usgs_earthquakes_producer_data.usgs.earthquakes.event import Event
 
         event = Event(
             id="us7000test",

@@ -14,6 +14,8 @@ aiohttp = ">=3.10.5"
 asyncio = ">=3.4.3"
 avro = "^1.12.1"
 dataclasses-json = "^0.6.7"
+usgs_earthquakes_producer_data = {path = "usgs_earthquakes_producer/usgs_earthquakes_producer_data"}
+usgs_earthquakes_producer_kafka_producer = {path = "usgs_earthquakes_producer/usgs_earthquakes_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"

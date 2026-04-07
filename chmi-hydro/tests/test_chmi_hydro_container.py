@@ -9,7 +9,7 @@ from confluent_kafka import Producer, Consumer
 from confluent_kafka.admin import AdminClient, NewTopic
 
 from chmi_hydro.chmi_hydro import CHMIHydroAPI, feed_stations
-from chmi_hydro.chmi_hydro_producer.producer_client import CZGovCHMIHydroEventProducer
+from chmi_hydro_producer_kafka_producer.producer import CZGovCHMIHydroEventProducer
 
 SAMPLE_META_RECORDS = [
     ["0-203-1-001000", "001000", "Špindlerův Mlýn", "Labe",

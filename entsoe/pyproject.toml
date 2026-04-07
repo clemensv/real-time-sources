@@ -15,6 +15,8 @@ confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = "^1.12.1"
+entsoe_producer_data = {path = "entsoe_producer/entsoe_producer_data"}
+entsoe_producer_kafka_producer = {path = "entsoe_producer/entsoe_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.2"

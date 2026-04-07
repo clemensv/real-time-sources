@@ -12,9 +12,9 @@ import time
 from typing import Dict, List
 import argparse
 import requests
-from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
-from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.zone import Zone
-from .noaa_nws_producer.producer_client import MicrosoftOpenDataUSNOAANWSEventProducer
+from noaa_nws_producer_data import WeatherAlert
+from noaa_nws_producer_data import Zone
+from noaa_nws_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSAlertsEventProducer, MicrosoftOpenDataUSNOAANWSZonesEventProducer
 
 
 class NWSAlertPoller:
@@ -42,7 +42,9 @@ class NWSAlertPoller:
         self.last_polled_file = last_polled_file
         from confluent_kafka import Producer
         kafka_producer = Producer(kafka_config)
-        self.producer = MicrosoftOpenDataUSNOAANWSEventProducer(kafka_producer, kafka_topic)
+        self.alerts_producer = MicrosoftOpenDataUSNOAANWSAlertsEventProducer(kafka_producer, kafka_topic)
+        self.zones_producer = MicrosoftOpenDataUSNOAANWSZonesEventProducer(kafka_producer, kafka_topic)
+        self.kafka_producer = kafka_producer
 
     def load_seen_alerts(self) -> Dict:
         """
@@ -131,9 +133,9 @@ class NWSAlertPoller:
         print("Sending NWS forecast zones as reference data...")
         zones = self.fetch_zones()
         for zone in zones:
-            self.producer.send_microsoft_open_data_us_noaa_nws_zone(
-                zone, zone.zone_id, flush_producer=False)
-        self.producer.producer.flush()
+            self.zones_producer.send_microsoft_open_data_us_noaa_nws_zone(
+                zone.zone_id, zone, flush_producer=False)
+        self.kafka_producer.flush()
         print(f"Sent {len(zones)} zones as reference data")
 
         while True:
@@ -168,13 +170,13 @@ class NWSAlertPoller:
                         description=props.get("description", "")
                     )
 
-                    self.producer.send_microsoft_open_data_us_noaa_nws_weather_alert(
-                        alert, alert_id, flush_producer=False)
+                    self.alerts_producer.send_microsoft_open_data_us_noaa_nws_weather_alert(
+                        alert_id, alert, flush_producer=False)
                     seen_ids.add(alert_id)
                     new_count += 1
 
                 if new_count > 0:
-                    self.producer.producer.flush()
+                    self.kafka_producer.flush()
                     print(f"Sent {new_count} new alert(s) to Kafka")
 
                 # Keep only the last 10000 seen IDs to prevent unbounded growth

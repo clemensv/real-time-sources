@@ -14,9 +14,9 @@ from typing import Dict, List, Optional
 from datetime import datetime, timezone
 import argparse
 import requests
-from noaa_ndbc.noaa_ndbc_producer.microsoft.opendata.us.noaa.ndbc.buoyobservation import BuoyObservation
-from noaa_ndbc.noaa_ndbc_producer.microsoft.opendata.us.noaa.ndbc.buoystation import BuoyStation
-from .noaa_ndbc_producer.producer_client import MicrosoftOpenDataUSNOAANDBCEventProducer
+from noaa_ndbc_producer_data import BuoyObservation
+from noaa_ndbc_producer_data import BuoyStation
+from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCEventProducer
 
 
 def parse_float(value: str) -> Optional[float]:
@@ -289,7 +289,7 @@ class NDBCBuoyPoller:
         stations = self.fetch_stations()
         for station in stations:
             self.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(
-                station, flush_producer=False)
+                station.station_id, station, flush_producer=False)
         self.producer.producer.flush()
         print(f"Sent {len(stations)} buoy stations as reference data")
 
@@ -306,7 +306,7 @@ class NDBCBuoyPoller:
                         continue
 
                     self.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(
-                        obs, obs.station_id, flush_producer=False)
+                        obs.station_id, obs, flush_producer=False)
                     last_timestamps[obs.station_id] = obs.timestamp
                     new_count += 1
 

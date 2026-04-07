@@ -11,9 +11,9 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from confluent_kafka import Producer
 
-from chmi_hydro.chmi_hydro_producer.producer_client import CZGovCHMIHydroEventProducer
-from chmi_hydro.chmi_hydro_producer.cz.gov.chmi.hydro.station import Station
-from chmi_hydro.chmi_hydro_producer.cz.gov.chmi.hydro.water_level_observation import WaterLevelObservation
+from chmi_hydro_producer_kafka_producer.producer import CZGovCHMIHydroEventProducer
+from chmi_hydro_producer_data import Station
+from chmi_hydro_producer_data import WaterLevelObservation
 
 logger = logging.getLogger(__name__)
 
@@ -216,6 +216,7 @@ def send_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer) -> t
         station_ids.append(station.station_id)
         stations_by_id[station.station_id] = station
         producer.send_cz_gov_chmi_hydro_station(
+            station.station_id,
             station,
             flush_producer=False,
             key_mapper=lambda ce, s: f"CZ.Gov.CHMI.Hydro.Station:{s.station_id}"
@@ -244,6 +245,7 @@ def feed_observations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer,
             if reading_key in previous_readings:
                 continue
             producer.send_cz_gov_chmi_hydro_water_level_observation(
+                observation.station_id,
                 observation,
                 flush_producer=False,
                 key_mapper=lambda ce, o: f"CZ.Gov.CHMI.Hydro.WaterLevelObservation:{o.station_id}"

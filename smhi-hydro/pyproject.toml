@@ -1,21 +1,22 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
-name = "smhi_hydro"
+[tool.poetry]
+name = "smhi-hydro"
 version = "0.1.0"
-requires-python = ">=3.9"
-dependencies = [
-    "avro>=1.11.0",
-    "confluent_kafka",
-    "cloudevents>=1.11.0,<2.0.0",
-    "requests",
-    "dataclasses-json",
-]
+description = "Swedish Meteorological and Hydrological Institute (SMHI) Hydrology bridge to Apache Kafka"
+authors = ["Clemens Vasters"]
 
-[project.scripts]
-smhi_hydro = "smhi_hydro:main"
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+smhi_hydro_producer_data = {path = "smhi_hydro_producer_tmp/smhi_hydro_producer_data"}
+smhi_hydro_producer_kafka_producer = {path = "smhi_hydro_producer_tmp/smhi_hydro_producer_kafka_producer"}
 
-[tool.setuptools.packages.find]
-include = ["smhi_hydro*"]
+[tool.poetry.scripts]
+smhi-hydro = "smhi_hydro:main"

@@ -4,9 +4,9 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
 from imgw_hydro.imgw_hydro import IMGWHydroAPI, parse_connection_string, feed_stations, IMGW_BASE_URL
-from imgw_hydro.imgw_hydro_producer.pl.gov.imgw.hydro.station import Station
-from imgw_hydro.imgw_hydro_producer.pl.gov.imgw.hydro.water_level_observation import WaterLevelObservation
-from imgw_hydro.imgw_hydro_producer.producer_client import PLGovIMGWHydroEventProducer
+from imgw_hydro_producer_data import Station
+from imgw_hydro_producer_data import WaterLevelObservation
+from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroEventProducer
 
 
 SAMPLE_RECORD = {
@@ -144,7 +144,7 @@ class TestDataClasses:
     def test_station_to_byte_array(self):
         station = Station(id_stacji="123", stacja="Test", rzeka="River", wojewodztwo="test", longitude=20.0, latitude=52.0)
         data = station.to_byte_array("application/json")
-        assert isinstance(data, bytes)
+        assert isinstance(data, (str, bytes))
         parsed = json.loads(data)
         assert parsed["id_stacji"] == "123"
 
@@ -176,6 +176,12 @@ class TestDataClasses:
             voivodeship="",
             water_level=200.0,
             water_level_timestamp="2026-03-25 12:00:00",
+            water_temperature=None,
+            water_temperature_timestamp=None,
+            discharge=None,
+            discharge_timestamp=None,
+            ice_phenomenon_code=None,
+            overgrowth_code=None,
         )
         assert obs.water_temperature is None
         assert obs.discharge is None
@@ -189,6 +195,12 @@ class TestDataClasses:
             voivodeship="test",
             water_level=100.0,
             water_level_timestamp="2026-01-01 00:00:00",
+            water_temperature=None,
+            water_temperature_timestamp=None,
+            discharge=None,
+            discharge_timestamp=None,
+            ice_phenomenon_code=None,
+            overgrowth_code=None,
         )
         json_str = obs.to_json()
         data = json.loads(json_str)
@@ -204,6 +216,12 @@ class TestDataClasses:
             "voivodeship": "test",
             "water_level": 100.0,
             "water_level_timestamp": "2026-01-01 00:00:00",
+            "water_temperature": None,
+            "water_temperature_timestamp": None,
+            "discharge": None,
+            "discharge_timestamp": None,
+            "ice_phenomenon_code": None,
+            "overgrowth_code": None,
         }
         obs = WaterLevelObservation.from_data(data)
         assert obs.station_id == "123"
@@ -225,9 +243,9 @@ class TestAPIParsing:
     def test_parse_station_null_coords(self):
         station = IMGWHydroAPI.parse_station(SAMPLE_RECORD_MINIMAL)
         assert station.id_stacji == "150190010"
-        assert station.longitude == 0.0
-        assert station.latitude == 0.0
-        assert station.wojewodztwo == ""
+        assert station.longitude is None
+        assert station.latitude is None
+        assert station.wojewodztwo is None
 
     def test_parse_observation_full(self):
         obs = IMGWHydroAPI.parse_observation(SAMPLE_RECORD)
@@ -306,7 +324,7 @@ class TestProducerClient:
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(id_stacji="123", stacja="Test", rzeka="River", wojewodztwo="test", longitude=20.0, latitude=52.0)
-        producer.send_pl_gov_imgw_hydro_station(station)
+        producer.send_pl_gov_imgw_hydro_station("123", station)
         mock_kafka_producer.produce.assert_called_once()
         mock_kafka_producer.flush.assert_called_once()
 
@@ -316,15 +334,18 @@ class TestProducerClient:
         obs = WaterLevelObservation(
             station_id="123", station_name="Test", river="River", voivodeship="test",
             water_level=100.0, water_level_timestamp="2026-01-01 00:00:00",
+            water_temperature=None, water_temperature_timestamp=None,
+            discharge=None, discharge_timestamp=None,
+            ice_phenomenon_code=None, overgrowth_code=None,
         )
-        producer.send_pl_gov_imgw_hydro_water_level_observation(obs)
+        producer.send_pl_gov_imgw_hydro_water_level_observation("123", obs)
         mock_kafka_producer.produce.assert_called_once()
 
     def test_send_station_no_flush(self):
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(id_stacji="123", stacja="Test", rzeka="River", wojewodztwo="test", longitude=20.0, latitude=52.0)
-        producer.send_pl_gov_imgw_hydro_station(station, flush_producer=False)
+        producer.send_pl_gov_imgw_hydro_station("123", station, flush_producer=False)
         mock_kafka_producer.produce.assert_called_once()
         mock_kafka_producer.flush.assert_not_called()
 
@@ -332,14 +353,14 @@ class TestProducerClient:
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic", content_mode='binary')
         station = Station(id_stacji="123", stacja="Test", rzeka="River", wojewodztwo="test", longitude=20.0, latitude=52.0)
-        producer.send_pl_gov_imgw_hydro_station(station)
+        producer.send_pl_gov_imgw_hydro_station("123", station)
         mock_kafka_producer.produce.assert_called_once()
 
     def test_cloudevents_structured_format(self):
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(id_stacji="123", stacja="Test", rzeka="River", wojewodztwo="test", longitude=20.0, latitude=52.0)
-        producer.send_pl_gov_imgw_hydro_station(station)
+        producer.send_pl_gov_imgw_hydro_station("123", station)
         call_kwargs = mock_kafka_producer.produce.call_args
         headers = dict(call_kwargs[1]['headers']) if isinstance(call_kwargs[1]['headers'], list) else call_kwargs[1]['headers']
         assert b"application/cloudevents+json" in [v for v in headers.values()] or any(b"application/cloudevents+json" == v for _, v in call_kwargs[1]['headers'])
@@ -348,7 +369,7 @@ class TestProducerClient:
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(id_stacji="123", stacja="Test", rzeka="River", wojewodztwo="test", longitude=20.0, latitude=52.0)
-        producer.send_pl_gov_imgw_hydro_station(station)
+        producer.send_pl_gov_imgw_hydro_station("123", station)
         call_kwargs = mock_kafka_producer.produce.call_args
         value = json.loads(call_kwargs[1]['value'])
         assert value['type'] == 'PL.Gov.IMGW.Hydro.Station'

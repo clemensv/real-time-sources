@@ -10,9 +10,9 @@ import logging
 import requests
 from confluent_kafka import Producer
 
-from imgw_hydro.imgw_hydro_producer.producer_client import PLGovIMGWHydroEventProducer
-from imgw_hydro.imgw_hydro_producer.pl.gov.imgw.hydro.station import Station
-from imgw_hydro.imgw_hydro_producer.pl.gov.imgw.hydro.water_level_observation import WaterLevelObservation
+from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroEventProducer
+from imgw_hydro_producer_data import Station
+from imgw_hydro_producer_data import WaterLevelObservation
 
 logger = logging.getLogger(__name__)
 
@@ -148,6 +148,7 @@ def send_stations(api: IMGWHydroAPI, producer: PLGovIMGWHydroEventProducer) -> i
     for record in records:
         station = api.parse_station(record)
         producer.send_pl_gov_imgw_hydro_station(
+            station.id_stacji,
             station,
             flush_producer=False,
             key_mapper=lambda ce, s: f"PL.Gov.IMGW.Hydro.Station:{s.id_stacji}"
@@ -169,6 +170,7 @@ def feed_observations(api: IMGWHydroAPI, producer: PLGovIMGWHydroEventProducer, 
             if reading_key in previous_readings:
                 continue
             producer.send_pl_gov_imgw_hydro_water_level_observation(
+                observation.station_id,
                 observation,
                 flush_producer=False,
                 key_mapper=lambda ce, o: f"PL.Gov.IMGW.Hydro.WaterLevelObservation:{o.station_id}"

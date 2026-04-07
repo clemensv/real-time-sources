@@ -18,18 +18,18 @@ from typing import Dict, List, Optional
 
 import requests
 
-from entsoe.entsoe_producer.eu.entsoe.transparency.actualgenerationpertype import ActualGenerationPerType
-from entsoe.entsoe_producer.eu.entsoe.transparency.dayaheadprices import DayAheadPrices
-from entsoe.entsoe_producer.eu.entsoe.transparency.actualtotalload import ActualTotalLoad
-from entsoe.entsoe_producer.eu.entsoe.transparency.windsolarforecast import WindSolarForecast
-from entsoe.entsoe_producer.eu.entsoe.transparency.loadforecastmargin import LoadForecastMargin
-from entsoe.entsoe_producer.eu.entsoe.transparency.generationforecast import GenerationForecast
-from entsoe.entsoe_producer.eu.entsoe.transparency.reservoirfillinginformation import ReservoirFillingInformation
-from entsoe.entsoe_producer.eu.entsoe.transparency.actualgeneration import ActualGeneration
-from entsoe.entsoe_producer.eu.entsoe.transparency.windsolargeneration import WindSolarGeneration
-from entsoe.entsoe_producer.eu.entsoe.transparency.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
-from entsoe.entsoe_producer.eu.entsoe.transparency.crossborderphysicalflows import CrossBorderPhysicalFlows
-from entsoe.entsoe_producer.producer_client import EuEntsoeTransparencyEventProducer
+from entsoe_producer_data.eu.entsoe.transparency.actualgenerationpertype import ActualGenerationPerType
+from entsoe_producer_data.eu.entsoe.transparency.dayaheadprices import DayAheadPrices
+from entsoe_producer_data.eu.entsoe.transparency.actualtotalload import ActualTotalLoad
+from entsoe_producer_data.eu.entsoe.transparency.windsolarforecast import WindSolarForecast
+from entsoe_producer_data.eu.entsoe.transparency.loadforecastmargin import LoadForecastMargin
+from entsoe_producer_data.eu.entsoe.transparency.generationforecast import GenerationForecast
+from entsoe_producer_data.eu.entsoe.transparency.reservoirfillinginformation import ReservoirFillingInformation
+from entsoe_producer_data.eu.entsoe.transparency.actualgeneration import ActualGeneration
+from entsoe_producer_data.eu.entsoe.transparency.windsolargeneration import WindSolarGeneration
+from entsoe_producer_data.eu.entsoe.transparency.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
+from entsoe_producer_data.eu.entsoe.transparency.crossborderphysicalflows import CrossBorderPhysicalFlows
+from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyByDomainEventProducer, EuEntsoeTransparencyByDomainPsrTypeEventProducer, EuEntsoeTransparencyCrossBorderEventProducer
 from entsoe.xml_parser import parse_entsoe_xml, build_api_url, TimeSeriesPoint
 from entsoe.delta_state import load_state, save_state, get_last_polled, set_last_polled
 
@@ -103,12 +103,19 @@ DOC_TYPE_CROSS_BORDER = "A11"
 class EntsoePoller:
     """Polls the ENTSO-E API and sends CloudEvents to Kafka."""
 
-    def __init__(self, security_token: str, producer: EuEntsoeTransparencyEventProducer,
+    def __init__(self, security_token: str,
+                 domain_producer: EuEntsoeTransparencyByDomainEventProducer,
+                 domain_psr_producer: EuEntsoeTransparencyByDomainPsrTypeEventProducer,
+                 cross_border_producer: EuEntsoeTransparencyCrossBorderEventProducer,
+                 kafka_producer,
                  state_file: str, domains: List[str], document_types: List[str],
                  cross_border_pairs: Optional[List[tuple]] = None,
                  lookback_hours: int = 24, polling_interval: int = 900):
         self.security_token = security_token
-        self.producer = producer
+        self.domain_producer = domain_producer
+        self.domain_psr_producer = domain_psr_producer
+        self.cross_border_producer = cross_border_producer
+        self.kafka_producer = kafka_producer
         self.state_file = state_file
         self.domains = domains
         self.document_types = document_types
@@ -151,32 +158,32 @@ class EntsoePoller:
                     quantity=point.quantity or 0.0, resolution=point.resolution,
                     businessType=point.business_type, documentType=dt,
                     unitName=point.unit_name or "MAW")
-                self.producer.send_eu_entsoe_transparency_actual_generation_per_type(
-                    data, flush_producer=False)
+                self.domain_psr_producer.send_eu_entsoe_transparency_actual_generation_per_type(
+                    point.in_domain, point.psr_type, data, flush_producer=False)
             elif dt == "A69":
                 data = WindSolarForecast(
                     inDomain=point.in_domain, psrType=point.psr_type,
                     quantity=point.quantity or 0.0, resolution=point.resolution,
                     businessType=point.business_type, documentType=dt,
                     unitName=point.unit_name or "MAW")
-                self.producer.send_eu_entsoe_transparency_wind_solar_forecast(
-                    data, flush_producer=False)
+                self.domain_psr_producer.send_eu_entsoe_transparency_wind_solar_forecast(
+                    point.in_domain, point.psr_type, data, flush_producer=False)
             elif dt == "A74":
                 data = WindSolarGeneration(
                     inDomain=point.in_domain, psrType=point.psr_type,
                     quantity=point.quantity or 0.0, resolution=point.resolution,
                     businessType=point.business_type, documentType=dt,
                     unitName=point.unit_name or "MAW")
-                self.producer.send_eu_entsoe_transparency_wind_solar_generation(
-                    data, flush_producer=False)
+                self.domain_psr_producer.send_eu_entsoe_transparency_wind_solar_generation(
+                    point.in_domain, point.psr_type, data, flush_producer=False)
             elif dt == "A68":
                 data = InstalledGenerationCapacityPerType(
                     inDomain=point.in_domain, psrType=point.psr_type,
                     quantity=point.quantity or 0.0, resolution=point.resolution,
                     businessType=point.business_type, documentType=dt,
                     unitName=point.unit_name or "MAW")
-                self.producer.send_eu_entsoe_transparency_installed_generation_capacity_per_type(
-                    data, flush_producer=False)
+                self.domain_psr_producer.send_eu_entsoe_transparency_installed_generation_capacity_per_type(
+                    point.in_domain, point.psr_type, data, flush_producer=False)
 
         elif dt == "A44":
             data = DayAheadPrices(
@@ -184,8 +191,8 @@ class EntsoePoller:
                 currency=point.currency or "EUR",
                 unitName=point.unit_name or "MWH",
                 resolution=point.resolution, documentType=dt)
-            self.producer.send_eu_entsoe_transparency_day_ahead_prices(
-                data, flush_producer=False)
+            self.domain_producer.send_eu_entsoe_transparency_day_ahead_prices(
+                point.in_domain, data, flush_producer=False)
 
         elif dt == DOC_TYPE_CROSS_BORDER:
             data = CrossBorderPhysicalFlows(
@@ -194,48 +201,48 @@ class EntsoePoller:
                 quantity=point.quantity or 0.0,
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
-            self.producer.send_eu_entsoe_transparency_cross_border_physical_flows(
-                data, flush_producer=False)
+            self.cross_border_producer.send_eu_entsoe_transparency_cross_border_physical_flows(
+                point.in_domain, point.out_domain or "", data, flush_producer=False)
 
         elif dt == "A65":
             data = ActualTotalLoad(
                 inDomain=point.in_domain, quantity=point.quantity or 0.0,
                 resolution=point.resolution, outDomain=point.out_domain,
                 documentType=dt)
-            self.producer.send_eu_entsoe_transparency_actual_total_load(
-                data, flush_producer=False)
+            self.domain_producer.send_eu_entsoe_transparency_actual_total_load(
+                point.in_domain, data, flush_producer=False)
 
         elif dt == "A70":
             data = LoadForecastMargin(
                 inDomain=point.in_domain, quantity=point.quantity or 0.0,
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
-            self.producer.send_eu_entsoe_transparency_load_forecast_margin(
-                data, flush_producer=False)
+            self.domain_producer.send_eu_entsoe_transparency_load_forecast_margin(
+                point.in_domain, data, flush_producer=False)
 
         elif dt == "A71":
             data = GenerationForecast(
                 inDomain=point.in_domain, quantity=point.quantity or 0.0,
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
-            self.producer.send_eu_entsoe_transparency_generation_forecast(
-                data, flush_producer=False)
+            self.domain_producer.send_eu_entsoe_transparency_generation_forecast(
+                point.in_domain, data, flush_producer=False)
 
         elif dt == "A72":
             data = ReservoirFillingInformation(
                 inDomain=point.in_domain, quantity=point.quantity or 0.0,
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
-            self.producer.send_eu_entsoe_transparency_reservoir_filling_information(
-                data, flush_producer=False)
+            self.domain_producer.send_eu_entsoe_transparency_reservoir_filling_information(
+                point.in_domain, data, flush_producer=False)
 
         elif dt == "A73":
             data = ActualGeneration(
                 inDomain=point.in_domain, quantity=point.quantity or 0.0,
                 resolution=point.resolution, documentType=dt,
                 unitName=point.unit_name or "MAW")
-            self.producer.send_eu_entsoe_transparency_actual_generation(
-                data, flush_producer=False)
+            self.domain_producer.send_eu_entsoe_transparency_actual_generation(
+                point.in_domain, data, flush_producer=False)
 
     def _poll_domain(self, doc_type: str, domain: str, now: datetime,
                      out_domain: Optional[str] = None) -> int:
@@ -270,7 +277,7 @@ class EntsoePoller:
             if point.timestamp > max_timestamp:
                 max_timestamp = point.timestamp
 
-        self.producer.producer.flush()
+        self.kafka_producer.flush()
 
         set_last_polled(self.state, doc_type, state_key, max_timestamp)
         save_state(self.state_file, self.state)
@@ -414,11 +421,16 @@ def main():
 
     from confluent_kafka import Producer
     kafka_producer = Producer(kafka_config)
-    producer = EuEntsoeTransparencyEventProducer(kafka_producer, kafka_topic)
+    domain_producer = EuEntsoeTransparencyByDomainEventProducer(kafka_producer, kafka_topic)
+    domain_psr_producer = EuEntsoeTransparencyByDomainPsrTypeEventProducer(kafka_producer, kafka_topic)
+    cross_border_producer = EuEntsoeTransparencyCrossBorderEventProducer(kafka_producer, kafka_topic)
 
     poller = EntsoePoller(
         security_token=security_token,
-        producer=producer,
+        domain_producer=domain_producer,
+        domain_psr_producer=domain_psr_producer,
+        cross_border_producer=cross_border_producer,
+        kafka_producer=kafka_producer,
         state_file=state_file,
         domains=domains,
         document_types=document_types,

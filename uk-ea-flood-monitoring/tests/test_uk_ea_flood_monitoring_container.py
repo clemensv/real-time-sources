@@ -131,9 +131,9 @@ class TestEAFloodMonitoringContainerIntegration:
         mock_readings.return_value = SAMPLE_READINGS_RESPONSE["items"]
 
         from uk_ea_flood_monitoring.uk_ea_flood_monitoring import EAFloodMonitoringAPI
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.producer_client import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.uk.gov.environment.ea.floodmonitoring.station import Station
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.uk.gov.environment.ea.floodmonitoring.reading import Reading
+        from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
+        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
+        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.reading import Reading
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)
@@ -159,7 +159,7 @@ class TestEAFloodMonitoringContainerIntegration:
                 date_opened=station.get("dateOpened", "")
             )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_station(
-                station_data, flush_producer=False)
+                station_ref, station_data, flush_producer=False)
 
         # Send readings
         readings = api.get_latest_readings()
@@ -173,7 +173,7 @@ class TestEAFloodMonitoringContainerIntegration:
                 value=float(item.get("value", 0))
             )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_reading(
-                reading_data, flush_producer=False)
+                station_ref, reading_data, flush_producer=False)
 
         producer.flush()
 
@@ -228,8 +228,8 @@ class TestEAFloodMonitoringContainerIntegration:
         mock_stations.return_value = SAMPLE_STATIONS_RESPONSE["items"]
         mock_readings.return_value = []
 
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.producer_client import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.uk.gov.environment.ea.floodmonitoring.station import Station
+        from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
+        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)
@@ -240,8 +240,9 @@ class TestEAFloodMonitoringContainerIntegration:
         stations = api.list_stations()
 
         for station in stations:
+            station_ref = station.get("stationReference", "")
             station_data = Station(
-                station_reference=station.get("stationReference", ""),
+                station_reference=station_ref,
                 label=station.get("label", ""),
                 river_name=station.get("riverName", ""),
                 catchment_name=station.get("catchmentName", ""),
@@ -253,7 +254,7 @@ class TestEAFloodMonitoringContainerIntegration:
                 date_opened=station.get("dateOpened", "")
             )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_station(
-                station_data, flush_producer=False)
+                station_ref, station_data, flush_producer=False)
         producer.flush()
 
         from confluent_kafka import Consumer
@@ -325,8 +326,8 @@ class TestEAFloodMonitoringLiveContainerIntegration:
         self._create_topic(kafka_container, topic)
 
         from uk_ea_flood_monitoring.uk_ea_flood_monitoring import EAFloodMonitoringAPI
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.producer_client import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.uk.gov.environment.ea.floodmonitoring.station import Station
+        from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
+        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
         from confluent_kafka import Producer
 
         api = EAFloodMonitoringAPI()
@@ -359,7 +360,7 @@ class TestEAFloodMonitoringLiveContainerIntegration:
                 date_opened=station.get("dateOpened", "")
             )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_station(
-                station_data, flush_producer=False)
+                station_ref, station_data, flush_producer=False)
         producer.flush()
 
         # Consume and verify
@@ -395,8 +396,8 @@ class TestEAFloodMonitoringLiveContainerIntegration:
         topic = 'test-ea-live-readings'
         self._create_topic(kafka_container, topic)
 
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.producer_client import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.uk.gov.environment.ea.floodmonitoring.reading import Reading
+        from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
+        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.reading import Reading
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)
@@ -434,7 +435,7 @@ class TestEAFloodMonitoringLiveContainerIntegration:
                 value=float(value)
             )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_reading(
-                reading_data, flush_producer=False)
+                station_ref, reading_data, flush_producer=False)
             sent_count += 1
         producer.flush()
 

@@ -1,21 +1,22 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
-name = "imgw_hydro"
+[tool.poetry]
+name = "imgw-hydro"
 version = "0.1.0"
-requires-python = ">=3.9"
-dependencies = [
-    "avro>=1.11.0",
-    "confluent_kafka",
-    "cloudevents>=1.11.0,<2.0.0",
-    "requests",
-    "dataclasses-json",
-]
+description = "Polish Institute of Meteorology and Water Management (IMGW-PIB) Hydrology bridge to Apache Kafka"
+authors = ["Clemens Vasters"]
 
-[project.scripts]
-imgw_hydro = "imgw_hydro:main"
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+imgw_hydro_producer_data = {path = "imgw_hydro_producer_tmp/imgw_hydro_producer_data"}
+imgw_hydro_producer_kafka_producer = {path = "imgw_hydro_producer_tmp/imgw_hydro_producer_kafka_producer"}
 
-[tool.setuptools.packages.find]
-include = ["imgw_hydro*"]
+[tool.poetry.scripts]
+imgw-hydro = "imgw_hydro:main"

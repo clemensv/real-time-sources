@@ -150,7 +150,7 @@ class TestRWSRealEndpoints:
         assert len(stations) > 100
         # Verify we can build Station objects
         loc = stations[0]
-        from rws_waterwebservices.rws_waterwebservices_producer.nl.rws.waterwebservices.station import Station
+        from rws_waterwebservices_producer_data import Station
         station = Station(
             code=loc.get("Code", ""),
             name=loc.get("Naam", ""),

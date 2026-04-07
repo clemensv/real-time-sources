@@ -15,8 +15,8 @@ import argparse
 from confluent_kafka import Producer
 
 # pylint: disable=import-error, line-too-long
-from usgs_earthquakes.usgs_earthquakes_producer.usgs.earthquakes.event import Event
-from usgs_earthquakes.usgs_earthquakes_producer.producer_client import USGSEarthquakesEventProducer
+from usgs_earthquakes_producer_data.usgs.earthquakes.event import Event
+from usgs_earthquakes_producer_kafka_producer.producer import USGSEarthquakesEventProducer
 # pylint: enable=import-error, line-too-long
 
 

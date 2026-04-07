@@ -4,9 +4,9 @@ import json
 import pytest
 from unittest.mock import MagicMock, patch, PropertyMock
 from smhi_hydro.smhi_hydro import SMHIHydroAPI, parse_connection_string, feed_stations
-from smhi_hydro.smhi_hydro_producer.se.gov.smhi.hydro.station import Station
-from smhi_hydro.smhi_hydro_producer.se.gov.smhi.hydro.discharge_observation import DischargeObservation
-from smhi_hydro.smhi_hydro_producer.producer_client import SEGovSMHIHydroEventProducer
+from smhi_hydro_producer_data import Station
+from smhi_hydro_producer_data import DischargeObservation
+from smhi_hydro_producer_kafka_producer.producer import SEGovSMHIHydroEventProducer
 
 
 SAMPLE_STATION_DATA = {
@@ -366,7 +366,7 @@ class TestProducerClient:
         mock_producer.flush = MagicMock()
         event_producer = SEGovSMHIHydroEventProducer(mock_producer, 'test-topic', 'structured')
         station = SMHIHydroAPI.parse_station(SAMPLE_STATION_DATA)
-        event_producer.send_se_gov_smhi_hydro_station(station)
+        event_producer.send_se_gov_smhi_hydro_station(station.station_id, station)
         mock_producer.produce.assert_called_once()
         call_args = mock_producer.produce.call_args
         # produce is called with positional topic arg or keyword args
@@ -382,7 +382,7 @@ class TestProducerClient:
         mock_producer.flush = MagicMock()
         event_producer = SEGovSMHIHydroEventProducer(mock_producer, 'test-topic', 'structured')
         obs = SMHIHydroAPI.parse_latest_observation(SAMPLE_STATION_DATA)
-        event_producer.send_se_gov_smhi_hydro_discharge_observation(obs)
+        event_producer.send_se_gov_smhi_hydro_discharge_observation(obs.station_id, obs)
         mock_producer.produce.assert_called_once()
         call_args = mock_producer.produce.call_args
         value_arg = call_args.kwargs.get('value')
@@ -395,7 +395,7 @@ class TestProducerClient:
         mock_producer.flush = MagicMock()
         event_producer = SEGovSMHIHydroEventProducer(mock_producer, 'test-topic')
         station = SMHIHydroAPI.parse_station(SAMPLE_STATION_DATA)
-        event_producer.send_se_gov_smhi_hydro_station(station, flush_producer=False)
+        event_producer.send_se_gov_smhi_hydro_station(station.station_id, station, flush_producer=False)
         mock_producer.flush.assert_not_called()
 
     def test_send_station_with_key_mapper(self):
@@ -404,6 +404,7 @@ class TestProducerClient:
         event_producer = SEGovSMHIHydroEventProducer(mock_producer, 'test-topic')
         station = SMHIHydroAPI.parse_station(SAMPLE_STATION_DATA)
         event_producer.send_se_gov_smhi_hydro_station(
+            station.station_id,
             station,
             key_mapper=lambda ce, s: f"custom:{s.station_id}"
         )
@@ -415,7 +416,7 @@ class TestProducerClient:
         mock_producer.flush = MagicMock()
         event_producer = SEGovSMHIHydroEventProducer(mock_producer, 'test-topic', 'binary')
         obs = SMHIHydroAPI.parse_latest_observation(SAMPLE_STATION_DATA)
-        event_producer.send_se_gov_smhi_hydro_discharge_observation(obs)
+        event_producer.send_se_gov_smhi_hydro_discharge_observation(obs.station_id, obs)
         mock_producer.produce.assert_called_once()
 
 
@@ -432,7 +433,7 @@ class TestUnicodeHandling:
         data = {**SAMPLE_STATION_DATA, "name": "ÖVRE ABISKOJOKK", "catchmentName": "TORNEÄLVEN"}
         station = SMHIHydroAPI.parse_station(data)
         json_str = station.to_json()
-        station2 = Station.from_data(json_str)
+        station2 = Station.from_data(json_str, "application/json")
         assert station2.name == "ÖVRE ABISKOJOKK"
         assert station2.catchment_name == "TORNEÄLVEN"
 

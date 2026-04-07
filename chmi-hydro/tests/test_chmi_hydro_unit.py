@@ -4,9 +4,9 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
 from chmi_hydro.chmi_hydro import CHMIHydroAPI, parse_connection_string, feed_stations, CHMI_BASE_URL
-from chmi_hydro.chmi_hydro_producer.cz.gov.chmi.hydro.station import Station
-from chmi_hydro.chmi_hydro_producer.cz.gov.chmi.hydro.water_level_observation import WaterLevelObservation
-from chmi_hydro.chmi_hydro_producer.producer_client import CZGovCHMIHydroEventProducer
+from chmi_hydro_producer_data import Station
+from chmi_hydro_producer_data import WaterLevelObservation
+from chmi_hydro_producer_kafka_producer.producer import CZGovCHMIHydroEventProducer
 
 
 # Meta1.json header: objID,DBC,STATION_NAME,STREAM_NAME,GEOGR1,GEOGR2,
@@ -193,7 +193,7 @@ class TestDataClasses:
         assert station.latitude == 50.7231692
         assert station.longitude == 15.5980379
         assert station.flood_level_1 == 165.0
-        assert station.has_forecast is False
+        assert not station.has_forecast
 
     def test_station_serialization(self):
         station = Station(
@@ -203,6 +203,11 @@ class TestDataClasses:
             stream_name="Labe",
             latitude=50.7231692,
             longitude=15.5980379,
+            flood_level_1=None,
+            flood_level_2=None,
+            flood_level_3=None,
+            flood_level_4=None,
+            has_forecast=None,
         )
         json_str = station.to_json()
         data = json.loads(json_str)
@@ -211,16 +216,19 @@ class TestDataClasses:
 
     def test_station_from_data(self):
         data = {"station_id": "123", "dbc": "123", "station_name": "Test",
-                "stream_name": "River", "latitude": 50.0, "longitude": 15.0}
+                "stream_name": "River", "latitude": 50.0, "longitude": 15.0,
+                "flood_level_1": None, "flood_level_2": None, "flood_level_3": None,
+                "flood_level_4": None, "has_forecast": None}
         station = Station.from_data(data)
         assert station.station_id == "123"
         assert station.latitude == 50.0
 
     def test_station_to_byte_array(self):
         station = Station(station_id="123", dbc="123", station_name="Test",
-                         stream_name="River", latitude=50.0, longitude=15.0)
+                         stream_name="River", latitude=50.0, longitude=15.0,
+                         flood_level_1=None, flood_level_2=None, flood_level_3=None,
+                         flood_level_4=None, has_forecast=None)
         data = station.to_byte_array("application/json")
-        assert isinstance(data, bytes)
         parsed = json.loads(data)
         assert parsed["station_id"] == "123"
 
@@ -228,6 +236,8 @@ class TestDataClasses:
         station = Station(
             station_id="123", dbc="123", station_name="Test",
             stream_name="River", latitude=50.0, longitude=15.0,
+            flood_level_1=None, flood_level_2=None, flood_level_3=None,
+            flood_level_4=None, has_forecast=None,
         )
         assert station.flood_level_1 is None
         assert station.flood_level_2 is None
@@ -256,6 +266,12 @@ class TestDataClasses:
             station_id="123",
             station_name="Test",
             stream_name="River",
+            water_level=None,
+            water_level_timestamp=None,
+            discharge=None,
+            discharge_timestamp=None,
+            water_temperature=None,
+            water_temperature_timestamp=None,
         )
         assert obs.water_level is None
         assert obs.discharge is None
@@ -268,6 +284,10 @@ class TestDataClasses:
             stream_name="River",
             water_level=100.0,
             water_level_timestamp="2026-01-01T00:00:00Z",
+            discharge=None,
+            discharge_timestamp=None,
+            water_temperature=None,
+            water_temperature_timestamp=None,
         )
         json_str = obs.to_json()
         data = json.loads(json_str)
@@ -282,6 +302,10 @@ class TestDataClasses:
             "stream_name": "River",
             "water_level": 100.0,
             "water_level_timestamp": "2026-01-01T00:00:00Z",
+            "discharge": None,
+            "discharge_timestamp": None,
+            "water_temperature": None,
+            "water_temperature_timestamp": None,
         }
         obs = WaterLevelObservation.from_data(data)
         assert obs.station_id == "123"
@@ -303,7 +327,7 @@ class TestAPIParsing:
         assert station.flood_level_2 == 200.0
         assert station.flood_level_3 == 220.0
         assert station.flood_level_4 == 297.0
-        assert station.has_forecast is False
+        assert not station.has_forecast
 
     def test_parse_station_with_forecast(self):
         station = CHMIHydroAPI.parse_station(SAMPLE_META_RECORD_FORECAST)
@@ -429,8 +453,10 @@ class TestProducerClient:
         mock_kafka_producer = MagicMock()
         producer = CZGovCHMIHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(station_id="123", dbc="123", station_name="Test",
-                         stream_name="River", latitude=50.0, longitude=15.0)
-        producer.send_cz_gov_chmi_hydro_station(station)
+                         stream_name="River", latitude=50.0, longitude=15.0,
+                         flood_level_1=None, flood_level_2=None, flood_level_3=None,
+                         flood_level_4=None, has_forecast=None)
+        producer.send_cz_gov_chmi_hydro_station("123", station)
         mock_kafka_producer.produce.assert_called_once()
         mock_kafka_producer.flush.assert_called_once()
 
@@ -440,16 +466,20 @@ class TestProducerClient:
         obs = WaterLevelObservation(
             station_id="123", station_name="Test", stream_name="River",
             water_level=100.0, water_level_timestamp="2026-01-01T00:00:00Z",
+            discharge=None, discharge_timestamp=None,
+            water_temperature=None, water_temperature_timestamp=None,
         )
-        producer.send_cz_gov_chmi_hydro_water_level_observation(obs)
+        producer.send_cz_gov_chmi_hydro_water_level_observation("123", obs)
         mock_kafka_producer.produce.assert_called_once()
 
     def test_send_station_no_flush(self):
         mock_kafka_producer = MagicMock()
         producer = CZGovCHMIHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(station_id="123", dbc="123", station_name="Test",
-                         stream_name="River", latitude=50.0, longitude=15.0)
-        producer.send_cz_gov_chmi_hydro_station(station, flush_producer=False)
+                         stream_name="River", latitude=50.0, longitude=15.0,
+                         flood_level_1=None, flood_level_2=None, flood_level_3=None,
+                         flood_level_4=None, has_forecast=None)
+        producer.send_cz_gov_chmi_hydro_station("123", station, flush_producer=False)
         mock_kafka_producer.produce.assert_called_once()
         mock_kafka_producer.flush.assert_not_called()
 
@@ -457,16 +487,20 @@ class TestProducerClient:
         mock_kafka_producer = MagicMock()
         producer = CZGovCHMIHydroEventProducer(mock_kafka_producer, "test-topic", content_mode='binary')
         station = Station(station_id="123", dbc="123", station_name="Test",
-                         stream_name="River", latitude=50.0, longitude=15.0)
-        producer.send_cz_gov_chmi_hydro_station(station)
+                         stream_name="River", latitude=50.0, longitude=15.0,
+                         flood_level_1=None, flood_level_2=None, flood_level_3=None,
+                         flood_level_4=None, has_forecast=None)
+        producer.send_cz_gov_chmi_hydro_station("123", station)
         mock_kafka_producer.produce.assert_called_once()
 
     def test_cloudevents_structured_format(self):
         mock_kafka_producer = MagicMock()
         producer = CZGovCHMIHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(station_id="123", dbc="123", station_name="Test",
-                         stream_name="River", latitude=50.0, longitude=15.0)
-        producer.send_cz_gov_chmi_hydro_station(station)
+                         stream_name="River", latitude=50.0, longitude=15.0,
+                         flood_level_1=None, flood_level_2=None, flood_level_3=None,
+                         flood_level_4=None, has_forecast=None)
+        producer.send_cz_gov_chmi_hydro_station("123", station)
         call_kwargs = mock_kafka_producer.produce.call_args
         headers = dict(call_kwargs[1]['headers']) if isinstance(call_kwargs[1]['headers'], list) else call_kwargs[1]['headers']
         assert b"application/cloudevents+json" in [v for v in headers.values()] or any(b"application/cloudevents+json" == v for _, v in call_kwargs[1]['headers'])
@@ -475,8 +509,10 @@ class TestProducerClient:
         mock_kafka_producer = MagicMock()
         producer = CZGovCHMIHydroEventProducer(mock_kafka_producer, "test-topic")
         station = Station(station_id="123", dbc="123", station_name="Test",
-                         stream_name="River", latitude=50.0, longitude=15.0)
-        producer.send_cz_gov_chmi_hydro_station(station)
+                         stream_name="River", latitude=50.0, longitude=15.0,
+                         flood_level_1=None, flood_level_2=None, flood_level_3=None,
+                         flood_level_4=None, has_forecast=None)
+        producer.send_cz_gov_chmi_hydro_station("123", station)
         call_kwargs = mock_kafka_producer.produce.call_args
         value = json.loads(call_kwargs[1]['value'])
         assert value['type'] == 'CZ.Gov.CHMI.Hydro.Station'

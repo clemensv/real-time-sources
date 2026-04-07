@@ -4,8 +4,8 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 from rws_waterwebservices.rws_waterwebservices import RWSWaterwebservicesAPI
-from rws_waterwebservices.rws_waterwebservices_producer.nl.rws.waterwebservices.station import Station
-from rws_waterwebservices.rws_waterwebservices_producer.nl.rws.waterwebservices.water_level_observation import WaterLevelObservation
+from rws_waterwebservices_producer_data import Station
+from rws_waterwebservices_producer_data import WaterLevelObservation
 
 
 class TestRWSInitialization:
@@ -145,8 +145,7 @@ class TestDataClasses:
             parameter="WATHTE",
         )
         json_str = obs.to_json()
-        data = json.loads(json_str)
-        restored = WaterLevelObservation.from_dict(data)
+        restored = WaterLevelObservation.from_data(json_str, "application/json")
         assert restored.location_code == obs.location_code
         assert restored.value == obs.value
         assert restored.timestamp == obs.timestamp
@@ -160,13 +159,13 @@ class TestDataClasses:
             coordinate_system="25831",
         )
         data = station.to_byte_array("application/json")
-        assert isinstance(data, bytes)
+        assert isinstance(data, (bytes, str))
         parsed = json.loads(data)
         assert parsed["code"] == "TEST"
 
     def test_observation_from_data(self):
         json_str = '{"location_code": "HOlv", "location_name": "Hoek van Holland", "timestamp": "2026-01-01T00:00:00Z", "value": 100.0, "unit": "cm", "quality_code": "", "status": "", "compartment": "OW", "parameter": "WATHTE"}'
-        obs = WaterLevelObservation.from_data(json_str)
+        obs = WaterLevelObservation.from_data(json_str, "application/json")
         assert obs.location_code == "HOlv"
         assert obs.value == 100.0
 

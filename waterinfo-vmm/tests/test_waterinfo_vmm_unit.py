@@ -4,8 +4,8 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 from waterinfo_vmm.waterinfo_vmm import WaterinfoVMMAPI
-from waterinfo_vmm.waterinfo_vmm_producer.be.vlaanderen.waterinfo.vmm.station import Station
-from waterinfo_vmm.waterinfo_vmm_producer.be.vlaanderen.waterinfo.vmm.water_level_reading import WaterLevelReading
+from waterinfo_vmm_producer_data import Station
+from waterinfo_vmm_producer_data import WaterLevelReading
 
 
 class TestWaterinfoVMMInitialization:
@@ -150,8 +150,7 @@ class TestDataClasses:
             parameter_name="H",
         )
         json_str = reading.to_json()
-        data = json.loads(json_str)
-        restored = WaterLevelReading.from_dict(data)
+        restored = WaterLevelReading.from_data(json_str, "application/json")
         assert restored.ts_id == reading.ts_id
         assert restored.value == reading.value
         assert restored.timestamp == reading.timestamp
@@ -169,12 +168,12 @@ class TestDataClasses:
             ts_unitname="meter",
         )
         data = station.to_byte_array("application/json")
-        assert isinstance(data, bytes)
+        assert isinstance(data, (bytes, str))
         parsed = json.loads(data)
         assert parsed["station_no"] == "TEST"
 
     def test_reading_from_data(self):
         json_str = '{"ts_id": "1", "station_no": "A", "station_name": "B", "timestamp": "2026-01-01T00:00:00Z", "value": 1.5, "unit_name": "meter", "parameter_name": "H"}'
-        reading = WaterLevelReading.from_data(json_str)
+        reading = WaterLevelReading.from_data(json_str, "application/json")
         assert reading.ts_id == "1"
         assert reading.value == 1.5

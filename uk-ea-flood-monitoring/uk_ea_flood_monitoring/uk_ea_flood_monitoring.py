@@ -13,9 +13,9 @@ import logging
 from typing import Dict, List, Any
 import argparse
 import requests
-from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.uk.gov.environment.ea.floodmonitoring.station import Station
-from uk_ea_flood_monitoring.uk_ea_flood_monitoring_producer.uk.gov.environment.ea.floodmonitoring.reading import Reading
-from .uk_ea_flood_monitoring_producer.producer_client import UKGovEnvironmentEAFloodMonitoringEventProducer
+from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
+from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.reading import Reading
+from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -166,7 +166,7 @@ class EAFloodMonitoringAPI:
                 date_opened=station.get("dateOpened", "")
             )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_station(
-                station_data, flush_producer=False)
+                station_ref, station_data, flush_producer=False)
         producer.flush()
         logging.info("Sent %d stations as reference data", len(stations))
 
@@ -209,7 +209,7 @@ class EAFloodMonitoringAPI:
 
                     try:
                         ea_producer.send_uk_gov_environment_ea_flood_monitoring_reading(
-                            reading_data, flush_producer=False)
+                            station_ref, reading_data, flush_producer=False)
                         count += 1
                     # pylint: disable=broad-except
                     except Exception as e:

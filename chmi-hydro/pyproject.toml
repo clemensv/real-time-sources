@@ -1,21 +1,22 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
-name = "chmi_hydro"
+[tool.poetry]
+name = "chmi-hydro"
 version = "0.1.0"
-requires-python = ">=3.9"
-dependencies = [
-    "avro>=1.11.0",
-    "confluent_kafka",
-    "cloudevents>=1.11.0,<2.0.0",
-    "requests",
-    "dataclasses-json",
-]
+description = "Czech Hydrometeorological Institute (ČHMÚ) Hydrology bridge to Apache Kafka"
+authors = ["Clemens Vasters"]
 
-[project.scripts]
-chmi_hydro = "chmi_hydro:main"
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+chmi_hydro_producer_data = {path = "chmi_hydro_producer_tmp/chmi_hydro_producer_data"}
+chmi_hydro_producer_kafka_producer = {path = "chmi_hydro_producer_tmp/chmi_hydro_producer_kafka_producer"}
 
-[tool.setuptools.packages.find]
-include = ["chmi_hydro*"]
+[tool.poetry.scripts]
+chmi-hydro = "chmi_hydro:main"

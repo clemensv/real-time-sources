@@ -9,7 +9,7 @@ from confluent_kafka import Producer, Consumer
 from confluent_kafka.admin import AdminClient, NewTopic
 
 from imgw_hydro.imgw_hydro import IMGWHydroAPI, feed_stations
-from imgw_hydro.imgw_hydro_producer.producer_client import PLGovIMGWHydroEventProducer
+from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroEventProducer
 
 SAMPLE_RECORDS = [
     {

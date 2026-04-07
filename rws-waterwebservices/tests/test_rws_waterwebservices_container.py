@@ -9,9 +9,9 @@ from testcontainers.kafka import KafkaContainer
 from confluent_kafka import Producer, Consumer, KafkaError
 
 from rws_waterwebservices.rws_waterwebservices import RWSWaterwebservicesAPI
-from rws_waterwebservices.rws_waterwebservices_producer.producer_client import NLRWSWaterwebservicesEventProducer
-from rws_waterwebservices.rws_waterwebservices_producer.nl.rws.waterwebservices.station import Station
-from rws_waterwebservices.rws_waterwebservices_producer.nl.rws.waterwebservices.water_level_observation import WaterLevelObservation
+from rws_waterwebservices_producer_kafka_producer.producer import NLRWSWaterwebservicesEventProducer
+from rws_waterwebservices_producer_data import Station
+from rws_waterwebservices_producer_data import WaterLevelObservation
 
 KAFKA_TOPIC = "test-rws-waterwebservices"
 

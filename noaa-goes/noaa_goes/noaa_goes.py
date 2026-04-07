@@ -13,10 +13,10 @@ import time
 from typing import Dict, List
 import argparse
 import requests
-from noaa_goes.noaa_goes_producer.microsoft.opendata.us.noaa.swpc.spaceweatheralert import SpaceWeatherAlert
-from noaa_goes.noaa_goes_producer.microsoft.opendata.us.noaa.swpc.planetarykindex import PlanetaryKIndex
-from noaa_goes.noaa_goes_producer.microsoft.opendata.us.noaa.swpc.solarwindsummary import SolarWindSummary
-from .noaa_goes_producer.producer_client import MicrosoftOpenDataUSNOAASWPCEventProducer
+from noaa_goes_producer_data import SpaceWeatherAlert
+from noaa_goes_producer_data import PlanetaryKIndex
+from noaa_goes_producer_data import SolarWindSummary
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCAlertsEventProducer, MicrosoftOpenDataUSNOAASWPCObservationsEventProducer
 
 
 class SWPCPoller:
@@ -43,7 +43,9 @@ class SWPCPoller:
         self.last_polled_file = last_polled_file
         from confluent_kafka import Producer
         kafka_producer = Producer(kafka_config)
-        self.producer = MicrosoftOpenDataUSNOAASWPCEventProducer(kafka_producer, kafka_topic)
+        self.alerts_producer = MicrosoftOpenDataUSNOAASWPCAlertsEventProducer(kafka_producer, kafka_topic)
+        self.observations_producer = MicrosoftOpenDataUSNOAASWPCObservationsEventProducer(kafka_producer, kafka_topic)
+        self.kafka_producer = kafka_producer
 
     def load_state(self) -> Dict:
         """
@@ -178,8 +180,8 @@ class SWPCPoller:
                         issue_datetime=alert_data.get("issue_datetime", ""),
                         message=alert_data.get("message", "")
                     )
-                    self.producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(
-                        alert, product_id, flush_producer=False)
+                    self.alerts_producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(
+                        product_id, alert, flush_producer=False)
                     state["last_alert_id"] = product_id
                     new_count += 1
 
@@ -197,8 +199,8 @@ class SWPCPoller:
                         a_running=float(row.get("a_running", 0)),
                         station_count=float(row.get("station_count", 0))
                     )
-                    self.producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(
-                        kindex, time_tag, flush_producer=False)
+                    self.observations_producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(
+                        time_tag, kindex, flush_producer=False)
                     state["last_kindex_time"] = time_tag
                     new_count += 1
 
@@ -216,13 +218,13 @@ class SWPCPoller:
                         bt=record.get("bt", 0.0),
                         bz=record.get("bz", 0.0)
                     )
-                    self.producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(
-                        summary, ts, flush_producer=False)
+                    self.observations_producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(
+                        ts, summary, flush_producer=False)
                     state["last_solar_wind_time"] = ts
                     new_count += 1
 
                 if new_count > 0:
-                    self.producer.producer.flush()
+                    self.kafka_producer.flush()
                     print(f"Sent {new_count} new record(s) to Kafka")
 
                 self.save_state(state)

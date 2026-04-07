@@ -16,6 +16,8 @@ confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = "^1.12.1"
+noaa_producer_data = {path = "noaa_producer/noaa_producer_data"}
+noaa_producer_kafka_producer = {path = "noaa_producer/noaa_producer_kafka_producer"}
 
 
 [tool.poetry.dev-dependencies]

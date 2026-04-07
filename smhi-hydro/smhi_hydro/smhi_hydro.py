@@ -11,9 +11,9 @@ import requests
 from datetime import datetime, timezone
 from confluent_kafka import Producer
 
-from smhi_hydro.smhi_hydro_producer.producer_client import SEGovSMHIHydroEventProducer
-from smhi_hydro.smhi_hydro_producer.se.gov.smhi.hydro.station import Station
-from smhi_hydro.smhi_hydro_producer.se.gov.smhi.hydro.discharge_observation import DischargeObservation
+from smhi_hydro_producer_kafka_producer.producer import SEGovSMHIHydroEventProducer
+from smhi_hydro_producer_data import Station
+from smhi_hydro_producer_data import DischargeObservation
 
 logger = logging.getLogger(__name__)
 
@@ -136,6 +136,7 @@ def send_stations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer) -> i
     for station_data in stations:
         station = api.parse_station(station_data)
         producer.send_se_gov_smhi_hydro_station(
+            station.station_id,
             station,
             flush_producer=False,
             key_mapper=lambda ce, s: f"SE.Gov.SMHI.Hydro.Station:{s.station_id}"
@@ -160,6 +161,7 @@ def feed_observations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer, 
             if reading_key in previous_readings:
                 continue
             producer.send_se_gov_smhi_hydro_discharge_observation(
+                observation.station_id,
                 observation,
                 flush_producer=False,
                 key_mapper=lambda ce, o: f"SE.Gov.SMHI.Hydro.DischargeObservation:{o.station_id}"

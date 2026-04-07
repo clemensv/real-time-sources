@@ -9,7 +9,7 @@ from confluent_kafka import Producer, Consumer
 from confluent_kafka.admin import AdminClient, NewTopic
 
 from smhi_hydro.smhi_hydro import SMHIHydroAPI, feed_stations
-from smhi_hydro.smhi_hydro_producer.producer_client import SEGovSMHIHydroEventProducer
+from smhi_hydro_producer_kafka_producer.producer import SEGovSMHIHydroEventProducer
 
 SAMPLE_STATION_DATA_1 = {
     "key": "1583",
