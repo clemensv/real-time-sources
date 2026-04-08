@@ -1,0 +1,561 @@
+{
+  "endpoints": {
+    "be.issep.airquality.Sensors.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wallonia-issep",
+          "key": "{configuration_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/be.issep.airquality.Sensors"
+      ]
+    }
+  },
+  "messagegroups": {
+    "be.issep.airquality.Sensors": {
+      "messages": {
+        "be.issep.airquality.SensorConfiguration": {
+          "name": "SensorConfiguration",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "be.issep.airquality.SensorConfiguration"
+            },
+            "source": {
+              "value": "https://www.odwb.be/api/explore/v2.1/catalog/datasets/last-data-capteurs-qualite-de-l-air-issep/records"
+            },
+            "subject": {
+              "value": "{configuration_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.jstruct/schemas/be.issep.airquality.SensorConfiguration"
+        },
+        "be.issep.airquality.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "be.issep.airquality.Observation"
+            },
+            "source": {
+              "value": "https://www.odwb.be/api/explore/v2.1/catalog/datasets/last-data-capteurs-qualite-de-l-air-issep/records"
+            },
+            "subject": {
+              "value": "{configuration_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.jstruct/schemas/be.issep.airquality.Observation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "be.issep.airquality.jstruct": {
+      "schemas": {
+        "be.issep.airquality.SensorConfiguration": {
+          "name": "SensorConfiguration",
+          "format": "JsonStructure/draft-02",
+          "description": "Reference event for an ISSeP Wallonia air quality sensor configuration derived from the last-data records. Each distinct id_configuration represents a deployed sensor unit.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://www.odwb.be/schemas/be/issep/airquality/SensorConfiguration",
+                "name": "SensorConfiguration",
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Reference data for one ISSeP Wallonia air quality sensor configuration. Each id_configuration identifies a deployed sensor unit. The bridge emits this event at startup for each distinct configuration seen in the data records.",
+                "required": [
+                  "configuration_id"
+                ],
+                "properties": {
+                  "configuration_id": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Stable numeric identifier of the sensor configuration from the upstream id_configuration field. Converted to string because it serves as the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "issep": "id_configuration"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "be.issep.airquality.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "description": "Telemetry event for one air quality observation from a Wallonia ISSeP sensor. Contains pollutant concentrations, particulate matter levels, environmental readings, and quality status flags.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://www.odwb.be/schemas/be/issep/airquality/Observation",
+                "name": "Observation",
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Air quality observation from one ISSeP Wallonia sensor at a specific moment in time. Includes raw electrochemical gas readings, calibrated ppb and µg/m³ values, particulate matter concentrations, environmental parameters, reference station comparisons, and quality status flags. Negative raw values (e.g. no2=-4) are valid sensor readings and must not be filtered.",
+                "required": [
+                  "configuration_id",
+                  "moment"
+                ],
+                "properties": {
+                  "configuration_id": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Stable numeric sensor configuration identifier from id_configuration. Matches the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "issep": "id_configuration"
+                    }
+                  },
+                  "moment": {
+                    "type": "string",
+                    "description": "ISO 8601 observation timestamp from the upstream moment field, e.g. '2026-04-08T09:09:13+02:00'. Preserved as-is from the API response.",
+                    "altnames": {
+                      "issep": "moment"
+                    }
+                  },
+                  "co": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Raw carbon monoxide electrochemical sensor reading in internal units.",
+                    "altnames": {
+                      "issep": "co"
+                    }
+                  },
+                  "no": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Raw nitric oxide electrochemical sensor reading in internal units.",
+                    "altnames": {
+                      "issep": "no"
+                    }
+                  },
+                  "no2": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Raw nitrogen dioxide electrochemical sensor reading in internal units. Negative values are valid.",
+                    "altnames": {
+                      "issep": "no2"
+                    }
+                  },
+                  "o3no2": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Raw combined ozone and nitrogen dioxide electrochemical sensor reading in internal units. Negative values are valid.",
+                    "altnames": {
+                      "issep": "o3no2"
+                    }
+                  },
+                  "ppbno": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Calibrated nitric oxide concentration in parts per billion (ppb).",
+                    "unit": "ppb",
+                    "altnames": {
+                      "issep": "ppbno"
+                    }
+                  },
+                  "ppbno_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for ppbno. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "ppbno_statut"
+                    }
+                  },
+                  "ppbno2": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Calibrated nitrogen dioxide concentration in parts per billion (ppb).",
+                    "unit": "ppb",
+                    "altnames": {
+                      "issep": "ppbno2"
+                    }
+                  },
+                  "ppbno2_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for ppbno2. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "ppbno2_statut"
+                    }
+                  },
+                  "ppbo3": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Calibrated ozone concentration in parts per billion (ppb).",
+                    "unit": "ppb",
+                    "altnames": {
+                      "issep": "ppbo3"
+                    }
+                  },
+                  "ppbo3_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for ppbo3. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "ppbo3_statut"
+                    }
+                  },
+                  "ugpcmno": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Calibrated nitric oxide concentration in micrograms per cubic meter (µg/m³).",
+                    "unit": "µg/m³",
+                    "altnames": {
+                      "issep": "ugpcmno"
+                    }
+                  },
+                  "ugpcmno_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for ugpcmno. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "ugpcmno_statut"
+                    }
+                  },
+                  "ugpcmno2": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Calibrated nitrogen dioxide concentration in micrograms per cubic meter (µg/m³).",
+                    "unit": "µg/m³",
+                    "altnames": {
+                      "issep": "ugpcmno2"
+                    }
+                  },
+                  "ugpcmno2_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for ugpcmno2. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "ugpcmno2_statut"
+                    }
+                  },
+                  "ugpcmo3": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Calibrated ozone concentration in micrograms per cubic meter (µg/m³).",
+                    "unit": "µg/m³",
+                    "altnames": {
+                      "issep": "ugpcmo3"
+                    }
+                  },
+                  "ugpcmo3_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for ugpcmo3. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "ugpcmo3_statut"
+                    }
+                  },
+                  "bme_t": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Temperature reading from the BME280 environmental sensor in degrees Celsius.",
+                    "unit": "°C",
+                    "altnames": {
+                      "issep": "bme_t"
+                    }
+                  },
+                  "bme_t_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for bme_t. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "bme_t_statut"
+                    }
+                  },
+                  "bme_pres": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Atmospheric pressure reading from the BME280 sensor in Pascals.",
+                    "unit": "Pa",
+                    "altnames": {
+                      "issep": "bme_pres"
+                    }
+                  },
+                  "bme_pres_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for bme_pres. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "bme_pres_statut"
+                    }
+                  },
+                  "bme_rh": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Relative humidity reading from the BME280 sensor as a percentage.",
+                    "unit": "%",
+                    "altnames": {
+                      "issep": "bme_rh"
+                    }
+                  },
+                  "bme_rh_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for bme_rh. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "bme_rh_statut"
+                    }
+                  },
+                  "pm1": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Particulate matter concentration for particles under 1 micrometer in µg/m³.",
+                    "unit": "µg/m³",
+                    "altnames": {
+                      "issep": "pm1"
+                    }
+                  },
+                  "pm1_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for pm1. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "pm1_statut"
+                    }
+                  },
+                  "pm25": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Particulate matter concentration for particles under 2.5 micrometers in µg/m³.",
+                    "unit": "µg/m³",
+                    "altnames": {
+                      "issep": "pm25"
+                    }
+                  },
+                  "pm25_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for pm25. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "pm25_statut"
+                    }
+                  },
+                  "pm4": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Particulate matter concentration for particles under 4 micrometers in µg/m³.",
+                    "unit": "µg/m³",
+                    "altnames": {
+                      "issep": "pm4"
+                    }
+                  },
+                  "pm4_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for pm4. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "pm4_statut"
+                    }
+                  },
+                  "pm10": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Particulate matter concentration for particles under 10 micrometers in µg/m³.",
+                    "unit": "µg/m³",
+                    "altnames": {
+                      "issep": "pm10"
+                    }
+                  },
+                  "pm10_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for pm10. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "pm10_statut"
+                    }
+                  },
+                  "vbat": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Battery voltage of the sensor unit in Volts.",
+                    "unit": "V",
+                    "altnames": {
+                      "issep": "vbat"
+                    }
+                  },
+                  "vbat_statut": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Quality status flag for vbat. 100 indicates valid, 0 indicates invalid or unavailable.",
+                    "altnames": {
+                      "issep": "vbat_statut"
+                    }
+                  },
+                  "mwh_bat": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Battery energy level in milliwatt-hours. Negative values indicate discharge.",
+                    "unit": "mWh",
+                    "altnames": {
+                      "issep": "mwh_bat"
+                    }
+                  },
+                  "mwh_pv": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Photovoltaic energy generation in milliwatt-hours.",
+                    "unit": "mWh",
+                    "altnames": {
+                      "issep": "mwh_pv"
+                    }
+                  },
+                  "co_rf": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Carbon monoxide reference station comparison value.",
+                    "altnames": {
+                      "issep": "co_rf"
+                    }
+                  },
+                  "no_rf": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Nitric oxide reference station comparison value.",
+                    "altnames": {
+                      "issep": "no_rf"
+                    }
+                  },
+                  "no2_rf": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Nitrogen dioxide reference station comparison value.",
+                    "altnames": {
+                      "issep": "no2_rf"
+                    }
+                  },
+                  "o3no2_rf": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Combined ozone and nitrogen dioxide reference station comparison value.",
+                    "altnames": {
+                      "issep": "o3no2_rf"
+                    }
+                  },
+                  "o3_rf": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Ozone reference station comparison value.",
+                    "altnames": {
+                      "issep": "o3_rf"
+                    }
+                  },
+                  "pm10_rf": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "PM10 reference station comparison value.",
+                    "altnames": {
+                      "issep": "pm10_rf"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
