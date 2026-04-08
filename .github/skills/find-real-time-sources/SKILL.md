@@ -18,11 +18,12 @@ argument-hint: "Describe the domain of interest (e.g. hydrology, maritime, aviat
 - **Domain** — one or more from the taxonomy below, or "any"
 - **Region** — a country, continent, "global", or a list of target countries
 - **Constraints** — max acceptable latency, auth preferences, protocol preferences, volume bounds
+- **Search language** — for country-specific web research, build and run queries in the target country's primary administrative/search language first; use English only for supranational sources, standards material, or after local-language searches fail
 
 ## Procedure
 
 1. **Scope the search** using the domain taxonomy and region.
-2. **Generate search queries** following the strategy in [search playbook](references/search-playbook.md).
+2. **Generate search queries** in the primary language of each target country, following the strategy in [search playbook](references/search-playbook.md). Do not start country-specific discovery with English-only queries.
 3. **Probe each candidate** for freshness, protocol, auth, and volume.
 4. **Score candidates** against the fitness criteria.
 5. **Check for overlap** with sources already in this repo.

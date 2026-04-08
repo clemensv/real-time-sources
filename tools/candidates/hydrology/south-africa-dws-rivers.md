@@ -1,13 +1,13 @@
 # South Africa DWS Hydrological Data Network
 
 - **Country/Region**: South Africa
-- **Endpoint**: `https://www.dws.gov.za/Hydrology/Verified/HyDataSets.aspx?Station={StationCode}`
+- **Endpoint**: `https://www.dws.gov.za/Hydrology/Unverified` (near-real-time), `https://www.dws.gov.za/Hydrology/Verified/HyDataSets.aspx?Station={StationCode}` (audited)
 - **Protocol**: HTTP (ASP.NET web forms)
 - **Auth**: None
 - **Format**: HTML (tabular data, parseable)
-- **Freshness**: Daily flow data (verified), near-real-time (unverified/preliminary)
+- **Freshness**: Hourly (unverified/preliminary), daily (verified)
 - **Docs**: https://www.dws.gov.za/Hydrology/
-- **Score**: 9/18
+- **Score**: 10/18
 
 ## Overview
 
@@ -66,11 +66,61 @@ The system also provides:
 - **Complement with satellite**: Use satellite altimetry data (Copernicus) for major
   rivers where ground stations are sparse.
 
+## Unverified (Near-Real-Time) Data — Confirmed Live April 2026
+
+The unverified data endpoint at `https://www.dws.gov.za/Hydrology/Unverified` is
+the most valuable discovery. It serves **hourly updated** HTML tables for 6 Water
+Management Areas (WMAs):
+
+| WMA | Example | Stations |
+|-----|---------|:--------:|
+| Limpopo-Olifants | WMA1 | ~50+ |
+| Inkomati-Usuthu | WMA2 | ~30+ |
+| Pongola-Mtamvuna | WMA3 | ~30+ |
+| Vaal-Orange | WMA4 | ~80+ |
+| Mzimvubu-Tsitsikama | WMA5 | ~40+ |
+| Breede-Olifants | WMA6 | ~40+ |
+
+### Sample Live Data (Vaal-Orange, 2026-04-08 05:00)
+
+| Station | Place | Stage (m) | Flow/Cap |
+|---------|-------|----------:|:--------:|
+| C1R001 | Vaal Dam | 22.837 | 104.03% |
+| C9R002 | Bloemhof Dam | 18.301 | 106.02% |
+| D3R002 | Gariep Dam | 55.611 | 98.66% |
+| D3R003 | Vanderkloof Dam | 61.508 | 103.54% |
+| D8H015 | Orange at Sendelingsdrif | 2.448 | 943.55 m³/s |
+
+Columns: Station code, Place name, Date/Time, Stage (m), Flow or Capacity (%),
+Spill indicator, Comment. Blue-highlighted rows indicate dams (capacity shown as %).
+
+### Station Code Convention
+
+- First letter: Drainage region (A–X)
+- Number: Sub-catchment
+- H = flow gauging station, R = reservoir/dam, M = rainfall
+
+### Additional Endpoints
+
+- **Weekly dam state**: `https://www.dws.gov.za/Hydrology/Weekly/Province.aspx` —
+  ~210 dams by province or WMA, updated weekly
+- **Daily Orange/Vaal**: `https://www.dws.gov.za/Hydrology/Daily/Default.aspx` —
+  daily dam/flow/rainfall chart for the Vaal-Orange system
+- **Dam optimization**: `https://www.dws.gov.za/Hydrology/Unverified/Home/DamOpt?stanum={code}` —
+  routing through specific dams (inflow, outflow, capacity)
+
+### Scraping Approach
+
+The unverified data pages render as simple HTML tables selectable by WMA via a
+dropdown. The tables use a consistent `Station | Place | Date/Time | Stage | Flow/Cap | Spill | Comment`
+structure. No AJAX, no ViewState tokens needed for the unverified pages — they're
+straightforward GET requests with a query parameter for the WMA.
+
 | Criterion | Score | Notes |
 |-----------|-------|-------|
-| Freshness | 2 | Daily flow data, preliminary available faster |
+| Freshness | 2 | Hourly unverified, daily verified |
 | Openness | 3 | No auth, government data |
 | Stability | 1 | Ageing ASP.NET infrastructure |
-| Structure | 0 | HTML scraping required |
+| Structure | 1 | HTML scraping required, but tables are simple |
 | Identifiers | 2 | Station codes (SA-specific convention) |
-| Richness | 1 | Flow rates, levels, basic metadata |
+| Richness | 1 | Flow rates, levels, dam capacity, spill |

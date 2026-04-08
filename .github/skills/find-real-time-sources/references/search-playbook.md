@@ -4,6 +4,8 @@
 
 Build web searches that combine three dimensions: **domain keywords**, **data-access indicators**, and **geographic scope**. The goal is to surface official open-data portals, API documentation pages, and developer guides — not news articles or Wikipedia overviews.
 
+For country-specific discovery, translate all three dimensions into the target country's primary administrative/search language and run those queries first. Do not start national-source discovery with English-only searches unless the source is clearly supranational.
+
 ### Domain Keywords
 
 Use the technical vocabulary that data publishers actually put in their docs:
@@ -51,14 +53,19 @@ Append terms that signal a machine-readable API exists:
 - `free`, `public`, `no authentication`, `open government data`
 - `documentation`, `endpoint`, `swagger`, `OpenAPI`
 
+Translate these indicators into the target country's primary language before searching national portals or agency sites.
+
 ### Geographic Patterns
 
-For country-level searches, use both English and native-language terms:
+For country-level searches, default to the primary language used by the target
+country's agencies and open-data portals:
 
-- **Prefer native language** for national agencies: "Wasserstand API" beats "water level API Germany"
-- **Try the national open data portal** first: data.gov, data.gouv.fr, govdata.de, data.gov.uk, opendata.swiss
-- **Search for the agency name directly** when you know it: "BOM API Australia", "KNMI data platform"
-- **Use regional aggregators**: EU Open Data Portal, Copernicus, GEOSS
+- **Translate domain and access terms fully**: use the country's primary-language wording for the phenomenon, API, freshness, and openness terms
+- **Use the local script and spelling**: keep accents, umlauts, Cyrillic, Hangul, kana, etc.
+- **Try the national open data portal first** using local-language terms: data.gov, data.gouv.fr, govdata.de, data.gov.uk, opendata.swiss
+- **Search for the agency name directly** when you know it, in the language the agency uses publicly
+- **For multilingual countries**, start with the responsible agency's primary working language; add other official languages only if needed
+- **Use English only after local-language queries** for that country, or immediately for EU/international standards bodies, global aggregators, and cross-border programs
 
 ### Example Queries
 
@@ -101,6 +108,10 @@ MobilityData GBFS catalog
 "open charge map" API documentation
 OCPI "charging station" availability API
 NOBIL "ladestasjoner" API
+"borne de recharge" disponibilité API temps réel France
+"punto de recarga" disponibilidad API tiempo real España
+"estação de carregamento" disponibilidade API tempo real Portugal
+"Ladesäule" Verfügbarkeit API Deutschland
 
 # Reservoir
 "reservoir storage" API real-time "Bureau of Reclamation"
@@ -121,6 +132,9 @@ stream.wikimedia.org EventStreams documentation
 
 # Miscellaneous
 "datos abiertos" calidad aire API tiempo real España
+"Wasserstand" API Echtzeit Deutschland
+"qualité de l'air" API temps réel France
+"stazione di ricarica" disponibilità API tempo reale Italia
 "open data" earthquake API real-time -USGS
 AIS vessel tracking open data API -MarineTraffic -VesselFinder
 국가수자원관리 종합정보시스템 API
@@ -218,18 +232,168 @@ Rate each candidate 0–3 on each dimension, then sum for a total out of 18:
 
 ### Europe
 
-- **EU Open Data Portal**: data.europa.eu — aggregates member state portals
+- **EU Open Data Portal**: data.europa.eu — aggregates member state portals (see detailed querying guide below)
 - **Copernicus services**: land, marine, atmosphere, climate, emergency — all have APIs
 - **EEA**: European Environment Agency — air quality, water, noise
 - **ENTSO-E / ENTSO-G**: pan-European electricity and gas transparency platforms
 - **National portals**: data.gouv.fr, govdata.de, dati.gov.it, datos.gob.es, data.overheid.nl, opendata.swiss
 
+#### data.europa.eu — Programmatic Discovery
+
+The EU Open Data Portal at `data.europa.eu` harvests DCAT-AP metadata from
+all EU/EEA national portals plus institutional catalogs. It exposes two
+machine-readable endpoints that are invaluable for systematic cross-country
+source discovery.
+
+**REST Search API** — `https://data.europa.eu/api/hub/search/`
+
+Best for: faceted discovery, country/format breakdowns, initial scoping.
+
+```
+# Basic search — returns dataset count, facets, and result pages
+GET /search?q="water+level"&filters=dataset&limit=50
+
+# Country-scoped (national data only, excludes EU institutional)
+GET /search?q="air+quality"&filters=dataset&countryData=true&limit=50
+
+# Filter by category (DCAT theme codes: TRAN, ENER, ENVI, TECH, etc.)
+GET /search?q="charging+station"&filters=dataset&facets={"categories":["TRAN","ENER"]}&limit=50
+```
+
+Key parameters:
+- `q` — full-text query; use exact phrases with `"quotes"` and language-
+  specific terms (e.g. `"IRVE"`, `"Ladesäule"`, `"laadpaal"`)
+- `filters=dataset` — restrict to datasets (not catalogs, distributions, etc.)
+- `limit` — up to 1000 results per page; use `0` for facet-only queries
+- `countryData=true` — filter to national-level catalogs only
+- `facets` — JSON object to filter by category, country, format, etc.
+
+Response includes `result.count`, `result.facets` (country, catalog, format,
+keywords breakdowns), and `result.results[]` with full dataset metadata
+including `distributions[].access_url` and `distributions[].format`.
+
+**SPARQL Endpoint** — `https://data.europa.eu/sparql`
+
+Best for: drilling into distributions of known datasets, finding download URLs,
+joining dataset metadata with distribution format/access info.
+
+```sparql
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dct:  <http://purl.org/dc/terms/>
+
+SELECT ?dataset ?title ?access_url
+WHERE {
+  ?dataset a dcat:Dataset ;
+           dct:title ?title ;
+           dcat:distribution ?dist .
+  ?dist dcat:accessURL ?access_url .
+  FILTER(CONTAINS(LCASE(STR(?title)), "water level"))
+  FILTER(CONTAINS(LCASE(STR(?access_url)), "json") ||
+         CONTAINS(LCASE(STR(?access_url)), "api"))
+  FILTER(LANG(?title) = "en" || LANG(?title) = "")
+}
+LIMIT 100
+```
+
+POST to `https://data.europa.eu/sparql` with
+`Content-Type: application/x-www-form-urlencoded` and `Accept:
+application/sparql-results+json`. Complex GROUP BY queries may time out
+(HTTP 500); keep queries simple with FILTER + LIMIT.
+
+**Effective querying strategy:**
+
+1. Run REST `limit=0` queries per language-specific term to get faceted
+   counts by country — this reveals which countries have data for a domain.
+2. Use SPARQL to find actual download/API URLs by filtering on `access_url`
+   containing `json`, `csv`, or `api`.
+3. Always search in **multiple languages** — French `"borne de recharge"`,
+   German `"Ladestation"`, Dutch `"laadpaal"`, etc. — because the portal
+   indexes titles in their original language.
+
+**Limitations**: Many key real-time sources operate outside the harvested
+DCAT ecosystem (dedicated national platforms like Norway's NOBIL, Netherlands
+NDW, Poland's EIPA, Lithuania's EV portal). The portal is strongest for France
+(data.gouv.fr is well-indexed with ~74K datasets) and Germany (GovData).
+Always supplement data.europa.eu queries with direct probing of national
+agency websites.
+
 ### North America
 
-- **data.gov**: US federal open data catalog
+- **data.gov**: US federal open data catalog (CKAN API — see below)
 - **USGS**, **NOAA**, **EPA**, **FAA**, **EIA**: major US data agencies
-- **open.canada.ca**: Canadian open data portal
+- **open.canada.ca**: Canadian open data portal (also CKAN-based, same API pattern)
 - **datos.gob.mx**: Mexican open data
+
+#### Querying data.gov Programmatically
+
+data.gov runs CKAN and exposes the full **CKAN Action API v3**. No
+authentication is required.
+
+**Base URL:** `https://catalog.data.gov/api/3/action/`
+
+**Key Endpoints:**
+
+| Action | Purpose | Example |
+|--------|---------|---------|
+| `package_search` | Full-text search with Solr filter queries | `?q="water level"&rows=20` |
+| `package_show` | Single dataset by name or ID | `?id=toxics-release-inventory-tri` |
+| `organization_list` | List publishing agencies | `?all_fields=true` |
+| `group_list` | List topic groups | `?all_fields=true` |
+| `tag_list` | List all tags | `?query=real-time` |
+
+**Search Parameters:**
+
+- `q` — full-text query; use `"quoted phrases"` for exact match
+- `fq` — Solr filter query for faceted filtering:
+  `fq=organization:noaa-gov`, `fq=res_format:API`,
+  `fq=tags:real-time AND res_format:JSON`
+- `rows` — results per page (max ~1000), default 10
+- `start` — offset for pagination
+- `sort` — `views_recent desc` (default), `metadata_modified desc`, `name asc`
+- `facet=true&facet.field=["organization","res_format","tags"]` — get count
+  breakdowns
+
+**Response Shape:**
+```json
+{"success": true, "result": {"count": 24556, "results": [...]}}
+```
+
+Each result includes `organization.name` (e.g. `noaa-gov`, `epa-gov`),
+`resources[]` with `format` and `url`, and `tags[]` with keyword names.
+
+**Effective Strategy:**
+1. Start broad: `package_search?q="water level"&facet=true&facet.field=["organization","res_format"]&rows=0`
+   to get facet counts without retrieving full results.
+2. Filter by format: `fq=res_format:API` or `fq=res_format:JSON` to find
+   machine-readable endpoints.
+3. Filter by agency: `fq=organization:noaa-gov` to scope to a known publisher.
+4. Combine filters with AND: `fq=organization:epa-gov AND res_format:API`
+5. Inspect `resources[].url` in results — these are the actual data endpoints.
+
+**Example Discovery Queries:**
+```
+# Real-time APIs across all agencies
+package_search?q="real-time"&fq=res_format:API&rows=20
+
+# NOAA datasets with JSON resources
+package_search?q=&fq=organization:noaa-gov AND res_format:JSON&rows=50
+
+# Water/hydrology monitoring APIs
+package_search?q="water level" OR "stream gauge"&fq=res_format:API&rows=20
+
+# EV charging data
+package_search?q="charging station" OR "electric vehicle"&fq=res_format:JSON&rows=20
+```
+
+**Limitations:**
+- No SPARQL endpoint — CKAN only, no RDF graph queries.
+- Many datasets are static file dumps (CSV, ZIP) rather than live APIs.
+  Filter on `res_format:API` or `res_format:JSON` to find live endpoints.
+- The catalog is a metadata index — the actual data lives at the agency's
+  own URL. Always follow `resources[].url` to verify the endpoint works.
+- Coverage skews federal; state/local open-data portals (e.g.
+  `data.ny.gov`, `data.ca.gov`) run separate CKAN or Socrata instances
+  and are not fully indexed here.
 
 ### Asia-Pacific
 
@@ -251,6 +415,6 @@ Rate each candidate 0–3 on each dimension, then sum for a total out of 18:
 
 - **Don't chase commercial aggregators** (MarineTraffic, FlightRadar24, Windy) — they sit on top of the same raw sources we want direct access to, and their terms prohibit redistribution.
 - **Don't confuse a data viewer with a data API** — many portals have pretty dashboards but no machine-readable endpoint. Check for `/api/` in the URL or a "Developers" section.
-- **Don't assume English-only** — the best government data portals are often only documented in the national language. Use translation tools.
+- **Don't start in English for national-source discovery** — the best government data portals are often only documented in the national language, and English-first searches will systematically miss them.
 - **Don't over-index on one country** — spread coverage across regions for a diverse, resilient catalog.
 - **Don't skip the license check** — open doesn't always mean free to redistribute. Verify the license explicitly.
