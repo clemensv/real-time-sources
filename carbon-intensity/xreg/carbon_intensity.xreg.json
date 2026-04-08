@@ -1,0 +1,422 @@
+{
+  "endpoints": {
+    "uk.org.carbonintensity.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "carbon-intensity",
+          "key": "{period_from}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.org.carbonintensity"
+      ]
+    },
+    "uk.org.carbonintensity.Regional.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "carbon-intensity",
+          "key": "{region_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.org.carbonintensity.Regional"
+      ]
+    }
+  },
+  "messagegroups": {
+    "uk.org.carbonintensity": {
+      "messages": {
+        "uk.org.carbonintensity.Intensity": {
+          "name": "Intensity",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.org.carbonintensity.Intensity"
+            },
+            "source": {
+              "value": "https://api.carbonintensity.org.uk"
+            },
+            "subject": {
+              "value": "{period_from}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.Intensity"
+        },
+        "uk.org.carbonintensity.GenerationMix": {
+          "name": "GenerationMix",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.org.carbonintensity.GenerationMix"
+            },
+            "source": {
+              "value": "https://api.carbonintensity.org.uk"
+            },
+            "subject": {
+              "value": "{period_from}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.GenerationMix"
+        }
+      }
+    },
+    "uk.org.carbonintensity.Regional": {
+      "messages": {
+        "uk.org.carbonintensity.RegionalIntensity": {
+          "name": "RegionalIntensity",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.org.carbonintensity.RegionalIntensity"
+            },
+            "source": {
+              "value": "https://api.carbonintensity.org.uk"
+            },
+            "subject": {
+              "value": "{region_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.RegionalIntensity"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "uk.org.carbonintensity.jstruct": {
+      "schemas": {
+        "uk.org.carbonintensity.Intensity": {
+          "format": "JsonStructure/draft-02",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$id": "uk.org.carbonintensity.Intensity",
+                "type": "object",
+                "description": "National half-hourly carbon intensity for the Great Britain electricity grid, published by National Grid ESO. Contains the forecast and actual carbon dioxide emission intensity in grams of CO2 per kilowatt-hour, along with a qualitative index band.",
+                "properties": {
+                  "period_from": {
+                    "type": "datetime",
+                    "description": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period (e.g. 2026-04-06T09:30Z)."
+                  },
+                  "period_to": {
+                    "type": "datetime",
+                    "description": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period (e.g. 2026-04-06T10:00Z)."
+                  },
+                  "forecast": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Forecast carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh), computed ahead of real-time by National Grid ESO.",
+                    "unit": "gCO2/kWh"
+                  },
+                  "actual": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Actual (metered) carbon intensity for this settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh). May be null when the period has not yet completed.",
+                    "unit": "gCO2/kWh"
+                  },
+                  "index": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Qualitative index band for the carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'."
+                  }
+                },
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "name": "Intensity",
+                "required": [
+                  "period_from",
+                  "period_to"
+                ]
+              }
+            }
+          },
+          "name": "Intensity",
+          "defaultversionid": "1"
+        },
+        "uk.org.carbonintensity.GenerationMix": {
+          "format": "JsonStructure/draft-02",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$id": "uk.org.carbonintensity.GenerationMix",
+                "type": "object",
+                "description": "National half-hourly electricity generation fuel mix for Great Britain, published by National Grid ESO. Each field represents the percentage contribution of a specific fuel type to total generation during the settlement period.",
+                "properties": {
+                  "period_from": {
+                    "type": "datetime",
+                    "description": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period."
+                  },
+                  "period_to": {
+                    "type": "datetime",
+                    "description": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period."
+                  },
+                  "biomass_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from biomass (wood pellets, energy crops, and other organic matter) during this settlement period.",
+                    "unit": "%"
+                  },
+                  "coal_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from coal-fired power stations during this settlement period.",
+                    "unit": "%"
+                  },
+                  "gas_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from natural gas (CCGT and OCGT) during this settlement period.",
+                    "unit": "%"
+                  },
+                  "hydro_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from hydroelectric power stations during this settlement period.",
+                    "unit": "%"
+                  },
+                  "imports_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity supplied via interconnector imports from continental Europe and Ireland during this settlement period.",
+                    "unit": "%"
+                  },
+                  "nuclear_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from nuclear power stations during this settlement period.",
+                    "unit": "%"
+                  },
+                  "oil_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from oil-fired power stations during this settlement period.",
+                    "unit": "%"
+                  },
+                  "other_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from other or unclassified fuel sources during this settlement period.",
+                    "unit": "%"
+                  },
+                  "solar_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from solar photovoltaic installations during this settlement period.",
+                    "unit": "%"
+                  },
+                  "wind_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from onshore and offshore wind turbines during this settlement period.",
+                    "unit": "%"
+                  }
+                },
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "name": "GenerationMix",
+                "required": [
+                  "period_from",
+                  "period_to"
+                ]
+              }
+            }
+          },
+          "name": "GenerationMix",
+          "defaultversionid": "1"
+        },
+        "uk.org.carbonintensity.RegionalIntensity": {
+          "format": "JsonStructure/draft-02",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$id": "uk.org.carbonintensity.RegionalIntensity",
+                "type": "object",
+                "description": "Half-hourly carbon intensity and generation mix for one of the 17 GB Distribution Network Operator (DNO) regions, published by National Grid ESO. Each record covers a specific DNO region identified by its numeric region ID.",
+                "properties": {
+                  "region_id": {
+                    "type": "int32",
+                    "description": "Numeric identifier for the DNO region as assigned by the Carbon Intensity API (1\u00e2\u20ac\u201c17)."
+                  },
+                  "dnoregion": {
+                    "type": "string",
+                    "description": "Full name of the Distribution Network Operator region (e.g. 'Scottish Hydro Electric Power Distribution')."
+                  },
+                  "shortname": {
+                    "type": "string",
+                    "description": "Short display name for the DNO region (e.g. 'North Scotland')."
+                  },
+                  "period_from": {
+                    "type": "datetime",
+                    "description": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period."
+                  },
+                  "period_to": {
+                    "type": "datetime",
+                    "description": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period."
+                  },
+                  "forecast": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Forecast carbon intensity for this region and settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh).",
+                    "unit": "gCO2/kWh"
+                  },
+                  "index": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Qualitative index band for the regional carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'."
+                  },
+                  "biomass_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from biomass in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "coal_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from coal in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "gas_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from natural gas in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "hydro_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from hydroelectric power in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "imports_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity supplied via interconnector imports in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "nuclear_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from nuclear power in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "oil_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from oil in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "other_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from other or unclassified fuel sources in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "solar_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from solar photovoltaic installations in this region during this settlement period.",
+                    "unit": "%"
+                  },
+                  "wind_pct": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Percentage of electricity generated from wind turbines in this region during this settlement period.",
+                    "unit": "%"
+                  }
+                },
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "name": "RegionalIntensity",
+                "required": [
+                  "region_id",
+                  "dnoregion",
+                  "shortname",
+                  "period_from",
+                  "period_to"
+                ]
+              }
+            }
+          },
+          "name": "RegionalIntensity",
+          "defaultversionid": "1"
+        }
+      }
+    }
+  }
+}
