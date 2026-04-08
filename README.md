@@ -52,6 +52,7 @@ documentation, and the README in each project directory has full details.
 
 | Source | Coverage | Link |
 |---|---|---|
+| Blitzortung | Global (community lightning strokes, seconds latency) | [Container](blitzortung/CONTAINER.md) |
 | BOM Australia | Australia (~8 capital city airports, half-hourly obs) | [Container](bom-australia/CONTAINER.md) |
 | DWD | Germany (~1,450 stations, observations and CAP alerts) | [Container](dwd/CONTAINER.md) |
 | Environment Canada | Canada (~963 SWOB stations, hourly obs) | [Container](environment-canada/CONTAINER.md) |
@@ -190,6 +191,10 @@ quantity data for over 1.5 million US stations. Updated every 15 minutes.
 ~1,785 stations across Flanders. Polled every 15 minutes.
 
 ### Weather and Meteorology
+
+**[Blitzortung](blitzortung/README.md)** -- Public LightningMaps / Blitzortung
+live websocket feed with global lightning strokes, typically delivered within
+seconds of occurrence.
 
 **[BOM Australia](bom-australia/README.md)** -- Australian Bureau of Meteorology.
 Half-hourly weather observations from capital city airports: temperature, wind,

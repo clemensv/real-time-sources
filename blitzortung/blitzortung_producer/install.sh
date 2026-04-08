@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./blitzortung_producer_data
+pip install ./blitzortung_producer_kafka_producer

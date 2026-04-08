@@ -28,6 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         project:
+          - { dir: blitzortung, module: blitzortung }
           - { dir: bluesky, module: bluesky }
           - { dir: bfs-odl, module: bfs_odl }
           - { dir: chmi-hydro, module: chmi_hydro }
@@ -70,6 +71,7 @@ jobs:
       fail-fast: false
       matrix:
         project:
+          - { dir: blitzortung, test_class: TestBlitzortungDockerFlow }
           - { dir: chmi-hydro, test_class: TestCHMIHydroDockerFlow }
           - { dir: hubeau-hydrometrie, test_class: TestHubeauDockerFlow }
           - { dir: imgw-hydro, test_class: TestIMGWHydroDockerFlow }

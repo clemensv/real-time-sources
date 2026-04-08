@@ -149,6 +149,10 @@ def wikimedia_eventstreams_image():
     return build_image('wikimedia-eventstreams')
 
 @pytest.fixture(scope='module')
+def blitzortung_image():
+    return build_image('blitzortung')
+
+@pytest.fixture(scope='module')
 def bfs_odl_image():
     return build_image('bfs-odl')
 
@@ -505,6 +509,24 @@ class TestWikimediaEventStreamsDockerFlow:
             kafka, wikimedia_eventstreams_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['RecentChange'],
+            extra_env={'KAFKA_TOPIC': self.TOPIC},
+            min_messages=1,
+            timeout=180,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Blitzortung (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestBlitzortungDockerFlow:
+    TOPIC = 'test-blitzortung'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, blitzortung_image):
+        _run_kafka_flow_test(
+            kafka, blitzortung_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['LightningStroke'],
             extra_env={'KAFKA_TOPIC': self.TOPIC},
             min_messages=1,
             timeout=180,
