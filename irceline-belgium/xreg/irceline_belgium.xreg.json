@@ -1,0 +1,653 @@
+{
+  "endpoints": {
+    "be.irceline.Stations.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "irceline-belgium",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/be.irceline.Stations"
+      ]
+    },
+    "be.irceline.Timeseries.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "irceline-belgium",
+          "key": "{timeseries_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/be.irceline.Timeseries"
+      ]
+    }
+  },
+  "messagegroups": {
+    "be.irceline.Stations": {
+      "messages": {
+        "be.irceline.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "be.irceline.Station"
+            },
+            "source": {
+              "value": "https://geo.irceline.be/sos/api/v1/stations"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Station"
+        }
+      }
+    },
+    "be.irceline.Timeseries": {
+      "messages": {
+        "be.irceline.Timeseries": {
+          "name": "Timeseries",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "be.irceline.Timeseries"
+            },
+            "source": {
+              "value": "https://geo.irceline.be/sos/api/v1/timeseries"
+            },
+            "subject": {
+              "value": "{timeseries_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Timeseries"
+        },
+        "be.irceline.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "be.irceline.Observation"
+            },
+            "source": {
+              "value": "https://geo.irceline.be/sos/api/v1/timeseries"
+            },
+            "subject": {
+              "value": "{timeseries_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/be.irceline.jstruct/schemas/be.irceline.Observation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "be.irceline.jstruct": {
+      "schemas": {
+        "be.irceline.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "description": "Reference event for an IRCELINE Belgium air-quality monitoring station from GET /stations. Each record represents one GeoJSON feature with a stable numeric station identifier, human-readable label, and WGS 84 point coordinates.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://geo.irceline.be/schemas/be/irceline/Station",
+                "name": "Station",
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.",
+                "required": [
+                  "station_id",
+                  "label",
+                  "latitude",
+                  "longitude"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "irceline": "properties.id"
+                    }
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site.",
+                    "altnames": {
+                      "irceline": "properties.label"
+                    }
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "Station latitude in decimal degrees north, derived from the second element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The upstream array follows GeoJSON order [longitude, latitude, elevation].",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "altnames": {
+                      "irceline": "geometry.coordinates[1]"
+                    }
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Station longitude in decimal degrees east, derived from the first element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The third element is the literal string 'NaN' in live payloads and is ignored.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "altnames": {
+                      "irceline": "geometry.coordinates[0]"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "be.irceline.Timeseries": {
+          "name": "Timeseries",
+          "format": "JsonStructure/draft-02",
+          "description": "Reference event for one IRCELINE station-timeseries combination from GET /timeseries?expanded=true. The record identifies the monitored phenomenon, unit of measurement, linked station metadata, and optional BelAQI-style status interval bands published by IRCELINE.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://geo.irceline.be/schemas/be/irceline/Timeseries",
+                "name": "Timeseries",
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.",
+                "definitions": {
+                  "StatusInterval": {
+                    "name": "StatusInterval",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "description": "One threshold band from the upstream statusIntervals array returned on expanded IRCELINE timeseries records. IRCELINE uses these bands to associate numeric ranges with display labels and colors.",
+                    "required": [
+                      "lower",
+                      "upper",
+                      "name",
+                      "color"
+                    ],
+                    "properties": {
+                      "lower": {
+                        "type": "string",
+                        "description": "Inclusive lower threshold boundary as published in statusIntervals[].lower. IRCELINE publishes the threshold as a string, for example '50.0' or '-10.0'.",
+                        "altnames": {
+                          "irceline": "statusIntervals.lower"
+                        }
+                      },
+                      "upper": {
+                        "type": "string",
+                        "description": "Exclusive upper threshold boundary as published in statusIntervals[].upper. IRCELINE publishes the threshold as a string, for example '60.0' or '10000.0'.",
+                        "altnames": {
+                          "irceline": "statusIntervals.upper"
+                        }
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Human-readable band label from statusIntervals[].name, such as '51 - 60 PM10' or '101 - MAX PM10'.",
+                        "altnames": {
+                          "irceline": "statusIntervals.name"
+                        }
+                      },
+                      "color": {
+                        "type": "string",
+                        "pattern": "^#[0-9A-Fa-f]{6}$",
+                        "description": "Hex RGB display color from statusIntervals[].color used by the IRCELINE UI to render the threshold band.",
+                        "altnames": {
+                          "irceline": "statusIntervals.color"
+                        }
+                      }
+                    }
+                  },
+                  "StatusIntervalList": {
+                    "name": "StatusIntervalList",
+                    "type": "array",
+                    "description": "Ordered list of threshold bands from the upstream statusIntervals expansion. Each item describes one display interval used by IRCELINE to interpret timeseries values.",
+                    "items": {
+                      "type": {
+                        "$ref": "#/definitions/StatusInterval"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "timeseries_id",
+                  "label",
+                  "uom",
+                  "station_id",
+                  "station_label"
+                ],
+                "properties": {
+                  "timeseries_id": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events.",
+                    "altnames": {
+                      "irceline": "id"
+                    }
+                  },
+                  "label": {
+                    "type": "string",
+                    "description": "Descriptive timeseries label from the upstream label property, combining phenomenon name, timeseries identifier, procedure label, and station label. Example: 'Particulate Matter < 10 µm 6152 - DAILY CORRECTION TEOM - procedure, 40AL01 - Linkeroever'.",
+                    "altnames": {
+                      "irceline": "label"
+                    }
+                  },
+                  "uom": {
+                    "type": "string",
+                    "description": "Published unit of measurement from the upstream uom property, such as 'µg/m³'. IRCELINE returns this literal display unit on both collection and expanded timeseries responses.",
+                    "altnames": {
+                      "irceline": "uom"
+                    }
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Numeric station identifier linked to the timeseries, mapped from station.properties.id on the embedded station feature. This is the stable identifier of the monitoring site that hosts the timeseries.",
+                    "altnames": {
+                      "irceline": "station.properties.id"
+                    }
+                  },
+                  "station_label": {
+                    "type": "string",
+                    "description": "Human-readable station label linked to the timeseries, mapped from station.properties.label on the embedded station feature.",
+                    "altnames": {
+                      "irceline": "station.properties.label"
+                    }
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Station latitude in decimal degrees north, derived from station.geometry.coordinates[1] when the embedded station feature includes a GeoJSON Point geometry.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "altnames": {
+                      "irceline": "station.geometry.coordinates[1]"
+                    }
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Station longitude in decimal degrees east, derived from station.geometry.coordinates[0] when the embedded station feature includes a GeoJSON Point geometry.",
+                    "unit": "deg",
+                    "symbol": "°",
+                    "altnames": {
+                      "irceline": "station.geometry.coordinates[0]"
+                    }
+                  },
+                  "phenomenon_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Identifier of the measured phenomenon from parameters.phenomenon.id on expanded timeseries metadata, for example '5' for particulate matter under 10 micrometers.",
+                    "altnames": {
+                      "irceline": "parameters.phenomenon.id"
+                    }
+                  },
+                  "phenomenon_label": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable phenomenon label from parameters.phenomenon.label on expanded timeseries metadata, for example 'Nitrogen dioxide' or 'Ozone'.",
+                    "altnames": {
+                      "irceline": "parameters.phenomenon.label"
+                    }
+                  },
+                  "category_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Identifier of the IRCELINE category linked to the timeseries from parameters.category.id. In the live API this currently mirrors the phenomenon identifier for air-quality pollutants.",
+                    "altnames": {
+                      "irceline": "parameters.category.id"
+                    }
+                  },
+                  "category_label": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable IRCELINE category label from parameters.category.label. In the live API this currently mirrors the phenomenon label for air-quality pollutants.",
+                    "altnames": {
+                      "irceline": "parameters.category.label"
+                    }
+                  },
+                  "status_intervals": {
+                    "type": [
+                      {
+                        "$ref": "#/definitions/StatusIntervalList"
+                      },
+                      "null"
+                    ],
+                    "description": "Optional ordered array of status interval bands from the upstream statusIntervals expansion. Each entry describes a lower and upper threshold, a display label, and a color used by IRCELINE for BelAQI-style interpretation of the timeseries values.",
+                    "altnames": {
+                      "irceline": "statusIntervals"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "be.irceline.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "description": "Telemetry event for one measurement value from GET /timeseries/{id}/getData. The bridge polls the last two hours of data per timeseries and emits only observations with timestamps newer than the persisted per-timeseries dedup state.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://geo.irceline.be/schemas/be/irceline/Observation",
+                "name": "Observation",
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.",
+                "required": [
+                  "timeseries_id",
+                  "timestamp",
+                  "uom"
+                ],
+                "properties": {
+                  "timeseries_id": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$",
+                    "description": "Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key.",
+                    "altnames": {
+                      "irceline": "id"
+                    }
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{3})?Z$",
+                    "description": "Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'.",
+                    "altnames": {
+                      "irceline": "values.timestamp"
+                    }
+                  },
+                  "value": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null.",
+                    "altnames": {
+                      "irceline": "values.value"
+                    }
+                  },
+                  "uom": {
+                    "type": "string",
+                    "description": "Unit of measurement carried over from the parent timeseries uom field, such as 'µg/m³'. This keeps each observation self-describing without requiring a separate metadata lookup.",
+                    "altnames": {
+                      "irceline": "uom"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "be.irceline.avro": {
+      "schemas": {
+        "be.irceline.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "description": "Reference event for one IRCELINE monitoring station.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "be.irceline",
+                "doc": "Reference event for one IRCELINE monitoring station.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable numeric station identifier from properties.id."
+                  },
+                  {
+                    "name": "label",
+                    "type": "string",
+                    "doc": "Human-readable station label from properties.label."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in decimal degrees north from GeoJSON coordinates[1]."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in decimal degrees east from GeoJSON coordinates[0]."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "be.irceline.Timeseries": {
+          "name": "Timeseries",
+          "format": "Avro/1.11.3",
+          "description": "Reference event for one IRCELINE station-timeseries combination.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Timeseries",
+                "namespace": "be.irceline",
+                "doc": "Reference event for one IRCELINE station-timeseries combination.",
+                "fields": [
+                  {
+                    "name": "timeseries_id",
+                    "type": "string",
+                    "doc": "Stable numeric timeseries identifier from id."
+                  },
+                  {
+                    "name": "label",
+                    "type": "string",
+                    "doc": "Descriptive upstream timeseries label."
+                  },
+                  {
+                    "name": "uom",
+                    "type": "string",
+                    "doc": "Published unit of measurement."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Linked numeric station identifier from station.properties.id."
+                  },
+                  {
+                    "name": "station_label",
+                    "type": "string",
+                    "doc": "Linked station label from station.properties.label."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Linked station latitude from station.geometry.coordinates[1]."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Linked station longitude from station.geometry.coordinates[0]."
+                  },
+                  {
+                    "name": "phenomenon_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Measured phenomenon identifier from parameters.phenomenon.id."
+                  },
+                  {
+                    "name": "phenomenon_label",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Measured phenomenon label from parameters.phenomenon.label."
+                  },
+                  {
+                    "name": "category_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Category identifier from parameters.category.id."
+                  },
+                  {
+                    "name": "category_label",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Category label from parameters.category.label."
+                  },
+                  {
+                    "name": "status_intervals",
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "StatusInterval",
+                          "doc": "One threshold band from the IRCELINE statusIntervals expansion.",
+                          "fields": [
+                            {
+                              "name": "lower",
+                              "type": "string",
+                              "doc": "Inclusive lower threshold boundary."
+                            },
+                            {
+                              "name": "upper",
+                              "type": "string",
+                              "doc": "Exclusive upper threshold boundary."
+                            },
+                            {
+                              "name": "name",
+                              "type": "string",
+                              "doc": "Human-readable band label."
+                            },
+                            {
+                              "name": "color",
+                              "type": "string",
+                              "doc": "Hex RGB display color."
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "default": null,
+                    "doc": "Optional ordered array of status interval bands from the expanded timeseries metadata."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "be.irceline.Observation": {
+          "name": "Observation",
+          "format": "Avro/1.11.3",
+          "description": "Telemetry event for one IRCELINE measurement value.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Observation",
+                "namespace": "be.irceline",
+                "doc": "Telemetry event for one IRCELINE measurement value.",
+                "fields": [
+                  {
+                    "name": "timeseries_id",
+                    "type": "string",
+                    "doc": "Stable numeric timeseries identifier."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp in ISO 8601 UTC form."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Measured value from the IRCELINE getData response."
+                  },
+                  {
+                    "name": "uom",
+                    "type": "string",
+                    "doc": "Published unit of measurement copied from the parent timeseries."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

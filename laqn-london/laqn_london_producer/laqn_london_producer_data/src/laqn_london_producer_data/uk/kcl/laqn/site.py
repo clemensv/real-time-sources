@@ -26,8 +26,8 @@ class Site:
         site_type (str): Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.
         local_authority_code (str): Stable local authority code associated with the site in the LAQN reference data.
         local_authority_name (str): Human-readable local authority name associated with the site in the LAQN reference data.
-        latitude (float): WGS84 latitude of the monitoring site in decimal degrees.
-        longitude (float): WGS84 longitude of the monitoring site in decimal degrees.
+        latitude (typing.Optional[float]): WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.
+        longitude (typing.Optional[float]): WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.
         date_opened (str): Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.
         date_closed (typing.Optional[str]): Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.
         data_owner (str): Organisation listed by LAQN as the owner of the site's data.
@@ -38,15 +38,15 @@ class Site:
     site_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_type"))
     local_authority_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="local_authority_code"))
     local_authority_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="local_authority_name"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     date_opened: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_opened"))
     date_closed: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_closed"))
     data_owner: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_owner"))
     data_manager: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_manager"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Site\", \"namespace\": \"uk.kcl.laqn\", \"doc\": \"Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.\", \"fields\": [{\"name\": \"site_code\", \"type\": \"string\", \"doc\": \"Stable LAQN site code that identifies the monitoring site, such as BX1.\"}, {\"name\": \"site_name\", \"type\": \"string\", \"doc\": \"Human-readable LAQN site name published for the monitoring site.\"}, {\"name\": \"site_type\", \"type\": \"string\", \"doc\": \"Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.\"}, {\"name\": \"local_authority_code\", \"type\": \"string\", \"doc\": \"Stable local authority code associated with the site in the LAQN reference data.\"}, {\"name\": \"local_authority_name\", \"type\": \"string\", \"doc\": \"Human-readable local authority name associated with the site in the LAQN reference data.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"WGS84 latitude of the monitoring site in decimal degrees.\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"WGS84 longitude of the monitoring site in decimal degrees.\"}, {\"name\": \"date_opened\", \"type\": \"string\", \"doc\": \"Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.\"}, {\"name\": \"date_closed\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.\"}, {\"name\": \"data_owner\", \"type\": \"string\", \"doc\": \"Organisation listed by LAQN as the owner of the site's data.\"}, {\"name\": \"data_manager\", \"type\": \"string\", \"doc\": \"Organisation listed by LAQN as the manager of the monitoring site data.\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Site\", \"namespace\": \"uk.kcl.laqn\", \"doc\": \"Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.\", \"fields\": [{\"name\": \"site_code\", \"type\": \"string\", \"doc\": \"Stable LAQN site code that identifies the monitoring site, such as BX1.\"}, {\"name\": \"site_name\", \"type\": \"string\", \"doc\": \"Human-readable LAQN site name published for the monitoring site.\"}, {\"name\": \"site_type\", \"type\": \"string\", \"doc\": \"Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.\"}, {\"name\": \"local_authority_code\", \"type\": \"string\", \"doc\": \"Stable local authority code associated with the site in the LAQN reference data.\"}, {\"name\": \"local_authority_name\", \"type\": \"string\", \"doc\": \"Human-readable local authority name associated with the site in the LAQN reference data.\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.\"}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.\"}, {\"name\": \"date_opened\", \"type\": \"string\", \"doc\": \"Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.\"}, {\"name\": \"date_closed\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.\"}, {\"name\": \"data_owner\", \"type\": \"string\", \"doc\": \"Organisation listed by LAQN as the owner of the site's data.\"}, {\"name\": \"data_manager\", \"type\": \"string\", \"doc\": \"Organisation listed by LAQN as the manager of the monitoring site data.\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -56,8 +56,8 @@ class Site:
         self.site_type=str(self.site_type)
         self.local_authority_code=str(self.local_authority_code)
         self.local_authority_name=str(self.local_authority_name)
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
+        self.latitude=float(self.latitude) if self.latitude else None
+        self.longitude=float(self.longitude) if self.longitude else None
         self.date_opened=str(self.date_opened)
         self.date_closed=str(self.date_closed) if self.date_closed else None
         self.data_owner=str(self.data_owner)

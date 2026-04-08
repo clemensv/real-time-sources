@@ -110,6 +110,45 @@ class TestLAQNLondonIntegration:
         assert len(species_producer.species) == 1
         assert site_producer.producer.flush_count == 1
 
+    def test_emit_reference_data_allows_blank_coordinates(self):
+        api = LAQNLondonAPI()
+        site_producer = _FakeSiteEventProducer()
+        species_producer = _FakeSpeciesEventProducer(site_producer.producer)
+
+        with requests_mock.Mocker() as mocker:
+            mocker.get(
+                "http://api.erg.ic.ac.uk/AirQuality/Information/MonitoringSites/GroupName=All/Json",
+                json={
+                    "Sites": {
+                        "Site": [
+                            {
+                                "@LocalAuthorityCode": "999",
+                                "@LocalAuthorityName": "Example",
+                                "@SiteCode": "EX1",
+                                "@SiteName": "Example Site",
+                                "@SiteType": "Suburban",
+                                "@DateOpened": "2020-01-01 00:00:00",
+                                "@Latitude": "",
+                                "@Longitude": "",
+                                "@DataOwner": "Example",
+                                "@DataManager": "King's College London",
+                            }
+                        ]
+                    }
+                },
+            )
+            mocker.get(
+                "http://api.erg.ic.ac.uk/AirQuality/Information/Species/Json",
+                json={"AirQualitySpecies": {"Species": []}},
+            )
+
+            active_sites = api.emit_reference_data(site_producer, species_producer)
+
+        assert active_sites == ["EX1"]
+        assert len(site_producer.sites) == 1
+        assert site_producer.sites[0][1].latitude is None
+        assert site_producer.sites[0][1].longitude is None
+
     def test_emit_measurements_skips_empty_values_and_dedupes(self):
         api = LAQNLondonAPI()
         site_producer = _FakeSiteEventProducer()
@@ -148,6 +187,40 @@ class TestLAQNLondonIntegration:
         assert second_count == 0
         assert len(site_producer.measurements) == 1
         assert site_producer.measurements[0][1].value == 35.5
+
+    def test_emit_measurements_skips_sites_with_upstream_http_errors(self):
+        api = LAQNLondonAPI()
+        site_producer = _FakeSiteEventProducer()
+        measurement_state = {}
+
+        with requests_mock.Mocker() as mocker:
+            mocker.get(
+                "http://api.erg.ic.ac.uk/AirQuality/Data/Site/SiteCode=NPS/StartDate=2026-04-06/EndDate=2026-04-07/Json",
+                status_code=400,
+            )
+            mocker.get(
+                "http://api.erg.ic.ac.uk/AirQuality/Data/Site/SiteCode=BX1/StartDate=2026-04-06/EndDate=2026-04-07/Json",
+                json={
+                    "AirQualityData": {
+                        "@SiteCode": "BX1",
+                        "Data": [
+                            {
+                                "@SpeciesCode": "NO2",
+                                "@MeasurementDateGMT": "2026-04-07 00:00:00",
+                                "@Value": "35.5",
+                            }
+                        ]
+                    }
+                },
+            )
+
+            count = api.emit_measurements(
+                ["NPS", "BX1"], site_producer, measurement_state, date(2026, 4, 6), date(2026, 4, 7)
+            )
+
+        assert count == 1
+        assert len(site_producer.measurements) == 1
+        assert site_producer.measurements[0][0] == "BX1"
 
     def test_emit_daily_index_flattens_nested_response_and_dedupes(self):
         api = LAQNLondonAPI()

@@ -1,0 +1,564 @@
+{
+  "endpoints": {
+    "io.sensor.community.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "sensor-community",
+          "key": "{sensor_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/io.sensor.community"
+      ]
+    }
+  },
+  "messagegroups": {
+    "io.sensor.community": {
+      "messages": {
+        "io.sensor.community.SensorInfo": {
+          "name": "SensorInfo",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for a Sensor.Community sensor node including its hardware type and last known location metadata.",
+          "envelopemetadata": {
+            "type": {
+              "value": "io.sensor.community.SensorInfo"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorInfo"
+        },
+        "io.sensor.community.SensorReading": {
+          "name": "SensorReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "Latest Sensor.Community telemetry reading for one sensor at a specific timestamp, normalized across particulate, climate, pressure, and noise measurements.",
+          "envelopemetadata": {
+            "type": {
+              "value": "io.sensor.community.SensorReading"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "io.sensor.community.jstruct": {
+      "schemas": {
+        "io.sensor.community.SensorInfo": {
+          "name": "SensorInfo",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/io/sensor/community/SensorInfo",
+                "name": "SensorInfo",
+                "$root": "#/definitions/io/sensor/community/SensorInfo",
+                "definitions": {
+                  "io": {
+                    "sensor": {
+                      "community": {
+                        "SensorInfo": {
+                          "name": "SensorInfo",
+                          "type": "object",
+                          "description": "Schema for Sensor.Community sensor reference data, capturing the stable sensor identifier, hardware type, and latest known location metadata published in the Airrohr API payload.",
+                          "properties": {
+                            "sensor_id": {
+                              "type": "integer",
+                              "description": "Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key."
+                            },
+                            "sensor_type_id": {
+                              "type": "integer",
+                              "description": "Numeric upstream identifier for the sensor hardware type, such as the Sensor.Community type id for SDS011 or BME280."
+                            },
+                            "sensor_type_name": {
+                              "type": "string",
+                              "description": "Upstream sensor hardware type name published under sensor.sensor_type.name, for example SDS011, SPS30, BME280, or DHT22."
+                            },
+                            "sensor_type_manufacturer": {
+                              "type": "string",
+                              "description": "Manufacturer name published by Sensor.Community for the sensor hardware type, taken from sensor.sensor_type.manufacturer."
+                            },
+                            "pin": {
+                              "type": "string",
+                              "description": "Sensor pin designation reported by the upstream payload under sensor.pin."
+                            },
+                            "location_id": {
+                              "type": "integer",
+                              "description": "Stable integer identifier of the Sensor.Community location object associated with the reading."
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "Latitude of the sensor location in WGS84 decimal degrees."
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "Longitude of the sensor location in WGS84 decimal degrees."
+                            },
+                            "altitude": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Altitude of the sensor location in meters above sea level when supplied by the upstream payload.",
+                              "unit": "m"
+                            },
+                            "country": {
+                              "type": "string",
+                              "description": "ISO 3166-1 alpha-2 country code published in the Sensor.Community location record.",
+                              "minLength": 2,
+                              "maxLength": 2
+                            },
+                            "indoor": {
+                              "type": "boolean",
+                              "description": "True when the upstream location.indoor flag marks the sensor as indoor; false when the sensor is marked as outdoor."
+                            }
+                          },
+                          "required": [
+                            "sensor_id",
+                            "sensor_type_id",
+                            "sensor_type_name",
+                            "sensor_type_manufacturer",
+                            "pin",
+                            "location_id",
+                            "latitude",
+                            "longitude",
+                            "altitude",
+                            "country",
+                            "indoor"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "io.sensor.community.SensorReading": {
+          "name": "SensorReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/io/sensor/community/SensorReading",
+                "name": "SensorReading",
+                "$root": "#/definitions/io/sensor/community/SensorReading",
+                "definitions": {
+                  "io": {
+                    "sensor": {
+                      "community": {
+                        "SensorReading": {
+                          "name": "SensorReading",
+                          "type": "object",
+                          "description": "Schema for the latest normalized Sensor.Community telemetry reading for a single sensor and timestamp, covering particulate matter, temperature, humidity, pressure, and supported noise measurements.",
+                          "properties": {
+                            "sensor_id": {
+                              "type": "integer",
+                              "description": "Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key."
+                            },
+                            "timestamp": {
+                              "type": "string",
+                              "description": "UTC timestamp published by Sensor.Community for the reading in the format YYYY-MM-DD HH:mm:ss."
+                            },
+                            "sensor_type_name": {
+                              "type": "string",
+                              "description": "Upstream sensor hardware type name published under sensor.sensor_type.name for the device that emitted the reading."
+                            },
+                            "pm10_ug_m3": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Particulate matter mass concentration for PM10 in micrograms per cubic meter when the upstream feed publishes value type P1.",
+                              "unit": "µg/m³",
+                              "altnames": [
+                                "P1"
+                              ]
+                            },
+                            "pm2_5_ug_m3": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Particulate matter mass concentration for PM2.5 in micrograms per cubic meter when the upstream feed publishes value type P2.",
+                              "unit": "µg/m³",
+                              "altnames": [
+                                "P2"
+                              ]
+                            },
+                            "pm1_0_ug_m3": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Particulate matter mass concentration for PM1.0 in micrograms per cubic meter when the upstream feed publishes value type P0, typically for SPS30-family sensors.",
+                              "unit": "µg/m³",
+                              "altnames": [
+                                "P0"
+                              ]
+                            },
+                            "pm4_0_ug_m3": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Particulate matter mass concentration for PM4.0 in micrograms per cubic meter when the upstream feed publishes value type P4, typically for SPS30-family sensors.",
+                              "unit": "µg/m³",
+                              "altnames": [
+                                "P4"
+                              ]
+                            },
+                            "temperature_celsius": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Ambient temperature measurement in degrees Celsius when the upstream feed publishes value type temperature.",
+                              "unit": "°C",
+                              "altnames": [
+                                "temperature"
+                              ]
+                            },
+                            "humidity_percent": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Relative humidity in percent when the upstream feed publishes value type humidity.",
+                              "unit": "%",
+                              "altnames": [
+                                "humidity"
+                              ]
+                            },
+                            "pressure_pa": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Atmospheric pressure in pascals when the upstream feed publishes value type pressure.",
+                              "unit": "Pa",
+                              "altnames": [
+                                "pressure"
+                              ]
+                            },
+                            "pressure_sealevel_pa": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Atmospheric pressure reduced to sea level in pascals when the upstream feed publishes value type pressure_at_sealevel.",
+                              "unit": "Pa",
+                              "altnames": [
+                                "pressure_at_sealevel"
+                              ]
+                            },
+                            "noise_laeq_db": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Equivalent continuous sound level in A-weighted decibels when the upstream feed publishes value type noise_LAeq.",
+                              "unit": "dB(A)",
+                              "altnames": [
+                                "noise_LAeq"
+                              ]
+                            },
+                            "noise_la_min_db": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Minimum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_min.",
+                              "unit": "dB(A)",
+                              "altnames": [
+                                "noise_LA_min"
+                              ]
+                            },
+                            "noise_la_max_db": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Maximum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_max.",
+                              "unit": "dB(A)",
+                              "altnames": [
+                                "noise_LA_max"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "sensor_id",
+                            "timestamp",
+                            "sensor_type_name",
+                            "pm10_ug_m3",
+                            "pm2_5_ug_m3",
+                            "pm1_0_ug_m3",
+                            "pm4_0_ug_m3",
+                            "temperature_celsius",
+                            "humidity_percent",
+                            "pressure_pa",
+                            "pressure_sealevel_pa",
+                            "noise_laeq_db",
+                            "noise_la_min_db",
+                            "noise_la_max_db"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "io.sensor.community.avro": {
+      "schemas": {
+        "io.sensor.community.SensorInfo": {
+          "name": "SensorInfo",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SensorInfo",
+                "namespace": "io.sensor.community",
+                "doc": "Reference data for a Sensor.Community sensor node including hardware type and latest known location metadata.",
+                "fields": [
+                  {
+                    "name": "sensor_id",
+                    "type": "int",
+                    "doc": "Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "sensor_type_id",
+                    "type": "int",
+                    "doc": "Numeric upstream identifier for the sensor hardware type, such as the Sensor.Community type id for SDS011 or BME280."
+                  },
+                  {
+                    "name": "sensor_type_name",
+                    "type": "string",
+                    "doc": "Upstream sensor hardware type name published under sensor.sensor_type.name, for example SDS011, SPS30, BME280, or DHT22."
+                  },
+                  {
+                    "name": "sensor_type_manufacturer",
+                    "type": "string",
+                    "doc": "Manufacturer name published by Sensor.Community for the sensor hardware type, taken from sensor.sensor_type.manufacturer."
+                  },
+                  {
+                    "name": "pin",
+                    "type": "string",
+                    "doc": "Sensor pin designation reported by the upstream payload under sensor.pin."
+                  },
+                  {
+                    "name": "location_id",
+                    "type": "int",
+                    "doc": "Stable integer identifier of the Sensor.Community location object associated with the reading."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the sensor location in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the sensor location in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "altitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Altitude of the sensor location in meters above sea level when supplied by the upstream payload."
+                  },
+                  {
+                    "name": "country",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code published in the Sensor.Community location record."
+                  },
+                  {
+                    "name": "indoor",
+                    "type": "boolean",
+                    "doc": "True when the upstream location.indoor flag marks the sensor as indoor; false when the sensor is marked as outdoor."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "io.sensor.community.SensorReading": {
+          "name": "SensorReading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SensorReading",
+                "namespace": "io.sensor.community",
+                "doc": "Latest Sensor.Community telemetry reading for one sensor at a specific timestamp, normalized across particulate, climate, pressure, and noise measurements.",
+                "fields": [
+                  {
+                    "name": "sensor_id",
+                    "type": "int",
+                    "doc": "Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "UTC timestamp published by Sensor.Community for the reading in the format YYYY-MM-DD HH:mm:ss."
+                  },
+                  {
+                    "name": "sensor_type_name",
+                    "type": "string",
+                    "doc": "Upstream sensor hardware type name published under sensor.sensor_type.name for the device that emitted the reading."
+                  },
+                  {
+                    "name": "pm10_ug_m3",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Particulate matter mass concentration for PM10 in micrograms per cubic meter when the upstream feed publishes value type P1."
+                  },
+                  {
+                    "name": "pm2_5_ug_m3",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Particulate matter mass concentration for PM2.5 in micrograms per cubic meter when the upstream feed publishes value type P2."
+                  },
+                  {
+                    "name": "pm1_0_ug_m3",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Particulate matter mass concentration for PM1.0 in micrograms per cubic meter when the upstream feed publishes value type P0."
+                  },
+                  {
+                    "name": "pm4_0_ug_m3",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Particulate matter mass concentration for PM4.0 in micrograms per cubic meter when the upstream feed publishes value type P4."
+                  },
+                  {
+                    "name": "temperature_celsius",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Ambient temperature measurement in degrees Celsius when the upstream feed publishes value type temperature."
+                  },
+                  {
+                    "name": "humidity_percent",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Relative humidity in percent when the upstream feed publishes value type humidity."
+                  },
+                  {
+                    "name": "pressure_pa",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Atmospheric pressure in pascals when the upstream feed publishes value type pressure."
+                  },
+                  {
+                    "name": "pressure_sealevel_pa",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Atmospheric pressure reduced to sea level in pascals when the upstream feed publishes value type pressure_at_sealevel."
+                  },
+                  {
+                    "name": "noise_laeq_db",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Equivalent continuous sound level in A-weighted decibels when the upstream feed publishes value type noise_LAeq."
+                  },
+                  {
+                    "name": "noise_la_min_db",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Minimum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_min."
+                  },
+                  {
+                    "name": "noise_la_max_db",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Maximum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_max."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+pip install .\sensor_community_producer_data
+pip install .\sensor_community_producer_kafka_producer

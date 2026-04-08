@@ -28,17 +28,17 @@ class Test_Site(unittest.TestCase):
         Create instance of Site for testing
         """
         instance = Site(
-            site_code='vutqxghdtzshuxcgtjmb',
-            site_name='tnrrolyzshujlgometkp',
-            site_type='xrnpdgzpbrtmticjlymd',
-            local_authority_code='iubknvdpxelvidybxaxg',
-            local_authority_name='pmdwlcnqvvvycuwqpyzk',
-            latitude=float(76.89601595701279),
-            longitude=float(36.14148198490417),
-            date_opened='zekmvoygselfiztjutfj',
-            date_closed='bknpdpiwifslxdxtwixq',
-            data_owner='wrwylaxmqgwzrogtfuya',
-            data_manager='dtlpkeswzyehnnqhzfjx'
+            site_code='uwwxakirkkatflusxfyx',
+            site_name='vjkwoejmdstyapyniikc',
+            site_type='afuhsokmpvhjykrrtjzl',
+            local_authority_code='stwryyligydzadgjfrhi',
+            local_authority_name='awsmwvawpnikvxisortb',
+            latitude=float(30.704286537036673),
+            longitude=float(1.7589815757430904),
+            date_opened='fkarqyfobtsxqavthhaa',
+            date_closed='kdgwjjdylkqggqnhctrj',
+            data_owner='vdibzojlsorawuzjvwxa',
+            data_manager='bttdlhacinjawdkjcgfq'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Site(unittest.TestCase):
         """
         Test site_code property
         """
-        test_value = 'vutqxghdtzshuxcgtjmb'
+        test_value = 'uwwxakirkkatflusxfyx'
         self.instance.site_code = test_value
         self.assertEqual(self.instance.site_code, test_value)
     
@@ -55,7 +55,7 @@ class Test_Site(unittest.TestCase):
         """
         Test site_name property
         """
-        test_value = 'tnrrolyzshujlgometkp'
+        test_value = 'vjkwoejmdstyapyniikc'
         self.instance.site_name = test_value
         self.assertEqual(self.instance.site_name, test_value)
     
@@ -63,7 +63,7 @@ class Test_Site(unittest.TestCase):
         """
         Test site_type property
         """
-        test_value = 'xrnpdgzpbrtmticjlymd'
+        test_value = 'afuhsokmpvhjykrrtjzl'
         self.instance.site_type = test_value
         self.assertEqual(self.instance.site_type, test_value)
     
@@ -71,7 +71,7 @@ class Test_Site(unittest.TestCase):
         """
         Test local_authority_code property
         """
-        test_value = 'iubknvdpxelvidybxaxg'
+        test_value = 'stwryyligydzadgjfrhi'
         self.instance.local_authority_code = test_value
         self.assertEqual(self.instance.local_authority_code, test_value)
     
@@ -79,7 +79,7 @@ class Test_Site(unittest.TestCase):
         """
         Test local_authority_name property
         """
-        test_value = 'pmdwlcnqvvvycuwqpyzk'
+        test_value = 'awsmwvawpnikvxisortb'
         self.instance.local_authority_name = test_value
         self.assertEqual(self.instance.local_authority_name, test_value)
     
@@ -87,7 +87,7 @@ class Test_Site(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(76.89601595701279)
+        test_value = float(30.704286537036673)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -95,7 +95,7 @@ class Test_Site(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(36.14148198490417)
+        test_value = float(1.7589815757430904)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -103,7 +103,7 @@ class Test_Site(unittest.TestCase):
         """
         Test date_opened property
         """
-        test_value = 'zekmvoygselfiztjutfj'
+        test_value = 'fkarqyfobtsxqavthhaa'
         self.instance.date_opened = test_value
         self.assertEqual(self.instance.date_opened, test_value)
     
@@ -111,7 +111,7 @@ class Test_Site(unittest.TestCase):
         """
         Test date_closed property
         """
-        test_value = 'bknpdpiwifslxdxtwixq'
+        test_value = 'kdgwjjdylkqggqnhctrj'
         self.instance.date_closed = test_value
         self.assertEqual(self.instance.date_closed, test_value)
     
@@ -119,7 +119,7 @@ class Test_Site(unittest.TestCase):
         """
         Test data_owner property
         """
-        test_value = 'wrwylaxmqgwzrogtfuya'
+        test_value = 'vdibzojlsorawuzjvwxa'
         self.instance.data_owner = test_value
         self.assertEqual(self.instance.data_owner, test_value)
     
@@ -127,7 +127,7 @@ class Test_Site(unittest.TestCase):
         """
         Test data_manager property
         """
-        test_value = 'dtlpkeswzyehnnqhzfjx'
+        test_value = 'bttdlhacinjawdkjcgfq'
         self.instance.data_manager = test_value
         self.assertEqual(self.instance.data_manager, test_value)
     

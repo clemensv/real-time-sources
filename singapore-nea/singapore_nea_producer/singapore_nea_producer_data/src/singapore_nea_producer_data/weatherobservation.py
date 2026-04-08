@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WeatherObservation:
     """
-    Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity/wind every minute. Fields are null when the station does not report that parameter.
+    Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity and wind every minute. Fields are null when the station does not report that parameter.
     
     Attributes:
         station_id (str)
@@ -167,12 +167,12 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='iamsyfihmbmgesvtrmns',
-            station_name='jtocyhejpxhgvvuwawqk',
+            station_id='qlbmamyqprgujigcbjnu',
+            station_name='aybijsbiebtumwtshtra',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(92.87556788522792),
-            rainfall=float(73.28117846493292),
-            relative_humidity=float(57.870953617136536),
-            wind_speed=float(50.505731239269004),
-            wind_direction=float(51.34805022487061)
+            air_temperature=float(24.6511899467848),
+            rainfall=float(14.06301769391921),
+            relative_humidity=float(17.092852855208186),
+            wind_speed=float(35.84836874898668),
+            wind_direction=float(98.91152197730074)
         )

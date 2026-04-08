@@ -141,6 +141,42 @@ def singapore_nea_image():
     return build_image('singapore-nea')
 
 @pytest.fixture(scope='module')
+def defra_aurn_image():
+    return build_image('defra-aurn')
+
+@pytest.fixture(scope='module')
+def irceline_belgium_image():
+    return build_image('irceline-belgium')
+
+@pytest.fixture(scope='module')
+def sensor_community_image():
+    return build_image('sensor-community')
+
+@pytest.fixture(scope='module')
+def canada_aqhi_image():
+    return build_image('canada-aqhi')
+
+@pytest.fixture(scope='module')
+def fmi_finland_image():
+    return build_image('fmi-finland')
+
+@pytest.fixture(scope='module')
+def hongkong_epd_image():
+    return build_image('hongkong-epd')
+
+@pytest.fixture(scope='module')
+def luchtmeetnet_nl_image():
+    return build_image('luchtmeetnet-nl')
+
+@pytest.fixture(scope='module')
+def uba_airdata_image():
+    return build_image('uba-airdata')
+
+@pytest.fixture(scope='module')
+def laqn_london_image():
+    return build_image('laqn-london')
+
+@pytest.fixture(scope='module')
 def environment_canada_image():
     return build_image('environment-canada')
 
@@ -176,6 +212,7 @@ def _run_kafka_flow_test(
     *,
     reference_types: Optional[List[str]] = None,
     telemetry_types: Optional[List[str]] = None,
+    required_types: Optional[List[str]] = None,
     extra_env: Optional[Dict[str, str]] = None,
     min_messages: int = 5,
     timeout: int = 300,
@@ -227,7 +264,10 @@ def _run_kafka_flow_test(
             tel_ok = telemetry_types is None or any(
                 any(pat in t for pat in telemetry_types) for t in observed_types
             )
-            return ref_ok and tel_ok
+            required_ok = required_types is None or all(
+                any(pat in t for t in observed_types) for pat in required_types
+            )
+            return ref_ok and tel_ok and required_ok
 
         try:
             while time.time() < deadline:
@@ -278,6 +318,17 @@ def _run_kafka_flow_test(
             assert has_telemetry, (
                 f'No telemetry events found.  Expected type containing one of '
                 f'{telemetry_types}, but got types: {sorted(observed_types)}\n'
+                f'Container logs:\n{container.logs().decode()}'
+            )
+
+        if required_types is not None:
+            missing = [
+                pat for pat in required_types
+                if not any(pat in t for t in observed_types)
+            ]
+            assert not missing, (
+                f'Missing required event families {missing}. Observed types: '
+                f'{sorted(observed_types)}\n'
                 f'Container logs:\n{container.logs().decode()}'
             )
     finally:
@@ -755,6 +806,180 @@ class TestSingaporeNEADockerFlow:
             kafka, singapore_nea_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['WeatherObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# Air Quality sources
+# ---------------------------------------------------------------------------
+
+class TestSingaporeNEAAirQualityDockerFlow:
+    TOPIC = 'test-singapore-nea-airquality'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, singapore_nea_image):
+        _run_kafka_flow_test(
+            kafka, singapore_nea_image, self.TOPIC,
+            reference_types=['Region'],
+            telemetry_types=['PSIReading', 'PM25Reading'],
+            required_types=['Region', 'PSIReading', 'PM25Reading'],
+            extra_env={
+                'KAFKA_TOPIC': self.TOPIC,
+                'AIRQUALITY_TOPIC': self.TOPIC,
+                'AIRQUALITY_POLLING_INTERVAL': '300',
+            },
+        )
+
+
+# ---------------------------------------------------------------------------
+# Defra AURN (UK air quality)
+# ---------------------------------------------------------------------------
+
+class TestDefraAURNDockerFlow:
+    TOPIC = 'test-defra-aurn'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, defra_aurn_image):
+        _run_kafka_flow_test(
+            kafka, defra_aurn_image, self.TOPIC,
+            reference_types=['Station', 'Timeseries'],
+            telemetry_types=['Observation'],
+            required_types=['Station', 'Timeseries', 'Observation'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# IRCELINE Belgium (Belgian air quality)
+# ---------------------------------------------------------------------------
+
+class TestIrcelineBelgiumDockerFlow:
+    TOPIC = 'test-irceline-belgium'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, irceline_belgium_image):
+        _run_kafka_flow_test(
+            kafka, irceline_belgium_image, self.TOPIC,
+            reference_types=['Station', 'Timeseries'],
+            telemetry_types=['Observation'],
+            required_types=['Station', 'Timeseries', 'Observation'],
+            extra_env={'KAFKA_TOPIC': self.TOPIC, 'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# Sensor.Community (citizen air sensors)
+# ---------------------------------------------------------------------------
+
+class TestSensorCommunityDockerFlow:
+    TOPIC = 'test-sensor-community'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, sensor_community_image):
+        _run_kafka_flow_test(
+            kafka, sensor_community_image, self.TOPIC,
+            reference_types=['SensorInfo'],
+            telemetry_types=['SensorReading'],
+            required_types=['SensorInfo', 'SensorReading'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# Canada AQHI (community AQHI observations and forecasts)
+# ---------------------------------------------------------------------------
+
+class TestCanadaAQHIDockerFlow:
+    TOPIC = 'test-canada-aqhi'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, canada_aqhi_image):
+        _run_kafka_flow_test(
+            kafka, canada_aqhi_image, self.TOPIC,
+            reference_types=['Community'],
+            telemetry_types=['Observation', 'Forecast'],
+            required_types=['Community', 'Observation', 'Forecast'],
+            extra_env={'POLLING_INTERVAL': '5', 'PROVINCES': 'ON'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# FMI Finland (hourly air quality observations)
+# ---------------------------------------------------------------------------
+
+class TestFMIFinlandDockerFlow:
+    TOPIC = 'test-fmi-finland'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, fmi_finland_image):
+        _run_kafka_flow_test(
+            kafka, fmi_finland_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['Observation'],
+            required_types=['Station', 'Observation'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# Hong Kong EPD AQHI
+# ---------------------------------------------------------------------------
+
+class TestHongKongEPDDockerFlow:
+    TOPIC = 'test-hongkong-epd'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, hongkong_epd_image):
+        _run_kafka_flow_test(
+            kafka, hongkong_epd_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['AQHIReading'],
+            required_types=['Station', 'AQHIReading'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# Luchtmeetnet Netherlands
+# ---------------------------------------------------------------------------
+
+class TestLuchtmeetnetNLDockerFlow:
+    TOPIC = 'test-luchtmeetnet-nl'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, luchtmeetnet_nl_image):
+        _run_kafka_flow_test(
+            kafka, luchtmeetnet_nl_image, self.TOPIC,
+            reference_types=['Station', 'Component'],
+            telemetry_types=['Measurement', 'LKI'],
+            required_types=['Station', 'Component', 'Measurement', 'LKI'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# UBA AirData Germany
+# ---------------------------------------------------------------------------
+
+class TestUBAAirDataDockerFlow:
+    TOPIC = 'test-uba-airdata'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, uba_airdata_image):
+        _run_kafka_flow_test(
+            kafka, uba_airdata_image, self.TOPIC,
+            reference_types=['Station', 'Component'],
+            telemetry_types=['Measure'],
+            required_types=['Station', 'Component', 'Measure'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# LAQN London
+# ---------------------------------------------------------------------------
+
+class TestLAQNLondonDockerFlow:
+    TOPIC = 'test-laqn-london'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, laqn_london_image):
+        _run_kafka_flow_test(
+            kafka, laqn_london_image, self.TOPIC,
+            reference_types=['Site', 'Species'],
+            telemetry_types=['Measurement', 'DailyIndex'],
+            required_types=['Site', 'Species', 'Measurement', 'DailyIndex'],
+            extra_env={'POLLING_INTERVAL': '5'},
         )
 
 

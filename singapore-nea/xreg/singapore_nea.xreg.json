@@ -16,6 +16,23 @@
         }
       },
       "messagegroups": ["#/messagegroups/SG.Gov.NEA.Weather"]
+    },
+    "SG.Gov.NEA.AirQuality.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "singapore-nea-airquality",
+          "key": "{region}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/SG.Gov.NEA.AirQuality"]
     }
   },
   "messagegroups": {
@@ -25,9 +42,16 @@
           "name": "Station",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "SG.Gov.NEA.Weather.Station"},
-            "source": {"value": "https://api.data.gov.sg"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "SG.Gov.NEA.Weather.Station"
+            },
+            "source": {
+              "value": "https://api.data.gov.sg"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.Station"
@@ -36,12 +60,77 @@
           "name": "WeatherObservation",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {"value": "SG.Gov.NEA.Weather.WeatherObservation"},
-            "source": {"value": "https://api.data.gov.sg"},
-            "subject": {"value": "{station_id}", "type": "uritemplate"}
+            "type": {
+              "value": "SG.Gov.NEA.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://api.data.gov.sg"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/SG.Gov.NEA.Weather.jstruct/schemas/SG.Gov.NEA.Weather.WeatherObservation"
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality": {
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region": {
+          "name": "Region",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "SG.Gov.NEA.AirQuality.Region"
+            },
+            "source": {
+              "value": "https://api.data.gov.sg"
+            },
+            "subject": {
+              "value": "{region}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.Region"
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading": {
+          "name": "PSIReading",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "SG.Gov.NEA.AirQuality.PSIReading"
+            },
+            "source": {
+              "value": "https://api.data.gov.sg"
+            },
+            "subject": {
+              "value": "{region}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PSIReading"
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading": {
+          "name": "PM25Reading",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "SG.Gov.NEA.AirQuality.PM25Reading"
+            },
+            "source": {
+              "value": "https://api.data.gov.sg"
+            },
+            "subject": {
+              "value": "{region}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PM25Reading"
         }
       }
     }
@@ -62,7 +151,12 @@
                 "type": "object",
                 "name": "Station",
                 "description": "Reference data for a Singapore NEA weather observation station. Stations are identified by a stable device ID (e.g. S109) and include location coordinates. The data_types field indicates which parameters this station reports.",
-                "required": ["station_id", "name", "latitude", "longitude"],
+                "required": [
+                  "station_id",
+                  "name",
+                  "latitude",
+                  "longitude"
+                ],
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -109,8 +203,12 @@
                 "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity/wind every minute. Fields are null when the station does not report that parameter.",
-                "required": ["station_id", "station_name", "observation_time"],
+                "description": "Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity and wind every minute. Fields are null when the station does not report that parameter.",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "observation_time"
+                ],
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -125,34 +223,306 @@
                     "description": "Timestamp of the observation in ISO 8601 with Singapore timezone (+08:00)."
                   },
                   "air_temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Air temperature from the air-temperature endpoint.",
                     "unit": "Cel",
                     "symbol": "°C"
                   },
                   "rainfall": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Rainfall amount in the last 5 minutes from the rainfall endpoint.",
                     "unit": "mm",
                     "symbol": "mm"
                   },
                   "relative_humidity": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Relative humidity from the relative-humidity endpoint.",
                     "unit": "percent",
                     "symbol": "%"
                   },
                   "wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind speed from the wind-speed endpoint.",
                     "unit": "kn",
                     "symbol": "kn"
                   },
                   "wind_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind direction in degrees clockwise from true north, from the wind-direction endpoint.",
                     "unit": "degree",
                     "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.jstruct": {
+      "schemas": {
+        "SG.Gov.NEA.AirQuality.Region": {
+          "name": "Region",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/Region",
+                "type": "object",
+                "name": "Region",
+                "description": "Reference data for a Singapore NEA air quality monitoring region. NEA divides Singapore into five geographic regions for PSI and PM2.5 reporting.",
+                "required": [
+                  "region",
+                  "latitude",
+                  "longitude"
+                ],
+                "properties": {
+                  "region": {
+                    "type": "string",
+                    "description": "Region identifier. One of: west, east, central, south, north.",
+                    "altenums": [
+                      "west",
+                      "east",
+                      "central",
+                      "south",
+                      "north"
+                    ]
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "WGS84 latitude of the region label location as published by the NEA API.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "WGS84 longitude of the region label location as published by the NEA API.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading": {
+          "name": "PSIReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/PSIReading",
+                "type": "object",
+                "name": "PSIReading",
+                "description": "Pollutant Standards Index (PSI) reading for a Singapore NEA air quality region. PSI is a composite index calculated from six pollutant sub-indices. Published hourly by the NEA via data.gov.sg.",
+                "required": [
+                  "region",
+                  "timestamp",
+                  "update_timestamp",
+                  "psi_twenty_four_hourly"
+                ],
+                "properties": {
+                  "region": {
+                    "type": "string",
+                    "description": "Region identifier (west/east/central/south/north).",
+                    "altenums": [
+                      "west",
+                      "east",
+                      "central",
+                      "south",
+                      "north"
+                    ]
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation period start timestamp in ISO 8601 with timezone."
+                  },
+                  "update_timestamp": {
+                    "type": "datetime",
+                    "description": "Timestamp when the NEA API last updated this reading."
+                  },
+                  "psi_twenty_four_hourly": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "24-hour PSI value. The overall Pollutant Standards Index for the region. Scale: 0-50 Good, 51-100 Moderate, 101-200 Unhealthy, 201-300 Very Unhealthy, above 300 Hazardous.",
+                    "minimum": 0
+                  },
+                  "o3_sub_index": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "Ozone (O3) sub-index component of PSI.",
+                    "minimum": 0
+                  },
+                  "pm10_sub_index": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "PM10 sub-index component of PSI.",
+                    "minimum": 0
+                  },
+                  "pm10_twenty_four_hourly": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "PM10 24-hour concentration used to calculate the PM10 PSI sub-index.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³",
+                    "minimum": 0
+                  },
+                  "pm25_sub_index": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "PM2.5 sub-index component of PSI.",
+                    "minimum": 0
+                  },
+                  "pm25_twenty_four_hourly": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "PM2.5 24-hour concentration.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³",
+                    "minimum": 0
+                  },
+                  "co_sub_index": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "Carbon monoxide (CO) sub-index component of PSI.",
+                    "minimum": 0
+                  },
+                  "co_eight_hour_max": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "CO 8-hour maximum concentration.",
+                    "unit": "mg/m3",
+                    "symbol": "mg/m³",
+                    "minimum": 0
+                  },
+                  "so2_sub_index": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "Sulphur dioxide (SO2) sub-index component of PSI.",
+                    "minimum": 0
+                  },
+                  "so2_twenty_four_hourly": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "SO2 24-hour concentration.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³",
+                    "minimum": 0
+                  },
+                  "no2_one_hour_max": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "Nitrogen dioxide (NO2) 1-hour maximum concentration.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³",
+                    "minimum": 0
+                  },
+                  "o3_eight_hour_max": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "Ozone (O3) 8-hour maximum concentration.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading": {
+          "name": "PM25Reading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/PM25Reading",
+                "type": "object",
+                "name": "PM25Reading",
+                "description": "Hourly PM2.5 concentration reading for a Singapore NEA air quality region. Fine particulate matter with aerodynamic diameter less than or equal to 2.5 micrometres. Published hourly by NEA.",
+                "required": [
+                  "region",
+                  "timestamp",
+                  "update_timestamp",
+                  "pm25_one_hourly"
+                ],
+                "properties": {
+                  "region": {
+                    "type": "string",
+                    "description": "Region identifier (west/east/central/south/north).",
+                    "altenums": [
+                      "west",
+                      "east",
+                      "central",
+                      "south",
+                      "north"
+                    ]
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation period start timestamp in ISO 8601 with timezone."
+                  },
+                  "update_timestamp": {
+                    "type": "datetime",
+                    "description": "Timestamp when the NEA API last updated this reading."
+                  },
+                  "pm25_one_hourly": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "PM2.5 1-hour concentration for the region.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³",
+                    "minimum": 0
                   }
                 }
               }

@@ -162,8 +162,8 @@ class LAQNLondonAPI:
             site_type=str(site.get("@SiteType", "")).strip(),
             local_authority_code=str(site.get("@LocalAuthorityCode", "")).strip(),
             local_authority_name=str(site.get("@LocalAuthorityName", "")).strip(),
-            latitude=float(site.get("@Latitude")),
-            longitude=float(site.get("@Longitude")),
+            latitude=_parse_float_or_none(site.get("@Latitude")),
+            longitude=_parse_float_or_none(site.get("@Longitude")),
             date_opened=str(site.get("@DateOpened", "")).strip(),
             date_closed=date_closed,
             data_owner=str(site.get("@DataOwner", "")).strip(),
@@ -309,7 +309,13 @@ class LAQNLondonAPI:
         end_date = _format_api_date(end_day)
 
         for site_code in site_codes:
-            for raw_measurement in self.get_site_measurements(site_code, start_date, end_date):
+            try:
+                raw_measurements = self.get_site_measurements(site_code, start_date, end_date)
+            except requests.RequestException as exc:
+                logging.warning("Skipping measurements for site %s after upstream error: %s", site_code, exc)
+                continue
+
+            for raw_measurement in raw_measurements:
                 measurement = self.normalize_measurement(site_code, raw_measurement)
                 if measurement is None:
                     continue

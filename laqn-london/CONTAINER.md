@@ -20,6 +20,10 @@ definitions and emits them as reference events. It then polls:
 Reference data is re-emitted every 24 polls so downstream consumers can keep a
 temporally consistent local copy of the site and species catalogs.
 
+If LAQN leaves a site's decimal latitude or longitude blank, the bridge emits
+that coordinate as `null` in the site reference event and continues with the
+rest of the feed.
+
 ## Installing the Container Image
 
 ```shell

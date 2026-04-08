@@ -33,11 +33,15 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from singapore_nea_producer_kafka_producer.producer import SGGovNEAWeatherEventProducer
+from singapore_nea_producer_kafka_producer.producer import SGGovNEAAirQualityEventProducer
 
 # imports for the data classes for each event
 
 from singapore_nea_producer_data.station import Station
 from singapore_nea_producer_data.weatherobservation import WeatherObservation
+from singapore_nea_producer_data.region import Region
+from singapore_nea_producer_data.psireading import PSIReading
+from singapore_nea_producer_data.pm25reading import PM25Reading
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,6 +76,38 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'SG.Gov.NEA.Weather.WeatherObservation' event to Kafka topic.
     await sggov_neaweather_event_producer.send_sg_gov_nea_weather_weather_observation(_station_id = 'TODO: replace me', data = _weather_observation)
     print(f"Sent 'SG.Gov.NEA.Weather.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        sggov_neaair_quality_event_producer = SGGovNEAAirQualityEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        sggov_neaair_quality_event_producer = SGGovNEAAirQualityEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- SG.Gov.NEA.AirQuality.Region ----
+    # TODO: Supply event data for the SG.Gov.NEA.AirQuality.Region event
+    _region = Region()
+
+    # sends the 'SG.Gov.NEA.AirQuality.Region' event to Kafka topic.
+    await sggov_neaair_quality_event_producer.send_sg_gov_nea_air_quality_region(_region = 'TODO: replace me', data = _region)
+    print(f"Sent 'SG.Gov.NEA.AirQuality.Region' event: {_region.to_json()}")
+
+    # ---- SG.Gov.NEA.AirQuality.PSIReading ----
+    # TODO: Supply event data for the SG.Gov.NEA.AirQuality.PSIReading event
+    _psireading = PSIReading()
+
+    # sends the 'SG.Gov.NEA.AirQuality.PSIReading' event to Kafka topic.
+    await sggov_neaair_quality_event_producer.send_sg_gov_nea_air_quality_psireading(_region = 'TODO: replace me', data = _psireading)
+    print(f"Sent 'SG.Gov.NEA.AirQuality.PSIReading' event: {_psireading.to_json()}")
+
+    # ---- SG.Gov.NEA.AirQuality.PM25Reading ----
+    # TODO: Supply event data for the SG.Gov.NEA.AirQuality.PM25Reading event
+    _pm25_reading = PM25Reading()
+
+    # sends the 'SG.Gov.NEA.AirQuality.PM25Reading' event to Kafka topic.
+    await sggov_neaair_quality_event_producer.send_sg_gov_nea_air_quality_pm25_reading(_region = 'TODO: replace me', data = _pm25_reading)
+    print(f"Sent 'SG.Gov.NEA.AirQuality.PM25Reading' event: {_pm25_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

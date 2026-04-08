@@ -1,0 +1,541 @@
+{
+  "endpoints": {
+    "ca.gc.weather.aqhi.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "canada-aqhi",
+          "key": "{province}/{community_name}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/ca.gc.weather.aqhi"
+      ]
+    }
+  },
+  "messagegroups": {
+    "ca.gc.weather.aqhi": {
+      "messages": {
+        "ca.gc.weather.aqhi.Community": {
+          "name": "Community",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for a Canadian Air Quality Health Index reporting community, including its stable CGNDB identifier and current upstream feed URLs.",
+          "envelopemetadata": {
+            "type": {
+              "value": "ca.gc.weather.aqhi.Community"
+            },
+            "source": {
+              "value": "https://dd.weather.gc.ca/today/air_quality/aqhi/",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{province}/{community_name}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.jstruct/schemas/ca.gc.weather.aqhi.Community"
+        },
+        "ca.gc.weather.aqhi.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Latest AQHI observation for a reporting community. Observations are published hourly and may include decimal AQHI values.",
+          "envelopemetadata": {
+            "type": {
+              "value": "ca.gc.weather.aqhi.Observation"
+            },
+            "source": {
+              "value": "https://dd.weather.gc.ca/today/air_quality/aqhi/",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{province}/{community_name}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.jstruct/schemas/ca.gc.weather.aqhi.Observation"
+        },
+        "ca.gc.weather.aqhi.Forecast": {
+          "name": "Forecast",
+          "envelope": "CloudEvents/1.0",
+          "description": "Public AQHI forecast for one of the four standard Canadian forecast periods published for an AQHI community.",
+          "envelopemetadata": {
+            "type": {
+              "value": "ca.gc.weather.aqhi.Forecast"
+            },
+            "source": {
+              "value": "https://dd.weather.gc.ca/today/air_quality/aqhi/",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{province}/{community_name}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/ca.gc.weather.aqhi.jstruct/schemas/ca.gc.weather.aqhi.Forecast"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "ca.gc.weather.aqhi.jstruct": {
+      "schemas": {
+        "ca.gc.weather.aqhi.Community": {
+          "name": "Community",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/canada-aqhi/schemas/ca.gc.weather.aqhi.Community",
+                "name": "Community",
+                "$root": "#/definitions/ca/gc/weather/aqhi/Community",
+                "definitions": {
+                  "ca": {
+                    "gc": {
+                      "weather": {
+                        "aqhi": {
+                          "Community": {
+                            "name": "Community",
+                            "type": "object",
+                            "description": "Reference record for an AQHI community from the official ECCC AQHI city lists. It links the public community name and province code to the CGNDB key and current XML feeds used by the bridge.",
+                            "properties": {
+                              "province": {
+                                "type": "string",
+                                "description": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+                                "pattern": "^[A-Z]{2}$"
+                              },
+                              "community_name": {
+                                "type": "string",
+                                "description": "English AQHI community name as published by Environment and Climate Change Canada."
+                              },
+                              "cgndb_code": {
+                                "type": "string",
+                                "description": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+                                "pattern": "^[A-Z0-9]{5}$"
+                              },
+                              "latitude": {
+                                "type": "double",
+                                "description": "Latitude of the AQHI community reference point in WGS84 decimal degrees.",
+                                "minimum": -90,
+                                "maximum": 90
+                              },
+                              "longitude": {
+                                "type": "double",
+                                "description": "Longitude of the AQHI community reference point in WGS84 decimal degrees.",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              "observation_url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Current XML observation feed URL for the AQHI community, or null when observations are not distributed for that community."
+                              },
+                              "forecast_url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Current XML forecast feed URL for the AQHI community, or null when a public forecast feed is not available."
+                              }
+                            },
+                            "required": [
+                              "province",
+                              "community_name",
+                              "cgndb_code",
+                              "latitude",
+                              "longitude"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/canada-aqhi/schemas/ca.gc.weather.aqhi.Observation",
+                "name": "Observation",
+                "$root": "#/definitions/ca/gc/weather/aqhi/Observation",
+                "definitions": {
+                  "ca": {
+                    "gc": {
+                      "weather": {
+                        "aqhi": {
+                          "Observation": {
+                            "name": "Observation",
+                            "type": "object",
+                            "description": "Latest AQHI observation for a reporting community. The value reflects short-term health risk from air pollution and may be null when the upstream feed has not published a value yet.",
+                            "properties": {
+                              "province": {
+                                "type": "string",
+                                "description": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+                                "pattern": "^[A-Z]{2}$"
+                              },
+                              "community_name": {
+                                "type": "string",
+                                "description": "English AQHI community name as published by Environment and Climate Change Canada."
+                              },
+                              "cgndb_code": {
+                                "type": "string",
+                                "description": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+                                "pattern": "^[A-Z0-9]{5}$"
+                              },
+                              "observation_datetime": {
+                                "type": "string",
+                                "description": "UTC timestamp of the AQHI observation in ISO 8601 format."
+                              },
+                              "aqhi": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Observed AQHI value for the community. Observation feeds publish AQHI with decimal precision."
+                              },
+                              "aqhi_category": {
+                                "type": "string",
+                                "description": "Public AQHI health-risk category derived from the AQHI value.",
+                                "enum": [
+                                  "Low",
+                                  "Moderate",
+                                  "High",
+                                  "Very High",
+                                  "Unknown"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "province",
+                              "community_name",
+                              "cgndb_code",
+                              "observation_datetime",
+                              "aqhi_category"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.Forecast": {
+          "name": "Forecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/canada-aqhi/schemas/ca.gc.weather.aqhi.Forecast",
+                "name": "Forecast",
+                "$root": "#/definitions/ca/gc/weather/aqhi/Forecast",
+                "definitions": {
+                  "ca": {
+                    "gc": {
+                      "weather": {
+                        "aqhi": {
+                          "Forecast": {
+                            "name": "Forecast",
+                            "type": "object",
+                            "description": "Public AQHI forecast for a community and one of the four standard forecast periods published by ECCC.",
+                            "properties": {
+                              "province": {
+                                "type": "string",
+                                "description": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+                                "pattern": "^[A-Z]{2}$"
+                              },
+                              "community_name": {
+                                "type": "string",
+                                "description": "English AQHI community name as published by Environment and Climate Change Canada."
+                              },
+                              "cgndb_code": {
+                                "type": "string",
+                                "description": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+                                "pattern": "^[A-Z0-9]{5}$"
+                              },
+                              "publication_datetime": {
+                                "type": "string",
+                                "description": "UTC timestamp at which the public AQHI forecast bulletin was issued."
+                              },
+                              "forecast_date": {
+                                "type": "string",
+                                "description": "Forecast target date expressed as YYYYMMDD. Periods 1 and 2 use the bulletin issue date; periods 3 and 4 use the following day.",
+                                "pattern": "^[0-9]{8}$"
+                              },
+                              "forecast_period": {
+                                "type": "integer",
+                                "description": "AQHI public forecast period number: 1 Today, 2 Tonight, 3 Tomorrow, 4 Tomorrow Night.",
+                                "enum": [
+                                  1,
+                                  2,
+                                  3,
+                                  4
+                                ]
+                              },
+                              "forecast_period_label": {
+                                "type": "string",
+                                "description": "English public label for the AQHI forecast period.",
+                                "enum": [
+                                  "Today",
+                                  "Tonight",
+                                  "Tomorrow",
+                                  "Tomorrow Night"
+                                ]
+                              },
+                              "aqhi": {
+                                "type": [
+                                  "integer",
+                                  "null"
+                                ],
+                                "description": "Forecast AQHI value for the forecast period. Public forecasts are published as whole numbers."
+                              },
+                              "aqhi_category": {
+                                "type": "string",
+                                "description": "Public AQHI health-risk category derived from the forecast AQHI value.",
+                                "enum": [
+                                  "Low",
+                                  "Moderate",
+                                  "High",
+                                  "Very High",
+                                  "Unknown"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "province",
+                              "community_name",
+                              "cgndb_code",
+                              "publication_datetime",
+                              "forecast_date",
+                              "forecast_period",
+                              "forecast_period_label",
+                              "aqhi_category"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.avro": {
+      "schemas": {
+        "ca.gc.weather.aqhi.Community": {
+          "name": "Community",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Community",
+                "namespace": "ca.gc.weather.aqhi",
+                "doc": "Reference record for an AQHI community from the official ECCC AQHI city lists.",
+                "fields": [
+                  {
+                    "name": "province",
+                    "type": "string",
+                    "doc": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community."
+                  },
+                  {
+                    "name": "community_name",
+                    "type": "string",
+                    "doc": "English AQHI community name as published by Environment and Climate Change Canada."
+                  },
+                  {
+                    "name": "cgndb_code",
+                    "type": "string",
+                    "doc": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the AQHI community reference point in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the AQHI community reference point in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "observation_url",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Current XML observation feed URL for the AQHI community, or null when observations are not distributed for that community."
+                  },
+                  {
+                    "name": "forecast_url",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Current XML forecast feed URL for the AQHI community, or null when a public forecast feed is not available."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.Observation": {
+          "name": "Observation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Observation",
+                "namespace": "ca.gc.weather.aqhi",
+                "doc": "Latest AQHI observation for a reporting community.",
+                "fields": [
+                  {
+                    "name": "province",
+                    "type": "string",
+                    "doc": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community."
+                  },
+                  {
+                    "name": "community_name",
+                    "type": "string",
+                    "doc": "English AQHI community name as published by Environment and Climate Change Canada."
+                  },
+                  {
+                    "name": "cgndb_code",
+                    "type": "string",
+                    "doc": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds."
+                  },
+                  {
+                    "name": "observation_datetime",
+                    "type": "string",
+                    "doc": "UTC timestamp of the AQHI observation in ISO 8601 format."
+                  },
+                  {
+                    "name": "aqhi",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Observed AQHI value for the community. Observation feeds publish AQHI with decimal precision."
+                  },
+                  {
+                    "name": "aqhi_category",
+                    "type": "string",
+                    "doc": "Public AQHI health-risk category derived from the AQHI value."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.Forecast": {
+          "name": "Forecast",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Forecast",
+                "namespace": "ca.gc.weather.aqhi",
+                "doc": "Public AQHI forecast for a community and one of the four standard forecast periods published by ECCC.",
+                "fields": [
+                  {
+                    "name": "province",
+                    "type": "string",
+                    "doc": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community."
+                  },
+                  {
+                    "name": "community_name",
+                    "type": "string",
+                    "doc": "English AQHI community name as published by Environment and Climate Change Canada."
+                  },
+                  {
+                    "name": "cgndb_code",
+                    "type": "string",
+                    "doc": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds."
+                  },
+                  {
+                    "name": "publication_datetime",
+                    "type": "string",
+                    "doc": "UTC timestamp at which the public AQHI forecast bulletin was issued."
+                  },
+                  {
+                    "name": "forecast_date",
+                    "type": "string",
+                    "doc": "Forecast target date expressed as YYYYMMDD."
+                  },
+                  {
+                    "name": "forecast_period",
+                    "type": "int",
+                    "doc": "AQHI public forecast period number: 1 Today, 2 Tonight, 3 Tomorrow, 4 Tomorrow Night."
+                  },
+                  {
+                    "name": "forecast_period_label",
+                    "type": "string",
+                    "doc": "English public label for the AQHI forecast period."
+                  },
+                  {
+                    "name": "aqhi",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Forecast AQHI value for the forecast period. Public forecasts are published as whole numbers."
+                  },
+                  {
+                    "name": "aqhi_category",
+                    "type": "string",
+                    "doc": "Public AQHI health-risk category derived from the forecast AQHI value."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -61,8 +61,23 @@ documentation, and the README in each project directory has full details.
 | NOAA NWS | United States (weather alerts, CAP) | [Container](noaa-nws/CONTAINER.md) |
 | NWS CAP Alerts | United States (active alerts via api.weather.gov) | [Container](nws-alerts/CONTAINER.md) |
 | NOAA GOES / SWPC | Global (space weather, solar wind, K-index) | [Container](noaa-goes/CONTAINER.md) |
-| Singapore NEA | Singapore (62 stations, temp/rainfall/wind/forecast) | [Container](singapore-nea/CONTAINER.md) |
+| Singapore NEA | Singapore (62 weather stations + 5 air-quality regions) | [Container](singapore-nea/CONTAINER.md) |
 | SMHI Weather | Sweden (~232 stations, hourly obs) | [Container](smhi-weather/CONTAINER.md) |
+
+### Air Quality and Environmental Health
+
+| Source | Coverage | Link |
+|---|---|---|
+| Canada AQHI | Canada (community AQHI observations and forecasts) | [Container](canada-aqhi/CONTAINER.md) |
+| Defra AURN | United Kingdom (300+ monitoring locations, hourly pollutants) | [Container](defra-aurn/CONTAINER.md) |
+| FMI Finland | Finland (hourly air quality observations via FMI WFS) | [Container](fmi-finland/CONTAINER.md) |
+| Hong Kong EPD AQHI | Hong Kong (18 AQHI stations, hourly health index readings) | [Container](hongkong-epd/CONTAINER.md) |
+| IRCELINE Belgium | Belgium (station, timeseries, and hourly observations) | [Container](irceline-belgium/CONTAINER.md) |
+| LAQN London | London, UK (site metadata, species, hourly measurements, Daily AQI) | [Container](laqn-london/CONTAINER.md) |
+| Luchtmeetnet Netherlands | Netherlands (station measurements, components, and LKI index) | [Container](luchtmeetnet-nl/CONTAINER.md) |
+| Sensor.Community | Global (citizen air sensors, PM and climate readings) | [Container](sensor-community/CONTAINER.md) |
+| Singapore NEA Air Quality | Singapore (regional PSI and PM2.5 readings) | [Container](singapore-nea/CONTAINER.md) |
+| UBA AirData | Germany (stations, pollutant components, hourly measures) | [Container](uba-airdata/CONTAINER.md) |
 
 ### Disaster Alerts and Civil Protection
 
@@ -228,11 +243,53 @@ every 60 seconds.
 
 **[Singapore NEA](singapore-nea/README.md)** -- National Environment Agency of
 Singapore. 62 weather stations with temperature, rainfall, wind speed, wind
-direction, and 2-hour area forecasts.
+direction, 2-hour area forecasts, and regional PSI/PM2.5 air-quality readings.
 
 **[SMHI Weather](smhi-weather/README.md)** -- Swedish Meteorological and
 Hydrological Institute (SMHI). ~232 stations with hourly temperature, wind gust,
 dew point, pressure, humidity, and precipitation.
+
+### Air Quality and Environmental Health
+
+**[Canada AQHI](canada-aqhi/README.md)** -- Environment and Climate Change
+Canada. Community-keyed AQHI reference data, current observations, and public
+forecast periods across all provinces and territories.
+
+**[Defra AURN](defra-aurn/README.md)** -- UK Defra Automatic Urban and Rural
+Network. Station reference data, pollutant timeseries metadata, and hourly
+observations from the public SOS API.
+
+**[FMI Finland](fmi-finland/README.md)** -- Finnish Meteorological Institute
+air-quality WFS feed. Station reference records plus hourly aggregated pollutant
+and AQI observations.
+
+**[Hong Kong EPD AQHI](hongkong-epd/README.md)** -- Hong Kong Environmental
+Protection Department AQHI feed. Station reference events and the latest AQHI
+reading per station from the public 24-hour XML feed.
+
+**[IRCELINE Belgium](irceline-belgium/README.md)** -- Belgian IRCELINE SOS API.
+Station metadata, pollutant timeseries metadata, and hourly observations with
+BelAQI context on the timeseries records.
+
+**[LAQN London](laqn-london/README.md)** -- King's College London LAQN API.
+Monitoring sites, pollutant species metadata, hourly measurements, and Daily
+Air Quality Index bulletin records for London.
+
+**[Luchtmeetnet Netherlands](luchtmeetnet-nl/README.md)** -- Dutch
+Luchtmeetnet open API. Station and component reference data, hourly station
+measurements, and Dutch LKI air-quality-index readings.
+
+**[Sensor.Community](sensor-community/README.md)** -- Sensor.Community public
+JSON sensor feeds. Sensor reference metadata plus particulate and climate sensor
+readings from the community network worldwide.
+
+**[Singapore NEA Air Quality](singapore-nea/README.md)** -- The Singapore NEA
+bridge also publishes regional air-quality reference data, PSI readings, and
+PM2.5 readings alongside the existing weather feed.
+
+**[UBA AirData](uba-airdata/README.md)** -- German Umweltbundesamt air-data
+API. Station reference records, pollutant component catalog events, and hourly
+measurements from the federal monitoring network.
 
 ### Disaster Alerts and Civil Protection
 

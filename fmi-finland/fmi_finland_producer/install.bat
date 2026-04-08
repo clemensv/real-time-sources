@@ -1,0 +1,2 @@
+pip install .\fmi_finland_producer_data
+pip install .\fmi_finland_producer_kafka_producer

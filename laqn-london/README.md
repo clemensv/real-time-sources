@@ -22,6 +22,10 @@ That is not a typo. The upstream does not offer HTTPS.
 Reference data is emitted at startup and refreshed every 24 polls. Telemetry is
 polled every hour by default.
 
+Some LAQN site records leave the decimal latitude or longitude blank. The bridge
+preserves those as `null` in site reference events instead of failing the
+reference-data pass.
+
 ## Upstream Channels Reviewed
 
 | Family | Endpoint | Identity | Cadence | Decision |

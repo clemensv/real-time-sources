@@ -17,23 +17,24 @@ Scouted: 2026-04-06
 | 7 | [LAQN London](laqn-london.md) | UK (London) | ✅ REST | None | Hourly | 17/18 | 🟢 HIGH |
 | 8 | [Singapore NEA](singapore-nea.md) | Singapore | ✅ REST | None | Hourly | 16/18 | 🟢 HIGH |
 | 9 | [Taiwan MOENV](taiwan-moenv.md) | Taiwan | ✅ REST | API Key (free) | Hourly | 16/18 | 🟢 HIGH |
-| 10 | [Sensor.Community](sensor-community.md) | Global | ✅ REST | None | ~2.5 min | 15/18 | 🟡 MEDIUM |
-| 11 | [NILU Norway](nilu-norway.md) | Norway | ✅ REST | API Key (req'd) | Hourly | 15/18 | 🟡 MEDIUM |
-| 12 | [Canada AQHI](canada-aqhi.md) | Canada | ⚠️ Files/WMS | None | Hourly | 15/18 | 🟡 MEDIUM |
-| 13 | [GIOŚ Poland](gios-poland.md) | Poland | ✅ REST | None (rate-limited) | Hourly | 14/18 | 🟡 MEDIUM |
-| 14 | [PurpleAir](purpleair.md) | Global (US-heavy) | ✅ REST v1 | API Key (free) | ~2 min | 14/18 | 🟡 MEDIUM |
-| 15 | [FMI Finland](fmi-finland.md) | Finland | ✅ WFS 2.0 | None | Hourly | 14/18 | 🟡 MEDIUM |
-| 16 | [AQICN / WAQI](aqicn-waqi.md) | Global | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
-| 17 | [EEA Air Quality](eea-air-quality.md) | Europe | ⚠️ Bulk DL | None | Hourly | 13/18 | 🟡 MEDIUM |
-| 18 | [Hong Kong EPD](hongkong-epd.md) | Hong Kong | ⚠️ XML feed | None | Hourly | 13/18 | 🟡 MEDIUM |
-| 19 | [Atmo France](atmo-france.md) | France | ⚠️ ArcGIS | Varies | Hourly | 13/18 | 🟡 MEDIUM |
-| 20 | [Swiss NABEL](swiss-nabel.md) | Switzerland | ⚠️ WMS/CSV | None | Hourly | 13/18 | 🟡 MEDIUM |
-| 21 | [South Korea AirKorea](south-korea-airkorea.md) | South Korea | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
-| 22 | [NSW EPA Australia](nsw-epa-australia.md) | Australia (NSW) | ✅ REST (likely) | Unknown | Hourly | 13/18 | 🟡 MEDIUM |
-| 23 | [Mexico SINAICA](mexico-sinaica.md) | Mexico | ❌ Web/CSV | N/A | Hourly | 11/18 | 🔴 LOW |
-| 24 | [Chile SINCA](chile-sinca.md) | Chile | ❌ Web/CSV | N/A | Hourly | 8/18 | 🔴 LOW |
-| 25 | [Japan SORAMAME](japan-soramame.md) | Japan | ❌ Web only | N/A | Hourly | 7/18 | 🔴 LOW |
-| 26 | [India CPCB](india-cpcb.md) | India | ❌ Web only | N/A | 15-min | 7/18 | 🔴 LOW |
+| 10 | [Wallonia ISSeP](wallonia-issep.md) | Belgium (Wallonia) | ✅ REST | None | Near-RT | 15/18 | 🟡 MEDIUM |
+| 11 | [Sensor.Community](sensor-community.md) | Global | ✅ REST | None | ~2.5 min | 15/18 | 🟡 MEDIUM |
+| 12 | [NILU Norway](nilu-norway.md) | Norway | ✅ REST | API Key (req'd) | Hourly | 15/18 | 🟡 MEDIUM |
+| 13 | [Canada AQHI](canada-aqhi.md) | Canada | ⚠️ Files/WMS | None | Hourly | 15/18 | 🟡 MEDIUM |
+| 14 | [GIOŚ Poland](gios-poland.md) | Poland | ✅ REST | None (rate-limited) | Hourly | 14/18 | 🟡 MEDIUM |
+| 15 | [PurpleAir](purpleair.md) | Global (US-heavy) | ✅ REST v1 | API Key (free) | ~2 min | 14/18 | 🟡 MEDIUM |
+| 16 | [FMI Finland](fmi-finland.md) | Finland | ✅ WFS 2.0 | None | Hourly | 14/18 | 🟡 MEDIUM |
+| 17 | [AQICN / WAQI](aqicn-waqi.md) | Global | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
+| 18 | [EEA Air Quality](eea-air-quality.md) | Europe | ⚠️ Bulk DL | None | Hourly | 13/18 | 🟡 MEDIUM |
+| 19 | [Hong Kong EPD](hongkong-epd.md) | Hong Kong | ⚠️ XML feed | None | Hourly | 13/18 | 🟡 MEDIUM |
+| 20 | [Atmo France](atmo-france.md) | France | ⚠️ ArcGIS | Varies | Hourly | 13/18 | 🟡 MEDIUM |
+| 21 | [Swiss NABEL](swiss-nabel.md) | Switzerland | ⚠️ WMS/CSV | None | Hourly | 13/18 | 🟡 MEDIUM |
+| 22 | [South Korea AirKorea](south-korea-airkorea.md) | South Korea | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
+| 23 | [NSW EPA Australia](nsw-epa-australia.md) | Australia (NSW) | ✅ REST (likely) | Unknown | Hourly | 13/18 | 🟡 MEDIUM |
+| 24 | [Mexico SINAICA](mexico-sinaica.md) | Mexico | ❌ Web/CSV | N/A | Hourly | 11/18 | 🔴 LOW |
+| 25 | [Chile SINCA](chile-sinca.md) | Chile | ❌ Web/CSV | N/A | Hourly | 8/18 | 🔴 LOW |
+| 26 | [Japan SORAMAME](japan-soramame.md) | Japan | ❌ Web only | N/A | Hourly | 7/18 | 🔴 LOW |
+| 27 | [India CPCB](india-cpcb.md) | India | ❌ Web only | N/A | 15-min | 7/18 | 🔴 LOW |
 
 ### Asia/Middle East — Deep Dive Round 5
 

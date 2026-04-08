@@ -1,0 +1,537 @@
+{
+  "endpoints": {
+    "uk.gov.defra.aurn.Stations.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "defra-aurn",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.gov.defra.aurn.Stations"
+      ]
+    },
+    "uk.gov.defra.aurn.Timeseries.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "defra-aurn",
+          "key": "{timeseries_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.gov.defra.aurn.Timeseries"
+      ]
+    }
+  },
+  "messagegroups": {
+    "uk.gov.defra.aurn.Stations": {
+      "messages": {
+        "uk.gov.defra.aurn.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference metadata for a Defra AURN monitoring station entry as published by the 52°North SOS Timeseries API stations collection.",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.gov.defra.aurn.Station"
+            },
+            "source": {
+              "value": "https://uk-air.defra.gov.uk/sos-ukair/api/v1/stations"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.jstruct/schemas/uk.gov.defra.aurn.Station"
+        }
+      }
+    },
+    "uk.gov.defra.aurn.Timeseries": {
+      "messages": {
+        "uk.gov.defra.aurn.Timeseries": {
+          "name": "Timeseries",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference metadata for a Defra AURN station and pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.gov.defra.aurn.Timeseries"
+            },
+            "source": {
+              "value": "https://uk-air.defra.gov.uk/sos-ukair/api/v1/timeseries"
+            },
+            "subject": {
+              "value": "{timeseries_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.jstruct/schemas/uk.gov.defra.aurn.Timeseries"
+        },
+        "uk.gov.defra.aurn.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Hourly or near-hourly Defra AURN observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window.",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.gov.defra.aurn.Observation"
+            },
+            "source": {
+              "value": "https://uk-air.defra.gov.uk/sos-ukair/api/v1/timeseries"
+            },
+            "subject": {
+              "value": "{timeseries_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.gov.defra.aurn.jstruct/schemas/uk.gov.defra.aurn.Observation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "uk.gov.defra.aurn.jstruct": {
+      "schemas": {
+        "uk.gov.defra.aurn.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://clemensv.github.io/real-time-sources/schemas/uk/gov/defra/aurn/station.json",
+                "name": "Station",
+                "$root": "#/definitions/uk/gov/defra/aurn/Station",
+                "definitions": {
+                  "uk": {
+                    "gov": {
+                      "defra": {
+                        "aurn": {
+                          "Station": {
+                            "name": "Station",
+                            "type": "object",
+                            "description": "Metadata for a Defra AURN monitoring station as returned by GET /stations. The bridge flattens the GeoJSON feature into a payload with the station identifier, the upstream display label, and WGS84 latitude and longitude values taken from geometry.coordinates[0] and geometry.coordinates[1], because this API returns coordinates in latitude, longitude order.",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "pattern": "^[0-9]+$",
+                                "description": "Stable numeric monitoring station identifier from the GeoJSON feature properties.id field returned by GET /stations. The bridge converts the numeric API value to a string so it can be used consistently as the Kafka key and CloudEvents subject."
+                              },
+                              "label": {
+                                "type": "string",
+                                "description": "Upstream station label from properties.label in GET /stations. In this API the label includes both the site name and the monitored pollutant description, for example 'Camden Kerbside-Particulate matter less than 10 micro m (aerosol)'."
+                              },
+                              "latitude": {
+                                "type": "double",
+                                "unit": "degree",
+                                "symbol": "°",
+                                "minimum": -90,
+                                "maximum": 90,
+                                "description": "WGS84 latitude in decimal degrees taken from geometry.coordinates[0] in the Defra SOS GeoJSON feature. The upstream API uses latitude-first coordinate ordering rather than GeoJSON's usual longitude-first convention."
+                              },
+                              "longitude": {
+                                "type": "double",
+                                "unit": "degree",
+                                "symbol": "°",
+                                "minimum": -180,
+                                "maximum": 180,
+                                "description": "WGS84 longitude in decimal degrees taken from geometry.coordinates[1] in the Defra SOS GeoJSON feature. The bridge ignores the third coordinate array member because the upstream API returns a string 'NaN' elevation value there."
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "label",
+                              "latitude",
+                              "longitude"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Timeseries": {
+          "name": "Timeseries",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://clemensv.github.io/real-time-sources/schemas/uk/gov/defra/aurn/timeseries.json",
+                "name": "Timeseries",
+                "$root": "#/definitions/uk/gov/defra/aurn/Timeseries",
+                "definitions": {
+                  "uk": {
+                    "gov": {
+                      "defra": {
+                        "aurn": {
+                          "Timeseries": {
+                            "name": "Timeseries",
+                            "type": "object",
+                            "description": "Reference metadata for a Defra AURN station and pollutant timeseries combination, assembled from GET /timeseries/{id}?expanded=true. The payload preserves the stable timeseries identifier, linked station metadata, unit of measurement, and pollutant taxonomy references published in parameters.phenomenon and parameters.category.",
+                            "properties": {
+                              "timeseries_id": {
+                                "type": "string",
+                                "pattern": "^[0-9]+$",
+                                "description": "Stable numeric timeseries identifier from the id field returned by GET /timeseries and GET /timeseries/{id}?expanded=true. Each timeseries represents one station and one pollutant combination."
+                              },
+                              "label": {
+                                "type": "string",
+                                "description": "Descriptive label from the timeseries label field. In the live API this string combines the EIONet pollutant URI, the station identifier, and the station display label."
+                              },
+                              "uom": {
+                                "type": "string",
+                                "description": "Unit of measurement string from the timeseries uom field, for example 'ug.m-3'. The bridge republishes the upstream unit token unchanged so consumers can interpret observation values correctly."
+                              },
+                              "station_id": {
+                                "type": "string",
+                                "pattern": "^[0-9]+$",
+                                "description": "Stable station identifier from station.properties.id inside the expanded timeseries response. This is the identifier of the monitoring site associated with the timeseries."
+                              },
+                              "station_label": {
+                                "type": "string",
+                                "description": "Station display label from station.properties.label inside the expanded timeseries response. In this API the label already includes the pollutant name, so it is unique per station and pollutant combination."
+                              },
+                              "latitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "unit": "degree",
+                                "symbol": "°",
+                                "minimum": -90,
+                                "maximum": 90,
+                                "description": "WGS84 latitude in decimal degrees derived from station.geometry.coordinates[0] in the expanded timeseries response. The field is nullable because the bridge will emit null if the upstream omits coordinates."
+                              },
+                              "longitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "unit": "degree",
+                                "symbol": "°",
+                                "minimum": -180,
+                                "maximum": 180,
+                                "description": "WGS84 longitude in decimal degrees derived from station.geometry.coordinates[1] in the expanded timeseries response. The field is nullable because the bridge will emit null if the upstream omits coordinates."
+                              },
+                              "phenomenon_id": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "pattern": "^[0-9]+$",
+                                "description": "Pollutant phenomenon identifier from parameters.phenomenon.id in the expanded timeseries response. The API models pollutants through EIONet vocabulary identifiers and numeric ids."
+                              },
+                              "phenomenon_label": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Pollutant label from parameters.phenomenon.label in the expanded timeseries response. In the live API this is typically an EIONet pollutant URI such as 'http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5'."
+                              },
+                              "category_id": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "pattern": "^[0-9]+$",
+                                "description": "Category identifier from parameters.category.id in the expanded timeseries response. In this API the category collection currently mirrors the phenomenon collection, but it is still carried through explicitly because it is part of the published timeseries metadata."
+                              },
+                              "category_label": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Category label from parameters.category.label in the expanded timeseries response. In the live API this is the same EIONet URI string as the phenomenon label for the same pollutant."
+                              }
+                            },
+                            "required": [
+                              "timeseries_id",
+                              "label",
+                              "uom",
+                              "station_id",
+                              "station_label"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://clemensv.github.io/real-time-sources/schemas/uk/gov/defra/aurn/observation.json",
+                "name": "Observation",
+                "$root": "#/definitions/uk/gov/defra/aurn/Observation",
+                "definitions": {
+                  "uk": {
+                    "gov": {
+                      "defra": {
+                        "aurn": {
+                          "Observation": {
+                            "name": "Observation",
+                            "type": "object",
+                            "description": "Observation value from GET /timeseries/{id}/getData. The bridge converts the upstream Unix millisecond timestamp to an ISO 8601 UTC timestamp string and republishes the measurement value together with the timeseries identifier and unit of measurement from the reference metadata.",
+                            "properties": {
+                              "timeseries_id": {
+                                "type": "string",
+                                "pattern": "^[0-9]+$",
+                                "description": "Stable numeric timeseries identifier for the series that produced this observation. This field is the Kafka key and CloudEvents subject for both the reference timeseries event and the observation event."
+                              },
+                              "timestamp": {
+                                "type": "datetime",
+                                "description": "Observation timestamp encoded as an ISO 8601 UTC string. The bridge converts the upstream GET /timeseries/{id}/getData values[].timestamp Unix millisecond value with datetime.fromtimestamp(timestamp/1000, tz=timezone.utc).isoformat()."
+                              },
+                              "value": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Measured pollutant concentration or other reported numeric reading from values[].value in GET /timeseries/{id}/getData. The field is nullable because the API can represent missing or flagged values with null."
+                              },
+                              "uom": {
+                                "type": "string",
+                                "description": "Unit of measurement for the observation, copied from the parent timeseries uom field so each telemetry event remains self-describing."
+                              }
+                            },
+                            "required": [
+                              "timeseries_id",
+                              "timestamp",
+                              "value",
+                              "uom"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "uk.gov.defra.aurn.avro": {
+      "schemas": {
+        "uk.gov.defra.aurn.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "uk.gov.defra.aurn",
+                "doc": "Metadata for a Defra AURN monitoring station as returned by GET /stations.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable numeric monitoring station identifier from properties.id."
+                  },
+                  {
+                    "name": "label",
+                    "type": "string",
+                    "doc": "Upstream station label from properties.label."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "WGS84 latitude in decimal degrees from geometry.coordinates[0]."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "WGS84 longitude in decimal degrees from geometry.coordinates[1]."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Timeseries": {
+          "name": "Timeseries",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Timeseries",
+                "namespace": "uk.gov.defra.aurn",
+                "doc": "Reference metadata for a Defra AURN station and pollutant timeseries combination.",
+                "fields": [
+                  {
+                    "name": "timeseries_id",
+                    "type": "string",
+                    "doc": "Stable numeric timeseries identifier from id."
+                  },
+                  {
+                    "name": "label",
+                    "type": "string",
+                    "doc": "Descriptive label from the timeseries label field."
+                  },
+                  {
+                    "name": "uom",
+                    "type": "string",
+                    "doc": "Unit of measurement string from the timeseries uom field."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier from station.properties.id."
+                  },
+                  {
+                    "name": "station_label",
+                    "type": "string",
+                    "doc": "Station display label from station.properties.label."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Nullable WGS84 latitude in decimal degrees from station.geometry.coordinates[0]."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Nullable WGS84 longitude in decimal degrees from station.geometry.coordinates[1]."
+                  },
+                  {
+                    "name": "phenomenon_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Nullable pollutant phenomenon identifier from parameters.phenomenon.id."
+                  },
+                  {
+                    "name": "phenomenon_label",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Nullable pollutant label from parameters.phenomenon.label."
+                  },
+                  {
+                    "name": "category_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Nullable category identifier from parameters.category.id."
+                  },
+                  {
+                    "name": "category_label",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Nullable category label from parameters.category.label."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "uk.gov.defra.aurn.Observation": {
+          "name": "Observation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Observation",
+                "namespace": "uk.gov.defra.aurn",
+                "doc": "Observation value from GET /timeseries/{id}/getData.",
+                "fields": [
+                  {
+                    "name": "timeseries_id",
+                    "type": "string",
+                    "doc": "Stable numeric timeseries identifier for the series that produced this observation."
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": "string",
+                    "doc": "Observation timestamp encoded as an ISO 8601 UTC string."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Measured pollutant concentration or other reported numeric reading."
+                  },
+                  {
+                    "name": "uom",
+                    "type": "string",
+                    "doc": "Unit of measurement for the observation."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

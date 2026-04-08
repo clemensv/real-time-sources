@@ -198,15 +198,21 @@
                               ]
                             },
                             "latitude": {
-                              "type": "double",
-                              "description": "WGS84 latitude of the monitoring site in decimal degrees. This bridge uses the decimal latitude field, not the projected WGS84 metre coordinate.",
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "WGS84 latitude of the monitoring site in decimal degrees. This bridge uses the decimal latitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.",
                               "altnames": [
                                 "@Latitude"
                               ]
                             },
                             "longitude": {
-                              "type": "double",
-                              "description": "WGS84 longitude of the monitoring site in decimal degrees. This bridge uses the decimal longitude field, not the projected WGS84 metre coordinate.",
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "WGS84 longitude of the monitoring site in decimal degrees. This bridge uses the decimal longitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.",
                               "altnames": [
                                 "@Longitude"
                               ]
@@ -540,13 +546,21 @@
                   },
                   {
                     "name": "latitude",
-                    "type": "double",
-                    "doc": "WGS84 latitude of the monitoring site in decimal degrees."
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank."
                   },
                   {
                     "name": "longitude",
-                    "type": "double",
-                    "doc": "WGS84 longitude of the monitoring site in decimal degrees."
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank."
                   },
                   {
                     "name": "date_opened",

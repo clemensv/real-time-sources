@@ -1,0 +1,192 @@
+{
+  "endpoints": {
+    "HK.Gov.EPD.AQHI.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "hongkong-epd-aqhi",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/HK.Gov.EPD.AQHI"]
+    }
+  },
+  "messagegroups": {
+    "HK.Gov.EPD.AQHI": {
+      "messages": {
+        "HK.Gov.EPD.AQHI.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "HK.Gov.EPD.AQHI.Station"
+            },
+            "source": {
+              "value": "https://www.aqhi.gov.hk"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.Station"
+        },
+        "HK.Gov.EPD.AQHI.AQHIReading": {
+          "name": "AQHIReading",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "HK.Gov.EPD.AQHI.AQHIReading"
+            },
+            "source": {
+              "value": "https://www.aqhi.gov.hk"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.AQHIReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "HK.Gov.EPD.AQHI.jstruct": {
+      "schemas": {
+        "HK.Gov.EPD.AQHI.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://www.aqhi.gov.hk/schemas/HK/Gov/EPD/AQHI/Station",
+                "type": "object",
+                "name": "Station",
+                "description": "Reference data for a Hong Kong EPD AQHI monitoring station. The EPD operates a network of General Stations and Roadside Stations across Hong Kong. Station coordinates are derived from the EPD station map.",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "station_type"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable station identifier derived from the station name in snake_case, for example central_western or mong_kok."
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Station name as published in the EPD AQHI feed, for example 'Central/Western' or 'Mong Kok'."
+                  },
+                  "station_type": {
+                    "type": "string",
+                    "description": "Station classification. General Stations measure ambient background air quality and Roadside Stations are positioned near roads to capture traffic-related pollution.",
+                    "altenums": [
+                      "General Stations",
+                      "Roadside Stations"
+                    ]
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS84 latitude of the monitoring station.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS84 longitude of the monitoring station.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "HK.Gov.EPD.AQHI.AQHIReading": {
+          "name": "AQHIReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://www.aqhi.gov.hk/schemas/HK/Gov/EPD/AQHI/AQHIReading",
+                "type": "object",
+                "name": "AQHIReading",
+                "description": "Air Quality Health Index (AQHI) reading for a Hong Kong EPD monitoring station. AQHI quantifies health risk from air pollution on a scale of 1 to 10+ and is calculated from concentrations of nitrogen dioxide, sulphur dioxide, ozone, and PM2.5. Published hourly by the EPD.",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "station_type",
+                  "reading_time",
+                  "aqhi"
+                ],
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable station identifier in snake_case."
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Station name as published in the EPD AQHI feed."
+                  },
+                  "station_type": {
+                    "type": "string",
+                    "description": "Station classification: General Stations or Roadside Stations.",
+                    "altenums": [
+                      "General Stations",
+                      "Roadside Stations"
+                    ]
+                  },
+                  "reading_time": {
+                    "type": "datetime",
+                    "description": "Observation timestamp parsed from the feed DateTime field. The XML feed publishes RFC 2822 timestamps and the bridge emits ISO 8601 values."
+                  },
+                  "aqhi": {
+                    "type": "integer",
+                    "description": "AQHI value. Scale: 1 to 3 Low health risk, 4 to 6 Moderate, 7 High, 8 to 10 Very High, and above 10 Serious. Value 11 is used in the feed to indicate 10+ Serious.",
+                    "minimum": 1
+                  },
+                  "health_risk_category": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Health risk category derived from the AQHI value: Low, Moderate, High, Very High, or Serious.",
+                    "altenums": [
+                      "Low",
+                      "Moderate",
+                      "High",
+                      "Very High",
+                      "Serious"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

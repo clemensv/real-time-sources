@@ -1,6 +1,6 @@
 from .species import Species
+from .measurement import Measurement
 from .dailyindex import DailyIndex
 from .site import Site
-from .measurement import Measurement
 
-__all__ = ["Species", "DailyIndex", "Site", "Measurement"]
+__all__ = ["Species", "Measurement", "DailyIndex", "Site"]
