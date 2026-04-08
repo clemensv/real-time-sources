@@ -125,6 +125,10 @@ def digitraffic_road_image():
     return build_image('digitraffic-road')
 
 @pytest.fixture(scope='module')
+def digitraffic_maritime_image():
+    return build_image('digitraffic-maritime')
+
+@pytest.fixture(scope='module')
 def bom_australia_image():
     return build_image('bom-australia')
 
@@ -213,7 +217,9 @@ def _run_kafka_flow_test(
     reference_types: Optional[List[str]] = None,
     telemetry_types: Optional[List[str]] = None,
     required_types: Optional[List[str]] = None,
+    required_any_types: Optional[List[str]] = None,
     extra_env: Optional[Dict[str, str]] = None,
+    command: Optional[str | List[str]] = None,
     min_messages: int = 5,
     timeout: int = 300,
 ):
@@ -231,7 +237,10 @@ def _run_kafka_flow_test(
         reference_types: Substrings expected in ``type`` for reference events.
             Pass *None* for projects that emit no reference data.
         telemetry_types: Substrings expected in ``type`` for telemetry events.
+        required_types: Substrings that must all appear in observed event types.
+        required_any_types: Substrings where at least one must appear.
         extra_env: Additional environment variables for the container.
+        command: Optional container command override.
         min_messages: Minimum total messages to consume.
         timeout: Seconds to wait for all expected event categories.
     """
@@ -244,7 +253,7 @@ def _run_kafka_flow_test(
     if extra_env:
         env.update(extra_env)
 
-    container = run_container_detached(image, environment=env)
+    container = run_container_detached(image, environment=env, command=command)
     try:
         # Consume in a loop until both event categories are seen or timeout.
         consumer = Consumer({
@@ -267,7 +276,10 @@ def _run_kafka_flow_test(
             required_ok = required_types is None or all(
                 any(pat in t for t in observed_types) for pat in required_types
             )
-            return ref_ok and tel_ok and required_ok
+            required_any_ok = required_any_types is None or any(
+                any(pat in t for t in observed_types) for pat in required_any_types
+            )
+            return ref_ok and tel_ok and required_ok and required_any_ok
 
         try:
             while time.time() < deadline:
@@ -329,6 +341,16 @@ def _run_kafka_flow_test(
             assert not missing, (
                 f'Missing required event families {missing}. Observed types: '
                 f'{sorted(observed_types)}\n'
+                f'Container logs:\n{container.logs().decode()}'
+            )
+
+        if required_any_types is not None:
+            has_any_required = any(
+                any(pat in t for t in observed_types) for pat in required_any_types
+            )
+            assert has_any_required, (
+                f'Expected at least one event family from {required_any_types}, '
+                f'but observed types were {sorted(observed_types)}\n'
                 f'Container logs:\n{container.logs().decode()}'
             )
     finally:
@@ -484,6 +506,34 @@ class TestDigitrafficRoadDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# Digitraffic Maritime (Finland — port calls and companion reference data)
+# ---------------------------------------------------------------------------
+
+class TestDigitrafficMaritimeDockerFlow:
+    TOPIC = 'test-digitraffic-maritime'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, digitraffic_maritime_image):
+        _run_kafka_flow_test(
+            kafka, digitraffic_maritime_image, self.TOPIC,
+            reference_types=['VesselDetails', 'PortLocation'],
+            telemetry_types=['PortCall'],
+            required_types=['VesselDetails', 'PortLocation', 'PortCall'],
+            command=[
+                'python',
+                '-m',
+                'digitraffic_maritime',
+                'port-calls',
+                '--poll-interval',
+                '3600',
+                '--state-file',
+                '/tmp/digitraffic-portcalls-state.json',
+            ],
+            min_messages=3,
+            timeout=360,
+        )
+
+
+# ---------------------------------------------------------------------------
 # NOAA NDBC (Buoy observations)
 # ---------------------------------------------------------------------------
 
@@ -495,6 +545,12 @@ class TestNOAANdbcDockerFlow:
             kafka, noaa_ndbc_image, self.TOPIC,
             reference_types=['BuoyStation'],
             telemetry_types=['BuoyObservation'],
+            required_any_types=[
+                'BuoyContinuousWindObservation',
+                'BuoySupplementalMeasurement',
+                'BuoyDetailedWaveSummary',
+                'BuoyHourlyRainMeasurement',
+            ],
         )
 
 

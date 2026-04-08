@@ -34,12 +34,16 @@ from confluent_kafka import Producer as KafkaProducer
 
 from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarineAisEventProducer
 from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarinePortcallEventProducer
+from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarinePortcallVesseldetailsEventProducer
+from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarinePortcallPortlocationEventProducer
 
 # imports for the data classes for each event
 
 from digitraffic_maritime_producer_data.vessellocation import VesselLocation
 from digitraffic_maritime_producer_data.vesselmetadata import VesselMetadata
 from digitraffic_maritime_producer_data.portcall import PortCall
+from digitraffic_maritime_producer_data.vesseldetails import VesselDetails
+from digitraffic_maritime_producer_data.portlocation import PortLocation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -90,6 +94,38 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'fi.digitraffic.marine.portcall.PortCall' event to Kafka topic.
     await fi_digitraffic_marine_portcall_event_producer.send_fi_digitraffic_marine_portcall_port_call(_port_call_id = 'TODO: replace me', data = _port_call)
     print(f"Sent 'fi.digitraffic.marine.portcall.PortCall' event: {_port_call.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_digitraffic_marine_portcall_vesseldetails_event_producer = FiDigitrafficMarinePortcallVesseldetailsEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_digitraffic_marine_portcall_vesseldetails_event_producer = FiDigitrafficMarinePortcallVesseldetailsEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.digitraffic.marine.portcall.VesselDetails ----
+    # TODO: Supply event data for the fi.digitraffic.marine.portcall.VesselDetails event
+    _vessel_details = VesselDetails()
+
+    # sends the 'fi.digitraffic.marine.portcall.VesselDetails' event to Kafka topic.
+    await fi_digitraffic_marine_portcall_vesseldetails_event_producer.send_fi_digitraffic_marine_portcall_vessel_details(_vessel_id = 'TODO: replace me', data = _vessel_details)
+    print(f"Sent 'fi.digitraffic.marine.portcall.VesselDetails' event: {_vessel_details.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_digitraffic_marine_portcall_portlocation_event_producer = FiDigitrafficMarinePortcallPortlocationEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_digitraffic_marine_portcall_portlocation_event_producer = FiDigitrafficMarinePortcallPortlocationEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.digitraffic.marine.portcall.PortLocation ----
+    # TODO: Supply event data for the fi.digitraffic.marine.portcall.PortLocation event
+    _port_location = PortLocation()
+
+    # sends the 'fi.digitraffic.marine.portcall.PortLocation' event to Kafka topic.
+    await fi_digitraffic_marine_portcall_portlocation_event_producer.send_fi_digitraffic_marine_portcall_port_location(_locode = 'TODO: replace me', data = _port_location)
+    print(f"Sent 'fi.digitraffic.marine.portcall.PortLocation' event: {_port_location.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

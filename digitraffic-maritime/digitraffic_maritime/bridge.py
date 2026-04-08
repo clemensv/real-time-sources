@@ -10,10 +10,20 @@ from typing import Any, Dict, Optional, Set
 
 from confluent_kafka import Producer
 import requests
-from digitraffic_maritime_producer_data import PortCall, PortCallAgent, PortCallAreaDetail, VesselLocation, VesselMetadata
+from digitraffic_maritime_producer_data.berth import Berth
+from digitraffic_maritime_producer_data.portarea import PortArea
+from digitraffic_maritime_producer_data.portcall import PortCall
+from digitraffic_maritime_producer_data.portcallagent import PortCallAgent
+from digitraffic_maritime_producer_data.portcallareadetail import PortCallAreaDetail
+from digitraffic_maritime_producer_data.portlocation import PortLocation
+from digitraffic_maritime_producer_data.vesseldetails import VesselDetails
+from digitraffic_maritime_producer_data.vessellocation import VesselLocation
+from digitraffic_maritime_producer_data.vesselmetadata import VesselMetadata
 from digitraffic_maritime_producer_kafka_producer.producer import (
     FiDigitrafficMarineAisEventProducer,
     FiDigitrafficMarinePortcallEventProducer,
+    FiDigitrafficMarinePortcallPortlocationEventProducer,
+    FiDigitrafficMarinePortcallVesseldetailsEventProducer,
 )
 
 from digitraffic_maritime.mqtt_source import MQTTSource
@@ -32,6 +42,8 @@ _MESSAGE_MAP: Dict[str, tuple] = {
 }
 
 _PORT_CALLS_URL = "https://meri.digitraffic.fi/api/port-call/v1/port-calls"
+_VESSEL_DETAILS_URL = "https://meri.digitraffic.fi/api/port-call/v1/vessel-details"
+_PORTS_URL = "https://meri.digitraffic.fi/api/port-call/v1/ports"
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -59,16 +71,6 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
     return config_dict
 
 
-def _mmsi_key_mapper(event, data) -> str:
-    """Use MMSI as the Kafka partition key."""
-    return str(getattr(data, 'mmsi', ''))
-
-
-def _port_call_key_mapper(event, data) -> str:
-    """Use the Digitraffic port call identifier as the Kafka partition key."""
-    return str(getattr(data, 'port_call_id', ''))
-
-
 def _emit_event(event_producer: FiDigitrafficMarineAisEventProducer,
                 topic_type: str, mmsi: int, payload: Dict[str, Any]) -> bool:
     """Send a decoded AIS message through the typed Kafka producer.
@@ -88,7 +90,7 @@ def _emit_event(event_producer: FiDigitrafficMarineAisEventProducer,
         enriched["mmsi"] = mmsi
         data = data_class.from_serializer_dict(enriched)
         send_fn = getattr(event_producer, send_method_name)
-        send_fn(_mmsi=str(data.mmsi), data=data, flush_producer=False, key_mapper=_mmsi_key_mapper)
+        send_fn(_mmsi=str(data.mmsi), data=data, flush_producer=False)
         return True
     except Exception as e:
         logger.warning("Failed to emit %s for MMSI %d: %s", topic_type, mmsi, e)
@@ -145,15 +147,39 @@ class DigitrafficPortCallPoller:
     def __init__(self,
                  kafka_producer: Producer,
                  event_producer: FiDigitrafficMarinePortcallEventProducer,
+                 vessel_details_event_producer: Optional[FiDigitrafficMarinePortcallVesseldetailsEventProducer],
+                 port_location_event_producer: Optional[FiDigitrafficMarinePortcallPortlocationEventProducer],
                  state_file: str,
                  poll_interval: int = 300,
                  session: Optional[requests.Session] = None):
         self._kafka = kafka_producer
         self._event_producer = event_producer
+        self._vessel_details_event_producer = vessel_details_event_producer
+        self._port_location_event_producer = port_location_event_producer
         self._state_file = state_file
         self._poll_interval = poll_interval
         self._session = session or requests.Session()
         self._session.headers.update({"User-Agent": "real-time-sources-digitraffic-maritime/1.0"})
+
+    @classmethod
+    def _empty_state(cls) -> Dict[str, Dict[str, str]]:
+        return {
+            "port_calls": {},
+            "vessel_details": {},
+            "port_locations": {},
+        }
+
+    @classmethod
+    def _normalize_state(cls, state: Any) -> Dict[str, Dict[str, str]]:
+        normalized = cls._empty_state()
+        if not isinstance(state, dict):
+            return normalized
+
+        for section in normalized:
+            raw_section = state.get(section, {})
+            if isinstance(raw_section, dict):
+                normalized[section].update({str(key): str(value) for key, value in raw_section.items()})
+        return normalized
 
     @staticmethod
     def _normalize_optional_text(value: Any) -> Optional[str]:
@@ -179,6 +205,33 @@ class DigitrafficPortCallPoller:
             return float(value)
         except (TypeError, ValueError):
             return default
+
+    @staticmethod
+    def _normalize_optional_float(value: Any) -> Optional[float]:
+        if value is None or value == "":
+            return None
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _normalize_optional_mapping(values: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        return values if any(value is not None for value in values.values()) else None
+
+    @classmethod
+    def _point_coordinates(cls, geometry: Any) -> tuple[Optional[float], Optional[float]]:
+        if not isinstance(geometry, dict):
+            return None, None
+
+        coordinates = geometry.get("coordinates")
+        if not isinstance(coordinates, list) or len(coordinates) < 2:
+            return None, None
+
+        return (
+            cls._normalize_optional_float(coordinates[0]),
+            cls._normalize_optional_float(coordinates[1]),
+        )
 
     @classmethod
     def parse_port_call(cls, payload: Dict[str, Any]) -> Optional[PortCall]:
@@ -246,28 +299,207 @@ class DigitrafficPortCallPoller:
             "port_areas": port_areas,
         })
 
+    @classmethod
+    def parse_vessel_details(cls, payload: Dict[str, Any]) -> Optional[VesselDetails]:
+        """Normalize one raw Digitraffic vessel-details payload into the generated VesselDetails type."""
+        vessel_id = cls._normalize_optional_int(payload.get("vesselId"))
+        updated_at = cls._normalize_optional_text(payload.get("updateTimestamp"))
+        if vessel_id is None or updated_at is None:
+            return None
+
+        construction_raw = payload.get("vesselConstruction") or {}
+        construction = cls._normalize_optional_mapping({
+            "vessel_type_code": cls._normalize_optional_int(construction_raw.get("vesselTypeCode")),
+            "vessel_type_name": cls._normalize_optional_text(construction_raw.get("vesselTypeName")),
+            "ice_class_code": cls._normalize_optional_text(construction_raw.get("iceClassCode")),
+            "ice_class_issue_date": cls._normalize_optional_text(construction_raw.get("iceClassIssueDate")),
+            "ice_class_issue_place": cls._normalize_optional_text(construction_raw.get("iceClassIssuePlace")),
+            "ice_class_end_date": cls._normalize_optional_text(construction_raw.get("iceClassEndDate")),
+            "double_bottom": construction_raw.get("doubleBottom") if construction_raw.get("doubleBottom") is not None else None,
+            "inert_gas_system": construction_raw.get("inertGasSystem") if construction_raw.get("inertGasSystem") is not None else None,
+            "ballast_tank": construction_raw.get("ballastTank") if construction_raw.get("ballastTank") is not None else None,
+        })
+
+        dimensions_raw = payload.get("vesselDimensions") or {}
+        dimensions = cls._normalize_optional_mapping({
+            "tonnage_certificate_issuer": cls._normalize_optional_text(dimensions_raw.get("tonnageCertificateIssuer")),
+            "date_of_issue": cls._normalize_optional_text(dimensions_raw.get("dateOfIssue")),
+            "gross_tonnage": cls._normalize_optional_int(dimensions_raw.get("grossTonnage")),
+            "net_tonnage": cls._normalize_optional_int(dimensions_raw.get("netTonnage")),
+            "dead_weight": cls._normalize_optional_int(dimensions_raw.get("deathWeight")),
+            "length": cls._normalize_optional_float(dimensions_raw.get("length")),
+            "overall_length": cls._normalize_optional_float(dimensions_raw.get("overallLength")),
+            "height": cls._normalize_optional_float(dimensions_raw.get("height")),
+            "breadth": cls._normalize_optional_float(dimensions_raw.get("breadth")),
+            "draught": cls._normalize_optional_float(dimensions_raw.get("draught")),
+            "max_speed": cls._normalize_optional_float(dimensions_raw.get("maxSpeed")),
+            "engine_power": cls._normalize_optional_text(dimensions_raw.get("enginePower")),
+        })
+
+        registration_raw = payload.get("vesselRegistration") or {}
+        registration = cls._normalize_optional_mapping({
+            "nationality": cls._normalize_optional_text(registration_raw.get("nationality")),
+            "port_of_registry": cls._normalize_optional_text(registration_raw.get("portOfRegistry")),
+        })
+
+        system_raw = payload.get("vesselSystem") or {}
+        system = cls._normalize_optional_mapping({
+            "ship_owner": cls._normalize_optional_text(system_raw.get("shipOwner")),
+            "ship_telephone_1": cls._normalize_optional_text(system_raw.get("shipTelephone1")),
+            "ship_email": cls._normalize_optional_text(system_raw.get("shipEmail")),
+            "ship_verifier": cls._normalize_optional_text(system_raw.get("shipVerifier")),
+        })
+
+        return VesselDetails.from_serializer_dict({
+            "vessel_id": vessel_id,
+            "updated_at": updated_at,
+            "mmsi": cls._normalize_optional_int(payload.get("mmsi")),
+            "name": cls._normalize_optional_text(payload.get("name")),
+            "name_prefix": cls._normalize_optional_text(payload.get("namePrefix")),
+            "imo_lloyds": cls._normalize_optional_int(payload.get("imoLloyds")),
+            "radio_call_sign": cls._normalize_optional_text(payload.get("radioCallSign")),
+            "radio_call_sign_type": cls._normalize_optional_text(payload.get("radioCallSignType")),
+            "data_source": cls._normalize_optional_text(payload.get("dataSource")),
+            "vessel_construction": construction,
+            "vessel_dimensions": dimensions,
+            "vessel_registration": registration,
+            "vessel_system": system,
+        })
+
+    @classmethod
+    def parse_port_location(
+        cls,
+        port_feature: Dict[str, Any],
+        data_updated_time: str,
+        port_area_features: list[Dict[str, Any]],
+        berth_entries: list[Dict[str, Any]],
+    ) -> Optional[PortLocation]:
+        """Normalize one raw Digitraffic port location into the generated PortLocation type."""
+        properties = port_feature.get("properties") or {}
+        locode = cls._normalize_optional_text(port_feature.get("locode") or properties.get("locode"))
+        location_name = cls._normalize_optional_text(properties.get("locationName"))
+        country = cls._normalize_optional_text(properties.get("country"))
+        if locode is None or data_updated_time is None or location_name is None or country is None:
+            return None
+
+        longitude, latitude = cls._point_coordinates(port_feature.get("geometry"))
+
+        port_areas = []
+        for port_area_feature in port_area_features:
+            area_properties = port_area_feature.get("properties") or {}
+            port_area_code = cls._normalize_optional_text(port_area_feature.get("portAreaCode"))
+            port_area_name = cls._normalize_optional_text(area_properties.get("portAreaName"))
+            if port_area_code is None or port_area_name is None:
+                continue
+
+            area_longitude, area_latitude = cls._point_coordinates(port_area_feature.get("geometry"))
+            port_areas.append(PortArea.from_serializer_dict({
+                "port_area_code": port_area_code,
+                "port_area_name": port_area_name,
+                "longitude": area_longitude,
+                "latitude": area_latitude,
+            }))
+
+        berths = []
+        for berth_entry in berth_entries:
+            port_area_code = cls._normalize_optional_text(berth_entry.get("portAreaCode"))
+            berth_code = cls._normalize_optional_text(berth_entry.get("berthCode"))
+            berth_name = cls._normalize_optional_text(berth_entry.get("berthName"))
+            if port_area_code is None or berth_code is None or berth_name is None:
+                continue
+
+            berths.append(Berth.from_serializer_dict({
+                "port_area_code": port_area_code,
+                "berth_code": berth_code,
+                "berth_name": berth_name,
+            }))
+
+        return PortLocation.from_serializer_dict({
+            "locode": locode,
+            "data_updated_time": data_updated_time,
+            "location_name": location_name,
+            "country": country,
+            "longitude": longitude,
+            "latitude": latitude,
+            "port_areas": port_areas,
+            "berths": berths,
+        })
+
     def load_state(self) -> Dict[str, Dict[str, str]]:
-        """Load deduplication state for port calls."""
+        """Load deduplication state for port calls and companion reference data."""
         try:
             if self._state_file and os.path.exists(self._state_file):
                 with open(self._state_file, "r", encoding="utf-8") as file_handle:
-                    state = json.load(file_handle)
-                    if isinstance(state, dict) and isinstance(state.get("port_calls"), dict):
-                        return state
+                    return self._normalize_state(json.load(file_handle))
         except Exception as exc:
             logger.warning("Failed to load port call state from %s: %s", self._state_file, exc)
-        return {"port_calls": {}}
+        return self._empty_state()
 
     def save_state(self, state: Dict[str, Dict[str, str]]) -> None:
         """Persist port-call deduplication state."""
+        state_to_save = self._normalize_state(state)
         try:
             directory = os.path.dirname(self._state_file)
             if directory:
                 os.makedirs(directory, exist_ok=True)
             with open(self._state_file, "w", encoding="utf-8") as file_handle:
-                json.dump(state, file_handle, indent=2)
+                json.dump(state_to_save, file_handle, indent=2)
         except Exception as exc:
             logger.warning("Failed to save port call state to %s: %s", self._state_file, exc)
+
+    def poll_vessel_details(self) -> list[VesselDetails]:
+        """Fetch and normalize current Digitraffic vessel details."""
+        response = self._session.get(_VESSEL_DETAILS_URL, timeout=60)
+        response.raise_for_status()
+        payload = response.json()
+        vessel_details = []
+        for raw_vessel_details in payload if isinstance(payload, list) else []:
+            vessel_detail = self.parse_vessel_details(raw_vessel_details)
+            if vessel_detail is not None:
+                vessel_details.append(vessel_detail)
+        return vessel_details
+
+    def poll_port_locations(self) -> list[PortLocation]:
+        """Fetch and normalize the current Digitraffic port-location catalog."""
+        response = self._session.get(_PORTS_URL, timeout=60)
+        response.raise_for_status()
+        payload = response.json()
+        data_updated_time = self._normalize_optional_text(payload.get("dataUpdatedTime"))
+        if data_updated_time is None:
+            return []
+
+        raw_port_areas = (payload.get("portAreas") or payload.get("portArea") or {}).get("features", []) or []
+        raw_berths = (payload.get("berths") or {}).get("berths", []) or []
+
+        port_areas_by_locode: Dict[str, list[Dict[str, Any]]] = {}
+        for port_area_feature in raw_port_areas:
+            locode = self._normalize_optional_text(port_area_feature.get("locode"))
+            if locode is None:
+                continue
+            port_areas_by_locode.setdefault(locode, []).append(port_area_feature)
+
+        berths_by_locode: Dict[str, list[Dict[str, Any]]] = {}
+        for berth_entry in raw_berths:
+            locode = self._normalize_optional_text(berth_entry.get("locode"))
+            if locode is None:
+                continue
+            berths_by_locode.setdefault(locode, []).append(berth_entry)
+
+        port_locations = []
+        for port_feature in (payload.get("ssnLocations") or {}).get("features", []) or []:
+            locode = self._normalize_optional_text(port_feature.get("locode"))
+            if locode is None:
+                continue
+
+            port_location = self.parse_port_location(
+                port_feature,
+                data_updated_time,
+                port_areas_by_locode.get(locode, []),
+                berths_by_locode.get(locode, []),
+            )
+            if port_location is not None:
+                port_locations.append(port_location)
+        return port_locations
 
     def poll_port_calls(self) -> list[PortCall]:
         """Fetch and normalize current Digitraffic port calls."""
@@ -282,31 +514,63 @@ class DigitrafficPortCallPoller:
         return port_calls
 
     def poll_and_send(self, once: bool = False) -> None:
-        """Poll and emit new or updated port calls."""
+        """Poll and emit updated reference data followed by updated port calls."""
         while True:
             try:
                 state = self.load_state()
-                last_seen = state.get("port_calls", {})
+                port_call_state = state.get("port_calls", {})
+                vessel_detail_state = state.get("vessel_details", {})
+                port_location_state = state.get("port_locations", {})
+
+                vessel_details = self.poll_vessel_details()
+                port_locations = self.poll_port_locations()
                 port_calls = self.poll_port_calls()
 
                 sent = 0
+                if self._vessel_details_event_producer is not None:
+                    for vessel_detail in vessel_details:
+                        key = str(vessel_detail.vessel_id)
+                        if vessel_detail_state.get(key) == vessel_detail.updated_at:
+                            continue
+                        self._vessel_details_event_producer.send_fi_digitraffic_marine_portcall_vessel_details(
+                            _vessel_id=key,
+                            data=vessel_detail,
+                            flush_producer=False,
+                        )
+                        vessel_detail_state[key] = vessel_detail.updated_at
+                        sent += 1
+
+                if self._port_location_event_producer is not None:
+                    for port_location in port_locations:
+                        key = port_location.locode
+                        if port_location_state.get(key) == port_location.data_updated_time:
+                            continue
+                        self._port_location_event_producer.send_fi_digitraffic_marine_portcall_port_location(
+                            _locode=key,
+                            data=port_location,
+                            flush_producer=False,
+                        )
+                        port_location_state[key] = port_location.data_updated_time
+                        sent += 1
+
                 for port_call in port_calls:
                     key = str(port_call.port_call_id)
-                    if last_seen.get(key) == port_call.updated_at:
+                    if port_call_state.get(key) == port_call.updated_at:
                         continue
                     self._event_producer.send_fi_digitraffic_marine_portcall_port_call(
                         _port_call_id=key,
                         data=port_call,
                         flush_producer=False,
-                        key_mapper=_port_call_key_mapper,
                     )
-                    last_seen[key] = port_call.updated_at
+                    port_call_state[key] = port_call.updated_at
                     sent += 1
 
                 if sent:
                     self._kafka.flush()
-                    logger.info("Sent %d new or updated port call event(s)", sent)
+                    logger.info("Sent %d new or updated Digitraffic marine event(s)", sent)
 
+                state["vessel_details"] = {str(vessel_detail.vessel_id): vessel_detail.updated_at for vessel_detail in vessel_details}
+                state["port_locations"] = {port_location.locode: port_location.data_updated_time for port_location in port_locations}
                 state["port_calls"] = {str(port_call.port_call_id): port_call.updated_at for port_call in port_calls}
                 self.save_state(state)
             except Exception as exc:
@@ -423,9 +687,13 @@ def main() -> None:
         kafka_config = _build_kafka_config(bootstrap, sasl_user, sasl_pw)
         kafka_producer = Producer(kafka_config)
         event_producer = FiDigitrafficMarinePortcallEventProducer(kafka_producer, topic)
+        vessel_details_event_producer = FiDigitrafficMarinePortcallVesseldetailsEventProducer(kafka_producer, topic)
+        port_location_event_producer = FiDigitrafficMarinePortcallPortlocationEventProducer(kafka_producer, topic)
         poller = DigitrafficPortCallPoller(
             kafka_producer=kafka_producer,
             event_producer=event_producer,
+            vessel_details_event_producer=vessel_details_event_producer,
+            port_location_event_producer=port_location_event_producer,
             state_file=args.state_file,
             poll_interval=args.poll_interval,
         )

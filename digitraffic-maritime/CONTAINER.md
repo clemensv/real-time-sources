@@ -1,6 +1,9 @@
-# Digitraffic Marine AIS Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Digitraffic Marine Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 
-This container image provides a bridge between Finland's Digitraffic Marine real-time AIS vessel tracking MQTT stream and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge connects to the Digitraffic MQTT WebSocket and forwards vessel positions and metadata to the configured Kafka endpoint.
+This container image provides a bridge between Finland's Digitraffic Marine open data services and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The image supports two runtime modes:
+
+- `stream` connects to the Digitraffic MQTT WebSocket and forwards AIS vessel positions and metadata.
+- `port-calls` polls the Portnet-backed REST APIs and forwards vessel details, port locations, and port call visit updates.
 
 ## Digitraffic Marine Data
 
@@ -10,7 +13,21 @@ Digitraffic Marine is an open data service from [Fintraffic](https://www.fintraf
 
 ## Functionality
 
-The bridge connects to the Digitraffic MQTT endpoint at `wss://meri.digitraffic.fi:443/mqtt`, subscribes to vessel location and metadata topics, and writes messages to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md).
+Both delivery modes write [CloudEvents](https://cloudevents.io/) in JSON format to the configured Kafka endpoint. The emitted event families are documented in [EVENTS.md](EVENTS.md).
+
+### `stream` mode
+
+The default container command is `python -m digitraffic_maritime stream`. It connects to the Digitraffic MQTT endpoint at `wss://meri.digitraffic.fi:443/mqtt`, subscribes to vessel location and metadata topics, and continuously forwards AIS updates.
+
+### `port-calls` mode
+
+The container can also run `python -m digitraffic_maritime port-calls`. In this mode it polls these Digitraffic REST endpoints:
+
+- `https://meri.digitraffic.fi/api/port-call/v1/vessel-details`
+- `https://meri.digitraffic.fi/api/port-call/v1/ports`
+- `https://meri.digitraffic.fi/api/port-call/v1/port-calls`
+
+Each cycle emits reference data first (`VesselDetails`, `PortLocation`) and then visit telemetry (`PortCall`). The bridge persists last-seen timestamps in a JSON state file to suppress duplicates between polls.
 
 ## Database Schemas and Handling
 
@@ -28,6 +45,8 @@ $ docker pull ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
 
 ### With Azure Event Hubs or Fabric Event Streams
 
+This uses the default `stream` mode:
+
 ```shell
 $ docker run --rm \
     -e CONNECTION_STRING='<connection-string>' \
@@ -35,6 +54,8 @@ $ docker run --rm \
 ```
 
 ### With a Kafka Broker
+
+This uses the default `stream` mode:
 
 ```shell
 $ docker run --rm \
@@ -61,6 +82,32 @@ $ docker run --rm \
     -e CONNECTION_STRING='<connection-string>' \
     -e DIGITRAFFIC_FILTER_MMSI='230629000,219598000' \
     ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
+```
+
+### Port Calls and Reference Data
+
+Run the image with an explicit command override to enable `port-calls` mode:
+
+```shell
+$ docker run --rm \
+    -e CONNECTION_STRING='<connection-string>' \
+    ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest \
+    python -m digitraffic_maritime port-calls
+```
+
+### Port Calls with Direct Kafka Parameters
+
+```shell
+$ docker run --rm \
+    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
+    -e KAFKA_TOPIC='<kafka-topic>' \
+    -e SASL_USERNAME='<sasl-username>' \
+    -e SASL_PASSWORD='<sasl-password>' \
+    -e DIGITRAFFIC_PORTCALL_POLL_INTERVAL='300' \
+    -e DIGITRAFFIC_PORTCALL_STATE_FILE='/state/portcalls.json' \
+    -v digitraffic-portcalls-state:/state \
+    ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest \
+    python -m digitraffic_maritime port-calls
 ```
 
 ## Environment Variables
@@ -96,3 +143,11 @@ Comma-separated list of MMSI numbers to include. When set, the bridge subscribes
 ### `DIGITRAFFIC_FLUSH_INTERVAL`
 
 Number of events to buffer before flushing the Kafka producer. Default: `1000`.
+
+### `DIGITRAFFIC_PORTCALL_POLL_INTERVAL`
+
+Polling interval in seconds for the `port-calls` command. Default: `300`.
+
+### `DIGITRAFFIC_PORTCALL_STATE_FILE`
+
+JSON file used by the `port-calls` command to persist last-seen timestamps for `VesselDetails`, `PortLocation`, and `PortCall` records. Default: `~/.digitraffic_portcalls_state.json` inside the container unless overridden.

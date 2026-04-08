@@ -29,11 +29,11 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         Create instance of BuoySolarRadiationObservation for testing
         """
         instance = BuoySolarRadiationObservation(
-            station_id='mbhduwpqhrmtyzmmllkr',
+            station_id='xcfnshypuuzivtgyxomp',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            shortwave_radiation_licor=float(55.394096416070624),
-            shortwave_radiation_eppley=float(92.38834953141402),
-            longwave_radiation=float(39.4799765515598)
+            shortwave_radiation_licor=float(20.44117616835378),
+            shortwave_radiation_eppley=float(62.000579829021675),
+            longwave_radiation=float(11.64382960347189)
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'mbhduwpqhrmtyzmmllkr'
+        test_value = 'xcfnshypuuzivtgyxomp'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test shortwave_radiation_licor property
         """
-        test_value = float(55.394096416070624)
+        test_value = float(20.44117616835378)
         self.instance.shortwave_radiation_licor = test_value
         self.assertEqual(self.instance.shortwave_radiation_licor, test_value)
     
@@ -66,7 +66,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test shortwave_radiation_eppley property
         """
-        test_value = float(92.38834953141402)
+        test_value = float(62.000579829021675)
         self.instance.shortwave_radiation_eppley = test_value
         self.assertEqual(self.instance.shortwave_radiation_eppley, test_value)
     
@@ -74,7 +74,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test longwave_radiation property
         """
-        test_value = float(39.4799765515598)
+        test_value = float(11.64382960347189)
         self.instance.longwave_radiation = test_value
         self.assertEqual(self.instance.longwave_radiation, test_value)
     

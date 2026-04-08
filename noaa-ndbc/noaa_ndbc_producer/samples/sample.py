@@ -41,6 +41,10 @@ from noaa_ndbc_producer_data.buoystation import BuoyStation
 from noaa_ndbc_producer_data.buoysolarradiationobservation import BuoySolarRadiationObservation
 from noaa_ndbc_producer_data.buoyoceanographicobservation import BuoyOceanographicObservation
 from noaa_ndbc_producer_data.buoydartmeasurement import BuoyDartMeasurement
+from noaa_ndbc_producer_data.buoycontinuouswindobservation import BuoyContinuousWindObservation
+from noaa_ndbc_producer_data.buoysupplementalmeasurement import BuoySupplementalMeasurement
+from noaa_ndbc_producer_data.buoydetailedwavesummary import BuoyDetailedWaveSummary
+from noaa_ndbc_producer_data.buoyhourlyrainmeasurement import BuoyHourlyRainMeasurement
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -99,6 +103,38 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement' event to Kafka topic.
     await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement(_station_id = 'TODO: replace me', data = _buoy_dart_measurement)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement' event: {_buoy_dart_measurement.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation event
+    _buoy_continuous_wind_observation = BuoyContinuousWindObservation()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation(_station_id = 'TODO: replace me', data = _buoy_continuous_wind_observation)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation' event: {_buoy_continuous_wind_observation.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement event
+    _buoy_supplemental_measurement = BuoySupplementalMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement(_station_id = 'TODO: replace me', data = _buoy_supplemental_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement' event: {_buoy_supplemental_measurement.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary event
+    _buoy_detailed_wave_summary = BuoyDetailedWaveSummary()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary(_station_id = 'TODO: replace me', data = _buoy_detailed_wave_summary)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary' event: {_buoy_detailed_wave_summary.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement event
+    _buoy_hourly_rain_measurement = BuoyHourlyRainMeasurement()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement' event to Kafka topic.
+    await microsoft_open_data_usnoaandbcevent_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement(_station_id = 'TODO: replace me', data = _buoy_hourly_rain_measurement)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement' event: {_buoy_hourly_rain_measurement.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

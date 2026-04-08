@@ -11,6 +11,7 @@ packages = [{include = "digitraffic_maritime"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
+requests = ">=2.32.3"
 paho-mqtt = ">=2.0.0"
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"

@@ -114,6 +114,78 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement"
+          },
+          "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
+            "name": "BuoyContinuousWindObservation",
+            "envelope": "CloudEvents/1.0",
+            "envelopemetadata": {
+              "type": {
+                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
+              },
+              "source": {
+                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+              },
+              "subject": {
+                "value": "{station_id}",
+                "type": "uritemplate"
+              }
+            },
+            "dataschemaformat": "JsonStructure/draft-02",
+            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
+          },
+          "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
+            "name": "BuoySupplementalMeasurement",
+            "envelope": "CloudEvents/1.0",
+            "envelopemetadata": {
+              "type": {
+                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
+              },
+              "source": {
+                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+              },
+              "subject": {
+                "value": "{station_id}",
+                "type": "uritemplate"
+              }
+            },
+            "dataschemaformat": "JsonStructure/draft-02",
+            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
+          },
+          "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
+            "name": "BuoyDetailedWaveSummary",
+            "envelope": "CloudEvents/1.0",
+            "envelopemetadata": {
+              "type": {
+                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
+              },
+              "source": {
+                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+              },
+              "subject": {
+                "value": "{station_id}",
+                "type": "uritemplate"
+              }
+            },
+            "dataschemaformat": "JsonStructure/draft-02",
+            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
+          },
+          "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
+            "name": "BuoyHourlyRainMeasurement",
+            "envelope": "CloudEvents/1.0",
+            "envelopemetadata": {
+              "type": {
+                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
+              },
+              "source": {
+                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+              },
+              "subject": {
+                "value": "{station_id}",
+                "type": "uritemplate"
+              }
+            },
+            "dataschemaformat": "JsonStructure/draft-02",
+            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
         }
       }
     }
@@ -483,6 +555,247 @@
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDartMeasurement",
                 "description": "Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
+          "name": "BuoyContinuousWindObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "BuoyContinuousWindObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NDBC station identifier for the station publishing the .cwind realtime2 file."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file."
+                  },
+                  "wind_direction": {
+                    "type": ["double", "null"],
+                    "description": "Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "wind_speed": {
+                    "type": ["double", "null"],
+                    "description": "Ten-minute average wind speed from the WSPD column. Unit: meters per second.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "gust_direction": {
+                    "type": ["double", "null"],
+                    "description": "Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "gust": {
+                    "type": ["double", "null"],
+                    "description": "Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "gust_time_code": {
+                    "type": ["string", "null"],
+                    "description": "HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
+                    "pattern": "^[0-9]{4}$"
+                  }
+                },
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyContinuousWindObservation",
+                "description": "Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
+          "name": "BuoySupplementalMeasurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "BuoySupplementalMeasurement",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NDBC station identifier for the station publishing the .supl realtime2 file."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file."
+                  },
+                  "lowest_pressure": {
+                    "type": ["double", "null"],
+                    "description": "Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals.",
+                    "unit": "hPa",
+                    "symbol": "hPa"
+                  },
+                  "lowest_pressure_time_code": {
+                    "type": ["string", "null"],
+                    "description": "HHMM UTC time code from the PTIME column indicating when the lowest one-minute pressure occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
+                    "pattern": "^[0-9]{4}$"
+                  },
+                  "highest_wind_speed": {
+                    "type": ["double", "null"],
+                    "description": "Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "highest_wind_direction": {
+                    "type": ["double", "null"],
+                    "description": "Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "highest_wind_time_code": {
+                    "type": ["string", "null"],
+                    "description": "HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
+                    "pattern": "^[0-9]{4}$"
+                  }
+                },
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySupplementalMeasurement",
+                "description": "Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
+          "name": "BuoyDetailedWaveSummary",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "BuoyDetailedWaveSummary",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NDBC station identifier for the station publishing the .spec realtime2 file."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file."
+                  },
+                  "significant_wave_height": {
+                    "type": ["double", "null"],
+                    "description": "Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "swell_height": {
+                    "type": ["double", "null"],
+                    "description": "Swell-wave height from the SwH column. Unit: meters.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "swell_period": {
+                    "type": ["double", "null"],
+                    "description": "Swell-wave period from the SwP column. Unit: seconds.",
+                    "unit": "s",
+                    "symbol": "s"
+                  },
+                  "wind_wave_height": {
+                    "type": ["double", "null"],
+                    "description": "Wind-wave height from the WWH column. Unit: meters.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "wind_wave_period": {
+                    "type": ["double", "null"],
+                    "description": "Wind-wave period from the WWP column. Unit: seconds.",
+                    "unit": "s",
+                    "symbol": "s"
+                  },
+                  "swell_direction": {
+                    "type": ["string", "null"],
+                    "description": "Swell direction from the SwD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value."
+                  },
+                  "wind_wave_direction": {
+                    "type": ["string", "null"],
+                    "description": "Wind-wave direction from the WWD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value."
+                  },
+                  "steepness": {
+                    "type": ["string", "null"],
+                    "description": "Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP."
+                  },
+                  "average_wave_period": {
+                    "type": ["double", "null"],
+                    "description": "Average wave period from the APD column. Unit: seconds.",
+                    "unit": "s",
+                    "symbol": "s"
+                  },
+                  "mean_wave_direction": {
+                    "type": ["double", "null"],
+                    "description": "Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  }
+                },
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDetailedWaveSummary",
+                "description": "Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
+          "name": "BuoyHourlyRainMeasurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "BuoyHourlyRainMeasurement",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NDBC station identifier for the station publishing the .rain realtime2 file."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file."
+                  },
+                  "accumulation": {
+                    "type": ["double", "null"],
+                    "description": "Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters.",
+                    "unit": "mm",
+                    "symbol": "mm"
+                  }
+                },
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyHourlyRainMeasurement",
+                "description": "Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp."
               }
             }
           }
@@ -902,6 +1215,290 @@
                   {
                     "name": "water_column_height",
                     "type": "double"
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
+          "name": "BuoyContinuousWindObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoyContinuousWindObservation",
+                "doc": "Continuous-wind measurement from the NDBC .cwind realtime2 product.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "wind_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wind_speed",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "gust_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "gust",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "gust_time_code",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
+          "name": "BuoySupplementalMeasurement",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoySupplementalMeasurement",
+                "doc": "Supplemental hourly extrema from the NDBC .supl realtime2 product.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "lowest_pressure",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "lowest_pressure_time_code",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "highest_wind_speed",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "highest_wind_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "highest_wind_time_code",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
+          "name": "BuoyDetailedWaveSummary",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoyDetailedWaveSummary",
+                "doc": "Detailed wave-summary record from the NDBC .spec realtime2 product.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "significant_wave_height",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "swell_height",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "swell_period",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wind_wave_height",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wind_wave_period",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "swell_direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "wind_wave_direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "steepness",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "average_wave_period",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "mean_wave_direction",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
+          "name": "BuoyHourlyRainMeasurement",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoyHourlyRainMeasurement",
+                "doc": "Hourly precipitation total from the NDBC .rain realtime2 product.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "accumulation",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
                   }
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"

@@ -2,12 +2,14 @@
 
 ## Overview
 
-**NOAA NDBC Buoy Observations Poller** polls the National Data Buoy Center (NDBC) for the latest buoy observations across the United States and sends them to a Kafka topic as CloudEvents. The tool tracks previously seen observation timestamps per station to avoid sending duplicates.
+**NOAA NDBC Buoy Observations Poller** polls the National Data Buoy Center (NDBC) station table, the composite `latest_obs.txt` feed, and selected `realtime2` family files, then sends them to a Kafka topic as CloudEvents. The bridge emits station reference data first and tracks previously seen timestamps per station and feed family to avoid sending duplicates.
 
 ## Key Features
 
-- **NDBC Observations Polling**: Fetch the latest buoy observations from `https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt`.
-- **Deduplication**: Tracks last seen observation timestamp per station in a state file to avoid reprocessing.
+- **Reference Data First**: Emits `BuoyStation` reference events from the NDBC station table before telemetry polling begins.
+- **Composite Latest Observations**: Fetches the standard buoy observation feed from `https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt`.
+- **Realtime2 Coverage**: Polls the `srad`, `ocean`, `dart`, `cwind`, `supl`, `spec`, and `rain` realtime2 families when available for a station.
+- **Family-Aware Deduplication**: Tracks last seen observation timestamps per station and feed family in a state file to avoid reprocessing.
 - **Kafka Integration**: Send buoy observations to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
 
@@ -69,31 +71,25 @@ Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;S
 - `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
 - `NDBC_LAST_POLLED_FILE`: File to store last seen timestamps per station for deduplication.
 
-## NDBC Buoy Observation Properties
+## Event Families
 
-Each buoy observation includes these properties:
+All events are keyed by `station_id`. Full CloudEvents and field documentation lives in [EVENTS.md](EVENTS.md).
 
-| Property | Type | Unit | Description |
-|----------|------|------|-------------|
-| `station_id` | string | — | NDBC station identifier |
-| `latitude` | double | degrees | Station latitude |
-| `longitude` | double | degrees | Station longitude |
-| `timestamp` | string | — | ISO timestamp of observation |
-| `wind_direction` | double | degrees | Wind direction |
-| `wind_speed` | double | m/s | Wind speed |
-| `gust` | double | m/s | Wind gust speed |
-| `wave_height` | double | meters | Significant wave height |
-| `dominant_wave_period` | double | seconds | Dominant wave period |
-| `average_wave_period` | double | seconds | Average wave period |
-| `mean_wave_direction` | double | degrees | Mean wave direction |
-| `pressure` | double | hPa | Sea level pressure |
-| `air_temperature` | double | celsius | Air temperature |
-| `water_temperature` | double | celsius | Sea surface temperature |
-| `dewpoint` | double | celsius | Dewpoint temperature |
+| Event Type | Upstream Source | Description |
+|------------|-----------------|-------------|
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation` | NDBC station table | Reference metadata for the observing platform |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation` | `latest_obs.txt` | Standard meteorological and oceanographic snapshot |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation` | `realtime2/*.srad` | Shortwave and longwave radiation telemetry |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation` | `realtime2/*.ocean` | Depth-tagged ocean chemistry and physical measurements |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement` | `realtime2/*.dart` | DART tsunami buoy water-column measurements |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation` | `realtime2/*.cwind` | Ten-minute wind averages plus hourly gust extrema |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement` | `realtime2/*.supl` | Hourly pressure minima and one-minute wind maxima |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary` | `realtime2/*.spec` | Swell, wind-wave, and wave-steepness summary values |
+| `Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement` | `realtime2/*.rain` | One-hour precipitation accumulation |
 
 ## Data Source
 
-The NOAA National Data Buoy Center (NDBC) maintains a network of approximately 1,300 buoys and coastal stations that measure meteorological and oceanographic conditions. Observations include wind, waves, atmospheric pressure, air and sea surface temperatures. Data is updated approximately every 5 minutes.
+The NOAA National Data Buoy Center (NDBC) maintains a network of approximately 1,300 buoys and coastal stations that measure meteorological and oceanographic conditions. The bridge covers the standard observation composite feed plus selected realtime2 channel families for radiation, ocean chemistry, DART, wind extrema, wave summaries, and rainfall. Data is updated approximately every 5 minutes for the composite feed, with station-specific realtime2 products published on their own cadences.
 
 - **Latest observations**: `https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt`
 - **NDBC home page**: `https://www.ndbc.noaa.gov/`

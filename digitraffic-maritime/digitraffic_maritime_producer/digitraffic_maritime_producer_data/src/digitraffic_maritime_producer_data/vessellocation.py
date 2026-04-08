@@ -171,15 +171,15 @@ class VesselLocation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(94),
-            time=int(17),
-            sog=float(33.203911035339814),
-            cog=float(49.70426613118839),
-            navStat=int(47),
-            rot=int(78),
-            posAcc=False,
+            mmsi=int(70),
+            time=int(30),
+            sog=float(44.02708777302499),
+            cog=float(3.8201412940597645),
+            navStat=int(97),
+            rot=int(33),
+            posAcc=True,
             raim=True,
-            heading=int(34),
-            lon=float(33.0404537129625),
-            lat=float(56.610378070389864)
+            heading=int(58),
+            lon=float(83.59517655201986),
+            lat=float(85.45386942503005)
         )

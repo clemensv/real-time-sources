@@ -1,28 +1,50 @@
-# Digitraffic Marine AIS Bridge Usage Guide
+# Digitraffic Marine Bridge Usage Guide
 
 ## Overview
 
-**Digitraffic Marine AIS Bridge** connects to Finland's
+**Digitraffic Marine Bridge** connects to Finland's
 [Digitraffic](https://www.digitraffic.fi/) MQTT stream for real-time AIS
-vessel tracking and forwards decoded messages to a Kafka topic as
+vessel tracking and also polls Digitraffic's Port Call REST APIs for vessel
+visit and companion reference data. Both paths are forwarded to Kafka as
 [CloudEvents](https://cloudevents.io/) in JSON format.
 
-This is a **streaming** bridge — it holds an open MQTT WebSocket
-connection to `meri.digitraffic.fi` and continuously forwards vessel
-position and metadata messages. No polling. No API key required.
+The bridge has two delivery modes:
+
+- `stream` keeps an open MQTT WebSocket connection to `meri.digitraffic.fi`
+  and continuously forwards vessel position and metadata messages.
+- `port-calls` polls the Portnet-backed REST APIs and emits vessel details,
+  port locations, and port call visit updates.
 
 ## Key Features
 
 - **Real-time MQTT stream**: ~35 messages/second from Digitraffic's
   government-operated AIS infrastructure
+- **Port Call polling**: Digitraffic REST polling for vessel visits and
+  companion reference data
 - **No authentication required**: Open data under Creative Commons 4.0 BY
 - **Baltic Sea coverage**: Finnish waters, Sweden, Estonia, Latvia,
   Lithuania, Denmark, Germany, Poland, and transit traffic
-- **Two event types**: Vessel positions and vessel metadata
+- **Five event types**: AIS vessel positions, AIS vessel metadata, port calls,
+  vessel details, and port locations
 - **MMSI filtering**: Subscribe to specific vessels via MQTT topic filters
 - **Auto-reconnect**: Exponential backoff on connection failures
+- **Reference data ahead of visits**: The `port-calls` command emits vessel
+  details and port locations before port call visit events in each cycle
 - **Kafka integration**: SASL PLAIN authentication for Event Hubs / Fabric
   Event Streams
+
+## Event Families
+
+The bridge emits these CloudEvents families. Full field documentation lives in
+[EVENTS.md](EVENTS.md).
+
+| Event Type | Command | Identity |
+|------------|---------|----------|
+| `fi.digitraffic.marine.ais.VesselLocation` | `stream` | `{mmsi}` |
+| `fi.digitraffic.marine.ais.VesselMetadata` | `stream` | `{mmsi}` |
+| `fi.digitraffic.marine.portcall.PortCall` | `port-calls` | `{port_call_id}` |
+| `fi.digitraffic.marine.portcall.VesselDetails` | `port-calls` | `{vessel_id}` |
+| `fi.digitraffic.marine.portcall.PortLocation` | `port-calls` | `{locode}` |
 
 ## Data Source
 
@@ -132,6 +154,28 @@ digitraffic-maritime stream \
     -c "<conn_string>" \
     --mmsi-filter "230629000,219598000"
 ```
+
+### Poll Port Calls and Reference Data
+
+Poll the Portnet-backed REST APIs and emit vessel details, port locations, and
+port calls to Kafka:
+
+```bash
+digitraffic-maritime port-calls \
+  -c "<conn_string>"
+```
+
+### Command-Line Arguments (port-calls)
+
+| Argument | Env Var | Description |
+|----------|---------|-------------|
+| `-c`, `--connection-string` | `CONNECTION_STRING` | Event Hubs / Fabric connection string |
+| `--kafka-bootstrap-servers` | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers |
+| `--kafka-topic` | `KAFKA_TOPIC` | Kafka topic name |
+| `--sasl-username` | `SASL_USERNAME` | SASL PLAIN username |
+| `--sasl-password` | `SASL_PASSWORD` | SASL PLAIN password |
+| `--poll-interval` | `DIGITRAFFIC_PORTCALL_POLL_INTERVAL` | Port call polling interval in seconds |
+| `--state-file` | `DIGITRAFFIC_PORTCALL_STATE_FILE` | JSON file used to persist last-seen reference and visit timestamps |
 
 ## MQTT Topics
 

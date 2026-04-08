@@ -41,6 +41,48 @@
       "messagegroups": [
         "#/messagegroups/fi.digitraffic.marine.portcall"
       ]
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "digitraffic-maritime",
+          "key": "{vessel_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails"
+      ]
+    },
+    "fi.digitraffic.marine.portcall.portlocation.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "digitraffic-maritime",
+          "key": "{locode}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.digitraffic.marine.portcall.portlocation"
+      ]
     }
   },
   "messagegroups": {
@@ -103,6 +145,50 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.jstruct/schemas/fi.digitraffic.marine.portcall.PortCall"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.vesseldetails": {
+      "messages": {
+        "fi.digitraffic.marine.portcall.VesselDetails": {
+          "name": "VesselDetails",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.digitraffic.marine.portcall.VesselDetails"
+            },
+            "source": {
+              "value": "https://meri.digitraffic.fi/api/port-call/v1/vessel-details"
+            },
+            "subject": {
+              "value": "{vessel_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.jstruct/schemas/fi.digitraffic.marine.portcall.VesselDetails"
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.portlocation": {
+      "messages": {
+        "fi.digitraffic.marine.portcall.PortLocation": {
+          "name": "PortLocation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "fi.digitraffic.marine.portcall.PortLocation"
+            },
+            "source": {
+              "value": "https://meri.digitraffic.fi/api/port-call/v1/ports"
+            },
+            "subject": {
+              "value": "{locode}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fi.digitraffic.marine.portcall.reference.jstruct/schemas/fi.digitraffic.marine.portcall.PortLocation"
         }
       }
     }
@@ -443,6 +529,351 @@
                           "description": "Departure draught reported for this berth or port-area assignment in meters.",
                           "unit": "m",
                           "symbol": "m"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.digitraffic.marine.portcall.reference.jstruct": {
+      "schemas": {
+        "fi.digitraffic.marine.portcall.VesselDetails": {
+          "name": "VesselDetails",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://meri.digitraffic.fi/schemas/fi/digitraffic/marine/portcall/VesselDetails",
+                "type": "object",
+                "name": "VesselDetails",
+                "description": "Reference record from Digitraffic's Port Call vessel-details API. Each event represents the current known metadata for one vessel entity keyed by Digitraffic's stable vessel identifier and includes identity, construction, dimensions, registration, and contact details sourced from Portnet.",
+                "definitions": {
+                  "VesselConstruction": {
+                    "name": "VesselConstruction",
+                    "type": "object",
+                    "description": "Construction and classification attributes for the vessel.",
+                    "properties": {
+                      "vessel_type_code": {
+                        "type": ["int32", "null"],
+                        "description": "Digitraffic vessel type code from vesselConstruction.vesselTypeCode when available."
+                      },
+                      "vessel_type_name": {
+                        "type": ["string", "null"],
+                        "description": "Human-readable vessel type name from vesselConstruction.vesselTypeName when available."
+                      },
+                      "ice_class_code": {
+                        "type": ["string", "null"],
+                        "description": "Ice class code reported for the vessel when available."
+                      },
+                      "ice_class_issue_date": {
+                        "type": ["datetime", "null"],
+                        "description": "Date when the current ice-class endorsement was issued, when available."
+                      },
+                      "ice_class_issue_place": {
+                        "type": ["string", "null"],
+                        "description": "Place where the ice-class endorsement was issued when available."
+                      },
+                      "ice_class_end_date": {
+                        "type": ["datetime", "null"],
+                        "description": "Date when the current ice-class endorsement ends, when available."
+                      },
+                      "double_bottom": {
+                        "type": ["boolean", "null"],
+                        "description": "True when the vessel is reported as having a double bottom."
+                      },
+                      "inert_gas_system": {
+                        "type": ["boolean", "null"],
+                        "description": "True when the vessel is reported as having an inert gas system."
+                      },
+                      "ballast_tank": {
+                        "type": ["boolean", "null"],
+                        "description": "True when the vessel is reported as having a ballast tank."
+                      }
+                    }
+                  },
+                  "VesselDimensions": {
+                    "name": "VesselDimensions",
+                    "type": "object",
+                    "description": "Tonnage and dimensional attributes for the vessel.",
+                    "properties": {
+                      "tonnage_certificate_issuer": {
+                        "type": ["string", "null"],
+                        "description": "Issuer of the vessel tonnage certificate when available."
+                      },
+                      "date_of_issue": {
+                        "type": ["datetime", "null"],
+                        "description": "Date when the tonnage certificate was issued when available."
+                      },
+                      "gross_tonnage": {
+                        "type": ["int32", "null"],
+                        "description": "Gross tonnage reported for the vessel when available."
+                      },
+                      "net_tonnage": {
+                        "type": ["int32", "null"],
+                        "description": "Net tonnage reported for the vessel when available."
+                      },
+                      "dead_weight": {
+                        "type": ["int32", "null"],
+                        "description": "Deadweight reported for the vessel from the deathWeight field when available."
+                      },
+                      "length": {
+                        "type": ["double", "null"],
+                        "description": "Reported vessel length in meters when available.",
+                        "unit": "m",
+                        "symbol": "m"
+                      },
+                      "overall_length": {
+                        "type": ["double", "null"],
+                        "description": "Reported vessel overall length in meters when available.",
+                        "unit": "m",
+                        "symbol": "m"
+                      },
+                      "height": {
+                        "type": ["double", "null"],
+                        "description": "Reported vessel height in meters when available.",
+                        "unit": "m",
+                        "symbol": "m"
+                      },
+                      "breadth": {
+                        "type": ["double", "null"],
+                        "description": "Reported vessel breadth in meters when available.",
+                        "unit": "m",
+                        "symbol": "m"
+                      },
+                      "draught": {
+                        "type": ["double", "null"],
+                        "description": "Reported vessel draught in meters when available.",
+                        "unit": "m",
+                        "symbol": "m"
+                      },
+                      "max_speed": {
+                        "type": ["double", "null"],
+                        "description": "Reported maximum vessel speed in knots when available.",
+                        "unit": "kn",
+                        "symbol": "kn"
+                      },
+                      "engine_power": {
+                        "type": ["string", "null"],
+                        "description": "Engine power value as reported by Digitraffic when available."
+                      }
+                    }
+                  },
+                  "VesselRegistration": {
+                    "name": "VesselRegistration",
+                    "type": "object",
+                    "description": "Registry and nationality details for the vessel.",
+                    "properties": {
+                      "nationality": {
+                        "type": ["string", "null"],
+                        "description": "Reported nationality or flag state for the vessel when available."
+                      },
+                      "port_of_registry": {
+                        "type": ["string", "null"],
+                        "description": "Reported port of registry or home port for the vessel when available."
+                      }
+                    }
+                  },
+                  "VesselSystem": {
+                    "name": "VesselSystem",
+                    "type": "object",
+                    "description": "System and contact details carried with the vessel metadata.",
+                    "properties": {
+                      "ship_owner": {
+                        "type": ["string", "null"],
+                        "description": "Reported ship owner name when available."
+                      },
+                      "ship_telephone_1": {
+                        "type": ["string", "null"],
+                        "description": "Primary ship telephone number when available."
+                      },
+                      "ship_email": {
+                        "type": ["string", "null"],
+                        "description": "Ship email address when available."
+                      },
+                      "ship_verifier": {
+                        "type": ["string", "null"],
+                        "description": "Verifier or registry authority code carried with the vessel system record when available."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "vessel_id",
+                  "updated_at"
+                ],
+                "properties": {
+                  "vessel_id": {
+                    "type": "integer",
+                    "description": "Digitraffic vessel identifier from the vesselId field. This is the stable identifier used as the CloudEvents subject and Kafka record key for vessel reference events."
+                  },
+                  "updated_at": {
+                    "type": "datetime",
+                    "description": "Timestamp when Digitraffic last updated the vessel metadata record, from the updateTimestamp field."
+                  },
+                  "mmsi": {
+                    "type": ["int32", "null"],
+                    "description": "Maritime Mobile Service Identity associated with this vessel when available."
+                  },
+                  "name": {
+                    "type": ["string", "null"],
+                    "description": "Reported vessel name."
+                  },
+                  "name_prefix": {
+                    "type": ["string", "null"],
+                    "description": "Reported vessel-name prefix such as ms when available."
+                  },
+                  "imo_lloyds": {
+                    "type": ["int32", "null"],
+                    "description": "IMO or Lloyd's number associated with the vessel when available."
+                  },
+                  "radio_call_sign": {
+                    "type": ["string", "null"],
+                    "description": "Radio call sign associated with the vessel when available."
+                  },
+                  "radio_call_sign_type": {
+                    "type": ["string", "null"],
+                    "description": "Type of radio call sign reported by Digitraffic, for example REAL."
+                  },
+                  "data_source": {
+                    "type": ["string", "null"],
+                    "description": "Upstream data source reported by Digitraffic for the vessel metadata, for example Portnet."
+                  },
+                  "vessel_construction": {
+                    "type": ["null", { "$ref": "#/definitions/VesselConstruction" }],
+                    "description": "Construction and classification attributes for the vessel."
+                  },
+                  "vessel_dimensions": {
+                    "type": ["null", { "$ref": "#/definitions/VesselDimensions" }],
+                    "description": "Tonnage and dimensional attributes for the vessel."
+                  },
+                  "vessel_registration": {
+                    "type": ["null", { "$ref": "#/definitions/VesselRegistration" }],
+                    "description": "Registry and nationality details for the vessel."
+                  },
+                  "vessel_system": {
+                    "type": ["null", { "$ref": "#/definitions/VesselSystem" }],
+                    "description": "System and contact details carried with the vessel metadata."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fi.digitraffic.marine.portcall.PortLocation": {
+          "name": "PortLocation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://meri.digitraffic.fi/schemas/fi/digitraffic/marine/portcall/PortLocation",
+                "type": "object",
+                "name": "PortLocation",
+                "description": "Reference record from Digitraffic's Port Call ports API. Each event represents one SafeSeaNet port location keyed by UN/LOCODE together with its point geometry, port-area definitions, and berth catalog from the same upstream snapshot.",
+                "required": [
+                  "locode",
+                  "data_updated_time",
+                  "location_name",
+                  "country",
+                  "port_areas",
+                  "berths"
+                ],
+                "properties": {
+                  "locode": {
+                    "type": "string",
+                    "description": "UN/LOCODE identifying the port location. This value is used as the CloudEvents subject and Kafka record key for port-location reference events."
+                  },
+                  "data_updated_time": {
+                    "type": "datetime",
+                    "description": "Timestamp when the ports snapshot used for this location was last updated in Digitraffic."
+                  },
+                  "location_name": {
+                    "type": "string",
+                    "description": "Human-readable port or location name from the ssnLocations feature properties."
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "Country name reported for the location in the ssnLocations feature properties."
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Longitude of the port location point in decimal degrees east when the upstream feature includes geometry.",
+                    "unit": "deg",
+                    "symbol": "deg"
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Latitude of the port location point in decimal degrees north when the upstream feature includes geometry.",
+                    "unit": "deg",
+                    "symbol": "deg"
+                  },
+                  "port_areas": {
+                    "type": "array",
+                    "description": "Port areas associated with this location from the portAreas feature collection.",
+                    "items": {
+                      "type": "object",
+                      "name": "PortArea",
+                      "required": [
+                        "port_area_code",
+                        "port_area_name"
+                      ],
+                      "properties": {
+                        "port_area_code": {
+                          "type": "string",
+                          "description": "Port-area code identifying one sub-area of the port location."
+                        },
+                        "port_area_name": {
+                          "type": "string",
+                          "description": "Human-readable name of the port area."
+                        },
+                        "longitude": {
+                          "type": ["double", "null"],
+                          "description": "Longitude of the port-area point in decimal degrees east when the upstream feature includes geometry.",
+                          "unit": "deg",
+                          "symbol": "deg"
+                        },
+                        "latitude": {
+                          "type": ["double", "null"],
+                          "description": "Latitude of the port-area point in decimal degrees north when the upstream feature includes geometry.",
+                          "unit": "deg",
+                          "symbol": "deg"
+                        }
+                      }
+                    }
+                  },
+                  "berths": {
+                    "type": "array",
+                    "description": "Berth catalog entries associated with this location from the berths collection.",
+                    "items": {
+                      "type": "object",
+                      "name": "Berth",
+                      "required": [
+                        "port_area_code",
+                        "berth_code",
+                        "berth_name"
+                      ],
+                      "properties": {
+                        "port_area_code": {
+                          "type": "string",
+                          "description": "Code of the port area that contains this berth."
+                        },
+                        "berth_code": {
+                          "type": "string",
+                          "description": "Berth code within the port area."
+                        },
+                        "berth_name": {
+                          "type": "string",
+                          "description": "Human-readable berth name."
                         }
                       }
                     }

@@ -17,7 +17,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - FiDigitrafficMarineAisEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficMarinePortcallEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficMarinePortcallEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficMarinePortcallVesseldetailsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    FiDigitrafficMarinePortcallPortlocationEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +49,14 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - FiDigitrafficMarinePortcallProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- FiDigitrafficMarinePortcallVesseldetailsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- FiDigitrafficMarinePortcallPortlocationProducersolution for event-driven applications.
 
 
 
@@ -238,6 +250,86 @@ fi_digitraffic_marine_ais_vessel_location_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallVesseldetailsProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.VesselLocation`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.vesseldetails` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_ais_vessel_location_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselLocation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallVesseldetailsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_vesseldetails_dispatcher.fi_digitraffic_marine_ais_vessel_location_async =
+fi_digitraffic_marine_ais_vessel_location_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallPortlocationProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.VesselLocation`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.portlocation` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_ais_vessel_location_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselLocation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallPortlocationProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_portlocation_dispatcher.fi_digitraffic_marine_ais_vessel_location_async =
+fi_digitraffic_marine_ais_vessel_location_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -336,6 +428,86 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 fi_digitraffic_marine_portcall_dispatcher.fi_digitraffic_marine_ais_vessel_metadata_async =
+fi_digitraffic_marine_ais_vessel_metadata_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallVesseldetailsProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.VesselMetadata`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.vesseldetails` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_ais_vessel_metadata_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselMetadata) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallVesseldetailsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_vesseldetails_dispatcher.fi_digitraffic_marine_ais_vessel_metadata_async =
+fi_digitraffic_marine_ais_vessel_metadata_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallPortlocationProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.VesselMetadata`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.portlocation` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_ais_vessel_metadata_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselMetadata) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallPortlocationProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_portlocation_dispatcher.fi_digitraffic_marine_ais_vessel_metadata_async =
 fi_digitraffic_marine_ais_vessel_metadata_event
 
 **Parameters:**```
@@ -745,6 +917,86 @@ fi_digitraffic_marine_portcall_port_call_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallVesseldetailsProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.PortCall`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.vesseldetails` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_port_call_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PortCall) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallVesseldetailsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_vesseldetails_dispatcher.fi_digitraffic_marine_portcall_port_call_async =
+fi_digitraffic_marine_portcall_port_call_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallPortlocationProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.PortCall`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.portlocation` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_port_call_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PortCall) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallPortlocationProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_portlocation_dispatcher.fi_digitraffic_marine_portcall_port_call_async =
+fi_digitraffic_marine_portcall_port_call_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -847,6 +1099,772 @@ await producer.send_fi_digitraffic_marine_portcall_port_call_batch(```
         PortCall(...),
 
         PortCall(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions###
+FiDigitrafficMarinePortcallVesseldetailsEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`FiDigitrafficMarinePortcallVesseldetailsEventDispatcher` handles events for the
+fi.digitraffic.marine.portcall.vesseldetails message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from digitraffic-maritime-producer import FiDigitrafficMarineAisProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = FiDigitrafficMarineAisProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_fi_digitraffic_marine_ais_vessel_location(```python
+
+    data=VesselLocation(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The FiDigitrafficMarinePortcallVesseldetailsEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = FiDigitrafficMarineAisProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `fi_digitraffic_marine_portcall_vessel_details_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'fi_digitraffic_marine_portcall_vessel_details_async:  Callable[[ConsumerRecord,
+CloudEvent, VesselDetails], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `fi.digitraffic.marine.portcall.VesselDetails`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarineAisProducer- `data`: The event data of type `digitraffic_maritime_producer_data.VesselDetails`.
+
+
+
+Producer for `fi.digitraffic.marine.ais` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_vessel_details_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselDetails) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarineAisProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_ais_dispatcher.fi_digitraffic_marine_portcall_vessel_details_async =
+fi_digitraffic_marine_portcall_vessel_details_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.VesselDetails`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_vessel_details_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselDetails) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_dispatcher.fi_digitraffic_marine_portcall_vessel_details_async =
+fi_digitraffic_marine_portcall_vessel_details_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallVesseldetailsProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.VesselDetails`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.vesseldetails` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_vessel_details_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselDetails) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallVesseldetailsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_vesseldetails_dispatcher.fi_digitraffic_marine_portcall_vessel_details_async =
+fi_digitraffic_marine_portcall_vessel_details_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallPortlocationProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.VesselDetails`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.portlocation` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_vessel_details_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+VesselDetails) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallPortlocationProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_portlocation_dispatcher.fi_digitraffic_marine_portcall_vessel_details_async =
+fi_digitraffic_marine_portcall_vessel_details_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_fi_digitraffic_marine_portcall_vessel_details`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_fi_digitraffic_marine_portcall_vessel_details(
+
+    self,##### `_process_event`
+
+    data: VesselDetails,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `fi.digitraffic.marine.portcall.VesselDetails` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `VesselDetails`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_fi_digitraffic_marine_portcall_vessel_details(
+
+    data=VesselDetails(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `fi.digitraffic.marine.portcall.VesselDetails` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_fi_digitraffic_marine_portcall_vessel_details_batch(```
+
+    messages=[
+
+        VesselDetails(...),Initializes the runner with a Kafka consumer.
+
+        VesselDetails(...),
+
+        VesselDetails(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions###
+FiDigitrafficMarinePortcallPortlocationEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`FiDigitrafficMarinePortcallPortlocationEventDispatcher` handles events for the
+fi.digitraffic.marine.portcall.portlocation message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from digitraffic-maritime-producer import FiDigitrafficMarineAisProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = FiDigitrafficMarineAisProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_fi_digitraffic_marine_ais_vessel_location(```python
+
+    data=VesselLocation(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The FiDigitrafficMarinePortcallPortlocationEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = FiDigitrafficMarineAisProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `fi_digitraffic_marine_portcall_port_location_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'fi_digitraffic_marine_portcall_port_location_async:  Callable[[ConsumerRecord,
+CloudEvent, PortLocation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `fi.digitraffic.marine.portcall.PortLocation`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarineAisProducer- `data`: The event data of type `digitraffic_maritime_producer_data.PortLocation`.
+
+
+
+Producer for `fi.digitraffic.marine.ais` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_port_location_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PortLocation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarineAisProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_ais_dispatcher.fi_digitraffic_marine_portcall_port_location_async =
+fi_digitraffic_marine_portcall_port_location_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.PortLocation`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_port_location_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PortLocation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_dispatcher.fi_digitraffic_marine_portcall_port_location_async =
+fi_digitraffic_marine_portcall_port_location_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallVesseldetailsProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.PortLocation`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.vesseldetails` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_port_location_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PortLocation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallVesseldetailsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_vesseldetails_dispatcher.fi_digitraffic_marine_portcall_port_location_async =
+fi_digitraffic_marine_portcall_port_location_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### FiDigitrafficMarinePortcallPortlocationProducer- `data`: The event data of type
+`digitraffic_maritime_producer_data.PortLocation`.
+
+
+
+Producer for `fi.digitraffic.marine.portcall.portlocation` message group.Example:
+
+
+
+#### Constructor```python
+
+async def fi_digitraffic_marine_portcall_port_location_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PortLocation) -> None:
+
+```python    # Process the event data
+
+FiDigitrafficMarinePortcallPortlocationProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+fi_digitraffic_marine_portcall_portlocation_dispatcher.fi_digitraffic_marine_portcall_port_location_async =
+fi_digitraffic_marine_portcall_port_location_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_fi_digitraffic_marine_portcall_port_location`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_fi_digitraffic_marine_portcall_port_location(
+
+    self,##### `_process_event`
+
+    data: PortLocation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `fi.digitraffic.marine.portcall.PortLocation` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PortLocation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_fi_digitraffic_marine_portcall_port_location(
+
+    data=PortLocation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `fi.digitraffic.marine.portcall.PortLocation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_fi_digitraffic_marine_portcall_port_location_batch(```
+
+    messages=[
+
+        PortLocation(...),Initializes the runner with a Kafka consumer.
+
+        PortLocation(...),
+
+        PortLocation(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

@@ -217,7 +217,7 @@ def run_container(
     image: Image,
     *,
     environment: Optional[Dict[str, str]] = None,
-    command: Optional[str] = None,
+    command: Optional[str | List[str]] = None,
     timeout: float = 120,
 ) -> Tuple[int, str]:
     """Run a container and wait for it to finish or timeout.
@@ -255,7 +255,7 @@ def run_container_detached(
     image: Image,
     *,
     environment: Optional[Dict[str, str]] = None,
-    command: Optional[str] = None,
+    command: Optional[str | List[str]] = None,
 ) -> Container:
     """Run a container in the background.
 

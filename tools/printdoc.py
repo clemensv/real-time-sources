@@ -21,19 +21,31 @@ Functions:
 
 import json
 import argparse
+import io
+
+
+def sanitize_cell(value):
+    if value is None:
+        return ''
+    return str(value).replace('|', '\\|').replace('\n', ' ')
 
 def main():
     parser = argparse.ArgumentParser(description='Generate documentation from a JSON manifest.')
     parser.add_argument('manifest_file', help='Path to the JSON manifest file.')
     parser.add_argument('--title', help='Title of the documentation (replaces "Table of Contents").', default='Table of Contents')
     parser.add_argument('--description', help='Description added under the title.', default='')
+    parser.add_argument('--output', help='Optional output file path. Writes UTF-8 when provided.')
     args = parser.parse_args()
 
-    with open(args.manifest_file, 'r') as f:
+    with open(args.manifest_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    # Generate documentation with updated features
-    generate_documentation(data, args.title, args.description)
+    document = generate_documentation(data, args.title, args.description)
+    if args.output:
+        with open(args.output, 'w', encoding='utf-8', newline='\n') as output_file:
+            output_file.write(document)
+    else:
+        print(document, end='')
 
 def generate_documentation(data, title, description):
     messagegroups = data.get('messagegroups', {})
@@ -57,17 +69,20 @@ def generate_documentation(data, title, description):
             output_lines.append(msg_heading)
             output_lines.extend(process_message(msg, schemagroups))
 
-    # Print Title and Description
-    print(f"# {title}\n")
+    buffer = io.StringIO()
+    buffer.write(f"# {title}\n\n")
     if description:
-        print(f"{description}\n")
+        buffer.write(f"{description}\n\n")
     for line in toc:
-        print(line)
-    print("\n---\n")
+        buffer.write(f"{line}\n")
+    buffer.write("\n---\n\n")
 
-    # Print documentation
     for line in output_lines:
-        print(line)
+        buffer.write(line)
+        if not line.endswith('\n'):
+            buffer.write('\n')
+
+    return buffer.getvalue()
 
 def process_message(msg, schemagroups):
     lines = []
@@ -126,6 +141,9 @@ def generate_anchor(name):
     return anchor
 
 def print_schema(schema):
+    if is_json_structure_schema(schema):
+        return print_json_structure_schema(schema)
+
     lines = []
     records_to_document = []
     enums_to_document = []
@@ -145,6 +163,137 @@ def print_schema(schema):
                 lines.append("\n---\n")
                 lines.extend(print_enum(enum_schema, documented_enums))
     return lines
+
+
+def is_json_structure_schema(schema):
+    return isinstance(schema, dict) and 'fields' not in schema and (
+        'properties' in schema or '$root' in schema or 'definitions' in schema
+    )
+
+
+def resolve_json_pointer(document, pointer):
+    if not pointer or not pointer.startswith('#/'):
+        return None
+    node = document
+    for part in pointer[2:].split('/'):
+        if not isinstance(node, dict):
+            return None
+        node = node.get(part)
+        if node is None:
+            return None
+    return node
+
+
+def resolve_json_structure_root(schema):
+    root_pointer = schema.get('$root')
+    if root_pointer:
+        root = resolve_json_pointer(schema, root_pointer)
+        if root is not None:
+            return root
+    return schema
+
+
+def is_json_object_type(schema):
+    type_value = schema.get('type')
+    if type_value == 'object':
+        return True
+    if isinstance(type_value, list) and 'object' in type_value:
+        return True
+    return False
+
+
+def primitive_type_name(type_name):
+    return f"*{type_name}*"
+
+
+def print_json_structure_schema(schema):
+    lines = []
+    objects_to_document = []
+    documented_objects = set()
+
+    root_schema = resolve_json_structure_root(schema)
+    root_name = root_schema.get('name') or schema.get('name') or 'Root'
+    objects_to_document.append((root_name, root_schema))
+
+    while objects_to_document:
+        object_name, object_schema = objects_to_document.pop(0)
+        anchor_name = f"object-{generate_anchor(object_name)}"
+        if anchor_name in documented_objects:
+            continue
+        documented_objects.add(anchor_name)
+        if lines:
+            lines.append("\n---\n")
+        lines.extend(print_json_object(object_name, object_schema, objects_to_document))
+
+    return lines
+
+
+def print_json_object(object_name, schema, objects_to_document):
+    lines = [f"##### Object: {object_name}\n"]
+    description = schema.get('description', '')
+    if description:
+        lines.append(f"*{sanitize_cell(description)}*\n")
+
+    properties = schema.get('properties', {})
+    required = set(schema.get('required', []))
+
+    lines.append("| **Field Name** | **Type** | **Unit** | **Required** | **Description** |")
+    lines.append("|----------------|----------|----------|--------------|-----------------|")
+    for field_name, field_schema in properties.items():
+        field_type = get_json_structure_type_str(field_schema, objects_to_document, f"{object_name}.{field_name}")
+        unit = get_json_structure_unit(field_schema)
+        is_required = '`True`' if field_name in required else '`False`'
+        description = sanitize_cell(field_schema.get('description', ''))
+        lines.append(
+            f"| `{field_name}` | {field_type} | {unit} | {is_required} | {description} |"
+        )
+    return lines
+
+
+def get_json_structure_unit(schema):
+    unit = schema.get('unit')
+    symbol = schema.get('symbol')
+    if unit and symbol and unit != symbol:
+        return sanitize_cell(f"{unit} ({symbol})")
+    if symbol:
+        return sanitize_cell(symbol)
+    if unit:
+        return sanitize_cell(unit)
+    return '-'
+
+
+def get_json_structure_type_str(schema, objects_to_document, fallback_name):
+    type_value = schema.get('type')
+
+    if type_value == 'array':
+        items = schema.get('items', {})
+        item_type = get_json_structure_type_str(items, objects_to_document, f"{fallback_name}Item")
+        return f"array of {item_type}"
+
+    if is_json_object_type(schema):
+        object_name = schema.get('name') or fallback_name
+        objects_to_document.append((object_name, schema))
+        return f"[Object {object_name}](#object-{generate_anchor(object_name)})"
+
+    if isinstance(type_value, list):
+        nullable = 'null' in type_value
+        rendered_types = []
+        for member_type in type_value:
+            if member_type == 'null':
+                continue
+            if member_type == 'object' and is_json_object_type(schema):
+                object_name = schema.get('name') or fallback_name
+                objects_to_document.append((object_name, schema))
+                rendered_types.append(f"[Object {object_name}](#object-{generate_anchor(object_name)})")
+            else:
+                rendered_types.append(primitive_type_name(member_type))
+        suffix = ' (optional)' if nullable else ''
+        return ', '.join(rendered_types) + suffix
+
+    if isinstance(type_value, str):
+        return primitive_type_name(type_value)
+
+    return '*unknown*'
 
 def print_record(schema, records_to_document, enums_to_document, documented_records):
     lines = []
@@ -167,7 +316,7 @@ def print_record(schema, records_to_document, enums_to_document, documented_reco
         field_type = field.get('type')
         field_doc = field.get('doc', '')
         field_type_str = get_field_type_str(field_type, records_to_document, enums_to_document)
-        lines.append(f"| `{field_name}` | {field_type_str} | {field_doc} |")
+        lines.append(f"| `{field_name}` | {field_type_str} | {sanitize_cell(field_doc)} |")
     return lines
 
 def get_field_type_str(field_type, records_to_document, enums_to_document):

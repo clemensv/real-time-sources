@@ -1,8 +1,8 @@
 FROM python:3.10-slim
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/digitraffic-maritime"
-LABEL org.opencontainers.image.title="Digitraffic Marine AIS bridge to Kafka endpoints"
-LABEL org.opencontainers.image.description="Streams Finnish/Baltic AIS vessel tracking data from Digitraffic Marine MQTT to Kafka endpoints as CloudEvents."
+LABEL org.opencontainers.image.title="Digitraffic Marine bridge to Kafka endpoints"
+LABEL org.opencontainers.image.description="Streams Digitraffic Marine AIS and port-call data to Kafka endpoints as CloudEvents."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/digitraffic-maritime/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 

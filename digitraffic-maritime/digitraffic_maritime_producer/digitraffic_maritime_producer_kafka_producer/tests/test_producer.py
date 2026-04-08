@@ -26,6 +26,12 @@ from test_digitraffic_maritime_producer_data_vesselmetadata import Test_VesselMe
 from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarinePortcallEventProducer
 from digitraffic_maritime_producer_data import PortCall
 from test_digitraffic_maritime_producer_data_portcall import Test_PortCall
+from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarinePortcallVesseldetailsEventProducer
+from digitraffic_maritime_producer_data import VesselDetails
+from test_digitraffic_maritime_producer_data_vesseldetails import Test_VesselDetails
+from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarinePortcallPortlocationEventProducer
+from digitraffic_maritime_producer_data import PortLocation
+from test_digitraffic_maritime_producer_data_portlocation import Test_PortLocation
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -244,6 +250,132 @@ def test_fi_digitraffic_marine_portcall_fidigitrafficmarineportcallportcall(kafk
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{port_call_id}".format(port_call_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_fi_digitraffic_marine_portcall_vesseldetails_fidigitrafficmarineportcallvesseldetails(kafka_emulator):
+    """Test the FiDigitrafficMarinePortcallVesselDetails event from the Fi.Digitraffic.Marine.Portcall.Vesseldetails message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_fi_digitraffic_marine_portcall_vesseldetails_fidigitrafficmarineportcallvesseldetails',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.VesselDetails":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = FiDigitrafficMarinePortcallVesseldetailsEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_VesselDetails.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_fi_digitraffic_marine_portcall_vessel_details(_vessel_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{vessel_id}".format(vessel_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_fi_digitraffic_marine_portcall_portlocation_fidigitrafficmarineportcallportlocation(kafka_emulator):
+    """Test the FiDigitrafficMarinePortcallPortLocation event from the Fi.Digitraffic.Marine.Portcall.Portlocation message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_fi_digitraffic_marine_portcall_portlocation_fidigitrafficmarineportcallportlocation',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.PortLocation":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = FiDigitrafficMarinePortcallPortlocationEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PortLocation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_fi_digitraffic_marine_portcall_port_location(_locode = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{locode}".format(locode=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 

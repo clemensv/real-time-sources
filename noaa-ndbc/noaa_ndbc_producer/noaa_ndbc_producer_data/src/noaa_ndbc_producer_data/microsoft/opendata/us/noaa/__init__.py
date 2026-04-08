@@ -1,3 +1,3 @@
-from .ndbc import BuoyOceanographicObservation, BuoyDartMeasurement, BuoyObservation, BuoyStation, BuoySolarRadiationObservation
+from .ndbc import BuoyObservation, BuoyContinuousWindObservation, BuoyDetailedWaveSummary, BuoySupplementalMeasurement, BuoyStation, BuoySolarRadiationObservation, BuoyOceanographicObservation, BuoyDartMeasurement, BuoyHourlyRainMeasurement
 
-__all__ = ["BuoyOceanographicObservation", "BuoyDartMeasurement", "BuoyObservation", "BuoyStation", "BuoySolarRadiationObservation"]
+__all__ = ["BuoyObservation", "BuoyContinuousWindObservation", "BuoyDetailedWaveSummary", "BuoySupplementalMeasurement", "BuoyStation", "BuoySolarRadiationObservation", "BuoyOceanographicObservation", "BuoyDartMeasurement", "BuoyHourlyRainMeasurement"]
