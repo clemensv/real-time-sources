@@ -211,6 +211,8 @@ def gracedb_image():
     return build_image('gracedb')
 def aviationweather_image():
     return build_image('aviationweather')
+def cbp_border_wait_image():
+    return build_image('cbp-border-wait')
 
 
 # ---------------------------------------------------------------------------
@@ -1154,4 +1156,15 @@ class TestAviationWeatherDockerFlow:
             extra_env={
                 'AVIATIONWEATHER_STATIONS': 'KJFK,EGLL,LFPG',
             },
+# CBP Border Wait Times (US – border crossing wait times)
+# ---------------------------------------------------------------------------
+
+class TestCbpBorderWaitDockerFlow:
+    TOPIC = 'test-cbp-border-wait'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, cbp_border_wait_image):
+        _run_kafka_flow_test(
+            kafka, cbp_border_wait_image, self.TOPIC,
+            reference_types=['Port'],
+            telemetry_types=['WaitTime'],
         )
