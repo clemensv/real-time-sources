@@ -1,0 +1,230 @@
+{
+  "endpoints": {
+    "net.airqo.uganda.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "airqo-uganda",
+          "key": "{site_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/net.airqo.uganda"
+      ]
+    }
+  },
+  "messagegroups": {
+    "net.airqo.uganda": {
+      "messages": {
+        "net.airqo.uganda.Site": {
+          "name": "Site",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for an AirQo monitoring site, including its geographic location, administrative area, and online status.",
+          "envelopemetadata": {
+            "type": {
+              "value": "net.airqo.uganda.Site"
+            },
+            "source": {
+              "value": "https://api.airqo.net"
+            },
+            "subject": {
+              "value": "{site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/net.airqo.uganda.jstruct/schemas/net.airqo.uganda.Site"
+        },
+        "net.airqo.uganda.Measurement": {
+          "name": "Measurement",
+          "envelope": "CloudEvents/1.0",
+          "description": "Near-real-time air quality measurement from an AirQo low-cost sensor, typically published at hourly intervals.",
+          "envelopemetadata": {
+            "type": {
+              "value": "net.airqo.uganda.Measurement"
+            },
+            "source": {
+              "value": "https://api.airqo.net"
+            },
+            "subject": {
+              "value": "{site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/net.airqo.uganda.jstruct/schemas/net.airqo.uganda.Measurement"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "net.airqo.uganda.jstruct": {
+      "schemas": {
+        "net.airqo.uganda.Site": {
+          "name": "Site",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "site_id",
+                  "name"
+                ],
+                "name": "Site",
+                "properties": {
+                  "site_id": {
+                    "type": "string",
+                    "description": "AirQo site identifier. A 24-character hexadecimal MongoDB ObjectId assigned by the AirQo platform (e.g. '60d058c8048305120d2xxxxx')."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable site name assigned during deployment, typically referencing a local landmark or neighbourhood (e.g. 'Makerere University')."
+                  },
+                  "formatted_name": {
+                    "type": ["string", "null"],
+                    "description": "Full geocoded address string for the monitoring site as returned by the AirQo platform reverse-geocoder."
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Approximate latitude of the monitoring site in decimal degrees north. Negative values indicate southern hemisphere.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Approximate longitude of the monitoring site in decimal degrees east. Negative values indicate western hemisphere.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "country": {
+                    "type": ["string", "null"],
+                    "description": "Country where the monitoring site is located, as reported by the AirQo platform (e.g. 'Uganda', 'Kenya')."
+                  },
+                  "region": {
+                    "type": ["string", "null"],
+                    "description": "Administrative region or province where the monitoring site is located (e.g. 'Central Region', 'Kilifi County')."
+                  },
+                  "city": {
+                    "type": ["string", "null"],
+                    "description": "City or town nearest to the monitoring site (e.g. 'Kampala', 'Jinja')."
+                  },
+                  "is_online": {
+                    "type": "boolean",
+                    "description": "Whether the site is currently reporting data to the AirQo platform. True indicates the site transmitted data recently."
+                  }
+                },
+                "$id": "https://api.airqo.net/schemas/net/airqo/uganda/Site",
+                "description": "Reference record for an AirQo air quality monitoring site, describing its human-readable name, geocoded address, GPS coordinates, administrative area, and current online status. Sourced from the AirQo grids summary API."
+              }
+            }
+          }
+        },
+        "net.airqo.uganda.Measurement": {
+          "name": "Measurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "site_id",
+                  "device",
+                  "timestamp"
+                ],
+                "name": "Measurement",
+                "properties": {
+                  "site_id": {
+                    "type": "string",
+                    "description": "AirQo site identifier linking this measurement to its monitoring location. A 24-character hexadecimal MongoDB ObjectId."
+                  },
+                  "device": {
+                    "type": "string",
+                    "description": "Short device name assigned by AirQo, typically prefixed with 'aq_' followed by a numeric sequence (e.g. 'aq_01')."
+                  },
+                  "device_id": {
+                    "type": ["string", "null"],
+                    "description": "AirQo internal device identifier. A 24-character hexadecimal MongoDB ObjectId uniquely identifying the physical sensor unit."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC as reported by the AirQo platform, typically aligned to the top of each hour."
+                  },
+                  "pm2_5_raw": {
+                    "type": ["double", "null"],
+                    "description": "Raw (uncalibrated) PM2.5 mass concentration as reported directly by the low-cost particulate sensor. Unit: micrograms per cubic meter.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³"
+                  },
+                  "pm2_5_calibrated": {
+                    "type": ["double", "null"],
+                    "description": "Calibrated PM2.5 mass concentration after applying the AirQo machine-learning calibration model. Unit: micrograms per cubic meter.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³"
+                  },
+                  "pm10_raw": {
+                    "type": ["double", "null"],
+                    "description": "Raw (uncalibrated) PM10 mass concentration as reported directly by the low-cost particulate sensor. Unit: micrograms per cubic meter.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³"
+                  },
+                  "pm10_calibrated": {
+                    "type": ["double", "null"],
+                    "description": "Calibrated PM10 mass concentration after applying the AirQo machine-learning calibration model. Unit: micrograms per cubic meter.",
+                    "unit": "ug/m3",
+                    "symbol": "µg/m³"
+                  },
+                  "temperature": {
+                    "type": ["double", "null"],
+                    "description": "Ambient air temperature measured by the on-board sensor at the time of observation. Unit: degrees Celsius.",
+                    "unit": "CEL",
+                    "symbol": "°C"
+                  },
+                  "humidity": {
+                    "type": ["double", "null"],
+                    "description": "Relative humidity of the ambient air measured by the on-board sensor at the time of observation. Unit: percent.",
+                    "unit": "%",
+                    "symbol": "%"
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Latitude of the device at the time of measurement in decimal degrees north, as reported in the measurement payload.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Longitude of the device at the time of measurement in decimal degrees east, as reported in the measurement payload.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "frequency": {
+                    "type": ["string", "null"],
+                    "description": "Temporal resolution of the measurement as reported by the AirQo API (e.g. 'hourly', 'daily')."
+                  }
+                },
+                "$id": "https://api.airqo.net/schemas/net/airqo/uganda/Measurement",
+                "description": "Near-real-time air quality measurement from an AirQo low-cost sensor deployed in the AirQo network. Includes raw and calibrated PM2.5 and PM10 concentrations, ambient temperature, humidity, and device location. Measurements are typically published at hourly intervals."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
