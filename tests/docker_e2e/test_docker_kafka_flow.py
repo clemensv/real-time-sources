@@ -221,6 +221,8 @@ def elexon_bmrs_image():
     return build_image('elexon-bmrs')
 def energy_charts_image():
     return build_image('energy-charts')
+def usgs_geomag_image():
+    return build_image('usgs-geomag')
 
 
 # ---------------------------------------------------------------------------
@@ -1220,4 +1222,15 @@ class TestEnergiDataServiceDkDockerFlow:
             reference_types=None,
             telemetry_types=['PowerSystemSnapshot', 'SpotPrice'],
             min_messages=1,
+# USGS Geomagnetism (geomagnetic field measurements)
+# ---------------------------------------------------------------------------
+
+class TestUSGSGeomagDockerFlow:
+    TOPIC = 'test-usgs-geomag'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, usgs_geomag_image):
+        _run_kafka_flow_test(
+            kafka, usgs_geomag_image, self.TOPIC,
+            reference_types=['Observatory'],
+            telemetry_types=['MagneticFieldReading'],
         )
