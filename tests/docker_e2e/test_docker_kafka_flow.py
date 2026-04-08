@@ -1309,4 +1309,19 @@ class TestNDLNetherlandsDockerFlow:
             extra_env={'SITUATIONS_TOPIC': self.TOPIC},
             min_messages=5,
             timeout=300,
+# Madrid Traffic (Informo real-time traffic sensors)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def madrid_traffic_image():
+    return build_image('madrid-traffic')
+
+class TestMadridTrafficDockerFlow:
+    TOPIC = 'test-madrid-traffic'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, madrid_traffic_image):
+        _run_kafka_flow_test(
+            kafka, madrid_traffic_image, self.TOPIC,
+            reference_types=['MeasurementPoint'],
+            telemetry_types=['TrafficReading'],
         )
