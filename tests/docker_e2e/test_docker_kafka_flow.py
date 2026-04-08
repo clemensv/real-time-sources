@@ -1233,4 +1233,20 @@ class TestUSGSGeomagDockerFlow:
             kafka, usgs_geomag_image, self.TOPIC,
             reference_types=['Observatory'],
             telemetry_types=['MagneticFieldReading'],
+# Ireland OPW waterlevel.ie (Irish water levels)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def ireland_opw_waterlevel_image():
+    return build_image('ireland-opw-waterlevel')
+
+
+class TestIrelandOPWWaterlevelDockerFlow:
+    TOPIC = 'test-ireland-opw-waterlevel'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, ireland_opw_waterlevel_image):
+        _run_kafka_flow_test(
+            kafka, ireland_opw_waterlevel_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WaterLevelReading'],
         )
