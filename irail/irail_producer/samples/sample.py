@@ -38,6 +38,7 @@ from irail_producer_kafka_producer.producer import BeIrailEventProducer
 
 from irail_producer_data.station import Station
 from irail_producer_data.stationboard import StationBoard
+from irail_producer_data.arrivalboard import ArrivalBoard
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,6 +73,14 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'be.irail.StationBoard' event to Kafka topic.
     await be_irail_event_producer.send_be_irail_station_board(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _station_board)
     print(f"Sent 'be.irail.StationBoard' event: {_station_board.to_json()}")
+
+    # ---- be.irail.ArrivalBoard ----
+    # TODO: Supply event data for the be.irail.ArrivalBoard event
+    _arrival_board = ArrivalBoard()
+
+    # sends the 'be.irail.ArrivalBoard' event to Kafka topic.
+    await be_irail_event_producer.send_be_irail_arrival_board(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _arrival_board)
+    print(f"Sent 'be.irail.ArrivalBoard' event: {_arrival_board.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

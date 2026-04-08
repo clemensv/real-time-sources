@@ -1,4 +1,4 @@
-""" Document dataclass. """
+""" BuoySolarRadiationObservation dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 import io
@@ -13,58 +13,42 @@ from dataclasses_json import Undefined, dataclass_json
 import avro.schema
 import avro.name
 import avro.io
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Document:
+class BuoySolarRadiationObservation:
     """
-    AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update.
+    Hourly solar radiation observation from the NDBC .srad realtime2 product.
     Attributes:
-        mmsi (typing.Optional[int]): 
-        time (int): 
-        sog (float): 
-        cog (float): 
-        navStat (int): 
-        rot (int): 
-        posAcc (bool): 
-        raim (bool): 
-        heading (int): 
-        lon (float): 
-        lat (float): """
+        station_id (str): 
+        timestamp (datetime.datetime): 
+        shortwave_radiation_licor (typing.Optional[float]): 
+        shortwave_radiation_eppley (typing.Optional[float]): 
+        longwave_radiation (typing.Optional[float]): """
     
-    mmsi: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
-    time: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
-    sog: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sog"))
-    cog: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cog"))
-    navStat: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="navStat"))
-    rot: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rot"))
-    posAcc: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="posAcc"))
-    raim: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="raim"))
-    heading: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="heading"))
-    lon: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lon"))
-    lat: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lat"))
+    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    shortwave_radiation_licor: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortwave_radiation_licor"))
+    shortwave_radiation_eppley: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="shortwave_radiation_eppley"))
+    longwave_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longwave_radiation"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"document\", \"doc\": \"AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update.\", \"fields\": [{\"name\": \"mmsi\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"time\", \"type\": \"int\"}, {\"name\": \"sog\", \"type\": \"double\"}, {\"name\": \"cog\", \"type\": \"double\"}, {\"name\": \"navStat\", \"type\": \"int\"}, {\"name\": \"rot\", \"type\": \"int\"}, {\"name\": \"posAcc\", \"type\": \"boolean\"}, {\"name\": \"raim\", \"type\": \"boolean\"}, {\"name\": \"heading\", \"type\": \"int\"}, {\"name\": \"lon\", \"type\": \"double\"}, {\"name\": \"lat\", \"type\": \"double\"}]}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"BuoySolarRadiationObservation\", \"doc\": \"Hourly solar radiation observation from the NDBC .srad realtime2 product.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"shortwave_radiation_licor\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"shortwave_radiation_eppley\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"longwave_radiation\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"Microsoft.OpenData.US.NOAA.NDBC\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.mmsi=int(self.mmsi) if self.mmsi else None
-        self.time=int(self.time)
-        self.sog=float(self.sog)
-        self.cog=float(self.cog)
-        self.navStat=int(self.navStat)
-        self.rot=int(self.rot)
-        self.posAcc=bool(self.posAcc)
-        self.raim=bool(self.raim)
-        self.heading=int(self.heading)
-        self.lon=float(self.lon)
-        self.lat=float(self.lat)
+        self.station_id=str(self.station_id)
+        value_timestamp = self.timestamp
+        self.timestamp = value_timestamp
+        self.shortwave_radiation_licor=float(self.shortwave_radiation_licor) if self.shortwave_radiation_licor else None
+        self.shortwave_radiation_eppley=float(self.shortwave_radiation_eppley) if self.shortwave_radiation_eppley else None
+        self.longwave_radiation=float(self.longwave_radiation) if self.longwave_radiation else None
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Document':
+    def from_serializer_dict(cls, data: dict) -> 'BuoySolarRadiationObservation':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -145,7 +129,7 @@ class Document:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Document']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['BuoySolarRadiationObservation']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -193,12 +177,12 @@ class Document:
             else:
                 raise NotImplementedError(f'Unsupported Avro media type {content_type}')
             _record = reader.read(decoder)            
-            return Document.from_serializer_dict(_record)
+            return BuoySolarRadiationObservation.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Document.from_serializer_dict(_record)
+                return BuoySolarRadiationObservation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
 

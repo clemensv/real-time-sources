@@ -9,6 +9,7 @@ from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
 from irail_producer_data import Station
 from irail_producer_data import StationBoard
+from irail_producer_data import ArrivalBoard
 
 class BeIrailEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -90,6 +91,39 @@ class BeIrailEventProducer:
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
              "type":"be.irail.StationBoard",
+             "source":"{feedurl}".format(feedurl = _feedurl),
+             "subject":"{station_id}".format(station_id = _station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_be_irail_arrival_board(self,_feedurl : str, _station_id : str, data: ArrivalBoard, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ArrivalBoard], str]=None) -> None:
+        """
+        Sends the 'be.irail.ArrivalBoard' event to the Kafka topic
+
+        Args:
+            _feedurl(str):  Value for placeholder feedurl in attribute source
+            _station_id(str):  Value for placeholder station_id in attribute subject
+            data: (ArrivalBoard): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ArrivalBoard], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_id}'
+        """
+        kafka_key = "{station_id}".format(station_id=_station_id)
+        attributes = {
+             "type":"be.irail.ArrivalBoard",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{station_id}".format(station_id = _station_id)
         }

@@ -1,3 +1,4 @@
-from .document import Document
+from .vessellocation import VesselLocation
+from .vesselmetadata import VesselMetadata
 
-__all__ = ["Document"]
+__all__ = ["VesselLocation", "VesselMetadata"]

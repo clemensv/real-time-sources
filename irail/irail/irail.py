@@ -12,6 +12,8 @@ from typing import Any, Dict, List, Optional
 import requests
 from confluent_kafka import Producer
 from irail_producer_data.be.irail.station import Station
+from irail_producer_data.be.irail.arrival import Arrival
+from irail_producer_data.be.irail.arrivalboard import ArrivalBoard
 from irail_producer_data.be.irail.departure import Departure
 from irail_producer_data.be.irail.stationboard import StationBoard
 from irail_producer_kafka_producer.producer import BeIrailEventProducer
@@ -45,11 +47,17 @@ class IRailAPI:
         data = resp.json()
         return data.get("station", [])
 
-    def fetch_liveboard(self, station_id: str) -> Optional[Dict[str, Any]]:
-        """Fetch the current departure board for a station by NMBS id."""
+    def fetch_liveboard(self, station_id: str, arrdep: str = "departure") -> Optional[Dict[str, Any]]:
+        """Fetch the current departure or arrival board for a station by NMBS id."""
         resp = self.session.get(
             f"{API_BASE}/liveboard/",
-            params={"id": f"BE.NMBS.{station_id}", "format": "json", "lang": "en", "alerts": "false"},
+            params={
+                "id": f"BE.NMBS.{station_id}",
+                "format": "json",
+                "lang": "en",
+                "alerts": "false",
+                "arrdep": arrdep,
+            },
             timeout=30,
         )
         if resp.status_code == 404:
@@ -64,8 +72,7 @@ class IRailAPI:
     @staticmethod
     def parse_station(raw: Dict[str, Any]) -> Station:
         """Convert a raw station dict from the iRail stations API to a Station data class."""
-        raw_id = raw.get("id", "")
-        station_id = raw_id.replace("BE.NMBS.", "") if raw_id.startswith("BE.NMBS.") else raw_id
+        station_id = IRailAPI._parse_station_id(raw.get("id", ""))
         return Station(
             station_id=station_id,
             name=raw.get("name", ""),
@@ -76,43 +83,80 @@ class IRailAPI:
         )
 
     @staticmethod
-    def parse_departure(raw: Dict[str, Any]) -> Departure:
-        """Convert a raw departure dict from the iRail liveboard API to a Departure data class."""
-        # Destination station info
-        station_info = raw.get("stationinfo", {})
-        dest_raw_id = station_info.get("id", "")
-        dest_station_id = dest_raw_id.replace("BE.NMBS.", "") if dest_raw_id.startswith("BE.NMBS.") else dest_raw_id
+    def _parse_station_id(raw_id: str) -> str:
+        """Normalize an iRail station identifier to the nine-digit NMBS id."""
+        return raw_id.replace("BE.NMBS.", "") if raw_id.startswith("BE.NMBS.") else raw_id
 
-        # Time conversion: iRail returns Unix timestamps as strings
-        scheduled_unix = int(raw.get("time", "0"))
-        scheduled_time = datetime.fromtimestamp(scheduled_unix, tz=timezone.utc).isoformat()
+    @staticmethod
+    def _parse_scheduled_time(raw_unix: str) -> str:
+        """Convert an iRail Unix timestamp string to an ISO 8601 UTC datetime."""
+        return datetime.fromtimestamp(int(raw_unix), tz=timezone.utc).isoformat()
 
-        # Vehicle info
-        vehicle_info = raw.get("vehicleinfo", {})
+    @staticmethod
+    def _parse_vehicle_details(vehicle_info: Dict[str, Any]) -> tuple[str, str]:
+        """Extract vehicle type and number from the liveboard payload."""
         vehicle_type = vehicle_info.get("type", "")
         vehicle_number = vehicle_info.get("number", "")
-        if not vehicle_type and not vehicle_number:
-            # Fall back to parsing from shortname like "IC 2117"
-            shortname = vehicle_info.get("shortname", "")
-            parts = shortname.split(" ", 1)
-            if len(parts) == 2:
-                vehicle_type = parts[0]
-                vehicle_number = parts[1]
-            elif parts:
-                vehicle_type = parts[0]
+        if vehicle_type or vehicle_number:
+            return vehicle_type, vehicle_number
 
-        # Platform info
+        shortname = vehicle_info.get("shortname", "")
+        parts = shortname.split(" ", 1)
+        if len(parts) == 2:
+            return parts[0], parts[1]
+        if parts:
+            return parts[0], ""
+        return "", ""
+
+    @staticmethod
+    def _parse_platform_details(raw: Dict[str, Any]) -> tuple[Optional[str], bool]:
+        """Extract the platform and whether it is the scheduled one."""
         platform = raw.get("platform", None)
         if platform in ("", "?"):
             platform = None
+
         platform_info = raw.get("platforminfo", {})
         is_normal = platform_info.get("normal", "1") == "1"
+        return platform, is_normal
 
-        # Occupancy
+    @staticmethod
+    def _parse_occupancy(raw: Dict[str, Any]) -> str:
+        """Normalize the optional occupancy term emitted by iRail."""
         occupancy_info = raw.get("occupancy", {})
         occupancy = occupancy_info.get("name", "unknown")
         if occupancy not in ("low", "medium", "high", "unknown"):
-            occupancy = "unknown"
+            return "unknown"
+        return occupancy
+
+    @staticmethod
+    def _parse_connection_uri(raw: Dict[str, Any], *keys: str) -> str:
+        """Return the first non-empty connection URI field from the payload."""
+        for key in keys:
+            value = raw.get(key)
+            if value:
+                return str(value)
+        return ""
+
+    @staticmethod
+    def _normalize_board_entries(raw_entries: Any) -> List[Dict[str, Any]]:
+        """Normalize liveboard entry collections to a list."""
+        if isinstance(raw_entries, list):
+            return raw_entries
+        if isinstance(raw_entries, dict):
+            return [raw_entries]
+        return []
+
+    @staticmethod
+    def parse_departure(raw: Dict[str, Any]) -> Departure:
+        """Convert a raw departure dict from the iRail liveboard API to a Departure data class."""
+        station_info = raw.get("stationinfo", {})
+        dest_station_id = IRailAPI._parse_station_id(station_info.get("id", ""))
+        scheduled_time = IRailAPI._parse_scheduled_time(raw.get("time", "0"))
+
+        vehicle_info = raw.get("vehicleinfo", {})
+        vehicle_type, vehicle_number = IRailAPI._parse_vehicle_details(vehicle_info)
+        platform, is_normal = IRailAPI._parse_platform_details(raw)
+        occupancy = IRailAPI._parse_occupancy(raw)
 
         return Departure(
             destination_station_id=dest_station_id,
@@ -129,7 +173,37 @@ class IRailAPI:
             platform=platform,
             is_normal_platform=is_normal,
             occupancy=occupancy,
-            departure_connection_uri=raw.get("departureConnection", ""),
+            departure_connection_uri=IRailAPI._parse_connection_uri(raw, "departureConnection", "connection"),
+        )
+
+    @staticmethod
+    def parse_arrival(raw: Dict[str, Any]) -> Arrival:
+        """Convert a raw arrival dict from the iRail liveboard API to an Arrival data class."""
+        station_info = raw.get("stationinfo", {})
+        origin_station_id = IRailAPI._parse_station_id(station_info.get("id", ""))
+        scheduled_time = IRailAPI._parse_scheduled_time(raw.get("time", "0"))
+
+        vehicle_info = raw.get("vehicleinfo", {})
+        vehicle_type, vehicle_number = IRailAPI._parse_vehicle_details(vehicle_info)
+        platform, is_normal = IRailAPI._parse_platform_details(raw)
+        occupancy = IRailAPI._parse_occupancy(raw)
+
+        return Arrival(
+            origin_station_id=origin_station_id,
+            origin_name=raw.get("station", station_info.get("name", "")),
+            scheduled_time=scheduled_time,
+            delay_seconds=int(raw.get("delay", "0")),
+            is_canceled=str(raw.get("canceled", "0")) == "1",
+            has_arrived=str(raw.get("arrived", "0")) == "1",
+            is_extra_stop=str(raw.get("isExtra", "0")) == "1",
+            vehicle_id=raw.get("vehicle", vehicle_info.get("name", "")),
+            vehicle_short_name=vehicle_info.get("shortname", ""),
+            vehicle_type=vehicle_type,
+            vehicle_number=vehicle_number,
+            platform=platform,
+            is_normal_platform=is_normal,
+            occupancy=occupancy,
+            connection_uri=IRailAPI._parse_connection_uri(raw, "arrivalConnection", "departureConnection", "connection"),
         )
 
     @staticmethod
@@ -139,7 +213,7 @@ class IRailAPI:
         retrieved_at = datetime.fromtimestamp(timestamp_unix, tz=timezone.utc).isoformat()
 
         departures_obj = raw.get("departures", {})
-        raw_departures = departures_obj.get("departure", [])
+        raw_departures = IRailAPI._normalize_board_entries(departures_obj.get("departure", []))
         departures = []
         for dep in raw_departures:
             try:
@@ -156,6 +230,32 @@ class IRailAPI:
             retrieved_at=retrieved_at,
             departure_count=len(departures),
             departures=departures,
+        )
+
+    @staticmethod
+    def parse_arrivalboard(raw: Dict[str, Any], station_id: str) -> ArrivalBoard:
+        """Convert a raw liveboard response to an ArrivalBoard data class."""
+        timestamp_unix = int(raw.get("timestamp", "0"))
+        retrieved_at = datetime.fromtimestamp(timestamp_unix, tz=timezone.utc).isoformat()
+
+        arrivals_obj = raw.get("arrivals", {})
+        raw_arrivals = IRailAPI._normalize_board_entries(arrivals_obj.get("arrival", []))
+        arrivals = []
+        for arr in raw_arrivals:
+            try:
+                arrivals.append(IRailAPI.parse_arrival(arr))
+            except Exception as e:
+                logging.debug("Skipping malformed arrival: %s", e)
+
+        station_info_raw = raw.get("stationinfo", {})
+        station_name = raw.get("station", station_info_raw.get("name", ""))
+
+        return ArrivalBoard(
+            station_id=station_id,
+            station_name=station_name,
+            retrieved_at=retrieved_at,
+            arrival_count=len(arrivals),
+            arrivals=arrivals,
         )
 
 
@@ -238,34 +338,49 @@ def feed(args):
     # Liveboard polling loop
     while True:
         try:
-            board_count = 0
+            departure_board_count = 0
             departure_count = 0
+            arrival_board_count = 0
+            arrival_count = 0
             start_time = datetime.now(timezone.utc)
+            board_specs = (
+                ("departure", api.parse_liveboard, event_producer.send_be_irail_station_board, "departure_count"),
+                ("arrival", api.parse_arrivalboard, event_producer.send_be_irail_arrival_board, "arrival_count"),
+            )
             for station_id in station_ids:
-                try:
-                    liveboard_raw = api.fetch_liveboard(station_id)
-                    if liveboard_raw is None:
-                        continue
-                    board = api.parse_liveboard(liveboard_raw, station_id)
-                    event_producer.send_be_irail_station_board(
-                        _feedurl=FEED_URL,
-                        _station_id=station_id,
-                        data=board,
-                        flush_producer=False,
-                    )
-                    board_count += 1
-                    departure_count += board.departure_count
-                except Exception as e:
-                    logging.error("Error fetching liveboard for %s: %s", station_id, e)
-                time.sleep(REQUEST_DELAY)
+                for board_kind, parser, sender, count_attr in board_specs:
+                    try:
+                        liveboard_raw = api.fetch_liveboard(station_id, arrdep=board_kind)
+                        if liveboard_raw is None:
+                            continue
+
+                        board = parser(liveboard_raw, station_id)
+                        sender(
+                            _feedurl=FEED_URL,
+                            _station_id=station_id,
+                            data=board,
+                            flush_producer=False,
+                        )
+
+                        if board_kind == "departure":
+                            departure_board_count += 1
+                            departure_count += getattr(board, count_attr)
+                        else:
+                            arrival_board_count += 1
+                            arrival_count += getattr(board, count_attr)
+                    except Exception as e:
+                        logging.error("Error fetching %s board for %s: %s", board_kind, station_id, e)
+                    time.sleep(REQUEST_DELAY)
             producer.flush()
             end_time = datetime.now(timezone.utc)
             elapsed = (end_time - start_time).total_seconds()
             effective_interval = max(0, polling_interval - elapsed)
             logging.info(
-                "Sent %d station boards (%d departures) in %.1f s. Next poll at %s.",
-                board_count,
+                "Sent %d departure boards (%d departures) and %d arrival boards (%d arrivals) in %.1f s. Next poll at %s.",
+                departure_board_count,
                 departure_count,
+                arrival_board_count,
+                arrival_count,
                 elapsed,
                 (datetime.now(timezone.utc) + timedelta(seconds=effective_interval)).isoformat(),
             )

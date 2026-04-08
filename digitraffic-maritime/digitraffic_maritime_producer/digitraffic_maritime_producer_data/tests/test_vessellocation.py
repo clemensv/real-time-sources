@@ -1,5 +1,5 @@
 """
-Test case for Document
+Test case for VesselLocation
 """
 
 import os
@@ -8,37 +8,37 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from digitraffic_maritime_producer_data.digitraffic_maritime_producer_data.document import Document
+from digitraffic_maritime_producer_data.vessellocation import VesselLocation
 
 
-class Test_Document(unittest.TestCase):
+class Test_VesselLocation(unittest.TestCase):
     """
-    Test case for Document
+    Test case for VesselLocation
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Document.create_instance()
+        self.instance = Test_VesselLocation.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Document for testing
+        Create instance of VesselLocation for testing
         """
-        instance = Document(
-            mmsi=int(68),
-            time=int(6),
-            sog=float(14.425277972372708),
-            cog=float(5.463576057937125),
-            navStat=int(45),
-            rot=int(96),
-            posAcc=True,
+        instance = VesselLocation(
+            mmsi=int(94),
+            time=int(17),
+            sog=float(33.203911035339814),
+            cog=float(49.70426613118839),
+            navStat=int(47),
+            rot=int(78),
+            posAcc=False,
             raim=True,
-            heading=int(71),
-            lon=float(58.812145338454236),
-            lat=float(88.8983944618221)
+            heading=int(34),
+            lon=float(33.0404537129625),
+            lat=float(56.610378070389864)
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Document(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(68)
+        test_value = int(94)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -55,7 +55,7 @@ class Test_Document(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(6)
+        test_value = int(17)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -63,7 +63,7 @@ class Test_Document(unittest.TestCase):
         """
         Test sog property
         """
-        test_value = float(14.425277972372708)
+        test_value = float(33.203911035339814)
         self.instance.sog = test_value
         self.assertEqual(self.instance.sog, test_value)
     
@@ -71,7 +71,7 @@ class Test_Document(unittest.TestCase):
         """
         Test cog property
         """
-        test_value = float(5.463576057937125)
+        test_value = float(49.70426613118839)
         self.instance.cog = test_value
         self.assertEqual(self.instance.cog, test_value)
     
@@ -79,7 +79,7 @@ class Test_Document(unittest.TestCase):
         """
         Test navStat property
         """
-        test_value = int(45)
+        test_value = int(47)
         self.instance.navStat = test_value
         self.assertEqual(self.instance.navStat, test_value)
     
@@ -87,7 +87,7 @@ class Test_Document(unittest.TestCase):
         """
         Test rot property
         """
-        test_value = int(96)
+        test_value = int(78)
         self.instance.rot = test_value
         self.assertEqual(self.instance.rot, test_value)
     
@@ -95,7 +95,7 @@ class Test_Document(unittest.TestCase):
         """
         Test posAcc property
         """
-        test_value = True
+        test_value = False
         self.instance.posAcc = test_value
         self.assertEqual(self.instance.posAcc, test_value)
     
@@ -111,7 +111,7 @@ class Test_Document(unittest.TestCase):
         """
         Test heading property
         """
-        test_value = int(71)
+        test_value = int(34)
         self.instance.heading = test_value
         self.assertEqual(self.instance.heading, test_value)
     
@@ -119,7 +119,7 @@ class Test_Document(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(58.812145338454236)
+        test_value = float(33.0404537129625)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -127,16 +127,26 @@ class Test_Document(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(88.8983944618221)
+        test_value = float(56.610378070389864)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Document.from_data(bytes_data, media_type)
+        new_instance = VesselLocation.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = VesselLocation.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

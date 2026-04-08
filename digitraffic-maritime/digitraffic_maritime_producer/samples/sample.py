@@ -33,11 +33,13 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarineAisEventProducer
+from digitraffic_maritime_producer_kafka_producer.producer import FiDigitrafficMarinePortcallEventProducer
 
 # imports for the data classes for each event
 
 from digitraffic_maritime_producer_data.vessellocation import VesselLocation
 from digitraffic_maritime_producer_data.vesselmetadata import VesselMetadata
+from digitraffic_maritime_producer_data.portcall import PortCall
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,6 +74,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'fi.digitraffic.marine.ais.VesselMetadata' event to Kafka topic.
     await fi_digitraffic_marine_ais_event_producer.send_fi_digitraffic_marine_ais_vessel_metadata(_mmsi = 'TODO: replace me', data = _vessel_metadata)
     print(f"Sent 'fi.digitraffic.marine.ais.VesselMetadata' event: {_vessel_metadata.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_digitraffic_marine_portcall_event_producer = FiDigitrafficMarinePortcallEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_digitraffic_marine_portcall_event_producer = FiDigitrafficMarinePortcallEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.digitraffic.marine.portcall.PortCall ----
+    # TODO: Supply event data for the fi.digitraffic.marine.portcall.PortCall event
+    _port_call = PortCall()
+
+    # sends the 'fi.digitraffic.marine.portcall.PortCall' event to Kafka topic.
+    await fi_digitraffic_marine_portcall_event_producer.send_fi_digitraffic_marine_portcall_port_call(_port_call_id = 'TODO: replace me', data = _port_call)
+    print(f"Sent 'fi.digitraffic.marine.portcall.PortCall' event: {_port_call.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

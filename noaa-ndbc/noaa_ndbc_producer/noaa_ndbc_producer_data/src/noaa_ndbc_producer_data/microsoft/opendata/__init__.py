@@ -1,3 +1,3 @@
-from .us import BuoyStation, BuoyObservation
+from .us import BuoyOceanographicObservation, BuoyDartMeasurement, BuoyObservation, BuoyStation, BuoySolarRadiationObservation
 
-__all__ = ["BuoyStation", "BuoyObservation"]
+__all__ = ["BuoyOceanographicObservation", "BuoyDartMeasurement", "BuoyObservation", "BuoyStation", "BuoySolarRadiationObservation"]

@@ -126,6 +126,99 @@ SAMPLE_LIVEBOARD_RESPONSE = {
     }
 }
 
+SAMPLE_ARRIVALBOARD_RESPONSE = {
+    "version": "1.1",
+    "timestamp": "1712500000",
+    "station": "Brussels-South",
+    "stationinfo": {
+        "@id": "http://irail.be/stations/NMBS/008814001",
+        "id": "BE.NMBS.008814001",
+        "name": "Brussels-South",
+        "locationX": "4.336531",
+        "locationY": "50.835707",
+        "standardname": "Bruxelles-Midi / Brussel-Zuid"
+    },
+    "arrivals": {
+        "number": 2,
+        "arrival": [
+            {
+                "id": "0",
+                "station": "Antwerp-Central",
+                "stationinfo": {
+                    "@id": "http://irail.be/stations/NMBS/008821006",
+                    "id": "BE.NMBS.008821006",
+                    "name": "Antwerp-Central",
+                    "locationX": "4.421101",
+                    "locationY": "51.2172",
+                    "standardname": "Antwerpen-Centraal"
+                },
+                "time": "1712502000",
+                "delay": "300",
+                "canceled": "0",
+                "arrived": "0",
+                "isExtra": "0",
+                "vehicle": "BE.NMBS.IC2117",
+                "vehicleinfo": {
+                    "name": "BE.NMBS.IC2117",
+                    "shortname": "IC 2117",
+                    "number": "2117",
+                    "type": "IC",
+                    "locationX": "0",
+                    "locationY": "0",
+                    "@id": "http://irail.be/vehicle/IC2117"
+                },
+                "platform": "13",
+                "platforminfo": {
+                    "name": "13",
+                    "normal": "1"
+                },
+                "occupancy": {
+                    "@id": "http://api.irail.be/terms/low",
+                    "name": "low"
+                },
+                "departureConnection": "http://irail.be/connections/8814001/20260407/IC2117"
+            },
+            {
+                "id": "1",
+                "station": "Ghent-Sint-Pieters",
+                "stationinfo": {
+                    "@id": "http://irail.be/stations/NMBS/008892007",
+                    "id": "BE.NMBS.008892007",
+                    "name": "Ghent-Sint-Pieters",
+                    "locationX": "3.710675",
+                    "locationY": "51.035896",
+                    "standardname": "Gent-Sint-Pieters"
+                },
+                "time": "1712503800",
+                "delay": "0",
+                "canceled": "1",
+                "arrived": "1",
+                "isExtra": "1",
+                "vehicle": "BE.NMBS.S51507",
+                "vehicleinfo": {
+                    "name": "BE.NMBS.S51507",
+                    "shortname": "S5 1507",
+                    "number": "1507",
+                    "type": "S5",
+                    "locationX": "0",
+                    "locationY": "0",
+                    "@id": "http://irail.be/vehicle/S51507"
+                },
+                "platform": "4",
+                "platforminfo": {
+                    "name": "4",
+                    "normal": "0"
+                },
+                "occupancy": {
+                    "@id": "http://api.irail.be/terms/high",
+                    "name": "high"
+                },
+                "departureConnection": "http://irail.be/connections/8814001/20260407/S51507"
+            }
+        ]
+    }
+}
+
 
 class TestParseStation(unittest.TestCase):
     """Test station parsing."""
@@ -218,6 +311,56 @@ class TestParseDeparture(unittest.TestCase):
         self.assertEqual(dep.occupancy, "unknown")
 
 
+class TestParseArrival(unittest.TestCase):
+    """Test arrival parsing."""
+
+    def test_parse_arrival_with_delay(self):
+        raw = SAMPLE_ARRIVALBOARD_RESPONSE["arrivals"]["arrival"][0]
+        arr = IRailAPI.parse_arrival(raw)
+        self.assertEqual(arr.origin_station_id, "008821006")
+        self.assertEqual(arr.origin_name, "Antwerp-Central")
+        self.assertEqual(arr.delay_seconds, 300)
+        self.assertFalse(arr.is_canceled)
+        self.assertFalse(arr.has_arrived)
+        self.assertFalse(arr.is_extra_stop)
+        self.assertEqual(arr.vehicle_id, "BE.NMBS.IC2117")
+        self.assertEqual(arr.vehicle_short_name, "IC 2117")
+        self.assertEqual(arr.vehicle_type, "IC")
+        self.assertEqual(arr.vehicle_number, "2117")
+        self.assertEqual(arr.platform, "13")
+        self.assertTrue(arr.is_normal_platform)
+        self.assertEqual(arr.occupancy, "low")
+        self.assertEqual(arr.connection_uri, "http://irail.be/connections/8814001/20260407/IC2117")
+
+    def test_parse_arrival_arrived_and_canceled(self):
+        raw = SAMPLE_ARRIVALBOARD_RESPONSE["arrivals"]["arrival"][1]
+        arr = IRailAPI.parse_arrival(raw)
+        self.assertTrue(arr.is_canceled)
+        self.assertTrue(arr.has_arrived)
+        self.assertTrue(arr.is_extra_stop)
+        self.assertEqual(arr.occupancy, "high")
+        self.assertFalse(arr.is_normal_platform)
+
+    def test_parse_arrival_time_conversion(self):
+        raw = SAMPLE_ARRIVALBOARD_RESPONSE["arrivals"]["arrival"][0]
+        arr = IRailAPI.parse_arrival(raw)
+        dt = datetime.fromisoformat(arr.scheduled_time)
+        self.assertEqual(dt.tzinfo, timezone.utc)
+
+    def test_parse_arrival_empty_platform(self):
+        raw = dict(SAMPLE_ARRIVALBOARD_RESPONSE["arrivals"]["arrival"][0])
+        raw["platform"] = ""
+        raw["platforminfo"] = {"name": "", "normal": "1"}
+        arr = IRailAPI.parse_arrival(raw)
+        self.assertIsNone(arr.platform)
+
+    def test_parse_arrival_unknown_occupancy(self):
+        raw = dict(SAMPLE_ARRIVALBOARD_RESPONSE["arrivals"]["arrival"][0])
+        raw["occupancy"] = {"@id": "http://api.irail.be/terms/something", "name": "xyz"}
+        arr = IRailAPI.parse_arrival(raw)
+        self.assertEqual(arr.occupancy, "unknown")
+
+
 class TestParseLiveboard(unittest.TestCase):
     """Test liveboard parsing."""
 
@@ -238,7 +381,45 @@ class TestParseLiveboard(unittest.TestCase):
                "departures": {"number": 0, "departure": []}}
         board = IRailAPI.parse_liveboard(raw, "008800001")
         self.assertEqual(board.departure_count, 0)
-        self.assertEqual(board.departures, [])
+
+
+class TestParseArrivalBoard(unittest.TestCase):
+    """Test arrival board parsing."""
+
+    def test_parse_arrivalboard_basic(self):
+        board = IRailAPI.parse_arrivalboard(SAMPLE_ARRIVALBOARD_RESPONSE, "008814001")
+        self.assertEqual(board.station_id, "008814001")
+        self.assertEqual(board.station_name, "Brussels-South")
+        self.assertEqual(board.arrival_count, 2)
+        self.assertEqual(len(board.arrivals), 2)
+
+    def test_parse_arrivalboard_timestamp(self):
+        board = IRailAPI.parse_arrivalboard(SAMPLE_ARRIVALBOARD_RESPONSE, "008814001")
+        dt = datetime.fromisoformat(board.retrieved_at)
+        self.assertEqual(dt.tzinfo, timezone.utc)
+
+    def test_parse_arrivalboard_empty_arrivals(self):
+        raw = {"timestamp": "1712500000", "station": "Test", "stationinfo": {},
+               "arrivals": {"number": 0, "arrival": []}}
+        board = IRailAPI.parse_arrivalboard(raw, "008800001")
+        self.assertEqual(board.arrival_count, 0)
+        self.assertEqual(board.arrivals, [])
+
+    def test_parse_arrivalboard_malformed_arrival_skipped(self):
+        raw = {
+            "timestamp": "1712500000",
+            "station": "Test",
+            "stationinfo": {},
+            "arrivals": {
+                "number": 1,
+                "arrival": [
+                    {"time": "not_a_number"}
+                ]
+            }
+        }
+        board = IRailAPI.parse_arrivalboard(raw, "008800001")
+        self.assertEqual(board.arrival_count, 0)
+        self.assertEqual(board.arrivals, [])
 
     def test_parse_liveboard_malformed_departure_skipped(self):
         raw = {
@@ -330,6 +511,46 @@ class TestDataClassSerialization(unittest.TestCase):
         self.assertEqual(len(d["departures"]), 1)
         self.assertEqual(d["departures"][0]["vehicle_type"], "IC")
 
+    def test_arrival_roundtrip(self):
+        from irail_producer_data.be.irail.arrival import Arrival
+        arr = Arrival(
+            origin_station_id="008821006", origin_name="Antwerp-Central",
+            scheduled_time="2026-04-07T18:00:00+00:00", delay_seconds=300,
+            is_canceled=False, has_arrived=False, is_extra_stop=False,
+            vehicle_id="BE.NMBS.IC2117", vehicle_short_name="IC 2117",
+            vehicle_type="IC", vehicle_number="2117",
+            platform="13", is_normal_platform=True,
+            occupancy="low",
+            connection_uri="http://irail.be/connections/8814001/20260407/IC2117"
+        )
+        d = arr.to_serializer_dict()
+        self.assertEqual(d["delay_seconds"], 300)
+        arr2 = Arrival.from_serializer_dict(d)
+        self.assertEqual(arr2.vehicle_type, "IC")
+
+    def test_arrivalboard_roundtrip(self):
+        from irail_producer_data.be.irail.arrival import Arrival
+        from irail_producer_data.be.irail.arrivalboard import ArrivalBoard
+        arr = Arrival(
+            origin_station_id="008821006", origin_name="Antwerp-Central",
+            scheduled_time="2026-04-07T18:00:00+00:00", delay_seconds=0,
+            is_canceled=False, has_arrived=False, is_extra_stop=False,
+            vehicle_id="BE.NMBS.IC2117", vehicle_short_name="IC 2117",
+            vehicle_type="IC", vehicle_number="2117",
+            platform=None, is_normal_platform=True,
+            occupancy="unknown",
+            connection_uri="http://irail.be/connections/8814001/20260407/IC2117"
+        )
+        board = ArrivalBoard(
+            station_id="008814001", station_name="Brussels-South",
+            retrieved_at="2026-04-07T18:00:00+00:00", arrival_count=1,
+            arrivals=[arr]
+        )
+        d = board.to_serializer_dict()
+        self.assertEqual(d["arrival_count"], 1)
+        self.assertEqual(len(d["arrivals"]), 1)
+        self.assertEqual(d["arrivals"][0]["vehicle_type"], "IC")
+
     def test_station_avro_roundtrip(self):
         from irail_producer_data.be.irail.station import Station
         station = Station(
@@ -358,6 +579,24 @@ class TestDataClassSerialization(unittest.TestCase):
         avro_bytes = dep.to_byte_array("avro/binary")
         dep2 = Departure.from_data(avro_bytes, "avro/binary")
         self.assertIsNone(dep2.platform)
+
+    def test_arrival_null_platform_serialization(self):
+        from irail_producer_data.be.irail.arrival import Arrival
+        arr = Arrival(
+            origin_station_id="008821006", origin_name="Antwerp",
+            scheduled_time="2026-04-07T18:00:00+00:00", delay_seconds=0,
+            is_canceled=False, has_arrived=False, is_extra_stop=False,
+            vehicle_id="BE.NMBS.IC1", vehicle_short_name="IC 1",
+            vehicle_type="IC", vehicle_number="1",
+            platform=None, is_normal_platform=True,
+            occupancy="unknown",
+            connection_uri=""
+        )
+        d = arr.to_serializer_dict()
+        self.assertIsNone(d["platform"])
+        avro_bytes = arr.to_byte_array("avro/binary")
+        arr2 = Arrival.from_data(avro_bytes, "avro/binary")
+        self.assertIsNone(arr2.platform)
 
 
 class TestFetchStations(unittest.TestCase):
@@ -390,6 +629,23 @@ class TestFetchStations(unittest.TestCase):
         api.session = mock_session
         result = api.fetch_liveboard("008814001")
         self.assertIsNone(result)
+
+    @patch("irail.irail.requests.Session")
+    def test_fetch_liveboard_arrival_params(self, mock_session_cls):
+        mock_session = MagicMock()
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = SAMPLE_ARRIVALBOARD_RESPONSE
+        mock_response.raise_for_status = MagicMock()
+        mock_session.get.return_value = mock_response
+        mock_session_cls.return_value = mock_session
+
+        api = IRailAPI()
+        api.session = mock_session
+        result = api.fetch_liveboard("008814001", arrdep="arrival")
+        self.assertEqual(result["station"], "Brussels-South")
+        _, kwargs = mock_session.get.call_args
+        self.assertEqual(kwargs["params"]["arrdep"], "arrival")
 
 
 if __name__ == "__main__":

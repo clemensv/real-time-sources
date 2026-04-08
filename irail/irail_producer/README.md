@@ -261,6 +261,71 @@ be_irail_dispatcher.be_irail_station_board_async = be_irail_station_board_event
 
 - `**kwargs`: Additional Kafka producer configuration
 
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irail_arrival_board_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irail_arrival_board_async:  Callable[[ConsumerRecord, CloudEvent, ArrivalBoard],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irail.ArrivalBoard`: A real-time arrival board snapshot for a Belgian railway station
+from the iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay information,
+platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each
+event replaces the previous arrival-board state for the same station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) -> None:
+
+```python    # Process the event data
+
+BeIrailProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_dispatcher.be_irail_arrival_board_async = be_irail_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
 
 
 #### Send Methods## Internals
@@ -467,6 +532,112 @@ await producer.send_be_irail_station_board_batch(```
         StationBoard(...),
 
         StationBoard(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_be_irail_arrival_board`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irail_arrival_board(
+
+    self,##### `_process_event`
+
+    data: ArrivalBoard,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irail.ArrivalBoard` message. A real-time arrival board snapshot for a Belgian railway station from the
+iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay information, platform
+assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event
+replaces the previous arrival-board state for the same station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ArrivalBoard`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irail_arrival_board(
+
+    data=ArrivalBoard(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irail.ArrivalBoard` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irail_arrival_board_batch(```
+
+    messages=[
+
+        ArrivalBoard(...),Initializes the runner with a Kafka consumer.
+
+        ArrivalBoard(...),
+
+        ArrivalBoard(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

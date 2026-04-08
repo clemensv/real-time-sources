@@ -1,3 +1,3 @@
-from .opendata import BuoyStation, BuoyObservation
+from .opendata import BuoyOceanographicObservation, BuoyDartMeasurement, BuoyObservation, BuoyStation, BuoySolarRadiationObservation
 
-__all__ = ["BuoyStation", "BuoyObservation"]
+__all__ = ["BuoyOceanographicObservation", "BuoyDartMeasurement", "BuoyObservation", "BuoyStation", "BuoySolarRadiationObservation"]

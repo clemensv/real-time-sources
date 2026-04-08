@@ -29,10 +29,10 @@ class Test_StationBoard(unittest.TestCase):
         Create instance of StationBoard for testing
         """
         instance = StationBoard(
-            station_id='jltdgpdyzoysgvdcgsnj',
-            station_name='ctsmroeqcfxrwhzozhai',
-            retrieved_at='ydawbsatqzysqtnenjnk',
-            departure_count=int(63),
+            station_id='vociqvwgzsfzdgnkgbgf',
+            station_name='cxjugkqvaqgowltwfdff',
+            retrieved_at='akfmdvwwwswvkjrmcglq',
+            departure_count=int(17),
             departures=[Test_Departure.create_instance(), Test_Departure.create_instance()]
         )
         return instance
@@ -42,7 +42,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'jltdgpdyzoysgvdcgsnj'
+        test_value = 'vociqvwgzsfzdgnkgbgf'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'ctsmroeqcfxrwhzozhai'
+        test_value = 'cxjugkqvaqgowltwfdff'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -58,7 +58,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test retrieved_at property
         """
-        test_value = 'ydawbsatqzysqtnenjnk'
+        test_value = 'akfmdvwwwswvkjrmcglq'
         self.instance.retrieved_at = test_value
         self.assertEqual(self.instance.retrieved_at, test_value)
     
@@ -66,7 +66,7 @@ class Test_StationBoard(unittest.TestCase):
         """
         Test departure_count property
         """
-        test_value = int(63)
+        test_value = int(17)
         self.instance.departure_count = test_value
         self.assertEqual(self.instance.departure_count, test_value)
     

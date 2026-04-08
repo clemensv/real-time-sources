@@ -1,5 +1,5 @@
 """
-Test case for Document
+Test case for VesselMetadata
 """
 
 import os
@@ -8,40 +8,40 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from digitraffic_maritime_producer_data.document import Document
+from digitraffic_maritime_producer_data.digitraffic_maritime_producer_data.vesselmetadata import VesselMetadata
 
 
-class Test_Document(unittest.TestCase):
+class Test_VesselMetadata(unittest.TestCase):
     """
-    Test case for Document
+    Test case for VesselMetadata
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Document.create_instance()
+        self.instance = Test_VesselMetadata.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Document for testing
+        Create instance of VesselMetadata for testing
         """
-        instance = Document(
-            mmsi=int(60),
-            timestamp=int(62),
-            name='zniscuxegvxkoufvfmik',
-            callSign='jeqmgmhsscdddacvethb',
-            imo=int(15),
-            type=int(60),
-            draught=int(98),
-            eta=int(51),
-            destination='einoaivfdxaraavwwtkb',
-            posType=int(94),
-            refA=int(23),
-            refB=int(67),
-            refC=int(80),
-            refD=int(89)
+        instance = VesselMetadata(
+            mmsi=int(96),
+            timestamp=int(80),
+            name='hynfpawxckchpsvacnav',
+            callSign='rbkodmevmlkhakiqzunc',
+            imo=int(1),
+            type=int(1),
+            draught=int(62),
+            eta=int(100),
+            destination='srgrottrbbragpmvkvpq',
+            posType=int(3),
+            refA=int(17),
+            refB=int(82),
+            refC=int(28),
+            refD=int(91)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_Document(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(60)
+        test_value = int(96)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -58,7 +58,7 @@ class Test_Document(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(62)
+        test_value = int(80)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -66,7 +66,7 @@ class Test_Document(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'zniscuxegvxkoufvfmik'
+        test_value = 'hynfpawxckchpsvacnav'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -74,7 +74,7 @@ class Test_Document(unittest.TestCase):
         """
         Test callSign property
         """
-        test_value = 'jeqmgmhsscdddacvethb'
+        test_value = 'rbkodmevmlkhakiqzunc'
         self.instance.callSign = test_value
         self.assertEqual(self.instance.callSign, test_value)
     
@@ -82,7 +82,7 @@ class Test_Document(unittest.TestCase):
         """
         Test imo property
         """
-        test_value = int(15)
+        test_value = int(1)
         self.instance.imo = test_value
         self.assertEqual(self.instance.imo, test_value)
     
@@ -90,7 +90,7 @@ class Test_Document(unittest.TestCase):
         """
         Test type property
         """
-        test_value = int(60)
+        test_value = int(1)
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -98,7 +98,7 @@ class Test_Document(unittest.TestCase):
         """
         Test draught property
         """
-        test_value = int(98)
+        test_value = int(62)
         self.instance.draught = test_value
         self.assertEqual(self.instance.draught, test_value)
     
@@ -106,7 +106,7 @@ class Test_Document(unittest.TestCase):
         """
         Test eta property
         """
-        test_value = int(51)
+        test_value = int(100)
         self.instance.eta = test_value
         self.assertEqual(self.instance.eta, test_value)
     
@@ -114,7 +114,7 @@ class Test_Document(unittest.TestCase):
         """
         Test destination property
         """
-        test_value = 'einoaivfdxaraavwwtkb'
+        test_value = 'srgrottrbbragpmvkvpq'
         self.instance.destination = test_value
         self.assertEqual(self.instance.destination, test_value)
     
@@ -122,7 +122,7 @@ class Test_Document(unittest.TestCase):
         """
         Test posType property
         """
-        test_value = int(94)
+        test_value = int(3)
         self.instance.posType = test_value
         self.assertEqual(self.instance.posType, test_value)
     
@@ -130,7 +130,7 @@ class Test_Document(unittest.TestCase):
         """
         Test refA property
         """
-        test_value = int(23)
+        test_value = int(17)
         self.instance.refA = test_value
         self.assertEqual(self.instance.refA, test_value)
     
@@ -138,7 +138,7 @@ class Test_Document(unittest.TestCase):
         """
         Test refB property
         """
-        test_value = int(67)
+        test_value = int(82)
         self.instance.refB = test_value
         self.assertEqual(self.instance.refB, test_value)
     
@@ -146,7 +146,7 @@ class Test_Document(unittest.TestCase):
         """
         Test refC property
         """
-        test_value = int(80)
+        test_value = int(28)
         self.instance.refC = test_value
         self.assertEqual(self.instance.refC, test_value)
     
@@ -154,26 +154,16 @@ class Test_Document(unittest.TestCase):
         """
         Test refD property
         """
-        test_value = int(89)
+        test_value = int(91)
         self.instance.refD = test_value
         self.assertEqual(self.instance.refD, test_value)
     
-    def test_to_byte_array_json(self):
+    def test_to_byte_array_avro(self):
         """
-        Test to_byte_array method with json media type
+        Test to_byte_array method with avro media type
         """
-        media_type = "application/json"
+        media_type = "application/vnd.apache.avro+avro"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Document.from_data(bytes_data, media_type)
+        new_instance = VesselMetadata.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
-
-    def test_to_json(self):
-        """
-        Test to_json method
-        """
-        json_data = self.instance.to_json()
-        new_instance = Document.from_json(json_data)
-        json_data2 = new_instance.to_json()
-        self.assertEqual(json_data, json_data2)
-

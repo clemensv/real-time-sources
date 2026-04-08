@@ -15,7 +15,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - AUGovBOMWeatherEventDispatcher
+3. [Quick Start](#quick-start)    - AUGovBOMWeatherEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    AUGovBOMWarningEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +41,10 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - AUGovBOMWeatherProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- AUGovBOMWarningProducersolution for event-driven applications.
 
 
 
@@ -190,6 +196,43 @@ au_gov_bom_weather_dispatcher.au_gov_bom_weather_station_async = au_gov_bom_weat
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### AUGovBOMWarningProducer- `data`: The event data of type `bom_australia_producer_data.Station`.
+
+
+
+Producer for `AU.Gov.BOM.Warning` message group.Example:
+
+
+
+#### Constructor```python
+
+async def au_gov_bom_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+AUGovBOMWarningProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+au_gov_bom_warning_dispatcher.au_gov_bom_weather_station_async = au_gov_bom_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -248,6 +291,45 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 au_gov_bom_weather_dispatcher.au_gov_bom_weather_weather_observation_async =
+au_gov_bom_weather_weather_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### AUGovBOMWarningProducer- `data`: The event data of type `bom_australia_producer_data.WeatherObservation`.
+
+
+
+Producer for `AU.Gov.BOM.Warning` message group.Example:
+
+
+
+#### Constructor```python
+
+async def au_gov_bom_weather_weather_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+AUGovBOMWarningProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+au_gov_bom_warning_dispatcher.au_gov_bom_weather_weather_observation_async =
 au_gov_bom_weather_weather_observation_event
 
 **Parameters:**```
@@ -459,6 +541,304 @@ await producer.send_au_gov_bom_weather_weather_observation_batch(```
         WeatherObservation(...),
 
         WeatherObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### AUGovBOMWarningEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`AUGovBOMWarningEventDispatcher` handles events for the AU.Gov.BOM.Warning message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from bom_australia_producer import AUGovBOMWeatherProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = AUGovBOMWeatherProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_au_gov_bom_weather_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The AUGovBOMWarningEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = AUGovBOMWeatherProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `au_gov_bom_warning_warning_bulletin_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'au_gov_bom_warning_warning_bulletin_async:  Callable[[ConsumerRecord, CloudEvent,
+WarningBulletin], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `AU.Gov.BOM.Warning.WarningBulletin`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### AUGovBOMWeatherProducer- `data`: The event data of type `bom_australia_producer_data.WarningBulletin`.
+
+
+
+Producer for `AU.Gov.BOM.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def au_gov_bom_warning_warning_bulletin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WarningBulletin) -> None:
+
+```python    # Process the event data
+
+AUGovBOMWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+au_gov_bom_weather_dispatcher.au_gov_bom_warning_warning_bulletin_async = au_gov_bom_warning_warning_bulletin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### AUGovBOMWarningProducer- `data`: The event data of type `bom_australia_producer_data.WarningBulletin`.
+
+
+
+Producer for `AU.Gov.BOM.Warning` message group.Example:
+
+
+
+#### Constructor```python
+
+async def au_gov_bom_warning_warning_bulletin_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WarningBulletin) -> None:
+
+```python    # Process the event data
+
+AUGovBOMWarningProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+au_gov_bom_warning_dispatcher.au_gov_bom_warning_warning_bulletin_async = au_gov_bom_warning_warning_bulletin_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_au_gov_bom_warning_warning_bulletin`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_au_gov_bom_warning_warning_bulletin(
+
+    self,##### `_process_event`
+
+    data: WarningBulletin,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `AU.Gov.BOM.Warning.WarningBulletin` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WarningBulletin`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_au_gov_bom_warning_warning_bulletin(
+
+    data=WarningBulletin(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `AU.Gov.BOM.Warning.WarningBulletin` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_au_gov_bom_warning_warning_bulletin_batch(```
+
+    messages=[
+
+        WarningBulletin(...),Initializes the runner with a Kafka consumer.
+
+        WarningBulletin(...),
+
+        WarningBulletin(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

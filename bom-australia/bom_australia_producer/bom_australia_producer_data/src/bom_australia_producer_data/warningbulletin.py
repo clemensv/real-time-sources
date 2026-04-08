@@ -1,4 +1,4 @@
-""" Document dataclass. """
+""" WarningBulletin dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -10,50 +10,42 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Document:
+class WarningBulletin:
     """
-    AIS vessel static and voyage data from Digitraffic MQTT stream. Represents decoded AIS message type 5/24 data.
+    Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed.
     
     Attributes:
-        mmsi (typing.Optional[int])
-        timestamp (int)
-        name (typing.Optional[str])
-        callSign (typing.Optional[str])
-        imo (typing.Optional[int])
-        type (typing.Optional[int])
-        draught (typing.Optional[int])
-        eta (typing.Optional[int])
-        destination (typing.Optional[str])
-        posType (typing.Optional[int])
-        refA (typing.Optional[int])
-        refB (typing.Optional[int])
-        refC (typing.Optional[int])
-        refD (typing.Optional[int])
+        warning_id (str)
+        warning_url (str)
+        feed_url (str)
+        feed_title (str)
+        title (str)
+        published_at (datetime.datetime)
+        issued_local_time_text (typing.Optional[str])
+        warning_type (typing.Optional[str])
+        affected_area_text (typing.Optional[str])
     """
     
     
-    mmsi: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
-    timestamp: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
-    name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    callSign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callSign"))
-    imo: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imo"))
-    type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
-    draught: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="draught"))
-    eta: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta"))
-    destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination"))
-    posType: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="posType"))
-    refA: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="refA"))
-    refB: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="refB"))
-    refC: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="refC"))
-    refD: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="refD"))
+    warning_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warning_id"))
+    warning_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warning_url"))
+    feed_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feed_url"))
+    feed_title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feed_title"))
+    title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
+    published_at: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="published_at", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    issued_local_time_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="issued_local_time_text"))
+    warning_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warning_type"))
+    affected_area_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="affected_area_text"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Document':
+    def from_serializer_dict(cls, data: dict) -> 'WarningBulletin':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -126,7 +118,7 @@ class Document:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Document']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['WarningBulletin']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -163,13 +155,13 @@ class Document:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Document.from_serializer_dict(_record)
+                return WarningBulletin.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Document':
+    def create_instance(cls) -> 'WarningBulletin':
         """
         Creates an instance of the dataclass with test values.
         
@@ -177,18 +169,13 @@ class Document:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(60),
-            timestamp=int(62),
-            name='zniscuxegvxkoufvfmik',
-            callSign='jeqmgmhsscdddacvethb',
-            imo=int(15),
-            type=int(60),
-            draught=int(98),
-            eta=int(51),
-            destination='einoaivfdxaraavwwtkb',
-            posType=int(94),
-            refA=int(23),
-            refB=int(67),
-            refC=int(80),
-            refD=int(89)
+            warning_id='zvvcrzfdskpvdlbzgiaa',
+            warning_url='xgpmmqtxcpdqycorkyzh',
+            feed_url='phcfipwbgxpsdahgylwb',
+            feed_title='szdmrqrkujfnwdobfwcc',
+            title='hufnefvgthmamwncjlzw',
+            published_at=datetime.datetime.now(datetime.timezone.utc),
+            issued_local_time_text='ghnyzsufmlcabyqtmzxh',
+            warning_type='bhouiconyiwinvadizqj',
+            affected_area_text='fzyaqtrsarpxqvqnwbhm'
         )

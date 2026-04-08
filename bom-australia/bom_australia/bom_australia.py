@@ -7,12 +7,16 @@ import os
 import time
 import typing
 import logging
+import re
+import xml.etree.ElementTree as ET
 import requests
+from email.utils import parsedate_to_datetime
 from datetime import datetime, timezone
 from confluent_kafka import Producer
 
+from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningEventProducer
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherEventProducer
-from bom_australia_producer_data import Station, WeatherObservation
+from bom_australia_producer_data import Station, WarningBulletin, WeatherObservation
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +46,20 @@ FALLBACK_STATIONS = [
     ("IDD60901", 94120),   # Darwin Airport, NT
     ("IDC60901", 94926),   # Canberra Airport, ACT
 ]
+
+WARNING_FEEDS = [
+    "https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml",
+    "https://www.bom.gov.au/fwo/IDZ00059.warnings_vic.xml",
+    "https://www.bom.gov.au/fwo/IDZ00056.warnings_qld.xml",
+    "https://www.bom.gov.au/fwo/IDZ00060.warnings_wa.xml",
+    "https://www.bom.gov.au/fwo/IDZ00057.warnings_sa.xml",
+    "https://www.bom.gov.au/fwo/IDZ00058.warnings_tas.xml",
+    "https://www.bom.gov.au/fwo/IDZ00055.warnings_nt.xml",
+]
+
+WARNING_TITLE_PATTERN = re.compile(
+    r"^(?P<issued_local_time_text>\d{2}/\d{2}:\d{2}\s+[A-Z]{2,4})\s+(?P<warning_type>.+?)(?:\s+for\s+(?P<affected_area_text>.+))?$"
+)
 
 
 class BOMAustraliaAPI:
@@ -112,6 +130,12 @@ class BOMAustraliaAPI:
         response = self.session.get(url, timeout=30)
         response.raise_for_status()
         return response.json()
+
+    def get_warning_feed(self, feed_url: str) -> str:
+        """Fetch a BOM RSS warning feed as XML text."""
+        response = self.session.get(feed_url, timeout=30)
+        response.raise_for_status()
+        return response.text
 
     @staticmethod
     def parse_station(product_id: str, obs_data: dict) -> typing.Optional[Station]:
@@ -202,6 +226,62 @@ class BOMAustraliaAPI:
             longitude=float(obs_record.get("lon", 0.0)),
         )
 
+    @staticmethod
+    def parse_warning_feed(feed_url: str, feed_xml: str) -> list[WarningBulletin]:
+        """Parse a BOM RSS warning feed into WarningBulletin records."""
+        try:
+            root = ET.fromstring(feed_xml)
+        except ET.ParseError:
+            return []
+
+        channel = root.find("channel")
+        if channel is None:
+            return []
+
+        feed_title = " ".join((channel.findtext("title") or "").split())
+        warnings: list[WarningBulletin] = []
+
+        for item in channel.findall("item"):
+            title = " ".join((item.findtext("title") or "").split())
+            warning_url = (item.findtext("link") or "").strip()
+            published_text = (item.findtext("pubDate") or "").strip()
+            guid = (item.findtext("guid") or warning_url).strip()
+
+            if not title or not warning_url or not published_text:
+                continue
+
+            try:
+                published_at = parsedate_to_datetime(published_text).astimezone(timezone.utc).isoformat()
+            except (TypeError, ValueError, IndexError):
+                continue
+
+            warning_id = _warning_id_from_url(guid)
+            if not warning_id:
+                continue
+
+            match = WARNING_TITLE_PATTERN.match(title)
+            warning_type = title
+            issued_local_time_text = None
+            affected_area_text = None
+            if match:
+                issued_local_time_text = match.group("issued_local_time_text")
+                warning_type = match.group("warning_type")
+                affected_area_text = match.group("affected_area_text")
+
+            warnings.append(WarningBulletin(
+                warning_id=warning_id,
+                warning_url=warning_url,
+                feed_url=feed_url,
+                feed_title=feed_title,
+                title=title,
+                published_at=published_at,
+                issued_local_time_text=issued_local_time_text,
+                warning_type=warning_type,
+                affected_area_text=affected_area_text,
+            ))
+
+        return warnings
+
 
 def parse_connection_string(connection_string: str) -> dict:
     """Parse a Kafka connection string into a config dict."""
@@ -228,15 +308,63 @@ def parse_connection_string(connection_string: str) -> dict:
     return config
 
 
+def _warning_id_from_url(url: str) -> str:
+    """Extract a BOM warning identifier from the linked warning product URL."""
+    basename = os.path.basename(url.strip().rstrip("/"))
+    if basename.endswith(".shtml"):
+        basename = basename[:-6]
+    return basename
+
+
+def _parse_warning_feed_list(feed_csv: str) -> list[str]:
+    """Parse a comma-separated list of warning feed URLs or relative feed paths."""
+    feeds = []
+    for entry in feed_csv.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if entry.startswith("http://") or entry.startswith("https://"):
+            feeds.append(entry)
+        else:
+            feeds.append(f"https://www.bom.gov.au{entry}")
+    return feeds
+
+
+def _normalize_state(state: typing.Any) -> dict[str, dict[str, str]]:
+    """Normalize persisted state and preserve compatibility with legacy flat observation maps."""
+    normalized = {"observations": {}, "warnings": {}}
+    if not isinstance(state, dict):
+        return normalized
+    if "observations" in state or "warnings" in state:
+        observations = state.get("observations", {})
+        warnings = state.get("warnings", {})
+        if isinstance(observations, dict):
+            normalized["observations"].update(observations)
+        if isinstance(warnings, dict):
+            normalized["warnings"].update(warnings)
+        return normalized
+
+    normalized["observations"].update(state)
+    return normalized
+
+
+def _trim_state_bucket(bucket: dict[str, str]) -> dict[str, str]:
+    """Trim a state bucket when it grows beyond the retention threshold."""
+    if len(bucket) <= 100000:
+        return bucket
+    keys = list(bucket.keys())
+    return {key: bucket[key] for key in keys[-50000:]}
+
+
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
     try:
         if state_file and os.path.exists(state_file):
             with open(state_file, "r", encoding="utf-8") as f:
-                return json.load(f)
+                return _normalize_state(json.load(f))
     except Exception as e:
         logging.warning("Could not load state from %s: %s", state_file, e)
-    return {}
+    return _normalize_state(None)
 
 
 def _save_state(state_file: str, data: dict) -> None:
@@ -244,11 +372,11 @@ def _save_state(state_file: str, data: dict) -> None:
     if not state_file:
         return
     try:
-        if len(data) > 100000:
-            keys = list(data.keys())
-            data = {k: data[k] for k in keys[-50000:]}
+        state = _normalize_state(data)
+        state["observations"] = _trim_state_bucket(state["observations"])
+        state["warnings"] = _trim_state_bucket(state["warnings"])
         with open(state_file, "w", encoding="utf-8") as f:
-            json.dump(data, f)
+            json.dump(state, f)
     except Exception as e:
         logging.warning("Could not save state to %s: %s", state_file, e)
 
@@ -314,6 +442,30 @@ def feed_observations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProduc
     return sent
 
 
+def feed_warnings(api: BOMAustraliaAPI, producer: AUGovBOMWarningEventProducer,
+                  warning_feeds: list[str], previous_warnings: dict) -> int:
+    """Fetch current warning feeds and emit new or updated bulletin items."""
+    sent = 0
+    for feed_url in warning_feeds:
+        try:
+            feed_xml = api.get_warning_feed(feed_url)
+            bulletins = api.parse_warning_feed(feed_url, feed_xml)
+            for bulletin in bulletins:
+                if previous_warnings.get(bulletin.warning_id) == bulletin.published_at:
+                    continue
+                producer.send_au_gov_bom_warning_warning_bulletin(
+                    bulletin.warning_id,
+                    bulletin,
+                    flush_producer=False,
+                )
+                previous_warnings[bulletin.warning_id] = bulletin.published_at
+                sent += 1
+        except Exception as e:
+            logger.warning("Failed to fetch warnings from %s: %s", feed_url, e)
+    producer.producer.flush()
+    return sent
+
+
 def main():
     """Main entry point for the BOM Australia bridge."""
     parser = argparse.ArgumentParser(description="BOM Australia Weather Observation Bridge")
@@ -328,6 +480,8 @@ def main():
                         help="Comma-separated product_id:wmo_id pairs (overrides station discovery)")
     parser.add_argument("--state-filter", type=str, default=os.environ.get("BOM_STATE_FILTER", ""),
                         help="Comma-separated state abbreviations to filter (e.g. NSW,VIC)")
+    parser.add_argument("--warning-feeds", type=str, default=os.environ.get("BOM_WARNING_FEEDS", ""),
+                        help="Comma-separated BOM warning RSS feed URLs or /fwo/... feed paths")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List configured stations")
     subparsers.add_parser("feed", help="Feed data to Kafka")
@@ -339,6 +493,7 @@ def main():
         station_list = _parse_station_list(args.stations)
     else:
         station_list = api.discover_stations(args.state_filter or None)
+    warning_feeds = _parse_warning_feed_list(args.warning_feeds) if args.warning_feeds else list(WARNING_FEEDS)
 
     if args.command == "list":
         for product_id, wmo_id in station_list:
@@ -371,15 +526,17 @@ def main():
         kafka_config["client.id"] = "bom-australia-bridge"
         kafka_producer = Producer(kafka_config)
         event_producer = AUGovBOMWeatherEventProducer(kafka_producer, args.topic)
+        warning_producer = AUGovBOMWarningEventProducer(kafka_producer, args.topic)
         logger.info("Starting BOM Australia bridge, polling every %d seconds, %d stations",
                      args.polling_interval, len(station_list))
-        previous_readings = _load_state(args.state_file)
+        state = _load_state(args.state_file)
         send_stations(api, event_producer, station_list)
         while True:
             try:
-                count = feed_observations(api, event_producer, station_list, previous_readings)
-                _save_state(args.state_file, previous_readings)
-                logger.info("Sent %d observation events", count)
+                observation_count = feed_observations(api, event_producer, station_list, state["observations"])
+                warning_count = feed_warnings(api, warning_producer, warning_feeds, state["warnings"])
+                _save_state(args.state_file, state)
+                logger.info("Sent %d observation events and %d warning events", observation_count, warning_count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
             time.sleep(args.polling_interval)

@@ -4,12 +4,14 @@ import json
 import pytest
 from unittest.mock import MagicMock, patch
 from datetime import datetime, timezone
+from bom_australia_producer_data import WarningBulletin
 
 from bom_australia.bom_australia import (
     BOMAustraliaAPI,
     parse_connection_string,
     send_stations,
     feed_observations,
+    feed_warnings,
     _parse_station_list,
     _load_state,
     _save_state,
@@ -111,6 +113,22 @@ SAMPLE_OBS_RESPONSE = {
     }
 }
 
+SAMPLE_WARNING_FEED = """<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Weather Warnings for New South Wales / Australian Capital Territory. Issued by the Australian Bureau of Meteorology</title>
+        <link>https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml</link>
+        <description>Current weather warnings for New South Wales / Australian Capital Territory.</description>
+        <item>
+            <title>08/16:29 EST Severe Weather Warning for parts of Snowy Mountains Forecast District.</title>
+            <link>https://www.bom.gov.au/products/IDN21037.shtml</link>
+            <pubDate>Wed, 08 Apr 2026 06:29:40 GMT</pubDate>
+            <guid isPermaLink="false">https://www.bom.gov.au/products/IDN21037.shtml</guid>
+        </item>
+    </channel>
+</rss>
+"""
+
 
 class TestParseStation:
     def test_parse_station_from_observation(self):
@@ -178,6 +196,29 @@ class TestParseObservation:
         assert obs.press_tend is None
         assert obs.cloud_type is None
         assert obs.weather is None
+
+
+class TestParseWarningFeed:
+    def test_parse_warning_feed_success(self):
+        bulletins = BOMAustraliaAPI.parse_warning_feed(
+            "https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml",
+            SAMPLE_WARNING_FEED,
+        )
+
+        assert len(bulletins) == 1
+        bulletin = bulletins[0]
+        assert bulletin.warning_id == "IDN21037"
+        assert bulletin.warning_url == "https://www.bom.gov.au/products/IDN21037.shtml"
+        assert bulletin.feed_url == "https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml"
+        assert bulletin.feed_title.startswith("Weather Warnings for New South Wales")
+        assert bulletin.title == "08/16:29 EST Severe Weather Warning for parts of Snowy Mountains Forecast District."
+        assert bulletin.published_at == "2026-04-08T06:29:40+00:00"
+        assert bulletin.issued_local_time_text == "08/16:29 EST"
+        assert bulletin.warning_type == "Severe Weather Warning"
+        assert bulletin.affected_area_text == "parts of Snowy Mountains Forecast District."
+
+    def test_parse_warning_feed_invalid_xml(self):
+        assert BOMAustraliaAPI.parse_warning_feed("https://www.bom.gov.au/fwo/test.xml", "<rss") == []
 
 
 class TestConnectionString:
@@ -333,20 +374,82 @@ class TestFeedObservations:
         assert count == 0
 
 
+class TestFeedWarnings:
+    def test_feed_warnings_emits_new(self):
+        api = BOMAustraliaAPI()
+        mock_producer = MagicMock()
+        mock_producer.producer = MagicMock()
+        previous = {}
+
+        with patch.object(api, "get_warning_feed", return_value=SAMPLE_WARNING_FEED):
+            count = feed_warnings(
+                api,
+                mock_producer,
+                ["https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml"],
+                previous,
+            )
+
+        assert count == 1
+        mock_producer.send_au_gov_bom_warning_warning_bulletin.assert_called_once()
+        assert previous["IDN21037"] == "2026-04-08T06:29:40+00:00"
+
+    def test_feed_warnings_deduplicates(self):
+        api = BOMAustraliaAPI()
+        mock_producer = MagicMock()
+        mock_producer.producer = MagicMock()
+        previous = {"IDN21037": "2026-04-08T06:29:40+00:00"}
+
+        with patch.object(api, "get_warning_feed", return_value=SAMPLE_WARNING_FEED):
+            count = feed_warnings(
+                api,
+                mock_producer,
+                ["https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml"],
+                previous,
+            )
+
+        assert count == 0
+        mock_producer.send_au_gov_bom_warning_warning_bulletin.assert_not_called()
+
+    def test_feed_warnings_handles_error(self):
+        api = BOMAustraliaAPI()
+        mock_producer = MagicMock()
+        mock_producer.producer = MagicMock()
+
+        with patch.object(api, "get_warning_feed", side_effect=Exception("timeout")):
+            count = feed_warnings(
+                api,
+                mock_producer,
+                ["https://www.bom.gov.au/fwo/IDZ00054.warnings_nsw.xml"],
+                {},
+            )
+
+        assert count == 0
+
+
 class TestState:
     def test_load_state_missing_file(self, tmp_path):
-        assert _load_state(str(tmp_path / "nonexistent.json")) == {}
+        assert _load_state(str(tmp_path / "nonexistent.json")) == {"observations": {}, "warnings": {}}
+
+    def test_load_state_legacy_flat_dict(self, tmp_path):
+        path = str(tmp_path / "state.json")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump({"94767:2026-04-07T06:30:00+00:00": "2026-04-07T06:30:00+00:00"}, f)
+
+        loaded = _load_state(path)
+        assert loaded["observations"]["94767:2026-04-07T06:30:00+00:00"] == "2026-04-07T06:30:00+00:00"
+        assert loaded["warnings"] == {}
 
     def test_save_and_load_state(self, tmp_path):
         path = str(tmp_path / "state.json")
-        data = {"key1": "val1", "key2": "val2"}
+        data = {"observations": {"key1": "val1"}, "warnings": {"warn1": "val2"}}
         _save_state(path, data)
         loaded = _load_state(path)
         assert loaded == data
 
     def test_save_state_truncates(self, tmp_path):
         path = str(tmp_path / "state.json")
-        data = {str(i): str(i) for i in range(110000)}
+        data = {"observations": {str(i): str(i) for i in range(110000)}, "warnings": {}}
         _save_state(path, data)
         loaded = _load_state(path)
-        assert len(loaded) <= 50000
+        assert len(loaded["observations"]) <= 50000
+        assert loaded["warnings"] == {}

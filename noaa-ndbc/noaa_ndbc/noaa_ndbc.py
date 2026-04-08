@@ -14,7 +14,10 @@ from typing import Dict, List, Optional
 from datetime import datetime, timezone
 import argparse
 import requests
+from noaa_ndbc_producer_data import BuoyDartMeasurement
 from noaa_ndbc_producer_data import BuoyObservation
+from noaa_ndbc_producer_data import BuoyOceanographicObservation
+from noaa_ndbc_producer_data import BuoySolarRadiationObservation
 from noaa_ndbc_producer_data import BuoyStation
 from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCEventProducer
 
@@ -45,6 +48,8 @@ class NDBCBuoyPoller:
     """
     LATEST_OBS_URL = "https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt"
     STATION_TABLE_URL = "https://www.ndbc.noaa.gov/data/stations/station_table.txt"
+    REALTIME2_INDEX_URL = "https://www.ndbc.noaa.gov/data/realtime2/"
+    REALTIME2_EXTENSIONS = ("srad", "ocean", "dart")
     POLL_INTERVAL_SECONDS = 300  # NDBC data updates every ~5 minutes
 
     def __init__(self, kafka_config: Dict[str, str], kafka_topic: str, last_polled_file: str):
@@ -93,6 +98,326 @@ class NDBCBuoyPoller:
             return lat, lon
         except (ValueError, IndexError):
             return None, None
+
+    @classmethod
+    def _empty_state(cls) -> Dict:
+        """
+        Return the default persisted state shape.
+
+        Returns:
+            Dict containing latest observation timestamps and realtime2 family state.
+        """
+        return {
+            "last_timestamps": {},
+            "latest_obs": {},
+            "realtime2": {extension: {} for extension in cls.REALTIME2_EXTENSIONS},
+        }
+
+    @classmethod
+    def _normalize_state(cls, state: Optional[Dict]) -> Dict:
+        """
+        Normalize persisted state and preserve backward compatibility with the
+        legacy last_timestamps-only format.
+
+        Args:
+            state: Raw state loaded from disk.
+
+        Returns:
+            Normalized state dictionary.
+        """
+        normalized = cls._empty_state()
+        if not isinstance(state, dict):
+            return normalized
+
+        latest_obs = state.get("latest_obs", state.get("last_timestamps", {}))
+        if isinstance(latest_obs, dict):
+            normalized["latest_obs"].update(latest_obs)
+
+        realtime2 = state.get("realtime2", {})
+        if isinstance(realtime2, dict):
+            for extension in cls.REALTIME2_EXTENSIONS:
+                family_state = realtime2.get(extension, {})
+                if isinstance(family_state, dict):
+                    normalized["realtime2"][extension].update(family_state)
+
+        normalized["last_timestamps"] = dict(normalized["latest_obs"])
+        return normalized
+
+    @staticmethod
+    def parse_timestamp(parts: List[str], include_seconds: bool = False) -> Optional[str]:
+        """
+        Parse a UTC timestamp from split NDBC date/time columns.
+
+        Args:
+            parts: Timestamp columns beginning with year.
+            include_seconds: Whether the timestamp includes a seconds column.
+
+        Returns:
+            ISO 8601 UTC timestamp string, or None on failure.
+        """
+        expected_parts = 6 if include_seconds else 5
+        if len(parts) < expected_parts:
+            return None
+
+        try:
+            if include_seconds:
+                dt = datetime(
+                    int(parts[0]),
+                    int(parts[1]),
+                    int(parts[2]),
+                    int(parts[3]),
+                    int(parts[4]),
+                    int(parts[5]),
+                    tzinfo=timezone.utc,
+                )
+            else:
+                dt = datetime(
+                    int(parts[0]),
+                    int(parts[1]),
+                    int(parts[2]),
+                    int(parts[3]),
+                    int(parts[4]),
+                    tzinfo=timezone.utc,
+                )
+        except ValueError:
+            return None
+
+        return dt.isoformat()
+
+    @staticmethod
+    def iter_data_rows(text: str):
+        """
+        Yield parsed data rows from an NDBC text product.
+
+        Args:
+            text: Raw text file content.
+
+        Yields:
+            Whitespace-split data rows, excluding comments and blank lines.
+        """
+        for line in text.splitlines():
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            yield re.split(r'\s+', line)
+
+    def parse_realtime2_file_index(self, text: str) -> Dict[str, List[str]]:
+        """
+        Parse the realtime2 directory listing and group station IDs by family.
+
+        Args:
+            text: Directory listing HTML.
+
+        Returns:
+            Dict mapping family extensions to sorted station ID lists.
+        """
+        station_ids = {extension: set() for extension in self.REALTIME2_EXTENSIONS}
+        for match in re.finditer(r'href="([^"]+)\.(srad|ocean|dart)"', text, re.IGNORECASE):
+            station_id = match.group(1)
+            extension = match.group(2).lower()
+            station_ids[extension].add(station_id)
+
+        return {
+            extension: sorted(values)
+            for extension, values in station_ids.items()
+        }
+
+    def fetch_realtime2_file_index(self) -> Dict[str, List[str]]:
+        """
+        Fetch the realtime2 directory index and discover available families.
+
+        Returns:
+            Dict mapping family extensions to station ID lists.
+        """
+        try:
+            response = requests.get(self.REALTIME2_INDEX_URL, timeout=60)
+            response.raise_for_status()
+            return self.parse_realtime2_file_index(response.text)
+        except Exception as err:
+            print(f"Error fetching NDBC realtime2 index: {err}")
+            return {extension: [] for extension in self.REALTIME2_EXTENSIONS}
+
+    def fetch_realtime2_product(self, station_id: str, extension: str) -> Optional[str]:
+        """
+        Fetch a station-scoped realtime2 product file.
+
+        Args:
+            station_id: NDBC station identifier.
+            extension: Product family suffix such as srad, ocean, or dart.
+
+        Returns:
+            Raw file text, or None on failure.
+        """
+        try:
+            response = requests.get(f"{self.REALTIME2_INDEX_URL}{station_id}.{extension}", timeout=60)
+            response.raise_for_status()
+            return response.text
+        except Exception as err:
+            print(f"Error fetching NDBC realtime2 product {station_id}.{extension}: {err}")
+            return None
+
+    def parse_solar_radiation_observation(self, station_id: str, text: str) -> Optional[BuoySolarRadiationObservation]:
+        """
+        Parse the newest solar radiation observation for one station.
+
+        Args:
+            station_id: NDBC station identifier.
+            text: Raw .srad file content.
+
+        Returns:
+            Parsed solar radiation observation, or None if no valid row exists.
+        """
+        for parts in self.iter_data_rows(text):
+            if len(parts) < 8:
+                continue
+            timestamp = self.parse_timestamp(parts[:5])
+            if timestamp is None:
+                continue
+
+            return BuoySolarRadiationObservation(
+                station_id=station_id,
+                timestamp=timestamp,
+                shortwave_radiation_licor=parse_float(parts[5]),
+                shortwave_radiation_eppley=parse_float(parts[6]),
+                longwave_radiation=parse_float(parts[7]),
+            )
+
+        return None
+
+    def parse_oceanographic_observation(self, station_id: str, text: str) -> Optional[BuoyOceanographicObservation]:
+        """
+        Parse the newest oceanographic observation for one station.
+
+        Args:
+            station_id: NDBC station identifier.
+            text: Raw .ocean file content.
+
+        Returns:
+            Parsed oceanographic observation, or None if no valid row exists.
+        """
+        for parts in self.iter_data_rows(text):
+            if len(parts) < 15:
+                continue
+            timestamp = self.parse_timestamp(parts[:5])
+            if timestamp is None:
+                continue
+
+            depth = parse_float(parts[5])
+            if depth is None:
+                continue
+
+            return BuoyOceanographicObservation(
+                station_id=station_id,
+                timestamp=timestamp,
+                depth=depth,
+                ocean_temperature=parse_float(parts[6]),
+                conductivity=parse_float(parts[7]),
+                salinity=parse_float(parts[8]),
+                oxygen_saturation=parse_float(parts[9]),
+                oxygen_concentration=parse_float(parts[10]),
+                chlorophyll_concentration=parse_float(parts[11]),
+                turbidity=parse_float(parts[12]),
+                ph=parse_float(parts[13]),
+                redox_potential=parse_float(parts[14]),
+            )
+
+        return None
+
+    def parse_dart_measurement(self, station_id: str, text: str) -> Optional[BuoyDartMeasurement]:
+        """
+        Parse the newest DART measurement for one station.
+
+        Args:
+            station_id: NDBC station identifier.
+            text: Raw .dart file content.
+
+        Returns:
+            Parsed DART measurement, or None if no valid row exists.
+        """
+        for parts in self.iter_data_rows(text):
+            if len(parts) < 8:
+                continue
+            timestamp = self.parse_timestamp(parts[:6], include_seconds=True)
+            if timestamp is None:
+                continue
+
+            water_column_height = parse_float(parts[7])
+            if water_column_height is None:
+                continue
+
+            try:
+                measurement_type_code = int(parts[6])
+            except ValueError:
+                continue
+
+            return BuoyDartMeasurement(
+                station_id=station_id,
+                timestamp=timestamp,
+                measurement_type_code=measurement_type_code,
+                water_column_height=water_column_height,
+            )
+
+        return None
+
+    def poll_solar_radiation_observations(self, station_ids: List[str]) -> List[BuoySolarRadiationObservation]:
+        """
+        Fetch the newest solar radiation observation for each station in the index.
+
+        Args:
+            station_ids: Station IDs with available .srad files.
+
+        Returns:
+            Parsed solar radiation observations.
+        """
+        observations = []
+        for station_id in station_ids:
+            text = self.fetch_realtime2_product(station_id, "srad")
+            if text is None:
+                continue
+            observation = self.parse_solar_radiation_observation(station_id, text)
+            if observation is not None:
+                observations.append(observation)
+        return observations
+
+    def poll_oceanographic_observations(self, station_ids: List[str]) -> List[BuoyOceanographicObservation]:
+        """
+        Fetch the newest oceanographic observation for each station in the index.
+
+        Args:
+            station_ids: Station IDs with available .ocean files.
+
+        Returns:
+            Parsed oceanographic observations.
+        """
+        observations = []
+        for station_id in station_ids:
+            text = self.fetch_realtime2_product(station_id, "ocean")
+            if text is None:
+                continue
+            observation = self.parse_oceanographic_observation(station_id, text)
+            if observation is not None:
+                observations.append(observation)
+        return observations
+
+    def poll_dart_measurements(self, station_ids: List[str]) -> List[BuoyDartMeasurement]:
+        """
+        Fetch the newest DART measurement for each station in the index.
+
+        Args:
+            station_ids: Station IDs with available .dart files.
+
+        Returns:
+            Parsed DART measurements.
+        """
+        measurements = []
+        for station_id in station_ids:
+            text = self.fetch_realtime2_product(station_id, "dart")
+            if text is None:
+                continue
+            measurement = self.parse_dart_measurement(station_id, text)
+            if measurement is not None:
+                measurements.append(measurement)
+        return measurements
 
     def fetch_stations(self) -> List[BuoyStation]:
         """
@@ -149,10 +474,10 @@ class NDBCBuoyPoller:
         try:
             if os.path.exists(self.last_polled_file):
                 with open(self.last_polled_file, 'r', encoding='utf-8') as f:
-                    return json.load(f)
+                    return self._normalize_state(json.load(f))
         except Exception:
             pass
-        return {"last_timestamps": {}}
+        return self._empty_state()
 
     def save_state(self, state: Dict):
         """
@@ -161,10 +486,11 @@ class NDBCBuoyPoller:
         Args:
             state: Dict mapping station IDs to their last seen ISO timestamps.
         """
+        state_to_save = self._normalize_state(state)
         try:
             os.makedirs(os.path.dirname(self.last_polled_file) if os.path.dirname(self.last_polled_file) else '.', exist_ok=True)
             with open(self.last_polled_file, 'w', encoding='utf-8') as f:
-                json.dump(state, f, indent=2)
+                json.dump(state_to_save, f, indent=2)
         except Exception as e:
             print(f"Error saving state: {e}")
 
@@ -278,14 +604,17 @@ class NDBCBuoyPoller:
             print(f"Error fetching NDBC observations: {err}")
             return []
 
-    def poll_and_send(self):
+    def poll_and_send(self, once: bool = False):
         """
         Main polling loop. Fetches buoy observations, deduplicates by
         station timestamp, and sends new observations to Kafka as CloudEvents.
-        Polls every POLL_INTERVAL_SECONDS (300s / 5 min).
+
+        Args:
+            once: Run one poll iteration and return. Intended for tests.
         """
         print(f"Starting NDBC Buoy Observation poller, polling every {self.POLL_INTERVAL_SECONDS}s")
         print(f"  Observations URL: {self.LATEST_OBS_URL}")
+        print(f"  Realtime2 index URL: {self.REALTIME2_INDEX_URL}")
         print(f"  Kafka topic: {self.kafka_topic}")
 
         # Send reference data (buoy stations) at startup
@@ -300,8 +629,17 @@ class NDBCBuoyPoller:
         while True:
             try:
                 state = self.load_state()
-                last_timestamps = state.get("last_timestamps", {})
+                last_timestamps = state.get("latest_obs", {})
+                realtime2_state = state.get("realtime2", {})
+                solar_radiation_timestamps = realtime2_state.get("srad", {})
+                oceanographic_timestamps = realtime2_state.get("ocean", {})
+                dart_timestamps = realtime2_state.get("dart", {})
+
                 observations = self.poll_observations()
+                realtime2_file_index = self.fetch_realtime2_file_index()
+                solar_radiation_observations = self.poll_solar_radiation_observations(realtime2_file_index.get("srad", []))
+                oceanographic_observations = self.poll_oceanographic_observations(realtime2_file_index.get("ocean", []))
+                dart_measurements = self.poll_dart_measurements(realtime2_file_index.get("dart", []))
 
                 new_count = 0
                 for obs in observations:
@@ -314,18 +652,57 @@ class NDBCBuoyPoller:
                     last_timestamps[obs.station_id] = obs.timestamp
                     new_count += 1
 
+                for observation in solar_radiation_observations:
+                    if solar_radiation_timestamps.get(observation.station_id) == observation.timestamp:
+                        continue
+
+                    self.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation(
+                        observation.station_id, observation, flush_producer=False)
+                    solar_radiation_timestamps[observation.station_id] = observation.timestamp
+                    new_count += 1
+
+                for observation in oceanographic_observations:
+                    if oceanographic_timestamps.get(observation.station_id) == observation.timestamp:
+                        continue
+
+                    self.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation(
+                        observation.station_id, observation, flush_producer=False)
+                    oceanographic_timestamps[observation.station_id] = observation.timestamp
+                    new_count += 1
+
+                for measurement in dart_measurements:
+                    if dart_timestamps.get(measurement.station_id) == measurement.timestamp:
+                        continue
+
+                    self.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement(
+                        measurement.station_id, measurement, flush_producer=False)
+                    dart_timestamps[measurement.station_id] = measurement.timestamp
+                    new_count += 1
+
                 if new_count > 0:
                     self.producer.producer.flush()
-                    print(f"Sent {new_count} new observation(s) to Kafka")
+                    print(f"Sent {new_count} new event(s) to Kafka")
 
                 # Limit state size: keep only stations seen in this cycle
                 station_ids_this_cycle = {obs.station_id for obs in observations}
-                last_timestamps = {k: v for k, v in last_timestamps.items() if k in station_ids_this_cycle}
-                state["last_timestamps"] = last_timestamps
+                solar_station_ids_this_cycle = {observation.station_id for observation in solar_radiation_observations}
+                ocean_station_ids_this_cycle = {observation.station_id for observation in oceanographic_observations}
+                dart_station_ids_this_cycle = {measurement.station_id for measurement in dart_measurements}
+
+                state["latest_obs"] = {k: v for k, v in last_timestamps.items() if k in station_ids_this_cycle}
+                state["last_timestamps"] = dict(state["latest_obs"])
+                state["realtime2"] = {
+                    "srad": {k: v for k, v in solar_radiation_timestamps.items() if k in solar_station_ids_this_cycle},
+                    "ocean": {k: v for k, v in oceanographic_timestamps.items() if k in ocean_station_ids_this_cycle},
+                    "dart": {k: v for k, v in dart_timestamps.items() if k in dart_station_ids_this_cycle},
+                }
                 self.save_state(state)
 
             except Exception as e:
                 print(f"Error in polling loop: {e}")
+
+            if once:
+                break
 
             time.sleep(self.POLL_INTERVAL_SECONDS)
 

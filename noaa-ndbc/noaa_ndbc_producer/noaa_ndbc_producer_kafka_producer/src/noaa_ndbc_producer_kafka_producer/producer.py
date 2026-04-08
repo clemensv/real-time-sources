@@ -9,6 +9,9 @@ from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
 from noaa_ndbc_producer_data import BuoyObservation
 from noaa_ndbc_producer_data import BuoyStation
+from noaa_ndbc_producer_data import BuoySolarRadiationObservation
+from noaa_ndbc_producer_data import BuoyOceanographicObservation
+from noaa_ndbc_producer_data import BuoyDartMeasurement
 
 class MicrosoftOpenDataUSNOAANDBCEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
@@ -88,6 +91,102 @@ class MicrosoftOpenDataUSNOAANDBCEventProducer:
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
              "type":"Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+             "source":"https://www.ndbc.noaa.gov",
+             "subject":"{station_id}".format(station_id = _station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation(self,_station_id : str, data: BuoySolarRadiationObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BuoySolarRadiationObservation], str]=None) -> None:
+        """
+        Sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation' event to the Kafka topic
+
+        Args:
+            _station_id(str):  Value for placeholder station_id in attribute subject
+            data: (BuoySolarRadiationObservation): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BuoySolarRadiationObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_id}'
+        """
+        kafka_key = "{station_id}".format(station_id=_station_id)
+        attributes = {
+             "type":"Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+             "source":"https://www.ndbc.noaa.gov",
+             "subject":"{station_id}".format(station_id = _station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation(self,_station_id : str, data: BuoyOceanographicObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BuoyOceanographicObservation], str]=None) -> None:
+        """
+        Sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation' event to the Kafka topic
+
+        Args:
+            _station_id(str):  Value for placeholder station_id in attribute subject
+            data: (BuoyOceanographicObservation): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BuoyOceanographicObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_id}'
+        """
+        kafka_key = "{station_id}".format(station_id=_station_id)
+        attributes = {
+             "type":"Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+             "source":"https://www.ndbc.noaa.gov",
+             "subject":"{station_id}".format(station_id = _station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement(self,_station_id : str, data: BuoyDartMeasurement, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BuoyDartMeasurement], str]=None) -> None:
+        """
+        Sends the 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement' event to the Kafka topic
+
+        Args:
+            _station_id(str):  Value for placeholder station_id in attribute subject
+            data: (BuoyDartMeasurement): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, BuoyDartMeasurement], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_id}'
+        """
+        kafka_key = "{station_id}".format(station_id=_station_id)
+        attributes = {
+             "type":"Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
              "source":"https://www.ndbc.noaa.gov",
              "subject":"{station_id}".format(station_id = _station_id)
         }

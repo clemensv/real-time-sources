@@ -17,7 +17,7 @@ import json
 @dataclass
 class BuoyStation:
     """
-    BuoyStation
+    Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform.
     
     Attributes:
         station_id (str)
@@ -165,12 +165,12 @@ class BuoyStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='yqafutpbmtmaanfvtsrl',
-            owner='shqtomopfrvsckfvhwsl',
-            station_type='bzgpuewpxllmvgqowfgx',
-            hull='fevzlugosbpamzmutymb',
-            name='aqeosggkrakoiswxjjmr',
-            latitude=float(62.663876845575615),
-            longitude=float(71.6726639586409),
-            timezone='gvflyjvsfcpdedplplea'
+            station_id='sydbuibfhimxycailklx',
+            owner='guzsoxzrucyqsnnbqwjw',
+            station_type='qrzcbkskcglkckbblhqs',
+            hull='zhxalzhdrskwdqsomjjf',
+            name='ofeeuxftrjyjfyvujsve',
+            latitude=float(87.29182861690833),
+            longitude=float(3.0152532240782293),
+            timezone='gahpdzgpkceudvvegvdm'
         )

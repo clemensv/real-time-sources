@@ -20,6 +20,27 @@
       "messagegroups": [
         "#/messagegroups/AU.Gov.BOM.Weather"
       ]
+    },
+    "AU.Gov.BOM.Warning.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "bom-australia",
+          "key": "{warning_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/AU.Gov.BOM.Warning"
+      ]
     }
   },
   "messagegroups": {
@@ -60,6 +81,28 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/AU.Gov.BOM.Weather.jstruct/schemas/AU.Gov.BOM.Weather.WeatherObservation"
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning": {
+      "messages": {
+        "AU.Gov.BOM.Warning.WarningBulletin": {
+          "name": "WarningBulletin",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.BOM.Warning.WarningBulletin"
+            },
+            "source": {
+              "value": "https://www.bom.gov.au/rss/"
+            },
+            "subject": {
+              "value": "{warning_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.jstruct/schemas/AU.Gov.BOM.Warning.WarningBulletin"
         }
       }
     }
@@ -375,6 +418,82 @@
                     "description": "Longitude of the station at observation time.",
                     "unit": "degree",
                     "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.jstruct": {
+      "schemas": {
+        "AU.Gov.BOM.Warning.WarningBulletin": {
+          "name": "WarningBulletin",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://bom.gov.au/schemas/AU/Gov/BOM/Warning/WarningBulletin",
+                "type": "object",
+                "name": "WarningBulletin",
+                "description": "Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed.",
+                "required": [
+                  "warning_id",
+                  "warning_url",
+                  "feed_url",
+                  "feed_title",
+                  "title",
+                  "published_at"
+                ],
+                "properties": {
+                  "warning_id": {
+                    "type": "string",
+                    "description": "Stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'."
+                  },
+                  "warning_url": {
+                    "type": "string",
+                    "description": "Absolute BOM URL of the warning product page linked from the RSS item."
+                  },
+                  "feed_url": {
+                    "type": "string",
+                    "description": "Absolute BOM RSS feed URL that published this warning item."
+                  },
+                  "feed_title": {
+                    "type": "string",
+                    "description": "Title of the RSS feed channel publishing this warning bulletin."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Normalized warning headline text from the RSS item title with line breaks collapsed to spaces."
+                  },
+                  "published_at": {
+                    "type": "datetime",
+                    "description": "UTC timestamp when the RSS item was created or updated, taken from the item's pubDate field."
+                  },
+                  "issued_local_time_text": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Local issuance time prefix embedded in the RSS headline, for example '08/16:29 EST', when present."
+                  },
+                  "warning_type": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Warning headline extracted from the RSS title before the trailing affected-area clause, for example 'Severe Weather Warning'."
+                  },
+                  "affected_area_text": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'."
                   }
                 }
               }

@@ -8,6 +8,11 @@ import json
 import os
 import tempfile
 from unittest.mock import Mock, patch, MagicMock
+from noaa_ndbc_producer_data import BuoyDartMeasurement
+from noaa_ndbc_producer_data import BuoyObservation
+from noaa_ndbc_producer_data import BuoyOceanographicObservation
+from noaa_ndbc_producer_data import BuoySolarRadiationObservation
+from noaa_ndbc_producer_data import BuoyStation
 from noaa_ndbc.noaa_ndbc import NDBCBuoyPoller, parse_connection_string, parse_float
 
 
@@ -28,6 +33,35 @@ SAMPLE_OBS_TEXT = """\
 41001  34.700  -72.700 2024 06 15 14 50 210  8.2 10.3   1.5   7.1   5.2 200 1015.2  -1.2  22.3  24.1  18.5   MM   MM
 41002  32.300  -75.200 2024 06 15 14 50 180  5.1  6.8   0.8   8.0   4.5 190 1016.0   0.3  23.1  25.5  20.2  1.2  2.5
 BURL1  28.900  -89.400 2024 06 15 14 50  MM   MM   MM    MM    MM    MM  MM 1014.5    MM  28.7  29.3    MM   MM   MM
+"""
+
+SAMPLE_REALTIME2_INDEX_TEXT = """\
+<tr><td><a href="51WH0.srad">51WH0.srad</a></td></tr>
+<tr><td><a href="51WH0.ocean">51WH0.ocean</a></td></tr>
+<tr><td><a href="21413.dart">21413.dart</a></td></tr>
+<tr><td><a href="21413.dart">21413.dart</a></td></tr>
+<tr><td><a href="41001.txt">41001.txt</a></td></tr>
+"""
+
+SAMPLE_SRAD_TEXT = """\
+#YY  MM DD hh mm SRAD1 SWRAD LWRAD
+#yr  mo da hr mn W/m2  W/m2  W/m2
+2026 04 07 20 30    MM 241.6 411.1
+2026 04 07 19 30   9.4 316.3 405.4
+"""
+
+SAMPLE_OCEAN_TEXT = """\
+#YY  MM DD hh mm DEPTH OTMP COND  SAL  O2% O2PPM CLCON TURB  PH    EH
+#yr  mo da hr mn    m degC mS/cm  psu    %   ppm  ug/L  FTU pH    mV
+2026 04 07 20 30   1.0 23.5    MM 35.1   MM    MM   1.2  0.4  8.0 -44.0
+2026 04 07 19 30   1.2 23.6  52.2 35.2 97.1   6.7   1.3  0.5  8.1 -43.0
+"""
+
+SAMPLE_DART_TEXT = """\
+#YY  MM DD hh mm ss T HEIGHT
+#yr  mo da hr mn ss -      m
+2026 03 04 17 45 00 1 5779.945
+2026 03 04 17 30 00 2 5779.922
 """
 
 
@@ -108,13 +142,20 @@ class TestNDBCBuoyPoller:
         )
 
         state = poller.load_state()
-        assert state == {"last_timestamps": {}}
+        assert state == {
+            "last_timestamps": {},
+            "latest_obs": {},
+            "realtime2": {"srad": {}, "ocean": {}, "dart": {}},
+        }
 
     @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
     @patch('confluent_kafka.Producer')
     def test_load_state_existing(self, mock_producer_class, mock_event_producer, mock_kafka_config, temp_state_file):
         """Test loading state from existing state file"""
-        state_data = {"last_timestamps": {"41001": "2024-06-15T14:50:00+00:00", "41002": "2024-06-15T14:50:00+00:00"}}
+        state_data = {
+            "last_timestamps": {"41001": "2024-06-15T14:50:00+00:00", "41002": "2024-06-15T14:50:00+00:00"},
+            "realtime2": {"srad": {"51WH0": "2026-04-07T20:30:00+00:00"}},
+        }
         with open(temp_state_file, 'w', encoding='utf-8') as f:
             json.dump(state_data, f)
 
@@ -126,6 +167,10 @@ class TestNDBCBuoyPoller:
 
         state = poller.load_state()
         assert state["last_timestamps"]["41001"] == "2024-06-15T14:50:00+00:00"
+        assert state["latest_obs"]["41002"] == "2024-06-15T14:50:00+00:00"
+        assert state["realtime2"]["srad"]["51WH0"] == "2026-04-07T20:30:00+00:00"
+        assert state["realtime2"]["ocean"] == {}
+        assert state["realtime2"]["dart"] == {}
 
     @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
     @patch('confluent_kafka.Producer')
@@ -137,12 +182,19 @@ class TestNDBCBuoyPoller:
             last_polled_file=temp_state_file
         )
 
-        state_data = {"last_timestamps": {"41001": "2024-06-15T14:50:00+00:00"}}
+        state_data = {
+            "latest_obs": {"41001": "2024-06-15T14:50:00+00:00"},
+            "realtime2": {"dart": {"21413": "2026-03-04T17:45:00+00:00"}},
+        }
         poller.save_state(state_data)
 
         with open(temp_state_file, 'r', encoding='utf-8') as f:
             saved = json.load(f)
         assert saved["last_timestamps"]["41001"] == "2024-06-15T14:50:00+00:00"
+        assert saved["latest_obs"]["41001"] == "2024-06-15T14:50:00+00:00"
+        assert saved["realtime2"]["dart"]["21413"] == "2026-03-04T17:45:00+00:00"
+        assert saved["realtime2"]["srad"] == {}
+        assert saved["realtime2"]["ocean"] == {}
 
     @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
     @patch('confluent_kafka.Producer')
@@ -247,6 +299,86 @@ class TestNDBCBuoyPoller:
         observations = poller.parse_observations(header_only)
         assert observations == []
 
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_parse_realtime2_file_index(self, mock_producer_class, mock_event_producer, mock_kafka_config, temp_state_file):
+        """Test parsing the realtime2 directory listing into family-specific station IDs"""
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        index = poller.parse_realtime2_file_index(SAMPLE_REALTIME2_INDEX_TEXT)
+
+        assert index == {
+            "srad": ["51WH0"],
+            "ocean": ["51WH0"],
+            "dart": ["21413"],
+        }
+
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_parse_solar_radiation_observation(self, mock_producer_class, mock_event_producer, mock_kafka_config, temp_state_file):
+        """Test parsing a solar radiation realtime2 product"""
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        observation = poller.parse_solar_radiation_observation("51WH0", SAMPLE_SRAD_TEXT)
+
+        assert observation is not None
+        assert observation.station_id == "51WH0"
+        assert observation.timestamp == "2026-04-07T20:30:00+00:00"
+        assert observation.shortwave_radiation_licor is None
+        assert observation.shortwave_radiation_eppley == 241.6
+        assert observation.longwave_radiation == 411.1
+
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_parse_oceanographic_observation(self, mock_producer_class, mock_event_producer, mock_kafka_config, temp_state_file):
+        """Test parsing an oceanographic realtime2 product"""
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        observation = poller.parse_oceanographic_observation("51WH0", SAMPLE_OCEAN_TEXT)
+
+        assert observation is not None
+        assert observation.station_id == "51WH0"
+        assert observation.timestamp == "2026-04-07T20:30:00+00:00"
+        assert observation.depth == 1.0
+        assert observation.ocean_temperature == 23.5
+        assert observation.conductivity is None
+        assert observation.salinity == 35.1
+        assert observation.oxygen_saturation is None
+        assert observation.chlorophyll_concentration == 1.2
+        assert observation.turbidity == 0.4
+        assert observation.ph == 8.0
+        assert observation.redox_potential == -44.0
+
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_parse_dart_measurement(self, mock_producer_class, mock_event_producer, mock_kafka_config, temp_state_file):
+        """Test parsing a DART realtime2 product"""
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        measurement = poller.parse_dart_measurement("21413", SAMPLE_DART_TEXT)
+
+        assert measurement is not None
+        assert measurement.station_id == "21413"
+        assert measurement.timestamp == "2026-03-04T17:45:00+00:00"
+        assert measurement.measurement_type_code == 1
+        assert measurement.water_column_height == 5779.945
+
     @patch('noaa_ndbc.noaa_ndbc.requests.get')
     @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
     @patch('confluent_kafka.Producer')
@@ -283,6 +415,196 @@ class TestNDBCBuoyPoller:
 
         observations = poller.poll_observations()
         assert observations == []
+
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_poll_and_send_emits_realtime2_events_once(self, mock_producer_class, mock_event_producer, mock_kafka_config, temp_state_file):
+        """Test a single poll cycle emits latest observations and the new realtime2 families"""
+        event_producer = mock_event_producer.return_value
+        event_producer.producer = Mock()
+
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        station = BuoyStation(
+            station_id="41001",
+            owner="NDBC",
+            station_type="Weather Buoy",
+            hull="DISCUS",
+            name="Test Station",
+            latitude=34.7,
+            longitude=-72.7,
+            timezone="E",
+        )
+        observation = BuoyObservation(
+            station_id="41001",
+            latitude=34.7,
+            longitude=-72.7,
+            timestamp="2024-06-15T14:50:00+00:00",
+            wind_direction=210.0,
+            wind_speed=8.2,
+            gust=10.3,
+            wave_height=1.5,
+            dominant_wave_period=7.1,
+            average_wave_period=5.2,
+            mean_wave_direction=200.0,
+            pressure=1015.2,
+            air_temperature=22.3,
+            water_temperature=24.1,
+            dewpoint=18.5,
+            pressure_tendency=-1.2,
+            visibility=None,
+            tide=None,
+        )
+        solar_observation = BuoySolarRadiationObservation(
+            station_id="51WH0",
+            timestamp="2026-04-07T20:30:00+00:00",
+            shortwave_radiation_licor=None,
+            shortwave_radiation_eppley=241.6,
+            longwave_radiation=411.1,
+        )
+        ocean_observation = BuoyOceanographicObservation(
+            station_id="51WH0",
+            timestamp="2026-04-07T20:30:00+00:00",
+            depth=1.0,
+            ocean_temperature=23.5,
+            conductivity=None,
+            salinity=35.1,
+            oxygen_saturation=None,
+            oxygen_concentration=None,
+            chlorophyll_concentration=1.2,
+            turbidity=0.4,
+            ph=8.0,
+            redox_potential=-44.0,
+        )
+        dart_measurement = BuoyDartMeasurement(
+            station_id="21413",
+            timestamp="2026-03-04T17:45:00+00:00",
+            measurement_type_code=1,
+            water_column_height=5779.945,
+        )
+
+        with patch.object(poller, 'fetch_stations', return_value=[station]), \
+             patch.object(poller, 'poll_observations', return_value=[observation]), \
+             patch.object(poller, 'fetch_realtime2_file_index', return_value={"srad": ["51WH0"], "ocean": ["51WH0"], "dart": ["21413"]}), \
+             patch.object(poller, 'poll_solar_radiation_observations', return_value=[solar_observation]), \
+             patch.object(poller, 'poll_oceanographic_observations', return_value=[ocean_observation]), \
+             patch.object(poller, 'poll_dart_measurements', return_value=[dart_measurement]):
+            poller.poll_and_send(once=True)
+
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station.assert_called_once_with(
+            "41001", station, flush_producer=False
+        )
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation.assert_called_once_with(
+            "41001", observation, flush_producer=False
+        )
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation.assert_called_once_with(
+            "51WH0", solar_observation, flush_producer=False
+        )
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation.assert_called_once_with(
+            "51WH0", ocean_observation, flush_producer=False
+        )
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement.assert_called_once_with(
+            "21413", dart_measurement, flush_producer=False
+        )
+        assert event_producer.producer.flush.call_count == 2
+
+        with open(temp_state_file, 'r', encoding='utf-8') as f:
+            state = json.load(f)
+        assert state["latest_obs"]["41001"] == "2024-06-15T14:50:00+00:00"
+        assert state["realtime2"]["srad"]["51WH0"] == "2026-04-07T20:30:00+00:00"
+        assert state["realtime2"]["ocean"]["51WH0"] == "2026-04-07T20:30:00+00:00"
+        assert state["realtime2"]["dart"]["21413"] == "2026-03-04T17:45:00+00:00"
+
+    @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
+    @patch('confluent_kafka.Producer')
+    def test_poll_and_send_skips_duplicate_realtime2_events(self, mock_producer_class, mock_event_producer, mock_kafka_config, temp_state_file):
+        """Test a single poll cycle skips already-seen observation timestamps for all families"""
+        state_data = {
+            "latest_obs": {"41001": "2024-06-15T14:50:00+00:00"},
+            "realtime2": {
+                "srad": {"51WH0": "2026-04-07T20:30:00+00:00"},
+                "ocean": {"51WH0": "2026-04-07T20:30:00+00:00"},
+                "dart": {"21413": "2026-03-04T17:45:00+00:00"},
+            },
+        }
+        with open(temp_state_file, 'w', encoding='utf-8') as f:
+            json.dump(state_data, f)
+
+        event_producer = mock_event_producer.return_value
+        event_producer.producer = Mock()
+
+        poller = NDBCBuoyPoller(
+            kafka_config=mock_kafka_config,
+            kafka_topic='test-topic',
+            last_polled_file=temp_state_file
+        )
+
+        observation = BuoyObservation(
+            station_id="41001",
+            latitude=34.7,
+            longitude=-72.7,
+            timestamp="2024-06-15T14:50:00+00:00",
+            wind_direction=210.0,
+            wind_speed=8.2,
+            gust=10.3,
+            wave_height=1.5,
+            dominant_wave_period=7.1,
+            average_wave_period=5.2,
+            mean_wave_direction=200.0,
+            pressure=1015.2,
+            air_temperature=22.3,
+            water_temperature=24.1,
+            dewpoint=18.5,
+            pressure_tendency=-1.2,
+            visibility=None,
+            tide=None,
+        )
+        solar_observation = BuoySolarRadiationObservation(
+            station_id="51WH0",
+            timestamp="2026-04-07T20:30:00+00:00",
+            shortwave_radiation_licor=None,
+            shortwave_radiation_eppley=241.6,
+            longwave_radiation=411.1,
+        )
+        ocean_observation = BuoyOceanographicObservation(
+            station_id="51WH0",
+            timestamp="2026-04-07T20:30:00+00:00",
+            depth=1.0,
+            ocean_temperature=23.5,
+            conductivity=None,
+            salinity=35.1,
+            oxygen_saturation=None,
+            oxygen_concentration=None,
+            chlorophyll_concentration=1.2,
+            turbidity=0.4,
+            ph=8.0,
+            redox_potential=-44.0,
+        )
+        dart_measurement = BuoyDartMeasurement(
+            station_id="21413",
+            timestamp="2026-03-04T17:45:00+00:00",
+            measurement_type_code=1,
+            water_column_height=5779.945,
+        )
+
+        with patch.object(poller, 'fetch_stations', return_value=[]), \
+             patch.object(poller, 'poll_observations', return_value=[observation]), \
+             patch.object(poller, 'fetch_realtime2_file_index', return_value={"srad": ["51WH0"], "ocean": ["51WH0"], "dart": ["21413"]}), \
+             patch.object(poller, 'poll_solar_radiation_observations', return_value=[solar_observation]), \
+             patch.object(poller, 'poll_oceanographic_observations', return_value=[ocean_observation]), \
+             patch.object(poller, 'poll_dart_measurements', return_value=[dart_measurement]):
+            poller.poll_and_send(once=True)
+
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station.assert_not_called()
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation.assert_not_called()
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation.assert_not_called()
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation.assert_not_called()
+        event_producer.send_microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement.assert_not_called()
+        assert event_producer.producer.flush.call_count == 1
 
 
 @pytest.mark.unit

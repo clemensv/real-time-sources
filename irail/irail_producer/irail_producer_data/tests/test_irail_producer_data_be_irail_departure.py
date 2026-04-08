@@ -28,21 +28,21 @@ class Test_Departure(unittest.TestCase):
         Create instance of Departure for testing
         """
         instance = Departure(
-            destination_station_id='qdatdrycesgdglbhabuk',
-            destination_name='lgzjmwwgeqssypynmgoa',
-            scheduled_time='imxlvgmkqcihwydcboyw',
-            delay_seconds=int(59),
+            destination_station_id='kcmoxmpgnhlasnepizpj',
+            destination_name='mcubhoxinhrfnggnnbvk',
+            scheduled_time='qjakquaqspkqwnyvibyf',
+            delay_seconds=int(100),
             is_canceled=False,
             has_left=True,
             is_extra_stop=True,
-            vehicle_id='skwwhsfzrpaddsrjghju',
-            vehicle_short_name='gdodsgzkopwyswabblqe',
-            vehicle_type='qagbomskbcseechljpvr',
-            vehicle_number='clqgpsnjgkispasugpti',
-            platform='ivshezuupdgxbshjmhtb',
+            vehicle_id='rdalkfceleocfkixxtgc',
+            vehicle_short_name='wjtshmxreiyixkyiyawo',
+            vehicle_type='qglzzvjodqqvjauibtvj',
+            vehicle_number='zztjobomvqpswgfpwnoy',
+            platform='dhjvacqmehrnjtokdigg',
             is_normal_platform=True,
-            occupancy='sbwqjfnpmajipmakoyoq',
-            departure_connection_uri='wsmgbwcmmortrsqrdatq'
+            occupancy='qdnprlavvvonvbwlgwie',
+            departure_connection_uri='astivzfslhsdhtxcovon'
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test destination_station_id property
         """
-        test_value = 'qdatdrycesgdglbhabuk'
+        test_value = 'kcmoxmpgnhlasnepizpj'
         self.instance.destination_station_id = test_value
         self.assertEqual(self.instance.destination_station_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test destination_name property
         """
-        test_value = 'lgzjmwwgeqssypynmgoa'
+        test_value = 'mcubhoxinhrfnggnnbvk'
         self.instance.destination_name = test_value
         self.assertEqual(self.instance.destination_name, test_value)
     
@@ -67,7 +67,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test scheduled_time property
         """
-        test_value = 'imxlvgmkqcihwydcboyw'
+        test_value = 'qjakquaqspkqwnyvibyf'
         self.instance.scheduled_time = test_value
         self.assertEqual(self.instance.scheduled_time, test_value)
     
@@ -75,7 +75,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test delay_seconds property
         """
-        test_value = int(59)
+        test_value = int(100)
         self.instance.delay_seconds = test_value
         self.assertEqual(self.instance.delay_seconds, test_value)
     
@@ -107,7 +107,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test vehicle_id property
         """
-        test_value = 'skwwhsfzrpaddsrjghju'
+        test_value = 'rdalkfceleocfkixxtgc'
         self.instance.vehicle_id = test_value
         self.assertEqual(self.instance.vehicle_id, test_value)
     
@@ -115,7 +115,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test vehicle_short_name property
         """
-        test_value = 'gdodsgzkopwyswabblqe'
+        test_value = 'wjtshmxreiyixkyiyawo'
         self.instance.vehicle_short_name = test_value
         self.assertEqual(self.instance.vehicle_short_name, test_value)
     
@@ -123,7 +123,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test vehicle_type property
         """
-        test_value = 'qagbomskbcseechljpvr'
+        test_value = 'qglzzvjodqqvjauibtvj'
         self.instance.vehicle_type = test_value
         self.assertEqual(self.instance.vehicle_type, test_value)
     
@@ -131,7 +131,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test vehicle_number property
         """
-        test_value = 'clqgpsnjgkispasugpti'
+        test_value = 'zztjobomvqpswgfpwnoy'
         self.instance.vehicle_number = test_value
         self.assertEqual(self.instance.vehicle_number, test_value)
     
@@ -139,7 +139,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test platform property
         """
-        test_value = 'ivshezuupdgxbshjmhtb'
+        test_value = 'dhjvacqmehrnjtokdigg'
         self.instance.platform = test_value
         self.assertEqual(self.instance.platform, test_value)
     
@@ -155,7 +155,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test occupancy property
         """
-        test_value = 'sbwqjfnpmajipmakoyoq'
+        test_value = 'qdnprlavvvonvbwlgwie'
         self.instance.occupancy = test_value
         self.assertEqual(self.instance.occupancy, test_value)
     
@@ -163,7 +163,7 @@ class Test_Departure(unittest.TestCase):
         """
         Test departure_connection_uri property
         """
-        test_value = 'wsmgbwcmmortrsqrdatq'
+        test_value = 'astivzfslhsdhtxcovon'
         self.instance.departure_connection_uri = test_value
         self.assertEqual(self.instance.departure_connection_uri, test_value)
     

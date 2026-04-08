@@ -60,6 +60,60 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation": {
+          "name": "BuoySolarRadiationObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation": {
+          "name": "BuoyOceanographicObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement": {
+          "name": "BuoyDartMeasurement",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement"
         }
       }
     }
@@ -209,32 +263,226 @@
                 "name": "BuoyStation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products."
                   },
                   "owner": {
-                    "type": ["string", "null"]
+                    "type": ["string", "null"],
+                    "description": "Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency."
                   },
                   "station_type": {
-                    "type": ["string", "null"]
+                    "type": ["string", "null"],
+                    "description": "Platform type from the station table, such as Weather Buoy or C-MAN Station."
                   },
                   "hull": {
-                    "type": ["string", "null"]
+                    "type": ["string", "null"],
+                    "description": "Hull or platform class reported in the station table, for example DISCUS or 3-meter."
                   },
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Human-readable station name from the NDBC station table."
                   },
                   "latitude": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere.",
+                    "unit": "deg",
+                    "symbol": "deg"
                   },
                   "longitude": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere.",
+                    "unit": "deg",
+                    "symbol": "deg"
                   },
                   "timezone": {
-                    "type": ["string", "null"]
+                    "type": ["string", "null"],
+                    "description": "Single-letter time-zone code carried in the NDBC station table for display and forecast products."
                   }
                 },
-                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation",
-                "description": "BuoyStation"
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation",
+                "description": "Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation": {
+          "name": "BuoySolarRadiationObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "BuoySolarRadiationObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NDBC station identifier. The .srad realtime2 file is published per station and keyed by this identifier."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file."
+                  },
+                  "shortwave_radiation_licor": {
+                    "type": ["double", "null"],
+                    "description": "Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter.",
+                    "unit": "W/m2",
+                    "symbol": "W/m2"
+                  },
+                  "shortwave_radiation_eppley": {
+                    "type": ["double", "null"],
+                    "description": "Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter.",
+                    "unit": "W/m2",
+                    "symbol": "W/m2"
+                  },
+                  "longwave_radiation": {
+                    "type": ["double", "null"],
+                    "description": "Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter.",
+                    "unit": "W/m2",
+                    "symbol": "W/m2"
+                  }
+                },
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySolarRadiationObservation",
+                "description": "Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation": {
+          "name": "BuoyOceanographicObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp",
+                  "depth"
+                ],
+                "name": "BuoyOceanographicObservation",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NDBC station identifier. The .ocean realtime2 file is published per station and keyed by this identifier."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .ocean realtime2 file."
+                  },
+                  "depth": {
+                    "type": "double",
+                    "description": "Depth in meters at which the oceanographic measurements in this record were taken.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "ocean_temperature": {
+                    "type": ["double", "null"],
+                    "description": "Direct ocean temperature measurement from the OTMP column. Unit: degrees Celsius.",
+                    "unit": "CEL",
+                    "symbol": "degC"
+                  },
+                  "conductivity": {
+                    "type": ["double", "null"],
+                    "description": "Electrical conductivity of seawater from the COND column. Unit: millisiemens per centimeter.",
+                    "unit": "mS/cm",
+                    "symbol": "mS/cm"
+                  },
+                  "salinity": {
+                    "type": ["double", "null"],
+                    "description": "Practical salinity computed from conductivity, temperature, and pressure using the Practical Salinity Scale of 1978. Unit: practical salinity units.",
+                    "unit": "psu",
+                    "symbol": "psu"
+                  },
+                  "oxygen_saturation": {
+                    "type": ["double", "null"],
+                    "description": "Dissolved oxygen saturation percentage from the O2% column.",
+                    "unit": "%",
+                    "symbol": "%"
+                  },
+                  "oxygen_concentration": {
+                    "type": ["double", "null"],
+                    "description": "Dissolved oxygen concentration from the O2PPM column. Unit: parts per million.",
+                    "unit": "ppm",
+                    "symbol": "ppm"
+                  },
+                  "chlorophyll_concentration": {
+                    "type": ["double", "null"],
+                    "description": "Chlorophyll concentration from the CLCON column. Unit: micrograms per liter.",
+                    "unit": "ug/L",
+                    "symbol": "ug/L"
+                  },
+                  "turbidity": {
+                    "type": ["double", "null"],
+                    "description": "Turbidity from the TURB column. Unit: Formazin Turbidity Units.",
+                    "unit": "FTU",
+                    "symbol": "FTU"
+                  },
+                  "ph": {
+                    "type": ["double", "null"],
+                    "description": "Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless."
+                  },
+                  "redox_potential": {
+                    "type": ["double", "null"],
+                    "description": "Oxidation-reduction potential of seawater from the EH column. Unit: millivolts.",
+                    "unit": "mV",
+                    "symbol": "mV"
+                  }
+                },
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyOceanographicObservation",
+                "description": "Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement": {
+          "name": "BuoyDartMeasurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp",
+                  "measurement_type_code",
+                  "water_column_height"
+                ],
+                "name": "BuoyDartMeasurement",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file."
+                  },
+                  "measurement_type_code": {
+                    "type": "integer",
+                    "description": "Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement."
+                  },
+                  "water_column_height": {
+                    "type": "double",
+                    "description": "Height of the measured water column from the HEIGHT column in the DART file. Unit: meters.",
+                    "unit": "m",
+                    "symbol": "m"
+                  }
+                },
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDartMeasurement",
+                "description": "Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station."
               }
             }
           }
@@ -459,6 +707,201 @@
                       "string"
                     ],
                     "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation": {
+          "name": "BuoySolarRadiationObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoySolarRadiationObservation",
+                "doc": "Hourly solar radiation observation from the NDBC .srad realtime2 product.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "shortwave_radiation_licor",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "shortwave_radiation_eppley",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "longwave_radiation",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation": {
+          "name": "BuoyOceanographicObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoyOceanographicObservation",
+                "doc": "Oceanographic observation from the NDBC .ocean realtime2 product.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "depth",
+                    "type": "double"
+                  },
+                  {
+                    "name": "ocean_temperature",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "conductivity",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "salinity",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "oxygen_saturation",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "oxygen_concentration",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "chlorophyll_concentration",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "turbidity",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "ph",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "redox_potential",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  }
+                ],
+                "namespace": "Microsoft.OpenData.US.NOAA.NDBC"
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement": {
+          "name": "BuoyDartMeasurement",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BuoyDartMeasurement",
+                "doc": "Realtime DART tsunameter measurement from the NDBC .dart product.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "timestamp",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    }
+                  },
+                  {
+                    "name": "measurement_type_code",
+                    "type": "int"
+                  },
+                  {
+                    "name": "water_column_height",
+                    "type": "double"
                   }
                 ],
                 "namespace": "Microsoft.OpenData.US.NOAA.NDBC"

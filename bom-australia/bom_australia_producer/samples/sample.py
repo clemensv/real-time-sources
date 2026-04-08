@@ -33,11 +33,13 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherEventProducer
+from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningEventProducer
 
 # imports for the data classes for each event
 
 from bom_australia_producer_data.station import Station
 from bom_australia_producer_data.weatherobservation import WeatherObservation
+from bom_australia_producer_data.warningbulletin import WarningBulletin
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,6 +74,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'AU.Gov.BOM.Weather.WeatherObservation' event to Kafka topic.
     await augov_bomweather_event_producer.send_au_gov_bom_weather_weather_observation(_station_wmo = 'TODO: replace me', data = _weather_observation)
     print(f"Sent 'AU.Gov.BOM.Weather.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        augov_bomwarning_event_producer = AUGovBOMWarningEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        augov_bomwarning_event_producer = AUGovBOMWarningEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- AU.Gov.BOM.Warning.WarningBulletin ----
+    # TODO: Supply event data for the AU.Gov.BOM.Warning.WarningBulletin event
+    _warning_bulletin = WarningBulletin()
+
+    # sends the 'AU.Gov.BOM.Warning.WarningBulletin' event to Kafka topic.
+    await augov_bomwarning_event_producer.send_au_gov_bom_warning_warning_bulletin(_warning_id = 'TODO: replace me', data = _warning_bulletin)
+    print(f"Sent 'AU.Gov.BOM.Warning.WarningBulletin' event: {_warning_bulletin.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

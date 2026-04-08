@@ -1,3 +1,3 @@
-from .microsoft import BuoyStation, BuoyObservation
+from .microsoft import BuoyOceanographicObservation, BuoyDartMeasurement, BuoyObservation, BuoyStation, BuoySolarRadiationObservation
 
-__all__ = ["BuoyStation", "BuoyObservation"]
+__all__ = ["BuoyOceanographicObservation", "BuoyDartMeasurement", "BuoyObservation", "BuoyStation", "BuoySolarRadiationObservation"]
