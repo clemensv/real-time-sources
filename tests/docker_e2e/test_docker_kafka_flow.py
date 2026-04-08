@@ -1248,5 +1248,19 @@ class TestIrelandOPWWaterlevelDockerFlow:
         _run_kafka_flow_test(
             kafka, ireland_opw_waterlevel_image, self.TOPIC,
             reference_types=['Station'],
+# Nepal BIPAD Hydrology (Nepal river water levels)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def nepal_bipad_image():
+    return build_image('nepal-bipad-hydrology')
+
+class TestNepalBipadHydrologyDockerFlow:
+    TOPIC = 'test-nepal-bipad-hydrology'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nepal_bipad_image):
+        _run_kafka_flow_test(
+            kafka, nepal_bipad_image, self.TOPIC,
+            reference_types=['RiverStation'],
             telemetry_types=['WaterLevelReading'],
         )
