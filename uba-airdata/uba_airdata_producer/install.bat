@@ -1,0 +1,2 @@
+pip install .\uba_airdata_producer_data
+pip install .\uba_airdata_producer_kafka_producer

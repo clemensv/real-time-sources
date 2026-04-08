@@ -1,0 +1,391 @@
+{
+  "endpoints": {
+    "de.uba.airdata.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "uba-airdata",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/de.uba.airdata"
+      ]
+    },
+    "de.uba.airdata.components.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "uba-airdata",
+          "key": "{component_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/de.uba.airdata.components"
+      ]
+    }
+  },
+  "messagegroups": {
+    "de.uba.airdata": {
+      "messages": {
+        "de.uba.airdata.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for a UBA air quality monitoring station, including geographic position, station environment, and the denormalized monitoring network metadata published by the UBA air_data/v3 station catalog.",
+          "envelopemetadata": {
+            "type": {
+              "value": "de.uba.airdata.Station"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.jstruct/schemas/de.uba.airdata.Station"
+        },
+        "de.uba.airdata.Measure": {
+          "name": "Measure",
+          "envelope": "CloudEvents/1.0",
+          "description": "Hourly one-hour-average air quality measurement for a UBA monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.",
+          "envelopemetadata": {
+            "type": {
+              "value": "de.uba.airdata.Measure"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.jstruct/schemas/de.uba.airdata.Measure"
+        }
+      }
+    },
+    "de.uba.airdata.components": {
+      "messages": {
+        "de.uba.airdata.components.Component": {
+          "name": "Component",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for an air pollutant component published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol, unit, and English display name.",
+          "envelopemetadata": {
+            "type": {
+              "value": "de.uba.airdata.components.Component"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{component_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/de.uba.airdata.jstruct/schemas/de.uba.airdata.components.Component"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "de.uba.airdata.jstruct": {
+      "schemas": {
+        "de.uba.airdata.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/de/uba/airdata/Station",
+                "name": "Station",
+                "$root": "#/definitions/de/uba/airdata/Station",
+                "definitions": {
+                  "de": {
+                    "uba": {
+                      "airdata": {
+                        "Station": {
+                          "name": "Station",
+                          "type": "object",
+                          "description": "Reference data for a station in the Umweltbundesamt air_data/v3 station catalog. The station payload describes the UBA station identifier, official station code, station naming, active period, WGS84 coordinates, the denormalized federal state monitoring network, and the station environment classification.",
+                          "properties": {
+                            "station_id": {
+                              "type": "int32",
+                              "description": "Stable numeric UBA station identifier from the 'station id' column. This is the station key used for CloudEvents subject and Kafka key."
+                            },
+                            "station_code": {
+                              "type": "string",
+                              "description": "Official station code from the 'station code' column, typically the European Environment Agency style identifier such as 'DEBE021' or 'DEBB003'."
+                            },
+                            "station_name": {
+                              "type": "string",
+                              "description": "Human-readable station name from the 'station name' column as published by UBA."
+                            },
+                            "station_city": {
+                              "type": "string",
+                              "description": "City or locality from the 'station city' column where the monitoring station is located."
+                            },
+                            "station_synonym": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Legacy or alternate station short code from the 'station synonym' column. UBA may publish an empty value when no synonym exists."
+                            },
+                            "active_from": {
+                              "type": "string",
+                              "description": "Station activation date from the 'station active from' column in ISO date form 'YYYY-MM-DD'."
+                            },
+                            "active_to": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Station deactivation date from the 'station active to' column in ISO date form 'YYYY-MM-DD'. Null means the station is still active."
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "Station longitude from the 'station longitude' column in WGS84 decimal degrees."
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "Station latitude from the 'station latitude' column in WGS84 decimal degrees."
+                            },
+                            "network_id": {
+                              "type": "int32",
+                              "description": "Stable numeric monitoring network identifier from the 'network id' column. This maps to the federal state or the UBA-operated network."
+                            },
+                            "network_code": {
+                              "type": "string",
+                              "description": "Short network code from the 'network code' column, usually a two-letter German state code such as 'BE' or 'BB', or 'UB' for UBA."
+                            },
+                            "network_name": {
+                              "type": "string",
+                              "description": "Monitoring network name from the 'network name' column, typically the English federal state name such as 'Berlin' or 'Brandenburg'."
+                            },
+                            "setting_name": {
+                              "type": "string",
+                              "description": "Station environment description from the 'station setting name' column, for example 'urban area'."
+                            },
+                            "setting_short": {
+                              "type": "string",
+                              "description": "Short station environment code from the 'station setting short name' column, for example 'urban'."
+                            },
+                            "type_name": {
+                              "type": "string",
+                              "description": "Station type classification from the 'station type name' column, for example 'traffic', 'background', or 'industrial'."
+                            },
+                            "street": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Street name from the 'station street' column. Null is used when UBA does not publish a street value."
+                            },
+                            "street_nr": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Street number from the 'station street nr' column. Null is used when the source publishes an empty value."
+                            },
+                            "zip_code": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Postal code from the 'station zip code' column. Null is used when the source publishes an empty value."
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "station_code",
+                            "station_name",
+                            "station_city",
+                            "station_synonym",
+                            "active_from",
+                            "active_to",
+                            "longitude",
+                            "latitude",
+                            "network_id",
+                            "network_code",
+                            "network_name",
+                            "setting_name",
+                            "setting_short",
+                            "type_name",
+                            "street",
+                            "street_nr",
+                            "zip_code"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "de.uba.airdata.Measure": {
+          "name": "Measure",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/de/uba/airdata/Measure",
+                "name": "Measure",
+                "$root": "#/definitions/de/uba/airdata/Measure",
+                "definitions": {
+                  "de": {
+                    "uba": {
+                      "airdata": {
+                        "Measure": {
+                          "name": "Measure",
+                          "type": "object",
+                          "description": "Hourly air quality measurement record from the UBA air_data/v3 measures endpoint. The upstream API returns measurements grouped by station and measurement start time for a requested component and averaging scope.",
+                          "properties": {
+                            "station_id": {
+                              "type": "int32",
+                              "description": "Stable numeric UBA station identifier for the station that reported the measurement."
+                            },
+                            "component_id": {
+                              "type": "int32",
+                              "description": "Stable numeric UBA pollutant component identifier from the first element of the measure value array, for example 5 for NO₂."
+                            },
+                            "scope_id": {
+                              "type": "int32",
+                              "description": "Stable numeric UBA averaging scope identifier from the second element of the measure value array. Scope 2 represents the one-hour average used by this bridge."
+                            },
+                            "date_start": {
+                              "type": "string",
+                              "description": "Measurement period start timestamp from the nested measures object key, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'."
+                            },
+                            "date_end": {
+                              "type": "string",
+                              "description": "Measurement period end timestamp from the fourth element of the measure value array, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'."
+                            },
+                            "value": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Measured pollutant value from the third element of the measure value array, expressed in the unit defined by the referenced component. Null means the source returned no numeric measurement value."
+                            },
+                            "quality_index": {
+                              "type": "string",
+                              "description": "UBA quality or confidence flag from the fifth element of the measure value array. The published documentation commonly references 0 valid, 1 provisional, and 2 estimated; live payloads have also been observed with the code 3."
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "component_id",
+                            "scope_id",
+                            "date_start",
+                            "date_end",
+                            "value",
+                            "quality_index"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "de.uba.airdata.components.Component": {
+          "name": "Component",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/de/uba/airdata/components/Component",
+                "name": "Component",
+                "$root": "#/definitions/de/uba/airdata/components/Component",
+                "definitions": {
+                  "de": {
+                    "uba": {
+                      "airdata": {
+                        "components": {
+                          "Component": {
+                            "name": "Component",
+                            "type": "object",
+                            "description": "Reference data for a pollutant component from the UBA air_data/v3 components catalog. Each component defines the stable numeric component identifier, short code, published symbol, published unit string, and English display name.",
+                            "properties": {
+                              "component_id": {
+                                "type": "int32",
+                                "description": "Stable numeric UBA component identifier from the 'component id' column. This is the CloudEvents subject and Kafka key for component events."
+                              },
+                              "component_code": {
+                                "type": "string",
+                                "description": "Short UBA component code from the 'component code' column, such as 'PM10', 'NO2', 'O3', or 'PM2'."
+                              },
+                              "symbol": {
+                                "type": "string",
+                                "description": "Published component symbol from the 'component symbol' column. This may include Unicode subscripts, for example 'PM₁₀' or 'NO₂'."
+                              },
+                              "unit": {
+                                "type": "string",
+                                "description": "Published measurement unit string from the 'component unit' column, such as 'µg/m³', 'mg/m³', or 'ng/m³'."
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "English component display name from the 'component name' column, such as 'Particulate matter' or 'Nitrogen dioxide'."
+                              }
+                            },
+                            "required": [
+                              "component_id",
+                              "component_code",
+                              "symbol",
+                              "unit",
+                              "name"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,571 @@
+{
+  "endpoints": {
+    "nl.rivm.luchtmeetnet.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "luchtmeetnet-nl",
+          "key": "{station_number}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/nl.rivm.luchtmeetnet"
+      ]
+    },
+    "nl.rivm.luchtmeetnet.components.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "luchtmeetnet-nl",
+          "key": "{formula}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/nl.rivm.luchtmeetnet.components"
+      ]
+    }
+  },
+  "messagegroups": {
+    "nl.rivm.luchtmeetnet": {
+      "messages": {
+        "nl.rivm.luchtmeetnet.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Luchtmeetnet station metadata with location, operator, coordinates, and the formulas measured at the station.",
+          "envelopemetadata": {
+            "type": {
+              "value": "nl.rivm.luchtmeetnet.Station"
+            },
+            "source": {
+              "value": "https://api.luchtmeetnet.nl/open_api/stations"
+            },
+            "subject": {
+              "value": "{station_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.Station"
+        },
+        "nl.rivm.luchtmeetnet.Measurement": {
+          "name": "Measurement",
+          "envelope": "CloudEvents/1.0",
+          "description": "Hourly Luchtmeetnet measurement for a station and component formula.",
+          "envelopemetadata": {
+            "type": {
+              "value": "nl.rivm.luchtmeetnet.Measurement"
+            },
+            "source": {
+              "value": "https://api.luchtmeetnet.nl/open_api/measurements"
+            },
+            "subject": {
+              "value": "{station_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.Measurement"
+        },
+        "nl.rivm.luchtmeetnet.LKI": {
+          "name": "LKI",
+          "envelope": "CloudEvents/1.0",
+          "description": "Hourly Dutch Luchtkwaliteitsindex value for a station.",
+          "envelopemetadata": {
+            "type": {
+              "value": "nl.rivm.luchtmeetnet.LKI"
+            },
+            "source": {
+              "value": "https://api.luchtmeetnet.nl/open_api/lki"
+            },
+            "subject": {
+              "value": "{station_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.LKI"
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components": {
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.Component": {
+          "name": "Component",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference definition for a monitored component formula in the Luchtmeetnet network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "nl.rivm.luchtmeetnet.components.Component"
+            },
+            "source": {
+              "value": "https://api.luchtmeetnet.nl/open_api/components"
+            },
+            "subject": {
+              "value": "{formula}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.components.Component"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "nl.rivm.luchtmeetnet.jstruct": {
+      "schemas": {
+        "nl.rivm.luchtmeetnet.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://realtime.example.com/schemas/nl/rivm/luchtmeetnet/Station",
+                "name": "Station",
+                "$root": "#/definitions/nl/rivm/luchtmeetnet/Station",
+                "definitions": {
+                  "nl": {
+                    "rivm": {
+                      "luchtmeetnet": {
+                        "Station": {
+                          "name": "Station",
+                          "type": "object",
+                          "description": "Metadata for a Luchtmeetnet measuring station, combining the station list resource with the station detail resource so downstream consumers can interpret later measurements and LKI values in temporal context.",
+                          "properties": {
+                            "station_number": {
+                              "type": "string",
+                              "description": "Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests."
+                            },
+                            "location": {
+                              "type": "string",
+                              "description": "Human-readable station location label published by Luchtmeetnet."
+                            },
+                            "type": {
+                              "type": "string",
+                              "description": "Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional."
+                            },
+                            "organisation": {
+                              "type": "string",
+                              "description": "Organisation operating or publishing the station in the Luchtmeetnet network, such as RIVM or a regional environmental agency."
+                            },
+                            "municipality": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Municipality name for the station location when present in the detail response; null when the API does not provide one."
+                            },
+                            "province": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Province name for the station location when present in the detail response; null when the API omits it."
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "Longitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[0]."
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "Latitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[1]."
+                            },
+                            "year_start": {
+                              "type": "string",
+                              "description": "Year in which the station became operational according to the detail response. The upstream can return an empty string when the start year is not populated."
+                            },
+                            "components": {
+                              "type": "array",
+                              "description": "Ordered list of formula codes measured at the station, as returned by the station detail endpoint.",
+                              "items": {
+                                "type": "string",
+                                "description": "Component formula code measured at this station, such as NO2, PM10, FN, or BCWB."
+                              }
+                            }
+                          },
+                          "required": [
+                            "station_number",
+                            "location",
+                            "type",
+                            "organisation",
+                            "municipality",
+                            "province",
+                            "longitude",
+                            "latitude",
+                            "year_start",
+                            "components"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.Measurement": {
+          "name": "Measurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://realtime.example.com/schemas/nl/rivm/luchtmeetnet/Measurement",
+                "name": "Measurement",
+                "$root": "#/definitions/nl/rivm/luchtmeetnet/Measurement",
+                "definitions": {
+                  "nl": {
+                    "rivm": {
+                      "luchtmeetnet": {
+                        "Measurement": {
+                          "name": "Measurement",
+                          "type": "object",
+                          "description": "Hourly Luchtmeetnet measurement for a station and a single component formula. The API returns the latest values on page 1 and orders the series by measurement time.",
+                          "properties": {
+                            "station_number": {
+                              "type": "string",
+                              "description": "Stable Luchtmeetnet station code identifying where the measurement was taken."
+                            },
+                            "formula": {
+                              "type": "string",
+                              "description": "Component formula code identifying what was measured, for example NO2, O3, PM10, or FN."
+                            },
+                            "value": {
+                              "type": "double",
+                              "unit": "ugm-3",
+                              "description": "Numeric measurement value published by the API for the station and formula at the given timestamp. Standard gaseous and particulate concentration formulas are expressed in micrograms per cubic meter; some specialised formulas such as particle counts or black-carbon indicators may use different domain-specific units, so consumers should interpret the formula-specific semantics together with the component catalog."
+                            },
+                            "timestamp_measured": {
+                              "type": "string",
+                              "description": "Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset."
+                            }
+                          },
+                          "required": [
+                            "station_number",
+                            "formula",
+                            "value",
+                            "timestamp_measured"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.LKI": {
+          "name": "LKI",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://realtime.example.com/schemas/nl/rivm/luchtmeetnet/LKI",
+                "name": "LKI",
+                "$root": "#/definitions/nl/rivm/luchtmeetnet/LKI",
+                "definitions": {
+                  "nl": {
+                    "rivm": {
+                      "luchtmeetnet": {
+                        "LKI": {
+                          "name": "LKI",
+                          "type": "object",
+                          "description": "Hourly Dutch national air quality index value for a station. The LKI scale runs from 1 to 11, where lower values indicate better air quality.",
+                          "properties": {
+                            "station_number": {
+                              "type": "string",
+                              "description": "Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated."
+                            },
+                            "value": {
+                              "type": "integer",
+                              "unit": "1",
+                              "description": "Luchtkwaliteitsindex value on the Dutch 1 to 11 scale, where 1 to 3 is good, 4 to 6 is moderate, 7 to 9 is bad, and 10 to 11 is very bad."
+                            },
+                            "timestamp_measured": {
+                              "type": "string",
+                              "description": "Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset."
+                            }
+                          },
+                          "required": [
+                            "station_number",
+                            "value",
+                            "timestamp_measured"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.components.Component": {
+          "name": "Component",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://realtime.example.com/schemas/nl/rivm/luchtmeetnet/Component",
+                "name": "Component",
+                "$root": "#/definitions/nl/rivm/luchtmeetnet/components/Component",
+                "definitions": {
+                  "nl": {
+                    "rivm": {
+                      "luchtmeetnet": {
+                        "components": {
+                          "Component": {
+                            "name": "Component",
+                            "type": "object",
+                            "description": "Reference definition for a Luchtmeetnet monitored component formula as returned by the component catalog endpoint.",
+                            "properties": {
+                              "formula": {
+                                "type": "string",
+                                "description": "Stable component formula code used in measurement queries and in station component lists, such as NO2, PM25, O3, or BCWB."
+                              },
+                              "name_nl": {
+                                "type": "string",
+                                "description": "Dutch display name for the component from the component catalog."
+                              },
+                              "name_en": {
+                                "type": "string",
+                                "description": "English display name for the component from the component catalog."
+                              }
+                            },
+                            "required": [
+                              "formula",
+                              "name_nl",
+                              "name_en"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.avro": {
+      "schemas": {
+        "nl.rivm.luchtmeetnet.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "nl.rivm.luchtmeetnet",
+                "doc": "Metadata for a Luchtmeetnet measuring station, combining the station list resource with the station detail resource so downstream consumers can interpret later measurements and LKI values in temporal context.",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests."
+                  },
+                  {
+                    "name": "location",
+                    "type": "string",
+                    "doc": "Human-readable station location label published by Luchtmeetnet."
+                  },
+                  {
+                    "name": "type",
+                    "type": "string",
+                    "doc": "Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional."
+                  },
+                  {
+                    "name": "organisation",
+                    "type": "string",
+                    "doc": "Organisation operating or publishing the station in the Luchtmeetnet network, such as RIVM or a regional environmental agency."
+                  },
+                  {
+                    "name": "municipality",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Municipality name for the station location when present in the detail response; null when the API does not provide one."
+                  },
+                  {
+                    "name": "province",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Province name for the station location when present in the detail response; null when the API omits it."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[0]."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[1]."
+                  },
+                  {
+                    "name": "year_start",
+                    "type": "string",
+                    "doc": "Year in which the station became operational according to the detail response. The upstream can return an empty string when the start year is not populated."
+                  },
+                  {
+                    "name": "components",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Ordered list of formula codes measured at the station, as returned by the station detail endpoint."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.Measurement": {
+          "name": "Measurement",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Measurement",
+                "namespace": "nl.rivm.luchtmeetnet",
+                "doc": "Hourly Luchtmeetnet measurement for a station and a single component formula.",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Stable Luchtmeetnet station code identifying where the measurement was taken."
+                  },
+                  {
+                    "name": "formula",
+                    "type": "string",
+                    "doc": "Component formula code identifying what was measured, for example NO2, O3, PM10, or FN."
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Numeric measurement value published by the API for the station and formula at the given timestamp."
+                  },
+                  {
+                    "name": "timestamp_measured",
+                    "type": "string",
+                    "doc": "Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.LKI": {
+          "name": "LKI",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "LKI",
+                "namespace": "nl.rivm.luchtmeetnet",
+                "doc": "Hourly Dutch national air quality index value for a station.",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated."
+                  },
+                  {
+                    "name": "value",
+                    "type": "int",
+                    "doc": "Luchtkwaliteitsindex value on the Dutch 1 to 11 scale."
+                  },
+                  {
+                    "name": "timestamp_measured",
+                    "type": "string",
+                    "doc": "Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.components.Component": {
+          "name": "Component",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Component",
+                "namespace": "nl.rivm.luchtmeetnet.components",
+                "doc": "Reference definition for a Luchtmeetnet monitored component formula as returned by the component catalog endpoint.",
+                "fields": [
+                  {
+                    "name": "formula",
+                    "type": "string",
+                    "doc": "Stable component formula code used in measurement queries and in station component lists, such as NO2, PM25, O3, or BCWB."
+                  },
+                  {
+                    "name": "name_nl",
+                    "type": "string",
+                    "doc": "Dutch display name for the component from the component catalog."
+                  },
+                  {
+                    "name": "name_en",
+                    "type": "string",
+                    "doc": "English display name for the component from the component catalog."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

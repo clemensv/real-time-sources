@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./luchtmeetnet_nl_producer_data
+pip install ./luchtmeetnet_nl_producer_kafka_producer

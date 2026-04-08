@@ -1,0 +1,712 @@
+{
+  "endpoints": {
+    "uk.kcl.laqn.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "laqn-london",
+          "key": "{site_code}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.kcl.laqn"
+      ]
+    },
+    "uk.kcl.laqn.species.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "laqn-london",
+          "key": "{species_code}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.kcl.laqn.species"
+      ]
+    }
+  },
+  "messagegroups": {
+    "uk.kcl.laqn": {
+      "messages": {
+        "uk.kcl.laqn.Site": {
+          "name": "Site",
+          "envelope": "CloudEvents/1.0",
+          "description": "LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates.",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.kcl.laqn.Site"
+            },
+            "source": {
+              "value": "http://api.erg.ic.ac.uk/AirQuality/Information/MonitoringSites/GroupName=All/Json"
+            },
+            "subject": {
+              "value": "{site_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Site"
+        },
+        "uk.kcl.laqn.Measurement": {
+          "name": "Measurement",
+          "envelope": "CloudEvents/1.0",
+          "description": "LAQN hourly pollutant measurement for a site and species at a GMT timestamp.",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.kcl.laqn.Measurement"
+            },
+            "source": {
+              "value": "http://api.erg.ic.ac.uk/AirQuality/Data/Site"
+            },
+            "subject": {
+              "value": "{site_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Measurement"
+        },
+        "uk.kcl.laqn.DailyIndex": {
+          "name": "DailyIndex",
+          "envelope": "CloudEvents/1.0",
+          "description": "LAQN Daily Air Quality Index (DAQI) for a site and pollutant, published as the latest London-wide bulletin.",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.kcl.laqn.DailyIndex"
+            },
+            "source": {
+              "value": "http://api.erg.ic.ac.uk/AirQuality/Daily/MonitoringIndex/Latest/GroupName=London/Json"
+            },
+            "subject": {
+              "value": "{site_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.DailyIndex"
+        }
+      }
+    },
+    "uk.kcl.laqn.species": {
+      "messages": {
+        "uk.kcl.laqn.Species": {
+          "name": "Species",
+          "envelope": "CloudEvents/1.0",
+          "description": "LAQN pollutant reference data, including descriptive text and health guidance for a pollutant code.",
+          "envelopemetadata": {
+            "type": {
+              "value": "uk.kcl.laqn.Species"
+            },
+            "source": {
+              "value": "http://api.erg.ic.ac.uk/AirQuality/Information/Species/Json"
+            },
+            "subject": {
+              "value": "{species_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Species"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "uk.kcl.laqn.jstruct": {
+      "schemas": {
+        "uk.kcl.laqn.Site": {
+          "name": "Site",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Site",
+                "name": "Site",
+                "$root": "#/definitions/uk/kcl/laqn/Site",
+                "definitions": {
+                  "uk": {
+                    "kcl": {
+                      "laqn": {
+                        "Site": {
+                          "name": "Site",
+                          "type": "object",
+                          "description": "Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.",
+                          "properties": {
+                            "site_code": {
+                              "type": "string",
+                              "description": "Stable LAQN site code that identifies the monitoring site, such as BX1.",
+                              "altnames": [
+                                "@SiteCode"
+                              ]
+                            },
+                            "site_name": {
+                              "type": "string",
+                              "description": "Human-readable LAQN site name published for the monitoring site.",
+                              "altnames": [
+                                "@SiteName"
+                              ]
+                            },
+                            "site_type": {
+                              "type": "string",
+                              "description": "Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.",
+                              "enum": [
+                                "Suburban",
+                                "Kerbside",
+                                "Roadside",
+                                "Urban Background",
+                                "Industrial",
+                                "Rural",
+                                "other"
+                              ],
+                              "altnames": [
+                                "@SiteType"
+                              ]
+                            },
+                            "local_authority_code": {
+                              "type": "string",
+                              "description": "Stable local authority code associated with the site in the LAQN reference data.",
+                              "altnames": [
+                                "@LocalAuthorityCode"
+                              ]
+                            },
+                            "local_authority_name": {
+                              "type": "string",
+                              "description": "Human-readable local authority name associated with the site in the LAQN reference data.",
+                              "altnames": [
+                                "@LocalAuthorityName"
+                              ]
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "WGS84 latitude of the monitoring site in decimal degrees. This bridge uses the decimal latitude field, not the projected WGS84 metre coordinate.",
+                              "altnames": [
+                                "@Latitude"
+                              ]
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "WGS84 longitude of the monitoring site in decimal degrees. This bridge uses the decimal longitude field, not the projected WGS84 metre coordinate.",
+                              "altnames": [
+                                "@Longitude"
+                              ]
+                            },
+                            "date_opened": {
+                              "type": "string",
+                              "description": "Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.",
+                              "altnames": [
+                                "@DateOpened"
+                              ]
+                            },
+                            "date_closed": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.",
+                              "altnames": [
+                                "@DateClosed"
+                              ]
+                            },
+                            "data_owner": {
+                              "type": "string",
+                              "description": "Organisation listed by LAQN as the owner of the site's data.",
+                              "altnames": [
+                                "@DataOwner"
+                              ]
+                            },
+                            "data_manager": {
+                              "type": "string",
+                              "description": "Organisation listed by LAQN as the manager of the monitoring site data.",
+                              "altnames": [
+                                "@DataManager"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "site_code",
+                            "site_name",
+                            "site_type",
+                            "local_authority_code",
+                            "local_authority_name",
+                            "latitude",
+                            "longitude",
+                            "date_opened",
+                            "date_closed",
+                            "data_owner",
+                            "data_manager"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.Species": {
+          "name": "Species",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Species",
+                "name": "Species",
+                "$root": "#/definitions/uk/kcl/laqn/Species",
+                "definitions": {
+                  "uk": {
+                    "kcl": {
+                      "laqn": {
+                        "Species": {
+                          "name": "Species",
+                          "type": "object",
+                          "description": "Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.",
+                          "properties": {
+                            "species_code": {
+                              "type": "string",
+                              "description": "Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO.",
+                              "altnames": [
+                                "@SpeciesCode"
+                              ]
+                            },
+                            "species_name": {
+                              "type": "string",
+                              "description": "Human-readable pollutant name published by LAQN for the pollutant code.",
+                              "altnames": [
+                                "@SpeciesName"
+                              ]
+                            },
+                            "description": {
+                              "type": "string",
+                              "description": "LAQN explanatory description of the pollutant and how it is formed or encountered.",
+                              "altnames": [
+                                "@Description"
+                              ]
+                            },
+                            "health_effect": {
+                              "type": "string",
+                              "description": "LAQN health effect guidance describing the health impacts associated with exposure to the pollutant.",
+                              "altnames": [
+                                "@HealthEffect"
+                              ]
+                            },
+                            "link": {
+                              "type": "string",
+                              "description": "HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant.",
+                              "altnames": [
+                                "@Link"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "species_code",
+                            "species_name",
+                            "description",
+                            "health_effect",
+                            "link"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.Measurement": {
+          "name": "Measurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Measurement",
+                "name": "Measurement",
+                "$root": "#/definitions/uk/kcl/laqn/Measurement",
+                "definitions": {
+                  "uk": {
+                    "kcl": {
+                      "laqn": {
+                        "Measurement": {
+                          "name": "Measurement",
+                          "type": "object",
+                          "description": "Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.",
+                          "properties": {
+                            "site_code": {
+                              "type": "string",
+                              "description": "Stable LAQN site code for the monitoring site that produced the measurement.",
+                              "altnames": [
+                                "@SiteCode"
+                              ]
+                            },
+                            "species_code": {
+                              "type": "string",
+                              "description": "Stable LAQN pollutant code for the measured species.",
+                              "altnames": [
+                                "@SpeciesCode"
+                              ]
+                            },
+                            "measurement_date_gmt": {
+                              "type": "string",
+                              "description": "Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS.",
+                              "altnames": [
+                                "@MeasurementDateGMT"
+                              ]
+                            },
+                            "value": {
+                              "type": "double",
+                              "description": "Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value.",
+                              "altnames": [
+                                "@Value"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "site_code",
+                            "species_code",
+                            "measurement_date_gmt",
+                            "value"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.DailyIndex": {
+          "name": "DailyIndex",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/DailyIndex",
+                "name": "DailyIndex",
+                "$root": "#/definitions/uk/kcl/laqn/DailyIndex",
+                "definitions": {
+                  "uk": {
+                    "kcl": {
+                      "laqn": {
+                        "DailyIndex": {
+                          "name": "DailyIndex",
+                          "type": "object",
+                          "description": "Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.",
+                          "properties": {
+                            "site_code": {
+                              "type": "string",
+                              "description": "Stable LAQN site code for the monitoring site to which the daily index applies.",
+                              "altnames": [
+                                "@SiteCode"
+                              ]
+                            },
+                            "bulletin_date": {
+                              "type": "string",
+                              "description": "Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS.",
+                              "altnames": [
+                                "@BulletinDate"
+                              ]
+                            },
+                            "species_code": {
+                              "type": "string",
+                              "description": "Stable LAQN pollutant code for the species to which the daily index applies.",
+                              "altnames": [
+                                "@SpeciesCode"
+                              ]
+                            },
+                            "air_quality_index": {
+                              "type": "integer",
+                              "description": "LAQN Daily Air Quality Index value from 1 to 10, where 1 to 3 is Low, 4 to 6 is Moderate, 7 to 9 is High, and 10 is Very High.",
+                              "minimum": 1,
+                              "maximum": 10,
+                              "altnames": [
+                                "@AirQualityIndex"
+                              ]
+                            },
+                            "air_quality_band": {
+                              "type": "string",
+                              "description": "Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High.",
+                              "enum": [
+                                "Low",
+                                "Moderate",
+                                "High",
+                                "Very High"
+                              ],
+                              "altnames": [
+                                "@AirQualityBand"
+                              ]
+                            },
+                            "index_source": {
+                              "type": "string",
+                              "description": "Origin of the daily index published by LAQN, typically Measurement or Forecast.",
+                              "enum": [
+                                "Measurement",
+                                "Forecast"
+                              ],
+                              "altnames": [
+                                "@IndexSource"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "site_code",
+                            "bulletin_date",
+                            "species_code",
+                            "air_quality_index",
+                            "air_quality_band",
+                            "index_source"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "uk.kcl.laqn.avro": {
+      "schemas": {
+        "uk.kcl.laqn.Site": {
+          "name": "Site",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Site",
+                "namespace": "uk.kcl.laqn",
+                "doc": "Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.",
+                "fields": [
+                  {
+                    "name": "site_code",
+                    "type": "string",
+                    "doc": "Stable LAQN site code that identifies the monitoring site, such as BX1."
+                  },
+                  {
+                    "name": "site_name",
+                    "type": "string",
+                    "doc": "Human-readable LAQN site name published for the monitoring site."
+                  },
+                  {
+                    "name": "site_type",
+                    "type": "string",
+                    "doc": "Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other."
+                  },
+                  {
+                    "name": "local_authority_code",
+                    "type": "string",
+                    "doc": "Stable local authority code associated with the site in the LAQN reference data."
+                  },
+                  {
+                    "name": "local_authority_name",
+                    "type": "string",
+                    "doc": "Human-readable local authority name associated with the site in the LAQN reference data."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "WGS84 latitude of the monitoring site in decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "WGS84 longitude of the monitoring site in decimal degrees."
+                  },
+                  {
+                    "name": "date_opened",
+                    "type": "string",
+                    "doc": "Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format."
+                  },
+                  {
+                    "name": "date_closed",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published."
+                  },
+                  {
+                    "name": "data_owner",
+                    "type": "string",
+                    "doc": "Organisation listed by LAQN as the owner of the site's data."
+                  },
+                  {
+                    "name": "data_manager",
+                    "type": "string",
+                    "doc": "Organisation listed by LAQN as the manager of the monitoring site data."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.Species": {
+          "name": "Species",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Species",
+                "namespace": "uk.kcl.laqn",
+                "doc": "Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.",
+                "fields": [
+                  {
+                    "name": "species_code",
+                    "type": "string",
+                    "doc": "Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO."
+                  },
+                  {
+                    "name": "species_name",
+                    "type": "string",
+                    "doc": "Human-readable pollutant name published by LAQN for the pollutant code."
+                  },
+                  {
+                    "name": "description",
+                    "type": "string",
+                    "doc": "LAQN explanatory description of the pollutant and how it is formed or encountered."
+                  },
+                  {
+                    "name": "health_effect",
+                    "type": "string",
+                    "doc": "LAQN health effect guidance describing the health impacts associated with exposure to the pollutant."
+                  },
+                  {
+                    "name": "link",
+                    "type": "string",
+                    "doc": "HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.Measurement": {
+          "name": "Measurement",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Measurement",
+                "namespace": "uk.kcl.laqn",
+                "doc": "Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.",
+                "fields": [
+                  {
+                    "name": "site_code",
+                    "type": "string",
+                    "doc": "Stable LAQN site code for the monitoring site that produced the measurement."
+                  },
+                  {
+                    "name": "species_code",
+                    "type": "string",
+                    "doc": "Stable LAQN pollutant code for the measured species."
+                  },
+                  {
+                    "name": "measurement_date_gmt",
+                    "type": "string",
+                    "doc": "Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS."
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.DailyIndex": {
+          "name": "DailyIndex",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DailyIndex",
+                "namespace": "uk.kcl.laqn",
+                "doc": "Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.",
+                "fields": [
+                  {
+                    "name": "site_code",
+                    "type": "string",
+                    "doc": "Stable LAQN site code for the monitoring site to which the daily index applies."
+                  },
+                  {
+                    "name": "bulletin_date",
+                    "type": "string",
+                    "doc": "Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS."
+                  },
+                  {
+                    "name": "species_code",
+                    "type": "string",
+                    "doc": "Stable LAQN pollutant code for the species to which the daily index applies."
+                  },
+                  {
+                    "name": "air_quality_index",
+                    "type": "int",
+                    "doc": "LAQN Daily Air Quality Index value from 1 to 10."
+                  },
+                  {
+                    "name": "air_quality_band",
+                    "type": "string",
+                    "doc": "Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High."
+                  },
+                  {
+                    "name": "index_source",
+                    "type": "string",
+                    "doc": "Origin of the daily index published by LAQN, typically Measurement or Forecast."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
