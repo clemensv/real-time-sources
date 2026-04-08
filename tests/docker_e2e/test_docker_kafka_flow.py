@@ -199,6 +199,8 @@ def wallonia_issep_image():
     return build_image('wallonia-issep')
 def carbon_intensity_image():
     return build_image('carbon-intensity')
+def energidataservice_dk_image():
+    return build_image('energidataservice-dk')
 
 @pytest.fixture(scope='module')
 def irail_image():
@@ -1206,4 +1208,16 @@ class TestCarbonIntensityDockerFlow:
             telemetry_types=['Intensity', 'GenerationMix', 'RegionalIntensity'],
             min_messages=3,
             timeout=120,
+# Energi Data Service Denmark (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestEnergiDataServiceDkDockerFlow:
+    TOPIC = 'test-energidataservice-dk'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, energidataservice_dk_image):
+        _run_kafka_flow_test(
+            kafka, energidataservice_dk_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['PowerSystemSnapshot', 'SpotPrice'],
+            min_messages=1,
         )
