@@ -213,6 +213,8 @@ def aviationweather_image():
     return build_image('aviationweather')
 def cbp_border_wait_image():
     return build_image('cbp-border-wait')
+def elexon_bmrs_image():
+    return build_image('elexon-bmrs')
 
 
 # ---------------------------------------------------------------------------
@@ -1167,4 +1169,14 @@ class TestCbpBorderWaitDockerFlow:
             kafka, cbp_border_wait_image, self.TOPIC,
             reference_types=['Port'],
             telemetry_types=['WaitTime'],
+# Elexon BMRS (GB electricity market)
+# ---------------------------------------------------------------------------
+
+class TestElexonBMRSDockerFlow:
+    TOPIC = 'test-elexon-bmrs'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, elexon_bmrs_image):
+        _run_kafka_flow_test(
+            kafka, elexon_bmrs_image, self.TOPIC,
+            telemetry_types=['GenerationMix', 'DemandOutturn'],
         )
