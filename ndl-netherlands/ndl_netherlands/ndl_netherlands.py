@@ -1,31 +1,51 @@
-"""Netherlands NDL EV charging infrastructure bridge."""
+"""NDW Netherlands Road Traffic bridge.
+
+Downloads gzip-compressed DATEX II XML files from the Dutch NDW open data
+platform and emits CloudEvents for traffic speed, travel time, and traffic
+situations onto Kafka topics.
+"""
 
 from __future__ import annotations
 
 import argparse
-import asyncio
 import gzip
-import importlib
 import json
 import logging
 import os
 import sys
+import time
+import urllib.request
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from io import BytesIO
-from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional, Set, Tuple
 
-import aiohttp
 from confluent_kafka import Producer
 
+from ndl_netherlands_producer_data import TrafficSpeed, TravelTime, TrafficSituation
+from ndl_netherlands_producer_kafka_producer.producer import (
+    NLNDWTrafficMeasurementsEventProducer,
+    NLNDWTrafficSituationsEventProducer,
+)
 
 BASE_URL = "https://opendata.ndw.nu"
-LOCATIONS_FILE = "charging_point_locations_ocpi.json.gz"
-TARIFFS_FILE = "charging_point_tariffs_ocpi.json.gz"
-DEFAULT_CHARGING_TOPIC = "ndl-charging"
-DEFAULT_TARIFFS_TOPIC = "ndl-charging-tariffs"
-DEFAULT_POLL_INTERVAL_SECONDS = 300
+SPEED_FILE = "trafficspeed.xml.gz"
+TRAVELTIME_FILE = "traveltime.xml.gz"
+SITUATION_FILE = "actueel_beeld.xml.gz"
+
+DEFAULT_MEASUREMENTS_TOPIC = "ndl-traffic"
+DEFAULT_SITUATIONS_TOPIC = "ndl-traffic-situations"
+DEFAULT_POLL_INTERVAL_SECONDS = 60
 DEFAULT_STATE_FILE = os.path.expanduser("~/.ndl_netherlands_state.json")
+
+# DATEX II v2 namespace (trafficspeed, traveltime)
+DATEX2_NS = "http://datex2.eu/schema/2/2_0"
+SOAP_NS = "http://schemas.xmlsoap.org/soap/envelope/"
+
+# DATEX II v3 namespaces (actueel_beeld situations)
+D3_SIT = "http://datex2.eu/schema/3/situation"
+D3_COM = "http://datex2.eu/schema/3/common"
+D3_MC = "http://datex2.eu/schema/3/messageContainer"
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -35,599 +55,528 @@ else:
 logger = logging.getLogger(__name__)
 
 
-def _parse_optional_float(value: Any) -> Optional[float]:
-    if value in (None, "", "undefined"):
-        return None
-    try:
-        return float(str(value).replace(",", "."))
-    except (TypeError, ValueError):
-        return None
+# ---------------------------------------------------------------------------
+# Connection string / Kafka helpers
+# ---------------------------------------------------------------------------
 
-
-def _parse_optional_bool(value: Any) -> Optional[bool]:
-    if value is None:
-        return None
-    if isinstance(value, bool):
-        return value
-    text = str(value).strip().lower()
-    if text in {"true", "1", "yes"}:
-        return True
-    if text in {"false", "0", "no"}:
-        return False
-    return None
-
-
-def _safe_string(value: Any) -> Optional[str]:
-    if value is None:
-        return None
-    s = str(value).strip()
-    return s if s else None
-
-
-def _safe_string_list(value: Any) -> Optional[list[str]]:
-    if not isinstance(value, list):
-        return None
-    result = [str(item) for item in value if item is not None and str(item).strip()]
-    return result if result else None
-
-
-def parse_connection_string(connection_string: str) -> dict[str, str]:
-    config_dict: dict[str, str] = {}
+def parse_connection_string(connection_string: str) -> Dict[str, str]:
+    """Parse an Event Hubs-style connection string into confluent-kafka config."""
+    config_dict: Dict[str, str] = {}
     try:
         for part in connection_string.split(";"):
             if "Endpoint" in part:
-                config_dict["bootstrap.servers"] = part.split("=", 1)[1].strip('"').replace("sb://", "").replace("/", "") + ":9093"
+                config_dict["bootstrap.servers"] = (
+                    part.split("=", 1)[1].strip('"').replace("sb://", "").replace("/", "") + ":9093"
+                )
             elif "EntityPath" in part:
-                config_dict["kafka_topic"] = part.split("=", 1)[1].strip('"')
+                config_dict["entity_path"] = part.split("=", 1)[1].strip('"')
             elif "SharedAccessKeyName" in part:
-                config_dict["sasl.username"] = "$ConnectionString"
+                config_dict["sasl.username"] = part.split("=", 1)[1].strip('"')
             elif "SharedAccessKey" in part:
-                config_dict["sasl.password"] = connection_string.strip()
-            elif "BootstrapServer" in part:
-                config_dict["bootstrap.servers"] = part.split("=", 1)[1].strip()
-    except IndexError as exc:
+                config_dict["sasl.password"] = part.split("=", 1)[1].strip('"')
+    except (IndexError, ValueError) as exc:
         raise ValueError("Invalid connection string format") from exc
-    if "sasl.username" in config_dict:
-        config_dict["security.protocol"] = "SASL_SSL"
-        config_dict["sasl.mechanism"] = "PLAIN"
     return config_dict
 
 
-def normalize_location(raw: dict[str, Any]) -> Optional[dict[str, Any]]:
-    """Extract a flat ChargingLocation dict from an OCPI Location object."""
-    location_id = raw.get("id")
-    if not location_id:
-        return None
+def _build_kafka_config(connection_string: str, enable_tls: bool = True) -> Tuple[Dict[str, str], Optional[str]]:
+    """Build Kafka producer config and extract topic from connection string."""
+    topic: Optional[str] = None
 
-    coords = raw.get("coordinates") or {}
-    lat = _parse_optional_float(coords.get("latitude"))
-    lon = _parse_optional_float(coords.get("longitude"))
-    if lat is None or lon is None:
-        return None
+    if "BootstrapServer=" in connection_string:
+        parts = {}
+        for part in connection_string.split(";"):
+            if "=" in part:
+                k, v = part.split("=", 1)
+                parts[k.strip()] = v.strip().strip('"')
+        config: Dict[str, str] = {"bootstrap.servers": parts.get("BootstrapServer", "")}
+        topic = parts.get("EntityPath")
+    else:
+        parsed = parse_connection_string(connection_string)
+        config = {
+            "bootstrap.servers": parsed.get("bootstrap.servers", ""),
+            "security.protocol": "SASL_SSL",
+            "sasl.mechanisms": "PLAIN",
+            "sasl.username": "$ConnectionString",
+            "sasl.password": connection_string.strip(),
+        }
+        topic = parsed.get("entity_path")
 
-    operator = raw.get("operator") or {}
-    suboperator = raw.get("suboperator") or {}
-    owner = raw.get("owner") or {}
-    energy_mix = raw.get("energy_mix") or {}
-    opening_times = raw.get("opening_times") or {}
-    evses = raw.get("evses") or []
-    connector_count = sum(len(e.get("connectors") or []) for e in evses if isinstance(e, dict))
+    if not enable_tls and "security.protocol" not in config:
+        config["security.protocol"] = "PLAINTEXT"
 
-    return {
-        "location_id": str(location_id),
-        "country_code": raw.get("country_code", ""),
-        "party_id": raw.get("party_id", ""),
-        "publish": raw.get("publish", True),
-        "name": _safe_string(raw.get("name")),
-        "address": raw.get("address", ""),
-        "city": raw.get("city", ""),
-        "postal_code": _safe_string(raw.get("postal_code")),
-        "state": _safe_string(raw.get("state")),
-        "country": raw.get("country", ""),
-        "latitude": lat,
-        "longitude": lon,
-        "parking_type": _safe_string(raw.get("parking_type")),
-        "operator_name": _safe_string(operator.get("name")),
-        "operator_website": _safe_string(operator.get("website")),
-        "suboperator_name": _safe_string(suboperator.get("name")),
-        "owner_name": _safe_string(owner.get("name")),
-        "facilities": _safe_string_list(raw.get("facilities")),
-        "time_zone": raw.get("time_zone", "Europe/Amsterdam"),
-        "opening_times_twentyfourseven": _parse_optional_bool(opening_times.get("twentyfourseven")),
-        "charging_when_closed": _parse_optional_bool(raw.get("charging_when_closed")),
-        "energy_mix_is_green_energy": _parse_optional_bool(energy_mix.get("is_green_energy")),
-        "energy_mix_supplier_name": _safe_string(energy_mix.get("supplier_name")),
-        "evse_count": len(evses),
-        "connector_count": connector_count,
-        "last_updated": raw.get("last_updated", datetime.now(timezone.utc).isoformat()),
-    }
+    return config, topic
 
 
-def normalize_connector(raw_connector: dict[str, Any]) -> dict[str, Any]:
-    """Extract a flat ConnectorSummary dict from an OCPI Connector object."""
-    return {
-        "connector_id": str(raw_connector.get("id", "")),
-        "standard": raw_connector.get("standard", ""),
-        "format": raw_connector.get("format", "SOCKET"),
-        "power_type": raw_connector.get("power_type", "AC_3_PHASE"),
-        "max_voltage": int(raw_connector.get("max_voltage", 0)),
-        "max_amperage": int(raw_connector.get("max_amperage", 0)),
-        "max_electric_power": int(raw_connector["max_electric_power"]) if raw_connector.get("max_electric_power") is not None else None,
-        "tariff_ids": _safe_string_list(raw_connector.get("tariff_ids")),
-    }
+# ---------------------------------------------------------------------------
+# XML download + decompress
+# ---------------------------------------------------------------------------
+
+def download_gzip_xml(url: str, timeout: int = 120) -> bytes:
+    """Download a gzip-compressed file and return the decompressed bytes."""
+    req = urllib.request.Request(url, headers={"Accept-Encoding": "identity"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        compressed = resp.read()
+    return gzip.decompress(compressed)
 
 
-def normalize_evse(location_id: str, raw_evse: dict[str, Any]) -> Optional[dict[str, Any]]:
-    """Extract a flat EvseStatus dict from an OCPI EVSE object."""
-    evse_uid = raw_evse.get("uid")
-    if not evse_uid:
-        return None
+# ---------------------------------------------------------------------------
+# DATEX II v2 parsers (trafficspeed + traveltime)
+# ---------------------------------------------------------------------------
 
-    coords = raw_evse.get("coordinates") or {}
-    connectors_raw = raw_evse.get("connectors") or []
-    connectors = [normalize_connector(c) for c in connectors_raw if isinstance(c, dict)]
-    if not connectors:
-        return None
-
-    return {
-        "location_id": str(location_id),
-        "evse_uid": str(evse_uid),
-        "evse_id": _safe_string(raw_evse.get("evse_id")),
-        "status": raw_evse.get("status", "UNKNOWN"),
-        "capabilities": _safe_string_list(raw_evse.get("capabilities")),
-        "floor_level": _safe_string(raw_evse.get("floor_level")),
-        "latitude": _parse_optional_float(coords.get("latitude")),
-        "longitude": _parse_optional_float(coords.get("longitude")),
-        "physical_reference": _safe_string(raw_evse.get("physical_reference")),
-        "parking_restrictions": _safe_string_list(raw_evse.get("parking_restrictions")),
-        "connectors": connectors,
-        "last_updated": raw_evse.get("last_updated", datetime.now(timezone.utc).isoformat()),
-    }
+def _find_text(elem: ET.Element, path: str, ns: str = DATEX2_NS) -> Optional[str]:
+    """Find text of a child element by local-name path within DATEX II v2 namespace."""
+    node = elem.find(path, {"d": ns})
+    return node.text.strip() if node is not None and node.text else None
 
 
-def normalize_tariff(raw: dict[str, Any]) -> Optional[dict[str, Any]]:
-    """Extract a flat ChargingTariff dict from an OCPI Tariff object."""
-    tariff_id = raw.get("id")
-    if not tariff_id:
-        return None
+def parse_traffic_speed_xml(xml_bytes: bytes) -> List[Dict[str, Any]]:
+    """Parse trafficspeed DATEX II v2 XML into list of per-site dicts."""
+    root = ET.fromstring(xml_bytes)
+    ns = {"d": DATEX2_NS, "xsi": "http://www.w3.org/2001/XMLSchema-instance"}
+    results: List[Dict[str, Any]] = []
 
-    elements_raw = raw.get("elements") or []
-    elements = []
-    for elem in elements_raw:
-        if not isinstance(elem, dict):
+    for sm in root.iter(f"{{{DATEX2_NS}}}siteMeasurements"):
+        ref = sm.find(f"{{{DATEX2_NS}}}measurementSiteReference")
+        if ref is None:
             continue
-        pcs_raw = elem.get("price_components") or []
-        pcs = []
-        for pc in pcs_raw:
-            if not isinstance(pc, dict):
+        site_id = ref.get("id", "")
+        time_elem = sm.find(f"{{{DATEX2_NS}}}measurementTimeDefault")
+        mtime = time_elem.text.strip() if time_elem is not None and time_elem.text else ""
+
+        speeds: List[float] = []
+        flows: List[int] = []
+
+        for mv in sm.findall(f"{{{DATEX2_NS}}}measuredValue"):
+            inner = mv.find(f"{{{DATEX2_NS}}}measuredValue")
+            if inner is None:
                 continue
-            pcs.append({
-                "type": pc.get("type", "FLAT"),
-                "price": float(pc.get("price", 0)),
-                "vat": float(pc["vat"]) if pc.get("vat") is not None else None,
-                "step_size": int(pc.get("step_size", 1)),
-            })
-        if not pcs:
-            continue
-        restrictions_raw = elem.get("restrictions")
-        restrictions = None
-        if isinstance(restrictions_raw, dict):
-            restrictions = {
-                "start_time": _safe_string(restrictions_raw.get("start_time")),
-                "end_time": _safe_string(restrictions_raw.get("end_time")),
-                "start_date": _safe_string(restrictions_raw.get("start_date")),
-                "end_date": _safe_string(restrictions_raw.get("end_date")),
-                "min_kwh": _parse_optional_float(restrictions_raw.get("min_kwh")),
-                "max_kwh": _parse_optional_float(restrictions_raw.get("max_kwh")),
-                "min_current": _parse_optional_float(restrictions_raw.get("min_current")),
-                "max_current": _parse_optional_float(restrictions_raw.get("max_current")),
-                "min_power": _parse_optional_float(restrictions_raw.get("min_power")),
-                "max_power": _parse_optional_float(restrictions_raw.get("max_power")),
-                "min_duration": int(restrictions_raw["min_duration"]) if restrictions_raw.get("min_duration") is not None else None,
-                "max_duration": int(restrictions_raw["max_duration"]) if restrictions_raw.get("max_duration") is not None else None,
-                "day_of_week": _safe_string_list(restrictions_raw.get("day_of_week")),
-                "reservation": _safe_string(restrictions_raw.get("reservation")),
-            }
-        elements.append({
-            "price_components": pcs,
-            "restrictions": restrictions,
+            bd = inner.find(f"{{{DATEX2_NS}}}basicData")
+            if bd is None:
+                continue
+
+            xsi_type = bd.get(f"{{{ns['xsi']}}}type", "")
+            if xsi_type == "TrafficSpeed":
+                avg_elem = bd.find(f"{{{DATEX2_NS}}}averageVehicleSpeed")
+                if avg_elem is not None:
+                    spd_elem = avg_elem.find(f"{{{DATEX2_NS}}}speed")
+                    if spd_elem is not None and spd_elem.text:
+                        val = float(spd_elem.text)
+                        if val > 0:
+                            speeds.append(val)
+            elif xsi_type == "TrafficFlow":
+                vf_elem = bd.find(f"{{{DATEX2_NS}}}vehicleFlow")
+                if vf_elem is not None:
+                    rate_elem = vf_elem.find(f"{{{DATEX2_NS}}}vehicleFlowRate")
+                    if rate_elem is not None and rate_elem.text:
+                        flows.append(int(rate_elem.text))
+
+        lanes = max(len(speeds), len(flows))
+        avg_speed: Optional[float] = round(sum(speeds) / len(speeds), 2) if speeds else None
+        total_flow: Optional[int] = sum(flows) if flows else None
+
+        results.append({
+            "site_id": site_id,
+            "measurement_time": mtime,
+            "average_speed": avg_speed,
+            "vehicle_flow_rate": total_flow,
+            "number_of_lanes_with_data": lanes,
         })
 
-    if not elements:
-        return None
-
-    alt_text_list = raw.get("tariff_alt_text") or []
-    alt_text = None
-    if isinstance(alt_text_list, list) and alt_text_list:
-        first = alt_text_list[0] if isinstance(alt_text_list[0], dict) else {}
-        alt_text = _safe_string(first.get("text"))
-
-    min_price = raw.get("min_price") or {}
-    max_price = raw.get("max_price") or {}
-
-    return {
-        "tariff_id": str(tariff_id),
-        "country_code": raw.get("country_code", ""),
-        "party_id": raw.get("party_id", ""),
-        "currency": raw.get("currency", "EUR"),
-        "tariff_type": _safe_string(raw.get("type")),
-        "tariff_alt_text": alt_text,
-        "tariff_alt_url": _safe_string(raw.get("tariff_alt_url")),
-        "min_price_excl_vat": _parse_optional_float(min_price.get("excl_vat") if isinstance(min_price, dict) else None),
-        "min_price_incl_vat": _parse_optional_float(min_price.get("incl_vat") if isinstance(min_price, dict) else None),
-        "max_price_excl_vat": _parse_optional_float(max_price.get("excl_vat") if isinstance(max_price, dict) else None),
-        "max_price_incl_vat": _parse_optional_float(max_price.get("incl_vat") if isinstance(max_price, dict) else None),
-        "elements": elements,
-        "start_date_time": _safe_string(raw.get("start_date_time")),
-        "end_date_time": _safe_string(raw.get("end_date_time")),
-        "energy_mix_is_green_energy": _parse_optional_bool((raw.get("energy_mix") or {}).get("is_green_energy")),
-        "last_updated": raw.get("last_updated", datetime.now(timezone.utc).isoformat()),
-    }
+    return results
 
 
-def _load_generated_data_classes() -> dict[str, type[Any]]:
-    module = importlib.import_module("ndl_netherlands_producer_data")
-    classes = {}
-    for name in ("ChargingLocation", "EvseStatus", "ChargingTariff", "ConnectorSummary",
-                 "PriceComponent", "TariffElement", "TariffRestrictions",
-                 "StatusEnum", "FormatEnum", "PowerTypeenum", "ParkingTypeenum",
-                 "TariffTypeenum", "TypeEnum", "ReservationEnum"):
-        cls = getattr(module, name, None)
-        if cls is not None:
-            classes[name] = cls
-    return classes
+def parse_travel_time_xml(xml_bytes: bytes) -> List[Dict[str, Any]]:
+    """Parse traveltime DATEX II v2 XML into list of per-site dicts."""
+    root = ET.fromstring(xml_bytes)
+    ns = {"xsi": "http://www.w3.org/2001/XMLSchema-instance"}
+    results: List[Dict[str, Any]] = []
+
+    for sm in root.iter(f"{{{DATEX2_NS}}}siteMeasurements"):
+        ref = sm.find(f"{{{DATEX2_NS}}}measurementSiteReference")
+        if ref is None:
+            continue
+        site_id = ref.get("id", "")
+        time_elem = sm.find(f"{{{DATEX2_NS}}}measurementTimeDefault")
+        mtime = time_elem.text.strip() if time_elem is not None and time_elem.text else ""
+
+        duration: Optional[float] = None
+        ref_duration: Optional[float] = None
+        accuracy: Optional[float] = None
+        data_quality: Optional[float] = None
+        n_input: Optional[int] = None
+
+        for mv in sm.findall(f"{{{DATEX2_NS}}}measuredValue"):
+            inner = mv.find(f"{{{DATEX2_NS}}}measuredValue")
+            if inner is None:
+                continue
+            bd = inner.find(f"{{{DATEX2_NS}}}basicData")
+            if bd is None:
+                continue
+            xsi_type = bd.get(f"{{{ns['xsi']}}}type", "")
+            if xsi_type != "TravelTimeData":
+                continue
+
+            tt_elem = bd.find(f"{{{DATEX2_NS}}}travelTime")
+            if tt_elem is not None:
+                dur_elem = tt_elem.find(f"{{{DATEX2_NS}}}duration")
+                if dur_elem is not None and dur_elem.text:
+                    val = float(dur_elem.text)
+                    duration = val if val >= 0 else None
+
+                acc_val = tt_elem.get("accuracy")
+                if acc_val is not None:
+                    accuracy = float(acc_val)
+
+                niv = tt_elem.get("numberOfInputValuesUsed")
+                if niv is not None:
+                    n_input = int(niv)
+
+                dq_val = tt_elem.get("supplierCalculatedDataQuality")
+                if dq_val is not None:
+                    data_quality = float(dq_val)
+
+            # Reference duration from extension
+            ext = inner.find(f"{{{DATEX2_NS}}}measuredValueExtension")
+            if ext is not None:
+                ext2 = ext.find(f"{{{DATEX2_NS}}}measuredValueExtended")
+                if ext2 is not None:
+                    brv = ext2.find(f"{{{DATEX2_NS}}}basicDataReferenceValue")
+                    if brv is not None:
+                        ttd = brv.find(f"{{{DATEX2_NS}}}travelTimeData")
+                        if ttd is not None:
+                            rtt = ttd.find(f"{{{DATEX2_NS}}}travelTime")
+                            if rtt is not None:
+                                rd = rtt.find(f"{{{DATEX2_NS}}}duration")
+                                if rd is not None and rd.text:
+                                    rdv = float(rd.text)
+                                    ref_duration = rdv if rdv >= 0 else None
+
+        results.append({
+            "site_id": site_id,
+            "measurement_time": mtime,
+            "duration": duration,
+            "reference_duration": ref_duration,
+            "accuracy": accuracy,
+            "data_quality": data_quality,
+            "number_of_input_values": n_input,
+        })
+
+    return results
 
 
-def _load_generated_producer_classes() -> dict[str, type[Any]]:
-    module = importlib.import_module("ndl_netherlands_producer_kafka_producer.producer")
-    producers = {}
-    for attr in dir(module):
-        obj = getattr(module, attr)
-        if isinstance(obj, type) and attr.endswith("EventProducer"):
-            producers[attr] = obj
-    return producers
+# ---------------------------------------------------------------------------
+# DATEX II v3 parser (actueel_beeld situations)
+# ---------------------------------------------------------------------------
+
+def parse_situation_xml(xml_bytes: bytes) -> List[Dict[str, Any]]:
+    """Parse actueel_beeld DATEX II v3 XML into list of situation dicts."""
+    root = ET.fromstring(xml_bytes)
+    results: List[Dict[str, Any]] = []
+
+    for sit in root.iter(f"{{{D3_SIT}}}situation"):
+        situation_id = sit.get("id", "")
+
+        vt_elem = sit.find(f"{{{D3_SIT}}}situationVersionTime")
+        version_time = vt_elem.text.strip() if vt_elem is not None and vt_elem.text else ""
+
+        sev_elem = sit.find(f"{{{D3_SIT}}}overallSeverity")
+        severity = sev_elem.text.strip() if sev_elem is not None and sev_elem.text else None
+
+        header = sit.find(f"{{{D3_SIT}}}headerInformation")
+        info_status = "real"
+        if header is not None:
+            is_elem = header.find(f"{{{D3_COM}}}informationStatus")
+            if is_elem is not None and is_elem.text:
+                info_status = is_elem.text.strip()
+
+        # Extract first situation record's type and cause
+        record_type: Optional[str] = None
+        cause_type: Optional[str] = None
+        start_time: Optional[str] = None
+        end_time: Optional[str] = None
+
+        sr = sit.find(f"{{{D3_SIT}}}situationRecord")
+        if sr is not None:
+            xsi_type = sr.get(f"{{http://www.w3.org/2001/XMLSchema-instance}}type", "")
+            if xsi_type.startswith("sit:"):
+                record_type = xsi_type[4:]
+            elif xsi_type:
+                record_type = xsi_type
+
+            cause_elem = sr.find(f"{{{D3_SIT}}}cause")
+            if cause_elem is not None:
+                ct_elem = cause_elem.find(f"{{{D3_SIT}}}causeType")
+                if ct_elem is not None and ct_elem.text:
+                    cause_type = ct_elem.text.strip()
+
+            validity = sr.find(f"{{{D3_SIT}}}validity")
+            if validity is not None:
+                vts = validity.find(f"{{{D3_COM}}}validityTimeSpecification")
+                if vts is not None:
+                    st_elem = vts.find(f"{{{D3_COM}}}overallStartTime")
+                    if st_elem is not None and st_elem.text:
+                        start_time = st_elem.text.strip()
+                    et_elem = vts.find(f"{{{D3_COM}}}overallEndTime")
+                    if et_elem is not None and et_elem.text:
+                        end_time = et_elem.text.strip()
+
+        results.append({
+            "situation_id": situation_id,
+            "version_time": version_time,
+            "severity": severity,
+            "record_type": record_type,
+            "cause_type": cause_type,
+            "start_time": start_time,
+            "end_time": end_time,
+            "information_status": info_status,
+        })
+
+    return results
 
 
-def _build_data_object(classes: dict[str, type[Any]], snapshot: dict[str, Any], schema_name: str) -> Any:
-    """Build a generated dataclass instance from a normalized snapshot dict."""
-    cls = classes[schema_name]
+# ---------------------------------------------------------------------------
+# State management for dedup
+# ---------------------------------------------------------------------------
 
-    if schema_name == "ChargingLocation":
-        kwargs = dict(snapshot)
-        if kwargs.get("parking_type") is not None:
-            kwargs["parking_type"] = classes["ParkingTypeenum"](kwargs["parking_type"])
-        kwargs["last_updated"] = _to_datetime(kwargs["last_updated"])
-        return cls(**kwargs)
+class StateManager:
+    """Persists last-seen timestamps per site/situation for deduplication."""
 
-    if schema_name == "EvseStatus":
-        kwargs = dict(snapshot)
-        kwargs["status"] = classes["StatusEnum"](kwargs["status"])
-        connectors = []
-        for c in kwargs.get("connectors", []):
-            c_kwargs = dict(c)
-            c_kwargs["format"] = classes["FormatEnum"](c_kwargs["format"])
-            c_kwargs["power_type"] = classes["PowerTypeenum"](c_kwargs["power_type"])
-            connectors.append(classes["ConnectorSummary"](**c_kwargs))
-        kwargs["connectors"] = connectors
-        kwargs["last_updated"] = _to_datetime(kwargs["last_updated"])
-        return cls(**kwargs)
+    def __init__(self, state_file: str):
+        self.state_file = state_file
+        self.state: Dict[str, Dict[str, str]] = {"speed": {}, "traveltime": {}, "situation": {}}
+        self._load()
 
-    if schema_name == "ChargingTariff":
-        kwargs = dict(snapshot)
-        if kwargs.get("tariff_type") is not None:
-            kwargs["tariff_type"] = classes["TariffTypeenum"](kwargs["tariff_type"])
-        elements = []
-        for elem in kwargs.get("elements", []):
-            pcs = []
-            for pc in elem.get("price_components", []):
-                pc_kwargs = dict(pc)
-                pc_kwargs["type"] = classes["TypeEnum"](pc_kwargs["type"])
-                pcs.append(classes["PriceComponent"](**pc_kwargs))
-            restrictions = None
-            if elem.get("restrictions") is not None:
-                r = dict(elem["restrictions"])
-                if r.get("reservation") is not None:
-                    r["reservation"] = classes["ReservationEnum"](r["reservation"])
-                restrictions = classes["TariffRestrictions"](**r)
-            elements.append(classes["TariffElement"](price_components=pcs, restrictions=restrictions))
-        kwargs["elements"] = elements
-        kwargs["last_updated"] = _to_datetime(kwargs["last_updated"])
-        kwargs["start_date_time"] = _to_datetime(kwargs.get("start_date_time")) if kwargs.get("start_date_time") else None
-        kwargs["end_date_time"] = _to_datetime(kwargs.get("end_date_time")) if kwargs.get("end_date_time") else None
-        return cls(**kwargs)
+    def _load(self) -> None:
+        if os.path.exists(self.state_file):
+            try:
+                with open(self.state_file, "r", encoding="utf-8") as f:
+                    self.state = json.load(f)
+            except (json.JSONDecodeError, OSError):
+                logger.warning("Could not load state file, starting fresh")
 
-    raise ValueError(f"Unknown schema: {schema_name}")
+    def save(self) -> None:
+        try:
+            with open(self.state_file, "w", encoding="utf-8") as f:
+                json.dump(self.state, f)
+        except OSError:
+            logger.warning("Could not save state file")
+
+    def is_new_speed(self, site_id: str, mtime: str) -> bool:
+        bucket = self.state.setdefault("speed", {})
+        if bucket.get(site_id) == mtime:
+            return False
+        bucket[site_id] = mtime
+        return True
+
+    def is_new_traveltime(self, site_id: str, mtime: str) -> bool:
+        bucket = self.state.setdefault("traveltime", {})
+        if bucket.get(site_id) == mtime:
+            return False
+        bucket[site_id] = mtime
+        return True
+
+    def is_new_situation(self, situation_id: str, version_time: str) -> bool:
+        bucket = self.state.setdefault("situation", {})
+        if bucket.get(situation_id) == version_time:
+            return False
+        bucket[situation_id] = version_time
+        return True
 
 
-def _to_datetime(value: Any) -> datetime:
-    if isinstance(value, datetime):
-        return value
-    if isinstance(value, str):
-        s = value.replace("Z", "+00:00")
-        return datetime.fromisoformat(s)
-    return datetime.now(timezone.utc)
+# ---------------------------------------------------------------------------
+# Poller
+# ---------------------------------------------------------------------------
 
-
-class NdlPoller:
-    """Poll NDL open data files and send changes to Kafka."""
-
-    headers = {
-        "Accept": "*/*",
-        "User-Agent": "(real-time-sources, clemensv@microsoft.com)",
-    }
+class NdwPoller:
+    """Polls NDW open data feeds and emits CloudEvents."""
 
     def __init__(
         self,
-        kafka_config: Optional[dict[str, str]] = None,
-        charging_topic: Optional[str] = None,
-        tariffs_topic: Optional[str] = None,
-        state_file: Optional[str] = None,
-        poll_interval_seconds: int = DEFAULT_POLL_INTERVAL_SECONDS,
+        measurements_producer: NLNDWTrafficMeasurementsEventProducer,
+        situations_producer: NLNDWTrafficSituationsEventProducer,
+        state: StateManager,
+        poll_interval: int = DEFAULT_POLL_INTERVAL_SECONDS,
+        base_url: str = BASE_URL,
     ):
-        self.charging_topic = charging_topic or DEFAULT_CHARGING_TOPIC
-        self.tariffs_topic = tariffs_topic or DEFAULT_TARIFFS_TOPIC
-        self.state_file = Path(state_file or DEFAULT_STATE_FILE)
-        self.poll_interval_seconds = poll_interval_seconds
-        self.evse_state: dict[str, str] = {}  # key=location_id/evse_uid -> value=status
-        self.data_classes: dict[str, type[Any]] = {}
-        self.location_producer: Optional[Any] = None
-        self.evse_producer: Optional[Any] = None
-        self.tariff_producer: Optional[Any] = None
-        self._first_poll = True
+        self.measurements_producer = measurements_producer
+        self.situations_producer = situations_producer
+        self.state = state
+        self.poll_interval = poll_interval
+        self.base_url = base_url
+        self._last_situation_poll: float = 0
 
-        if kafka_config is not None:
-            self.data_classes = _load_generated_data_classes()
-            producer_classes = _load_generated_producer_classes()
-            kafka_producer = Producer(kafka_config)
+    def poll_and_send(self) -> Tuple[int, int, int]:
+        """Run one poll cycle. Returns (speed_count, tt_count, sit_count)."""
+        speed_count = self._poll_speed()
+        tt_count = self._poll_traveltime()
+        sit_count = 0
 
-            for name, cls in producer_classes.items():
-                if "Locations" in name:
-                    self.location_producer = cls(kafka_producer, self.charging_topic)
-                elif "Evse" in name:
-                    self.evse_producer = cls(kafka_producer, self.charging_topic)
-                elif "Tariffs" in name:
-                    self.tariff_producer = cls(kafka_producer, self.tariffs_topic)
+        # Situations update every ~15 min, poll every 10 min
+        if time.time() - self._last_situation_poll >= 600:
+            sit_count = self._poll_situations()
+            self._last_situation_poll = time.time()
 
-    def load_state(self) -> None:
-        if self.state_file.exists():
-            try:
-                with self.state_file.open("r", encoding="utf-8") as f:
-                    state = json.load(f)
-                    self.evse_state = state.get("evse_state", {})
-                    self._first_poll = False
-            except (OSError, ValueError, json.JSONDecodeError) as exc:
-                logger.warning("Failed to load state: %s", exc)
+        self.state.save()
+        return speed_count, tt_count, sit_count
 
-    def save_state(self) -> None:
-        self.state_file.parent.mkdir(parents=True, exist_ok=True)
-        temp = self.state_file.with_suffix(self.state_file.suffix + ".tmp")
-        with temp.open("w", encoding="utf-8") as f:
-            json.dump({"evse_state": self.evse_state}, f, separators=(",", ":"))
-        temp.replace(self.state_file)
-
-    async def fetch_gzip_json(self, session: aiohttp.ClientSession, filename: str) -> Any:
-        url = f"{BASE_URL}/{filename}"
+    def _poll_speed(self) -> int:
+        url = f"{self.base_url}/{SPEED_FILE}"
         logger.info("Downloading %s", url)
-        async with session.get(url, headers=self.headers) as response:
-            response.raise_for_status()
-            compressed = await response.read()
-        with gzip.GzipFile(fileobj=BytesIO(compressed)) as gz:
-            raw = gz.read()
-        return json.loads(raw)
-
-    def _send_location(self, snapshot: dict[str, Any]) -> None:
-        if not self.location_producer:
-            return
-        data = _build_data_object(self.data_classes, snapshot, "ChargingLocation")
-        self.location_producer.send_nl_ndw_charging_charging_location(
-            _location_id=snapshot["location_id"],
-            _last_updated=snapshot["last_updated"],
-            data=data,
-            flush_producer=False,
-        )
-
-    def _send_evse_status(self, snapshot: dict[str, Any]) -> None:
-        if not self.evse_producer:
-            return
-        data = _build_data_object(self.data_classes, snapshot, "EvseStatus")
-        self.evse_producer.send_nl_ndw_charging_evse_status(
-            _location_id=snapshot["location_id"],
-            _evse_uid=snapshot["evse_uid"],
-            _last_updated=snapshot["last_updated"],
-            data=data,
-            flush_producer=False,
-        )
-
-    def _send_tariff(self, snapshot: dict[str, Any]) -> None:
-        if not self.tariff_producer:
-            return
-        data = _build_data_object(self.data_classes, snapshot, "ChargingTariff")
-        self.tariff_producer.send_nl_ndw_charging_charging_tariff(
-            _tariff_id=snapshot["tariff_id"],
-            _last_updated=snapshot["last_updated"],
-            data=data,
-            flush_producer=False,
-        )
-
-    def process_locations(self, raw_locations: list[dict[str, Any]]) -> dict[str, dict[str, int]]:
-        """Process OCPI locations, emit reference data and EVSE status changes."""
-        stats: dict[str, dict[str, int]] = {
-            "locations": {"emitted": 0, "skipped": 0},
-            "evse": {"appeared": 0, "updated": 0, "resolved": 0, "unchanged": 0},
-        }
-        new_evse_state: dict[str, str] = {}
-
-        for raw_loc in raw_locations:
-            if not isinstance(raw_loc, dict):
-                continue
-
-            location = normalize_location(raw_loc)
-            if location is None:
-                stats["locations"]["skipped"] += 1
-                continue
-
-            # Emit location reference on first poll
-            if self._first_poll:
-                self._send_location(location)
-                stats["locations"]["emitted"] += 1
-
-            location_id = location["location_id"]
-            for raw_evse in (raw_loc.get("evses") or []):
-                if not isinstance(raw_evse, dict):
-                    continue
-                evse = normalize_evse(location_id, raw_evse)
-                if evse is None:
-                    continue
-
-                key = f"{evse['location_id']}/{evse['evse_uid']}"
-                current_status = evse["status"]
-                new_evse_state[key] = current_status
-                previous_status = self.evse_state.get(key)
-
-                if previous_status is None:
-                    if not self._first_poll:
-                        self._send_evse_status(evse)
-                        stats["evse"]["appeared"] += 1
-                    else:
-                        self._send_evse_status(evse)
-                        stats["evse"]["appeared"] += 1
-                elif previous_status != current_status:
-                    self._send_evse_status(evse)
-                    stats["evse"]["updated"] += 1
-                else:
-                    stats["evse"]["unchanged"] += 1
-
-        # Detect removed EVSEs
-        removed_keys = set(self.evse_state.keys()) - set(new_evse_state.keys())
-        stats["evse"]["resolved"] = len(removed_keys)
-
-        self.evse_state = new_evse_state
-        return stats
-
-    def process_tariffs(self, raw_tariffs: list[dict[str, Any]]) -> dict[str, int]:
-        """Process OCPI tariffs, emit reference data on first poll."""
-        stats = {"emitted": 0, "skipped": 0}
-        if not self._first_poll:
-            return stats
-
-        for raw in raw_tariffs:
-            if not isinstance(raw, dict):
-                continue
-            tariff = normalize_tariff(raw)
-            if tariff is None:
-                stats["skipped"] += 1
-                continue
-            self._send_tariff(tariff)
-            stats["emitted"] += 1
-
-        return stats
-
-    async def poll_once(self, session: aiohttp.ClientSession) -> dict[str, Any]:
-        """Execute one poll cycle."""
-        poll_stats: dict[str, Any] = {}
-
-        # Download and process locations + EVSE status
         try:
-            raw_locations = await self.fetch_gzip_json(session, LOCATIONS_FILE)
-            if not isinstance(raw_locations, list):
-                logger.error("Locations file is not a JSON array")
-                raw_locations = []
-        except Exception as exc:
-            logger.error("Failed to download locations: %s", exc)
-            raw_locations = []
+            xml_bytes = download_gzip_xml(url)
+        except Exception:
+            logger.exception("Failed to download traffic speed data")
+            return 0
 
-        if raw_locations:
-            loc_stats = self.process_locations(raw_locations)
-            poll_stats["locations"] = loc_stats
-            logger.info(
-                "Locations: %d emitted, EVSE: %d appeared, %d updated, %d resolved, %d unchanged",
-                loc_stats["locations"]["emitted"],
-                loc_stats["evse"]["appeared"],
-                loc_stats["evse"]["updated"],
-                loc_stats["evse"]["resolved"],
-                loc_stats["evse"]["unchanged"],
+        records = parse_traffic_speed_xml(xml_bytes)
+        count = 0
+        for rec in records:
+            if not self.state.is_new_speed(rec["site_id"], rec["measurement_time"]):
+                continue
+            data = TrafficSpeed(
+                site_id=rec["site_id"],
+                measurement_time=rec["measurement_time"],
+                average_speed=rec["average_speed"],
+                vehicle_flow_rate=rec["vehicle_flow_rate"],
+                number_of_lanes_with_data=rec["number_of_lanes_with_data"],
             )
+            self.measurements_producer.send_nl_ndw_traffic_traffic_speed(
+                rec["site_id"], data, flush_producer=False
+            )
+            count += 1
 
-        # Download and process tariffs (first poll only)
-        if self._first_poll:
-            try:
-                raw_tariffs = await self.fetch_gzip_json(session, TARIFFS_FILE)
-                if not isinstance(raw_tariffs, list):
-                    logger.error("Tariffs file is not a JSON array")
-                    raw_tariffs = []
-            except Exception as exc:
-                logger.error("Failed to download tariffs: %s", exc)
-                raw_tariffs = []
+        if count:
+            self.measurements_producer.producer.flush()
+        logger.info("Emitted %d traffic speed events (of %d sites)", count, len(records))
+        return count
 
-            if raw_tariffs:
-                tariff_stats = self.process_tariffs(raw_tariffs)
-                poll_stats["tariffs"] = tariff_stats
-                logger.info("Tariffs: %d emitted, %d skipped", tariff_stats["emitted"], tariff_stats["skipped"])
+    def _poll_traveltime(self) -> int:
+        url = f"{self.base_url}/{TRAVELTIME_FILE}"
+        logger.info("Downloading %s", url)
+        try:
+            xml_bytes = download_gzip_xml(url)
+        except Exception:
+            logger.exception("Failed to download travel time data")
+            return 0
 
-        self._first_poll = False
-        self.save_state()
-        return poll_stats
+        records = parse_travel_time_xml(xml_bytes)
+        count = 0
+        for rec in records:
+            if not self.state.is_new_traveltime(rec["site_id"], rec["measurement_time"]):
+                continue
+            data = TravelTime(
+                site_id=rec["site_id"],
+                measurement_time=rec["measurement_time"],
+                duration=rec["duration"],
+                reference_duration=rec["reference_duration"],
+                accuracy=rec["accuracy"],
+                data_quality=rec["data_quality"],
+                number_of_input_values=rec["number_of_input_values"],
+            )
+            self.measurements_producer.send_nl_ndw_traffic_travel_time(
+                rec["site_id"], data, flush_producer=False
+            )
+            count += 1
 
-    async def run(self, session: aiohttp.ClientSession) -> None:
-        """Run the polling loop."""
-        self.load_state()
+        if count:
+            self.measurements_producer.producer.flush()
+        logger.info("Emitted %d travel time events (of %d sites)", count, len(records))
+        return count
+
+    def _poll_situations(self) -> int:
+        url = f"{self.base_url}/{SITUATION_FILE}"
+        logger.info("Downloading %s", url)
+        try:
+            xml_bytes = download_gzip_xml(url)
+        except Exception:
+            logger.exception("Failed to download situation data")
+            return 0
+
+        records = parse_situation_xml(xml_bytes)
+        count = 0
+        for rec in records:
+            if not self.state.is_new_situation(rec["situation_id"], rec["version_time"]):
+                continue
+            data = TrafficSituation(
+                situation_id=rec["situation_id"],
+                version_time=rec["version_time"],
+                severity=rec["severity"],
+                record_type=rec["record_type"],
+                cause_type=rec["cause_type"],
+                start_time=rec["start_time"],
+                end_time=rec["end_time"],
+                information_status=rec["information_status"],
+            )
+            self.situations_producer.send_nl_ndw_traffic_traffic_situation(
+                rec["situation_id"], data, flush_producer=False
+            )
+            count += 1
+
+        if count:
+            self.situations_producer.producer.flush()
+        logger.info("Emitted %d situation events (of %d situations)", count, len(records))
+        return count
+
+    def run_forever(self) -> None:
+        """Main polling loop."""
+        logger.info("Starting NDW Netherlands traffic poller (interval=%ds)", self.poll_interval)
+        # Force first situation poll
+        self._last_situation_poll = 0
         while True:
             try:
-                await self.poll_once(session)
+                s, t, sit = self.poll_and_send()
+                logger.info("Poll cycle complete: speed=%d, traveltime=%d, situation=%d", s, t, sit)
             except Exception:
-                logger.exception("Poll cycle failed")
-            logger.info("Sleeping %d seconds", self.poll_interval_seconds)
-            await asyncio.sleep(self.poll_interval_seconds)
+                logger.exception("Error during poll cycle")
+            time.sleep(self.poll_interval)
 
 
-async def async_main(args: argparse.Namespace) -> None:
-    kafka_config: Optional[dict[str, str]] = None
-    charging_topic = args.charging_topic
-    tariffs_topic = args.tariffs_topic
-
-    if args.connection_string:
-        kafka_config = parse_connection_string(args.connection_string)
-        if "kafka_topic" in kafka_config:
-            if not charging_topic:
-                charging_topic = kafka_config.pop("kafka_topic")
-            else:
-                kafka_config.pop("kafka_topic", None)
-    elif args.bootstrap_servers:
-        kafka_config = {"bootstrap.servers": args.bootstrap_servers}
-        if args.sasl_username:
-            kafka_config["security.protocol"] = "SASL_SSL"
-            kafka_config["sasl.mechanism"] = "PLAIN"
-            kafka_config["sasl.username"] = args.sasl_username
-            kafka_config["sasl.password"] = args.sasl_password or ""
-
-    poller = NdlPoller(
-        kafka_config=kafka_config,
-        charging_topic=charging_topic,
-        tariffs_topic=tariffs_topic,
-        state_file=args.state_file,
-        poll_interval_seconds=args.poll_interval,
-    )
-
-    timeout = aiohttp.ClientTimeout(total=600)
-    async with aiohttp.ClientSession(timeout=timeout) as session:
-        if args.once:
-            poller.load_state()
-            await poller.poll_once(session)
-        else:
-            await poller.run(session)
-
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="NDL Netherlands EV charging bridge")
-    parser.add_argument("--connection-string", default=os.environ.get("NDL_CONNECTION_STRING"), help="Event Hubs connection string")
-    parser.add_argument("--bootstrap-servers", default=os.environ.get("KAFKA_BOOTSTRAP_SERVERS"), help="Kafka bootstrap servers")
-    parser.add_argument("--sasl-username", default=os.environ.get("KAFKA_SASL_USERNAME"), help="SASL username")
-    parser.add_argument("--sasl-password", default=os.environ.get("KAFKA_SASL_PASSWORD"), help="SASL password")
-    parser.add_argument("--charging-topic", default=os.environ.get("NDL_CHARGING_TOPIC", DEFAULT_CHARGING_TOPIC), help="Kafka topic for charging data")
-    parser.add_argument("--tariffs-topic", default=os.environ.get("NDL_TARIFFS_TOPIC", DEFAULT_TARIFFS_TOPIC), help="Kafka topic for tariff data")
-    parser.add_argument("--state-file", default=os.environ.get("NDL_STATE_FILE", DEFAULT_STATE_FILE), help="Path to state file")
-    parser.add_argument("--poll-interval", type=int, default=int(os.environ.get("NDL_POLL_INTERVAL", DEFAULT_POLL_INTERVAL_SECONDS)), help="Poll interval in seconds")
-    parser.add_argument("--once", action="store_true", help="Run one poll cycle and exit")
+    parser = argparse.ArgumentParser(description="NDW Netherlands Road Traffic bridge")
+    parser.add_argument("--measurements-topic", default=None, help="Kafka topic for speed/traveltime")
+    parser.add_argument("--situations-topic", default=None, help="Kafka topic for situations")
+    parser.add_argument("--poll-interval", type=int, default=None, help="Poll interval in seconds")
+    parser.add_argument("--state-file", default=None, help="Path to state file for dedup")
     args = parser.parse_args()
 
-    asyncio.run(async_main(args))
+    connection_string = os.environ.get("CONNECTION_STRING", "")
+    if not connection_string:
+        logger.error("CONNECTION_STRING environment variable is required")
+        sys.exit(1)
+
+    enable_tls = os.environ.get("KAFKA_ENABLE_TLS", "true").lower() not in ("false", "0", "no")
+    kafka_config, conn_topic = _build_kafka_config(connection_string, enable_tls)
+
+    measurements_topic = (
+        args.measurements_topic
+        or os.environ.get("KAFKA_TOPIC", "")
+        or os.environ.get("MEASUREMENTS_TOPIC", "")
+        or conn_topic
+        or DEFAULT_MEASUREMENTS_TOPIC
+    )
+    situations_topic = (
+        args.situations_topic
+        or os.environ.get("SITUATIONS_TOPIC", "")
+        or DEFAULT_SITUATIONS_TOPIC
+    )
+
+    poll_interval = args.poll_interval or int(os.environ.get("POLLING_INTERVAL", DEFAULT_POLL_INTERVAL_SECONDS))
+    state_file = args.state_file or os.environ.get("STATE_FILE", DEFAULT_STATE_FILE)
+
+    producer = Producer(kafka_config)
+
+    measurements_prod = NLNDWTrafficMeasurementsEventProducer(producer, measurements_topic)
+    situations_prod = NLNDWTrafficSituationsEventProducer(producer, situations_topic)
+
+    state = StateManager(state_file)
+    poller = NdwPoller(measurements_prod, situations_prod, state, poll_interval)
+    poller.run_forever()
+
+
+if __name__ == "__main__":
+    main()
