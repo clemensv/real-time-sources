@@ -1263,4 +1263,20 @@ class TestNepalBipadHydrologyDockerFlow:
             kafka, nepal_bipad_image, self.TOPIC,
             reference_types=['RiverStation'],
             telemetry_types=['WaterLevelReading'],
+# ---------------------------------------------------------------------------
+# EURDEP Radiation (European ambient gamma dose rate)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def eurdep_radiation_image():
+    return build_image('eurdep-radiation')
+
+class TestEurdepRadiationDockerFlow:
+    TOPIC = 'test-eurdep-radiation'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, eurdep_radiation_image):
+        _run_kafka_flow_test(
+            kafka, eurdep_radiation_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['DoseRateReading'],
         )

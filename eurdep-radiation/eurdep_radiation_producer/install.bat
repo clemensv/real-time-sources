@@ -1,0 +1,2 @@
+pip install .\eurdep_radiation_producer_data
+pip install .\eurdep_radiation_producer_kafka_producer
