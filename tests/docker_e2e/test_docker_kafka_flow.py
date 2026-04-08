@@ -799,6 +799,27 @@ class TestHKODockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# CDEC California Reservoirs (reservoir storage, elevation, inflow, outflow)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def cdec_reservoirs_image():
+    return build_image('cdec-reservoirs')
+
+
+class TestCdecReservoirsDockerFlow:
+    TOPIC = 'test-cdec-reservoirs'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, cdec_reservoirs_image):
+        _run_kafka_flow_test(
+            kafka, cdec_reservoirs_image, self.TOPIC,
+            telemetry_types=['ReservoirReading'],
+            min_messages=1,
+            timeout=180,
+        )
+
+
+# ---------------------------------------------------------------------------
 # Singapore NEA (weather observations)
 # ---------------------------------------------------------------------------
 
