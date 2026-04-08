@@ -17,20 +17,20 @@ import json
 @dataclass
 class PlanetaryKIndex:
     """
-    PlanetaryKIndex
+    Planetary K-index (Kp) observation from the NOAA Space Weather Prediction Center. The Kp index quantifies disturbances in the horizontal component of Earth's magnetic field on a 0-9 quasi-logarithmic scale, derived from 3-hour standardized K values at a global network of ground magnetometer stations. Values of Kp >= 5 indicate geomagnetic storm conditions (G1-G5 on the NOAA scale).
     
     Attributes:
-        time_tag (str)
+        observation_time (str)
         kp (float)
         a_running (float)
-        station_count (float)
+        station_count (int)
     """
     
     
-    time_tag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_tag"))
+    observation_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time"))
     kp: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="kp"))
     a_running: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="a_running"))
-    station_count: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_count"))
+    station_count: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_count"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'PlanetaryKIndex':
@@ -157,8 +157,8 @@ class PlanetaryKIndex:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='omgduytpmeczrubsnerd',
-            kp=float(99.78126845081499),
-            a_running=float(25.179646572582392),
-            station_count=float(75.0612904518971)
+            observation_time='jwqqkwsdzuiltamlnrqj',
+            kp=float(49.57935707276761),
+            a_running=float(53.833403000016546),
+            station_count=int(44)
         )

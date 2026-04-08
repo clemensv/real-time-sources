@@ -19,28 +19,28 @@ import avro.io
 @dataclass
 class PlanetaryKIndex:
     """
-    PlanetaryKIndex
+    Planetary K-index observation with Kp, running Ap, and station count.
     Attributes:
-        time_tag (str): 
+        observation_time (str): 
         kp (float): 
         a_running (float): 
-        station_count (float): """
+        station_count (int): """
     
-    time_tag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_tag"))
+    observation_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time"))
     kp: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="kp"))
     a_running: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="a_running"))
-    station_count: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_count"))
+    station_count: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_count"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"PlanetaryKIndex\", \"doc\": \"PlanetaryKIndex\", \"fields\": [{\"name\": \"time_tag\", \"type\": \"string\"}, {\"name\": \"kp\", \"type\": \"double\"}, {\"name\": \"a_running\", \"type\": \"double\"}, {\"name\": \"station_count\", \"type\": \"double\"}], \"namespace\": \"Microsoft.OpenData.US.NOAA.SWPC\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"PlanetaryKIndex\", \"namespace\": \"Microsoft.OpenData.US.NOAA.SWPC\", \"doc\": \"Planetary K-index observation with Kp, running Ap, and station count.\", \"fields\": [{\"name\": \"observation_time\", \"type\": \"string\"}, {\"name\": \"kp\", \"type\": \"double\"}, {\"name\": \"a_running\", \"type\": \"double\"}, {\"name\": \"station_count\", \"type\": \"int\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.time_tag=str(self.time_tag)
+        self.observation_time=str(self.observation_time)
         self.kp=float(self.kp)
         self.a_running=float(self.a_running)
-        self.station_count=float(self.station_count)
+        self.station_count=int(self.station_count)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'PlanetaryKIndex':

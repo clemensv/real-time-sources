@@ -36,7 +36,10 @@ class BuoyObservation:
         pressure (typing.Optional[float]): 
         air_temperature (typing.Optional[float]): 
         water_temperature (typing.Optional[float]): 
-        dewpoint (typing.Optional[float]): """
+        dewpoint (typing.Optional[float]): 
+        pressure_tendency (typing.Optional[float]): 
+        visibility (typing.Optional[float]): 
+        tide (typing.Optional[float]): """
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
@@ -53,9 +56,12 @@ class BuoyObservation:
     air_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature"))
     water_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_temperature"))
     dewpoint: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dewpoint"))
+    pressure_tendency: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_tendency"))
+    visibility: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="visibility"))
+    tide: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tide"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"BuoyObservation\", \"doc\": \"BuoyObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"wind_direction\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"wind_speed\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"gust\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"wave_height\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"dominant_wave_period\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"average_wave_period\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"mean_wave_direction\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"pressure\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"air_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"dewpoint\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"Microsoft.OpenData.US.NOAA.NDBC\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"BuoyObservation\", \"doc\": \"BuoyObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"wind_direction\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"wind_speed\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"gust\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"wave_height\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"dominant_wave_period\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"average_wave_period\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"mean_wave_direction\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"pressure\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"air_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_temperature\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"dewpoint\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"pressure_tendency\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"visibility\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"tide\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"Microsoft.OpenData.US.NOAA.NDBC\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -76,6 +82,9 @@ class BuoyObservation:
         self.air_temperature=float(self.air_temperature) if self.air_temperature else None
         self.water_temperature=float(self.water_temperature) if self.water_temperature else None
         self.dewpoint=float(self.dewpoint) if self.dewpoint else None
+        self.pressure_tendency=float(self.pressure_tendency) if self.pressure_tendency else None
+        self.visibility=float(self.visibility) if self.visibility else None
+        self.tide=float(self.tide) if self.tide else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'BuoyObservation':

@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WeatherObservation:
     """
-    Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). Only the core meteorological parameters are retained: temperature, humidity, dew point, pressure, wind, and precipitation.
+    Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.
     
     Attributes:
         msc_id (str)
@@ -33,6 +33,17 @@ class WeatherObservation:
         wind_direction (typing.Optional[int])
         wind_gust (typing.Optional[float])
         precipitation_1hr (typing.Optional[float])
+        mean_sea_level_pressure (typing.Optional[float])
+        visibility (typing.Optional[float])
+        snow_depth (typing.Optional[float])
+        total_cloud_cover (typing.Optional[int])
+        pressure_tendency_3hr (typing.Optional[float])
+        max_temperature_24hr (typing.Optional[float])
+        min_temperature_24hr (typing.Optional[float])
+        wind_speed_1hr (typing.Optional[float])
+        wind_gust_1hr (typing.Optional[float])
+        precipitation_24hr (typing.Optional[float])
+        altimeter_setting (typing.Optional[float])
     """
     
     
@@ -47,6 +58,17 @@ class WeatherObservation:
     wind_direction: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction"))
     wind_gust: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_gust"))
     precipitation_1hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_1hr"))
+    mean_sea_level_pressure: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mean_sea_level_pressure"))
+    visibility: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="visibility"))
+    snow_depth: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="snow_depth"))
+    total_cloud_cover: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="total_cloud_cover"))
+    pressure_tendency_3hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_tendency_3hr"))
+    max_temperature_24hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="max_temperature_24hr"))
+    min_temperature_24hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="min_temperature_24hr"))
+    wind_speed_1hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed_1hr"))
+    wind_gust_1hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_gust_1hr"))
+    precipitation_24hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_24hr"))
+    altimeter_setting: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="altimeter_setting"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -173,15 +195,26 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            msc_id='hqlytcgiovzxytxixpeq',
-            station_name='pasdnfpzjjqktcxnzazo',
+            msc_id='urcntkdboaorqwzatamd',
+            station_name='gzhtxljducwhhvlkjdhq',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(20.42772045365241),
-            dew_point=float(49.07535878268733),
-            relative_humidity=int(68),
-            station_pressure=float(65.35832903086255),
-            wind_speed=float(15.47030069727704),
-            wind_direction=int(23),
-            wind_gust=float(68.51432599173961),
-            precipitation_1hr=float(50.93650752150738)
+            air_temperature=float(88.97115443765004),
+            dew_point=float(6.8226453592269865),
+            relative_humidity=int(18),
+            station_pressure=float(88.63048957125815),
+            wind_speed=float(36.289832247550855),
+            wind_direction=int(88),
+            wind_gust=float(48.729894763016404),
+            precipitation_1hr=float(4.975445817434332),
+            mean_sea_level_pressure=float(70.7454493007607),
+            visibility=float(45.566401762757444),
+            snow_depth=float(48.41991204686737),
+            total_cloud_cover=int(15),
+            pressure_tendency_3hr=float(40.87212339298342),
+            max_temperature_24hr=float(8.678449753146289),
+            min_temperature_24hr=float(57.67855904308094),
+            wind_speed_1hr=float(89.88444648080514),
+            wind_gust_1hr=float(11.207232062334317),
+            precipitation_24hr=float(55.96822823815215),
+            altimeter_setting=float(38.90164375699599)
         )

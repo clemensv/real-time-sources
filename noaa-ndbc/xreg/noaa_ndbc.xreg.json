@@ -86,53 +86,108 @@
                 "name": "BuoyObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "NDBC station identifier. Five-character alphanumeric code assigned by NDBC (e.g. '41001' for deep-ocean buoys, 'BURL1' for C-MAN stations)."
                   },
                   "latitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Latitude of the observing platform in decimal degrees north. Negative values indicate southern hemisphere."
                   },
                   "longitude": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Longitude of the observing platform in decimal degrees east. Negative values indicate western hemisphere."
                   },
                   "timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC data."
                   },
                   "wind_direction": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Wind direction (the direction the wind is coming from) averaged over an 8-minute period for buoys or a 2-minute period for land stations. Unit: degrees true.",
+                    "unit": "deg",
+                    "symbol": "\u00b0"
                   },
                   "wind_speed": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Average wind speed during the observation period: 8 minutes for buoys, 2 minutes for land stations. Unit: meters per second.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
                   },
                   "gust": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Peak 5-second or 8-second gust speed during the observation period. Unit: meters per second.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
                   },
                   "wave_height": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Significant wave height — the average of the highest one-third of all wave heights during a 20-minute sampling period. Unit: meters.",
+                    "unit": "m",
+                    "symbol": "m"
                   },
                   "dominant_wave_period": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Dominant wave period — the period (in seconds) of the wave band with the maximum energy in the spectral wave analysis. Unit: seconds.",
+                    "unit": "s",
+                    "symbol": "s"
                   },
                   "average_wave_period": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Average wave period of all waves during the 20-minute sampling period. Unit: seconds.",
+                    "unit": "s",
+                    "symbol": "s"
                   },
                   "mean_wave_direction": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Mean wave direction corresponding to the energy at the dominant wave period (DPD). Unit: degrees true.",
+                    "unit": "deg",
+                    "symbol": "\u00b0"
                   },
                   "pressure": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Sea-level pressure reduced using the standard atmosphere from the station elevation. Unit: hectopascals.",
+                    "unit": "hPa",
+                    "symbol": "hPa"
                   },
                   "air_temperature": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Air temperature measured at the station. Unit: degrees Celsius.",
+                    "unit": "CEL",
+                    "symbol": "\u00b0C"
                   },
                   "water_temperature": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Sea surface temperature. For buoys, measured by a hull-contact sensor near the waterline. Unit: degrees Celsius.",
+                    "unit": "CEL",
+                    "symbol": "\u00b0C"
                   },
                   "dewpoint": {
-                    "type": ["double", "null"]
+                    "type": ["double", "null"],
+                    "description": "Dewpoint temperature computed from air temperature and relative humidity. Unit: degrees Celsius.",
+                    "unit": "CEL",
+                    "symbol": "°C"
+                  },
+                  "pressure_tendency": {
+                    "type": ["double", "null"],
+                    "description": "Pressure tendency — the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals.",
+                    "unit": "hPa",
+                    "symbol": "hPa"
+                  },
+                  "visibility": {
+                    "type": ["double", "null"],
+                    "description": "Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles.",
+                    "unit": "[nmi_i]",
+                    "symbol": "nmi"
+                  },
+                  "tide": {
+                    "type": ["double", "null"],
+                    "description": "Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet.",
+                    "unit": "[ft_i]",
+                    "symbol": "ft"
                   }
                 },
-                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation",
-                "description": "BuoyObservation"
+                "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation",
+                "description": "Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide."
               }
             }
           }
@@ -301,6 +356,30 @@
                   },
                   {
                     "name": "dewpoint",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "pressure_tendency",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "visibility",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null
+                  },
+                  {
+                    "name": "tide",
                     "type": [
                       "null",
                       "double"

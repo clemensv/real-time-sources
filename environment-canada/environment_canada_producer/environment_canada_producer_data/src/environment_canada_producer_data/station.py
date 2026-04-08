@@ -171,15 +171,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            msc_id='unarzsiwgupayawtdqbi',
-            name='yfkromgopwjenchzobwb',
-            iata_id='tflimicjkruwagyvrntz',
-            wmo_id=int(90),
-            province_territory='zvyufrtgmozuaqwzbwba',
-            data_provider='hfqvynnynzousmaylfde',
-            dataset_network='grcabrxzjtviqljmlsxb',
-            auto_man='arvwvtbfmmkofwwdgbkf',
-            latitude=float(60.4790592569036),
-            longitude=float(47.35190618256666),
-            elevation=float(74.5644525680011)
+            msc_id='frdgoxaaowipsoujbafy',
+            name='nuramjkaczfrxrepbkja',
+            iata_id='eibdfpynqvcytnizjrej',
+            wmo_id=int(40),
+            province_territory='mumwquqjqkldjobyovmu',
+            data_provider='irvbdeutbkionzzigxrm',
+            dataset_network='ynlldffxdqkpprvydhae',
+            auto_man='fofqtfyultocnyrqyybr',
+            latitude=float(44.086616263744396),
+            longitude=float(66.9884282275524),
+            elevation=float(59.04851848297851)
         )

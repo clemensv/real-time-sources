@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class SpaceWeatherAlert:
     """
-    SpaceWeatherAlert
+    NOAA SWPC space weather alert, watch, or warning bulletin.
     Attributes:
         product_id (str): 
         issue_datetime (str): 
@@ -30,7 +30,7 @@ class SpaceWeatherAlert:
     message: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="message"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"SpaceWeatherAlert\", \"doc\": \"SpaceWeatherAlert\", \"fields\": [{\"name\": \"product_id\", \"type\": \"string\"}, {\"name\": \"issue_datetime\", \"type\": \"string\"}, {\"name\": \"message\", \"type\": \"string\"}], \"namespace\": \"Microsoft.OpenData.US.NOAA.SWPC\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"SpaceWeatherAlert\", \"namespace\": \"Microsoft.OpenData.US.NOAA.SWPC\", \"doc\": \"NOAA SWPC space weather alert, watch, or warning bulletin.\", \"fields\": [{\"name\": \"product_id\", \"type\": \"string\"}, {\"name\": \"issue_datetime\", \"type\": \"string\"}, {\"name\": \"message\", \"type\": \"string\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):

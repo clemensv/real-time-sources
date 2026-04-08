@@ -154,6 +154,17 @@ class ECWeatherAPI:
             wind_direction=_int("avg_wnd_dir_10m_pst1mt"),
             wind_gust=_float("max_wnd_spd_10m_pst1mt"),
             precipitation_1hr=_float("pcpn_amt_pst1hr"),
+            mean_sea_level_pressure=_float("mslp"),
+            visibility=_float("vis"),
+            snow_depth=_float("snw_dpth"),
+            total_cloud_cover=_int("tot_cld_amt"),
+            pressure_tendency_3hr=_float("pres_tend_amt_pst3hrs"),
+            max_temperature_24hr=_float("max_air_temp_pst24hrs"),
+            min_temperature_24hr=_float("min_air_temp_pst24hrs"),
+            wind_speed_1hr=_float("avg_wnd_spd_10m_pst1hr"),
+            wind_gust_1hr=_float("max_wnd_spd_10m_pst1hr"),
+            precipitation_24hr=_float("pcpn_amt_pst24hrs"),
+            altimeter_setting=_float("altmetr_setng"),
         )
 
 

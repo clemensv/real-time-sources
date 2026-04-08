@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class BuoyObservation:
     """
-    BuoyObservation
+    Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide.
     
     Attributes:
         station_id (str)
@@ -37,6 +37,9 @@ class BuoyObservation:
         air_temperature (typing.Optional[float])
         water_temperature (typing.Optional[float])
         dewpoint (typing.Optional[float])
+        pressure_tendency (typing.Optional[float])
+        visibility (typing.Optional[float])
+        tide (typing.Optional[float])
     """
     
     
@@ -55,6 +58,9 @@ class BuoyObservation:
     air_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature"))
     water_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="water_temperature"))
     dewpoint: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dewpoint"))
+    pressure_tendency: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure_tendency"))
+    visibility: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="visibility"))
+    tide: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tide"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'BuoyObservation':
@@ -181,19 +187,22 @@ class BuoyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='naqublmrzzcwadqhixku',
-            latitude=float(81.58063113937123),
-            longitude=float(56.87558455273065),
+            station_id='vyqmcexqrjdqxifluutq',
+            latitude=float(15.626307007634388),
+            longitude=float(8.65869828218816),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            wind_direction=float(72.3425509053619),
-            wind_speed=float(31.519209359631382),
-            gust=float(92.18458497994483),
-            wave_height=float(53.86938872696979),
-            dominant_wave_period=float(14.33025159549035),
-            average_wave_period=float(36.0061749710534),
-            mean_wave_direction=float(79.42157340968893),
-            pressure=float(16.94806479926593),
-            air_temperature=float(7.328927247653838),
-            water_temperature=float(7.739535151612054),
-            dewpoint=float(14.77855873113818)
+            wind_direction=float(66.33517310958398),
+            wind_speed=float(22.644867241534683),
+            gust=float(97.20906728432229),
+            wave_height=float(50.507600050918875),
+            dominant_wave_period=float(66.63117915644598),
+            average_wave_period=float(25.309806924033673),
+            mean_wave_direction=float(37.62516179956079),
+            pressure=float(36.26588038820721),
+            air_temperature=float(99.23195870008983),
+            water_temperature=float(20.615534125724356),
+            dewpoint=float(67.02015449511993),
+            pressure_tendency=float(48.349667352098734),
+            visibility=float(48.048183598833575),
+            tide=float(29.144532510264163)
         )

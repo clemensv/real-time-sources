@@ -26,7 +26,7 @@ SAMPLE_OBS_TEXT = """\
 #STN     LAT      LON  YYYY MM DD hh mm WDIR WSPD  GST  WVHT   DPD   APD MWD   PRES  PTDY  ATMP  WTMP  DEWP  VIS  TIDE
 #        deg      deg   yr mo da hr mn  deg  m/s  m/s    m    sec   sec deg    hPa   hPa  degC  degC  degC   nmi    ft
 41001  34.700  -72.700 2024 06 15 14 50 210  8.2 10.3   1.5   7.1   5.2 200 1015.2  -1.2  22.3  24.1  18.5   MM   MM
-41002  32.300  -75.200 2024 06 15 14 50 180  5.1  6.8   0.8   8.0   4.5 190 1016.0   0.3  23.1  25.5  20.2   MM   MM
+41002  32.300  -75.200 2024 06 15 14 50 180  5.1  6.8   0.8   8.0   4.5 190 1016.0   0.3  23.1  25.5  20.2  1.2  2.5
 BURL1  28.900  -89.400 2024 06 15 14 50  MM   MM   MM    MM    MM    MM  MM 1014.5    MM  28.7  29.3    MM   MM   MM
 """
 
@@ -175,11 +175,17 @@ class TestNDBCBuoyPoller:
         assert obs1.air_temperature == 22.3
         assert obs1.water_temperature == 24.1
         assert obs1.dewpoint == 18.5
+        assert obs1.pressure_tendency == -1.2
+        assert obs1.visibility is None  # MM in sample
+        assert obs1.tide is None  # MM in sample
 
         # Check second observation
         obs2 = observations[1]
         assert obs2.station_id == "41002"
         assert obs2.latitude == 32.300
+        assert obs2.pressure_tendency == 0.3
+        assert obs2.visibility == 1.2
+        assert obs2.tide == 2.5
 
     @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
     @patch('confluent_kafka.Producer')
@@ -198,15 +204,18 @@ class TestNDBCBuoyPoller:
         assert obs3.station_id == "BURL1"
         assert obs3.latitude == 28.900
         assert obs3.longitude == -89.400
-        # MM values should be converted to 0.0
-        assert obs3.wind_direction == 0.0
-        assert obs3.wind_speed == 0.0
-        assert obs3.gust == 0.0
-        assert obs3.wave_height == 0.0
+        # MM values should be converted to None (missing measurement)
+        assert obs3.wind_direction is None
+        assert obs3.wind_speed is None
+        assert obs3.gust is None
+        assert obs3.wave_height is None
         assert obs3.pressure == 1014.5  # This one has a value
         assert obs3.air_temperature == 28.7  # This one has a value
         assert obs3.water_temperature == 29.3  # This one has a value
-        assert obs3.dewpoint == 0.0  # MM
+        assert obs3.dewpoint is None  # MM
+        assert obs3.pressure_tendency is None  # MM
+        assert obs3.visibility is None  # MM
+        assert obs3.tide is None  # MM
 
     @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')
     @patch('confluent_kafka.Producer')

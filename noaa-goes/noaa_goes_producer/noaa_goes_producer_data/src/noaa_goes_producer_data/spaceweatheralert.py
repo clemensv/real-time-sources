@@ -17,7 +17,7 @@ import json
 @dataclass
 class SpaceWeatherAlert:
     """
-    SpaceWeatherAlert
+    NOAA Space Weather Prediction Center alert, watch, or warning bulletin. Alerts are issued for observed or expected space weather conditions that may affect technology systems on Earth or in space, including geomagnetic storms (ALTK/WARK), solar radiation storms (ALTPC/WARPC), and radio blackouts (ALTXR/SUM).
     
     Attributes:
         product_id (str)
@@ -155,7 +155,7 @@ class SpaceWeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            product_id='prpynprunkaeidfytaqd',
-            issue_datetime='lghhofsfeifkesckunwd',
-            message='vgpyaqmztboyykyyezim'
+            product_id='rtfvhjwloaqiagbdcolu',
+            issue_datetime='nebbrzqnynmrgzzsvtqz',
+            message='mnwfdpyrypwkjxnmkelu'
         )

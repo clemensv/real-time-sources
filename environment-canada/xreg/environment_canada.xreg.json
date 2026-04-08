@@ -131,7 +131,7 @@
                 "$id": "https://api.weather.gc.ca/schemas/CA/Gov/ECCC/Weather/WeatherObservation",
                 "type": "object",
                 "name": "WeatherObservation",
-                "description": "Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). Only the core meteorological parameters are retained: temperature, humidity, dew point, pressure, wind, and precipitation.",
+                "description": "Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.",
                 "required": ["msc_id", "station_name", "observation_time"],
                 "properties": {
                   "msc_id": {
@@ -193,6 +193,81 @@
                     "description": "Total precipitation in the last hour from pcpn_amt_pst1hr.",
                     "unit": "mm",
                     "symbol": "mm"
+                  },
+                  "mean_sea_level_pressure": {
+                    "type": ["double", "null"],
+                    "description": "Mean sea-level pressure (MSLP) from the mslp field. Available on synoptic and hourly reporting stations. Null on minutely auto-only stations.",
+                    "unit": "hPa",
+                    "symbol": "hPa",
+                    "altnames": {"json": "mslp"}
+                  },
+                  "visibility": {
+                    "type": ["double", "null"],
+                    "description": "Horizontal visibility from the vis field. Primarily available on staffed and NAV CANADA stations.",
+                    "unit": "km",
+                    "symbol": "km",
+                    "altnames": {"json": "vis"}
+                  },
+                  "snow_depth": {
+                    "type": ["double", "null"],
+                    "description": "Snow depth on the ground from the snw_dpth field. Available on stations equipped with ultrasonic snow depth sensors.",
+                    "unit": "cm",
+                    "symbol": "cm",
+                    "altnames": {"json": "snw_dpth"}
+                  },
+                  "total_cloud_cover": {
+                    "type": ["int32", "null"],
+                    "description": "Total cloud amount code from the tot_cld_amt field. Reports cloud cover in tenths (0-10) or oktas depending on reporting convention. Available on staffed and select automated stations.",
+                    "altnames": {"json": "tot_cld_amt"}
+                  },
+                  "pressure_tendency_3hr": {
+                    "type": ["double", "null"],
+                    "description": "Change in station pressure over the preceding 3 hours from pres_tend_amt_pst3hrs. Positive values indicate rising pressure.",
+                    "unit": "hPa",
+                    "symbol": "hPa",
+                    "altnames": {"json": "pres_tend_amt_pst3hrs"}
+                  },
+                  "max_temperature_24hr": {
+                    "type": ["double", "null"],
+                    "description": "Maximum air temperature in the past 24 hours from max_air_temp_pst24hrs.",
+                    "unit": "Cel",
+                    "symbol": "°C",
+                    "altnames": {"json": "max_air_temp_pst24hrs"}
+                  },
+                  "min_temperature_24hr": {
+                    "type": ["double", "null"],
+                    "description": "Minimum air temperature in the past 24 hours from min_air_temp_pst24hrs.",
+                    "unit": "Cel",
+                    "symbol": "°C",
+                    "altnames": {"json": "min_air_temp_pst24hrs"}
+                  },
+                  "wind_speed_1hr": {
+                    "type": ["double", "null"],
+                    "description": "Average wind speed at 10m over the past hour from avg_wnd_spd_10m_pst1hr.",
+                    "unit": "km/h",
+                    "symbol": "km/h",
+                    "altnames": {"json": "avg_wnd_spd_10m_pst1hr"}
+                  },
+                  "wind_gust_1hr": {
+                    "type": ["double", "null"],
+                    "description": "Maximum wind speed at 10m in the past hour from max_wnd_spd_10m_pst1hr.",
+                    "unit": "km/h",
+                    "symbol": "km/h",
+                    "altnames": {"json": "max_wnd_spd_10m_pst1hr"}
+                  },
+                  "precipitation_24hr": {
+                    "type": ["double", "null"],
+                    "description": "Total precipitation in the past 24 hours from pcpn_amt_pst24hrs.",
+                    "unit": "mm",
+                    "symbol": "mm",
+                    "altnames": {"json": "pcpn_amt_pst24hrs"}
+                  },
+                  "altimeter_setting": {
+                    "type": ["double", "null"],
+                    "description": "Altimeter setting from the altmetr_setng field. Used in aviation.",
+                    "unit": "[in_i'Hg]",
+                    "symbol": "inHg",
+                    "altnames": {"json": "altmetr_setng"}
                   }
                 }
               }

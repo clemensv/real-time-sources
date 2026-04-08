@@ -1,6 +1,6 @@
 
 
-# Noaa-ndbc-producer Kafka Producer# Noaa-ndbc-producer Event Dispatcher for Apache Kafka
+# Noaa_ndbc_producer Kafka Producer# Noaa_ndbc_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from noaa-ndbc-producer import MicrosoftOpenDataUSNOAANDBCProducer```python
+from noaa_ndbc_producer import MicrosoftOpenDataUSNOAANDBCProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 

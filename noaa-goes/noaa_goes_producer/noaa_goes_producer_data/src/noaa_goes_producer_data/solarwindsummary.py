@@ -17,17 +17,17 @@ import json
 @dataclass
 class SolarWindSummary:
     """
-    SolarWindSummary
+    Latest solar wind conditions summary from the DSCOVR satellite at the L1 Lagrange point (~1.5 million km sunward of Earth), combining proton bulk speed from the summary/solar-wind-speed endpoint and interplanetary magnetic field from the summary/solar-wind-mag-field endpoint. Provides a single snapshot of current conditions, updated approximately every minute.
     
     Attributes:
-        timestamp (str)
+        observation_time (str)
         wind_speed (float)
         bt (float)
         bz (float)
     """
     
     
-    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    observation_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time"))
     wind_speed: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
     bt: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bt"))
     bz: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bz"))
@@ -157,8 +157,8 @@ class SolarWindSummary:
             An instance of the dataclass.
         """
         return cls(
-            timestamp='csmkidvuvcbuvgzuxrwn',
-            wind_speed=float(0.6057519823846169),
-            bt=float(38.80081632755883),
-            bz=float(87.07897870893079)
+            observation_time='pfqchoewgnhdpglfbknc',
+            wind_speed=float(95.7789761965802),
+            bt=float(68.0535328022799),
+            bz=float(68.5113349818811)
         )

@@ -60,6 +60,17 @@ SAMPLE_OBS_FEATURE = {
         "avg_wnd_dir_10m_pst1mt": 270,
         "max_wnd_spd_10m_pst1mt": 22.0,
         "pcpn_amt_pst1hr": 0.0,
+        "mslp": 101.35,
+        "vis": 24.1,
+        "snw_dpth": 5.0,
+        "tot_cld_amt": 7,
+        "pres_tend_amt_pst3hrs": -0.12,
+        "max_air_temp_pst24hrs": 3.2,
+        "min_air_temp_pst24hrs": -6.8,
+        "avg_wnd_spd_10m_pst1hr": 12.5,
+        "max_wnd_spd_10m_pst1hr": 28.0,
+        "pcpn_amt_pst24hrs": 1.4,
+        "altmetr_setng": 30.01,
     },
 }
 
@@ -125,6 +136,17 @@ class TestParseObservation:
         assert obs.wind_gust == 22.0
         assert obs.precipitation_1hr == 0.0
         assert obs.observation_time.tzinfo is not None
+        assert obs.mean_sea_level_pressure == 101.35
+        assert obs.visibility == 24.1
+        assert obs.snow_depth == 5.0
+        assert obs.total_cloud_cover == 7
+        assert obs.pressure_tendency_3hr == -0.12
+        assert obs.max_temperature_24hr == 3.2
+        assert obs.min_temperature_24hr == -6.8
+        assert obs.wind_speed_1hr == 12.5
+        assert obs.wind_gust_1hr == 28.0
+        assert obs.precipitation_24hr == 1.4
+        assert obs.altimeter_setting == 30.01
 
     def test_parse_observation_no_msc(self):
         obs = ECWeatherAPI.parse_observation(SAMPLE_OBS_FEATURE_NO_MSC)
@@ -150,6 +172,11 @@ class TestParseObservation:
         assert obs.air_temperature == 10.5
         assert obs.dew_point is None
         assert obs.wind_speed is None
+        assert obs.mean_sea_level_pressure is None
+        assert obs.visibility is None
+        assert obs.snow_depth is None
+        assert obs.total_cloud_cover is None
+        assert obs.altimeter_setting is None
 
     def test_parse_observation_clim_id_fallback(self):
         feature = {

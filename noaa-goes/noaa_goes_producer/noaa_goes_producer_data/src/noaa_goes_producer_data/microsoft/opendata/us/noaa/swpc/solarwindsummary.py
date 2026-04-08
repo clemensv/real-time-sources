@@ -19,25 +19,25 @@ import avro.io
 @dataclass
 class SolarWindSummary:
     """
-    SolarWindSummary
+    Latest solar wind speed and interplanetary magnetic field summary from DSCOVR at L1.
     Attributes:
-        timestamp (str): 
+        observation_time (str): 
         wind_speed (float): 
         bt (float): 
         bz (float): """
     
-    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    observation_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time"))
     wind_speed: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
     bt: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bt"))
     bz: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bz"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"SolarWindSummary\", \"doc\": \"SolarWindSummary\", \"fields\": [{\"name\": \"timestamp\", \"type\": \"string\"}, {\"name\": \"wind_speed\", \"type\": \"double\"}, {\"name\": \"bt\", \"type\": \"double\"}, {\"name\": \"bz\", \"type\": \"double\"}], \"namespace\": \"Microsoft.OpenData.US.NOAA.SWPC\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"SolarWindSummary\", \"namespace\": \"Microsoft.OpenData.US.NOAA.SWPC\", \"doc\": \"Latest solar wind speed and interplanetary magnetic field summary from DSCOVR at L1.\", \"fields\": [{\"name\": \"observation_time\", \"type\": \"string\"}, {\"name\": \"wind_speed\", \"type\": \"double\"}, {\"name\": \"bt\", \"type\": \"double\"}, {\"name\": \"bz\", \"type\": \"double\"}]}"), avro.name.Names()
     )
 
     def __post_init__(self):
         """ Initializes the dataclass with the provided keyword arguments."""
-        self.timestamp=str(self.timestamp)
+        self.observation_time=str(self.observation_time)
         self.wind_speed=float(self.wind_speed)
         self.bt=float(self.bt)
         self.bz=float(self.bz)

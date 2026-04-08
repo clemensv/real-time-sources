@@ -230,28 +230,32 @@ class NDBCBuoyPoller:
                 average_wave_period = parse_float(parts[13]) if len(parts) > 13 else None
                 mean_wave_direction = parse_float(parts[14]) if len(parts) > 14 else None
                 pressure = parse_float(parts[15]) if len(parts) > 15 else None
-                # parts[16] is PTDY (pressure tendency) – not in our schema
+                pressure_tendency = parse_float(parts[16]) if len(parts) > 16 else None
                 air_temperature = parse_float(parts[17]) if len(parts) > 17 else None
                 water_temperature = parse_float(parts[18]) if len(parts) > 18 else None
                 dewpoint = parse_float(parts[19]) if len(parts) > 19 else None
-                # parts[20] is VIS, parts[21] is TIDE – not in our schema
+                visibility = parse_float(parts[20]) if len(parts) > 20 else None
+                tide = parse_float(parts[21]) if len(parts) > 21 else None
 
                 obs = BuoyObservation(
                     station_id=station_id,
                     latitude=lat,
                     longitude=lon,
                     timestamp=timestamp,
-                    wind_direction=wind_direction if wind_direction is not None else 0.0,
-                    wind_speed=wind_speed if wind_speed is not None else 0.0,
-                    gust=gust if gust is not None else 0.0,
-                    wave_height=wave_height if wave_height is not None else 0.0,
-                    dominant_wave_period=dominant_wave_period if dominant_wave_period is not None else 0.0,
-                    average_wave_period=average_wave_period if average_wave_period is not None else 0.0,
-                    mean_wave_direction=mean_wave_direction if mean_wave_direction is not None else 0.0,
-                    pressure=pressure if pressure is not None else 0.0,
-                    air_temperature=air_temperature if air_temperature is not None else 0.0,
-                    water_temperature=water_temperature if water_temperature is not None else 0.0,
-                    dewpoint=dewpoint if dewpoint is not None else 0.0,
+                    wind_direction=wind_direction,
+                    wind_speed=wind_speed,
+                    gust=gust,
+                    wave_height=wave_height,
+                    dominant_wave_period=dominant_wave_period,
+                    average_wave_period=average_wave_period,
+                    mean_wave_direction=mean_wave_direction,
+                    pressure=pressure,
+                    air_temperature=air_temperature,
+                    water_temperature=water_temperature,
+                    dewpoint=dewpoint,
+                    pressure_tendency=pressure_tendency,
+                    visibility=visibility,
+                    tide=tide,
                 )
                 observations.append(obs)
             except (IndexError, ValueError):

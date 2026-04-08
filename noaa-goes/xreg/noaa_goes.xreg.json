@@ -1,9 +1,7 @@
 {
   "endpoints": {
     "Microsoft.OpenData.US.NOAA.SWPC.Alerts.Kafka": {
-      "usage": [
-        "producer"
-      ],
+      "usage": ["producer"],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -17,14 +15,10 @@
           "key": "{product_id}"
         }
       },
-      "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts"
-      ]
+      "messagegroups": ["#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts"]
     },
     "Microsoft.OpenData.US.NOAA.SWPC.Observations.Kafka": {
-      "usage": [
-        "producer"
-      ],
+      "usage": ["producer"],
       "protocol": "KAFKA",
       "envelope": "CloudEvents/1.0",
       "envelopeoptions": {
@@ -38,9 +32,58 @@
           "key": "{observation_time}"
         }
       },
-      "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations"
-      ]
+      "messagegroups": ["#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations"]
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-goes",
+          "key": "{satellite}/{energy}/{time_tag}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux"]
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-goes",
+          "key": "{satellite}/{time_tag}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer"]
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "noaa-goes",
+          "key": "{satellite}/{begin_time}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares"]
     }
   },
   "messagegroups": {
@@ -50,16 +93,9 @@
           "name": "SpaceWeatherAlert",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {
-              "value": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
-            },
-            "source": {
-              "value": "https://services.swpc.noaa.gov"
-            },
-            "subject": {
-              "value": "{product_id}",
-              "type": "uritemplate"
-            }
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{product_id}", "type": "uritemplate" }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
@@ -72,16 +108,9 @@
           "name": "PlanetaryKIndex",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {
-              "value": "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex"
-            },
-            "source": {
-              "value": "https://services.swpc.noaa.gov"
-            },
-            "subject": {
-              "value": "{observation_time}",
-              "type": "uritemplate"
-            }
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{observation_time}", "type": "uritemplate" }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex"
@@ -90,19 +119,101 @@
           "name": "SolarWindSummary",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
-            "type": {
-              "value": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary"
-            },
-            "source": {
-              "value": "https://services.swpc.noaa.gov"
-            },
-            "subject": {
-              "value": "{observation_time}",
-              "type": "uritemplate"
-            }
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{observation_time}", "type": "uritemplate" }
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma": {
+          "name": "SolarWindPlasma",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{observation_time}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField": {
+          "name": "SolarWindMagField",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{observation_time}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux": {
+          "name": "GoesXrayFlux",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{satellite}/{energy}/{time_tag}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux": {
+          "name": "GoesProtonFlux",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{satellite}/{energy}/{time_tag}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux": {
+          "name": "GoesElectronFlux",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{satellite}/{energy}/{time_tag}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer": {
+          "name": "GoesMagnetometer",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{satellite}/{time_tag}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.SolarFlares": {
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare": {
+          "name": "XrayFlare",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": { "value": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare" },
+            "source": { "value": "https://services.swpc.noaa.gov" },
+            "subject": { "value": "{satellite}/{begin_time}", "type": "uritemplate" }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.jstruct/schemas/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare"
         }
       }
     }
@@ -119,26 +230,25 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SpaceWeatherAlert",
                 "type": "object",
-                "required": [
-                  "product_id",
-                  "issue_datetime",
-                  "message"
-                ],
                 "name": "SpaceWeatherAlert",
+                "description": "NOAA Space Weather Prediction Center alert, watch, or warning bulletin. Alerts are issued for observed or expected space weather conditions that may affect technology systems on Earth or in space, including geomagnetic storms (ALTK/WARK), solar radiation storms (ALTPC/WARPC), and radio blackouts (ALTXR/SUM).",
+                "required": ["product_id", "issue_datetime", "message"],
                 "properties": {
                   "product_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unique SWPC product identifier for this alert bulletin, combining the alert type code and serial number or date (e.g., 'ALTK04-20240101'). Used as the Kafka message key."
                   },
                   "issue_datetime": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Date and time the alert was issued by SWPC, formatted as 'YYYY Mon DD HHMM UTC' (e.g., '2024 Jan 01 0030 UTC')."
                   },
                   "message": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Full text body of the SWPC alert bulletin, including the message code, serial number, issue time, IP code, validity period, and detailed description of the observed or expected space weather condition with numerical thresholds."
                   }
-                },
-                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/SWPC/SpaceWeatherAlert",
-                "description": "SpaceWeatherAlert"
+                }
               }
             }
           }
@@ -152,30 +262,34 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/PlanetaryKIndex",
                 "type": "object",
-                "required": [
-                  "time_tag",
-                  "kp",
-                  "a_running",
-                  "station_count"
-                ],
                 "name": "PlanetaryKIndex",
+                "description": "Planetary K-index (Kp) observation from the NOAA Space Weather Prediction Center. The Kp index quantifies disturbances in the horizontal component of Earth's magnetic field on a 0-9 quasi-logarithmic scale, derived from 3-hour standardized K values at a global network of ground magnetometer stations. Values of Kp >= 5 indicate geomagnetic storm conditions (G1-G5 on the NOAA scale).",
+                "required": ["observation_time", "kp", "a_running", "station_count"],
                 "properties": {
-                  "time_tag": {
-                    "type": "string"
+                  "observation_time": {
+                    "type": "string",
+                    "description": "UTC date-time marking the start of the 3-hour Kp observation period, in 'YYYY-MM-DD HH:MM:SS.fff' format from the SWPC noaa-planetary-k-index endpoint.",
+                    "altnames": ["time_tag"]
                   },
                   "kp": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Planetary K-index value for this 3-hour period, ranging from 0.00 (quiet) to 9.00 (extreme storm). Each unit increase corresponds to roughly a doubling of geomagnetic disturbance amplitude. Storm thresholds: G1 (Kp=5), G2 (Kp=6), G3 (Kp=7), G4 (Kp=8), G5 (Kp=9).",
+                    "minimum": 0,
+                    "maximum": 9
                   },
                   "a_running": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Running daily planetary A-index (Ap), a linear measure of geomagnetic activity derived from the eight 3-hour Kp values via a standard conversion table. Ap is measured in units of 2 nT.",
+                    "unit": "nT",
+                    "symbol": "nT"
                   },
                   "station_count": {
-                    "type": "double"
+                    "type": "integer",
+                    "description": "Number of ground magnetometer stations contributing data to this Kp determination. Typical station count is 8-13; fewer stations may reduce measurement confidence."
                   }
-                },
-                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/SWPC/PlanetaryKIndex",
-                "description": "PlanetaryKIndex"
+                }
               }
             }
           }
@@ -189,30 +303,385 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindSummary",
                 "type": "object",
-                "required": [
-                  "timestamp",
-                  "wind_speed",
-                  "bt",
-                  "bz"
-                ],
                 "name": "SolarWindSummary",
+                "description": "Latest solar wind conditions summary from the DSCOVR satellite at the L1 Lagrange point (~1.5 million km sunward of Earth), combining proton bulk speed from the summary/solar-wind-speed endpoint and interplanetary magnetic field from the summary/solar-wind-mag-field endpoint. Provides a single snapshot of current conditions, updated approximately every minute.",
+                "required": ["observation_time", "wind_speed", "bt", "bz"],
                 "properties": {
-                  "timestamp": {
-                    "type": "string"
+                  "observation_time": {
+                    "type": "string",
+                    "description": "UTC date-time of the solar wind measurement from DSCOVR, in ISO 8601 format.",
+                    "altnames": ["time_tag", "TimeStamp"]
                   },
                   "wind_speed": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Solar wind proton bulk speed measured by DSCOVR at L1. Typical slow-wind values are 300-400 km/s; fast streams and CME passages can reach 500-1000+ km/s.",
+                    "unit": "km/s",
+                    "symbol": "km/s"
                   },
                   "bt": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Interplanetary magnetic field total magnitude (Bt) measured by the DSCOVR magnetometer at L1. Quiet-time values are typically 3-6 nT; values above 20 nT indicate strong solar wind driving.",
+                    "unit": "nT",
+                    "symbol": "nT"
                   },
                   "bz": {
-                    "type": "double"
+                    "type": "double",
+                    "description": "Interplanetary magnetic field north-south component in Geocentric Solar Magnetospheric (GSM) coordinates (Bz GSM). Sustained negative (southward) Bz is the primary driver of geomagnetic storms via magnetic reconnection at Earth's magnetopause.",
+                    "unit": "nT",
+                    "symbol": "nT"
                   }
-                },
-                "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindSummary",
-                "description": "SolarWindSummary"
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma": {
+          "name": "SolarWindPlasma",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindPlasma",
+                "type": "object",
+                "name": "SolarWindPlasma",
+                "description": "One-minute resolution solar wind plasma measurement from the DSCOVR satellite Faraday Cup instrument at the L1 Lagrange point, as reported by the SWPC solar-wind/plasma-7-day endpoint. Includes proton density, bulk speed, and ion temperature. DSCOVR provides approximately 15-45 minutes of advance warning before solar wind structures reach Earth's magnetosphere.",
+                "required": ["observation_time"],
+                "properties": {
+                  "observation_time": {
+                    "type": "string",
+                    "description": "UTC date-time of the plasma measurement, in 'YYYY-MM-DD HH:MM:SS.fff' format.",
+                    "altnames": ["time_tag"]
+                  },
+                  "density": {
+                    "type": ["double", "null"],
+                    "description": "Solar wind proton number density measured by the DSCOVR Faraday Cup. Typical quiet-time values are 3-10 n/cm³; values above 20 n/cm³ may indicate a coronal mass ejection passage or a compressed solar wind region.",
+                    "unit": "n/cm³",
+                    "symbol": "n/cm³"
+                  },
+                  "speed": {
+                    "type": ["double", "null"],
+                    "description": "Solar wind proton bulk speed measured by DSCOVR. Typical quiet-time values are 300-400 km/s (slow wind); high-speed streams reach 500-800 km/s and CME-driven shocks can exceed 1000 km/s.",
+                    "unit": "km/s",
+                    "symbol": "km/s"
+                  },
+                  "temperature": {
+                    "type": ["double", "null"],
+                    "description": "Solar wind ion temperature measured by DSCOVR. Typical values are 10,000-200,000 K; elevated temperatures often accompany high-speed streams and interplanetary shock passages.",
+                    "unit": "K",
+                    "symbol": "K"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField": {
+          "name": "SolarWindMagField",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindMagField",
+                "type": "object",
+                "name": "SolarWindMagField",
+                "description": "One-minute resolution interplanetary magnetic field (IMF) vector measurement from the DSCOVR satellite magnetometer at the L1 Lagrange point, as reported by the SWPC solar-wind/mag-7-day endpoint. Provides the full magnetic field vector in Geocentric Solar Magnetospheric (GSM) coordinates plus total magnitude. The Bz GSM component is the primary indicator of geomagnetic storm potential.",
+                "required": ["observation_time"],
+                "properties": {
+                  "observation_time": {
+                    "type": "string",
+                    "description": "UTC date-time of the magnetic field measurement, in 'YYYY-MM-DD HH:MM:SS.fff' format.",
+                    "altnames": ["time_tag"]
+                  },
+                  "bx_gsm": {
+                    "type": ["double", "null"],
+                    "description": "IMF X-component in GSM coordinates, directed from Earth toward the Sun along the Earth-Sun line.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  },
+                  "by_gsm": {
+                    "type": ["double", "null"],
+                    "description": "IMF Y-component in GSM coordinates, perpendicular to the Earth-Sun line in the magnetic equatorial plane. Influences the dawn-dusk electric field in the magnetosphere.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  },
+                  "bz_gsm": {
+                    "type": ["double", "null"],
+                    "description": "IMF Z-component in GSM coordinates (north-south). Sustained negative (southward) Bz is the primary driver of geomagnetic storms through magnetic reconnection at the dayside magnetopause. Values below -10 nT can produce G2+ storms.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  },
+                  "lon_gsm": {
+                    "type": ["double", "null"],
+                    "description": "IMF longitude angle in GSM coordinates, measured in the GSM X-Y plane from the Earth-Sun line.",
+                    "unit": "degrees",
+                    "symbol": "°"
+                  },
+                  "lat_gsm": {
+                    "type": ["double", "null"],
+                    "description": "IMF latitude angle in GSM coordinates, measured from the GSM X-Y plane toward the Z-axis.",
+                    "unit": "degrees",
+                    "symbol": "°"
+                  },
+                  "bt": {
+                    "type": ["double", "null"],
+                    "description": "Total interplanetary magnetic field magnitude, computed as the vector sum sqrt(Bx² + By² + Bz²). Typical quiet-time values are 3-6 nT; values above 20 nT indicate strong solar wind magnetic driving.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux": {
+          "name": "GoesXrayFlux",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesXrayFlux",
+                "type": "object",
+                "name": "GoesXrayFlux",
+                "description": "One-minute resolution full-disk solar X-ray flux measurement from the GOES primary satellite XRS (X-Ray Sensor) instrument, as reported by the SWPC goes/primary/xrays-7-day endpoint. Two energy bands are reported: 0.05-0.4 nm (short, harder X-rays) and 0.1-0.8 nm (long, softer X-rays). The 0.1-0.8 nm band is used for the official solar flare classification scale (A < B < C < M < X).",
+                "required": ["time_tag", "satellite", "flux", "energy"],
+                "properties": {
+                  "time_tag": {
+                    "type": "string",
+                    "description": "UTC date-time of the X-ray flux measurement from the GOES XRS instrument, in ISO 8601 format (e.g., '2024-01-01T00:00:00Z')."
+                  },
+                  "satellite": {
+                    "type": "integer",
+                    "description": "GOES satellite number providing the measurement (e.g., 18 for GOES-18, 19 for GOES-19). The primary operational GOES satellite changes when new spacecraft are commissioned."
+                  },
+                  "flux": {
+                    "type": "double",
+                    "description": "Solar X-ray irradiance in the specified energy band. Flare classification thresholds for the 0.1-0.8 nm band: A (< 1e-7), B (1e-7 to 1e-6), C (1e-6 to 1e-5), M (1e-5 to 1e-4), X (>= 1e-4). Background is typically A1-B1 level during solar minimum.",
+                    "unit": "W/m²",
+                    "symbol": "W/m²"
+                  },
+                  "energy": {
+                    "type": "string",
+                    "description": "X-ray energy band identifier: '0.05-0.4nm' (short wavelength, harder X-rays) or '0.1-0.8nm' (long wavelength, softer X-rays used for flare classification)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux": {
+          "name": "GoesProtonFlux",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesProtonFlux",
+                "type": "object",
+                "name": "GoesProtonFlux",
+                "description": "Five-minute resolution integral proton flux measurement from the GOES primary satellite SEISS/SGPS (Space Environment In-Situ Suite / Solar and Galactic Proton Sensor) instrument, as reported by the SWPC goes/primary/integral-protons-7-day endpoint. Four energy thresholds are reported. The >= 10 MeV channel is used for the official NOAA S-scale solar radiation storm classification (S1-S5).",
+                "required": ["time_tag", "satellite", "flux", "energy"],
+                "properties": {
+                  "time_tag": {
+                    "type": "string",
+                    "description": "UTC date-time of the proton flux measurement in ISO 8601 format."
+                  },
+                  "satellite": {
+                    "type": "integer",
+                    "description": "GOES satellite number providing the measurement (e.g., 19 for GOES-19)."
+                  },
+                  "flux": {
+                    "type": "double",
+                    "description": "Integral proton flux above the specified energy threshold, in particle flux units (pfu = protons/cm²/sr/s). An S1 minor radiation storm is declared when >= 10 MeV flux exceeds 10 pfu. S5 extreme: >= 100,000 pfu.",
+                    "unit": "pfu",
+                    "symbol": "pfu"
+                  },
+                  "energy": {
+                    "type": "string",
+                    "description": "Proton energy threshold identifier: '>=10 MeV' (NOAA S-scale metric), '>=50 MeV', '>=100 MeV', or '>=500 MeV'. Higher thresholds indicate more energetic and penetrating radiation."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux": {
+          "name": "GoesElectronFlux",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesElectronFlux",
+                "type": "object",
+                "name": "GoesElectronFlux",
+                "description": "Five-minute resolution integral electron flux measurement from the GOES primary satellite SEISS/SGPS instrument, as reported by the SWPC goes/primary/integral-electrons-3-day endpoint. The >= 2 MeV channel is monitored for deep dielectric charging risk to geosynchronous spacecraft. Elevated fluxes (> 1000 e/cm²/sr/s) sustained for several days can cause internal charging failures in satellite electronics.",
+                "required": ["time_tag", "satellite", "flux", "energy"],
+                "properties": {
+                  "time_tag": {
+                    "type": "string",
+                    "description": "UTC date-time of the electron flux measurement in ISO 8601 format."
+                  },
+                  "satellite": {
+                    "type": "integer",
+                    "description": "GOES satellite number providing the measurement (e.g., 19 for GOES-19)."
+                  },
+                  "flux": {
+                    "type": "double",
+                    "description": "Integral electron flux above the specified energy threshold, in electrons per cm² per steradian per second. Values above 1000 indicate elevated deep dielectric charging risk for geosynchronous satellites.",
+                    "unit": "e/(cm²·sr·s)",
+                    "symbol": "e/(cm²·sr·s)"
+                  },
+                  "energy": {
+                    "type": "string",
+                    "description": "Electron energy threshold identifier, currently '>=2 MeV'. This channel is monitored for spacecraft internal charging hazard assessment."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer": {
+          "name": "GoesMagnetometer",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesMagnetometer",
+                "type": "object",
+                "name": "GoesMagnetometer",
+                "description": "One-minute resolution magnetic field measurement from the GOES primary satellite magnetometer at geostationary orbit (~6.6 Earth radii), as reported by the SWPC goes/primary/magnetometers-7-day endpoint. The field is measured in the spacecraft-centered HEN coordinate system where Hp is parallel to Earth's rotation axis, He is perpendicular in the east-west direction, and Hn is radially earthward. During geomagnetic storms, Hp can drop dramatically or even become negative, indicating magnetopause compression.",
+                "required": ["time_tag", "satellite"],
+                "properties": {
+                  "time_tag": {
+                    "type": "string",
+                    "description": "UTC date-time of the magnetic field measurement in ISO 8601 format."
+                  },
+                  "satellite": {
+                    "type": "integer",
+                    "description": "GOES satellite number providing the measurement (e.g., 19 for GOES-19)."
+                  },
+                  "he": {
+                    "type": ["double", "null"],
+                    "description": "Magnetic field He component: perpendicular to the satellite-Earth direction and the dipole axis, positive eastward. Measures the east-west distortion of the geomagnetic field at geostationary orbit.",
+                    "unit": "nT",
+                    "symbol": "nT",
+                    "altnames": ["He"]
+                  },
+                  "hp": {
+                    "type": ["double", "null"],
+                    "description": "Magnetic field Hp component: parallel to Earth's dipole axis, positive northward. During quiet times Hp is typically 80-120 nT; during intense geomagnetic storms (G4-G5) it can drop below zero, indicating the magnetopause has been compressed inside geostationary orbit.",
+                    "unit": "nT",
+                    "symbol": "nT",
+                    "altnames": ["Hp"]
+                  },
+                  "hn": {
+                    "type": ["double", "null"],
+                    "description": "Magnetic field Hn component: along the satellite-Earth direction, positive radially earthward.",
+                    "unit": "nT",
+                    "symbol": "nT",
+                    "altnames": ["Hn"]
+                  },
+                  "total": {
+                    "type": ["double", "null"],
+                    "description": "Total magnetic field magnitude at geostationary orbit, computed as sqrt(He² + Hp² + Hn²). Typical quiet-time values are 100-120 nT.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  },
+                  "arcjet_flag": {
+                    "type": ["boolean", "null"],
+                    "description": "When true, the satellite's electric propulsion (arcjet) thrusters are firing, which causes magnetic field contamination. Magnetometer readings during arcjet events should be treated with caution as they may not reflect the ambient geomagnetic field."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare": {
+          "name": "XrayFlare",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/XrayFlare",
+                "type": "object",
+                "name": "XrayFlare",
+                "description": "Individual solar X-ray flare event detected by the GOES primary satellite XRS instrument, as reported by the SWPC goes/primary/xray-flares-7-day endpoint. Each record represents a discrete flare event with onset, peak, and end times plus X-ray classifications on the standard A/B/C/M/X logarithmic scale. The flare classification is based on peak 0.1-0.8 nm X-ray flux: C-class (1e-6 W/m²), M-class (1e-5), X-class (1e-4).",
+                "required": ["time_tag", "satellite", "begin_time"],
+                "properties": {
+                  "time_tag": {
+                    "type": "string",
+                    "description": "UTC date-time when this flare record was reported/filed by SWPC, in ISO 8601 format."
+                  },
+                  "begin_time": {
+                    "type": "string",
+                    "description": "UTC date-time of the flare onset (start of the X-ray flux rise above background), in ISO 8601 format. Used as part of the Kafka key to uniquely identify each flare event."
+                  },
+                  "begin_class": {
+                    "type": ["string", "null"],
+                    "description": "X-ray classification at flare onset, e.g., 'B6.9' or 'C1.0'. Format is a letter (A/B/C/M/X) followed by a decimal multiplier within that decade of flux."
+                  },
+                  "max_time": {
+                    "type": ["string", "null"],
+                    "description": "UTC date-time of the peak X-ray flux during the flare, in ISO 8601 format."
+                  },
+                  "max_class": {
+                    "type": ["string", "null"],
+                    "description": "X-ray classification at flare peak, e.g., 'C1.2', 'M5.3', 'X1.0'. This is the official flare magnitude used in space weather bulletins."
+                  },
+                  "max_xrlong": {
+                    "type": ["double", "null"],
+                    "description": "Peak X-ray flux in the 0.1-0.8 nm (long wavelength) band at the time of maximum.",
+                    "unit": "W/m²",
+                    "symbol": "W/m²"
+                  },
+                  "max_ratio": {
+                    "type": ["double", "null"],
+                    "description": "Ratio of 0.05-0.4 nm (short) to 0.1-0.8 nm (long) X-ray flux at flare maximum. Higher ratios indicate a spectrally harder (more energetic) flare, which correlates with stronger ionospheric effects."
+                  },
+                  "max_ratio_time": {
+                    "type": ["string", "null"],
+                    "description": "UTC date-time of the maximum short/long flux ratio, in ISO 8601 format. May differ from max_time."
+                  },
+                  "current_int_xrlong": {
+                    "type": ["double", "null"],
+                    "description": "Current time-integrated X-ray flux in the 0.1-0.8 nm band since flare onset, representing total X-ray energy delivered.",
+                    "unit": "J/m²",
+                    "symbol": "J/m²"
+                  },
+                  "end_time": {
+                    "type": ["string", "null"],
+                    "description": "UTC date-time when the flare X-ray flux returned to half the peak value above background, in ISO 8601 format. Null if the flare is still in progress."
+                  },
+                  "end_class": {
+                    "type": ["string", "null"],
+                    "description": "X-ray classification at the declared end of the flare event."
+                  },
+                  "satellite": {
+                    "type": "integer",
+                    "description": "GOES satellite number that detected this flare event (e.g., 18 for GOES-18, 19 for GOES-19)."
+                  }
+                }
               }
             }
           }
@@ -231,22 +700,13 @@
               "schema": {
                 "type": "record",
                 "name": "SpaceWeatherAlert",
-                "doc": "SpaceWeatherAlert",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "NOAA SWPC space weather alert, watch, or warning bulletin.",
                 "fields": [
-                  {
-                    "name": "product_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "issue_datetime",
-                    "type": "string"
-                  },
-                  {
-                    "name": "message",
-                    "type": "string"
-                  }
-                ],
-                "namespace": "Microsoft.OpenData.US.NOAA.SWPC"
+                  { "name": "product_id", "type": "string" },
+                  { "name": "issue_datetime", "type": "string" },
+                  { "name": "message", "type": "string" }
+                ]
               }
             }
           }
@@ -261,26 +721,14 @@
               "schema": {
                 "type": "record",
                 "name": "PlanetaryKIndex",
-                "doc": "PlanetaryKIndex",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "Planetary K-index observation with Kp, running Ap, and station count.",
                 "fields": [
-                  {
-                    "name": "time_tag",
-                    "type": "string"
-                  },
-                  {
-                    "name": "kp",
-                    "type": "double"
-                  },
-                  {
-                    "name": "a_running",
-                    "type": "double"
-                  },
-                  {
-                    "name": "station_count",
-                    "type": "double"
-                  }
-                ],
-                "namespace": "Microsoft.OpenData.US.NOAA.SWPC"
+                  { "name": "observation_time", "type": "string" },
+                  { "name": "kp", "type": "double" },
+                  { "name": "a_running", "type": "double" },
+                  { "name": "station_count", "type": "int" }
+                ]
               }
             }
           }
@@ -295,26 +743,182 @@
               "schema": {
                 "type": "record",
                 "name": "SolarWindSummary",
-                "doc": "SolarWindSummary",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "Latest solar wind speed and interplanetary magnetic field summary from DSCOVR at L1.",
                 "fields": [
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "wind_speed",
-                    "type": "double"
-                  },
-                  {
-                    "name": "bt",
-                    "type": "double"
-                  },
-                  {
-                    "name": "bz",
-                    "type": "double"
-                  }
-                ],
-                "namespace": "Microsoft.OpenData.US.NOAA.SWPC"
+                  { "name": "observation_time", "type": "string" },
+                  { "name": "wind_speed", "type": "double" },
+                  { "name": "bt", "type": "double" },
+                  { "name": "bz", "type": "double" }
+                ]
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma": {
+          "name": "SolarWindPlasma",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SolarWindPlasma",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "One-minute DSCOVR solar wind plasma measurement: density, speed, temperature.",
+                "fields": [
+                  { "name": "observation_time", "type": "string" },
+                  { "name": "density", "type": ["null", "double"], "default": null },
+                  { "name": "speed", "type": ["null", "double"], "default": null },
+                  { "name": "temperature", "type": ["null", "double"], "default": null }
+                ]
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField": {
+          "name": "SolarWindMagField",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SolarWindMagField",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "One-minute DSCOVR interplanetary magnetic field vector in GSM coordinates.",
+                "fields": [
+                  { "name": "observation_time", "type": "string" },
+                  { "name": "bx_gsm", "type": ["null", "double"], "default": null },
+                  { "name": "by_gsm", "type": ["null", "double"], "default": null },
+                  { "name": "bz_gsm", "type": ["null", "double"], "default": null },
+                  { "name": "lon_gsm", "type": ["null", "double"], "default": null },
+                  { "name": "lat_gsm", "type": ["null", "double"], "default": null },
+                  { "name": "bt", "type": ["null", "double"], "default": null }
+                ]
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux": {
+          "name": "GoesXrayFlux",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "GoesXrayFlux",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "One-minute GOES XRS solar X-ray flux measurement in two energy bands.",
+                "fields": [
+                  { "name": "time_tag", "type": "string" },
+                  { "name": "satellite", "type": "int" },
+                  { "name": "flux", "type": "double" },
+                  { "name": "energy", "type": "string" }
+                ]
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux": {
+          "name": "GoesProtonFlux",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "GoesProtonFlux",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "Five-minute GOES SEISS/SGPS integral proton flux at multiple energy thresholds.",
+                "fields": [
+                  { "name": "time_tag", "type": "string" },
+                  { "name": "satellite", "type": "int" },
+                  { "name": "flux", "type": "double" },
+                  { "name": "energy", "type": "string" }
+                ]
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux": {
+          "name": "GoesElectronFlux",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "GoesElectronFlux",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "Five-minute GOES SEISS/SGPS integral electron flux for deep dielectric charging assessment.",
+                "fields": [
+                  { "name": "time_tag", "type": "string" },
+                  { "name": "satellite", "type": "int" },
+                  { "name": "flux", "type": "double" },
+                  { "name": "energy", "type": "string" }
+                ]
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer": {
+          "name": "GoesMagnetometer",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "GoesMagnetometer",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "One-minute GOES magnetometer field measurement at geostationary orbit in HEN coordinates.",
+                "fields": [
+                  { "name": "time_tag", "type": "string" },
+                  { "name": "satellite", "type": "int" },
+                  { "name": "he", "type": ["null", "double"], "default": null },
+                  { "name": "hp", "type": ["null", "double"], "default": null },
+                  { "name": "hn", "type": ["null", "double"], "default": null },
+                  { "name": "total", "type": ["null", "double"], "default": null },
+                  { "name": "arcjet_flag", "type": ["null", "boolean"], "default": null }
+                ]
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare": {
+          "name": "XrayFlare",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "XrayFlare",
+                "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+                "doc": "Individual solar X-ray flare event with onset, peak, and end classifications.",
+                "fields": [
+                  { "name": "time_tag", "type": "string" },
+                  { "name": "begin_time", "type": "string" },
+                  { "name": "begin_class", "type": ["null", "string"], "default": null },
+                  { "name": "max_time", "type": ["null", "string"], "default": null },
+                  { "name": "max_class", "type": ["null", "string"], "default": null },
+                  { "name": "max_xrlong", "type": ["null", "double"], "default": null },
+                  { "name": "max_ratio", "type": ["null", "double"], "default": null },
+                  { "name": "max_ratio_time", "type": ["null", "string"], "default": null },
+                  { "name": "current_int_xrlong", "type": ["null", "double"], "default": null },
+                  { "name": "end_time", "type": ["null", "string"], "default": null },
+                  { "name": "end_class", "type": ["null", "string"], "default": null },
+                  { "name": "satellite", "type": "int" }
+                ]
               }
             }
           }

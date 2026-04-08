@@ -34,12 +34,22 @@ from confluent_kafka import Producer as KafkaProducer
 
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCAlertsEventProducer
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCObservationsEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESParticleFluxEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESMagnetometerEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCSolarFlaresEventProducer
 
 # imports for the data classes for each event
 
 from noaa_goes_producer_data.spaceweatheralert import SpaceWeatherAlert
 from noaa_goes_producer_data.planetarykindex import PlanetaryKIndex
 from noaa_goes_producer_data.solarwindsummary import SolarWindSummary
+from noaa_goes_producer_data.solarwindplasma import SolarWindPlasma
+from noaa_goes_producer_data.solarwindmagfield import SolarWindMagField
+from noaa_goes_producer_data.goesxrayflux import GoesXrayFlux
+from noaa_goes_producer_data.goesprotonflux import GoesProtonFlux
+from noaa_goes_producer_data.goeselectronflux import GoesElectronFlux
+from noaa_goes_producer_data.goesmagnetometer import GoesMagnetometer
+from noaa_goes_producer_data.xrayflare import XrayFlare
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -90,6 +100,86 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary' event to Kafka topic.
     await microsoft_open_data_usnoaaswpcobservations_event_producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(_observation_time = 'TODO: replace me', data = _solar_wind_summary)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary' event: {_solar_wind_summary.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma event
+    _solar_wind_plasma = SolarWindPlasma()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcobservations_event_producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_plasma(_observation_time = 'TODO: replace me', data = _solar_wind_plasma)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma' event: {_solar_wind_plasma.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField event
+    _solar_wind_mag_field = SolarWindMagField()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcobservations_event_producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_mag_field(_observation_time = 'TODO: replace me', data = _solar_wind_mag_field)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField' event: {_solar_wind_mag_field.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaaswpcgoesparticle_flux_event_producer = MicrosoftOpenDataUSNOAASWPCGOESParticleFluxEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaaswpcgoesparticle_flux_event_producer = MicrosoftOpenDataUSNOAASWPCGOESParticleFluxEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux event
+    _goes_xray_flux = GoesXrayFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesparticle_flux_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_xray_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux' event: {_goes_xray_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux event
+    _goes_proton_flux = GoesProtonFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesparticle_flux_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_proton_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux' event: {_goes_proton_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux event
+    _goes_electron_flux = GoesElectronFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesparticle_flux_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_electron_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux' event: {_goes_electron_flux.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaaswpcgoesmagnetometer_event_producer = MicrosoftOpenDataUSNOAASWPCGOESMagnetometerEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaaswpcgoesmagnetometer_event_producer = MicrosoftOpenDataUSNOAASWPCGOESMagnetometerEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer event
+    _goes_magnetometer = GoesMagnetometer()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesmagnetometer_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer(_satellite = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_magnetometer)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer' event: {_goes_magnetometer.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaaswpcsolar_flares_event_producer = MicrosoftOpenDataUSNOAASWPCSolarFlaresEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaaswpcsolar_flares_event_producer = MicrosoftOpenDataUSNOAASWPCSolarFlaresEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.XrayFlare ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.XrayFlare event
+    _xray_flare = XrayFlare()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcsolar_flares_event_producer.send_microsoft_open_data_us_noaa_swpc_xray_flare(_satellite = 'TODO: replace me', _begin_time = 'TODO: replace me', data = _xray_flare)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare' event: {_xray_flare.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
