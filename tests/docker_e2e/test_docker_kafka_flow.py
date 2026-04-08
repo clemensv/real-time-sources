@@ -1030,4 +1030,19 @@ class TestGIOSPolandDockerFlow:
             reference_types=['Station', 'Sensor'],
             telemetry_types=['Measurement', 'AirQualityIndex'],
             required_types=['Station', 'Sensor', 'Measurement', 'AirQualityIndex'],
+# DWD Pollenflug (German pollen forecast)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def dwd_pollenflug_image():
+    return build_image('dwd-pollenflug')
+
+class TestDWDPollenflugDockerFlow:
+    TOPIC = 'test-dwd-pollenflug'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, dwd_pollenflug_image):
+        _run_kafka_flow_test(
+            kafka, dwd_pollenflug_image, self.TOPIC,
+            reference_types=['Region'],
+            telemetry_types=['PollenForecast'],
         )

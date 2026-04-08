@@ -1,0 +1,277 @@
+{
+  "endpoints": {
+    "DE.DWD.Pollenflug.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "dwd-pollenflug",
+          "key": "{region_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Pollenflug"
+      ]
+    }
+  },
+  "messagegroups": {
+    "DE.DWD.Pollenflug": {
+      "messages": {
+        "DE.DWD.Pollenflug.Region": {
+          "name": "Region",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Pollenflug.Region"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+            },
+            "subject": {
+              "value": "{region_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.Region"
+        },
+        "DE.DWD.Pollenflug.PollenForecast": {
+          "name": "PollenForecast",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Pollenflug.PollenForecast"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+            },
+            "subject": {
+              "value": "{region_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.PollenForecast"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "DE.DWD.Pollenflug.jstruct": {
+      "schemas": {
+        "DE.DWD.Pollenflug.Region": {
+          "name": "Region",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.dwd.de/schemas/DE/DWD/Pollenflug/Region",
+                "type": "object",
+                "name": "Region",
+                "description": "Reference data for a DWD pollen forecast region or sub-region. Germany is divided into 11 main regions, some of which are subdivided into 2–4 sub-regions for a total of 27 forecast areas. Emitted at bridge startup so downstream consumers can correlate forecast events with region metadata.",
+                "required": [
+                  "region_id",
+                  "region_name"
+                ],
+                "properties": {
+                  "region_id": {
+                    "type": "int32",
+                    "description": "Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id."
+                  },
+                  "region_name": {
+                    "type": "string",
+                    "description": "Name of the main geographic region as published by DWD (e.g. 'Schleswig-Holstein und Hamburg', 'Bayern'). Sourced from the 'region_name' field in the DWD API response."
+                  },
+                  "partregion_id": {
+                    "type": ["int32", "null"],
+                    "description": "Numeric identifier of the sub-region within the parent region. Set to -1 by DWD when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_id' field in the DWD API response."
+                  },
+                  "partregion_name": {
+                    "type": ["string", "null"],
+                    "description": "Name of the sub-region (e.g. 'Inseln und Marschen', 'Geest,Schleswig-Holstein und Hamburg'). Empty string in the DWD response when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_name' field in the DWD API response."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "DE.DWD.Pollenflug.PollenForecast": {
+          "name": "PollenForecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.dwd.de/schemas/DE/DWD/Pollenflug/PollenForecast",
+                "type": "object",
+                "name": "PollenForecast",
+                "description": "Daily pollen forecast for a single German region or sub-region, published by the Deutscher Wetterdienst (DWD). Contains intensity values for eight pollen types across three forecast days (today, tomorrow, day after tomorrow). Intensity is on a scale from 0 (no load) to 3 (high load) with intermediate half-step ranges such as '0-1', '1-2', '2-3'. The bridge maps the German pollen names from the upstream API to English equivalents.",
+                "required": [
+                  "region_id",
+                  "region_name",
+                  "last_update",
+                  "next_update"
+                ],
+                "properties": {
+                  "region_id": {
+                    "type": "int32",
+                    "description": "Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id."
+                  },
+                  "region_name": {
+                    "type": "string",
+                    "description": "Display name of the forecast area. Uses partregion_name when available, otherwise region_name."
+                  },
+                  "last_update": {
+                    "type": "string",
+                    "description": "Timestamp of the last forecast update as published by DWD, e.g. '2025-04-08 11:00 Uhr'. Retained as a string because the upstream format includes the German suffix 'Uhr'."
+                  },
+                  "next_update": {
+                    "type": "string",
+                    "description": "Timestamp of the next expected forecast update as published by DWD, e.g. '2025-04-09 11:00 Uhr'."
+                  },
+                  "sender": {
+                    "type": ["string", "null"],
+                    "description": "Issuing organization as stated in the DWD API response, typically 'Deutscher Wetterdienst - Medizin-Meteorologie'."
+                  },
+                  "hazel_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Hasel (hazel) today. Values: '0' (none), '0-1' (none to low), '1' (low), '1-2' (low to medium), '2' (medium), '2-3' (medium to high), '3' (high).",
+                    "altnames": { "Hasel.today": "de" }
+                  },
+                  "hazel_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Hasel (hazel) tomorrow.",
+                    "altnames": { "Hasel.tomorrow": "de" }
+                  },
+                  "hazel_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Hasel (hazel) the day after tomorrow.",
+                    "altnames": { "Hasel.dayafter_to": "de" }
+                  },
+                  "alder_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Erle (alder) today.",
+                    "altnames": { "Erle.today": "de" }
+                  },
+                  "alder_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Erle (alder) tomorrow.",
+                    "altnames": { "Erle.tomorrow": "de" }
+                  },
+                  "alder_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Erle (alder) the day after tomorrow.",
+                    "altnames": { "Erle.dayafter_to": "de" }
+                  },
+                  "birch_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Birke (birch) today.",
+                    "altnames": { "Birke.today": "de" }
+                  },
+                  "birch_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Birke (birch) tomorrow.",
+                    "altnames": { "Birke.tomorrow": "de" }
+                  },
+                  "birch_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Birke (birch) the day after tomorrow.",
+                    "altnames": { "Birke.dayafter_to": "de" }
+                  },
+                  "ash_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Esche (ash) today.",
+                    "altnames": { "Esche.today": "de" }
+                  },
+                  "ash_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Esche (ash) tomorrow.",
+                    "altnames": { "Esche.tomorrow": "de" }
+                  },
+                  "ash_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Esche (ash) the day after tomorrow.",
+                    "altnames": { "Esche.dayafter_to": "de" }
+                  },
+                  "grasses_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Gräser (grasses) today. In the upstream API this field is named 'Graeser'.",
+                    "altnames": { "Graeser.today": "de" }
+                  },
+                  "grasses_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Gräser (grasses) tomorrow.",
+                    "altnames": { "Graeser.tomorrow": "de" }
+                  },
+                  "grasses_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Gräser (grasses) the day after tomorrow.",
+                    "altnames": { "Graeser.dayafter_to": "de" }
+                  },
+                  "rye_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Roggen (rye) today.",
+                    "altnames": { "Roggen.today": "de" }
+                  },
+                  "rye_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Roggen (rye) tomorrow.",
+                    "altnames": { "Roggen.tomorrow": "de" }
+                  },
+                  "rye_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Roggen (rye) the day after tomorrow.",
+                    "altnames": { "Roggen.dayafter_to": "de" }
+                  },
+                  "mugwort_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Beifuß (mugwort) today. In the upstream API this field is named 'Beifuss'.",
+                    "altnames": { "Beifuss.today": "de" }
+                  },
+                  "mugwort_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Beifuß (mugwort) tomorrow.",
+                    "altnames": { "Beifuss.tomorrow": "de" }
+                  },
+                  "mugwort_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Beifuß (mugwort) the day after tomorrow.",
+                    "altnames": { "Beifuss.dayafter_to": "de" }
+                  },
+                  "ragweed_today": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Ambrosia (ragweed) today.",
+                    "altnames": { "Ambrosia.today": "de" }
+                  },
+                  "ragweed_tomorrow": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Ambrosia (ragweed) tomorrow.",
+                    "altnames": { "Ambrosia.tomorrow": "de" }
+                  },
+                  "ragweed_dayafter_to": {
+                    "type": ["string", "null"],
+                    "description": "Pollen intensity for Ambrosia (ragweed) the day after tomorrow.",
+                    "altnames": { "Ambrosia.dayafter_to": "de" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
