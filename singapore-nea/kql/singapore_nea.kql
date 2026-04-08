@@ -1,0 +1,456 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: string,
+   [device_id]: string,
+   [name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [data_types]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference data for a Singapore NEA weather observation station. Stations are identified by a stable device ID (e.g. S109) and include location coordinates. The data_types field indicates which parameters this station reports.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_id]: "{\"description\": \"NEA station identifier, e.g. 'S109', 'S50'. Matches the device_id field in the NEA API metadata.\"}",
+   [device_id]: "{\"description\": \"Device identifier, typically identical to station_id.\"}",
+   [name]: "{\"description\": \"Human-readable station name describing the location, e.g. 'Ang Mo Kio Avenue 5', 'Changi'.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the station.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the station.\"}",
+   [data_types]: "{\"description\": \"Comma-separated list of observation types this station reports. Values: 'air_temperature', 'rainfall', 'relative_humidity', 'wind_speed', 'wind_direction'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "device_id", "path": "$.device_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "data_types", "path": "$.data_types"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "device_id", "path": "$.data.device_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "data_types", "path": "$.data.data_types"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'SG.Gov.NEA.Weather.Station') | project['station_id'] = tostring(data.['station_id']),['device_id'] = tostring(data.['device_id']),['name'] = tostring(data.['name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['data_types'] = tostring(data.['data_types']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherObservation] (
+   [station_id]: string,
+   [station_name]: string,
+   [observation_time]: datetime,
+   [air_temperature]: real,
+   [rainfall]: real,
+   [relative_humidity]: real,
+   [wind_speed]: real,
+   [wind_direction]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherObservation] docstring "{\"description\": \"Real-time weather observation from a Singapore NEA station assembled from multiple endpoints. Temperature updates every minute, rainfall every 5 minutes, humidity and wind every minute. Fields are null when the station does not report that parameter.\"}";
+
+.alter table [WeatherObservation] column-docstrings (
+   [station_id]: "{\"description\": \"NEA station identifier.\"}",
+   [station_name]: "{\"description\": \"Station location name.\"}",
+   [observation_time]: "{\"description\": \"Timestamp of the observation in ISO 8601 with Singapore timezone (+08:00).\"}",
+   [air_temperature]: "{\"description\": \"Air temperature from the air-temperature endpoint.\"}",
+   [rainfall]: "{\"description\": \"Rainfall amount in the last 5 minutes from the rainfall endpoint.\"}",
+   [relative_humidity]: "{\"description\": \"Relative humidity from the relative-humidity endpoint.\"}",
+   [wind_speed]: "{\"description\": \"Wind speed from the wind-speed endpoint.\"}",
+   [wind_direction]: "{\"description\": \"Wind direction in degrees clockwise from true north, from the wind-direction endpoint.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "air_temperature", "path": "$.air_temperature"},
+  {"column": "rainfall", "path": "$.rainfall"},
+  {"column": "relative_humidity", "path": "$.relative_humidity"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+]
+```
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "air_temperature", "path": "$.data.air_temperature"},
+  {"column": "rainfall", "path": "$.data.rainfall"},
+  {"column": "relative_humidity", "path": "$.data.relative_humidity"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+]
+```
+
+.drop materialized-view WeatherObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
+    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'SG.Gov.NEA.Weather.WeatherObservation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['observation_time'] = todatetime(data.['observation_time']),['air_temperature'] = toreal(data.['air_temperature']),['rainfall'] = toreal(data.['rainfall']),['relative_humidity'] = toreal(data.['relative_humidity']),['wind_speed'] = toreal(data.['wind_speed']),['wind_direction'] = toreal(data.['wind_direction']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Region] (
+   [region]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Region] docstring "{\"description\": \"Reference data for a Singapore NEA air quality monitoring region. NEA divides Singapore into five geographic regions for PSI and PM2.5 reporting.\"}";
+
+.alter table [Region] column-docstrings (
+   [region]: "{\"description\": \"Region identifier. One of: west, east, central, south, north.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the region label location as published by the NEA API.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the region label location as published by the NEA API.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Region] ingestion json mapping "Region_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region", "path": "$.region"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Region] ingestion json mapping "Region_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region", "path": "$.data.region"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view RegionLatest ifexists;
+
+.create materialized-view with (backfill=true) RegionLatest on table Region {
+    Region | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Region] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'SG.Gov.NEA.AirQuality.Region') | project['region'] = tostring(data.['region']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [PSIReading] (
+   [region]: string,
+   [timestamp]: datetime,
+   [update_timestamp]: datetime,
+   [psi_twenty_four_hourly]: int,
+   [o3_sub_index]: int,
+   [pm10_sub_index]: int,
+   [pm10_twenty_four_hourly]: int,
+   [pm25_sub_index]: int,
+   [pm25_twenty_four_hourly]: int,
+   [co_sub_index]: int,
+   [co_eight_hour_max]: int,
+   [so2_sub_index]: int,
+   [so2_twenty_four_hourly]: int,
+   [no2_one_hour_max]: int,
+   [o3_eight_hour_max]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PSIReading] docstring "{\"description\": \"Pollutant Standards Index (PSI) reading for a Singapore NEA air quality region. PSI is a composite index calculated from six pollutant sub-indices. Published hourly by the NEA via data.gov.sg.\"}";
+
+.alter table [PSIReading] column-docstrings (
+   [region]: "{\"description\": \"Region identifier (west/east/central/south/north).\"}",
+   [timestamp]: "{\"description\": \"Observation period start timestamp in ISO 8601 with timezone.\"}",
+   [update_timestamp]: "{\"description\": \"Timestamp when the NEA API last updated this reading.\"}",
+   [psi_twenty_four_hourly]: "{\"description\": \"24-hour PSI value. The overall Pollutant Standards Index for the region. Scale: 0-50 Good, 51-100 Moderate, 101-200 Unhealthy, 201-300 Very Unhealthy, above 300 Hazardous.\"}",
+   [o3_sub_index]: "{\"description\": \"Ozone (O3) sub-index component of PSI.\"}",
+   [pm10_sub_index]: "{\"description\": \"PM10 sub-index component of PSI.\"}",
+   [pm10_twenty_four_hourly]: "{\"description\": \"PM10 24-hour concentration used to calculate the PM10 PSI sub-index.\"}",
+   [pm25_sub_index]: "{\"description\": \"PM2.5 sub-index component of PSI.\"}",
+   [pm25_twenty_four_hourly]: "{\"description\": \"PM2.5 24-hour concentration.\"}",
+   [co_sub_index]: "{\"description\": \"Carbon monoxide (CO) sub-index component of PSI.\"}",
+   [co_eight_hour_max]: "{\"description\": \"CO 8-hour maximum concentration.\"}",
+   [so2_sub_index]: "{\"description\": \"Sulphur dioxide (SO2) sub-index component of PSI.\"}",
+   [so2_twenty_four_hourly]: "{\"description\": \"SO2 24-hour concentration.\"}",
+   [no2_one_hour_max]: "{\"description\": \"Nitrogen dioxide (NO2) 1-hour maximum concentration.\"}",
+   [o3_eight_hour_max]: "{\"description\": \"Ozone (O3) 8-hour maximum concentration.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PSIReading] ingestion json mapping "PSIReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region", "path": "$.region"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "update_timestamp", "path": "$.update_timestamp"},
+  {"column": "psi_twenty_four_hourly", "path": "$.psi_twenty_four_hourly"},
+  {"column": "o3_sub_index", "path": "$.o3_sub_index"},
+  {"column": "pm10_sub_index", "path": "$.pm10_sub_index"},
+  {"column": "pm10_twenty_four_hourly", "path": "$.pm10_twenty_four_hourly"},
+  {"column": "pm25_sub_index", "path": "$.pm25_sub_index"},
+  {"column": "pm25_twenty_four_hourly", "path": "$.pm25_twenty_four_hourly"},
+  {"column": "co_sub_index", "path": "$.co_sub_index"},
+  {"column": "co_eight_hour_max", "path": "$.co_eight_hour_max"},
+  {"column": "so2_sub_index", "path": "$.so2_sub_index"},
+  {"column": "so2_twenty_four_hourly", "path": "$.so2_twenty_four_hourly"},
+  {"column": "no2_one_hour_max", "path": "$.no2_one_hour_max"},
+  {"column": "o3_eight_hour_max", "path": "$.o3_eight_hour_max"},
+]
+```
+
+.create-or-alter table [PSIReading] ingestion json mapping "PSIReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region", "path": "$.data.region"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "update_timestamp", "path": "$.data.update_timestamp"},
+  {"column": "psi_twenty_four_hourly", "path": "$.data.psi_twenty_four_hourly"},
+  {"column": "o3_sub_index", "path": "$.data.o3_sub_index"},
+  {"column": "pm10_sub_index", "path": "$.data.pm10_sub_index"},
+  {"column": "pm10_twenty_four_hourly", "path": "$.data.pm10_twenty_four_hourly"},
+  {"column": "pm25_sub_index", "path": "$.data.pm25_sub_index"},
+  {"column": "pm25_twenty_four_hourly", "path": "$.data.pm25_twenty_four_hourly"},
+  {"column": "co_sub_index", "path": "$.data.co_sub_index"},
+  {"column": "co_eight_hour_max", "path": "$.data.co_eight_hour_max"},
+  {"column": "so2_sub_index", "path": "$.data.so2_sub_index"},
+  {"column": "so2_twenty_four_hourly", "path": "$.data.so2_twenty_four_hourly"},
+  {"column": "no2_one_hour_max", "path": "$.data.no2_one_hour_max"},
+  {"column": "o3_eight_hour_max", "path": "$.data.o3_eight_hour_max"},
+]
+```
+
+.drop materialized-view PSIReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) PSIReadingLatest on table PSIReading {
+    PSIReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PSIReading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'SG.Gov.NEA.AirQuality.PSIReading') | project['region'] = tostring(data.['region']),['timestamp'] = todatetime(data.['timestamp']),['update_timestamp'] = todatetime(data.['update_timestamp']),['psi_twenty_four_hourly'] = toint(data.['psi_twenty_four_hourly']),['o3_sub_index'] = toint(data.['o3_sub_index']),['pm10_sub_index'] = toint(data.['pm10_sub_index']),['pm10_twenty_four_hourly'] = toint(data.['pm10_twenty_four_hourly']),['pm25_sub_index'] = toint(data.['pm25_sub_index']),['pm25_twenty_four_hourly'] = toint(data.['pm25_twenty_four_hourly']),['co_sub_index'] = toint(data.['co_sub_index']),['co_eight_hour_max'] = toint(data.['co_eight_hour_max']),['so2_sub_index'] = toint(data.['so2_sub_index']),['so2_twenty_four_hourly'] = toint(data.['so2_twenty_four_hourly']),['no2_one_hour_max'] = toint(data.['no2_one_hour_max']),['o3_eight_hour_max'] = toint(data.['o3_eight_hour_max']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [PM25Reading] (
+   [region]: string,
+   [timestamp]: datetime,
+   [update_timestamp]: datetime,
+   [pm25_one_hourly]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PM25Reading] docstring "{\"description\": \"Hourly PM2.5 concentration reading for a Singapore NEA air quality region. Fine particulate matter with aerodynamic diameter less than or equal to 2.5 micrometres. Published hourly by NEA.\"}";
+
+.alter table [PM25Reading] column-docstrings (
+   [region]: "{\"description\": \"Region identifier (west/east/central/south/north).\"}",
+   [timestamp]: "{\"description\": \"Observation period start timestamp in ISO 8601 with timezone.\"}",
+   [update_timestamp]: "{\"description\": \"Timestamp when the NEA API last updated this reading.\"}",
+   [pm25_one_hourly]: "{\"description\": \"PM2.5 1-hour concentration for the region.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PM25Reading] ingestion json mapping "PM25Reading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region", "path": "$.region"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "update_timestamp", "path": "$.update_timestamp"},
+  {"column": "pm25_one_hourly", "path": "$.pm25_one_hourly"},
+]
+```
+
+.create-or-alter table [PM25Reading] ingestion json mapping "PM25Reading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region", "path": "$.data.region"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "update_timestamp", "path": "$.data.update_timestamp"},
+  {"column": "pm25_one_hourly", "path": "$.data.pm25_one_hourly"},
+]
+```
+
+.drop materialized-view PM25ReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) PM25ReadingLatest on table PM25Reading {
+    PM25Reading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PM25Reading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'SG.Gov.NEA.AirQuality.PM25Reading') | project['region'] = tostring(data.['region']),['timestamp'] = todatetime(data.['timestamp']),['update_timestamp'] = todatetime(data.['update_timestamp']),['pm25_one_hourly'] = toint(data.['pm25_one_hourly']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

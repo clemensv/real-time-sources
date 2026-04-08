@@ -10,7 +10,6 @@
     [data]: dynamic
 );
 
-
 .create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
 ```
 [
@@ -25,7 +24,6 @@
   {"column": "data", "path": "$.data"}
 ]
 ```
-
 
 .create-merge table [PositionReportClassA] (
    [mmsi]: int,
@@ -47,27 +45,30 @@
    [___subject]: string
 );
 
-.alter table [PositionReportClassA] column-docstrings (
-   [mmsi]: 'Maritime Mobile Service Identity (9 digits)',
-   [navigation_status]: 'AIS navigation status (0=under way using engine, 1=at anchor, etc.)',
-   [rate_of_turn]: 'Rate of turn in degrees/minute (-127=turning left, 127=turning right)',
-   [speed_over_ground]: 'Speed over ground in knots (102.3=not available)',
-   [position_accuracy]: 'Position accuracy (1=high, 0=low)',
-   [longitude]: 'Longitude in decimal degrees (181.0=not available)',
-   [latitude]: 'Latitude in decimal degrees (91.0=not available)',
-   [course_over_ground]: 'Course over ground in degrees (360.0=not available)',
-   [true_heading]: 'True heading in degrees (511=not available)',
-   [timestamp]: 'Receive timestamp (ISO 8601)',
-   [station_id]: 'Kystverket receiving station ID',
-   [msg_type]: 'AIS message type (1, 2, or 3)',
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
 .create-or-alter table [PositionReportClassA] ingestion json mapping "PositionReportClassA_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "navigation_status", "path": "$.navigation_status"},
+  {"column": "rate_of_turn", "path": "$.rate_of_turn"},
+  {"column": "speed_over_ground", "path": "$.speed_over_ground"},
+  {"column": "position_accuracy", "path": "$.position_accuracy"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "course_over_ground", "path": "$.course_over_ground"},
+  {"column": "true_heading", "path": "$.true_heading"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "msg_type", "path": "$.msg_type"},
+]
+```
+
+.create-or-alter table [PositionReportClassA] ingestion json mapping "PositionReportClassA_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -86,9 +87,15 @@
   {"column": "true_heading", "path": "$.data.true_heading"},
   {"column": "timestamp", "path": "$.data.timestamp"},
   {"column": "station_id", "path": "$.data.station_id"},
-  {"column": "msg_type", "path": "$.data.msg_type"}
+  {"column": "msg_type", "path": "$.data.msg_type"},
 ]
 ```
+
+.drop materialized-view PositionReportClassALatest ifexists;
+
+.create materialized-view with (backfill=true) PositionReportClassALatest on table PositionReportClassA {
+    PositionReportClassA | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
 
 .alter table [PositionReportClassA] policy update
 ```
@@ -97,10 +104,9 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.PositionReportClassA') | project['mmsi'] = toint(data.['mmsi']),['navigation_status'] = toint(data.['navigation_status']),['rate_of_turn'] = toreal(data.['rate_of_turn']),['speed_over_ground'] = toreal(data.['speed_over_ground']),['position_accuracy'] = toint(data.['position_accuracy']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['course_over_ground'] = toreal(data.['course_over_ground']),['true_heading'] = toint(data.['true_heading']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),['msg_type'] = toint(data.['msg_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "PropagateIngestionProperties": true,
 }]
 ```
-
 
 .create-merge table [StaticVoyageData] (
    [mmsi]: int,
@@ -127,32 +133,35 @@
    [___subject]: string
 );
 
-.alter table [StaticVoyageData] column-docstrings (
-   [mmsi]: 'Maritime Mobile Service Identity',
-   [imo_number]: 'IMO ship identification number',
-   [callsign]: 'International radio callsign (7 chars)',
-   [ship_name]: 'Ship name (20 chars)',
-   [ship_type]: 'Ship and cargo type code',
-   [dimension_to_bow]: 'Distance from GPS antenna to bow in meters',
-   [dimension_to_stern]: 'Distance from GPS antenna to stern in meters',
-   [dimension_to_port]: 'Distance from GPS antenna to port in meters',
-   [dimension_to_starboard]: 'Distance from GPS antenna to starboard in meters',
-   [draught]: 'Maximum static draught in meters',
-   [destination]: 'Destination (20 chars)',
-   [eta_month]: 'ETA month (1-12, 0=not available)',
-   [eta_day]: 'ETA day (1-31, 0=not available)',
-   [eta_hour]: 'ETA hour (0-23, 24=not available)',
-   [eta_minute]: 'ETA minute (0-59, 60=not available)',
-   [timestamp]: 'Receive timestamp (ISO 8601)',
-   [station_id]: 'Kystverket receiving station ID',
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
 .create-or-alter table [StaticVoyageData] ingestion json mapping "StaticVoyageData_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "imo_number", "path": "$.imo_number"},
+  {"column": "callsign", "path": "$.callsign"},
+  {"column": "ship_name", "path": "$.ship_name"},
+  {"column": "ship_type", "path": "$.ship_type"},
+  {"column": "dimension_to_bow", "path": "$.dimension_to_bow"},
+  {"column": "dimension_to_stern", "path": "$.dimension_to_stern"},
+  {"column": "dimension_to_port", "path": "$.dimension_to_port"},
+  {"column": "dimension_to_starboard", "path": "$.dimension_to_starboard"},
+  {"column": "draught", "path": "$.draught"},
+  {"column": "destination", "path": "$.destination"},
+  {"column": "eta_month", "path": "$.eta_month"},
+  {"column": "eta_day", "path": "$.eta_day"},
+  {"column": "eta_hour", "path": "$.eta_hour"},
+  {"column": "eta_minute", "path": "$.eta_minute"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+]
+```
+
+.create-or-alter table [StaticVoyageData] ingestion json mapping "StaticVoyageData_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -176,9 +185,15 @@
   {"column": "eta_hour", "path": "$.data.eta_hour"},
   {"column": "eta_minute", "path": "$.data.eta_minute"},
   {"column": "timestamp", "path": "$.data.timestamp"},
-  {"column": "station_id", "path": "$.data.station_id"}
+  {"column": "station_id", "path": "$.data.station_id"},
 ]
 ```
+
+.drop materialized-view StaticVoyageDataLatest ifexists;
+
+.create materialized-view with (backfill=true) StaticVoyageDataLatest on table StaticVoyageData {
+    StaticVoyageData | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
 
 .alter table [StaticVoyageData] policy update
 ```
@@ -187,10 +202,9 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.StaticVoyageData') | project['mmsi'] = toint(data.['mmsi']),['imo_number'] = toint(data.['imo_number']),['callsign'] = tostring(data.['callsign']),['ship_name'] = tostring(data.['ship_name']),['ship_type'] = toint(data.['ship_type']),['dimension_to_bow'] = toint(data.['dimension_to_bow']),['dimension_to_stern'] = toint(data.['dimension_to_stern']),['dimension_to_port'] = toint(data.['dimension_to_port']),['dimension_to_starboard'] = toint(data.['dimension_to_starboard']),['draught'] = toreal(data.['draught']),['destination'] = tostring(data.['destination']),['eta_month'] = toint(data.['eta_month']),['eta_day'] = toint(data.['eta_day']),['eta_hour'] = toint(data.['eta_hour']),['eta_minute'] = toint(data.['eta_minute']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "PropagateIngestionProperties": true,
 }]
 ```
-
 
 .create-merge table [PositionReportClassB] (
    [mmsi]: int,
@@ -210,25 +224,28 @@
    [___subject]: string
 );
 
-.alter table [PositionReportClassB] column-docstrings (
-   [mmsi]: 'Maritime Mobile Service Identity',
-   [speed_over_ground]: 'Speed over ground in knots',
-   [position_accuracy]: 'Position accuracy (1=high, 0=low)',
-   [longitude]: 'Longitude in decimal degrees',
-   [latitude]: 'Latitude in decimal degrees',
-   [course_over_ground]: 'Course over ground in degrees',
-   [true_heading]: 'True heading in degrees (511=not available)',
-   [timestamp]: 'Receive timestamp (ISO 8601)',
-   [station_id]: 'Kystverket receiving station ID',
-   [msg_type]: 'AIS message type (18 or 19)',
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
 .create-or-alter table [PositionReportClassB] ingestion json mapping "PositionReportClassB_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "speed_over_ground", "path": "$.speed_over_ground"},
+  {"column": "position_accuracy", "path": "$.position_accuracy"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "course_over_ground", "path": "$.course_over_ground"},
+  {"column": "true_heading", "path": "$.true_heading"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "msg_type", "path": "$.msg_type"},
+]
+```
+
+.create-or-alter table [PositionReportClassB] ingestion json mapping "PositionReportClassB_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -245,9 +262,15 @@
   {"column": "true_heading", "path": "$.data.true_heading"},
   {"column": "timestamp", "path": "$.data.timestamp"},
   {"column": "station_id", "path": "$.data.station_id"},
-  {"column": "msg_type", "path": "$.data.msg_type"}
+  {"column": "msg_type", "path": "$.data.msg_type"},
 ]
 ```
+
+.drop materialized-view PositionReportClassBLatest ifexists;
+
+.create materialized-view with (backfill=true) PositionReportClassBLatest on table PositionReportClassB {
+    PositionReportClassB | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
 
 .alter table [PositionReportClassB] policy update
 ```
@@ -256,10 +279,9 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.PositionReportClassB') | project['mmsi'] = toint(data.['mmsi']),['speed_over_ground'] = toreal(data.['speed_over_ground']),['position_accuracy'] = toint(data.['position_accuracy']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['course_over_ground'] = toreal(data.['course_over_ground']),['true_heading'] = toint(data.['true_heading']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),['msg_type'] = toint(data.['msg_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "PropagateIngestionProperties": true,
 }]
 ```
-
 
 .create-merge table [StaticDataClassB] (
    [mmsi]: int,
@@ -280,26 +302,29 @@
    [___subject]: string
 );
 
-.alter table [StaticDataClassB] column-docstrings (
-   [mmsi]: 'Maritime Mobile Service Identity',
-   [part_number]: 'Part number (0=Part A with name, 1=Part B with callsign/dimensions)',
-   [ship_name]: 'Ship name (Part A only)',
-   [ship_type]: 'Ship and cargo type code (Part B only)',
-   [callsign]: 'Callsign (Part B only)',
-   [dimension_to_bow]: 'Distance to bow in meters (Part B only)',
-   [dimension_to_stern]: 'Distance to stern in meters (Part B only)',
-   [dimension_to_port]: 'Distance to port in meters (Part B only)',
-   [dimension_to_starboard]: 'Distance to starboard in meters (Part B only)',
-   [timestamp]: 'Receive timestamp (ISO 8601)',
-   [station_id]: 'Kystverket receiving station ID',
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
 .create-or-alter table [StaticDataClassB] ingestion json mapping "StaticDataClassB_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "part_number", "path": "$.part_number"},
+  {"column": "ship_name", "path": "$.ship_name"},
+  {"column": "ship_type", "path": "$.ship_type"},
+  {"column": "callsign", "path": "$.callsign"},
+  {"column": "dimension_to_bow", "path": "$.dimension_to_bow"},
+  {"column": "dimension_to_stern", "path": "$.dimension_to_stern"},
+  {"column": "dimension_to_port", "path": "$.dimension_to_port"},
+  {"column": "dimension_to_starboard", "path": "$.dimension_to_starboard"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+]
+```
+
+.create-or-alter table [StaticDataClassB] ingestion json mapping "StaticDataClassB_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -317,9 +342,15 @@
   {"column": "dimension_to_port", "path": "$.data.dimension_to_port"},
   {"column": "dimension_to_starboard", "path": "$.data.dimension_to_starboard"},
   {"column": "timestamp", "path": "$.data.timestamp"},
-  {"column": "station_id", "path": "$.data.station_id"}
+  {"column": "station_id", "path": "$.data.station_id"},
 ]
 ```
+
+.drop materialized-view StaticDataClassBLatest ifexists;
+
+.create materialized-view with (backfill=true) StaticDataClassBLatest on table StaticDataClassB {
+    StaticDataClassB | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
 
 .alter table [StaticDataClassB] policy update
 ```
@@ -328,10 +359,9 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.StaticDataClassB') | project['mmsi'] = toint(data.['mmsi']),['part_number'] = toint(data.['part_number']),['ship_name'] = tostring(data.['ship_name']),['ship_type'] = toint(data.['ship_type']),['callsign'] = tostring(data.['callsign']),['dimension_to_bow'] = toint(data.['dimension_to_bow']),['dimension_to_stern'] = toint(data.['dimension_to_stern']),['dimension_to_port'] = toint(data.['dimension_to_port']),['dimension_to_starboard'] = toint(data.['dimension_to_starboard']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "PropagateIngestionProperties": true,
 }]
 ```
-
 
 .create-merge table [AidToNavigation] (
    [mmsi]: int,
@@ -349,23 +379,26 @@
    [___subject]: string
 );
 
-.alter table [AidToNavigation] column-docstrings (
-   [mmsi]: 'Maritime Mobile Service Identity',
-   [aid_type]: 'Type of aid to navigation',
-   [name]: 'Name of the aid to navigation',
-   [position_accuracy]: 'Position accuracy (1=high, 0=low)',
-   [longitude]: 'Longitude in decimal degrees',
-   [latitude]: 'Latitude in decimal degrees',
-   [timestamp]: 'Receive timestamp (ISO 8601)',
-   [station_id]: 'Kystverket receiving station ID',
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
 .create-or-alter table [AidToNavigation] ingestion json mapping "AidToNavigation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "aid_type", "path": "$.aid_type"},
+  {"column": "name", "path": "$.name"},
+  {"column": "position_accuracy", "path": "$.position_accuracy"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "station_id", "path": "$.station_id"},
+]
+```
+
+.create-or-alter table [AidToNavigation] ingestion json mapping "AidToNavigation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -380,9 +413,15 @@
   {"column": "longitude", "path": "$.data.longitude"},
   {"column": "latitude", "path": "$.data.latitude"},
   {"column": "timestamp", "path": "$.data.timestamp"},
-  {"column": "station_id", "path": "$.data.station_id"}
+  {"column": "station_id", "path": "$.data.station_id"},
 ]
 ```
+
+.drop materialized-view AidToNavigationLatest ifexists;
+
+.create materialized-view with (backfill=true) AidToNavigationLatest on table AidToNavigation {
+    AidToNavigation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
 
 .alter table [AidToNavigation] policy update
 ```
@@ -391,6 +430,7 @@
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NO.Kystverket.AIS.AidToNavigation') | project['mmsi'] = toint(data.['mmsi']),['aid_type'] = toint(data.['aid_type']),['name'] = tostring(data.['name']),['position_accuracy'] = toint(data.['position_accuracy']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['timestamp'] = tostring(data.['timestamp']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true
+  "PropagateIngestionProperties": true,
 }]
 ```
+

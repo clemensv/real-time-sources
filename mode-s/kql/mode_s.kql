@@ -10,7 +10,6 @@
     [data]: dynamic
 );
 
-
 .create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
 ```
 [
@@ -26,7 +25,6 @@
 ]
 ```
 
-
 .create-merge table [Messages] (
    [messages]: dynamic,
    [___type]: string,
@@ -39,7 +37,7 @@
 .alter table [Messages] docstring "{\"description\": \"A container for multiple Mode-S and ADS-B decoded messages.\"}";
 
 .alter table [Messages] column-docstrings (
-   [messages]: "{\"description\": \"An array of Mode-S and ADS-B decoded message records.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
+   [messages]: "{\"description\": \"An array of Mode-S and ADS-B decoded message records.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Mode_S/ModeS_ADSB_Record\"}, \"description\": \"An array of Mode-S and ADS-B decoded message records.\"}}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -59,7 +57,6 @@
 ]
 ```
 
-
 .create-or-alter table [Messages] ingestion json mapping "Messages_json_ce_structured"
 ```
 [
@@ -71,7 +68,6 @@
   {"column": "messages", "path": "$.data.messages"},
 ]
 ```
-
 
 .drop materialized-view MessagesLatest ifexists;
 
@@ -89,6 +85,7 @@
   "PropagateIngestionProperties": true,
 }]
 ```
+
 
 .create-merge table [ModeS_ADSB_Record] (
    [stid]: string,
@@ -209,6 +206,8 @@
 ]
 ```
 
+
+
 .alter table [ModeS_ADSB_Record] policy update
 ```
 [
@@ -221,8 +220,8 @@
       | mv-expand msg = messages
       | project
           stid = tostring(___subject),
-          ts = todatetime(msg.ts),
-          icao = tostring(msg.icao),
+          ts = unixtime_milliseconds_todatetime(tolong(msg.ts)),
+          icao = tolower(tostring(msg.icao)),
           df = toint(msg.df),
           tc = toint(msg.tc),
           bcode = tostring(msg.bcode),
@@ -261,3 +260,4 @@
   }
 ]
 ```
+

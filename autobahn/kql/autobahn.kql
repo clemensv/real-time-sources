@@ -1,0 +1,736 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [RoadEvent] (
+   [identifier]: string,
+   [road_ids]: dynamic,
+   [event_time]: datetime,
+   [display_type]: string,
+   [title]: string,
+   [subtitle]: string,
+   [description_lines]: dynamic,
+   [future]: bool,
+   [is_blocked]: bool,
+   [icon]: string,
+   [start_lc_position]: int,
+   [start_timestamp]: datetime,
+   [extent]: string,
+   [point]: string,
+   [coordinate_lat]: real,
+   [coordinate_lon]: real,
+   [geometry_json]: string,
+   [impact_lower]: string,
+   [impact_upper]: string,
+   [impact_symbols]: dynamic,
+   [route_recommendation_json]: string,
+   [footer_lines]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RoadEvent] docstring "{\"description\": \"Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.\"}";
+
+.alter table [RoadEvent] column-docstrings (
+   [identifier]: "{\"description\": \"Stable Autobahn item identifier used for the CloudEvents subject and Kafka key.\"}",
+   [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families.\"}}",
+   [event_time]: "{\"description\": \"CloudEvents event time for the emitted record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp.\"}",
+   [display_type]: "{\"description\": \"Autobahn API display_type value that identifies the road-event subtype.\"}",
+   [title]: "{\"description\": \"Human-readable title from the Autobahn API item.\"}",
+   [subtitle]: "{\"description\": \"Human-readable subtitle from the Autobahn API item.\"}",
+   [description_lines]: "{\"description\": \"Description lines from the Autobahn API description array.\"}",
+   [future]: "{\"description\": \"Whether the Autobahn API marks the item as a future event.\"}",
+   [is_blocked]: "{\"description\": \"Whether the Autobahn API marks the affected road segment as blocked.\"}",
+   [icon]: "{\"description\": \"Autobahn API icon identifier for the item.\"}",
+   [start_lc_position]: "{\"description\": \"Numeric startLcPosition value emitted by the Autobahn API for the beginning of the affected segment.\"}",
+   [start_timestamp]: "{\"description\": \"startTimestamp value from the Autobahn API when the item includes a scheduled or known start time.\"}",
+   [extent]: "{\"description\": \"Autobahn API extent text for the affected road segment.\"}",
+   [point]: "{\"description\": \"Autobahn API point text that identifies the affected point on the road segment.\"}",
+   [coordinate_lat]: "{\"description\": \"Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [coordinate_lon]: "{\"description\": \"Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [geometry_json]: "{\"description\": \"Serialized Autobahn API geometry object for the affected road segment.\"}",
+   [impact_lower]: "{\"description\": \"Lower bound from the Autobahn API impact object.\"}",
+   [impact_upper]: "{\"description\": \"Upper bound from the Autobahn API impact object.\"}",
+   [impact_symbols]: "{\"description\": \"Impact symbols from the Autobahn API impact.symbols array.\"}",
+   [route_recommendation_json]: "{\"description\": \"Serialized Autobahn API routeRecommendation object when rerouting advice is available.\"}",
+   [footer_lines]: "{\"description\": \"Footer lines from the Autobahn API footer array.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "road_ids", "path": "$.road_ids"},
+  {"column": "event_time", "path": "$.event_time"},
+  {"column": "display_type", "path": "$.display_type"},
+  {"column": "title", "path": "$.title"},
+  {"column": "subtitle", "path": "$.subtitle"},
+  {"column": "description_lines", "path": "$.description_lines"},
+  {"column": "future", "path": "$.future"},
+  {"column": "is_blocked", "path": "$.is_blocked"},
+  {"column": "icon", "path": "$.icon"},
+  {"column": "start_lc_position", "path": "$.start_lc_position"},
+  {"column": "start_timestamp", "path": "$.start_timestamp"},
+  {"column": "extent", "path": "$.extent"},
+  {"column": "point", "path": "$.point"},
+  {"column": "coordinate_lat", "path": "$.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.coordinate_lon"},
+  {"column": "geometry_json", "path": "$.geometry_json"},
+  {"column": "impact_lower", "path": "$.impact_lower"},
+  {"column": "impact_upper", "path": "$.impact_upper"},
+  {"column": "impact_symbols", "path": "$.impact_symbols"},
+  {"column": "route_recommendation_json", "path": "$.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.footer_lines"},
+]
+```
+
+.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "road_ids", "path": "$.data.road_ids"},
+  {"column": "event_time", "path": "$.data.event_time"},
+  {"column": "display_type", "path": "$.data.display_type"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "subtitle", "path": "$.data.subtitle"},
+  {"column": "description_lines", "path": "$.data.description_lines"},
+  {"column": "future", "path": "$.data.future"},
+  {"column": "is_blocked", "path": "$.data.is_blocked"},
+  {"column": "icon", "path": "$.data.icon"},
+  {"column": "start_lc_position", "path": "$.data.start_lc_position"},
+  {"column": "start_timestamp", "path": "$.data.start_timestamp"},
+  {"column": "extent", "path": "$.data.extent"},
+  {"column": "point", "path": "$.data.point"},
+  {"column": "coordinate_lat", "path": "$.data.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.data.coordinate_lon"},
+  {"column": "geometry_json", "path": "$.data.geometry_json"},
+  {"column": "impact_lower", "path": "$.data.impact_lower"},
+  {"column": "impact_upper", "path": "$.data.impact_upper"},
+  {"column": "impact_symbols", "path": "$.data.impact_symbols"},
+  {"column": "route_recommendation_json", "path": "$.data.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.data.footer_lines"},
+]
+```
+
+.drop materialized-view RoadEventLatest ifexists;
+
+.create materialized-view with (backfill=true) RoadEventLatest on table RoadEvent {
+    RoadEvent | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RoadEvent] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('DE.Autobahn.RoadworkAppeared', 'DE.Autobahn.RoadworkUpdated', 'DE.Autobahn.RoadworkResolved', 'DE.Autobahn.ShortTermRoadworkAppeared', 'DE.Autobahn.ShortTermRoadworkUpdated', 'DE.Autobahn.ShortTermRoadworkResolved', 'DE.Autobahn.ClosureAppeared', 'DE.Autobahn.ClosureUpdated', 'DE.Autobahn.ClosureResolved', 'DE.Autobahn.EntryExitClosureAppeared', 'DE.Autobahn.EntryExitClosureUpdated', 'DE.Autobahn.EntryExitClosureResolved', 'DE.Autobahn.WeightLimit35RestrictionAppeared', 'DE.Autobahn.WeightLimit35RestrictionUpdated', 'DE.Autobahn.WeightLimit35RestrictionResolved')) | project['identifier'] = tostring(data.['identifier']),['road_ids'] = todynamic(data.['road_ids']),['event_time'] = todatetime(data.['event_time']),['display_type'] = tostring(data.['display_type']),['title'] = tostring(data.['title']),['subtitle'] = tostring(data.['subtitle']),['description_lines'] = todynamic(data.['description_lines']),['future'] = tobool(data.['future']),['is_blocked'] = tobool(data.['is_blocked']),['icon'] = tostring(data.['icon']),['start_lc_position'] = toint(data.['start_lc_position']),['start_timestamp'] = todatetime(data.['start_timestamp']),['extent'] = tostring(data.['extent']),['point'] = tostring(data.['point']),['coordinate_lat'] = toreal(data.['coordinate_lat']),['coordinate_lon'] = toreal(data.['coordinate_lon']),['geometry_json'] = tostring(data.['geometry_json']),['impact_lower'] = tostring(data.['impact_lower']),['impact_upper'] = tostring(data.['impact_upper']),['impact_symbols'] = todynamic(data.['impact_symbols']),['route_recommendation_json'] = tostring(data.['route_recommendation_json']),['footer_lines'] = todynamic(data.['footer_lines']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WarningEvent] (
+   [identifier]: string,
+   [road_ids]: dynamic,
+   [event_time]: datetime,
+   [display_type]: string,
+   [title]: string,
+   [subtitle]: string,
+   [description_lines]: dynamic,
+   [future]: bool,
+   [is_blocked]: bool,
+   [icon]: string,
+   [start_lc_position]: int,
+   [start_timestamp]: datetime,
+   [extent]: string,
+   [point]: string,
+   [coordinate_lat]: real,
+   [coordinate_lon]: real,
+   [geometry_json]: string,
+   [impact_lower]: string,
+   [impact_upper]: string,
+   [impact_symbols]: dynamic,
+   [route_recommendation_json]: string,
+   [footer_lines]: dynamic,
+   [delay_minutes]: int,
+   [average_speed_kmh]: int,
+   [abnormal_traffic_type]: string,
+   [source_name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WarningEvent] docstring "{\"description\": \"Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.\"}";
+
+.alter table [WarningEvent] column-docstrings (
+   [identifier]: "{\"description\": \"Stable Autobahn warning identifier used for the CloudEvents subject and Kafka key.\"}",
+   [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this warning item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this warning item.\"}}",
+   [event_time]: "{\"description\": \"CloudEvents event time for the emitted warning record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp.\"}",
+   [display_type]: "{\"description\": \"Autobahn API display_type for warning items.\"}",
+   [title]: "{\"description\": \"Human-readable title from the Autobahn API warning item.\"}",
+   [subtitle]: "{\"description\": \"Human-readable subtitle from the Autobahn API warning item.\"}",
+   [description_lines]: "{\"description\": \"Description lines from the Autobahn API description array.\"}",
+   [future]: "{\"description\": \"Whether the Autobahn API marks the warning as a future event.\"}",
+   [is_blocked]: "{\"description\": \"Whether the Autobahn API marks the warning segment as blocked.\"}",
+   [icon]: "{\"description\": \"Autobahn API icon identifier for the warning item.\"}",
+   [start_lc_position]: "{\"description\": \"Numeric startLcPosition value emitted by the Autobahn API for the beginning of the warning segment.\"}",
+   [start_timestamp]: "{\"description\": \"startTimestamp value from the Autobahn API when the warning includes a scheduled or known start time.\"}",
+   [extent]: "{\"description\": \"Autobahn API extent text for the affected road segment.\"}",
+   [point]: "{\"description\": \"Autobahn API point text that identifies the affected point on the road segment.\"}",
+   [coordinate_lat]: "{\"description\": \"Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [coordinate_lon]: "{\"description\": \"Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [geometry_json]: "{\"description\": \"Serialized Autobahn API geometry object for the affected road segment.\"}",
+   [impact_lower]: "{\"description\": \"Lower bound from the Autobahn API impact object.\"}",
+   [impact_upper]: "{\"description\": \"Upper bound from the Autobahn API impact object.\"}",
+   [impact_symbols]: "{\"description\": \"Impact symbols from the Autobahn API impact.symbols array.\"}",
+   [route_recommendation_json]: "{\"description\": \"Serialized Autobahn API routeRecommendation object when rerouting advice is available.\"}",
+   [footer_lines]: "{\"description\": \"Footer lines from the Autobahn API footer array.\"}",
+   [delay_minutes]: "{\"description\": \"delayTimeValue from the Autobahn warning item, expressed in minutes.\"}",
+   [average_speed_kmh]: "{\"description\": \"averageSpeed from the Autobahn warning item, expressed in kilometers per hour.\"}",
+   [abnormal_traffic_type]: "{\"description\": \"abnormalTrafficType code from the Autobahn warning item.\"}",
+   [source_name]: "{\"description\": \"source value from the Autobahn warning item that identifies the origin of the warning.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WarningEvent] ingestion json mapping "WarningEvent_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "road_ids", "path": "$.road_ids"},
+  {"column": "event_time", "path": "$.event_time"},
+  {"column": "display_type", "path": "$.display_type"},
+  {"column": "title", "path": "$.title"},
+  {"column": "subtitle", "path": "$.subtitle"},
+  {"column": "description_lines", "path": "$.description_lines"},
+  {"column": "future", "path": "$.future"},
+  {"column": "is_blocked", "path": "$.is_blocked"},
+  {"column": "icon", "path": "$.icon"},
+  {"column": "start_lc_position", "path": "$.start_lc_position"},
+  {"column": "start_timestamp", "path": "$.start_timestamp"},
+  {"column": "extent", "path": "$.extent"},
+  {"column": "point", "path": "$.point"},
+  {"column": "coordinate_lat", "path": "$.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.coordinate_lon"},
+  {"column": "geometry_json", "path": "$.geometry_json"},
+  {"column": "impact_lower", "path": "$.impact_lower"},
+  {"column": "impact_upper", "path": "$.impact_upper"},
+  {"column": "impact_symbols", "path": "$.impact_symbols"},
+  {"column": "route_recommendation_json", "path": "$.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.footer_lines"},
+  {"column": "delay_minutes", "path": "$.delay_minutes"},
+  {"column": "average_speed_kmh", "path": "$.average_speed_kmh"},
+  {"column": "abnormal_traffic_type", "path": "$.abnormal_traffic_type"},
+  {"column": "source_name", "path": "$.source_name"},
+]
+```
+
+.create-or-alter table [WarningEvent] ingestion json mapping "WarningEvent_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "road_ids", "path": "$.data.road_ids"},
+  {"column": "event_time", "path": "$.data.event_time"},
+  {"column": "display_type", "path": "$.data.display_type"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "subtitle", "path": "$.data.subtitle"},
+  {"column": "description_lines", "path": "$.data.description_lines"},
+  {"column": "future", "path": "$.data.future"},
+  {"column": "is_blocked", "path": "$.data.is_blocked"},
+  {"column": "icon", "path": "$.data.icon"},
+  {"column": "start_lc_position", "path": "$.data.start_lc_position"},
+  {"column": "start_timestamp", "path": "$.data.start_timestamp"},
+  {"column": "extent", "path": "$.data.extent"},
+  {"column": "point", "path": "$.data.point"},
+  {"column": "coordinate_lat", "path": "$.data.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.data.coordinate_lon"},
+  {"column": "geometry_json", "path": "$.data.geometry_json"},
+  {"column": "impact_lower", "path": "$.data.impact_lower"},
+  {"column": "impact_upper", "path": "$.data.impact_upper"},
+  {"column": "impact_symbols", "path": "$.data.impact_symbols"},
+  {"column": "route_recommendation_json", "path": "$.data.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.data.footer_lines"},
+  {"column": "delay_minutes", "path": "$.data.delay_minutes"},
+  {"column": "average_speed_kmh", "path": "$.data.average_speed_kmh"},
+  {"column": "abnormal_traffic_type", "path": "$.data.abnormal_traffic_type"},
+  {"column": "source_name", "path": "$.data.source_name"},
+]
+```
+
+.drop materialized-view WarningEventLatest ifexists;
+
+.create materialized-view with (backfill=true) WarningEventLatest on table WarningEvent {
+    WarningEvent | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WarningEvent] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('DE.Autobahn.WarningAppeared', 'DE.Autobahn.WarningUpdated', 'DE.Autobahn.WarningResolved')) | project['identifier'] = tostring(data.['identifier']),['road_ids'] = todynamic(data.['road_ids']),['event_time'] = todatetime(data.['event_time']),['display_type'] = tostring(data.['display_type']),['title'] = tostring(data.['title']),['subtitle'] = tostring(data.['subtitle']),['description_lines'] = todynamic(data.['description_lines']),['future'] = tobool(data.['future']),['is_blocked'] = tobool(data.['is_blocked']),['icon'] = tostring(data.['icon']),['start_lc_position'] = toint(data.['start_lc_position']),['start_timestamp'] = todatetime(data.['start_timestamp']),['extent'] = tostring(data.['extent']),['point'] = tostring(data.['point']),['coordinate_lat'] = toreal(data.['coordinate_lat']),['coordinate_lon'] = toreal(data.['coordinate_lon']),['geometry_json'] = tostring(data.['geometry_json']),['impact_lower'] = tostring(data.['impact_lower']),['impact_upper'] = tostring(data.['impact_upper']),['impact_symbols'] = todynamic(data.['impact_symbols']),['route_recommendation_json'] = tostring(data.['route_recommendation_json']),['footer_lines'] = todynamic(data.['footer_lines']),['delay_minutes'] = toint(data.['delay_minutes']),['average_speed_kmh'] = toint(data.['average_speed_kmh']),['abnormal_traffic_type'] = tostring(data.['abnormal_traffic_type']),['source_name'] = tostring(data.['source_name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ParkingLorry] (
+   [identifier]: string,
+   [road_ids]: dynamic,
+   [event_time]: datetime,
+   [display_type]: string,
+   [title]: string,
+   [subtitle]: string,
+   [description_lines]: dynamic,
+   [future]: bool,
+   [is_blocked]: bool,
+   [icon]: string,
+   [start_lc_position]: int,
+   [extent]: string,
+   [point]: string,
+   [coordinate_lat]: real,
+   [coordinate_lon]: real,
+   [route_recommendation_json]: string,
+   [footer_lines]: dynamic,
+   [amenity_descriptions]: dynamic,
+   [car_space_count]: int,
+   [lorry_space_count]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ParkingLorry] docstring "{\"description\": \"Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.\"}";
+
+.alter table [ParkingLorry] column-docstrings (
+   [identifier]: "{\"description\": \"Stable Autobahn parking identifier used for the CloudEvents subject and Kafka key.\"}",
+   [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this parking item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this parking item.\"}}",
+   [event_time]: "{\"description\": \"CloudEvents event time for the emitted parking record. The bridge uses the poll timestamp because parking items do not expose startTimestamp in the normalized payload.\"}",
+   [display_type]: "{\"description\": \"Autobahn API display_type for lorry parking items.\"}",
+   [title]: "{\"description\": \"Human-readable title from the Autobahn API parking item.\"}",
+   [subtitle]: "{\"description\": \"Human-readable subtitle from the Autobahn API parking item.\"}",
+   [description_lines]: "{\"description\": \"Description lines from the Autobahn API description array.\"}",
+   [future]: "{\"description\": \"Whether the Autobahn API marks the parking item as a future entry.\"}",
+   [is_blocked]: "{\"description\": \"Whether the Autobahn API marks the parking site as blocked.\"}",
+   [icon]: "{\"description\": \"Autobahn API icon identifier for the parking item.\"}",
+   [start_lc_position]: "{\"description\": \"Numeric startLcPosition value emitted by the Autobahn API for the parking site location.\"}",
+   [extent]: "{\"description\": \"Autobahn API extent text for the parking site.\"}",
+   [point]: "{\"description\": \"Autobahn API point text that identifies the parking site location.\"}",
+   [coordinate_lat]: "{\"description\": \"Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [coordinate_lon]: "{\"description\": \"Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [route_recommendation_json]: "{\"description\": \"Serialized Autobahn API routeRecommendation object when rerouting advice is available for the parking location.\"}",
+   [footer_lines]: "{\"description\": \"Footer lines from the Autobahn API footer array.\"}",
+   [amenity_descriptions]: "{\"description\": \"Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities.\"}",
+   [car_space_count]: "{\"description\": \"Number of passenger-car spaces parsed from description lines that contain PKW Stellpl\\u00e4tze.\"}",
+   [lorry_space_count]: "{\"description\": \"Number of lorry spaces parsed from description lines that contain LKW Stellpl\\u00e4tze.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ParkingLorry] ingestion json mapping "ParkingLorry_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "road_ids", "path": "$.road_ids"},
+  {"column": "event_time", "path": "$.event_time"},
+  {"column": "display_type", "path": "$.display_type"},
+  {"column": "title", "path": "$.title"},
+  {"column": "subtitle", "path": "$.subtitle"},
+  {"column": "description_lines", "path": "$.description_lines"},
+  {"column": "future", "path": "$.future"},
+  {"column": "is_blocked", "path": "$.is_blocked"},
+  {"column": "icon", "path": "$.icon"},
+  {"column": "start_lc_position", "path": "$.start_lc_position"},
+  {"column": "extent", "path": "$.extent"},
+  {"column": "point", "path": "$.point"},
+  {"column": "coordinate_lat", "path": "$.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.coordinate_lon"},
+  {"column": "route_recommendation_json", "path": "$.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.footer_lines"},
+  {"column": "amenity_descriptions", "path": "$.amenity_descriptions"},
+  {"column": "car_space_count", "path": "$.car_space_count"},
+  {"column": "lorry_space_count", "path": "$.lorry_space_count"},
+]
+```
+
+.create-or-alter table [ParkingLorry] ingestion json mapping "ParkingLorry_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "road_ids", "path": "$.data.road_ids"},
+  {"column": "event_time", "path": "$.data.event_time"},
+  {"column": "display_type", "path": "$.data.display_type"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "subtitle", "path": "$.data.subtitle"},
+  {"column": "description_lines", "path": "$.data.description_lines"},
+  {"column": "future", "path": "$.data.future"},
+  {"column": "is_blocked", "path": "$.data.is_blocked"},
+  {"column": "icon", "path": "$.data.icon"},
+  {"column": "start_lc_position", "path": "$.data.start_lc_position"},
+  {"column": "extent", "path": "$.data.extent"},
+  {"column": "point", "path": "$.data.point"},
+  {"column": "coordinate_lat", "path": "$.data.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.data.coordinate_lon"},
+  {"column": "route_recommendation_json", "path": "$.data.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.data.footer_lines"},
+  {"column": "amenity_descriptions", "path": "$.data.amenity_descriptions"},
+  {"column": "car_space_count", "path": "$.data.car_space_count"},
+  {"column": "lorry_space_count", "path": "$.data.lorry_space_count"},
+]
+```
+
+.drop materialized-view ParkingLorryLatest ifexists;
+
+.create materialized-view with (backfill=true) ParkingLorryLatest on table ParkingLorry {
+    ParkingLorry | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ParkingLorry] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('DE.Autobahn.ParkingLorryAppeared', 'DE.Autobahn.ParkingLorryUpdated', 'DE.Autobahn.ParkingLorryResolved')) | project['identifier'] = tostring(data.['identifier']),['road_ids'] = todynamic(data.['road_ids']),['event_time'] = todatetime(data.['event_time']),['display_type'] = tostring(data.['display_type']),['title'] = tostring(data.['title']),['subtitle'] = tostring(data.['subtitle']),['description_lines'] = todynamic(data.['description_lines']),['future'] = tobool(data.['future']),['is_blocked'] = tobool(data.['is_blocked']),['icon'] = tostring(data.['icon']),['start_lc_position'] = toint(data.['start_lc_position']),['extent'] = tostring(data.['extent']),['point'] = tostring(data.['point']),['coordinate_lat'] = toreal(data.['coordinate_lat']),['coordinate_lon'] = toreal(data.['coordinate_lon']),['route_recommendation_json'] = tostring(data.['route_recommendation_json']),['footer_lines'] = todynamic(data.['footer_lines']),['amenity_descriptions'] = todynamic(data.['amenity_descriptions']),['car_space_count'] = toint(data.['car_space_count']),['lorry_space_count'] = toint(data.['lorry_space_count']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ChargingStation] (
+   [identifier]: string,
+   [road_ids]: dynamic,
+   [event_time]: datetime,
+   [display_type]: string,
+   [title]: string,
+   [subtitle]: string,
+   [description_lines]: dynamic,
+   [future]: bool,
+   [is_blocked]: bool,
+   [icon]: string,
+   [extent]: string,
+   [point]: string,
+   [coordinate_lat]: real,
+   [coordinate_lon]: real,
+   [address_line]: string,
+   [charging_point_count]: int,
+   [charging_points_json]: string,
+   [route_recommendation_json]: string,
+   [footer_lines]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ChargingStation] docstring "{\"description\": \"Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.\"}";
+
+.alter table [ChargingStation] column-docstrings (
+   [identifier]: "{\"description\": \"Stable Autobahn charging-station identifier used for the CloudEvents subject and Kafka key.\"}",
+   [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this charging station item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this charging station item.\"}}",
+   [event_time]: "{\"description\": \"CloudEvents event time for the emitted charging-station record. The bridge uses the poll timestamp because charging station items do not expose startTimestamp in the normalized payload.\"}",
+   [display_type]: "{\"description\": \"Autobahn API display_type for charging-station items.\"}",
+   [title]: "{\"description\": \"Human-readable title from the Autobahn API charging-station item.\"}",
+   [subtitle]: "{\"description\": \"Human-readable subtitle from the Autobahn API charging-station item.\"}",
+   [description_lines]: "{\"description\": \"Description lines from the Autobahn API description array.\"}",
+   [future]: "{\"description\": \"Whether the Autobahn API marks the charging station item as a future entry.\"}",
+   [is_blocked]: "{\"description\": \"Whether the Autobahn API marks the charging station site as blocked.\"}",
+   [icon]: "{\"description\": \"Autobahn API icon identifier for the charging station item.\"}",
+   [extent]: "{\"description\": \"Autobahn API extent text for the charging station site.\"}",
+   [point]: "{\"description\": \"Autobahn API point text that identifies the charging station site.\"}",
+   [coordinate_lat]: "{\"description\": \"Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [coordinate_lon]: "{\"description\": \"Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [address_line]: "{\"description\": \"Address line parsed from the first Autobahn API description line for the charging station site.\"}",
+   [charging_point_count]: "{\"description\": \"Number of parsed charging point entries derived from the Autobahn API description lines.\"}",
+   [charging_points_json]: "{\"description\": \"Serialized array of normalized charging point entries parsed from the Autobahn API description lines.\"}",
+   [route_recommendation_json]: "{\"description\": \"Serialized Autobahn API routeRecommendation object when rerouting advice is available for the charging station site.\"}",
+   [footer_lines]: "{\"description\": \"Footer lines from the Autobahn API footer array.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ChargingStation] ingestion json mapping "ChargingStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "road_ids", "path": "$.road_ids"},
+  {"column": "event_time", "path": "$.event_time"},
+  {"column": "display_type", "path": "$.display_type"},
+  {"column": "title", "path": "$.title"},
+  {"column": "subtitle", "path": "$.subtitle"},
+  {"column": "description_lines", "path": "$.description_lines"},
+  {"column": "future", "path": "$.future"},
+  {"column": "is_blocked", "path": "$.is_blocked"},
+  {"column": "icon", "path": "$.icon"},
+  {"column": "extent", "path": "$.extent"},
+  {"column": "point", "path": "$.point"},
+  {"column": "coordinate_lat", "path": "$.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.coordinate_lon"},
+  {"column": "address_line", "path": "$.address_line"},
+  {"column": "charging_point_count", "path": "$.charging_point_count"},
+  {"column": "charging_points_json", "path": "$.charging_points_json"},
+  {"column": "route_recommendation_json", "path": "$.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.footer_lines"},
+]
+```
+
+.create-or-alter table [ChargingStation] ingestion json mapping "ChargingStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "road_ids", "path": "$.data.road_ids"},
+  {"column": "event_time", "path": "$.data.event_time"},
+  {"column": "display_type", "path": "$.data.display_type"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "subtitle", "path": "$.data.subtitle"},
+  {"column": "description_lines", "path": "$.data.description_lines"},
+  {"column": "future", "path": "$.data.future"},
+  {"column": "is_blocked", "path": "$.data.is_blocked"},
+  {"column": "icon", "path": "$.data.icon"},
+  {"column": "extent", "path": "$.data.extent"},
+  {"column": "point", "path": "$.data.point"},
+  {"column": "coordinate_lat", "path": "$.data.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.data.coordinate_lon"},
+  {"column": "address_line", "path": "$.data.address_line"},
+  {"column": "charging_point_count", "path": "$.data.charging_point_count"},
+  {"column": "charging_points_json", "path": "$.data.charging_points_json"},
+  {"column": "route_recommendation_json", "path": "$.data.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.data.footer_lines"},
+]
+```
+
+.drop materialized-view ChargingStationLatest ifexists;
+
+.create materialized-view with (backfill=true) ChargingStationLatest on table ChargingStation {
+    ChargingStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ChargingStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('DE.Autobahn.ElectricChargingStationAppeared', 'DE.Autobahn.ElectricChargingStationUpdated', 'DE.Autobahn.ElectricChargingStationResolved', 'DE.Autobahn.StrongElectricChargingStationAppeared', 'DE.Autobahn.StrongElectricChargingStationUpdated', 'DE.Autobahn.StrongElectricChargingStationResolved')) | project['identifier'] = tostring(data.['identifier']),['road_ids'] = todynamic(data.['road_ids']),['event_time'] = todatetime(data.['event_time']),['display_type'] = tostring(data.['display_type']),['title'] = tostring(data.['title']),['subtitle'] = tostring(data.['subtitle']),['description_lines'] = todynamic(data.['description_lines']),['future'] = tobool(data.['future']),['is_blocked'] = tobool(data.['is_blocked']),['icon'] = tostring(data.['icon']),['extent'] = tostring(data.['extent']),['point'] = tostring(data.['point']),['coordinate_lat'] = toreal(data.['coordinate_lat']),['coordinate_lon'] = toreal(data.['coordinate_lon']),['address_line'] = tostring(data.['address_line']),['charging_point_count'] = toint(data.['charging_point_count']),['charging_points_json'] = tostring(data.['charging_points_json']),['route_recommendation_json'] = tostring(data.['route_recommendation_json']),['footer_lines'] = todynamic(data.['footer_lines']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Webcam] (
+   [identifier]: string,
+   [road_ids]: dynamic,
+   [event_time]: datetime,
+   [display_type]: string,
+   [title]: string,
+   [subtitle]: string,
+   [description_lines]: dynamic,
+   [future]: bool,
+   [is_blocked]: bool,
+   [icon]: string,
+   [extent]: string,
+   [point]: string,
+   [coordinate_lat]: real,
+   [coordinate_lon]: real,
+   [route_recommendation_json]: string,
+   [footer_lines]: dynamic,
+   [operator_name]: string,
+   [image_url]: string,
+   [stream_url]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Webcam] docstring "{\"description\": \"Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.\"}";
+
+.alter table [Webcam] column-docstrings (
+   [identifier]: "{\"description\": \"Stable Autobahn webcam identifier used for the CloudEvents subject and Kafka key.\"}",
+   [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this webcam item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this webcam item.\"}}",
+   [event_time]: "{\"description\": \"CloudEvents event time for the emitted webcam record. The bridge uses the poll timestamp because webcam items do not expose startTimestamp in the normalized payload.\"}",
+   [display_type]: "{\"description\": \"Autobahn API display_type for webcam items.\"}",
+   [title]: "{\"description\": \"Human-readable title from the Autobahn API webcam item.\"}",
+   [subtitle]: "{\"description\": \"Human-readable subtitle from the Autobahn API webcam item.\"}",
+   [description_lines]: "{\"description\": \"Description lines from the Autobahn API description array.\"}",
+   [future]: "{\"description\": \"Whether the Autobahn API marks the webcam item as a future entry.\"}",
+   [is_blocked]: "{\"description\": \"Whether the Autobahn API marks the webcam location as blocked.\"}",
+   [icon]: "{\"description\": \"Autobahn API icon identifier for the webcam item.\"}",
+   [extent]: "{\"description\": \"Autobahn API extent text for the webcam location.\"}",
+   [point]: "{\"description\": \"Autobahn API point text that identifies the webcam location.\"}",
+   [coordinate_lat]: "{\"description\": \"Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [coordinate_lon]: "{\"description\": \"Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.\"}",
+   [route_recommendation_json]: "{\"description\": \"Serialized Autobahn API routeRecommendation object when rerouting advice is available for the webcam location.\"}",
+   [footer_lines]: "{\"description\": \"Footer lines from the Autobahn API footer array.\"}",
+   [operator_name]: "{\"description\": \"operator value from the Autobahn API webcam item.\"}",
+   [image_url]: "{\"description\": \"imageurl value from the Autobahn API webcam item for the still image.\"}",
+   [stream_url]: "{\"description\": \"linkurl value from the Autobahn API webcam item for the linked stream or detail page.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Webcam] ingestion json mapping "Webcam_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "road_ids", "path": "$.road_ids"},
+  {"column": "event_time", "path": "$.event_time"},
+  {"column": "display_type", "path": "$.display_type"},
+  {"column": "title", "path": "$.title"},
+  {"column": "subtitle", "path": "$.subtitle"},
+  {"column": "description_lines", "path": "$.description_lines"},
+  {"column": "future", "path": "$.future"},
+  {"column": "is_blocked", "path": "$.is_blocked"},
+  {"column": "icon", "path": "$.icon"},
+  {"column": "extent", "path": "$.extent"},
+  {"column": "point", "path": "$.point"},
+  {"column": "coordinate_lat", "path": "$.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.coordinate_lon"},
+  {"column": "route_recommendation_json", "path": "$.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.footer_lines"},
+  {"column": "operator_name", "path": "$.operator_name"},
+  {"column": "image_url", "path": "$.image_url"},
+  {"column": "stream_url", "path": "$.stream_url"},
+]
+```
+
+.create-or-alter table [Webcam] ingestion json mapping "Webcam_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "road_ids", "path": "$.data.road_ids"},
+  {"column": "event_time", "path": "$.data.event_time"},
+  {"column": "display_type", "path": "$.data.display_type"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "subtitle", "path": "$.data.subtitle"},
+  {"column": "description_lines", "path": "$.data.description_lines"},
+  {"column": "future", "path": "$.data.future"},
+  {"column": "is_blocked", "path": "$.data.is_blocked"},
+  {"column": "icon", "path": "$.data.icon"},
+  {"column": "extent", "path": "$.data.extent"},
+  {"column": "point", "path": "$.data.point"},
+  {"column": "coordinate_lat", "path": "$.data.coordinate_lat"},
+  {"column": "coordinate_lon", "path": "$.data.coordinate_lon"},
+  {"column": "route_recommendation_json", "path": "$.data.route_recommendation_json"},
+  {"column": "footer_lines", "path": "$.data.footer_lines"},
+  {"column": "operator_name", "path": "$.data.operator_name"},
+  {"column": "image_url", "path": "$.data.image_url"},
+  {"column": "stream_url", "path": "$.data.stream_url"},
+]
+```
+
+.drop materialized-view WebcamLatest ifexists;
+
+.create materialized-view with (backfill=true) WebcamLatest on table Webcam {
+    Webcam | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Webcam] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('DE.Autobahn.WebcamAppeared', 'DE.Autobahn.WebcamUpdated', 'DE.Autobahn.WebcamResolved')) | project['identifier'] = tostring(data.['identifier']),['road_ids'] = todynamic(data.['road_ids']),['event_time'] = todatetime(data.['event_time']),['display_type'] = tostring(data.['display_type']),['title'] = tostring(data.['title']),['subtitle'] = tostring(data.['subtitle']),['description_lines'] = todynamic(data.['description_lines']),['future'] = tobool(data.['future']),['is_blocked'] = tobool(data.['is_blocked']),['icon'] = tostring(data.['icon']),['extent'] = tostring(data.['extent']),['point'] = tostring(data.['point']),['coordinate_lat'] = toreal(data.['coordinate_lat']),['coordinate_lon'] = toreal(data.['coordinate_lon']),['route_recommendation_json'] = tostring(data.['route_recommendation_json']),['footer_lines'] = todynamic(data.['footer_lines']),['operator_name'] = tostring(data.['operator_name']),['image_url'] = tostring(data.['image_url']),['stream_url'] = tostring(data.['stream_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

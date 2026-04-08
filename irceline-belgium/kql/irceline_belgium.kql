@@ -1,0 +1,278 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: string,
+   [label]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_id]: "{\"description\": \"Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key.\"}",
+   [label]: "{\"description\": \"Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site.\"}",
+   [latitude]: "{\"description\": \"Station latitude in decimal degrees north, derived from the second element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The upstream array follows GeoJSON order [longitude, latitude, elevation].\"}",
+   [longitude]: "{\"description\": \"Station longitude in decimal degrees east, derived from the first element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The third element is the literal string 'NaN' in live payloads and is ignored.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "label", "path": "$.label"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "label", "path": "$.data.label"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.irceline.Station') | project['station_id'] = tostring(data.['station_id']),['label'] = tostring(data.['label']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Timeseries] (
+   [timeseries_id]: string,
+   [label]: string,
+   [uom]: string,
+   [station_id]: string,
+   [station_label]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [phenomenon_id]: string,
+   [phenomenon_label]: string,
+   [category_id]: string,
+   [category_label]: string,
+   [status_intervals]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Timeseries] docstring "{\"description\": \"Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.\"}";
+
+.alter table [Timeseries] column-docstrings (
+   [timeseries_id]: "{\"description\": \"Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events.\"}",
+   [label]: "{\"description\": \"Descriptive timeseries label from the upstream label property, combining phenomenon name, timeseries identifier, procedure label, and station label. Example: 'Particulate Matter < 10 \\u00b5m 6152 - DAILY CORRECTION TEOM - procedure, 40AL01 - Linkeroever'.\"}",
+   [uom]: "{\"description\": \"Published unit of measurement from the upstream uom property, such as '\\u00b5g/m\\u00b3'. IRCELINE returns this literal display unit on both collection and expanded timeseries responses.\"}",
+   [station_id]: "{\"description\": \"Numeric station identifier linked to the timeseries, mapped from station.properties.id on the embedded station feature. This is the stable identifier of the monitoring site that hosts the timeseries.\"}",
+   [station_label]: "{\"description\": \"Human-readable station label linked to the timeseries, mapped from station.properties.label on the embedded station feature.\"}",
+   [latitude]: "{\"description\": \"Station latitude in decimal degrees north, derived from station.geometry.coordinates[1] when the embedded station feature includes a GeoJSON Point geometry.\"}",
+   [longitude]: "{\"description\": \"Station longitude in decimal degrees east, derived from station.geometry.coordinates[0] when the embedded station feature includes a GeoJSON Point geometry.\"}",
+   [phenomenon_id]: "{\"description\": \"Identifier of the measured phenomenon from parameters.phenomenon.id on expanded timeseries metadata, for example '5' for particulate matter under 10 micrometers.\"}",
+   [phenomenon_label]: "{\"description\": \"Human-readable phenomenon label from parameters.phenomenon.label on expanded timeseries metadata, for example 'Nitrogen dioxide' or 'Ozone'.\"}",
+   [category_id]: "{\"description\": \"Identifier of the IRCELINE category linked to the timeseries from parameters.category.id. In the live API this currently mirrors the phenomenon identifier for air-quality pollutants.\"}",
+   [category_label]: "{\"description\": \"Human-readable IRCELINE category label from parameters.category.label. In the live API this currently mirrors the phenomenon label for air-quality pollutants.\"}",
+   [status_intervals]: "{\"description\": \"Optional ordered array of status interval bands from the upstream statusIntervals expansion. Each entry describes a lower and upper threshold, a display label, and a color used by IRCELINE for BelAQI-style interpretation of the timeseries values.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timeseries_id", "path": "$.timeseries_id"},
+  {"column": "label", "path": "$.label"},
+  {"column": "uom", "path": "$.uom"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_label", "path": "$.station_label"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "phenomenon_id", "path": "$.phenomenon_id"},
+  {"column": "phenomenon_label", "path": "$.phenomenon_label"},
+  {"column": "category_id", "path": "$.category_id"},
+  {"column": "category_label", "path": "$.category_label"},
+  {"column": "status_intervals", "path": "$.status_intervals"},
+]
+```
+
+.create-or-alter table [Timeseries] ingestion json mapping "Timeseries_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timeseries_id", "path": "$.data.timeseries_id"},
+  {"column": "label", "path": "$.data.label"},
+  {"column": "uom", "path": "$.data.uom"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_label", "path": "$.data.station_label"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "phenomenon_id", "path": "$.data.phenomenon_id"},
+  {"column": "phenomenon_label", "path": "$.data.phenomenon_label"},
+  {"column": "category_id", "path": "$.data.category_id"},
+  {"column": "category_label", "path": "$.data.category_label"},
+  {"column": "status_intervals", "path": "$.data.status_intervals"},
+]
+```
+
+.drop materialized-view TimeseriesLatest ifexists;
+
+.create materialized-view with (backfill=true) TimeseriesLatest on table Timeseries {
+    Timeseries | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Timeseries] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.irceline.Timeseries') | project['timeseries_id'] = tostring(data.['timeseries_id']),['label'] = tostring(data.['label']),['uom'] = tostring(data.['uom']),['station_id'] = tostring(data.['station_id']),['station_label'] = tostring(data.['station_label']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['phenomenon_id'] = tostring(data.['phenomenon_id']),['phenomenon_label'] = tostring(data.['phenomenon_label']),['category_id'] = tostring(data.['category_id']),['category_label'] = tostring(data.['category_label']),['status_intervals'] = todynamic(data.['status_intervals']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Observation] (
+   [timeseries_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [uom]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Observation] docstring "{\"description\": \"Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.\"}";
+
+.alter table [Observation] column-docstrings (
+   [timeseries_id]: "{\"description\": \"Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'.\"}",
+   [value]: "{\"description\": \"Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null.\"}",
+   [uom]: "{\"description\": \"Unit of measurement carried over from the parent timeseries uom field, such as '\\u00b5g/m\\u00b3'. This keeps each observation self-describing without requiring a separate metadata lookup.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timeseries_id", "path": "$.timeseries_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "uom", "path": "$.uom"},
+]
+```
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timeseries_id", "path": "$.data.timeseries_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "uom", "path": "$.data.uom"},
+]
+```
+
+.drop materialized-view ObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) ObservationLatest on table Observation {
+    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Observation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'be.irceline.Observation') | project['timeseries_id'] = tostring(data.['timeseries_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['uom'] = tostring(data.['uom']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

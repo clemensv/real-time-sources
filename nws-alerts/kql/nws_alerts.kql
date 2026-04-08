@@ -1,0 +1,192 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [WeatherAlert] (
+   [alert_id]: string,
+   [area_desc]: string,
+   [same_codes]: string,
+   [ugc_codes]: string,
+   [sent]: datetime,
+   [effective]: datetime,
+   [onset]: datetime,
+   [expires]: datetime,
+   [ends]: datetime,
+   [status]: string,
+   [message_type]: string,
+   [category]: string,
+   [severity]: string,
+   [certainty]: string,
+   [urgency]: string,
+   [event]: string,
+   [sender]: string,
+   [sender_name]: string,
+   [headline]: string,
+   [description]: string,
+   [instruction]: string,
+   [response]: string,
+   [scope]: string,
+   [code]: string,
+   [nws_headline]: string,
+   [vtec]: string,
+   [web]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherAlert] docstring "{\"description\": \"A weather or non-weather alert from the US National Weather Service (NWS/NOAA). Contains full CAP properties including severity, urgency, certainty, VTEC codes for event tracking, and UGC/SAME zone geocodes.\"}";
+
+.alter table [WeatherAlert] column-docstrings (
+   [alert_id]: "{\"description\": \"The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert.\"}",
+   [area_desc]: "{\"description\": \"A textual description of the affected geographic area (e.g., county names).\"}",
+   [same_codes]: "{\"description\": \"Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS).\"}",
+   [ugc_codes]: "{\"description\": \"Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001').\"}",
+   [sent]: "{\"description\": \"The date and time when the alert was sent, in ISO-8601 format.\"}",
+   [effective]: "{\"description\": \"The date and time when the alert becomes effective.\"}",
+   [onset]: "{\"description\": \"The expected date and time of onset of the weather event.\"}",
+   [expires]: "{\"description\": \"The date and time when the alert expires.\"}",
+   [ends]: "{\"description\": \"The expected end time of the weather event.\"}",
+   [status]: "{\"description\": \"The CAP alert status.\"}",
+   [message_type]: "{\"description\": \"The CAP message type.\"}",
+   [category]: "{\"description\": \"The CAP alert category (e.g., 'Met' for meteorological).\"}",
+   [severity]: "{\"description\": \"The CAP severity level.\"}",
+   [certainty]: "{\"description\": \"The CAP certainty level.\"}",
+   [urgency]: "{\"description\": \"The CAP urgency level.\"}",
+   [event]: "{\"description\": \"The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory').\"}",
+   [sender]: "{\"description\": \"The email address or identifier of the alert sender.\"}",
+   [sender_name]: "{\"description\": \"The human-readable name of the sender (e.g., 'NWS Tulsa OK').\"}",
+   [headline]: "{\"description\": \"A brief headline summarizing the alert.\"}",
+   [description]: "{\"description\": \"The full textual description of the alert.\"}",
+   [instruction]: "{\"description\": \"Recommended protective actions.\"}",
+   [response]: "{\"description\": \"The recommended response type (e.g., 'Shelter', 'Evacuate', 'None').\"}",
+   [scope]: "{\"description\": \"The CAP scope of the alert.\"}",
+   [code]: "{\"description\": \"The IPAWS code (e.g., 'IPAWSv1.0').\"}",
+   [nws_headline]: "{\"description\": \"The NWS-specific headline from the parameters block.\"}",
+   [vtec]: "{\"description\": \"The P-VTEC (Valid Time Event Code) string for NWS event tracking.\"}",
+   [web]: "{\"description\": \"A URL to the full alert details.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherAlert] ingestion json mapping "WeatherAlert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "alert_id", "path": "$.alert_id"},
+  {"column": "area_desc", "path": "$.area_desc"},
+  {"column": "same_codes", "path": "$.same_codes"},
+  {"column": "ugc_codes", "path": "$.ugc_codes"},
+  {"column": "sent", "path": "$.sent"},
+  {"column": "effective", "path": "$.effective"},
+  {"column": "onset", "path": "$.onset"},
+  {"column": "expires", "path": "$.expires"},
+  {"column": "ends", "path": "$.ends"},
+  {"column": "status", "path": "$.status"},
+  {"column": "message_type", "path": "$.message_type"},
+  {"column": "category", "path": "$.category"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "certainty", "path": "$.certainty"},
+  {"column": "urgency", "path": "$.urgency"},
+  {"column": "event", "path": "$.event"},
+  {"column": "sender", "path": "$.sender"},
+  {"column": "sender_name", "path": "$.sender_name"},
+  {"column": "headline", "path": "$.headline"},
+  {"column": "description", "path": "$.description"},
+  {"column": "instruction", "path": "$.instruction"},
+  {"column": "response", "path": "$.response"},
+  {"column": "scope", "path": "$.scope"},
+  {"column": "code", "path": "$.code"},
+  {"column": "nws_headline", "path": "$.nws_headline"},
+  {"column": "vtec", "path": "$.vtec"},
+  {"column": "web", "path": "$.web"},
+]
+```
+
+.create-or-alter table [WeatherAlert] ingestion json mapping "WeatherAlert_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "alert_id", "path": "$.data.alert_id"},
+  {"column": "area_desc", "path": "$.data.area_desc"},
+  {"column": "same_codes", "path": "$.data.same_codes"},
+  {"column": "ugc_codes", "path": "$.data.ugc_codes"},
+  {"column": "sent", "path": "$.data.sent"},
+  {"column": "effective", "path": "$.data.effective"},
+  {"column": "onset", "path": "$.data.onset"},
+  {"column": "expires", "path": "$.data.expires"},
+  {"column": "ends", "path": "$.data.ends"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "message_type", "path": "$.data.message_type"},
+  {"column": "category", "path": "$.data.category"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "certainty", "path": "$.data.certainty"},
+  {"column": "urgency", "path": "$.data.urgency"},
+  {"column": "event", "path": "$.data.event"},
+  {"column": "sender", "path": "$.data.sender"},
+  {"column": "sender_name", "path": "$.data.sender_name"},
+  {"column": "headline", "path": "$.data.headline"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "instruction", "path": "$.data.instruction"},
+  {"column": "response", "path": "$.data.response"},
+  {"column": "scope", "path": "$.data.scope"},
+  {"column": "code", "path": "$.data.code"},
+  {"column": "nws_headline", "path": "$.data.nws_headline"},
+  {"column": "vtec", "path": "$.data.vtec"},
+  {"column": "web", "path": "$.data.web"},
+]
+```
+
+.drop materialized-view WeatherAlertLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherAlertLatest on table WeatherAlert {
+    WeatherAlert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherAlert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NWS.WeatherAlert') | project['alert_id'] = tostring(data.['alert_id']),['area_desc'] = tostring(data.['area_desc']),['same_codes'] = tostring(data.['same_codes']),['ugc_codes'] = tostring(data.['ugc_codes']),['sent'] = todatetime(data.['sent']),['effective'] = todatetime(data.['effective']),['onset'] = todatetime(data.['onset']),['expires'] = todatetime(data.['expires']),['ends'] = todatetime(data.['ends']),['status'] = tostring(data.['status']),['message_type'] = tostring(data.['message_type']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['certainty'] = tostring(data.['certainty']),['urgency'] = tostring(data.['urgency']),['event'] = tostring(data.['event']),['sender'] = tostring(data.['sender']),['sender_name'] = tostring(data.['sender_name']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['instruction'] = tostring(data.['instruction']),['response'] = tostring(data.['response']),['scope'] = tostring(data.['scope']),['code'] = tostring(data.['code']),['nws_headline'] = tostring(data.['nws_headline']),['vtec'] = tostring(data.['vtec']),['web'] = tostring(data.['web']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

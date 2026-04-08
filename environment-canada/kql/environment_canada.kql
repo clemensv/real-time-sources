@@ -1,0 +1,273 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [msc_id]: string,
+   [name]: string,
+   [iata_id]: string,
+   [wmo_id]: int,
+   [province_territory]: string,
+   [data_provider]: string,
+   [dataset_network]: string,
+   [auto_man]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [elevation]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference data for an Environment Canada SWOB weather station. Stations are identified by their MSC ID (Meteorological Service of Canada identifier) and include WMO synoptic IDs where available.\"}";
+
+.alter table [Station] column-docstrings (
+   [msc_id]: "{\"description\": \"MSC station identifier (Meteorological Service of Canada ID), also known as Climate ID. Used as Kafka key.\"}",
+   [name]: "{\"description\": \"Station name as listed in the SWOB station registry, e.g. 'TORONTO PEARSON INTL A', 'VANCOUVER INTL A'.\"}",
+   [iata_id]: "{\"description\": \"IATA station code, e.g. 'CYYZ' for Toronto Pearson.\"}",
+   [wmo_id]: "{\"description\": \"WMO synoptic station identifier, e.g. 71624 for Toronto Pearson. Null for stations without a WMO assignment.\"}",
+   [province_territory]: "{\"description\": \"Canadian province or territory where the station is located, e.g. 'Ontario', 'British Columbia'.\"}",
+   [data_provider]: "{\"description\": \"Organization providing the data, typically 'MSC' for Meteorological Service of Canada.\"}",
+   [dataset_network]: "{\"description\": \"Network identifier, typically 'CA' for Canadian stations.\"}",
+   [auto_man]: "{\"description\": \"Station type: 'AUTO' for automatic, 'MAN' for manual, or combination.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the station in decimal degrees.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the station in decimal degrees.\"}",
+   [elevation]: "{\"description\": \"Station elevation above sea level in meters.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "msc_id", "path": "$.msc_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "iata_id", "path": "$.iata_id"},
+  {"column": "wmo_id", "path": "$.wmo_id"},
+  {"column": "province_territory", "path": "$.province_territory"},
+  {"column": "data_provider", "path": "$.data_provider"},
+  {"column": "dataset_network", "path": "$.dataset_network"},
+  {"column": "auto_man", "path": "$.auto_man"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "elevation", "path": "$.elevation"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "msc_id", "path": "$.data.msc_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "iata_id", "path": "$.data.iata_id"},
+  {"column": "wmo_id", "path": "$.data.wmo_id"},
+  {"column": "province_territory", "path": "$.data.province_territory"},
+  {"column": "data_provider", "path": "$.data.data_provider"},
+  {"column": "dataset_network", "path": "$.data.dataset_network"},
+  {"column": "auto_man", "path": "$.data.auto_man"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "elevation", "path": "$.data.elevation"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'CA.Gov.ECCC.Weather.Station') | project['msc_id'] = tostring(data.['msc_id']),['name'] = tostring(data.['name']),['iata_id'] = tostring(data.['iata_id']),['wmo_id'] = toint(data.['wmo_id']),['province_territory'] = tostring(data.['province_territory']),['data_provider'] = tostring(data.['data_provider']),['dataset_network'] = tostring(data.['dataset_network']),['auto_man'] = tostring(data.['auto_man']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['elevation'] = toreal(data.['elevation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherObservation] (
+   [msc_id]: string,
+   [station_name]: string,
+   [observation_time]: datetime,
+   [air_temperature]: real,
+   [dew_point]: real,
+   [relative_humidity]: int,
+   [station_pressure]: real,
+   [wind_speed]: real,
+   [wind_direction]: int,
+   [wind_gust]: real,
+   [precipitation_1hr]: real,
+   [mean_sea_level_pressure]: real,
+   [visibility]: real,
+   [snow_depth]: real,
+   [total_cloud_cover]: int,
+   [pressure_tendency_3hr]: real,
+   [max_temperature_24hr]: real,
+   [min_temperature_24hr]: real,
+   [wind_speed_1hr]: real,
+   [wind_gust_1hr]: real,
+   [precipitation_24hr]: real,
+   [altimeter_setting]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherObservation] docstring "{\"description\": \"Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.\"}";
+
+.alter table [WeatherObservation] column-docstrings (
+   [msc_id]: "{\"description\": \"MSC station identifier.\"}",
+   [station_name]: "{\"description\": \"Station name from the SWOB record.\"}",
+   [observation_time]: "{\"description\": \"Observation timestamp in UTC from the obs_date_tm field.\"}",
+   [air_temperature]: "{\"description\": \"Instantaneous air temperature from the air_temp field.\"}",
+   [dew_point]: "{\"description\": \"Dew point temperature from the dwpt_temp field.\"}",
+   [relative_humidity]: "{\"description\": \"Relative humidity from the rel_hum field.\"}",
+   [station_pressure]: "{\"description\": \"Station-level atmospheric pressure from the stn_pres field.\"}",
+   [wind_speed]: "{\"description\": \"Average wind speed at 10m over the last 1 minute from avg_wnd_spd_10m_pst1mt.\"}",
+   [wind_direction]: "{\"description\": \"Average wind direction at 10m over the last 1 minute from avg_wnd_dir_10m_pst1mt, in degrees clockwise from true north.\"}",
+   [wind_gust]: "{\"description\": \"Maximum wind speed at 10m in the last 1 minute from max_wnd_spd_10m_pst1mt.\"}",
+   [precipitation_1hr]: "{\"description\": \"Total precipitation in the last hour from pcpn_amt_pst1hr.\"}",
+   [mean_sea_level_pressure]: "{\"description\": \"Mean sea-level pressure (MSLP) from the mslp field. Available on synoptic and hourly reporting stations. Null on minutely auto-only stations.\"}",
+   [visibility]: "{\"description\": \"Horizontal visibility from the vis field. Primarily available on staffed and NAV CANADA stations.\"}",
+   [snow_depth]: "{\"description\": \"Snow depth on the ground from the snw_dpth field. Available on stations equipped with ultrasonic snow depth sensors.\"}",
+   [total_cloud_cover]: "{\"description\": \"Total cloud amount code from the tot_cld_amt field. Reports cloud cover in tenths (0-10) or oktas depending on reporting convention. Available on staffed and select automated stations.\"}",
+   [pressure_tendency_3hr]: "{\"description\": \"Change in station pressure over the preceding 3 hours from pres_tend_amt_pst3hrs. Positive values indicate rising pressure.\"}",
+   [max_temperature_24hr]: "{\"description\": \"Maximum air temperature in the past 24 hours from max_air_temp_pst24hrs.\"}",
+   [min_temperature_24hr]: "{\"description\": \"Minimum air temperature in the past 24 hours from min_air_temp_pst24hrs.\"}",
+   [wind_speed_1hr]: "{\"description\": \"Average wind speed at 10m over the past hour from avg_wnd_spd_10m_pst1hr.\"}",
+   [wind_gust_1hr]: "{\"description\": \"Maximum wind speed at 10m in the past hour from max_wnd_spd_10m_pst1hr.\"}",
+   [precipitation_24hr]: "{\"description\": \"Total precipitation in the past 24 hours from pcpn_amt_pst24hrs.\"}",
+   [altimeter_setting]: "{\"description\": \"Altimeter setting from the altmetr_setng field. Used in aviation.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "msc_id", "path": "$.msc_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "air_temperature", "path": "$.air_temperature"},
+  {"column": "dew_point", "path": "$.dew_point"},
+  {"column": "relative_humidity", "path": "$.relative_humidity"},
+  {"column": "station_pressure", "path": "$.station_pressure"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_gust", "path": "$.wind_gust"},
+  {"column": "precipitation_1hr", "path": "$.precipitation_1hr"},
+  {"column": "mean_sea_level_pressure", "path": "$.mean_sea_level_pressure"},
+  {"column": "visibility", "path": "$.visibility"},
+  {"column": "snow_depth", "path": "$.snow_depth"},
+  {"column": "total_cloud_cover", "path": "$.total_cloud_cover"},
+  {"column": "pressure_tendency_3hr", "path": "$.pressure_tendency_3hr"},
+  {"column": "max_temperature_24hr", "path": "$.max_temperature_24hr"},
+  {"column": "min_temperature_24hr", "path": "$.min_temperature_24hr"},
+  {"column": "wind_speed_1hr", "path": "$.wind_speed_1hr"},
+  {"column": "wind_gust_1hr", "path": "$.wind_gust_1hr"},
+  {"column": "precipitation_24hr", "path": "$.precipitation_24hr"},
+  {"column": "altimeter_setting", "path": "$.altimeter_setting"},
+]
+```
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "msc_id", "path": "$.data.msc_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "air_temperature", "path": "$.data.air_temperature"},
+  {"column": "dew_point", "path": "$.data.dew_point"},
+  {"column": "relative_humidity", "path": "$.data.relative_humidity"},
+  {"column": "station_pressure", "path": "$.data.station_pressure"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_gust", "path": "$.data.wind_gust"},
+  {"column": "precipitation_1hr", "path": "$.data.precipitation_1hr"},
+  {"column": "mean_sea_level_pressure", "path": "$.data.mean_sea_level_pressure"},
+  {"column": "visibility", "path": "$.data.visibility"},
+  {"column": "snow_depth", "path": "$.data.snow_depth"},
+  {"column": "total_cloud_cover", "path": "$.data.total_cloud_cover"},
+  {"column": "pressure_tendency_3hr", "path": "$.data.pressure_tendency_3hr"},
+  {"column": "max_temperature_24hr", "path": "$.data.max_temperature_24hr"},
+  {"column": "min_temperature_24hr", "path": "$.data.min_temperature_24hr"},
+  {"column": "wind_speed_1hr", "path": "$.data.wind_speed_1hr"},
+  {"column": "wind_gust_1hr", "path": "$.data.wind_gust_1hr"},
+  {"column": "precipitation_24hr", "path": "$.data.precipitation_24hr"},
+  {"column": "altimeter_setting", "path": "$.data.altimeter_setting"},
+]
+```
+
+.drop materialized-view WeatherObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
+    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'CA.Gov.ECCC.Weather.WeatherObservation') | project['msc_id'] = tostring(data.['msc_id']),['station_name'] = tostring(data.['station_name']),['observation_time'] = todatetime(data.['observation_time']),['air_temperature'] = toreal(data.['air_temperature']),['dew_point'] = toreal(data.['dew_point']),['relative_humidity'] = toint(data.['relative_humidity']),['station_pressure'] = toreal(data.['station_pressure']),['wind_speed'] = toreal(data.['wind_speed']),['wind_direction'] = toint(data.['wind_direction']),['wind_gust'] = toreal(data.['wind_gust']),['precipitation_1hr'] = toreal(data.['precipitation_1hr']),['mean_sea_level_pressure'] = toreal(data.['mean_sea_level_pressure']),['visibility'] = toreal(data.['visibility']),['snow_depth'] = toreal(data.['snow_depth']),['total_cloud_cover'] = toint(data.['total_cloud_cover']),['pressure_tendency_3hr'] = toreal(data.['pressure_tendency_3hr']),['max_temperature_24hr'] = toreal(data.['max_temperature_24hr']),['min_temperature_24hr'] = toreal(data.['min_temperature_24hr']),['wind_speed_1hr'] = toreal(data.['wind_speed_1hr']),['wind_gust_1hr'] = toreal(data.['wind_gust_1hr']),['precipitation_24hr'] = toreal(data.['precipitation_24hr']),['altimeter_setting'] = toreal(data.['altimeter_setting']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

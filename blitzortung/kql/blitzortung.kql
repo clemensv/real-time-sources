@@ -1,0 +1,124 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [LightningStroke] (
+   [source_id]: int,
+   [stroke_id]: string,
+   [event_time]: string,
+   [event_timestamp_ms]: long,
+   [latitude]: real,
+   [longitude]: real,
+   [server_id]: int,
+   [server_delay_ms]: int,
+   [accuracy_diameter_m]: real,
+   [detector_participations]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LightningStroke] docstring "{\"description\": \"One located lightning stroke from the public LightningMaps / Blitzortung live websocket feed. The stroke identity is the tuple of source_id and stroke_id because the upstream browser client tracks the last seen stroke id separately for each source stream.\"}";
+
+.alter table [LightningStroke] column-docstrings (
+   [source_id]: "{\"description\": \"Upstream live-source identifier from the src field. The public LightningMaps websocket treats stroke ids as source-scoped, so this field is part of the stable event identity.\"}",
+   [stroke_id]: "{\"description\": \"Source-scoped stroke identifier from the upstream id field, stringified so the Kafka key and CloudEvents subject can be resolved directly from the payload.\"}",
+   [event_time]: "{\"description\": \"ISO-8601 UTC timestamp derived from the upstream time field, which the public live websocket emits in Unix epoch milliseconds.\"}",
+   [event_timestamp_ms]: "{\"description\": \"Original upstream time value in Unix epoch milliseconds from the public live websocket.\"}",
+   [latitude]: "{\"description\": \"Latitude of the located lightning stroke in decimal degrees from the upstream lat field.\"}",
+   [longitude]: "{\"description\": \"Longitude of the located lightning stroke in decimal degrees from the upstream lon field.\"}",
+   [server_id]: "{\"description\": \"Upstream server identifier from the srv field that produced the current live batch. The public documentation reviewed during implementation does not publish a stable human-readable enumeration for these ids.\"}",
+   [server_delay_ms]: "{\"description\": \"Delay between the upstream server receiving or computing the stroke and sending it to the live client, in milliseconds, from the public del field.\"}",
+   [accuracy_diameter_m]: "{\"description\": \"Estimated accuracy diameter in meters from the upstream dev field. The public LightningMaps client renders an accuracy circle with radius dev/2, which indicates the value is expressed as a diameter rather than a raw algorithm score.\"}",
+   [detector_participations]: "{\"description\": \"Detector participation entries expanded from the upstream sta object when the client asks the public live feed to include station details. An empty array means the upstream batch did not include detector participation details for this stroke.\", \"schema\": {\"type\": \"array\", \"description\": \"Detector participation entries expanded from the upstream sta object when the client asks the public live feed to include station details. An empty array means the upstream batch did not include detector participation details for this stroke.\", \"items\": {\"$ref\": \"#/definitions/DetectorParticipation\"}, \"altnames\": {\"lightningmaps-live\": \"sta\"}}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LightningStroke] ingestion json mapping "LightningStroke_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "source_id", "path": "$.source_id"},
+  {"column": "stroke_id", "path": "$.stroke_id"},
+  {"column": "event_time", "path": "$.event_time"},
+  {"column": "event_timestamp_ms", "path": "$.event_timestamp_ms"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "server_id", "path": "$.server_id"},
+  {"column": "server_delay_ms", "path": "$.server_delay_ms"},
+  {"column": "accuracy_diameter_m", "path": "$.accuracy_diameter_m"},
+  {"column": "detector_participations", "path": "$.detector_participations"},
+]
+```
+
+.create-or-alter table [LightningStroke] ingestion json mapping "LightningStroke_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "source_id", "path": "$.data.source_id"},
+  {"column": "stroke_id", "path": "$.data.stroke_id"},
+  {"column": "event_time", "path": "$.data.event_time"},
+  {"column": "event_timestamp_ms", "path": "$.data.event_timestamp_ms"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "server_id", "path": "$.data.server_id"},
+  {"column": "server_delay_ms", "path": "$.data.server_delay_ms"},
+  {"column": "accuracy_diameter_m", "path": "$.data.accuracy_diameter_m"},
+  {"column": "detector_participations", "path": "$.data.detector_participations"},
+]
+```
+
+.drop materialized-view LightningStrokeLatest ifexists;
+
+.create materialized-view with (backfill=true) LightningStrokeLatest on table LightningStroke {
+    LightningStroke | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LightningStroke] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Blitzortung.Lightning.LightningStroke') | project['source_id'] = toint(data.['source_id']),['stroke_id'] = tostring(data.['stroke_id']),['event_time'] = tostring(data.['event_time']),['event_timestamp_ms'] = tolong(data.['event_timestamp_ms']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['server_id'] = toint(data.['server_id']),['server_delay_ms'] = toint(data.['server_delay_ms']),['accuracy_diameter_m'] = toreal(data.['accuracy_diameter_m']),['detector_participations'] = todynamic(data.['detector_participations']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

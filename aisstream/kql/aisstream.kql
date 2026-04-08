@@ -1,0 +1,1954 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [PositionReport] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [NavigationalStatus]: int,
+   [RateOfTurn]: int,
+   [Sog]: real,
+   [PositionAccuracy]: bool,
+   [Longitude]: real,
+   [Latitude]: real,
+   [Cog]: real,
+   [TrueHeading]: int,
+   [Timestamp]: int,
+   [SpecialManoeuvreIndicator]: int,
+   [Spare]: int,
+   [Raim]: bool,
+   [CommunicationState]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [PositionReport] ingestion json mapping "PositionReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "NavigationalStatus", "path": "$.NavigationalStatus"},
+  {"column": "RateOfTurn", "path": "$.RateOfTurn"},
+  {"column": "Sog", "path": "$.Sog"},
+  {"column": "PositionAccuracy", "path": "$.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "Cog", "path": "$.Cog"},
+  {"column": "TrueHeading", "path": "$.TrueHeading"},
+  {"column": "Timestamp", "path": "$.Timestamp"},
+  {"column": "SpecialManoeuvreIndicator", "path": "$.SpecialManoeuvreIndicator"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Raim", "path": "$.Raim"},
+  {"column": "CommunicationState", "path": "$.CommunicationState"},
+]
+```
+
+.create-or-alter table [PositionReport] ingestion json mapping "PositionReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "NavigationalStatus", "path": "$.data.NavigationalStatus"},
+  {"column": "RateOfTurn", "path": "$.data.RateOfTurn"},
+  {"column": "Sog", "path": "$.data.Sog"},
+  {"column": "PositionAccuracy", "path": "$.data.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "Cog", "path": "$.data.Cog"},
+  {"column": "TrueHeading", "path": "$.data.TrueHeading"},
+  {"column": "Timestamp", "path": "$.data.Timestamp"},
+  {"column": "SpecialManoeuvreIndicator", "path": "$.data.SpecialManoeuvreIndicator"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Raim", "path": "$.data.Raim"},
+  {"column": "CommunicationState", "path": "$.data.CommunicationState"},
+]
+```
+
+.drop materialized-view PositionReportLatest ifexists;
+
+.create materialized-view with (backfill=true) PositionReportLatest on table PositionReport {
+    PositionReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PositionReport] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.PositionReport') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['NavigationalStatus'] = toint(data.['NavigationalStatus']),['RateOfTurn'] = toint(data.['RateOfTurn']),['Sog'] = toreal(data.['Sog']),['PositionAccuracy'] = tobool(data.['PositionAccuracy']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['Cog'] = toreal(data.['Cog']),['TrueHeading'] = toint(data.['TrueHeading']),['Timestamp'] = toint(data.['Timestamp']),['SpecialManoeuvreIndicator'] = toint(data.['SpecialManoeuvreIndicator']),['Spare'] = toint(data.['Spare']),['Raim'] = tobool(data.['Raim']),['CommunicationState'] = toint(data.['CommunicationState']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ShipStaticData] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [AisVersion]: int,
+   [ImoNumber]: int,
+   [CallSign]: string,
+   [Name]: string,
+   [Type]: int,
+   [Dimension]: dynamic,
+   [FixType]: int,
+   [Eta]: dynamic,
+   [MaximumStaticDraught]: real,
+   [Destination]: string,
+   [Dte]: bool,
+   [Spare]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [ShipStaticData] ingestion json mapping "ShipStaticData_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "AisVersion", "path": "$.AisVersion"},
+  {"column": "ImoNumber", "path": "$.ImoNumber"},
+  {"column": "CallSign", "path": "$.CallSign"},
+  {"column": "Name", "path": "$.Name"},
+  {"column": "Type", "path": "$.Type"},
+  {"column": "Dimension", "path": "$.Dimension"},
+  {"column": "FixType", "path": "$.FixType"},
+  {"column": "Eta", "path": "$.Eta"},
+  {"column": "MaximumStaticDraught", "path": "$.MaximumStaticDraught"},
+  {"column": "Destination", "path": "$.Destination"},
+  {"column": "Dte", "path": "$.Dte"},
+  {"column": "Spare", "path": "$.Spare"},
+]
+```
+
+.create-or-alter table [ShipStaticData] ingestion json mapping "ShipStaticData_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "AisVersion", "path": "$.data.AisVersion"},
+  {"column": "ImoNumber", "path": "$.data.ImoNumber"},
+  {"column": "CallSign", "path": "$.data.CallSign"},
+  {"column": "Name", "path": "$.data.Name"},
+  {"column": "Type", "path": "$.data.Type"},
+  {"column": "Dimension", "path": "$.data.Dimension"},
+  {"column": "FixType", "path": "$.data.FixType"},
+  {"column": "Eta", "path": "$.data.Eta"},
+  {"column": "MaximumStaticDraught", "path": "$.data.MaximumStaticDraught"},
+  {"column": "Destination", "path": "$.data.Destination"},
+  {"column": "Dte", "path": "$.data.Dte"},
+  {"column": "Spare", "path": "$.data.Spare"},
+]
+```
+
+.drop materialized-view ShipStaticDataLatest ifexists;
+
+.create materialized-view with (backfill=true) ShipStaticDataLatest on table ShipStaticData {
+    ShipStaticData | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ShipStaticData] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.ShipStaticData') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['AisVersion'] = toint(data.['AisVersion']),['ImoNumber'] = toint(data.['ImoNumber']),['CallSign'] = tostring(data.['CallSign']),['Name'] = tostring(data.['Name']),['Type'] = toint(data.['Type']),['Dimension'] = todynamic(data.['Dimension']),['FixType'] = toint(data.['FixType']),['Eta'] = todynamic(data.['Eta']),['MaximumStaticDraught'] = toreal(data.['MaximumStaticDraught']),['Destination'] = tostring(data.['Destination']),['Dte'] = tobool(data.['Dte']),['Spare'] = tobool(data.['Spare']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StandardClassBPositionReport] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare1]: int,
+   [Sog]: real,
+   [PositionAccuracy]: bool,
+   [Longitude]: real,
+   [Latitude]: real,
+   [Cog]: real,
+   [TrueHeading]: int,
+   [Timestamp]: int,
+   [Spare2]: int,
+   [ClassBUnit]: bool,
+   [ClassBDisplay]: bool,
+   [ClassBDsc]: bool,
+   [ClassBBand]: bool,
+   [ClassBMsg22]: bool,
+   [AssignedMode]: bool,
+   [Raim]: bool,
+   [CommunicationStateIsItdma]: bool,
+   [CommunicationState]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [StandardClassBPositionReport] ingestion json mapping "StandardClassBPositionReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "Sog", "path": "$.Sog"},
+  {"column": "PositionAccuracy", "path": "$.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "Cog", "path": "$.Cog"},
+  {"column": "TrueHeading", "path": "$.TrueHeading"},
+  {"column": "Timestamp", "path": "$.Timestamp"},
+  {"column": "Spare2", "path": "$.Spare2"},
+  {"column": "ClassBUnit", "path": "$.ClassBUnit"},
+  {"column": "ClassBDisplay", "path": "$.ClassBDisplay"},
+  {"column": "ClassBDsc", "path": "$.ClassBDsc"},
+  {"column": "ClassBBand", "path": "$.ClassBBand"},
+  {"column": "ClassBMsg22", "path": "$.ClassBMsg22"},
+  {"column": "AssignedMode", "path": "$.AssignedMode"},
+  {"column": "Raim", "path": "$.Raim"},
+  {"column": "CommunicationStateIsItdma", "path": "$.CommunicationStateIsItdma"},
+  {"column": "CommunicationState", "path": "$.CommunicationState"},
+]
+```
+
+.create-or-alter table [StandardClassBPositionReport] ingestion json mapping "StandardClassBPositionReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "Sog", "path": "$.data.Sog"},
+  {"column": "PositionAccuracy", "path": "$.data.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "Cog", "path": "$.data.Cog"},
+  {"column": "TrueHeading", "path": "$.data.TrueHeading"},
+  {"column": "Timestamp", "path": "$.data.Timestamp"},
+  {"column": "Spare2", "path": "$.data.Spare2"},
+  {"column": "ClassBUnit", "path": "$.data.ClassBUnit"},
+  {"column": "ClassBDisplay", "path": "$.data.ClassBDisplay"},
+  {"column": "ClassBDsc", "path": "$.data.ClassBDsc"},
+  {"column": "ClassBBand", "path": "$.data.ClassBBand"},
+  {"column": "ClassBMsg22", "path": "$.data.ClassBMsg22"},
+  {"column": "AssignedMode", "path": "$.data.AssignedMode"},
+  {"column": "Raim", "path": "$.data.Raim"},
+  {"column": "CommunicationStateIsItdma", "path": "$.data.CommunicationStateIsItdma"},
+  {"column": "CommunicationState", "path": "$.data.CommunicationState"},
+]
+```
+
+.drop materialized-view StandardClassBPositionReportLatest ifexists;
+
+.create materialized-view with (backfill=true) StandardClassBPositionReportLatest on table StandardClassBPositionReport {
+    StandardClassBPositionReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StandardClassBPositionReport] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.StandardClassBPositionReport') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare1'] = toint(data.['Spare1']),['Sog'] = toreal(data.['Sog']),['PositionAccuracy'] = tobool(data.['PositionAccuracy']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['Cog'] = toreal(data.['Cog']),['TrueHeading'] = toint(data.['TrueHeading']),['Timestamp'] = toint(data.['Timestamp']),['Spare2'] = toint(data.['Spare2']),['ClassBUnit'] = tobool(data.['ClassBUnit']),['ClassBDisplay'] = tobool(data.['ClassBDisplay']),['ClassBDsc'] = tobool(data.['ClassBDsc']),['ClassBBand'] = tobool(data.['ClassBBand']),['ClassBMsg22'] = tobool(data.['ClassBMsg22']),['AssignedMode'] = tobool(data.['AssignedMode']),['Raim'] = tobool(data.['Raim']),['CommunicationStateIsItdma'] = tobool(data.['CommunicationStateIsItdma']),['CommunicationState'] = toint(data.['CommunicationState']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ExtendedClassBPositionReport] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare1]: int,
+   [Sog]: real,
+   [PositionAccuracy]: bool,
+   [Longitude]: real,
+   [Latitude]: real,
+   [Cog]: real,
+   [TrueHeading]: int,
+   [Timestamp]: int,
+   [Spare2]: int,
+   [Name]: string,
+   [Type]: int,
+   [Dimension]: dynamic,
+   [FixType]: int,
+   [Raim]: bool,
+   [Dte]: bool,
+   [AssignedMode]: bool,
+   [Spare3]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [ExtendedClassBPositionReport] ingestion json mapping "ExtendedClassBPositionReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "Sog", "path": "$.Sog"},
+  {"column": "PositionAccuracy", "path": "$.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "Cog", "path": "$.Cog"},
+  {"column": "TrueHeading", "path": "$.TrueHeading"},
+  {"column": "Timestamp", "path": "$.Timestamp"},
+  {"column": "Spare2", "path": "$.Spare2"},
+  {"column": "Name", "path": "$.Name"},
+  {"column": "Type", "path": "$.Type"},
+  {"column": "Dimension", "path": "$.Dimension"},
+  {"column": "FixType", "path": "$.FixType"},
+  {"column": "Raim", "path": "$.Raim"},
+  {"column": "Dte", "path": "$.Dte"},
+  {"column": "AssignedMode", "path": "$.AssignedMode"},
+  {"column": "Spare3", "path": "$.Spare3"},
+]
+```
+
+.create-or-alter table [ExtendedClassBPositionReport] ingestion json mapping "ExtendedClassBPositionReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "Sog", "path": "$.data.Sog"},
+  {"column": "PositionAccuracy", "path": "$.data.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "Cog", "path": "$.data.Cog"},
+  {"column": "TrueHeading", "path": "$.data.TrueHeading"},
+  {"column": "Timestamp", "path": "$.data.Timestamp"},
+  {"column": "Spare2", "path": "$.data.Spare2"},
+  {"column": "Name", "path": "$.data.Name"},
+  {"column": "Type", "path": "$.data.Type"},
+  {"column": "Dimension", "path": "$.data.Dimension"},
+  {"column": "FixType", "path": "$.data.FixType"},
+  {"column": "Raim", "path": "$.data.Raim"},
+  {"column": "Dte", "path": "$.data.Dte"},
+  {"column": "AssignedMode", "path": "$.data.AssignedMode"},
+  {"column": "Spare3", "path": "$.data.Spare3"},
+]
+```
+
+.drop materialized-view ExtendedClassBPositionReportLatest ifexists;
+
+.create materialized-view with (backfill=true) ExtendedClassBPositionReportLatest on table ExtendedClassBPositionReport {
+    ExtendedClassBPositionReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ExtendedClassBPositionReport] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.ExtendedClassBPositionReport') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare1'] = toint(data.['Spare1']),['Sog'] = toreal(data.['Sog']),['PositionAccuracy'] = tobool(data.['PositionAccuracy']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['Cog'] = toreal(data.['Cog']),['TrueHeading'] = toint(data.['TrueHeading']),['Timestamp'] = toint(data.['Timestamp']),['Spare2'] = toint(data.['Spare2']),['Name'] = tostring(data.['Name']),['Type'] = toint(data.['Type']),['Dimension'] = todynamic(data.['Dimension']),['FixType'] = toint(data.['FixType']),['Raim'] = tobool(data.['Raim']),['Dte'] = tobool(data.['Dte']),['AssignedMode'] = tobool(data.['AssignedMode']),['Spare3'] = toint(data.['Spare3']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AidsToNavigationReport] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Type]: int,
+   [Name]: string,
+   [PositionAccuracy]: bool,
+   [Longitude]: real,
+   [Latitude]: real,
+   [Dimension]: dynamic,
+   [Fixtype]: int,
+   [Timestamp]: int,
+   [OffPosition]: bool,
+   [AtoN]: int,
+   [Raim]: bool,
+   [VirtualAtoN]: bool,
+   [AssignedMode]: bool,
+   [Spare]: bool,
+   [NameExtension]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [AidsToNavigationReport] ingestion json mapping "AidsToNavigationReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Type", "path": "$.Type"},
+  {"column": "Name", "path": "$.Name"},
+  {"column": "PositionAccuracy", "path": "$.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "Dimension", "path": "$.Dimension"},
+  {"column": "Fixtype", "path": "$.Fixtype"},
+  {"column": "Timestamp", "path": "$.Timestamp"},
+  {"column": "OffPosition", "path": "$.OffPosition"},
+  {"column": "AtoN", "path": "$.AtoN"},
+  {"column": "Raim", "path": "$.Raim"},
+  {"column": "VirtualAtoN", "path": "$.VirtualAtoN"},
+  {"column": "AssignedMode", "path": "$.AssignedMode"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "NameExtension", "path": "$.NameExtension"},
+]
+```
+
+.create-or-alter table [AidsToNavigationReport] ingestion json mapping "AidsToNavigationReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Type", "path": "$.data.Type"},
+  {"column": "Name", "path": "$.data.Name"},
+  {"column": "PositionAccuracy", "path": "$.data.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "Dimension", "path": "$.data.Dimension"},
+  {"column": "Fixtype", "path": "$.data.Fixtype"},
+  {"column": "Timestamp", "path": "$.data.Timestamp"},
+  {"column": "OffPosition", "path": "$.data.OffPosition"},
+  {"column": "AtoN", "path": "$.data.AtoN"},
+  {"column": "Raim", "path": "$.data.Raim"},
+  {"column": "VirtualAtoN", "path": "$.data.VirtualAtoN"},
+  {"column": "AssignedMode", "path": "$.data.AssignedMode"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "NameExtension", "path": "$.data.NameExtension"},
+]
+```
+
+.drop materialized-view AidsToNavigationReportLatest ifexists;
+
+.create materialized-view with (backfill=true) AidsToNavigationReportLatest on table AidsToNavigationReport {
+    AidsToNavigationReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AidsToNavigationReport] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.AidsToNavigationReport') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Type'] = toint(data.['Type']),['Name'] = tostring(data.['Name']),['PositionAccuracy'] = tobool(data.['PositionAccuracy']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['Dimension'] = todynamic(data.['Dimension']),['Fixtype'] = toint(data.['Fixtype']),['Timestamp'] = toint(data.['Timestamp']),['OffPosition'] = tobool(data.['OffPosition']),['AtoN'] = toint(data.['AtoN']),['Raim'] = tobool(data.['Raim']),['VirtualAtoN'] = tobool(data.['VirtualAtoN']),['AssignedMode'] = tobool(data.['AssignedMode']),['Spare'] = tobool(data.['Spare']),['NameExtension'] = tostring(data.['NameExtension']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StaticDataReport] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Reserved]: int,
+   [PartNumber]: bool,
+   [ReportA]: dynamic,
+   [ReportB]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [StaticDataReport] ingestion json mapping "StaticDataReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Reserved", "path": "$.Reserved"},
+  {"column": "PartNumber", "path": "$.PartNumber"},
+  {"column": "ReportA", "path": "$.ReportA"},
+  {"column": "ReportB", "path": "$.ReportB"},
+]
+```
+
+.create-or-alter table [StaticDataReport] ingestion json mapping "StaticDataReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Reserved", "path": "$.data.Reserved"},
+  {"column": "PartNumber", "path": "$.data.PartNumber"},
+  {"column": "ReportA", "path": "$.data.ReportA"},
+  {"column": "ReportB", "path": "$.data.ReportB"},
+]
+```
+
+.drop materialized-view StaticDataReportLatest ifexists;
+
+.create materialized-view with (backfill=true) StaticDataReportLatest on table StaticDataReport {
+    StaticDataReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StaticDataReport] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.StaticDataReport') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Reserved'] = toint(data.['Reserved']),['PartNumber'] = tobool(data.['PartNumber']),['ReportA'] = todynamic(data.['ReportA']),['ReportB'] = todynamic(data.['ReportB']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BaseStationReport] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [UtcYear]: int,
+   [UtcMonth]: int,
+   [UtcDay]: int,
+   [UtcHour]: int,
+   [UtcMinute]: int,
+   [UtcSecond]: int,
+   [PositionAccuracy]: bool,
+   [Longitude]: real,
+   [Latitude]: real,
+   [FixType]: int,
+   [LongRangeEnable]: bool,
+   [Spare]: int,
+   [Raim]: bool,
+   [CommunicationState]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [BaseStationReport] ingestion json mapping "BaseStationReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "UtcYear", "path": "$.UtcYear"},
+  {"column": "UtcMonth", "path": "$.UtcMonth"},
+  {"column": "UtcDay", "path": "$.UtcDay"},
+  {"column": "UtcHour", "path": "$.UtcHour"},
+  {"column": "UtcMinute", "path": "$.UtcMinute"},
+  {"column": "UtcSecond", "path": "$.UtcSecond"},
+  {"column": "PositionAccuracy", "path": "$.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "FixType", "path": "$.FixType"},
+  {"column": "LongRangeEnable", "path": "$.LongRangeEnable"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Raim", "path": "$.Raim"},
+  {"column": "CommunicationState", "path": "$.CommunicationState"},
+]
+```
+
+.create-or-alter table [BaseStationReport] ingestion json mapping "BaseStationReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "UtcYear", "path": "$.data.UtcYear"},
+  {"column": "UtcMonth", "path": "$.data.UtcMonth"},
+  {"column": "UtcDay", "path": "$.data.UtcDay"},
+  {"column": "UtcHour", "path": "$.data.UtcHour"},
+  {"column": "UtcMinute", "path": "$.data.UtcMinute"},
+  {"column": "UtcSecond", "path": "$.data.UtcSecond"},
+  {"column": "PositionAccuracy", "path": "$.data.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "FixType", "path": "$.data.FixType"},
+  {"column": "LongRangeEnable", "path": "$.data.LongRangeEnable"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Raim", "path": "$.data.Raim"},
+  {"column": "CommunicationState", "path": "$.data.CommunicationState"},
+]
+```
+
+.drop materialized-view BaseStationReportLatest ifexists;
+
+.create materialized-view with (backfill=true) BaseStationReportLatest on table BaseStationReport {
+    BaseStationReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BaseStationReport] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.BaseStationReport') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['UtcYear'] = toint(data.['UtcYear']),['UtcMonth'] = toint(data.['UtcMonth']),['UtcDay'] = toint(data.['UtcDay']),['UtcHour'] = toint(data.['UtcHour']),['UtcMinute'] = toint(data.['UtcMinute']),['UtcSecond'] = toint(data.['UtcSecond']),['PositionAccuracy'] = tobool(data.['PositionAccuracy']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['FixType'] = toint(data.['FixType']),['LongRangeEnable'] = tobool(data.['LongRangeEnable']),['Spare'] = toint(data.['Spare']),['Raim'] = tobool(data.['Raim']),['CommunicationState'] = toint(data.['CommunicationState']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SafetyBroadcastMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare]: int,
+   [Text]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [SafetyBroadcastMessage] ingestion json mapping "SafetyBroadcastMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Text", "path": "$.Text"},
+]
+```
+
+.create-or-alter table [SafetyBroadcastMessage] ingestion json mapping "SafetyBroadcastMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Text", "path": "$.data.Text"},
+]
+```
+
+.drop materialized-view SafetyBroadcastMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) SafetyBroadcastMessageLatest on table SafetyBroadcastMessage {
+    SafetyBroadcastMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SafetyBroadcastMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.SafetyBroadcastMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare'] = toint(data.['Spare']),['Text'] = tostring(data.['Text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StandardSearchAndRescueAircraftReport] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Altitude]: int,
+   [Sog]: real,
+   [PositionAccuracy]: bool,
+   [Longitude]: real,
+   [Latitude]: real,
+   [Cog]: real,
+   [Timestamp]: int,
+   [AltFromBaro]: bool,
+   [Spare1]: int,
+   [Dte]: bool,
+   [Spare2]: int,
+   [AssignedMode]: bool,
+   [Raim]: bool,
+   [CommunicationStateIsItdma]: bool,
+   [CommunicationState]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [StandardSearchAndRescueAircraftReport] ingestion json mapping "StandardSearchAndRescueAircraftReport_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Altitude", "path": "$.Altitude"},
+  {"column": "Sog", "path": "$.Sog"},
+  {"column": "PositionAccuracy", "path": "$.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "Cog", "path": "$.Cog"},
+  {"column": "Timestamp", "path": "$.Timestamp"},
+  {"column": "AltFromBaro", "path": "$.AltFromBaro"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "Dte", "path": "$.Dte"},
+  {"column": "Spare2", "path": "$.Spare2"},
+  {"column": "AssignedMode", "path": "$.AssignedMode"},
+  {"column": "Raim", "path": "$.Raim"},
+  {"column": "CommunicationStateIsItdma", "path": "$.CommunicationStateIsItdma"},
+  {"column": "CommunicationState", "path": "$.CommunicationState"},
+]
+```
+
+.create-or-alter table [StandardSearchAndRescueAircraftReport] ingestion json mapping "StandardSearchAndRescueAircraftReport_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Altitude", "path": "$.data.Altitude"},
+  {"column": "Sog", "path": "$.data.Sog"},
+  {"column": "PositionAccuracy", "path": "$.data.PositionAccuracy"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "Cog", "path": "$.data.Cog"},
+  {"column": "Timestamp", "path": "$.data.Timestamp"},
+  {"column": "AltFromBaro", "path": "$.data.AltFromBaro"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "Dte", "path": "$.data.Dte"},
+  {"column": "Spare2", "path": "$.data.Spare2"},
+  {"column": "AssignedMode", "path": "$.data.AssignedMode"},
+  {"column": "Raim", "path": "$.data.Raim"},
+  {"column": "CommunicationStateIsItdma", "path": "$.data.CommunicationStateIsItdma"},
+  {"column": "CommunicationState", "path": "$.data.CommunicationState"},
+]
+```
+
+.drop materialized-view StandardSearchAndRescueAircraftReportLatest ifexists;
+
+.create materialized-view with (backfill=true) StandardSearchAndRescueAircraftReportLatest on table StandardSearchAndRescueAircraftReport {
+    StandardSearchAndRescueAircraftReport | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StandardSearchAndRescueAircraftReport] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.StandardSearchAndRescueAircraftReport') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Altitude'] = toint(data.['Altitude']),['Sog'] = toreal(data.['Sog']),['PositionAccuracy'] = tobool(data.['PositionAccuracy']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['Cog'] = toreal(data.['Cog']),['Timestamp'] = toint(data.['Timestamp']),['AltFromBaro'] = tobool(data.['AltFromBaro']),['Spare1'] = toint(data.['Spare1']),['Dte'] = tobool(data.['Dte']),['Spare2'] = toint(data.['Spare2']),['AssignedMode'] = tobool(data.['AssignedMode']),['Raim'] = tobool(data.['Raim']),['CommunicationStateIsItdma'] = tobool(data.['CommunicationStateIsItdma']),['CommunicationState'] = toint(data.['CommunicationState']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LongRangeAisBroadcastMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [PositionAccuracy]: bool,
+   [Raim]: bool,
+   [NavigationalStatus]: int,
+   [Longitude]: real,
+   [Latitude]: real,
+   [Sog]: real,
+   [Cog]: real,
+   [PositionLatency]: bool,
+   [Spare]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [LongRangeAisBroadcastMessage] ingestion json mapping "LongRangeAisBroadcastMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "PositionAccuracy", "path": "$.PositionAccuracy"},
+  {"column": "Raim", "path": "$.Raim"},
+  {"column": "NavigationalStatus", "path": "$.NavigationalStatus"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "Sog", "path": "$.Sog"},
+  {"column": "Cog", "path": "$.Cog"},
+  {"column": "PositionLatency", "path": "$.PositionLatency"},
+  {"column": "Spare", "path": "$.Spare"},
+]
+```
+
+.create-or-alter table [LongRangeAisBroadcastMessage] ingestion json mapping "LongRangeAisBroadcastMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "PositionAccuracy", "path": "$.data.PositionAccuracy"},
+  {"column": "Raim", "path": "$.data.Raim"},
+  {"column": "NavigationalStatus", "path": "$.data.NavigationalStatus"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "Sog", "path": "$.data.Sog"},
+  {"column": "Cog", "path": "$.data.Cog"},
+  {"column": "PositionLatency", "path": "$.data.PositionLatency"},
+  {"column": "Spare", "path": "$.data.Spare"},
+]
+```
+
+.drop materialized-view LongRangeAisBroadcastMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) LongRangeAisBroadcastMessageLatest on table LongRangeAisBroadcastMessage {
+    LongRangeAisBroadcastMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LongRangeAisBroadcastMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.LongRangeAisBroadcastMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['PositionAccuracy'] = tobool(data.['PositionAccuracy']),['Raim'] = tobool(data.['Raim']),['NavigationalStatus'] = toint(data.['NavigationalStatus']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['Sog'] = toreal(data.['Sog']),['Cog'] = toreal(data.['Cog']),['PositionLatency'] = tobool(data.['PositionLatency']),['Spare'] = tobool(data.['Spare']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AddressedSafetyMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Sequenceinteger]: int,
+   [DestinationID]: int,
+   [Retransmission]: bool,
+   [Spare]: bool,
+   [Text]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [AddressedSafetyMessage] ingestion json mapping "AddressedSafetyMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Sequenceinteger", "path": "$.Sequenceinteger"},
+  {"column": "DestinationID", "path": "$.DestinationID"},
+  {"column": "Retransmission", "path": "$.Retransmission"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Text", "path": "$.Text"},
+]
+```
+
+.create-or-alter table [AddressedSafetyMessage] ingestion json mapping "AddressedSafetyMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Sequenceinteger", "path": "$.data.Sequenceinteger"},
+  {"column": "DestinationID", "path": "$.data.DestinationID"},
+  {"column": "Retransmission", "path": "$.data.Retransmission"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Text", "path": "$.data.Text"},
+]
+```
+
+.drop materialized-view AddressedSafetyMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) AddressedSafetyMessageLatest on table AddressedSafetyMessage {
+    AddressedSafetyMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AddressedSafetyMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.AddressedSafetyMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Sequenceinteger'] = toint(data.['Sequenceinteger']),['DestinationID'] = toint(data.['DestinationID']),['Retransmission'] = tobool(data.['Retransmission']),['Spare'] = tobool(data.['Spare']),['Text'] = tostring(data.['Text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AddressedBinaryMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Sequenceinteger]: int,
+   [DestinationID]: int,
+   [Retransmission]: bool,
+   [Spare]: bool,
+   [ApplicationID]: dynamic,
+   [BinaryData]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [AddressedBinaryMessage] ingestion json mapping "AddressedBinaryMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Sequenceinteger", "path": "$.Sequenceinteger"},
+  {"column": "DestinationID", "path": "$.DestinationID"},
+  {"column": "Retransmission", "path": "$.Retransmission"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "ApplicationID", "path": "$.ApplicationID"},
+  {"column": "BinaryData", "path": "$.BinaryData"},
+]
+```
+
+.create-or-alter table [AddressedBinaryMessage] ingestion json mapping "AddressedBinaryMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Sequenceinteger", "path": "$.data.Sequenceinteger"},
+  {"column": "DestinationID", "path": "$.data.DestinationID"},
+  {"column": "Retransmission", "path": "$.data.Retransmission"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "ApplicationID", "path": "$.data.ApplicationID"},
+  {"column": "BinaryData", "path": "$.data.BinaryData"},
+]
+```
+
+.drop materialized-view AddressedBinaryMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) AddressedBinaryMessageLatest on table AddressedBinaryMessage {
+    AddressedBinaryMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AddressedBinaryMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.AddressedBinaryMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Sequenceinteger'] = toint(data.['Sequenceinteger']),['DestinationID'] = toint(data.['DestinationID']),['Retransmission'] = tobool(data.['Retransmission']),['Spare'] = tobool(data.['Spare']),['ApplicationID'] = todynamic(data.['ApplicationID']),['BinaryData'] = tostring(data.['BinaryData']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AssignedModeCommand] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare]: int,
+   [Commands]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [AssignedModeCommand] ingestion json mapping "AssignedModeCommand_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Commands", "path": "$.Commands"},
+]
+```
+
+.create-or-alter table [AssignedModeCommand] ingestion json mapping "AssignedModeCommand_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Commands", "path": "$.data.Commands"},
+]
+```
+
+.drop materialized-view AssignedModeCommandLatest ifexists;
+
+.create materialized-view with (backfill=true) AssignedModeCommandLatest on table AssignedModeCommand {
+    AssignedModeCommand | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AssignedModeCommand] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.AssignedModeCommand') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare'] = toint(data.['Spare']),['Commands'] = todynamic(data.['Commands']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BinaryAcknowledge] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare]: int,
+   [Destinations]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [BinaryAcknowledge] ingestion json mapping "BinaryAcknowledge_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Destinations", "path": "$.Destinations"},
+]
+```
+
+.create-or-alter table [BinaryAcknowledge] ingestion json mapping "BinaryAcknowledge_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Destinations", "path": "$.data.Destinations"},
+]
+```
+
+.drop materialized-view BinaryAcknowledgeLatest ifexists;
+
+.create materialized-view with (backfill=true) BinaryAcknowledgeLatest on table BinaryAcknowledge {
+    BinaryAcknowledge | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BinaryAcknowledge] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.BinaryAcknowledge') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare'] = toint(data.['Spare']),['Destinations'] = todynamic(data.['Destinations']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BinaryBroadcastMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare]: int,
+   [ApplicationID]: dynamic,
+   [BinaryData]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [BinaryBroadcastMessage] ingestion json mapping "BinaryBroadcastMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "ApplicationID", "path": "$.ApplicationID"},
+  {"column": "BinaryData", "path": "$.BinaryData"},
+]
+```
+
+.create-or-alter table [BinaryBroadcastMessage] ingestion json mapping "BinaryBroadcastMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "ApplicationID", "path": "$.data.ApplicationID"},
+  {"column": "BinaryData", "path": "$.data.BinaryData"},
+]
+```
+
+.drop materialized-view BinaryBroadcastMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) BinaryBroadcastMessageLatest on table BinaryBroadcastMessage {
+    BinaryBroadcastMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BinaryBroadcastMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.BinaryBroadcastMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare'] = toint(data.['Spare']),['ApplicationID'] = todynamic(data.['ApplicationID']),['BinaryData'] = tostring(data.['BinaryData']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ChannelManagement] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare1]: int,
+   [ChannelA]: int,
+   [ChannelB]: int,
+   [TxRxMode]: int,
+   [LowPower]: bool,
+   [Area]: dynamic,
+   [Unicast]: dynamic,
+   [IsAddressed]: bool,
+   [BwA]: bool,
+   [BwB]: bool,
+   [TransitionalZoneSize]: int,
+   [Spare4]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [ChannelManagement] ingestion json mapping "ChannelManagement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "ChannelA", "path": "$.ChannelA"},
+  {"column": "ChannelB", "path": "$.ChannelB"},
+  {"column": "TxRxMode", "path": "$.TxRxMode"},
+  {"column": "LowPower", "path": "$.LowPower"},
+  {"column": "Area", "path": "$.Area"},
+  {"column": "Unicast", "path": "$.Unicast"},
+  {"column": "IsAddressed", "path": "$.IsAddressed"},
+  {"column": "BwA", "path": "$.BwA"},
+  {"column": "BwB", "path": "$.BwB"},
+  {"column": "TransitionalZoneSize", "path": "$.TransitionalZoneSize"},
+  {"column": "Spare4", "path": "$.Spare4"},
+]
+```
+
+.create-or-alter table [ChannelManagement] ingestion json mapping "ChannelManagement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "ChannelA", "path": "$.data.ChannelA"},
+  {"column": "ChannelB", "path": "$.data.ChannelB"},
+  {"column": "TxRxMode", "path": "$.data.TxRxMode"},
+  {"column": "LowPower", "path": "$.data.LowPower"},
+  {"column": "Area", "path": "$.data.Area"},
+  {"column": "Unicast", "path": "$.data.Unicast"},
+  {"column": "IsAddressed", "path": "$.data.IsAddressed"},
+  {"column": "BwA", "path": "$.data.BwA"},
+  {"column": "BwB", "path": "$.data.BwB"},
+  {"column": "TransitionalZoneSize", "path": "$.data.TransitionalZoneSize"},
+  {"column": "Spare4", "path": "$.data.Spare4"},
+]
+```
+
+.drop materialized-view ChannelManagementLatest ifexists;
+
+.create materialized-view with (backfill=true) ChannelManagementLatest on table ChannelManagement {
+    ChannelManagement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ChannelManagement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.ChannelManagement') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare1'] = toint(data.['Spare1']),['ChannelA'] = toint(data.['ChannelA']),['ChannelB'] = toint(data.['ChannelB']),['TxRxMode'] = toint(data.['TxRxMode']),['LowPower'] = tobool(data.['LowPower']),['Area'] = todynamic(data.['Area']),['Unicast'] = todynamic(data.['Unicast']),['IsAddressed'] = tobool(data.['IsAddressed']),['BwA'] = tobool(data.['BwA']),['BwB'] = tobool(data.['BwB']),['TransitionalZoneSize'] = toint(data.['TransitionalZoneSize']),['Spare4'] = toint(data.['Spare4']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [CoordinatedUTCInquiry] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare1]: int,
+   [DestinationID]: int,
+   [Spare2]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [CoordinatedUTCInquiry] ingestion json mapping "CoordinatedUTCInquiry_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "DestinationID", "path": "$.DestinationID"},
+  {"column": "Spare2", "path": "$.Spare2"},
+]
+```
+
+.create-or-alter table [CoordinatedUTCInquiry] ingestion json mapping "CoordinatedUTCInquiry_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "DestinationID", "path": "$.data.DestinationID"},
+  {"column": "Spare2", "path": "$.data.Spare2"},
+]
+```
+
+.drop materialized-view CoordinatedUTCInquiryLatest ifexists;
+
+.create materialized-view with (backfill=true) CoordinatedUTCInquiryLatest on table CoordinatedUTCInquiry {
+    CoordinatedUTCInquiry | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [CoordinatedUTCInquiry] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.CoordinatedUTCInquiry') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare1'] = toint(data.['Spare1']),['DestinationID'] = toint(data.['DestinationID']),['Spare2'] = toint(data.['Spare2']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DataLinkManagementMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare]: int,
+   [Data]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [DataLinkManagementMessage] ingestion json mapping "DataLinkManagementMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Data", "path": "$.Data"},
+]
+```
+
+.create-or-alter table [DataLinkManagementMessage] ingestion json mapping "DataLinkManagementMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Data", "path": "$.data.Data"},
+]
+```
+
+.drop materialized-view DataLinkManagementMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) DataLinkManagementMessageLatest on table DataLinkManagementMessage {
+    DataLinkManagementMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DataLinkManagementMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.DataLinkManagementMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare'] = toint(data.['Spare']),['Data'] = todynamic(data.['Data']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GnssBroadcastBinaryMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare1]: int,
+   [Longitude]: real,
+   [Latitude]: real,
+   [Spare2]: int,
+   [Data]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [GnssBroadcastBinaryMessage] ingestion json mapping "GnssBroadcastBinaryMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "Longitude", "path": "$.Longitude"},
+  {"column": "Latitude", "path": "$.Latitude"},
+  {"column": "Spare2", "path": "$.Spare2"},
+  {"column": "Data", "path": "$.Data"},
+]
+```
+
+.create-or-alter table [GnssBroadcastBinaryMessage] ingestion json mapping "GnssBroadcastBinaryMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "Longitude", "path": "$.data.Longitude"},
+  {"column": "Latitude", "path": "$.data.Latitude"},
+  {"column": "Spare2", "path": "$.data.Spare2"},
+  {"column": "Data", "path": "$.data.Data"},
+]
+```
+
+.drop materialized-view GnssBroadcastBinaryMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) GnssBroadcastBinaryMessageLatest on table GnssBroadcastBinaryMessage {
+    GnssBroadcastBinaryMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GnssBroadcastBinaryMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.GnssBroadcastBinaryMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare1'] = toint(data.['Spare1']),['Longitude'] = toreal(data.['Longitude']),['Latitude'] = toreal(data.['Latitude']),['Spare2'] = toint(data.['Spare2']),['Data'] = tostring(data.['Data']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GroupAssignmentCommand] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare1]: int,
+   [Longitude1]: real,
+   [Latitude1]: real,
+   [Longitude2]: real,
+   [Latitude2]: real,
+   [StationType]: int,
+   [ShipType]: int,
+   [Spare2]: int,
+   [TxRxMode]: int,
+   [ReportingInterval]: int,
+   [QuietTime]: int,
+   [Spare3]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [GroupAssignmentCommand] ingestion json mapping "GroupAssignmentCommand_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "Longitude1", "path": "$.Longitude1"},
+  {"column": "Latitude1", "path": "$.Latitude1"},
+  {"column": "Longitude2", "path": "$.Longitude2"},
+  {"column": "Latitude2", "path": "$.Latitude2"},
+  {"column": "StationType", "path": "$.StationType"},
+  {"column": "ShipType", "path": "$.ShipType"},
+  {"column": "Spare2", "path": "$.Spare2"},
+  {"column": "TxRxMode", "path": "$.TxRxMode"},
+  {"column": "ReportingInterval", "path": "$.ReportingInterval"},
+  {"column": "QuietTime", "path": "$.QuietTime"},
+  {"column": "Spare3", "path": "$.Spare3"},
+]
+```
+
+.create-or-alter table [GroupAssignmentCommand] ingestion json mapping "GroupAssignmentCommand_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "Longitude1", "path": "$.data.Longitude1"},
+  {"column": "Latitude1", "path": "$.data.Latitude1"},
+  {"column": "Longitude2", "path": "$.data.Longitude2"},
+  {"column": "Latitude2", "path": "$.data.Latitude2"},
+  {"column": "StationType", "path": "$.data.StationType"},
+  {"column": "ShipType", "path": "$.data.ShipType"},
+  {"column": "Spare2", "path": "$.data.Spare2"},
+  {"column": "TxRxMode", "path": "$.data.TxRxMode"},
+  {"column": "ReportingInterval", "path": "$.data.ReportingInterval"},
+  {"column": "QuietTime", "path": "$.data.QuietTime"},
+  {"column": "Spare3", "path": "$.data.Spare3"},
+]
+```
+
+.drop materialized-view GroupAssignmentCommandLatest ifexists;
+
+.create materialized-view with (backfill=true) GroupAssignmentCommandLatest on table GroupAssignmentCommand {
+    GroupAssignmentCommand | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GroupAssignmentCommand] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.GroupAssignmentCommand') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare1'] = toint(data.['Spare1']),['Longitude1'] = toreal(data.['Longitude1']),['Latitude1'] = toreal(data.['Latitude1']),['Longitude2'] = toreal(data.['Longitude2']),['Latitude2'] = toreal(data.['Latitude2']),['StationType'] = toint(data.['StationType']),['ShipType'] = toint(data.['ShipType']),['Spare2'] = toint(data.['Spare2']),['TxRxMode'] = toint(data.['TxRxMode']),['ReportingInterval'] = toint(data.['ReportingInterval']),['QuietTime'] = toint(data.['QuietTime']),['Spare3'] = toint(data.['Spare3']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Interrogation] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [Spare]: int,
+   [Station1Msg1]: dynamic,
+   [Station1Msg2]: dynamic,
+   [Station2]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [Interrogation] ingestion json mapping "Interrogation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "Station1Msg1", "path": "$.Station1Msg1"},
+  {"column": "Station1Msg2", "path": "$.Station1Msg2"},
+  {"column": "Station2", "path": "$.Station2"},
+]
+```
+
+.create-or-alter table [Interrogation] ingestion json mapping "Interrogation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "Station1Msg1", "path": "$.data.Station1Msg1"},
+  {"column": "Station1Msg2", "path": "$.data.Station1Msg2"},
+  {"column": "Station2", "path": "$.data.Station2"},
+]
+```
+
+.drop materialized-view InterrogationLatest ifexists;
+
+.create materialized-view with (backfill=true) InterrogationLatest on table Interrogation {
+    Interrogation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Interrogation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.Interrogation') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['Spare'] = toint(data.['Spare']),['Station1Msg1'] = todynamic(data.['Station1Msg1']),['Station1Msg2'] = todynamic(data.['Station1Msg2']),['Station2'] = todynamic(data.['Station2']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MultiSlotBinaryMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [DestinationIDValid]: bool,
+   [ApplicationIDValid]: bool,
+   [DestinationID]: int,
+   [Spare1]: int,
+   [ApplicationID]: dynamic,
+   [Payload]: string,
+   [Spare2]: int,
+   [CommunicationStateIsItdma]: bool,
+   [CommunicationState]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [MultiSlotBinaryMessage] ingestion json mapping "MultiSlotBinaryMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "DestinationIDValid", "path": "$.DestinationIDValid"},
+  {"column": "ApplicationIDValid", "path": "$.ApplicationIDValid"},
+  {"column": "DestinationID", "path": "$.DestinationID"},
+  {"column": "Spare1", "path": "$.Spare1"},
+  {"column": "ApplicationID", "path": "$.ApplicationID"},
+  {"column": "Payload", "path": "$.Payload"},
+  {"column": "Spare2", "path": "$.Spare2"},
+  {"column": "CommunicationStateIsItdma", "path": "$.CommunicationStateIsItdma"},
+  {"column": "CommunicationState", "path": "$.CommunicationState"},
+]
+```
+
+.create-or-alter table [MultiSlotBinaryMessage] ingestion json mapping "MultiSlotBinaryMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "DestinationIDValid", "path": "$.data.DestinationIDValid"},
+  {"column": "ApplicationIDValid", "path": "$.data.ApplicationIDValid"},
+  {"column": "DestinationID", "path": "$.data.DestinationID"},
+  {"column": "Spare1", "path": "$.data.Spare1"},
+  {"column": "ApplicationID", "path": "$.data.ApplicationID"},
+  {"column": "Payload", "path": "$.data.Payload"},
+  {"column": "Spare2", "path": "$.data.Spare2"},
+  {"column": "CommunicationStateIsItdma", "path": "$.data.CommunicationStateIsItdma"},
+  {"column": "CommunicationState", "path": "$.data.CommunicationState"},
+]
+```
+
+.drop materialized-view MultiSlotBinaryMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) MultiSlotBinaryMessageLatest on table MultiSlotBinaryMessage {
+    MultiSlotBinaryMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MultiSlotBinaryMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.MultiSlotBinaryMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['DestinationIDValid'] = tobool(data.['DestinationIDValid']),['ApplicationIDValid'] = tobool(data.['ApplicationIDValid']),['DestinationID'] = toint(data.['DestinationID']),['Spare1'] = toint(data.['Spare1']),['ApplicationID'] = todynamic(data.['ApplicationID']),['Payload'] = tostring(data.['Payload']),['Spare2'] = toint(data.['Spare2']),['CommunicationStateIsItdma'] = tobool(data.['CommunicationStateIsItdma']),['CommunicationState'] = toint(data.['CommunicationState']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SingleSlotBinaryMessage] (
+   [MessageID]: int,
+   [RepeatIndicator]: int,
+   [UserID]: int,
+   [Valid]: bool,
+   [DestinationIDValid]: bool,
+   [ApplicationIDValid]: bool,
+   [DestinationID]: int,
+   [Spare]: int,
+   [ApplicationID]: dynamic,
+   [Payload]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.create-or-alter table [SingleSlotBinaryMessage] ingestion json mapping "SingleSlotBinaryMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.RepeatIndicator"},
+  {"column": "UserID", "path": "$.UserID"},
+  {"column": "Valid", "path": "$.Valid"},
+  {"column": "DestinationIDValid", "path": "$.DestinationIDValid"},
+  {"column": "ApplicationIDValid", "path": "$.ApplicationIDValid"},
+  {"column": "DestinationID", "path": "$.DestinationID"},
+  {"column": "Spare", "path": "$.Spare"},
+  {"column": "ApplicationID", "path": "$.ApplicationID"},
+  {"column": "Payload", "path": "$.Payload"},
+]
+```
+
+.create-or-alter table [SingleSlotBinaryMessage] ingestion json mapping "SingleSlotBinaryMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "MessageID", "path": "$.data.MessageID"},
+  {"column": "RepeatIndicator", "path": "$.data.RepeatIndicator"},
+  {"column": "UserID", "path": "$.data.UserID"},
+  {"column": "Valid", "path": "$.data.Valid"},
+  {"column": "DestinationIDValid", "path": "$.data.DestinationIDValid"},
+  {"column": "ApplicationIDValid", "path": "$.data.ApplicationIDValid"},
+  {"column": "DestinationID", "path": "$.data.DestinationID"},
+  {"column": "Spare", "path": "$.data.Spare"},
+  {"column": "ApplicationID", "path": "$.data.ApplicationID"},
+  {"column": "Payload", "path": "$.data.Payload"},
+]
+```
+
+.drop materialized-view SingleSlotBinaryMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) SingleSlotBinaryMessageLatest on table SingleSlotBinaryMessage {
+    SingleSlotBinaryMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SingleSlotBinaryMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'IO.AISstream.SingleSlotBinaryMessage') | project['MessageID'] = toint(data.['MessageID']),['RepeatIndicator'] = toint(data.['RepeatIndicator']),['UserID'] = toint(data.['UserID']),['Valid'] = tobool(data.['Valid']),['DestinationIDValid'] = tobool(data.['DestinationIDValid']),['ApplicationIDValid'] = tobool(data.['ApplicationIDValid']),['DestinationID'] = toint(data.['DestinationID']),['Spare'] = toint(data.['Spare']),['ApplicationID'] = todynamic(data.['ApplicationID']),['Payload'] = tostring(data.['Payload']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

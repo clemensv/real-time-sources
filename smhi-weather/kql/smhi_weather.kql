@@ -1,0 +1,249 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: string,
+   [name]: string,
+   [owner]: string,
+   [owner_category]: string,
+   [measuring_stations]: string,
+   [height]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference metadata for a SMHI meteorological observation station. Stations report hourly surface observations of temperature, wind, pressure, humidity, precipitation, and other parameters across Sweden.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_id]: "{\"description\": \"SMHI numeric station identifier, unique within the SMHI observation network.\"}",
+   [name]: "{\"description\": \"Human-readable station name as assigned by SMHI, e.g. 'Abisko Aut' or 'Stockholm-Arlanda'.\"}",
+   [owner]: "{\"description\": \"Organization or entity that owns and operates the station, e.g. 'SMHI' or 'Polarforskningssekretariatet'.\"}",
+   [owner_category]: "{\"description\": \"Category of station ownership, e.g. 'CLIMATE' for long-running climate stations or 'AVIATION' for airport stations.\"}",
+   [measuring_stations]: "{\"description\": \"Station classification within SMHI's measuring station network, e.g. 'CORE' for primary network stations.\"}",
+   [height]: "{\"description\": \"Sensor height above ground in meters.\"}",
+   [latitude]: "{\"description\": \"Geographic latitude of the station in decimal degrees.\"}",
+   [longitude]: "{\"description\": \"Geographic longitude of the station in decimal degrees.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "owner", "path": "$.owner"},
+  {"column": "owner_category", "path": "$.owner_category"},
+  {"column": "measuring_stations", "path": "$.measuring_stations"},
+  {"column": "height", "path": "$.height"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "owner", "path": "$.data.owner"},
+  {"column": "owner_category", "path": "$.data.owner_category"},
+  {"column": "measuring_stations", "path": "$.data.measuring_stations"},
+  {"column": "height", "path": "$.data.height"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'SE.Gov.SMHI.Weather.Station') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['owner'] = tostring(data.['owner']),['owner_category'] = tostring(data.['owner_category']),['measuring_stations'] = tostring(data.['measuring_stations']),['height'] = toreal(data.['height']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherObservation] (
+   [station_id]: string,
+   [station_name]: string,
+   [observation_time]: datetime,
+   [air_temperature]: real,
+   [wind_gust]: real,
+   [dew_point]: real,
+   [air_pressure]: real,
+   [relative_humidity]: int,
+   [precipitation_last_hour]: real,
+   [wind_direction]: real,
+   [wind_speed]: real,
+   [max_wind_speed]: real,
+   [visibility]: real,
+   [total_cloud_cover]: int,
+   [present_weather]: int,
+   [sunshine_duration]: real,
+   [global_irradiance]: real,
+   [precipitation_intensity]: real,
+   [quality]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherObservation] docstring "{\"description\": \"Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind, pressure, humidity, precipitation, visibility, cloud cover, irradiance, and present weather.\"}";
+
+.alter table [WeatherObservation] column-docstrings (
+   [station_id]: "{\"description\": \"SMHI station identifier for the reporting station.\"}",
+   [station_name]: "{\"description\": \"Human-readable name of the reporting station.\"}",
+   [observation_time]: "{\"description\": \"Timestamp of the observation in UTC, derived from the SMHI epoch millisecond value.\"}",
+   [air_temperature]: "{\"description\": \"Instantaneous air temperature, reported hourly (SMHI parameter 1).\"}",
+   [wind_gust]: "{\"description\": \"Maximum wind gust speed, reported hourly (SMHI parameter 21).\"}",
+   [dew_point]: "{\"description\": \"Dew point temperature, reported hourly (SMHI parameter 39).\"}",
+   [air_pressure]: "{\"description\": \"Atmospheric pressure reduced to mean sea level, reported hourly (SMHI parameter 9).\"}",
+   [relative_humidity]: "{\"description\": \"Relative humidity as a percentage, reported hourly (SMHI parameter 6).\"}",
+   [precipitation_last_hour]: "{\"description\": \"Total precipitation in the last hour, reported hourly (SMHI parameter 7).\"}",
+   [wind_direction]: "{\"description\": \"Wind direction in degrees from which the wind is blowing, measured at 10 m height, reported hourly (SMHI parameter 3).\"}",
+   [wind_speed]: "{\"description\": \"Mean wind speed over 10 minutes measured at 10 m height, reported hourly (SMHI parameter 4).\"}",
+   [max_wind_speed]: "{\"description\": \"Maximum of 10-minute mean wind speed during the hour, measured at 10 m height (SMHI parameter 25).\"}",
+   [visibility]: "{\"description\": \"Horizontal visibility, reported hourly (SMHI parameter 12).\"}",
+   [total_cloud_cover]: "{\"description\": \"Total cloud cover in oktas (eighths of sky covered), reported hourly (SMHI parameter 16).\"}",
+   [present_weather]: "{\"description\": \"WMO present weather code (ww table 4677) describing current weather phenomena at the time of observation (SMHI parameter 13). Values range from 0 (clear) to 99 (thunderstorm with hail).\"}",
+   [sunshine_duration]: "{\"description\": \"Duration of sunshine during the last hour in seconds (SMHI parameter 10).\"}",
+   [global_irradiance]: "{\"description\": \"Global solar irradiance (direct + diffuse), average over the hour, measured by pyranometer (SMHI parameter 11).\"}",
+   [precipitation_intensity]: "{\"description\": \"Instantaneous precipitation intensity measured by optical or weighing gauge (SMHI parameter 38).\"}",
+   [quality]: "{\"description\": \"Quality flag for the observation as assigned by SMHI: 'G' for approved, 'Y' for suspect.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "air_temperature", "path": "$.air_temperature"},
+  {"column": "wind_gust", "path": "$.wind_gust"},
+  {"column": "dew_point", "path": "$.dew_point"},
+  {"column": "air_pressure", "path": "$.air_pressure"},
+  {"column": "relative_humidity", "path": "$.relative_humidity"},
+  {"column": "precipitation_last_hour", "path": "$.precipitation_last_hour"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "max_wind_speed", "path": "$.max_wind_speed"},
+  {"column": "visibility", "path": "$.visibility"},
+  {"column": "total_cloud_cover", "path": "$.total_cloud_cover"},
+  {"column": "present_weather", "path": "$.present_weather"},
+  {"column": "sunshine_duration", "path": "$.sunshine_duration"},
+  {"column": "global_irradiance", "path": "$.global_irradiance"},
+  {"column": "precipitation_intensity", "path": "$.precipitation_intensity"},
+  {"column": "quality", "path": "$.quality"},
+]
+```
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "air_temperature", "path": "$.data.air_temperature"},
+  {"column": "wind_gust", "path": "$.data.wind_gust"},
+  {"column": "dew_point", "path": "$.data.dew_point"},
+  {"column": "air_pressure", "path": "$.data.air_pressure"},
+  {"column": "relative_humidity", "path": "$.data.relative_humidity"},
+  {"column": "precipitation_last_hour", "path": "$.data.precipitation_last_hour"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "max_wind_speed", "path": "$.data.max_wind_speed"},
+  {"column": "visibility", "path": "$.data.visibility"},
+  {"column": "total_cloud_cover", "path": "$.data.total_cloud_cover"},
+  {"column": "present_weather", "path": "$.data.present_weather"},
+  {"column": "sunshine_duration", "path": "$.data.sunshine_duration"},
+  {"column": "global_irradiance", "path": "$.data.global_irradiance"},
+  {"column": "precipitation_intensity", "path": "$.data.precipitation_intensity"},
+  {"column": "quality", "path": "$.data.quality"},
+]
+```
+
+.drop materialized-view WeatherObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
+    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'SE.Gov.SMHI.Weather.WeatherObservation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['observation_time'] = todatetime(data.['observation_time']),['air_temperature'] = toreal(data.['air_temperature']),['wind_gust'] = toreal(data.['wind_gust']),['dew_point'] = toreal(data.['dew_point']),['air_pressure'] = toreal(data.['air_pressure']),['relative_humidity'] = toint(data.['relative_humidity']),['precipitation_last_hour'] = toreal(data.['precipitation_last_hour']),['wind_direction'] = toreal(data.['wind_direction']),['wind_speed'] = toreal(data.['wind_speed']),['max_wind_speed'] = toreal(data.['max_wind_speed']),['visibility'] = toreal(data.['visibility']),['total_cloud_cover'] = toint(data.['total_cloud_cover']),['present_weather'] = toint(data.['present_weather']),['sunshine_duration'] = toreal(data.['sunshine_duration']),['global_irradiance'] = toreal(data.['global_irradiance']),['precipitation_intensity'] = toreal(data.['precipitation_intensity']),['quality'] = tostring(data.['quality']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

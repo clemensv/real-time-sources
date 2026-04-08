@@ -1,18 +1,9 @@
-$scriptPath = Split-Path -Parent $PSCommandPath
-$jsonFiles = Get-ChildItem -Path "$scriptPath/../xreg/gtfs-static" -Filter "*.avsc" | Select-Object -ExpandProperty FullName
-$gtfsRtFiles = Get-ChildItem -Path "$scriptPath/../xreg/" -Filter "gtfs-rt-*.avsc" | Select-Object -ExpandProperty FullName
-$jsonFiles += $gtfsRtFiles
-$outputFile = ".schemas.avsc"
+$scriptDir = Split-Path -Parent $PSCommandPath
+$inputFile = Join-Path $scriptDir "..\xreg\gtfs.xreg.json"
+$kqlFile = Join-Path $scriptDir "gtfs.kql"
+$generatorScript = Join-Path $scriptDir "..\..\tools\generate-kql-from-xreg.ps1"
 
-$mergedArray = @()
-foreach ($file in $jsonFiles) {
-    $jsonContent = Get-Content $file -Raw | ConvertFrom-Json
-    $mergedArray += $jsonContent
-}
-$mergedArray | ConvertTo-Json -Depth 20 | Out-File $outputFile -Encoding UTF8
-
-avrotize a2k $outputFile --emit-cloudevents-dispatch --emit-cloudevents-columns > gtfs.kql
-Remove-Item $outputFile
+& $generatorScript -XregPath $inputFile -OutputPath $kqlFile
 
 # append the following to gtfs.kql
 @"
@@ -43,7 +34,7 @@ Remove-Item $outputFile
     ___id:string,
     ___time:datetime,
     ___subject:string
-"@ | Out-File -Append -FilePath gtfs.kql
+"@ | Out-File -Append -FilePath $kqlFile
 
 @"
 
@@ -59,7 +50,7 @@ Remove-Item $outputFile
   }
 ]
 ```
-"@ | Out-File -Append -FilePath gtfs.kql
+"@ | Out-File -Append -FilePath $kqlFile
 
 @"
 
@@ -90,7 +81,7 @@ Remove-Item $outputFile
     ___time: datetime,
     ___subject: string
 );
-"@ | Out-File -Append -FilePath gtfs.kql
+"@ | Out-File -Append -FilePath $kqlFile
 
 @"
 
@@ -149,7 +140,7 @@ Remove-Item $outputFile
         ___time,
         ___subject
 }
-"@ | Out-File -Append -FilePath gtfs.kql
+"@ | Out-File -Append -FilePath $kqlFile
 
 @"
 
@@ -160,4 +151,4 @@ Remove-Item $outputFile
     "IsTransactional": false,
     "PropagateIngestionProperties": false
 }]'
-"@ | Out-File -Append -FilePath gtfs.kql
+"@ | Out-File -Append -FilePath $kqlFile

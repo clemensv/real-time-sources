@@ -1,0 +1,173 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_no]: string,
+   [station_name]: string,
+   [station_id]: string,
+   [station_latitude]: real,
+   [station_longitude]: real,
+   [river_name]: string,
+   [stationparameter_name]: string,
+   [ts_id]: string,
+   [ts_unitname]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Station\"}";
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_no", "path": "$.station_no"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_latitude", "path": "$.station_latitude"},
+  {"column": "station_longitude", "path": "$.station_longitude"},
+  {"column": "river_name", "path": "$.river_name"},
+  {"column": "stationparameter_name", "path": "$.stationparameter_name"},
+  {"column": "ts_id", "path": "$.ts_id"},
+  {"column": "ts_unitname", "path": "$.ts_unitname"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_no", "path": "$.data.station_no"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_latitude", "path": "$.data.station_latitude"},
+  {"column": "station_longitude", "path": "$.data.station_longitude"},
+  {"column": "river_name", "path": "$.data.river_name"},
+  {"column": "stationparameter_name", "path": "$.data.stationparameter_name"},
+  {"column": "ts_id", "path": "$.data.ts_id"},
+  {"column": "ts_unitname", "path": "$.data.ts_unitname"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'BE.Vlaanderen.Waterinfo.VMM.Station') | project['station_no'] = tostring(data.['station_no']),['station_name'] = tostring(data.['station_name']),['station_id'] = tostring(data.['station_id']),['station_latitude'] = toreal(data.['station_latitude']),['station_longitude'] = toreal(data.['station_longitude']),['river_name'] = tostring(data.['river_name']),['stationparameter_name'] = tostring(data.['stationparameter_name']),['ts_id'] = tostring(data.['ts_id']),['ts_unitname'] = tostring(data.['ts_unitname']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WaterLevelReading] (
+   [ts_id]: string,
+   [station_no]: string,
+   [station_name]: string,
+   [timestamp]: datetime,
+   [value]: real,
+   [unit_name]: string,
+   [parameter_name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterLevelReading] docstring "{\"description\": \"WaterLevelReading\"}";
+
+.create-or-alter table [WaterLevelReading] ingestion json mapping "WaterLevelReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "ts_id", "path": "$.ts_id"},
+  {"column": "station_no", "path": "$.station_no"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "unit_name", "path": "$.unit_name"},
+  {"column": "parameter_name", "path": "$.parameter_name"},
+]
+```
+
+.create-or-alter table [WaterLevelReading] ingestion json mapping "WaterLevelReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "ts_id", "path": "$.data.ts_id"},
+  {"column": "station_no", "path": "$.data.station_no"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "unit_name", "path": "$.data.unit_name"},
+  {"column": "parameter_name", "path": "$.data.parameter_name"},
+]
+```
+
+.drop materialized-view WaterLevelReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) WaterLevelReadingLatest on table WaterLevelReading {
+    WaterLevelReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterLevelReading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading') | project['ts_id'] = tostring(data.['ts_id']),['station_no'] = tostring(data.['station_no']),['station_name'] = tostring(data.['station_name']),['timestamp'] = todatetime(data.['timestamp']),['value'] = toreal(data.['value']),['unit_name'] = tostring(data.['unit_name']),['parameter_name'] = tostring(data.['parameter_name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

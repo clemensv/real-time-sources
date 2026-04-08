@@ -1,0 +1,404 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [WeatherAlert] (
+   [alert_id]: string,
+   [area_desc]: string,
+   [sent]: datetime,
+   [effective]: datetime,
+   [expires]: datetime,
+   [status]: string,
+   [message_type]: string,
+   [category]: string,
+   [severity]: string,
+   [certainty]: string,
+   [urgency]: string,
+   [event]: string,
+   [sender_name]: string,
+   [headline]: string,
+   [description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherAlert] docstring "{\"description\": \"Active weather alert from the NWS Common Alerting Protocol (CAP) feed. Alerts cover severe weather warnings, watches, advisories, and statements issued by NWS Weather Forecast Offices.\"}";
+
+.create-or-alter table [WeatherAlert] ingestion json mapping "WeatherAlert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "alert_id", "path": "$.alert_id"},
+  {"column": "area_desc", "path": "$.area_desc"},
+  {"column": "sent", "path": "$.sent"},
+  {"column": "effective", "path": "$.effective"},
+  {"column": "expires", "path": "$.expires"},
+  {"column": "status", "path": "$.status"},
+  {"column": "message_type", "path": "$.message_type"},
+  {"column": "category", "path": "$.category"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "certainty", "path": "$.certainty"},
+  {"column": "urgency", "path": "$.urgency"},
+  {"column": "event", "path": "$.event"},
+  {"column": "sender_name", "path": "$.sender_name"},
+  {"column": "headline", "path": "$.headline"},
+  {"column": "description", "path": "$.description"},
+]
+```
+
+.create-or-alter table [WeatherAlert] ingestion json mapping "WeatherAlert_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "alert_id", "path": "$.data.alert_id"},
+  {"column": "area_desc", "path": "$.data.area_desc"},
+  {"column": "sent", "path": "$.data.sent"},
+  {"column": "effective", "path": "$.data.effective"},
+  {"column": "expires", "path": "$.data.expires"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "message_type", "path": "$.data.message_type"},
+  {"column": "category", "path": "$.data.category"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "certainty", "path": "$.data.certainty"},
+  {"column": "urgency", "path": "$.data.urgency"},
+  {"column": "event", "path": "$.data.event"},
+  {"column": "sender_name", "path": "$.data.sender_name"},
+  {"column": "headline", "path": "$.data.headline"},
+  {"column": "description", "path": "$.data.description"},
+]
+```
+
+.drop materialized-view WeatherAlertLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherAlertLatest on table WeatherAlert {
+    WeatherAlert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherAlert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert') | project['alert_id'] = tostring(data.['alert_id']),['area_desc'] = tostring(data.['area_desc']),['sent'] = todatetime(data.['sent']),['effective'] = todatetime(data.['effective']),['expires'] = todatetime(data.['expires']),['status'] = tostring(data.['status']),['message_type'] = tostring(data.['message_type']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['certainty'] = tostring(data.['certainty']),['urgency'] = tostring(data.['urgency']),['event'] = tostring(data.['event']),['sender_name'] = tostring(data.['sender_name']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Zone] (
+   [zone_id]: string,
+   [name]: string,
+   [type]: string,
+   [state]: string,
+   [forecast_office]: string,
+   [timezone]: string,
+   [radar_station]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Zone] docstring "{\"description\": \"NWS forecast zone reference data. Zones partition the US into geographic areas for which forecasts and warnings are issued.\"}";
+
+.alter table [Zone] column-docstrings (
+   [zone_id]: "{\"description\": \"NWS zone identifier, e.g. 'NYZ072' for New York City.\"}",
+   [name]: "{\"description\": \"Human-readable zone name.\"}",
+   [type]: "{\"description\": \"Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'.\"}",
+   [state]: "{\"description\": \"Two-letter US state or territory abbreviation.\"}",
+   [forecast_office]: "{\"description\": \"NWS Weather Forecast Office (WFO) responsible for this zone, e.g. 'OKX'.\"}",
+   [timezone]: "{\"description\": \"IANA timezone name for the zone, e.g. 'America/New_York'.\"}",
+   [radar_station]: "{\"description\": \"Nearest NEXRAD radar station identifier, or null if none assigned.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Zone] ingestion json mapping "Zone_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "type", "path": "$.type"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_office", "path": "$.forecast_office"},
+  {"column": "timezone", "path": "$.timezone"},
+  {"column": "radar_station", "path": "$.radar_station"},
+]
+```
+
+.create-or-alter table [Zone] ingestion json mapping "Zone_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_office", "path": "$.data.forecast_office"},
+  {"column": "timezone", "path": "$.data.timezone"},
+  {"column": "radar_station", "path": "$.data.radar_station"},
+]
+```
+
+.drop materialized-view ZoneLatest ifexists;
+
+.create materialized-view with (backfill=true) ZoneLatest on table Zone {
+    Zone | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Zone] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.Zone') | project['zone_id'] = tostring(data.['zone_id']),['name'] = tostring(data.['name']),['type'] = tostring(data.['type']),['state'] = tostring(data.['state']),['forecast_office'] = tostring(data.['forecast_office']),['timezone'] = tostring(data.['timezone']),['radar_station'] = tostring(data.['radar_station']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ObservationStation] (
+   [station_id]: string,
+   [name]: string,
+   [elevation_m]: real,
+   [time_zone]: string,
+   [forecast_zone]: string,
+   [county]: string,
+   [fire_weather_zone]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ObservationStation] docstring "{\"description\": \"NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US.\"}";
+
+.alter table [ObservationStation] column-docstrings (
+   [station_id]: "{\"description\": \"Station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID.\"}",
+   [name]: "{\"description\": \"Human-readable station name, e.g. 'New York, Kennedy International Airport'.\"}",
+   [elevation_m]: "{\"description\": \"Station elevation above mean sea level.\"}",
+   [time_zone]: "{\"description\": \"IANA timezone of the station, e.g. 'America/New_York'.\"}",
+   [forecast_zone]: "{\"description\": \"NWS forecast zone identifier associated with this station.\"}",
+   [county]: "{\"description\": \"NWS county zone identifier for the station's location.\"}",
+   [fire_weather_zone]: "{\"description\": \"NWS fire weather zone identifier for the station's location.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ObservationStation] ingestion json mapping "ObservationStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "elevation_m", "path": "$.elevation_m"},
+  {"column": "time_zone", "path": "$.time_zone"},
+  {"column": "forecast_zone", "path": "$.forecast_zone"},
+  {"column": "county", "path": "$.county"},
+  {"column": "fire_weather_zone", "path": "$.fire_weather_zone"},
+]
+```
+
+.create-or-alter table [ObservationStation] ingestion json mapping "ObservationStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "elevation_m", "path": "$.data.elevation_m"},
+  {"column": "time_zone", "path": "$.data.time_zone"},
+  {"column": "forecast_zone", "path": "$.data.forecast_zone"},
+  {"column": "county", "path": "$.data.county"},
+  {"column": "fire_weather_zone", "path": "$.data.fire_weather_zone"},
+]
+```
+
+.drop materialized-view ObservationStationLatest ifexists;
+
+.create materialized-view with (backfill=true) ObservationStationLatest on table ObservationStation {
+    ObservationStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ObservationStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.ObservationStation') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['elevation_m'] = toreal(data.['elevation_m']),['time_zone'] = tostring(data.['time_zone']),['forecast_zone'] = tostring(data.['forecast_zone']),['county'] = tostring(data.['county']),['fire_weather_zone'] = tostring(data.['fire_weather_zone']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherObservation] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [text_description]: string,
+   [temperature]: real,
+   [dewpoint]: real,
+   [wind_direction]: real,
+   [wind_speed]: real,
+   [wind_gust]: real,
+   [barometric_pressure]: real,
+   [sea_level_pressure]: real,
+   [visibility]: real,
+   [relative_humidity]: real,
+   [wind_chill]: real,
+   [heat_index]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherObservation] docstring "{\"description\": \"Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl).\"}";
+
+.alter table [WeatherObservation] column-docstrings (
+   [station_id]: "{\"description\": \"ICAO or cooperative observer station identifier.\"}",
+   [timestamp]: "{\"description\": \"UTC timestamp of the observation.\"}",
+   [text_description]: "{\"description\": \"Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'.\"}",
+   [temperature]: "{\"description\": \"Air temperature at the time of observation.\"}",
+   [dewpoint]: "{\"description\": \"Dew point temperature.\"}",
+   [wind_direction]: "{\"description\": \"Wind direction in degrees from which the wind is blowing.\"}",
+   [wind_speed]: "{\"description\": \"Sustained wind speed.\"}",
+   [wind_gust]: "{\"description\": \"Peak wind gust speed, null if no gusts observed.\"}",
+   [barometric_pressure]: "{\"description\": \"Station barometric pressure (not reduced to sea level).\"}",
+   [sea_level_pressure]: "{\"description\": \"Atmospheric pressure reduced to mean sea level.\"}",
+   [visibility]: "{\"description\": \"Horizontal visibility.\"}",
+   [relative_humidity]: "{\"description\": \"Relative humidity percentage.\"}",
+   [wind_chill]: "{\"description\": \"Calculated wind chill temperature, null when conditions do not warrant it.\"}",
+   [heat_index]: "{\"description\": \"Calculated heat index temperature, null when conditions do not warrant it.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "text_description", "path": "$.text_description"},
+  {"column": "temperature", "path": "$.temperature"},
+  {"column": "dewpoint", "path": "$.dewpoint"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "wind_gust", "path": "$.wind_gust"},
+  {"column": "barometric_pressure", "path": "$.barometric_pressure"},
+  {"column": "sea_level_pressure", "path": "$.sea_level_pressure"},
+  {"column": "visibility", "path": "$.visibility"},
+  {"column": "relative_humidity", "path": "$.relative_humidity"},
+  {"column": "wind_chill", "path": "$.wind_chill"},
+  {"column": "heat_index", "path": "$.heat_index"},
+]
+```
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "text_description", "path": "$.data.text_description"},
+  {"column": "temperature", "path": "$.data.temperature"},
+  {"column": "dewpoint", "path": "$.data.dewpoint"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "wind_gust", "path": "$.data.wind_gust"},
+  {"column": "barometric_pressure", "path": "$.data.barometric_pressure"},
+  {"column": "sea_level_pressure", "path": "$.data.sea_level_pressure"},
+  {"column": "visibility", "path": "$.data.visibility"},
+  {"column": "relative_humidity", "path": "$.data.relative_humidity"},
+  {"column": "wind_chill", "path": "$.data.wind_chill"},
+  {"column": "heat_index", "path": "$.data.heat_index"},
+]
+```
+
+.drop materialized-view WeatherObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
+    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.WeatherObservation') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['text_description'] = tostring(data.['text_description']),['temperature'] = toreal(data.['temperature']),['dewpoint'] = toreal(data.['dewpoint']),['wind_direction'] = toreal(data.['wind_direction']),['wind_speed'] = toreal(data.['wind_speed']),['wind_gust'] = toreal(data.['wind_gust']),['barometric_pressure'] = toreal(data.['barometric_pressure']),['sea_level_pressure'] = toreal(data.['sea_level_pressure']),['visibility'] = toreal(data.['visibility']),['relative_humidity'] = toreal(data.['relative_humidity']),['wind_chill'] = toreal(data.['wind_chill']),['heat_index'] = toreal(data.['heat_index']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

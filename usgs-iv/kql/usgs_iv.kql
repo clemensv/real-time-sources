@@ -10,7 +10,6 @@
     [data]: dynamic
 );
 
-
 .create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
 ```
 [
@@ -25,7 +24,6 @@
   {"column": "data", "path": "$.data"}
 ]
 ```
-
 
 .create-merge table [Site] (
    [agency_cd]: string,
@@ -86,8 +84,8 @@
    [site_tp_cd]: "{\"description\": \"Site type code.\"}",
    [lat_va]: "{\"description\": \"DMS latitude.\"}",
    [long_va]: "{\"description\": \"DMS longitude.\"}",
-   [dec_lat_va]: "{\"description\": \"Decimal latitude.\", \"schema\": [\"null\", \"float\"]}",
-   [dec_long_va]: "{\"description\": \"Decimal longitude.\", \"schema\": [\"null\", \"float\"]}",
+   [dec_lat_va]: "{\"description\": \"Decimal latitude.\"}",
+   [dec_long_va]: "{\"description\": \"Decimal longitude.\"}",
    [coord_meth_cd]: "{\"description\": \"Latitude-longitude method code.\"}",
    [coord_acy_cd]: "{\"description\": \"Coordinate accuracy code.\"}",
    [coord_datum_cd]: "{\"description\": \"Latitude-longitude datum code.\"}",
@@ -98,19 +96,19 @@
    [country_cd]: "{\"description\": \"Country code.\"}",
    [land_net_ds]: "{\"description\": \"Land net location description.\"}",
    [map_nm]: "{\"description\": \"Location map name.\"}",
-   [map_scale_fc]: "{\"description\": \"Location map scale factor.\", \"schema\": [\"null\", \"float\"]}",
-   [alt_va]: "{\"description\": \"Altitude.\", \"schema\": [\"null\", \"float\"]}",
+   [map_scale_fc]: "{\"description\": \"Location map scale factor.\"}",
+   [alt_va]: "{\"description\": \"Altitude.\"}",
    [alt_meth_cd]: "{\"description\": \"Method altitude determined code.\"}",
-   [alt_acy_va]: "{\"description\": \"Altitude accuracy.\", \"schema\": [\"null\", \"float\"]}",
+   [alt_acy_va]: "{\"description\": \"Altitude accuracy.\"}",
    [alt_datum_cd]: "{\"description\": \"Altitude datum code.\"}",
    [huc_cd]: "{\"description\": \"Hydrologic unit code.\"}",
    [basin_cd]: "{\"description\": \"Drainage basin code.\"}",
    [topo_cd]: "{\"description\": \"Topographic setting code.\"}",
    [instruments_cd]: "{\"description\": \"Flags for instruments at site.\"}",
-   [construction_dt]: "{\"description\": \"Date of first construction.\", \"schema\": [\"null\", \"string\"]}",
-   [inventory_dt]: "{\"description\": \"Date site established or inventoried.\", \"schema\": [\"null\", \"string\"]}",
-   [drain_area_va]: "{\"description\": \"Drainage area.\", \"schema\": [\"null\", \"float\"]}",
-   [contrib_drain_area_va]: "{\"description\": \"Contributing drainage area.\", \"schema\": [\"null\", \"float\"]}",
+   [construction_dt]: "{\"description\": \"Date of first construction.\"}",
+   [inventory_dt]: "{\"description\": \"Date site established or inventoried.\"}",
+   [drain_area_va]: "{\"description\": \"Drainage area.\"}",
+   [contrib_drain_area_va]: "{\"description\": \"Contributing drainage area.\"}",
    [tz_cd]: "{\"description\": \"Time Zone abbreviation.\"}",
    [local_time_fg]: "{\"description\": \"Site honors Daylight Savings Time flag.\"}",
    [reliability_cd]: "{\"description\": \"Data reliability code.\"}",
@@ -118,8 +116,8 @@
    [nat_aqfr_cd]: "{\"description\": \"National aquifer code.\"}",
    [aqfr_cd]: "{\"description\": \"Local aquifer code.\"}",
    [aqfr_type_cd]: "{\"description\": \"Local aquifer type code.\"}",
-   [well_depth_va]: "{\"description\": \"Well depth.\", \"schema\": [\"null\", \"float\"]}",
-   [hole_depth_va]: "{\"description\": \"Hole depth.\", \"schema\": [\"null\", \"float\"]}",
+   [well_depth_va]: "{\"description\": \"Well depth.\"}",
+   [hole_depth_va]: "{\"description\": \"Hole depth.\"}",
    [depth_src_cd]: "{\"description\": \"Source of depth data.\"}",
    [project_no]: "{\"description\": \"Project number.\"}",
    [___type] : 'Event type',
@@ -182,7 +180,6 @@
 ]
 ```
 
-
 .create-or-alter table [Site] ingestion json mapping "Site_json_ce_structured"
 ```
 [
@@ -235,7 +232,6 @@
   {"column": "project_no", "path": "$.data.project_no"},
 ]
 ```
-
 
 .drop materialized-view SiteLatest ifexists;
 
@@ -298,7 +294,6 @@
 ]
 ```
 
-
 .create-or-alter table [SiteTimeseries] ingestion json mapping "SiteTimeseries_json_ce_structured"
 ```
 [
@@ -314,7 +309,6 @@
   {"column": "description", "path": "$.data.description"},
 ]
 ```
-
 
 .drop materialized-view SiteTimeseriesLatest ifexists;
 
@@ -353,9 +347,9 @@
 .alter table [OtherParameter] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -383,7 +377,6 @@
 ]
 ```
 
-
 .create-or-alter table [OtherParameter] ingestion json mapping "OtherParameter_json_ce_structured"
 ```
 [
@@ -401,7 +394,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view OtherParameterLatest ifexists;
 
@@ -440,9 +432,9 @@
 .alter table [Precipitation] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Precipitation value, inches.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Precipitation value, inches.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -470,7 +462,6 @@
 ]
 ```
 
-
 .create-or-alter table [Precipitation] ingestion json mapping "Precipitation_json_ce_structured"
 ```
 [
@@ -488,7 +479,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view PrecipitationLatest ifexists;
 
@@ -527,9 +517,9 @@
 .alter table [Streamflow] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Discharge value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Discharge value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -557,7 +547,6 @@
 ]
 ```
 
-
 .create-or-alter table [Streamflow] ingestion json mapping "Streamflow_json_ce_structured"
 ```
 [
@@ -575,7 +564,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view StreamflowLatest ifexists;
 
@@ -614,9 +602,9 @@
 .alter table [GageHeight] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Gage height value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Gage height value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -644,7 +632,6 @@
 ]
 ```
 
-
 .create-or-alter table [GageHeight] ingestion json mapping "GageHeight_json_ce_structured"
 ```
 [
@@ -662,7 +649,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view GageHeightLatest ifexists;
 
@@ -701,9 +687,9 @@
 .alter table [WaterTemperature] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water temperature value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water temperature value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -731,7 +717,6 @@
 ]
 ```
 
-
 .create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_ce_structured"
 ```
 [
@@ -749,7 +734,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view WaterTemperatureLatest ifexists;
 
@@ -788,9 +772,9 @@
 .alter table [DissolvedOxygen] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved oxygen value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved oxygen value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -818,7 +802,6 @@
 ]
 ```
 
-
 .create-or-alter table [DissolvedOxygen] ingestion json mapping "DissolvedOxygen_json_ce_structured"
 ```
 [
@@ -836,7 +819,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view DissolvedOxygenLatest ifexists;
 
@@ -875,9 +857,9 @@
 .alter table [pH] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"pH value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"pH value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -905,7 +887,6 @@
 ]
 ```
 
-
 .create-or-alter table [pH] ingestion json mapping "pH_json_ce_structured"
 ```
 [
@@ -923,7 +904,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view pHLatest ifexists;
 
@@ -962,9 +942,9 @@
 .alter table [SpecificConductance] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Specific conductance value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Specific conductance value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -992,7 +972,6 @@
 ]
 ```
 
-
 .create-or-alter table [SpecificConductance] ingestion json mapping "SpecificConductance_json_ce_structured"
 ```
 [
@@ -1010,7 +989,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view SpecificConductanceLatest ifexists;
 
@@ -1049,9 +1027,9 @@
 .alter table [Turbidity] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1079,7 +1057,6 @@
 ]
 ```
 
-
 .create-or-alter table [Turbidity] ingestion json mapping "Turbidity_json_ce_structured"
 ```
 [
@@ -1098,7 +1075,6 @@
 ]
 ```
 
-
 .drop materialized-view TurbidityLatest ifexists;
 
 .create materialized-view with (backfill=true) TurbidityLatest on table Turbidity {
@@ -1111,6 +1087,91 @@
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.Turbidity') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AirTemperature] (
+   [site_no]: string,
+   [datetime]: string,
+   [value]: real,
+   [exception]: string,
+   [qualifiers]: dynamic,
+   [parameter_cd]: string,
+   [timeseries_cd]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [AirTemperature] docstring "{\"description\": \"USGS air temperature data. Parameter code 00020.\"}";
+
+.alter table [AirTemperature] column-docstrings (
+   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
+   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Air temperature value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
+   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
+   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.site_no"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "exception", "path": "$.exception"},
+  {"column": "qualifiers", "path": "$.qualifiers"},
+  {"column": "parameter_cd", "path": "$.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
+]
+```
+
+.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_no", "path": "$.data.site_no"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "exception", "path": "$.data.exception"},
+  {"column": "qualifiers", "path": "$.data.qualifiers"},
+  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
+  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
+]
+```
+
+.drop materialized-view AirTemperatureLatest ifexists;
+
+.create materialized-view with (backfill=true) AirTemperatureLatest on table AirTemperature {
+    AirTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AirTemperature] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.AirTemperature') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
@@ -1136,9 +1197,9 @@
 .alter table [WindSpeed] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind speed value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind speed value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1166,7 +1227,6 @@
 ]
 ```
 
-
 .create-or-alter table [WindSpeed] ingestion json mapping "WindSpeed_json_ce_structured"
 ```
 [
@@ -1184,7 +1244,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view WindSpeedLatest ifexists;
 
@@ -1223,9 +1282,9 @@
 .alter table [WindDirection] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind direction value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind direction value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1253,7 +1312,6 @@
 ]
 ```
 
-
 .create-or-alter table [WindDirection] ingestion json mapping "WindDirection_json_ce_structured"
 ```
 [
@@ -1271,7 +1329,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view WindDirectionLatest ifexists;
 
@@ -1310,9 +1367,9 @@
 .alter table [RelativeHumidity] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Relative humidity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Relative humidity value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1340,7 +1397,6 @@
 ]
 ```
 
-
 .create-or-alter table [RelativeHumidity] ingestion json mapping "RelativeHumidity_json_ce_structured"
 ```
 [
@@ -1358,7 +1414,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view RelativeHumidityLatest ifexists;
 
@@ -1397,9 +1452,9 @@
 .alter table [BarometricPressure] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Barometric pressure value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Barometric pressure value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1427,7 +1482,6 @@
 ]
 ```
 
-
 .create-or-alter table [BarometricPressure] ingestion json mapping "BarometricPressure_json_ce_structured"
 ```
 [
@@ -1446,7 +1500,6 @@
 ]
 ```
 
-
 .drop materialized-view BarometricPressureLatest ifexists;
 
 .create materialized-view with (backfill=true) BarometricPressureLatest on table BarometricPressure {
@@ -1459,93 +1512,6 @@
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
   "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.BarometricPressure') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
-}]
-```
-
-.create-merge table [AirTemperature] (
-   [site_no]: string,
-   [datetime]: string,
-   [value]: real,
-   [exception]: string,
-   [qualifiers]: dynamic,
-   [parameter_cd]: string,
-   [timeseries_cd]: string,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-);
-
-.alter table [AirTemperature] docstring "{\"description\": \"USGS air temperature data. Parameter code 00020.\"}";
-
-.alter table [AirTemperature] column-docstrings (
-   [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
-   [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Air temperature value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
-   [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
-   [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
-.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_flat"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "site_no", "path": "$.site_no"},
-  {"column": "datetime", "path": "$.datetime"},
-  {"column": "value", "path": "$.value"},
-  {"column": "exception", "path": "$.exception"},
-  {"column": "qualifiers", "path": "$.qualifiers"},
-  {"column": "parameter_cd", "path": "$.parameter_cd"},
-  {"column": "timeseries_cd", "path": "$.timeseries_cd"},
-]
-```
-
-
-.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_ce_structured"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "site_no", "path": "$.data.site_no"},
-  {"column": "datetime", "path": "$.data.datetime"},
-  {"column": "value", "path": "$.data.value"},
-  {"column": "exception", "path": "$.data.exception"},
-  {"column": "qualifiers", "path": "$.data.qualifiers"},
-  {"column": "parameter_cd", "path": "$.data.parameter_cd"},
-  {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
-]
-```
-
-
-.drop materialized-view AirTemperatureLatest ifexists;
-
-.create materialized-view with (backfill=true) AirTemperatureLatest on table AirTemperature {
-    AirTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
-}
-
-.alter table [AirTemperature] policy update
-```
-[{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'USGS.InstantaneousValues.AirTemperature') | project['site_no'] = tostring(data.['site_no']),['datetime'] = tostring(data.['datetime']),['value'] = toreal(data.['value']),['exception'] = tostring(data.['exception']),['qualifiers'] = todynamic(data.['qualifiers']),['parameter_cd'] = tostring(data.['parameter_cd']),['timeseries_cd'] = tostring(data.['timeseries_cd']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
@@ -1571,9 +1537,9 @@
 .alter table [TurbidityFNU] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1601,7 +1567,6 @@
 ]
 ```
 
-
 .create-or-alter table [TurbidityFNU] ingestion json mapping "TurbidityFNU_json_ce_structured"
 ```
 [
@@ -1619,7 +1584,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view TurbidityFNULatest ifexists;
 
@@ -1658,9 +1622,9 @@
 .alter table [fDOM] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved organic matter fluorescence value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved organic matter fluorescence value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1688,7 +1652,6 @@
 ]
 ```
 
-
 .create-or-alter table [fDOM] ingestion json mapping "fDOM_json_ce_structured"
 ```
 [
@@ -1706,7 +1669,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view fDOMLatest ifexists;
 
@@ -1745,9 +1707,9 @@
 .alter table [ReservoirStorage] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Reservoir storage value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Reservoir storage value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1775,7 +1737,6 @@
 ]
 ```
 
-
 .create-or-alter table [ReservoirStorage] ingestion json mapping "ReservoirStorage_json_ce_structured"
 ```
 [
@@ -1793,7 +1754,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view ReservoirStorageLatest ifexists;
 
@@ -1832,9 +1792,9 @@
 .alter table [LakeElevationNGVD29] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NGVD 1929.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NGVD 1929.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1862,7 +1822,6 @@
 ]
 ```
 
-
 .create-or-alter table [LakeElevationNGVD29] ingestion json mapping "LakeElevationNGVD29_json_ce_structured"
 ```
 [
@@ -1880,7 +1839,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view LakeElevationNGVD29Latest ifexists;
 
@@ -1919,9 +1877,9 @@
 .alter table [WaterDepth] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water depth value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water depth value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -1949,7 +1907,6 @@
 ]
 ```
 
-
 .create-or-alter table [WaterDepth] ingestion json mapping "WaterDepth_json_ce_structured"
 ```
 [
@@ -1967,7 +1924,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view WaterDepthLatest ifexists;
 
@@ -2004,7 +1960,7 @@
 .alter table [EquipmentStatus] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [status]: "{\"description\": \"{\\\"description\\\": \\\"Status of equipment alarm as codes.\\\"}\", \"schema\": [\"string\", \"null\"]}",
+   [status]: "{\"description\": \"{\\\"description\\\": \\\"Status of equipment alarm as codes.\\\"}\"}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -2030,7 +1986,6 @@
 ]
 ```
 
-
 .create-or-alter table [EquipmentStatus] ingestion json mapping "EquipmentStatus_json_ce_structured"
 ```
 [
@@ -2046,7 +2001,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view EquipmentStatusLatest ifexists;
 
@@ -2085,9 +2039,9 @@
 .alter table [TidallyFilteredDischarge] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Tidally filtered discharge value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Tidally filtered discharge value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -2115,7 +2069,6 @@
 ]
 ```
 
-
 .create-or-alter table [TidallyFilteredDischarge] ingestion json mapping "TidallyFilteredDischarge_json_ce_structured"
 ```
 [
@@ -2133,7 +2086,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view TidallyFilteredDischargeLatest ifexists;
 
@@ -2172,9 +2124,9 @@
 .alter table [WaterVelocity] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water velocity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Water velocity value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -2202,7 +2154,6 @@
 ]
 ```
 
-
 .create-or-alter table [WaterVelocity] ingestion json mapping "WaterVelocity_json_ce_structured"
 ```
 [
@@ -2220,7 +2171,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view WaterVelocityLatest ifexists;
 
@@ -2259,9 +2209,9 @@
 .alter table [EstuaryElevationNGVD29] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Estuary or ocean water surface elevation above NGVD 1929.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Estuary or ocean water surface elevation above NGVD 1929.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -2289,7 +2239,6 @@
 ]
 ```
 
-
 .create-or-alter table [EstuaryElevationNGVD29] ingestion json mapping "EstuaryElevationNGVD29_json_ce_structured"
 ```
 [
@@ -2307,7 +2256,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view EstuaryElevationNGVD29Latest ifexists;
 
@@ -2346,9 +2294,9 @@
 .alter table [LakeElevationNAVD88] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NAVD 1988.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NAVD 1988.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -2376,7 +2324,6 @@
 ]
 ```
 
-
 .create-or-alter table [LakeElevationNAVD88] ingestion json mapping "LakeElevationNAVD88_json_ce_structured"
 ```
 [
@@ -2394,7 +2341,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view LakeElevationNAVD88Latest ifexists;
 
@@ -2433,9 +2379,9 @@
 .alter table [Salinity] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Salinity value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Salinity value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -2463,7 +2409,6 @@
 ]
 ```
 
-
 .create-or-alter table [Salinity] ingestion json mapping "Salinity_json_ce_structured"
 ```
 [
@@ -2481,7 +2426,6 @@
   {"column": "timeseries_cd", "path": "$.data.timeseries_cd"},
 ]
 ```
-
 
 .drop materialized-view SalinityLatest ifexists;
 
@@ -2520,9 +2464,9 @@
 .alter table [GateOpening] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
-   [value]: "{\"description\": \"{\\\"description\\\": \\\"Gate opening value.\\\"}\", \"schema\": [\"double\", \"null\"]}",
-   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\", \"schema\": [\"string\", \"null\"]}",
-   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Gate opening value.\\\"}\"}",
+   [exception]: "{\"description\": \"{\\\"description\\\": \\\"Exception code when the value is unavailable.\\\"}\"}",
+   [qualifiers]: "{\"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"{\\\"description\\\": \\\"Qualifiers for the measurement.\\\"}\"}}",
    [parameter_cd]: "{\"description\": \"{\\\"description\\\": \\\"Parameter code.\\\"}\"}",
    [timeseries_cd]: "{\"description\": \"{\\\"description\\\": \\\"Timeseries code.\\\"}\"}",
    [___type] : 'Event type',
@@ -2550,7 +2494,6 @@
 ]
 ```
 
-
 .create-or-alter table [GateOpening] ingestion json mapping "GateOpening_json_ce_structured"
 ```
 [
@@ -2569,7 +2512,6 @@
 ]
 ```
 
-
 .drop materialized-view GateOpeningLatest ifexists;
 
 .create materialized-view with (backfill=true) GateOpeningLatest on table GateOpening {
@@ -2586,3 +2528,4 @@
   "PropagateIngestionProperties": true,
 }]
 ```
+

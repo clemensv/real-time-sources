@@ -10,7 +10,6 @@
     [data]: dynamic
 );
 
-
 .create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
 ```
 [
@@ -25,7 +24,6 @@
   {"column": "data", "path": "$.data"}
 ]
 ```
-
 
 .create-merge table [WaterLevel] (
    [station_id]: string,
@@ -80,7 +78,6 @@
 ]
 ```
 
-
 .create-or-alter table [WaterLevel] ingestion json mapping "WaterLevel_json_ce_structured"
 ```
 [
@@ -101,6 +98,7 @@
 ]
 ```
 
+.drop materialized-view WaterLevelLatest ifexists;
 
 .create materialized-view with (backfill=true) WaterLevelLatest on table WaterLevel {
     WaterLevel | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -153,7 +151,6 @@
 ]
 ```
 
-
 .create-or-alter table [Predictions] ingestion json mapping "Predictions_json_ce_structured"
 ```
 [
@@ -168,6 +165,7 @@
 ]
 ```
 
+.drop materialized-view PredictionsLatest ifexists;
 
 .create materialized-view with (backfill=true) PredictionsLatest on table Predictions {
     Predictions | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -229,7 +227,6 @@
 ]
 ```
 
-
 .create-or-alter table [AirPressure] ingestion json mapping "AirPressure_json_ce_structured"
 ```
 [
@@ -247,6 +244,7 @@
 ]
 ```
 
+.drop materialized-view AirPressureLatest ifexists;
 
 .create materialized-view with (backfill=true) AirPressureLatest on table AirPressure {
     AirPressure | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -308,7 +306,6 @@
 ]
 ```
 
-
 .create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_ce_structured"
 ```
 [
@@ -326,6 +323,7 @@
 ]
 ```
 
+.drop materialized-view AirTemperatureLatest ifexists;
 
 .create materialized-view with (backfill=true) AirTemperatureLatest on table AirTemperature {
     AirTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -387,7 +385,6 @@
 ]
 ```
 
-
 .create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_ce_structured"
 ```
 [
@@ -405,6 +402,7 @@
 ]
 ```
 
+.drop materialized-view WaterTemperatureLatest ifexists;
 
 .create materialized-view with (backfill=true) WaterTemperatureLatest on table WaterTemperature {
     WaterTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -472,7 +470,6 @@
 ]
 ```
 
-
 .create-or-alter table [Wind] ingestion json mapping "Wind_json_ce_structured"
 ```
 [
@@ -492,6 +489,7 @@
 ]
 ```
 
+.drop materialized-view WindLatest ifexists;
 
 .create materialized-view with (backfill=true) WindLatest on table Wind {
     Wind | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -511,7 +509,7 @@
 .create-merge table [Humidity] (
    [station_id]: string,
    [timestamp]: string,
-   [value]: string,
+   [value]: real,
    [max_humidity_exceeded]: bool,
    [min_humidity_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
@@ -553,7 +551,6 @@
 ]
 ```
 
-
 .create-or-alter table [Humidity] ingestion json mapping "Humidity_json_ce_structured"
 ```
 [
@@ -571,6 +568,7 @@
 ]
 ```
 
+.drop materialized-view HumidityLatest ifexists;
 
 .create materialized-view with (backfill=true) HumidityLatest on table Humidity {
     Humidity | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -581,7 +579,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Humidity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = tostring(data.['value']),['max_humidity_exceeded'] = tobool(data.['max_humidity_exceeded']),['min_humidity_exceeded'] = tobool(data.['min_humidity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Humidity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_humidity_exceeded'] = tobool(data.['max_humidity_exceeded']),['min_humidity_exceeded'] = tobool(data.['min_humidity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
@@ -590,7 +588,7 @@
 .create-merge table [Conductivity] (
    [station_id]: string,
    [timestamp]: string,
-   [value]: string,
+   [value]: real,
    [max_conductivity_exceeded]: bool,
    [min_conductivity_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
@@ -632,7 +630,6 @@
 ]
 ```
 
-
 .create-or-alter table [Conductivity] ingestion json mapping "Conductivity_json_ce_structured"
 ```
 [
@@ -650,6 +647,7 @@
 ]
 ```
 
+.drop materialized-view ConductivityLatest ifexists;
 
 .create materialized-view with (backfill=true) ConductivityLatest on table Conductivity {
     Conductivity | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -660,7 +658,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Conductivity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = tostring(data.['value']),['max_conductivity_exceeded'] = tobool(data.['max_conductivity_exceeded']),['min_conductivity_exceeded'] = tobool(data.['min_conductivity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Conductivity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_conductivity_exceeded'] = tobool(data.['max_conductivity_exceeded']),['min_conductivity_exceeded'] = tobool(data.['min_conductivity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
@@ -705,7 +703,6 @@
 ]
 ```
 
-
 .create-or-alter table [Salinity] ingestion json mapping "Salinity_json_ce_structured"
 ```
 [
@@ -721,6 +718,7 @@
 ]
 ```
 
+.drop materialized-view SalinityLatest ifexists;
 
 .create materialized-view with (backfill=true) SalinityLatest on table Salinity {
     Salinity | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -760,7 +758,7 @@
    [outlook]: bool,
    [HTFhistorical]: bool,
    [nonNavigational]: bool,
-   [id]: string,
+   [station_id]: string,
    [name]: string,
    [lat]: real,
    [lng]: real,
@@ -792,7 +790,7 @@
    [outlook]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station provides outlook data.\\\"}\"}",
    [HTFhistorical]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station has historical High Tide Flooding data.\\\"}\"}",
    [nonNavigational]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station is non-navigational.\\\"}\"}",
-   [id]: "{\"description\": \"{\\\"description\\\": \\\"Unique identifier for the station.\\\"}\"}",
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"Unique identifier for the station.\\\"}\"}",
    [name]: "{\"description\": \"{\\\"description\\\": \\\"Name of the station.\\\"}\"}",
    [lat]: "{\"description\": \"{\\\"description\\\": \\\"Latitude of the station.\\\"}\"}",
    [lng]: "{\"description\": \"{\\\"description\\\": \\\"Longitude of the station.\\\"}\"}",
@@ -838,7 +836,7 @@
   {"column": "outlook", "path": "$.outlook"},
   {"column": "HTFhistorical", "path": "$.HTFhistorical"},
   {"column": "nonNavigational", "path": "$.nonNavigational"},
-  {"column": "id", "path": "$.id"},
+  {"column": "station_id", "path": "$.station_id"},
   {"column": "name", "path": "$.name"},
   {"column": "lat", "path": "$.lat"},
   {"column": "lng", "path": "$.lng"},
@@ -852,7 +850,6 @@
   {"column": "tideType", "path": "$.tideType"},
 ]
 ```
-
 
 .create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
 ```
@@ -884,7 +881,7 @@
   {"column": "outlook", "path": "$.data.outlook"},
   {"column": "HTFhistorical", "path": "$.data.HTFhistorical"},
   {"column": "nonNavigational", "path": "$.data.nonNavigational"},
-  {"column": "id", "path": "$.data.id"},
+  {"column": "station_id", "path": "$.data.station_id"},
   {"column": "name", "path": "$.data.name"},
   {"column": "lat", "path": "$.data.lat"},
   {"column": "lng", "path": "$.data.lng"},
@@ -899,6 +896,7 @@
 ]
 ```
 
+.drop materialized-view StationLatest ifexists;
 
 .create materialized-view with (backfill=true) StationLatest on table Station {
     Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -909,7 +907,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Station') | project['tidal'] = tobool(data.['tidal']),['greatlakes'] = tobool(data.['greatlakes']),['shefcode'] = tostring(data.['shefcode']),['details'] = todynamic(data.['details']),['sensors'] = todynamic(data.['sensors']),['floodlevels'] = todynamic(data.['floodlevels']),['datums'] = todynamic(data.['datums']),['supersededdatums'] = todynamic(data.['supersededdatums']),['harmonicConstituents'] = todynamic(data.['harmonicConstituents']),['benchmarks'] = todynamic(data.['benchmarks']),['tidePredOffsets'] = todynamic(data.['tidePredOffsets']),['ofsMapOffsets'] = todynamic(data.['ofsMapOffsets']),['state'] = tostring(data.['state']),['timezone'] = tostring(data.['timezone']),['timezonecorr'] = toint(data.['timezonecorr']),['observedst'] = tobool(data.['observedst']),['stormsurge'] = tobool(data.['stormsurge']),['nearby'] = todynamic(data.['nearby']),['forecast'] = tobool(data.['forecast']),['outlook'] = tobool(data.['outlook']),['HTFhistorical'] = tobool(data.['HTFhistorical']),['nonNavigational'] = tobool(data.['nonNavigational']),['id'] = tostring(data.['id']),['name'] = tostring(data.['name']),['lat'] = toreal(data.['lat']),['lng'] = toreal(data.['lng']),['affiliations'] = tostring(data.['affiliations']),['portscode'] = tostring(data.['portscode']),['products'] = todynamic(data.['products']),['disclaimers'] = todynamic(data.['disclaimers']),['notices'] = todynamic(data.['notices']),['self'] = tostring(data.['self']),['expand'] = tostring(data.['expand']),['tideType'] = tostring(data.['tideType']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Station') | project['tidal'] = tobool(data.['tidal']),['greatlakes'] = tobool(data.['greatlakes']),['shefcode'] = tostring(data.['shefcode']),['details'] = todynamic(data.['details']),['sensors'] = todynamic(data.['sensors']),['floodlevels'] = todynamic(data.['floodlevels']),['datums'] = todynamic(data.['datums']),['supersededdatums'] = todynamic(data.['supersededdatums']),['harmonicConstituents'] = todynamic(data.['harmonicConstituents']),['benchmarks'] = todynamic(data.['benchmarks']),['tidePredOffsets'] = todynamic(data.['tidePredOffsets']),['ofsMapOffsets'] = todynamic(data.['ofsMapOffsets']),['state'] = tostring(data.['state']),['timezone'] = tostring(data.['timezone']),['timezonecorr'] = toint(data.['timezonecorr']),['observedst'] = tobool(data.['observedst']),['stormsurge'] = tobool(data.['stormsurge']),['nearby'] = todynamic(data.['nearby']),['forecast'] = tobool(data.['forecast']),['outlook'] = tobool(data.['outlook']),['HTFhistorical'] = tobool(data.['HTFhistorical']),['nonNavigational'] = tobool(data.['nonNavigational']),['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['lat'] = toreal(data.['lat']),['lng'] = toreal(data.['lng']),['affiliations'] = tostring(data.['affiliations']),['portscode'] = tostring(data.['portscode']),['products'] = todynamic(data.['products']),['disclaimers'] = todynamic(data.['disclaimers']),['notices'] = todynamic(data.['notices']),['self'] = tostring(data.['self']),['expand'] = tostring(data.['expand']),['tideType'] = tostring(data.['tideType']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
@@ -959,7 +957,6 @@
 ]
 ```
 
-
 .create-or-alter table [Visibility] ingestion json mapping "Visibility_json_ce_structured"
 ```
 [
@@ -977,6 +974,7 @@
 ]
 ```
 
+.drop materialized-view VisibilityLatest ifexists;
 
 .create materialized-view with (backfill=true) VisibilityLatest on table Visibility {
     Visibility | summarize arg_max(___time, *) by ___type, ___source, ___subject
@@ -992,3 +990,162 @@
   "PropagateIngestionProperties": true,
 }]
 ```
+
+.create-merge table [Currents] (
+   [station_id]: string,
+   [timestamp]: string,
+   [speed]: real,
+   [direction_degrees]: real,
+   [bin]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Currents] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the currents measurement\\\"}\"}",
+   [speed]: "{\"description\": \"{\\\"description\\\": \\\"Current speed\\\"}\"}",
+   [direction_degrees]: "{\"description\": \"{\\\"description\\\": \\\"Current direction in degrees\\\"}\"}",
+   [bin]: "{\"description\": \"{\\\"description\\\": \\\"Bin number\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Currents] ingestion json mapping "Currents_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "speed", "path": "$.speed"},
+  {"column": "direction_degrees", "path": "$.direction_degrees"},
+  {"column": "bin", "path": "$.bin"},
+]
+```
+
+.create-or-alter table [Currents] ingestion json mapping "Currents_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "speed", "path": "$.data.speed"},
+  {"column": "direction_degrees", "path": "$.data.direction_degrees"},
+  {"column": "bin", "path": "$.data.bin"},
+]
+```
+
+.drop materialized-view CurrentsLatest ifexists;
+
+.create materialized-view with (backfill=true) CurrentsLatest on table Currents {
+    Currents | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Currents] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Currents') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = toreal(data.['direction_degrees']),['bin'] = tostring(data.['bin']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [CurrentPredictions] (
+   [station_id]: string,
+   [timestamp]: string,
+   [velocity_major]: real,
+   [mean_flood_dir]: real,
+   [mean_ebb_dir]: real,
+   [depth]: real,
+   [bin]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [CurrentPredictions] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the current prediction\\\"}\"}",
+   [velocity_major]: "{\"description\": \"{\\\"description\\\": \\\"Major axis velocity\\\"}\"}",
+   [mean_flood_dir]: "{\"description\": \"{\\\"description\\\": \\\"Mean flood direction in degrees\\\"}\"}",
+   [mean_ebb_dir]: "{\"description\": \"{\\\"description\\\": \\\"Mean ebb direction in degrees\\\"}\"}",
+   [depth]: "{\"description\": \"{\\\"description\\\": \\\"Depth of measurement\\\"}\"}",
+   [bin]: "{\"description\": \"{\\\"description\\\": \\\"Bin number\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [CurrentPredictions] ingestion json mapping "CurrentPredictions_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "velocity_major", "path": "$.velocity_major"},
+  {"column": "mean_flood_dir", "path": "$.mean_flood_dir"},
+  {"column": "mean_ebb_dir", "path": "$.mean_ebb_dir"},
+  {"column": "depth", "path": "$.depth"},
+  {"column": "bin", "path": "$.bin"},
+]
+```
+
+.create-or-alter table [CurrentPredictions] ingestion json mapping "CurrentPredictions_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "velocity_major", "path": "$.data.velocity_major"},
+  {"column": "mean_flood_dir", "path": "$.data.mean_flood_dir"},
+  {"column": "mean_ebb_dir", "path": "$.data.mean_ebb_dir"},
+  {"column": "depth", "path": "$.data.depth"},
+  {"column": "bin", "path": "$.data.bin"},
+]
+```
+
+.drop materialized-view CurrentPredictionsLatest ifexists;
+
+.create materialized-view with (backfill=true) CurrentPredictionsLatest on table CurrentPredictions {
+    CurrentPredictions | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [CurrentPredictions] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.CurrentPredictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['velocity_major'] = toreal(data.['velocity_major']),['mean_flood_dir'] = toreal(data.['mean_flood_dir']),['mean_ebb_dir'] = toreal(data.['mean_ebb_dir']),['depth'] = toreal(data.['depth']),['bin'] = tostring(data.['bin']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

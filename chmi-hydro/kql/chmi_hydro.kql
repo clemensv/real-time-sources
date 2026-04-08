@@ -1,0 +1,185 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: string,
+   [dbc]: string,
+   [station_name]: string,
+   [stream_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [flood_level_1]: real,
+   [flood_level_2]: real,
+   [flood_level_3]: real,
+   [flood_level_4]: real,
+   [has_forecast]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Station\"}";
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "dbc", "path": "$.dbc"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "stream_name", "path": "$.stream_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "flood_level_1", "path": "$.flood_level_1"},
+  {"column": "flood_level_2", "path": "$.flood_level_2"},
+  {"column": "flood_level_3", "path": "$.flood_level_3"},
+  {"column": "flood_level_4", "path": "$.flood_level_4"},
+  {"column": "has_forecast", "path": "$.has_forecast"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "dbc", "path": "$.data.dbc"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "stream_name", "path": "$.data.stream_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "flood_level_1", "path": "$.data.flood_level_1"},
+  {"column": "flood_level_2", "path": "$.data.flood_level_2"},
+  {"column": "flood_level_3", "path": "$.data.flood_level_3"},
+  {"column": "flood_level_4", "path": "$.data.flood_level_4"},
+  {"column": "has_forecast", "path": "$.data.has_forecast"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'CZ.Gov.CHMI.Hydro.Station') | project['station_id'] = tostring(data.['station_id']),['dbc'] = tostring(data.['dbc']),['station_name'] = tostring(data.['station_name']),['stream_name'] = tostring(data.['stream_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['flood_level_1'] = toreal(data.['flood_level_1']),['flood_level_2'] = toreal(data.['flood_level_2']),['flood_level_3'] = toreal(data.['flood_level_3']),['flood_level_4'] = toreal(data.['flood_level_4']),['has_forecast'] = tobool(data.['has_forecast']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WaterLevelObservation] (
+   [station_id]: string,
+   [station_name]: string,
+   [stream_name]: string,
+   [water_level]: real,
+   [water_level_timestamp]: datetime,
+   [discharge]: real,
+   [discharge_timestamp]: datetime,
+   [water_temperature]: real,
+   [water_temperature_timestamp]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaterLevelObservation] docstring "{\"description\": \"WaterLevelObservation\"}";
+
+.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "stream_name", "path": "$.stream_name"},
+  {"column": "water_level", "path": "$.water_level"},
+  {"column": "water_level_timestamp", "path": "$.water_level_timestamp"},
+  {"column": "discharge", "path": "$.discharge"},
+  {"column": "discharge_timestamp", "path": "$.discharge_timestamp"},
+  {"column": "water_temperature", "path": "$.water_temperature"},
+  {"column": "water_temperature_timestamp", "path": "$.water_temperature_timestamp"},
+]
+```
+
+.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "stream_name", "path": "$.data.stream_name"},
+  {"column": "water_level", "path": "$.data.water_level"},
+  {"column": "water_level_timestamp", "path": "$.data.water_level_timestamp"},
+  {"column": "discharge", "path": "$.data.discharge"},
+  {"column": "discharge_timestamp", "path": "$.data.discharge_timestamp"},
+  {"column": "water_temperature", "path": "$.data.water_temperature"},
+  {"column": "water_temperature_timestamp", "path": "$.data.water_temperature_timestamp"},
+]
+```
+
+.drop materialized-view WaterLevelObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WaterLevelObservationLatest on table WaterLevelObservation {
+    WaterLevelObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaterLevelObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'CZ.Gov.CHMI.Hydro.WaterLevelObservation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['stream_name'] = tostring(data.['stream_name']),['water_level'] = toreal(data.['water_level']),['water_level_timestamp'] = todatetime(data.['water_level_timestamp']),['discharge'] = toreal(data.['discharge']),['discharge_timestamp'] = todatetime(data.['discharge_timestamp']),['water_temperature'] = toreal(data.['water_temperature']),['water_temperature_timestamp'] = todatetime(data.['water_temperature_timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

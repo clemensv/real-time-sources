@@ -1,0 +1,539 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [VesselLocation] (
+   [mmsi]: int,
+   [time]: int,
+   [sog]: real,
+   [cog]: real,
+   [navStat]: int,
+   [rot]: int,
+   [posAcc]: bool,
+   [raim]: bool,
+   [heading]: int,
+   [lon]: real,
+   [lat]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VesselLocation] docstring "{\"description\": \"AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update.\"}";
+
+.create-or-alter table [VesselLocation] ingestion json mapping "VesselLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "time", "path": "$.time"},
+  {"column": "sog", "path": "$.sog"},
+  {"column": "cog", "path": "$.cog"},
+  {"column": "navStat", "path": "$.navStat"},
+  {"column": "rot", "path": "$.rot"},
+  {"column": "posAcc", "path": "$.posAcc"},
+  {"column": "raim", "path": "$.raim"},
+  {"column": "heading", "path": "$.heading"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "lat", "path": "$.lat"},
+]
+```
+
+.create-or-alter table [VesselLocation] ingestion json mapping "VesselLocation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "sog", "path": "$.data.sog"},
+  {"column": "cog", "path": "$.data.cog"},
+  {"column": "navStat", "path": "$.data.navStat"},
+  {"column": "rot", "path": "$.data.rot"},
+  {"column": "posAcc", "path": "$.data.posAcc"},
+  {"column": "raim", "path": "$.data.raim"},
+  {"column": "heading", "path": "$.data.heading"},
+  {"column": "lon", "path": "$.data.lon"},
+  {"column": "lat", "path": "$.data.lat"},
+]
+```
+
+.drop materialized-view VesselLocationLatest ifexists;
+
+.create materialized-view with (backfill=true) VesselLocationLatest on table VesselLocation {
+    VesselLocation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [VesselLocation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.marine.ais.VesselLocation') | project['mmsi'] = toint(data.['mmsi']),['time'] = toint(data.['time']),['sog'] = toreal(data.['sog']),['cog'] = toreal(data.['cog']),['navStat'] = toint(data.['navStat']),['rot'] = toint(data.['rot']),['posAcc'] = tobool(data.['posAcc']),['raim'] = tobool(data.['raim']),['heading'] = toint(data.['heading']),['lon'] = toreal(data.['lon']),['lat'] = toreal(data.['lat']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [VesselMetadata] (
+   [mmsi]: int,
+   [timestamp]: int,
+   [name]: string,
+   [callSign]: string,
+   [imo]: int,
+   [type]: int,
+   [draught]: int,
+   [eta]: int,
+   [destination]: string,
+   [posType]: int,
+   [refA]: int,
+   [refB]: int,
+   [refC]: int,
+   [refD]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VesselMetadata] docstring "{\"description\": \"AIS vessel static and voyage data from Digitraffic MQTT stream. Represents decoded AIS message type 5/24 data.\"}";
+
+.create-or-alter table [VesselMetadata] ingestion json mapping "VesselMetadata_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "name", "path": "$.name"},
+  {"column": "callSign", "path": "$.callSign"},
+  {"column": "imo", "path": "$.imo"},
+  {"column": "type", "path": "$.type"},
+  {"column": "draught", "path": "$.draught"},
+  {"column": "eta", "path": "$.eta"},
+  {"column": "destination", "path": "$.destination"},
+  {"column": "posType", "path": "$.posType"},
+  {"column": "refA", "path": "$.refA"},
+  {"column": "refB", "path": "$.refB"},
+  {"column": "refC", "path": "$.refC"},
+  {"column": "refD", "path": "$.refD"},
+]
+```
+
+.create-or-alter table [VesselMetadata] ingestion json mapping "VesselMetadata_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "callSign", "path": "$.data.callSign"},
+  {"column": "imo", "path": "$.data.imo"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "draught", "path": "$.data.draught"},
+  {"column": "eta", "path": "$.data.eta"},
+  {"column": "destination", "path": "$.data.destination"},
+  {"column": "posType", "path": "$.data.posType"},
+  {"column": "refA", "path": "$.data.refA"},
+  {"column": "refB", "path": "$.data.refB"},
+  {"column": "refC", "path": "$.data.refC"},
+  {"column": "refD", "path": "$.data.refD"},
+]
+```
+
+.drop materialized-view VesselMetadataLatest ifexists;
+
+.create materialized-view with (backfill=true) VesselMetadataLatest on table VesselMetadata {
+    VesselMetadata | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [VesselMetadata] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.marine.ais.VesselMetadata') | project['mmsi'] = toint(data.['mmsi']),['timestamp'] = toint(data.['timestamp']),['name'] = tostring(data.['name']),['callSign'] = tostring(data.['callSign']),['imo'] = toint(data.['imo']),['type'] = toint(data.['type']),['draught'] = toint(data.['draught']),['eta'] = toint(data.['eta']),['destination'] = tostring(data.['destination']),['posType'] = toint(data.['posType']),['refA'] = toint(data.['refA']),['refB'] = toint(data.['refB']),['refC'] = toint(data.['refC']),['refD'] = toint(data.['refD']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [PortCall] (
+   [port_call_id]: int,
+   [updated_at]: datetime,
+   [customs_reference]: string,
+   [port_to_visit]: string,
+   [previous_port]: string,
+   [next_port]: string,
+   [mmsi]: int,
+   [imo_lloyds]: int,
+   [vessel_name]: string,
+   [vessel_name_prefix]: string,
+   [radio_call_sign]: string,
+   [nationality]: string,
+   [vessel_type_code]: int,
+   [domestic_traffic_arrival]: bool,
+   [domestic_traffic_departure]: bool,
+   [arrival_with_cargo]: bool,
+   [not_loading]: bool,
+   [discharge]: int,
+   [current_security_level]: int,
+   [agents]: dynamic,
+   [port_areas]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PortCall] docstring "{\"description\": \"Port call update from Digitraffic's Portnet-backed port-call API. Each event represents one vessel visit plan or update keyed by the Digitraffic port call identifier and carries the vessel identity, routing context, assigned agents, and berth-area timing details.\"}";
+
+.alter table [PortCall] column-docstrings (
+   [port_call_id]: "{\"description\": \"Digitraffic port call identifier for this Portnet vessel visit record.\"}",
+   [updated_at]: "{\"description\": \"Timestamp when this port call record was last updated in Digitraffic, from the portCallTimestamp field.\"}",
+   [customs_reference]: "{\"description\": \"Customs reference string carried with the port call when available.\"}",
+   [port_to_visit]: "{\"description\": \"UN/LOCODE of the destination port that this call is scheduled to visit.\"}",
+   [previous_port]: "{\"description\": \"UN/LOCODE of the vessel's previous port when reported by Portnet.\"}",
+   [next_port]: "{\"description\": \"UN/LOCODE of the vessel's next announced port when reported by Portnet.\"}",
+   [mmsi]: "{\"description\": \"Maritime Mobile Service Identity associated with the visiting vessel, when available.\"}",
+   [imo_lloyds]: "{\"description\": \"IMO or Lloyd's vessel number carried with the port call when available.\"}",
+   [vessel_name]: "{\"description\": \"Reported vessel name for the visit.\"}",
+   [vessel_name_prefix]: "{\"description\": \"Reported vessel name prefix such as 'ms' or 'mt' when present.\"}",
+   [radio_call_sign]: "{\"description\": \"Radio call sign for the visiting vessel when reported by Portnet.\"}",
+   [nationality]: "{\"description\": \"Flag or nationality code reported for the vessel.\"}",
+   [vessel_type_code]: "{\"description\": \"Digitraffic vessel type code for the visiting vessel.\"}",
+   [domestic_traffic_arrival]: "{\"description\": \"True when the arrival leg is domestic traffic.\"}",
+   [domestic_traffic_departure]: "{\"description\": \"True when the departure leg is domestic traffic.\"}",
+   [arrival_with_cargo]: "{\"description\": \"True when the vessel is reported as arriving with cargo.\"}",
+   [not_loading]: "{\"description\": \"True when the vessel is reported as not loading cargo at the call.\"}",
+   [discharge]: "{\"description\": \"Digitraffic discharge indicator value for the call when reported.\"}",
+   [current_security_level]: "{\"description\": \"Current ISPS security level reported for the vessel at this call.\"}",
+   [agents]: "{\"description\": \"Agent and manager organizations attached to the port call.\", \"schema\": {\"type\": \"array\", \"description\": \"Agent and manager organizations attached to the port call.\", \"items\": {\"type\": \"object\", \"name\": \"PortCallAgent\", \"description\": \"One agent or manager assignment attached to the port call.\", \"required\": [\"name\", \"port_call_direction\", \"role\"], \"properties\": {\"name\": {\"type\": \"string\", \"description\": \"Organization name for the assigned ship agent or manager.\"}, \"port_call_direction\": {\"type\": \"string\", \"description\": \"Direction scope for the assignment, such as arrival, departure, or whole port call.\"}, \"role\": {\"type\": \"int32\", \"description\": \"Digitraffic role code for the assignment, for example agent or ship manager.\"}}}}}",
+   [port_areas]: "{\"description\": \"Planned or actual berth and port-area timing details associated with the call.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PortCall] ingestion json mapping "PortCall_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "port_call_id", "path": "$.port_call_id"},
+  {"column": "updated_at", "path": "$.updated_at"},
+  {"column": "customs_reference", "path": "$.customs_reference"},
+  {"column": "port_to_visit", "path": "$.port_to_visit"},
+  {"column": "previous_port", "path": "$.previous_port"},
+  {"column": "next_port", "path": "$.next_port"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "imo_lloyds", "path": "$.imo_lloyds"},
+  {"column": "vessel_name", "path": "$.vessel_name"},
+  {"column": "vessel_name_prefix", "path": "$.vessel_name_prefix"},
+  {"column": "radio_call_sign", "path": "$.radio_call_sign"},
+  {"column": "nationality", "path": "$.nationality"},
+  {"column": "vessel_type_code", "path": "$.vessel_type_code"},
+  {"column": "domestic_traffic_arrival", "path": "$.domestic_traffic_arrival"},
+  {"column": "domestic_traffic_departure", "path": "$.domestic_traffic_departure"},
+  {"column": "arrival_with_cargo", "path": "$.arrival_with_cargo"},
+  {"column": "not_loading", "path": "$.not_loading"},
+  {"column": "discharge", "path": "$.discharge"},
+  {"column": "current_security_level", "path": "$.current_security_level"},
+  {"column": "agents", "path": "$.agents"},
+  {"column": "port_areas", "path": "$.port_areas"},
+]
+```
+
+.create-or-alter table [PortCall] ingestion json mapping "PortCall_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "port_call_id", "path": "$.data.port_call_id"},
+  {"column": "updated_at", "path": "$.data.updated_at"},
+  {"column": "customs_reference", "path": "$.data.customs_reference"},
+  {"column": "port_to_visit", "path": "$.data.port_to_visit"},
+  {"column": "previous_port", "path": "$.data.previous_port"},
+  {"column": "next_port", "path": "$.data.next_port"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "imo_lloyds", "path": "$.data.imo_lloyds"},
+  {"column": "vessel_name", "path": "$.data.vessel_name"},
+  {"column": "vessel_name_prefix", "path": "$.data.vessel_name_prefix"},
+  {"column": "radio_call_sign", "path": "$.data.radio_call_sign"},
+  {"column": "nationality", "path": "$.data.nationality"},
+  {"column": "vessel_type_code", "path": "$.data.vessel_type_code"},
+  {"column": "domestic_traffic_arrival", "path": "$.data.domestic_traffic_arrival"},
+  {"column": "domestic_traffic_departure", "path": "$.data.domestic_traffic_departure"},
+  {"column": "arrival_with_cargo", "path": "$.data.arrival_with_cargo"},
+  {"column": "not_loading", "path": "$.data.not_loading"},
+  {"column": "discharge", "path": "$.data.discharge"},
+  {"column": "current_security_level", "path": "$.data.current_security_level"},
+  {"column": "agents", "path": "$.data.agents"},
+  {"column": "port_areas", "path": "$.data.port_areas"},
+]
+```
+
+.drop materialized-view PortCallLatest ifexists;
+
+.create materialized-view with (backfill=true) PortCallLatest on table PortCall {
+    PortCall | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PortCall] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.marine.portcall.PortCall') | project['port_call_id'] = toint(data.['port_call_id']),['updated_at'] = todatetime(data.['updated_at']),['customs_reference'] = tostring(data.['customs_reference']),['port_to_visit'] = tostring(data.['port_to_visit']),['previous_port'] = tostring(data.['previous_port']),['next_port'] = tostring(data.['next_port']),['mmsi'] = toint(data.['mmsi']),['imo_lloyds'] = toint(data.['imo_lloyds']),['vessel_name'] = tostring(data.['vessel_name']),['vessel_name_prefix'] = tostring(data.['vessel_name_prefix']),['radio_call_sign'] = tostring(data.['radio_call_sign']),['nationality'] = tostring(data.['nationality']),['vessel_type_code'] = toint(data.['vessel_type_code']),['domestic_traffic_arrival'] = tobool(data.['domestic_traffic_arrival']),['domestic_traffic_departure'] = tobool(data.['domestic_traffic_departure']),['arrival_with_cargo'] = tobool(data.['arrival_with_cargo']),['not_loading'] = tobool(data.['not_loading']),['discharge'] = toint(data.['discharge']),['current_security_level'] = toint(data.['current_security_level']),['agents'] = todynamic(data.['agents']),['port_areas'] = todynamic(data.['port_areas']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [VesselDetails] (
+   [vessel_id]: int,
+   [updated_at]: datetime,
+   [mmsi]: int,
+   [name]: string,
+   [name_prefix]: string,
+   [imo_lloyds]: int,
+   [radio_call_sign]: string,
+   [radio_call_sign_type]: string,
+   [data_source]: string,
+   [vessel_construction]: dynamic,
+   [vessel_dimensions]: dynamic,
+   [vessel_registration]: dynamic,
+   [vessel_system]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VesselDetails] docstring "{\"description\": \"Reference record from Digitraffic's Port Call vessel-details API. Each event represents the current known metadata for one vessel entity keyed by Digitraffic's stable vessel identifier and includes identity, construction, dimensions, registration, and contact details sourced from Portnet.\"}";
+
+.alter table [VesselDetails] column-docstrings (
+   [vessel_id]: "{\"description\": \"Digitraffic vessel identifier from the vesselId field. This is the stable identifier used as the CloudEvents subject and Kafka record key for vessel reference events.\"}",
+   [updated_at]: "{\"description\": \"Timestamp when Digitraffic last updated the vessel metadata record, from the updateTimestamp field.\"}",
+   [mmsi]: "{\"description\": \"Maritime Mobile Service Identity associated with this vessel when available.\"}",
+   [name]: "{\"description\": \"Reported vessel name.\"}",
+   [name_prefix]: "{\"description\": \"Reported vessel-name prefix such as ms when available.\"}",
+   [imo_lloyds]: "{\"description\": \"IMO or Lloyd's number associated with the vessel when available.\"}",
+   [radio_call_sign]: "{\"description\": \"Radio call sign associated with the vessel when available.\"}",
+   [radio_call_sign_type]: "{\"description\": \"Type of radio call sign reported by Digitraffic, for example REAL.\"}",
+   [data_source]: "{\"description\": \"Upstream data source reported by Digitraffic for the vessel metadata, for example Portnet.\"}",
+   [vessel_construction]: "{\"description\": \"Construction and classification attributes for the vessel.\"}",
+   [vessel_dimensions]: "{\"description\": \"Tonnage and dimensional attributes for the vessel.\"}",
+   [vessel_registration]: "{\"description\": \"Registry and nationality details for the vessel.\"}",
+   [vessel_system]: "{\"description\": \"System and contact details carried with the vessel metadata.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [VesselDetails] ingestion json mapping "VesselDetails_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vessel_id", "path": "$.vessel_id"},
+  {"column": "updated_at", "path": "$.updated_at"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "name", "path": "$.name"},
+  {"column": "name_prefix", "path": "$.name_prefix"},
+  {"column": "imo_lloyds", "path": "$.imo_lloyds"},
+  {"column": "radio_call_sign", "path": "$.radio_call_sign"},
+  {"column": "radio_call_sign_type", "path": "$.radio_call_sign_type"},
+  {"column": "data_source", "path": "$.data_source"},
+  {"column": "vessel_construction", "path": "$.vessel_construction"},
+  {"column": "vessel_dimensions", "path": "$.vessel_dimensions"},
+  {"column": "vessel_registration", "path": "$.vessel_registration"},
+  {"column": "vessel_system", "path": "$.vessel_system"},
+]
+```
+
+.create-or-alter table [VesselDetails] ingestion json mapping "VesselDetails_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vessel_id", "path": "$.data.vessel_id"},
+  {"column": "updated_at", "path": "$.data.updated_at"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "name_prefix", "path": "$.data.name_prefix"},
+  {"column": "imo_lloyds", "path": "$.data.imo_lloyds"},
+  {"column": "radio_call_sign", "path": "$.data.radio_call_sign"},
+  {"column": "radio_call_sign_type", "path": "$.data.radio_call_sign_type"},
+  {"column": "data_source", "path": "$.data.data_source"},
+  {"column": "vessel_construction", "path": "$.data.vessel_construction"},
+  {"column": "vessel_dimensions", "path": "$.data.vessel_dimensions"},
+  {"column": "vessel_registration", "path": "$.data.vessel_registration"},
+  {"column": "vessel_system", "path": "$.data.vessel_system"},
+]
+```
+
+.drop materialized-view VesselDetailsLatest ifexists;
+
+.create materialized-view with (backfill=true) VesselDetailsLatest on table VesselDetails {
+    VesselDetails | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [VesselDetails] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.marine.portcall.VesselDetails') | project['vessel_id'] = toint(data.['vessel_id']),['updated_at'] = todatetime(data.['updated_at']),['mmsi'] = toint(data.['mmsi']),['name'] = tostring(data.['name']),['name_prefix'] = tostring(data.['name_prefix']),['imo_lloyds'] = toint(data.['imo_lloyds']),['radio_call_sign'] = tostring(data.['radio_call_sign']),['radio_call_sign_type'] = tostring(data.['radio_call_sign_type']),['data_source'] = tostring(data.['data_source']),['vessel_construction'] = todynamic(data.['vessel_construction']),['vessel_dimensions'] = todynamic(data.['vessel_dimensions']),['vessel_registration'] = todynamic(data.['vessel_registration']),['vessel_system'] = todynamic(data.['vessel_system']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [PortLocation] (
+   [locode]: string,
+   [data_updated_time]: datetime,
+   [location_name]: string,
+   [country]: string,
+   [longitude]: real,
+   [latitude]: real,
+   [port_areas]: dynamic,
+   [berths]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PortLocation] docstring "{\"description\": \"Reference record from Digitraffic's Port Call ports API. Each event represents one SafeSeaNet port location keyed by UN/LOCODE together with its point geometry, port-area definitions, and berth catalog from the same upstream snapshot.\"}";
+
+.alter table [PortLocation] column-docstrings (
+   [locode]: "{\"description\": \"UN/LOCODE identifying the port location. This value is used as the CloudEvents subject and Kafka record key for port-location reference events.\"}",
+   [data_updated_time]: "{\"description\": \"Timestamp when the ports snapshot used for this location was last updated in Digitraffic.\"}",
+   [location_name]: "{\"description\": \"Human-readable port or location name from the ssnLocations feature properties.\"}",
+   [country]: "{\"description\": \"Country name reported for the location in the ssnLocations feature properties.\"}",
+   [longitude]: "{\"description\": \"Longitude of the port location point in decimal degrees east when the upstream feature includes geometry.\"}",
+   [latitude]: "{\"description\": \"Latitude of the port location point in decimal degrees north when the upstream feature includes geometry.\"}",
+   [port_areas]: "{\"description\": \"Port areas associated with this location from the portAreas feature collection.\", \"schema\": {\"type\": \"array\", \"description\": \"Port areas associated with this location from the portAreas feature collection.\", \"items\": {\"type\": \"object\", \"name\": \"PortArea\", \"required\": [\"port_area_code\", \"port_area_name\"], \"properties\": {\"port_area_code\": {\"type\": \"string\", \"description\": \"Port-area code identifying one sub-area of the port location.\"}, \"port_area_name\": {\"type\": \"string\", \"description\": \"Human-readable name of the port area.\"}, \"longitude\": {\"type\": \"double\", \"description\": \"Longitude of the port-area point in decimal degrees east when the upstream feature includes geometry.\", \"unit\": \"deg\", \"symbol\": \"deg\"}, \"latitude\": {\"type\": \"double\", \"description\": \"Latitude of the port-area point in decimal degrees north when the upstream feature includes geometry.\", \"unit\": \"deg\", \"symbol\": \"deg\"}}}}}",
+   [berths]: "{\"description\": \"Berth catalog entries associated with this location from the berths collection.\", \"schema\": {\"type\": \"array\", \"description\": \"Berth catalog entries associated with this location from the berths collection.\", \"items\": {\"type\": \"object\", \"name\": \"Berth\", \"required\": [\"port_area_code\", \"berth_code\", \"berth_name\"], \"properties\": {\"port_area_code\": {\"type\": \"string\", \"description\": \"Code of the port area that contains this berth.\"}, \"berth_code\": {\"type\": \"string\", \"description\": \"Berth code within the port area.\"}, \"berth_name\": {\"type\": \"string\", \"description\": \"Human-readable berth name.\"}}}}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PortLocation] ingestion json mapping "PortLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locode", "path": "$.locode"},
+  {"column": "data_updated_time", "path": "$.data_updated_time"},
+  {"column": "location_name", "path": "$.location_name"},
+  {"column": "country", "path": "$.country"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "port_areas", "path": "$.port_areas"},
+  {"column": "berths", "path": "$.berths"},
+]
+```
+
+.create-or-alter table [PortLocation] ingestion json mapping "PortLocation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "locode", "path": "$.data.locode"},
+  {"column": "data_updated_time", "path": "$.data.data_updated_time"},
+  {"column": "location_name", "path": "$.data.location_name"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "port_areas", "path": "$.data.port_areas"},
+  {"column": "berths", "path": "$.data.berths"},
+]
+```
+
+.drop materialized-view PortLocationLatest ifexists;
+
+.create materialized-view with (backfill=true) PortLocationLatest on table PortLocation {
+    PortLocation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PortLocation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.marine.portcall.PortLocation') | project['locode'] = tostring(data.['locode']),['data_updated_time'] = todatetime(data.['data_updated_time']),['location_name'] = tostring(data.['location_name']),['country'] = tostring(data.['country']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['port_areas'] = todynamic(data.['port_areas']),['berths'] = todynamic(data.['berths']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

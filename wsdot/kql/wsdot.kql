@@ -1,0 +1,1121 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [TrafficFlowStation] (
+   [flow_data_id]: string,
+   [station_name]: string,
+   [region]: string,
+   [description]: string,
+   [road_name]: string,
+   [direction]: string,
+   [milepost]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TrafficFlowStation] docstring "{\"description\": \"Metadata for a traffic flow sensor station in the WSDOT network. Each sensor is identified by a unique FlowDataID integer.\"}";
+
+.alter table [TrafficFlowStation] column-docstrings (
+   [flow_data_id]: "{\"description\": \"Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.\"}",
+   [station_name]: "{\"description\": \"Descriptive name of the flow sensor station.\"}",
+   [region]: "{\"description\": \"WSDOT geographic coverage region.\"}",
+   [description]: "{\"description\": \"Location description. Null if not provided.\"}",
+   [road_name]: "{\"description\": \"Road designation where the sensor is installed.\"}",
+   [direction]: "{\"description\": \"Direction of travel monitored. Examples: NB, SB, EB, WB.\"}",
+   [milepost]: "{\"description\": \"Milepost marker along the roadway.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84 decimal degrees.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84 decimal degrees.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TrafficFlowStation] ingestion json mapping "TrafficFlowStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.flow_data_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "region", "path": "$.region"},
+  {"column": "description", "path": "$.description"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "direction", "path": "$.direction"},
+  {"column": "milepost", "path": "$.milepost"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [TrafficFlowStation] ingestion json mapping "TrafficFlowStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.data.flow_data_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "region", "path": "$.data.region"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "direction", "path": "$.data.direction"},
+  {"column": "milepost", "path": "$.data.milepost"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view TrafficFlowStationLatest ifexists;
+
+.create materialized-view with (backfill=true) TrafficFlowStationLatest on table TrafficFlowStation {
+    TrafficFlowStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TrafficFlowStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traffic.TrafficFlowStation') | project['flow_data_id'] = tostring(data.['flow_data_id']),['station_name'] = tostring(data.['station_name']),['region'] = tostring(data.['region']),['description'] = tostring(data.['description']),['road_name'] = tostring(data.['road_name']),['direction'] = tostring(data.['direction']),['milepost'] = toreal(data.['milepost']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TrafficFlowReading] (
+   [flow_data_id]: string,
+   [station_name]: string,
+   [region]: string,
+   [flow_reading]: string,
+   [reading_time]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TrafficFlowReading] docstring "{\"description\": \"A traffic flow reading from a WSDOT sensor station.\"}";
+
+.alter table [TrafficFlowReading] column-docstrings (
+   [flow_data_id]: "{\"description\": \"Sensor station identifier, stringified from upstream FlowDataID.\"}",
+   [station_name]: "{\"description\": \"Station name.\"}",
+   [region]: "{\"description\": \"WSDOT region.\"}",
+   [flow_reading]: "{\"description\": \"Current traffic Level of Service. Converted from upstream FlowReadingValue byte.\"}",
+   [reading_time]: "{\"description\": \"ISO 8601 UTC timestamp of the reading.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TrafficFlowReading] ingestion json mapping "TrafficFlowReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.flow_data_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "region", "path": "$.region"},
+  {"column": "flow_reading", "path": "$.flow_reading"},
+  {"column": "reading_time", "path": "$.reading_time"},
+]
+```
+
+.create-or-alter table [TrafficFlowReading] ingestion json mapping "TrafficFlowReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.data.flow_data_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "region", "path": "$.data.region"},
+  {"column": "flow_reading", "path": "$.data.flow_reading"},
+  {"column": "reading_time", "path": "$.data.reading_time"},
+]
+```
+
+.drop materialized-view TrafficFlowReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) TrafficFlowReadingLatest on table TrafficFlowReading {
+    TrafficFlowReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TrafficFlowReading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traffic.TrafficFlowReading') | project['flow_data_id'] = tostring(data.['flow_data_id']),['station_name'] = tostring(data.['station_name']),['region'] = tostring(data.['region']),['flow_reading'] = tostring(data.['flow_reading']),['reading_time'] = tostring(data.['reading_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TravelTimeRoute] (
+   [travel_time_id]: string,
+   [name]: string,
+   [description]: string,
+   [distance]: real,
+   [average_time]: int,
+   [current_time]: int,
+   [time_updated]: string,
+   [start_description]: string,
+   [start_road_name]: string,
+   [start_direction]: string,
+   [start_milepost]: real,
+   [start_latitude]: real,
+   [start_longitude]: real,
+   [end_description]: string,
+   [end_road_name]: string,
+   [end_direction]: string,
+   [end_milepost]: real,
+   [end_latitude]: real,
+   [end_longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TravelTimeRoute] docstring "{\"description\": \"A named travel time route monitored by WSDOT with historical average and current real-time travel times in minutes.\"}";
+
+.alter table [TravelTimeRoute] column-docstrings (
+   [travel_time_id]: "{\"description\": \"Unique route identifier, stringified from upstream TravelTimeID.\"}",
+   [name]: "{\"description\": \"Short route segment name.\"}",
+   [description]: "{\"description\": \"Longer description including lane type.\"}",
+   [distance]: "{\"description\": \"Route distance in miles.\"}",
+   [average_time]: "{\"description\": \"Historical average travel time in minutes.\"}",
+   [current_time]: "{\"description\": \"Current real-time travel time in minutes.\"}",
+   [time_updated]: "{\"description\": \"ISO 8601 UTC timestamp of last update.\"}",
+   [start_description]: "{\"description\": \"Start point description.\"}",
+   [start_road_name]: "{\"description\": \"Road at start point.\"}",
+   [start_direction]: "{\"description\": \"Direction at start point.\"}",
+   [start_milepost]: "{\"description\": \"Milepost at start.\"}",
+   [start_latitude]: "{\"description\": \"Start latitude in WGS84.\"}",
+   [start_longitude]: "{\"description\": \"Start longitude in WGS84.\"}",
+   [end_description]: "{\"description\": \"End point description.\"}",
+   [end_road_name]: "{\"description\": \"Road at end point.\"}",
+   [end_direction]: "{\"description\": \"Direction at end point.\"}",
+   [end_milepost]: "{\"description\": \"Milepost at end.\"}",
+   [end_latitude]: "{\"description\": \"End latitude in WGS84.\"}",
+   [end_longitude]: "{\"description\": \"End longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TravelTimeRoute] ingestion json mapping "TravelTimeRoute_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "travel_time_id", "path": "$.travel_time_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "description", "path": "$.description"},
+  {"column": "distance", "path": "$.distance"},
+  {"column": "average_time", "path": "$.average_time"},
+  {"column": "current_time", "path": "$.current_time"},
+  {"column": "time_updated", "path": "$.time_updated"},
+  {"column": "start_description", "path": "$.start_description"},
+  {"column": "start_road_name", "path": "$.start_road_name"},
+  {"column": "start_direction", "path": "$.start_direction"},
+  {"column": "start_milepost", "path": "$.start_milepost"},
+  {"column": "start_latitude", "path": "$.start_latitude"},
+  {"column": "start_longitude", "path": "$.start_longitude"},
+  {"column": "end_description", "path": "$.end_description"},
+  {"column": "end_road_name", "path": "$.end_road_name"},
+  {"column": "end_direction", "path": "$.end_direction"},
+  {"column": "end_milepost", "path": "$.end_milepost"},
+  {"column": "end_latitude", "path": "$.end_latitude"},
+  {"column": "end_longitude", "path": "$.end_longitude"},
+]
+```
+
+.create-or-alter table [TravelTimeRoute] ingestion json mapping "TravelTimeRoute_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "travel_time_id", "path": "$.data.travel_time_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "distance", "path": "$.data.distance"},
+  {"column": "average_time", "path": "$.data.average_time"},
+  {"column": "current_time", "path": "$.data.current_time"},
+  {"column": "time_updated", "path": "$.data.time_updated"},
+  {"column": "start_description", "path": "$.data.start_description"},
+  {"column": "start_road_name", "path": "$.data.start_road_name"},
+  {"column": "start_direction", "path": "$.data.start_direction"},
+  {"column": "start_milepost", "path": "$.data.start_milepost"},
+  {"column": "start_latitude", "path": "$.data.start_latitude"},
+  {"column": "start_longitude", "path": "$.data.start_longitude"},
+  {"column": "end_description", "path": "$.data.end_description"},
+  {"column": "end_road_name", "path": "$.data.end_road_name"},
+  {"column": "end_direction", "path": "$.data.end_direction"},
+  {"column": "end_milepost", "path": "$.data.end_milepost"},
+  {"column": "end_latitude", "path": "$.data.end_latitude"},
+  {"column": "end_longitude", "path": "$.data.end_longitude"},
+]
+```
+
+.drop materialized-view TravelTimeRouteLatest ifexists;
+
+.create materialized-view with (backfill=true) TravelTimeRouteLatest on table TravelTimeRoute {
+    TravelTimeRoute | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TravelTimeRoute] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traveltimes.TravelTimeRoute') | project['travel_time_id'] = tostring(data.['travel_time_id']),['name'] = tostring(data.['name']),['description'] = tostring(data.['description']),['distance'] = toreal(data.['distance']),['average_time'] = toint(data.['average_time']),['current_time'] = toint(data.['current_time']),['time_updated'] = tostring(data.['time_updated']),['start_description'] = tostring(data.['start_description']),['start_road_name'] = tostring(data.['start_road_name']),['start_direction'] = tostring(data.['start_direction']),['start_milepost'] = toreal(data.['start_milepost']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['end_description'] = tostring(data.['end_description']),['end_road_name'] = tostring(data.['end_road_name']),['end_direction'] = tostring(data.['end_direction']),['end_milepost'] = toreal(data.['end_milepost']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MountainPassCondition] (
+   [mountain_pass_id]: string,
+   [mountain_pass_name]: string,
+   [elevation_in_feet]: int,
+   [latitude]: real,
+   [longitude]: real,
+   [temperature_in_fahrenheit]: int,
+   [weather_condition]: string,
+   [road_condition]: string,
+   [travel_advisory_active]: bool,
+   [restriction_one_direction]: string,
+   [restriction_one_text]: string,
+   [restriction_two_direction]: string,
+   [restriction_two_text]: string,
+   [date_updated]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MountainPassCondition] docstring "{\"description\": \"Current conditions at a Washington State mountain pass. WSDOT monitors 16 mountain passes reporting temperature, weather, road conditions, travel advisories, and directional restrictions.\"}";
+
+.alter table [MountainPassCondition] column-docstrings (
+   [mountain_pass_id]: "{\"description\": \"Unique pass identifier, stringified from upstream MountainPassId.\"}",
+   [mountain_pass_name]: "{\"description\": \"Pass name with highway designation.\"}",
+   [elevation_in_feet]: "{\"description\": \"Summit elevation in feet above sea level.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [temperature_in_fahrenheit]: "{\"description\": \"Temperature at the summit in Fahrenheit. Null if not reporting.\"}",
+   [weather_condition]: "{\"description\": \"Current weather condition text. Examples: Clear, Rain, Snow, Fog.\"}",
+   [road_condition]: "{\"description\": \"Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice.\"}",
+   [travel_advisory_active]: "{\"description\": \"True if a travel advisory is in effect.\"}",
+   [restriction_one_direction]: "{\"description\": \"Direction for first restriction.\"}",
+   [restriction_one_text]: "{\"description\": \"First restriction text.\"}",
+   [restriction_two_direction]: "{\"description\": \"Direction for second restriction.\"}",
+   [restriction_two_text]: "{\"description\": \"Second restriction text.\"}",
+   [date_updated]: "{\"description\": \"ISO 8601 UTC timestamp of last update.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MountainPassCondition] ingestion json mapping "MountainPassCondition_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mountain_pass_id", "path": "$.mountain_pass_id"},
+  {"column": "mountain_pass_name", "path": "$.mountain_pass_name"},
+  {"column": "elevation_in_feet", "path": "$.elevation_in_feet"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "temperature_in_fahrenheit", "path": "$.temperature_in_fahrenheit"},
+  {"column": "weather_condition", "path": "$.weather_condition"},
+  {"column": "road_condition", "path": "$.road_condition"},
+  {"column": "travel_advisory_active", "path": "$.travel_advisory_active"},
+  {"column": "restriction_one_direction", "path": "$.restriction_one_direction"},
+  {"column": "restriction_one_text", "path": "$.restriction_one_text"},
+  {"column": "restriction_two_direction", "path": "$.restriction_two_direction"},
+  {"column": "restriction_two_text", "path": "$.restriction_two_text"},
+  {"column": "date_updated", "path": "$.date_updated"},
+]
+```
+
+.create-or-alter table [MountainPassCondition] ingestion json mapping "MountainPassCondition_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mountain_pass_id", "path": "$.data.mountain_pass_id"},
+  {"column": "mountain_pass_name", "path": "$.data.mountain_pass_name"},
+  {"column": "elevation_in_feet", "path": "$.data.elevation_in_feet"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "temperature_in_fahrenheit", "path": "$.data.temperature_in_fahrenheit"},
+  {"column": "weather_condition", "path": "$.data.weather_condition"},
+  {"column": "road_condition", "path": "$.data.road_condition"},
+  {"column": "travel_advisory_active", "path": "$.data.travel_advisory_active"},
+  {"column": "restriction_one_direction", "path": "$.data.restriction_one_direction"},
+  {"column": "restriction_one_text", "path": "$.data.restriction_one_text"},
+  {"column": "restriction_two_direction", "path": "$.data.restriction_two_direction"},
+  {"column": "restriction_two_text", "path": "$.data.restriction_two_text"},
+  {"column": "date_updated", "path": "$.data.date_updated"},
+]
+```
+
+.drop materialized-view MountainPassConditionLatest ifexists;
+
+.create materialized-view with (backfill=true) MountainPassConditionLatest on table MountainPassCondition {
+    MountainPassCondition | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MountainPassCondition] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.mountainpass.MountainPassCondition') | project['mountain_pass_id'] = tostring(data.['mountain_pass_id']),['mountain_pass_name'] = tostring(data.['mountain_pass_name']),['elevation_in_feet'] = toint(data.['elevation_in_feet']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['temperature_in_fahrenheit'] = toint(data.['temperature_in_fahrenheit']),['weather_condition'] = tostring(data.['weather_condition']),['road_condition'] = tostring(data.['road_condition']),['travel_advisory_active'] = tobool(data.['travel_advisory_active']),['restriction_one_direction'] = tostring(data.['restriction_one_direction']),['restriction_one_text'] = tostring(data.['restriction_one_text']),['restriction_two_direction'] = tostring(data.['restriction_two_direction']),['restriction_two_text'] = tostring(data.['restriction_two_text']),['date_updated'] = tostring(data.['date_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherStation] (
+   [station_id]: string,
+   [station_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherStation] docstring "{\"description\": \"Metadata for a WSDOT RWIS station.\"}";
+
+.alter table [WeatherStation] column-docstrings (
+   [station_id]: "{\"description\": \"Station identifier from upstream StationCode.\"}",
+   [station_name]: "{\"description\": \"Station name with highway and milepost.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view WeatherStationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherStationLatest on table WeatherStation {
+    WeatherStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.weather.WeatherStation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherReading] (
+   [station_id]: string,
+   [station_name]: string,
+   [reading_time]: string,
+   [temperature_in_fahrenheit]: real,
+   [precipitation_in_inches]: real,
+   [wind_speed_in_mph]: real,
+   [wind_gust_speed_in_mph]: real,
+   [wind_direction]: int,
+   [wind_direction_cardinal]: string,
+   [barometric_pressure]: real,
+   [relative_humidity]: int,
+   [visibility]: real,
+   [sky_coverage]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherReading] docstring "{\"description\": \"A current weather reading from a WSDOT RWIS station.\"}";
+
+.alter table [WeatherReading] column-docstrings (
+   [station_id]: "{\"description\": \"Station identifier from upstream StationID.\"}",
+   [station_name]: "{\"description\": \"Station name.\"}",
+   [reading_time]: "{\"description\": \"ISO 8601 UTC timestamp.\"}",
+   [temperature_in_fahrenheit]: "{\"description\": \"Air temperature in Fahrenheit.\"}",
+   [precipitation_in_inches]: "{\"description\": \"Precipitation in inches.\"}",
+   [wind_speed_in_mph]: "{\"description\": \"Wind speed in mph.\"}",
+   [wind_gust_speed_in_mph]: "{\"description\": \"Wind gust speed in mph.\"}",
+   [wind_direction]: "{\"description\": \"Wind direction in degrees from true north.\"}",
+   [wind_direction_cardinal]: "{\"description\": \"Wind direction as cardinal abbreviation.\"}",
+   [barometric_pressure]: "{\"description\": \"Barometric pressure in hPa.\"}",
+   [relative_humidity]: "{\"description\": \"Relative humidity percentage.\"}",
+   [visibility]: "{\"description\": \"Visibility distance.\"}",
+   [sky_coverage]: "{\"description\": \"Sky coverage description.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherReading] ingestion json mapping "WeatherReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "reading_time", "path": "$.reading_time"},
+  {"column": "temperature_in_fahrenheit", "path": "$.temperature_in_fahrenheit"},
+  {"column": "precipitation_in_inches", "path": "$.precipitation_in_inches"},
+  {"column": "wind_speed_in_mph", "path": "$.wind_speed_in_mph"},
+  {"column": "wind_gust_speed_in_mph", "path": "$.wind_gust_speed_in_mph"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_direction_cardinal", "path": "$.wind_direction_cardinal"},
+  {"column": "barometric_pressure", "path": "$.barometric_pressure"},
+  {"column": "relative_humidity", "path": "$.relative_humidity"},
+  {"column": "visibility", "path": "$.visibility"},
+  {"column": "sky_coverage", "path": "$.sky_coverage"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [WeatherReading] ingestion json mapping "WeatherReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "reading_time", "path": "$.data.reading_time"},
+  {"column": "temperature_in_fahrenheit", "path": "$.data.temperature_in_fahrenheit"},
+  {"column": "precipitation_in_inches", "path": "$.data.precipitation_in_inches"},
+  {"column": "wind_speed_in_mph", "path": "$.data.wind_speed_in_mph"},
+  {"column": "wind_gust_speed_in_mph", "path": "$.data.wind_gust_speed_in_mph"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_direction_cardinal", "path": "$.data.wind_direction_cardinal"},
+  {"column": "barometric_pressure", "path": "$.data.barometric_pressure"},
+  {"column": "relative_humidity", "path": "$.data.relative_humidity"},
+  {"column": "visibility", "path": "$.data.visibility"},
+  {"column": "sky_coverage", "path": "$.data.sky_coverage"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view WeatherReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherReadingLatest on table WeatherReading {
+    WeatherReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherReading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.weather.WeatherReading') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['reading_time'] = tostring(data.['reading_time']),['temperature_in_fahrenheit'] = toreal(data.['temperature_in_fahrenheit']),['precipitation_in_inches'] = toreal(data.['precipitation_in_inches']),['wind_speed_in_mph'] = toreal(data.['wind_speed_in_mph']),['wind_gust_speed_in_mph'] = toreal(data.['wind_gust_speed_in_mph']),['wind_direction'] = toint(data.['wind_direction']),['wind_direction_cardinal'] = tostring(data.['wind_direction_cardinal']),['barometric_pressure'] = toreal(data.['barometric_pressure']),['relative_humidity'] = toint(data.['relative_humidity']),['visibility'] = toreal(data.['visibility']),['sky_coverage'] = tostring(data.['sky_coverage']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TollRate] (
+   [trip_name]: string,
+   [state_route]: string,
+   [travel_direction]: string,
+   [current_toll]: int,
+   [current_message]: string,
+   [time_updated]: string,
+   [start_location_name]: string,
+   [start_latitude]: real,
+   [start_longitude]: real,
+   [start_milepost]: real,
+   [end_location_name]: string,
+   [end_latitude]: real,
+   [end_longitude]: real,
+   [end_milepost]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TollRate] docstring "{\"description\": \"Current toll rate for a WSDOT tolled route segment with dynamic pricing.\"}";
+
+.alter table [TollRate] column-docstrings (
+   [trip_name]: "{\"description\": \"Tolled route segment identifier.\"}",
+   [state_route]: "{\"description\": \"State route number.\"}",
+   [travel_direction]: "{\"description\": \"Travel direction: N, S, E, W.\"}",
+   [current_toll]: "{\"description\": \"Current toll in cents.\"}",
+   [current_message]: "{\"description\": \"Optional status message.\"}",
+   [time_updated]: "{\"description\": \"ISO 8601 UTC timestamp.\"}",
+   [start_location_name]: "{\"description\": \"Start location name.\"}",
+   [start_latitude]: "{\"description\": \"Start latitude.\"}",
+   [start_longitude]: "{\"description\": \"Start longitude.\"}",
+   [start_milepost]: "{\"description\": \"Start milepost.\"}",
+   [end_location_name]: "{\"description\": \"End location name.\"}",
+   [end_latitude]: "{\"description\": \"End latitude.\"}",
+   [end_longitude]: "{\"description\": \"End longitude.\"}",
+   [end_milepost]: "{\"description\": \"End milepost.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TollRate] ingestion json mapping "TollRate_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip_name", "path": "$.trip_name"},
+  {"column": "state_route", "path": "$.state_route"},
+  {"column": "travel_direction", "path": "$.travel_direction"},
+  {"column": "current_toll", "path": "$.current_toll"},
+  {"column": "current_message", "path": "$.current_message"},
+  {"column": "time_updated", "path": "$.time_updated"},
+  {"column": "start_location_name", "path": "$.start_location_name"},
+  {"column": "start_latitude", "path": "$.start_latitude"},
+  {"column": "start_longitude", "path": "$.start_longitude"},
+  {"column": "start_milepost", "path": "$.start_milepost"},
+  {"column": "end_location_name", "path": "$.end_location_name"},
+  {"column": "end_latitude", "path": "$.end_latitude"},
+  {"column": "end_longitude", "path": "$.end_longitude"},
+  {"column": "end_milepost", "path": "$.end_milepost"},
+]
+```
+
+.create-or-alter table [TollRate] ingestion json mapping "TollRate_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip_name", "path": "$.data.trip_name"},
+  {"column": "state_route", "path": "$.data.state_route"},
+  {"column": "travel_direction", "path": "$.data.travel_direction"},
+  {"column": "current_toll", "path": "$.data.current_toll"},
+  {"column": "current_message", "path": "$.data.current_message"},
+  {"column": "time_updated", "path": "$.data.time_updated"},
+  {"column": "start_location_name", "path": "$.data.start_location_name"},
+  {"column": "start_latitude", "path": "$.data.start_latitude"},
+  {"column": "start_longitude", "path": "$.data.start_longitude"},
+  {"column": "start_milepost", "path": "$.data.start_milepost"},
+  {"column": "end_location_name", "path": "$.data.end_location_name"},
+  {"column": "end_latitude", "path": "$.data.end_latitude"},
+  {"column": "end_longitude", "path": "$.data.end_longitude"},
+  {"column": "end_milepost", "path": "$.data.end_milepost"},
+]
+```
+
+.drop materialized-view TollRateLatest ifexists;
+
+.create materialized-view with (backfill=true) TollRateLatest on table TollRate {
+    TollRate | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TollRate] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.tolls.TollRate') | project['trip_name'] = tostring(data.['trip_name']),['state_route'] = tostring(data.['state_route']),['travel_direction'] = tostring(data.['travel_direction']),['current_toll'] = toint(data.['current_toll']),['current_message'] = tostring(data.['current_message']),['time_updated'] = tostring(data.['time_updated']),['start_location_name'] = tostring(data.['start_location_name']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['start_milepost'] = toreal(data.['start_milepost']),['end_location_name'] = tostring(data.['end_location_name']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),['end_milepost'] = toreal(data.['end_milepost']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [CommercialVehicleRestriction] (
+   [state_route_id]: string,
+   [bridge_number]: string,
+   [bridge_name]: string,
+   [location_name]: string,
+   [location_description]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [state]: string,
+   [restriction_type]: string,
+   [vehicle_type]: string,
+   [restriction_weight_in_pounds]: int,
+   [maximum_gross_vehicle_weight_in_pounds]: int,
+   [restriction_height_in_inches]: int,
+   [restriction_width_in_inches]: int,
+   [restriction_length_in_inches]: int,
+   [is_permanent_restriction]: bool,
+   [is_warning]: bool,
+   [is_detour_available]: bool,
+   [is_exceptions_allowed]: bool,
+   [restriction_comment]: string,
+   [date_posted]: string,
+   [date_effective]: string,
+   [date_expires]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [CommercialVehicleRestriction] docstring "{\"description\": \"A commercial vehicle restriction on a Washington State highway bridge or road segment.\"}";
+
+.alter table [CommercialVehicleRestriction] column-docstrings (
+   [state_route_id]: "{\"description\": \"State route identifier, first part of composite key.\"}",
+   [bridge_number]: "{\"description\": \"Bridge or structure number, second part of composite key.\"}",
+   [bridge_name]: "{\"description\": \"Bridge or structure name.\"}",
+   [location_name]: "{\"description\": \"Location relative to landmarks.\"}",
+   [location_description]: "{\"description\": \"Detailed location description.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [state]: "{\"description\": \"State abbreviation, typically WA.\"}",
+   [restriction_type]: "{\"description\": \"Type: BridgeRestriction, RoadRestriction.\"}",
+   [vehicle_type]: "{\"description\": \"Affected vehicle type.\"}",
+   [restriction_weight_in_pounds]: "{\"description\": \"Axle weight limit in pounds.\"}",
+   [maximum_gross_vehicle_weight_in_pounds]: "{\"description\": \"GVW limit in pounds.\"}",
+   [restriction_height_in_inches]: "{\"description\": \"Height limit in inches.\"}",
+   [restriction_width_in_inches]: "{\"description\": \"Width limit in inches.\"}",
+   [restriction_length_in_inches]: "{\"description\": \"Length limit in inches.\"}",
+   [is_permanent_restriction]: "{\"description\": \"True if permanent.\"}",
+   [is_warning]: "{\"description\": \"True if warning only.\"}",
+   [is_detour_available]: "{\"description\": \"True if detour exists.\"}",
+   [is_exceptions_allowed]: "{\"description\": \"True if permits available.\"}",
+   [restriction_comment]: "{\"description\": \"Additional details.\"}",
+   [date_posted]: "{\"description\": \"ISO 8601 UTC date posted.\"}",
+   [date_effective]: "{\"description\": \"ISO 8601 UTC date effective.\"}",
+   [date_expires]: "{\"description\": \"ISO 8601 UTC date expires.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [CommercialVehicleRestriction] ingestion json mapping "CommercialVehicleRestriction_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "state_route_id", "path": "$.state_route_id"},
+  {"column": "bridge_number", "path": "$.bridge_number"},
+  {"column": "bridge_name", "path": "$.bridge_name"},
+  {"column": "location_name", "path": "$.location_name"},
+  {"column": "location_description", "path": "$.location_description"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "state", "path": "$.state"},
+  {"column": "restriction_type", "path": "$.restriction_type"},
+  {"column": "vehicle_type", "path": "$.vehicle_type"},
+  {"column": "restriction_weight_in_pounds", "path": "$.restriction_weight_in_pounds"},
+  {"column": "maximum_gross_vehicle_weight_in_pounds", "path": "$.maximum_gross_vehicle_weight_in_pounds"},
+  {"column": "restriction_height_in_inches", "path": "$.restriction_height_in_inches"},
+  {"column": "restriction_width_in_inches", "path": "$.restriction_width_in_inches"},
+  {"column": "restriction_length_in_inches", "path": "$.restriction_length_in_inches"},
+  {"column": "is_permanent_restriction", "path": "$.is_permanent_restriction"},
+  {"column": "is_warning", "path": "$.is_warning"},
+  {"column": "is_detour_available", "path": "$.is_detour_available"},
+  {"column": "is_exceptions_allowed", "path": "$.is_exceptions_allowed"},
+  {"column": "restriction_comment", "path": "$.restriction_comment"},
+  {"column": "date_posted", "path": "$.date_posted"},
+  {"column": "date_effective", "path": "$.date_effective"},
+  {"column": "date_expires", "path": "$.date_expires"},
+]
+```
+
+.create-or-alter table [CommercialVehicleRestriction] ingestion json mapping "CommercialVehicleRestriction_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "state_route_id", "path": "$.data.state_route_id"},
+  {"column": "bridge_number", "path": "$.data.bridge_number"},
+  {"column": "bridge_name", "path": "$.data.bridge_name"},
+  {"column": "location_name", "path": "$.data.location_name"},
+  {"column": "location_description", "path": "$.data.location_description"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "restriction_type", "path": "$.data.restriction_type"},
+  {"column": "vehicle_type", "path": "$.data.vehicle_type"},
+  {"column": "restriction_weight_in_pounds", "path": "$.data.restriction_weight_in_pounds"},
+  {"column": "maximum_gross_vehicle_weight_in_pounds", "path": "$.data.maximum_gross_vehicle_weight_in_pounds"},
+  {"column": "restriction_height_in_inches", "path": "$.data.restriction_height_in_inches"},
+  {"column": "restriction_width_in_inches", "path": "$.data.restriction_width_in_inches"},
+  {"column": "restriction_length_in_inches", "path": "$.data.restriction_length_in_inches"},
+  {"column": "is_permanent_restriction", "path": "$.data.is_permanent_restriction"},
+  {"column": "is_warning", "path": "$.data.is_warning"},
+  {"column": "is_detour_available", "path": "$.data.is_detour_available"},
+  {"column": "is_exceptions_allowed", "path": "$.data.is_exceptions_allowed"},
+  {"column": "restriction_comment", "path": "$.data.restriction_comment"},
+  {"column": "date_posted", "path": "$.data.date_posted"},
+  {"column": "date_effective", "path": "$.data.date_effective"},
+  {"column": "date_expires", "path": "$.data.date_expires"},
+]
+```
+
+.drop materialized-view CommercialVehicleRestrictionLatest ifexists;
+
+.create materialized-view with (backfill=true) CommercialVehicleRestrictionLatest on table CommercialVehicleRestriction {
+    CommercialVehicleRestriction | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [CommercialVehicleRestriction] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction') | project['state_route_id'] = tostring(data.['state_route_id']),['bridge_number'] = tostring(data.['bridge_number']),['bridge_name'] = tostring(data.['bridge_name']),['location_name'] = tostring(data.['location_name']),['location_description'] = tostring(data.['location_description']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['state'] = tostring(data.['state']),['restriction_type'] = tostring(data.['restriction_type']),['vehicle_type'] = tostring(data.['vehicle_type']),['restriction_weight_in_pounds'] = toint(data.['restriction_weight_in_pounds']),['maximum_gross_vehicle_weight_in_pounds'] = toint(data.['maximum_gross_vehicle_weight_in_pounds']),['restriction_height_in_inches'] = toint(data.['restriction_height_in_inches']),['restriction_width_in_inches'] = toint(data.['restriction_width_in_inches']),['restriction_length_in_inches'] = toint(data.['restriction_length_in_inches']),['is_permanent_restriction'] = tobool(data.['is_permanent_restriction']),['is_warning'] = tobool(data.['is_warning']),['is_detour_available'] = tobool(data.['is_detour_available']),['is_exceptions_allowed'] = tobool(data.['is_exceptions_allowed']),['restriction_comment'] = tostring(data.['restriction_comment']),['date_posted'] = tostring(data.['date_posted']),['date_effective'] = tostring(data.['date_effective']),['date_expires'] = tostring(data.['date_expires']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BorderCrossing] (
+   [crossing_name]: string,
+   [wait_time]: int,
+   [time]: string,
+   [description]: string,
+   [road_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BorderCrossing] docstring "{\"description\": \"US-Canada border crossing wait time in Washington State.\"}";
+
+.alter table [BorderCrossing] column-docstrings (
+   [crossing_name]: "{\"description\": \"Crossing lane identifier.\"}",
+   [wait_time]: "{\"description\": \"Wait time in minutes.\"}",
+   [time]: "{\"description\": \"ISO 8601 UTC measurement timestamp.\"}",
+   [description]: "{\"description\": \"Lane description.\"}",
+   [road_name]: "{\"description\": \"Road designation.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BorderCrossing] ingestion json mapping "BorderCrossing_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "crossing_name", "path": "$.crossing_name"},
+  {"column": "wait_time", "path": "$.wait_time"},
+  {"column": "time", "path": "$.time"},
+  {"column": "description", "path": "$.description"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [BorderCrossing] ingestion json mapping "BorderCrossing_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "crossing_name", "path": "$.data.crossing_name"},
+  {"column": "wait_time", "path": "$.data.wait_time"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view BorderCrossingLatest ifexists;
+
+.create materialized-view with (backfill=true) BorderCrossingLatest on table BorderCrossing {
+    BorderCrossing | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BorderCrossing] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.border.BorderCrossing') | project['crossing_name'] = tostring(data.['crossing_name']),['wait_time'] = toint(data.['wait_time']),['time'] = tostring(data.['time']),['description'] = tostring(data.['description']),['road_name'] = tostring(data.['road_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [VesselLocation] (
+   [vessel_id]: string,
+   [vessel_name]: string,
+   [mmsi]: int,
+   [in_service]: bool,
+   [at_dock]: bool,
+   [latitude]: real,
+   [longitude]: real,
+   [speed]: real,
+   [heading]: int,
+   [departing_terminal_id]: int,
+   [departing_terminal_name]: string,
+   [departing_terminal_abbrev]: string,
+   [arriving_terminal_id]: int,
+   [arriving_terminal_name]: string,
+   [arriving_terminal_abbrev]: string,
+   [scheduled_departure]: string,
+   [left_dock]: string,
+   [eta]: string,
+   [eta_basis]: string,
+   [route_abbreviation]: string,
+   [timestamp]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VesselLocation] docstring "{\"description\": \"Real-time location and status of a Washington State Ferries vessel.\"}";
+
+.alter table [VesselLocation] column-docstrings (
+   [vessel_id]: "{\"description\": \"Vessel identifier, stringified from upstream VesselID.\"}",
+   [vessel_name]: "{\"description\": \"Ferry vessel name.\"}",
+   [mmsi]: "{\"description\": \"Maritime Mobile Service Identity for AIS.\"}",
+   [in_service]: "{\"description\": \"True if in active service.\"}",
+   [at_dock]: "{\"description\": \"True if docked.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [speed]: "{\"description\": \"Speed in knots.\"}",
+   [heading]: "{\"description\": \"Heading in degrees.\"}",
+   [departing_terminal_id]: "{\"description\": \"Departure terminal ID.\"}",
+   [departing_terminal_name]: "{\"description\": \"Departure terminal name.\"}",
+   [departing_terminal_abbrev]: "{\"description\": \"Departure terminal abbreviation.\"}",
+   [arriving_terminal_id]: "{\"description\": \"Arrival terminal ID.\"}",
+   [arriving_terminal_name]: "{\"description\": \"Arrival terminal name.\"}",
+   [arriving_terminal_abbrev]: "{\"description\": \"Arrival terminal abbreviation.\"}",
+   [scheduled_departure]: "{\"description\": \"ISO 8601 UTC scheduled departure.\"}",
+   [left_dock]: "{\"description\": \"ISO 8601 UTC actual departure.\"}",
+   [eta]: "{\"description\": \"ISO 8601 UTC estimated arrival.\"}",
+   [eta_basis]: "{\"description\": \"ETA calculation description.\"}",
+   [route_abbreviation]: "{\"description\": \"Current route abbreviation.\"}",
+   [timestamp]: "{\"description\": \"ISO 8601 UTC position timestamp.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [VesselLocation] ingestion json mapping "VesselLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vessel_id", "path": "$.vessel_id"},
+  {"column": "vessel_name", "path": "$.vessel_name"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "in_service", "path": "$.in_service"},
+  {"column": "at_dock", "path": "$.at_dock"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "speed", "path": "$.speed"},
+  {"column": "heading", "path": "$.heading"},
+  {"column": "departing_terminal_id", "path": "$.departing_terminal_id"},
+  {"column": "departing_terminal_name", "path": "$.departing_terminal_name"},
+  {"column": "departing_terminal_abbrev", "path": "$.departing_terminal_abbrev"},
+  {"column": "arriving_terminal_id", "path": "$.arriving_terminal_id"},
+  {"column": "arriving_terminal_name", "path": "$.arriving_terminal_name"},
+  {"column": "arriving_terminal_abbrev", "path": "$.arriving_terminal_abbrev"},
+  {"column": "scheduled_departure", "path": "$.scheduled_departure"},
+  {"column": "left_dock", "path": "$.left_dock"},
+  {"column": "eta", "path": "$.eta"},
+  {"column": "eta_basis", "path": "$.eta_basis"},
+  {"column": "route_abbreviation", "path": "$.route_abbreviation"},
+  {"column": "timestamp", "path": "$.timestamp"},
+]
+```
+
+.create-or-alter table [VesselLocation] ingestion json mapping "VesselLocation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vessel_id", "path": "$.data.vessel_id"},
+  {"column": "vessel_name", "path": "$.data.vessel_name"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "in_service", "path": "$.data.in_service"},
+  {"column": "at_dock", "path": "$.data.at_dock"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "speed", "path": "$.data.speed"},
+  {"column": "heading", "path": "$.data.heading"},
+  {"column": "departing_terminal_id", "path": "$.data.departing_terminal_id"},
+  {"column": "departing_terminal_name", "path": "$.data.departing_terminal_name"},
+  {"column": "departing_terminal_abbrev", "path": "$.data.departing_terminal_abbrev"},
+  {"column": "arriving_terminal_id", "path": "$.data.arriving_terminal_id"},
+  {"column": "arriving_terminal_name", "path": "$.data.arriving_terminal_name"},
+  {"column": "arriving_terminal_abbrev", "path": "$.data.arriving_terminal_abbrev"},
+  {"column": "scheduled_departure", "path": "$.data.scheduled_departure"},
+  {"column": "left_dock", "path": "$.data.left_dock"},
+  {"column": "eta", "path": "$.data.eta"},
+  {"column": "eta_basis", "path": "$.data.eta_basis"},
+  {"column": "route_abbreviation", "path": "$.data.route_abbreviation"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+]
+```
+
+.drop materialized-view VesselLocationLatest ifexists;
+
+.create materialized-view with (backfill=true) VesselLocationLatest on table VesselLocation {
+    VesselLocation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [VesselLocation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.ferries.VesselLocation') | project['vessel_id'] = tostring(data.['vessel_id']),['vessel_name'] = tostring(data.['vessel_name']),['mmsi'] = toint(data.['mmsi']),['in_service'] = tobool(data.['in_service']),['at_dock'] = tobool(data.['at_dock']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['speed'] = toreal(data.['speed']),['heading'] = toint(data.['heading']),['departing_terminal_id'] = toint(data.['departing_terminal_id']),['departing_terminal_name'] = tostring(data.['departing_terminal_name']),['departing_terminal_abbrev'] = tostring(data.['departing_terminal_abbrev']),['arriving_terminal_id'] = toint(data.['arriving_terminal_id']),['arriving_terminal_name'] = tostring(data.['arriving_terminal_name']),['arriving_terminal_abbrev'] = tostring(data.['arriving_terminal_abbrev']),['scheduled_departure'] = tostring(data.['scheduled_departure']),['left_dock'] = tostring(data.['left_dock']),['eta'] = tostring(data.['eta']),['eta_basis'] = tostring(data.['eta_basis']),['route_abbreviation'] = tostring(data.['route_abbreviation']),['timestamp'] = tostring(data.['timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

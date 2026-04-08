@@ -1,0 +1,386 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_wmo]: int,
+   [name]: string,
+   [product_id]: string,
+   [state]: string,
+   [time_zone]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference metadata for a BOM weather observation station identified by its WMO station number. Stations report half-hourly surface observations covering temperature, wind, pressure, rainfall, humidity, cloud, and visibility.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_wmo]: "{\"description\": \"WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products.\"}",
+   [name]: "{\"description\": \"Human-readable station name as assigned by the Bureau of Meteorology, e.g. 'Sydney Airport' or 'Melbourne Airport'.\"}",
+   [product_id]: "{\"description\": \"BOM product code identifying the observation product this station belongs to, e.g. 'IDN60901' for NSW capital city observations.\"}",
+   [state]: "{\"description\": \"Australian state or territory the station is located in, as reported by BOM, e.g. 'New South Wales', 'Victoria'.\"}",
+   [time_zone]: "{\"description\": \"Abbreviation of the local time zone for the station, e.g. 'EST' for Eastern Standard Time, 'CST' for Central Standard Time.\"}",
+   [latitude]: "{\"description\": \"Geographic latitude of the station in decimal degrees (negative for Southern Hemisphere).\"}",
+   [longitude]: "{\"description\": \"Geographic longitude of the station in decimal degrees.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_wmo", "path": "$.station_wmo"},
+  {"column": "name", "path": "$.name"},
+  {"column": "product_id", "path": "$.product_id"},
+  {"column": "state", "path": "$.state"},
+  {"column": "time_zone", "path": "$.time_zone"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_wmo", "path": "$.data.station_wmo"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "product_id", "path": "$.data.product_id"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "time_zone", "path": "$.data.time_zone"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'AU.Gov.BOM.Weather.Station') | project['station_wmo'] = toint(data.['station_wmo']),['name'] = tostring(data.['name']),['product_id'] = tostring(data.['product_id']),['state'] = tostring(data.['state']),['time_zone'] = tostring(data.['time_zone']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherObservation] (
+   [station_wmo]: int,
+   [station_name]: string,
+   [observation_time_utc]: datetime,
+   [local_time]: string,
+   [air_temp]: real,
+   [apparent_temp]: real,
+   [dewpt]: real,
+   [rel_hum]: int,
+   [delta_t]: real,
+   [wind_dir]: string,
+   [wind_spd_kmh]: int,
+   [wind_spd_kt]: int,
+   [gust_kmh]: int,
+   [gust_kt]: int,
+   [press]: real,
+   [press_qnh]: real,
+   [press_msl]: real,
+   [press_tend]: string,
+   [rain_trace]: string,
+   [cloud]: string,
+   [cloud_oktas]: int,
+   [cloud_base_m]: int,
+   [cloud_type]: string,
+   [vis_km]: string,
+   [weather]: string,
+   [sea_state]: string,
+   [swell_dir_worded]: string,
+   [swell_height]: real,
+   [swell_period]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherObservation] docstring "{\"description\": \"Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product.\"}";
+
+.alter table [WeatherObservation] column-docstrings (
+   [station_wmo]: "{\"description\": \"WMO station number identifying the reporting station.\"}",
+   [station_name]: "{\"description\": \"Human-readable name of the reporting station.\"}",
+   [observation_time_utc]: "{\"description\": \"Timestamp of the observation in UTC, derived from the BOM 'aifstime_utc' field in YYYYMMDDHHmmss format.\"}",
+   [local_time]: "{\"description\": \"Local date and time string as provided by BOM in 'local_date_time_full' format (YYYYMMDDHHmmss).\"}",
+   [air_temp]: "{\"description\": \"Air temperature measured at the station.\"}",
+   [apparent_temp]: "{\"description\": \"Apparent (feels-like) temperature combining air temperature, humidity, and wind chill effects.\"}",
+   [dewpt]: "{\"description\": \"Dew point temperature at the station.\"}",
+   [rel_hum]: "{\"description\": \"Relative humidity as a percentage.\"}",
+   [delta_t]: "{\"description\": \"Wet bulb depression (difference between dry and wet bulb temperatures), used for bushfire danger calculations.\"}",
+   [wind_dir]: "{\"description\": \"Compass direction the wind is blowing from, e.g. 'N', 'NNE', 'SSW', 'CALM'.\"}",
+   [wind_spd_kmh]: "{\"description\": \"Sustained wind speed in kilometres per hour.\"}",
+   [wind_spd_kt]: "{\"description\": \"Sustained wind speed in knots (nautical miles per hour).\"}",
+   [gust_kmh]: "{\"description\": \"Maximum wind gust speed recorded in the observation period in kilometres per hour.\"}",
+   [gust_kt]: "{\"description\": \"Maximum wind gust speed recorded in the observation period in knots.\"}",
+   [press]: "{\"description\": \"Atmospheric pressure at station level.\"}",
+   [press_qnh]: "{\"description\": \"QNH pressure \\u2014 atmospheric pressure adjusted to mean sea level using the International Standard Atmosphere, used in aviation altimetry.\"}",
+   [press_msl]: "{\"description\": \"Mean sea level pressure \\u2014 station pressure reduced to sea level, used for synoptic weather analysis.\"}",
+   [press_tend]: "{\"description\": \"Pressure tendency description indicating whether pressure is rising, falling, or steady over the past 3 hours. May be a numeric code or textual description.\"}",
+   [rain_trace]: "{\"description\": \"Rainfall since 9am local time as reported by BOM. Value is a string that may be '0.0', a numeric amount in mm, or 'Trace' for very small amounts.\"}",
+   [cloud]: "{\"description\": \"Textual cloud cover description, e.g. 'Partly cloudy', 'Clear', 'Overcast'.\"}",
+   [cloud_oktas]: "{\"description\": \"Cloud cover in oktas (eighths of sky covered), ranging from 0 (clear) to 8 (overcast).\"}",
+   [cloud_base_m]: "{\"description\": \"Height of the lowest cloud base above ground level.\"}",
+   [cloud_type]: "{\"description\": \"Cloud type classification as reported by the station, e.g. 'Cu', 'Cb', 'St'. May be '-' when not reported.\"}",
+   [vis_km]: "{\"description\": \"Horizontal visibility in kilometres. Reported as a string as BOM may include qualifiers.\"}",
+   [weather]: "{\"description\": \"Present weather description, e.g. 'Rain', 'Fog', 'Thunderstorm'. May be '-' when no significant weather.\"}",
+   [sea_state]: "{\"description\": \"Sea state description for coastal stations, e.g. 'Smooth', 'Slight', 'Moderate'.\"}",
+   [swell_dir_worded]: "{\"description\": \"Dominant swell direction as a compass bearing word for coastal stations.\"}",
+   [swell_height]: "{\"description\": \"Dominant swell height for coastal stations.\"}",
+   [swell_period]: "{\"description\": \"Dominant swell period for coastal stations.\"}",
+   [latitude]: "{\"description\": \"Latitude of the station at observation time.\"}",
+   [longitude]: "{\"description\": \"Longitude of the station at observation time.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_wmo", "path": "$.station_wmo"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "observation_time_utc", "path": "$.observation_time_utc"},
+  {"column": "local_time", "path": "$.local_time"},
+  {"column": "air_temp", "path": "$.air_temp"},
+  {"column": "apparent_temp", "path": "$.apparent_temp"},
+  {"column": "dewpt", "path": "$.dewpt"},
+  {"column": "rel_hum", "path": "$.rel_hum"},
+  {"column": "delta_t", "path": "$.delta_t"},
+  {"column": "wind_dir", "path": "$.wind_dir"},
+  {"column": "wind_spd_kmh", "path": "$.wind_spd_kmh"},
+  {"column": "wind_spd_kt", "path": "$.wind_spd_kt"},
+  {"column": "gust_kmh", "path": "$.gust_kmh"},
+  {"column": "gust_kt", "path": "$.gust_kt"},
+  {"column": "press", "path": "$.press"},
+  {"column": "press_qnh", "path": "$.press_qnh"},
+  {"column": "press_msl", "path": "$.press_msl"},
+  {"column": "press_tend", "path": "$.press_tend"},
+  {"column": "rain_trace", "path": "$.rain_trace"},
+  {"column": "cloud", "path": "$.cloud"},
+  {"column": "cloud_oktas", "path": "$.cloud_oktas"},
+  {"column": "cloud_base_m", "path": "$.cloud_base_m"},
+  {"column": "cloud_type", "path": "$.cloud_type"},
+  {"column": "vis_km", "path": "$.vis_km"},
+  {"column": "weather", "path": "$.weather"},
+  {"column": "sea_state", "path": "$.sea_state"},
+  {"column": "swell_dir_worded", "path": "$.swell_dir_worded"},
+  {"column": "swell_height", "path": "$.swell_height"},
+  {"column": "swell_period", "path": "$.swell_period"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_wmo", "path": "$.data.station_wmo"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "observation_time_utc", "path": "$.data.observation_time_utc"},
+  {"column": "local_time", "path": "$.data.local_time"},
+  {"column": "air_temp", "path": "$.data.air_temp"},
+  {"column": "apparent_temp", "path": "$.data.apparent_temp"},
+  {"column": "dewpt", "path": "$.data.dewpt"},
+  {"column": "rel_hum", "path": "$.data.rel_hum"},
+  {"column": "delta_t", "path": "$.data.delta_t"},
+  {"column": "wind_dir", "path": "$.data.wind_dir"},
+  {"column": "wind_spd_kmh", "path": "$.data.wind_spd_kmh"},
+  {"column": "wind_spd_kt", "path": "$.data.wind_spd_kt"},
+  {"column": "gust_kmh", "path": "$.data.gust_kmh"},
+  {"column": "gust_kt", "path": "$.data.gust_kt"},
+  {"column": "press", "path": "$.data.press"},
+  {"column": "press_qnh", "path": "$.data.press_qnh"},
+  {"column": "press_msl", "path": "$.data.press_msl"},
+  {"column": "press_tend", "path": "$.data.press_tend"},
+  {"column": "rain_trace", "path": "$.data.rain_trace"},
+  {"column": "cloud", "path": "$.data.cloud"},
+  {"column": "cloud_oktas", "path": "$.data.cloud_oktas"},
+  {"column": "cloud_base_m", "path": "$.data.cloud_base_m"},
+  {"column": "cloud_type", "path": "$.data.cloud_type"},
+  {"column": "vis_km", "path": "$.data.vis_km"},
+  {"column": "weather", "path": "$.data.weather"},
+  {"column": "sea_state", "path": "$.data.sea_state"},
+  {"column": "swell_dir_worded", "path": "$.data.swell_dir_worded"},
+  {"column": "swell_height", "path": "$.data.swell_height"},
+  {"column": "swell_period", "path": "$.data.swell_period"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view WeatherObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
+    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'AU.Gov.BOM.Weather.WeatherObservation') | project['station_wmo'] = toint(data.['station_wmo']),['station_name'] = tostring(data.['station_name']),['observation_time_utc'] = todatetime(data.['observation_time_utc']),['local_time'] = tostring(data.['local_time']),['air_temp'] = toreal(data.['air_temp']),['apparent_temp'] = toreal(data.['apparent_temp']),['dewpt'] = toreal(data.['dewpt']),['rel_hum'] = toint(data.['rel_hum']),['delta_t'] = toreal(data.['delta_t']),['wind_dir'] = tostring(data.['wind_dir']),['wind_spd_kmh'] = toint(data.['wind_spd_kmh']),['wind_spd_kt'] = toint(data.['wind_spd_kt']),['gust_kmh'] = toint(data.['gust_kmh']),['gust_kt'] = toint(data.['gust_kt']),['press'] = toreal(data.['press']),['press_qnh'] = toreal(data.['press_qnh']),['press_msl'] = toreal(data.['press_msl']),['press_tend'] = tostring(data.['press_tend']),['rain_trace'] = tostring(data.['rain_trace']),['cloud'] = tostring(data.['cloud']),['cloud_oktas'] = toint(data.['cloud_oktas']),['cloud_base_m'] = toint(data.['cloud_base_m']),['cloud_type'] = tostring(data.['cloud_type']),['vis_km'] = tostring(data.['vis_km']),['weather'] = tostring(data.['weather']),['sea_state'] = tostring(data.['sea_state']),['swell_dir_worded'] = tostring(data.['swell_dir_worded']),['swell_height'] = toreal(data.['swell_height']),['swell_period'] = toreal(data.['swell_period']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WarningBulletin] (
+   [warning_id]: string,
+   [warning_url]: string,
+   [feed_url]: string,
+   [feed_title]: string,
+   [title]: string,
+   [published_at]: datetime,
+   [issued_local_time_text]: string,
+   [warning_type]: string,
+   [affected_area_text]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WarningBulletin] docstring "{\"description\": \"Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed.\"}";
+
+.alter table [WarningBulletin] column-docstrings (
+   [warning_id]: "{\"description\": \"Stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'.\"}",
+   [warning_url]: "{\"description\": \"Absolute BOM URL of the warning product page linked from the RSS item.\"}",
+   [feed_url]: "{\"description\": \"Absolute BOM RSS feed URL that published this warning item.\"}",
+   [feed_title]: "{\"description\": \"Title of the RSS feed channel publishing this warning bulletin.\"}",
+   [title]: "{\"description\": \"Normalized warning headline text from the RSS item title with line breaks collapsed to spaces.\"}",
+   [published_at]: "{\"description\": \"UTC timestamp when the RSS item was created or updated, taken from the item's pubDate field.\"}",
+   [issued_local_time_text]: "{\"description\": \"Local issuance time prefix embedded in the RSS headline, for example '08/16:29 EST', when present.\"}",
+   [warning_type]: "{\"description\": \"Warning headline extracted from the RSS title before the trailing affected-area clause, for example 'Severe Weather Warning'.\"}",
+   [affected_area_text]: "{\"description\": \"Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WarningBulletin] ingestion json mapping "WarningBulletin_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "warning_id", "path": "$.warning_id"},
+  {"column": "warning_url", "path": "$.warning_url"},
+  {"column": "feed_url", "path": "$.feed_url"},
+  {"column": "feed_title", "path": "$.feed_title"},
+  {"column": "title", "path": "$.title"},
+  {"column": "published_at", "path": "$.published_at"},
+  {"column": "issued_local_time_text", "path": "$.issued_local_time_text"},
+  {"column": "warning_type", "path": "$.warning_type"},
+  {"column": "affected_area_text", "path": "$.affected_area_text"},
+]
+```
+
+.create-or-alter table [WarningBulletin] ingestion json mapping "WarningBulletin_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "warning_id", "path": "$.data.warning_id"},
+  {"column": "warning_url", "path": "$.data.warning_url"},
+  {"column": "feed_url", "path": "$.data.feed_url"},
+  {"column": "feed_title", "path": "$.data.feed_title"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "published_at", "path": "$.data.published_at"},
+  {"column": "issued_local_time_text", "path": "$.data.issued_local_time_text"},
+  {"column": "warning_type", "path": "$.data.warning_type"},
+  {"column": "affected_area_text", "path": "$.data.affected_area_text"},
+]
+```
+
+.drop materialized-view WarningBulletinLatest ifexists;
+
+.create materialized-view with (backfill=true) WarningBulletinLatest on table WarningBulletin {
+    WarningBulletin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WarningBulletin] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'AU.Gov.BOM.Warning.WarningBulletin') | project['warning_id'] = tostring(data.['warning_id']),['warning_url'] = tostring(data.['warning_url']),['feed_url'] = tostring(data.['feed_url']),['feed_title'] = tostring(data.['feed_title']),['title'] = tostring(data.['title']),['published_at'] = todatetime(data.['published_at']),['issued_local_time_text'] = tostring(data.['issued_local_time_text']),['warning_type'] = tostring(data.['warning_type']),['affected_area_text'] = tostring(data.['affected_area_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

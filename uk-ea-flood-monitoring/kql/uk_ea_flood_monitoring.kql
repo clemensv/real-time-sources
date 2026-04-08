@@ -1,0 +1,167 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_reference]: string,
+   [label]: string,
+   [river_name]: string,
+   [catchment_name]: string,
+   [town]: string,
+   [lat]: real,
+   [long]: real,
+   [notation]: string,
+   [status]: string,
+   [date_opened]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Station\"}";
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_reference", "path": "$.station_reference"},
+  {"column": "label", "path": "$.label"},
+  {"column": "river_name", "path": "$.river_name"},
+  {"column": "catchment_name", "path": "$.catchment_name"},
+  {"column": "town", "path": "$.town"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "long", "path": "$.long"},
+  {"column": "notation", "path": "$.notation"},
+  {"column": "status", "path": "$.status"},
+  {"column": "date_opened", "path": "$.date_opened"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_reference", "path": "$.data.station_reference"},
+  {"column": "label", "path": "$.data.label"},
+  {"column": "river_name", "path": "$.data.river_name"},
+  {"column": "catchment_name", "path": "$.data.catchment_name"},
+  {"column": "town", "path": "$.data.town"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "long", "path": "$.data.long"},
+  {"column": "notation", "path": "$.data.notation"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "date_opened", "path": "$.data.date_opened"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'UK.Gov.Environment.EA.FloodMonitoring.Station') | project['station_reference'] = tostring(data.['station_reference']),['label'] = tostring(data.['label']),['river_name'] = tostring(data.['river_name']),['catchment_name'] = tostring(data.['catchment_name']),['town'] = tostring(data.['town']),['lat'] = toreal(data.['lat']),['long'] = toreal(data.['long']),['notation'] = tostring(data.['notation']),['status'] = tostring(data.['status']),['date_opened'] = tostring(data.['date_opened']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Reading] (
+   [station_reference]: string,
+   [date_time]: datetime,
+   [measure]: string,
+   [value]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Reading] docstring "{\"description\": \"Reading\"}";
+
+.create-or-alter table [Reading] ingestion json mapping "Reading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_reference", "path": "$.station_reference"},
+  {"column": "date_time", "path": "$.date_time"},
+  {"column": "measure", "path": "$.measure"},
+  {"column": "value", "path": "$.value"},
+]
+```
+
+.create-or-alter table [Reading] ingestion json mapping "Reading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_reference", "path": "$.data.station_reference"},
+  {"column": "date_time", "path": "$.data.date_time"},
+  {"column": "measure", "path": "$.data.measure"},
+  {"column": "value", "path": "$.data.value"},
+]
+```
+
+.drop materialized-view ReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) ReadingLatest on table Reading {
+    Reading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Reading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'UK.Gov.Environment.EA.FloodMonitoring.Reading') | project['station_reference'] = tostring(data.['station_reference']),['date_time'] = todatetime(data.['date_time']),['measure'] = tostring(data.['measure']),['value'] = toreal(data.['value']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

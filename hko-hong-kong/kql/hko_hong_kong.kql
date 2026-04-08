@@ -1,0 +1,185 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [place_id]: string,
+   [name]: string,
+   [data_types]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference data for a HKO weather observation place. Places include automatic weather stations (temperature), rainfall reporting districts, and special measurement locations (humidity at HKO headquarters, UV index at King's Park).\"}";
+
+.alter table [Station] column-docstrings (
+   [place_id]: "{\"description\": \"URL-safe slug identifier derived from the English place name, e.g. 'kings-park', 'central-western-district'. Used as Kafka key and CloudEvents subject.\"}",
+   [name]: "{\"description\": \"Original English place name from the HKO rhrread API, e.g. 'King's Park', 'Central & Western District'.\"}",
+   [data_types]: "{\"description\": \"Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "place_id", "path": "$.place_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "data_types", "path": "$.data_types"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "place_id", "path": "$.data.place_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "data_types", "path": "$.data.data_types"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'HK.Gov.HKO.Weather.Station') | project['place_id'] = tostring(data.['place_id']),['name'] = tostring(data.['name']),['data_types'] = tostring(data.['data_types']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherObservation] (
+   [place_id]: string,
+   [place_name]: string,
+   [observation_time]: datetime,
+   [temperature]: real,
+   [rainfall_max]: real,
+   [humidity]: int,
+   [uv_index]: real,
+   [uv_description]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherObservation] docstring "{\"description\": \"Current weather observation for a HKO place from the rhrread endpoint. Temperature from automatic weather stations, rainfall from district-level rain gauges, humidity from HKO headquarters, UV index from King's Park. Fields are null when the place does not report that data type.\"}";
+
+.alter table [WeatherObservation] column-docstrings (
+   [place_id]: "{\"description\": \"URL-safe slug identifier for the place, matching the Kafka key.\"}",
+   [place_name]: "{\"description\": \"Original English place name from the HKO API.\"}",
+   [observation_time]: "{\"description\": \"ISO 8601 timestamp of the observation including Hong Kong timezone offset (+08:00), from the updateTime field.\"}",
+   [temperature]: "{\"description\": \"Air temperature from automatic weather stations.\"}",
+   [rainfall_max]: "{\"description\": \"Maximum rainfall in the past hour from district-level rain gauges.\"}",
+   [humidity]: "{\"description\": \"Relative humidity, currently only from Hong Kong Observatory headquarters.\"}",
+   [uv_index]: "{\"description\": \"UV index during the past hour, currently only from King's Park.\"}",
+   [uv_description]: "{\"description\": \"HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "place_id", "path": "$.place_id"},
+  {"column": "place_name", "path": "$.place_name"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "temperature", "path": "$.temperature"},
+  {"column": "rainfall_max", "path": "$.rainfall_max"},
+  {"column": "humidity", "path": "$.humidity"},
+  {"column": "uv_index", "path": "$.uv_index"},
+  {"column": "uv_description", "path": "$.uv_description"},
+]
+```
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "place_id", "path": "$.data.place_id"},
+  {"column": "place_name", "path": "$.data.place_name"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "temperature", "path": "$.data.temperature"},
+  {"column": "rainfall_max", "path": "$.data.rainfall_max"},
+  {"column": "humidity", "path": "$.data.humidity"},
+  {"column": "uv_index", "path": "$.data.uv_index"},
+  {"column": "uv_description", "path": "$.data.uv_description"},
+]
+```
+
+.drop materialized-view WeatherObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
+    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'HK.Gov.HKO.Weather.WeatherObservation') | project['place_id'] = tostring(data.['place_id']),['place_name'] = tostring(data.['place_name']),['observation_time'] = todatetime(data.['observation_time']),['temperature'] = toreal(data.['temperature']),['rainfall_max'] = toreal(data.['rainfall_max']),['humidity'] = toint(data.['humidity']),['uv_index'] = toreal(data.['uv_index']),['uv_description'] = tostring(data.['uv_description']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

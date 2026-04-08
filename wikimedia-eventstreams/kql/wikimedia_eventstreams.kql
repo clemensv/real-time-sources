@@ -1,0 +1,196 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [RecentChange] (
+   [event_id]: string,
+   [event_time]: string,
+   [schema_uri]: string,
+   [meta]: dynamic,
+   [id]: string,
+   [type]: string,
+   [namespace]: int,
+   [title]: string,
+   [title_url]: string,
+   [comment]: string,
+   [timestamp]: int,
+   [user]: string,
+   [bot]: bool,
+   [minor]: bool,
+   [patrolled]: bool,
+   [length]: dynamic,
+   [revision]: dynamic,
+   [server_url]: string,
+   [server_name]: string,
+   [server_script_path]: string,
+   [wiki]: string,
+   [parsedcomment]: string,
+   [notify_url]: string,
+   [log_type]: string,
+   [log_action]: string,
+   [log_action_comment]: string,
+   [log_id]: string,
+   [log_params_json]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RecentChange] docstring "{\"description\": \"Normalized representation of Wikimedia's mediawiki/recentchange event schema. This contract preserves the documented recentchange payload while renaming the upstream $schema field to schema_uri and serializing the variant log_params field into log_params_json for stable generated types.\"}";
+
+.alter table [RecentChange] column-docstrings (
+   [event_id]: "{\"description\": \"Top-level copy of meta.id so downstream validators and consumers can resolve the CloudEvents subject and Kafka key from the event payload itself.\"}",
+   [event_time]: "{\"description\": \"Top-level copy of meta.dt in ISO-8601 UTC format so downstream validators and consumers can resolve the CloudEvents time attribute from the payload itself.\"}",
+   [schema_uri]: "{\"description\": \"URI of the upstream Wikimedia JSON schema from the $schema field on the original event payload.\"}",
+   [meta]: "{\"description\": \"Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+   [id]: "{\"description\": \"MediaWiki recentchanges row identifier (rcid) for the event, stringified because some Wikimedia wikis already exceed signed 32-bit integer range.\"}",
+   [type]: "{\"description\": \"Recentchange type such as edit, new, log, categorize, or external.\"}",
+   [namespace]: "{\"description\": \"Numeric MediaWiki namespace identifier for the affected page, or -1 for special log events.\"}",
+   [title]: "{\"description\": \"Affected page title in MediaWiki prefixed text form.\"}",
+   [title_url]: "{\"description\": \"Canonical page URL for the affected title when present in the upstream payload.\"}",
+   [comment]: "{\"description\": \"Edit or log comment as supplied by the upstream recentchange record.\"}",
+   [timestamp]: "{\"description\": \"Unix timestamp derived from the MediaWiki rc_timestamp value.\"}",
+   [user]: "{\"description\": \"User name or IP address associated with the change.\"}",
+   [bot]: "{\"description\": \"Whether the recentchange entry was flagged as a bot edit.\"}",
+   [minor]: "{\"description\": \"Whether the recentchange entry was flagged as a minor change.\"}",
+   [patrolled]: "{\"description\": \"Whether the recentchange entry had been patrolled when the event was emitted.\"}",
+   [length]: "{\"description\": \"Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki.\", \"schema\": {\"type\": \"object\", \"description\": \"Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki.\", \"properties\": {\"old\": {\"type\": \"integer\", \"description\": \"Length of the page before the change.\"}, \"new\": {\"type\": \"integer\", \"description\": \"Length of the page after the change.\"}}}}",
+   [revision]: "{\"description\": \"Old and new MediaWiki revision identifiers associated with the change.\", \"schema\": {\"type\": \"object\", \"description\": \"Old and new MediaWiki revision identifiers associated with the change.\", \"properties\": {\"old\": {\"type\": \"string\", \"description\": \"Previous revision identifier before the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range.\"}, \"new\": {\"type\": \"string\", \"description\": \"New revision identifier after the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range.\"}}}}",
+   [server_url]: "{\"description\": \"Canonical server URL for the wiki that emitted the event.\"}",
+   [server_name]: "{\"description\": \"Server host name of the wiki that emitted the event.\"}",
+   [server_script_path]: "{\"description\": \"MediaWiki script path on the emitting wiki.\"}",
+   [wiki]: "{\"description\": \"Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki.\"}",
+   [parsedcomment]: "{\"description\": \"HTML-parsed form of the recentchange comment when Wikimedia provides it.\"}",
+   [notify_url]: "{\"description\": \"URL that points to a diff view or other relevant page for the change.\"}",
+   [log_type]: "{\"description\": \"MediaWiki log type for log events, such as move, delete, or patrol.\"}",
+   [log_action]: "{\"description\": \"Specific MediaWiki log action name for log events.\"}",
+   [log_action_comment]: "{\"description\": \"Additional comment field emitted for some MediaWiki log actions.\"}",
+   [log_id]: "{\"description\": \"MediaWiki log identifier associated with the event when the change is a log entry, stringified for stable cross-language handling.\"}",
+   [log_params_json]: "{\"description\": \"Serialized form of the upstream log_params field, which may be an object, array, or string in the raw Wikimedia payload.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RecentChange] ingestion json mapping "RecentChange_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.event_id"},
+  {"column": "event_time", "path": "$.event_time"},
+  {"column": "schema_uri", "path": "$.schema_uri"},
+  {"column": "meta", "path": "$.meta"},
+  {"column": "id", "path": "$.id"},
+  {"column": "type", "path": "$.type"},
+  {"column": "namespace", "path": "$.namespace"},
+  {"column": "title", "path": "$.title"},
+  {"column": "title_url", "path": "$.title_url"},
+  {"column": "comment", "path": "$.comment"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "user", "path": "$.user"},
+  {"column": "bot", "path": "$.bot"},
+  {"column": "minor", "path": "$.minor"},
+  {"column": "patrolled", "path": "$.patrolled"},
+  {"column": "length", "path": "$.length"},
+  {"column": "revision", "path": "$.revision"},
+  {"column": "server_url", "path": "$.server_url"},
+  {"column": "server_name", "path": "$.server_name"},
+  {"column": "server_script_path", "path": "$.server_script_path"},
+  {"column": "wiki", "path": "$.wiki"},
+  {"column": "parsedcomment", "path": "$.parsedcomment"},
+  {"column": "notify_url", "path": "$.notify_url"},
+  {"column": "log_type", "path": "$.log_type"},
+  {"column": "log_action", "path": "$.log_action"},
+  {"column": "log_action_comment", "path": "$.log_action_comment"},
+  {"column": "log_id", "path": "$.log_id"},
+  {"column": "log_params_json", "path": "$.log_params_json"},
+]
+```
+
+.create-or-alter table [RecentChange] ingestion json mapping "RecentChange_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.data.event_id"},
+  {"column": "event_time", "path": "$.data.event_time"},
+  {"column": "schema_uri", "path": "$.data.schema_uri"},
+  {"column": "meta", "path": "$.data.meta"},
+  {"column": "id", "path": "$.data.id"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "namespace", "path": "$.data.namespace"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "title_url", "path": "$.data.title_url"},
+  {"column": "comment", "path": "$.data.comment"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "user", "path": "$.data.user"},
+  {"column": "bot", "path": "$.data.bot"},
+  {"column": "minor", "path": "$.data.minor"},
+  {"column": "patrolled", "path": "$.data.patrolled"},
+  {"column": "length", "path": "$.data.length"},
+  {"column": "revision", "path": "$.data.revision"},
+  {"column": "server_url", "path": "$.data.server_url"},
+  {"column": "server_name", "path": "$.data.server_name"},
+  {"column": "server_script_path", "path": "$.data.server_script_path"},
+  {"column": "wiki", "path": "$.data.wiki"},
+  {"column": "parsedcomment", "path": "$.data.parsedcomment"},
+  {"column": "notify_url", "path": "$.data.notify_url"},
+  {"column": "log_type", "path": "$.data.log_type"},
+  {"column": "log_action", "path": "$.data.log_action"},
+  {"column": "log_action_comment", "path": "$.data.log_action_comment"},
+  {"column": "log_id", "path": "$.data.log_id"},
+  {"column": "log_params_json", "path": "$.data.log_params_json"},
+]
+```
+
+.drop materialized-view RecentChangeLatest ifexists;
+
+.create materialized-view with (backfill=true) RecentChangeLatest on table RecentChange {
+    RecentChange | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RecentChange] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Wikimedia.EventStreams.RecentChange') | project['event_id'] = tostring(data.['event_id']),['event_time'] = tostring(data.['event_time']),['schema_uri'] = tostring(data.['schema_uri']),['meta'] = todynamic(data.['meta']),['id'] = tostring(data.['id']),['type'] = tostring(data.['type']),['namespace'] = toint(data.['namespace']),['title'] = tostring(data.['title']),['title_url'] = tostring(data.['title_url']),['comment'] = tostring(data.['comment']),['timestamp'] = toint(data.['timestamp']),['user'] = tostring(data.['user']),['bot'] = tobool(data.['bot']),['minor'] = tobool(data.['minor']),['patrolled'] = tobool(data.['patrolled']),['length'] = todynamic(data.['length']),['revision'] = todynamic(data.['revision']),['server_url'] = tostring(data.['server_url']),['server_name'] = tostring(data.['server_name']),['server_script_path'] = tostring(data.['server_script_path']),['wiki'] = tostring(data.['wiki']),['parsedcomment'] = tostring(data.['parsedcomment']),['notify_url'] = tostring(data.['notify_url']),['log_type'] = tostring(data.['log_type']),['log_action'] = tostring(data.['log_action']),['log_action_comment'] = tostring(data.['log_action_comment']),['log_id'] = tostring(data.['log_id']),['log_params_json'] = tostring(data.['log_params_json']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -1,0 +1,844 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [BuoyObservation] (
+   [station_id]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [timestamp]: datetime,
+   [wind_direction]: real,
+   [wind_speed]: real,
+   [gust]: real,
+   [wave_height]: real,
+   [dominant_wave_period]: real,
+   [average_wave_period]: real,
+   [mean_wave_direction]: real,
+   [pressure]: real,
+   [air_temperature]: real,
+   [water_temperature]: real,
+   [dewpoint]: real,
+   [pressure_tendency]: real,
+   [visibility]: real,
+   [tide]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoyObservation] docstring "{\"description\": \"Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide.\"}";
+
+.alter table [BuoyObservation] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier. Five-character alphanumeric code assigned by NDBC (e.g. '41001' for deep-ocean buoys, 'BURL1' for C-MAN stations).\"}",
+   [latitude]: "{\"description\": \"Latitude of the observing platform in decimal degrees north. Negative values indicate southern hemisphere.\"}",
+   [longitude]: "{\"description\": \"Longitude of the observing platform in decimal degrees east. Negative values indicate western hemisphere.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC data.\"}",
+   [wind_direction]: "{\"description\": \"Wind direction (the direction the wind is coming from) averaged over an 8-minute period for buoys or a 2-minute period for land stations. Unit: degrees true.\"}",
+   [wind_speed]: "{\"description\": \"Average wind speed during the observation period: 8 minutes for buoys, 2 minutes for land stations. Unit: meters per second.\"}",
+   [gust]: "{\"description\": \"Peak 5-second or 8-second gust speed during the observation period. Unit: meters per second.\"}",
+   [wave_height]: "{\"description\": \"Significant wave height \\u2014 the average of the highest one-third of all wave heights during a 20-minute sampling period. Unit: meters.\"}",
+   [dominant_wave_period]: "{\"description\": \"Dominant wave period \\u2014 the period (in seconds) of the wave band with the maximum energy in the spectral wave analysis. Unit: seconds.\"}",
+   [average_wave_period]: "{\"description\": \"Average wave period of all waves during the 20-minute sampling period. Unit: seconds.\"}",
+   [mean_wave_direction]: "{\"description\": \"Mean wave direction corresponding to the energy at the dominant wave period (DPD). Unit: degrees true.\"}",
+   [pressure]: "{\"description\": \"Sea-level pressure reduced using the standard atmosphere from the station elevation. Unit: hectopascals.\"}",
+   [air_temperature]: "{\"description\": \"Air temperature measured at the station. Unit: degrees Celsius.\"}",
+   [water_temperature]: "{\"description\": \"Sea surface temperature. For buoys, measured by a hull-contact sensor near the waterline. Unit: degrees Celsius.\"}",
+   [dewpoint]: "{\"description\": \"Dewpoint temperature computed from air temperature and relative humidity. Unit: degrees Celsius.\"}",
+   [pressure_tendency]: "{\"description\": \"Pressure tendency \\u2014 the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals.\"}",
+   [visibility]: "{\"description\": \"Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles.\"}",
+   [tide]: "{\"description\": \"Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoyObservation] ingestion json mapping "BuoyObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "gust", "path": "$.gust"},
+  {"column": "wave_height", "path": "$.wave_height"},
+  {"column": "dominant_wave_period", "path": "$.dominant_wave_period"},
+  {"column": "average_wave_period", "path": "$.average_wave_period"},
+  {"column": "mean_wave_direction", "path": "$.mean_wave_direction"},
+  {"column": "pressure", "path": "$.pressure"},
+  {"column": "air_temperature", "path": "$.air_temperature"},
+  {"column": "water_temperature", "path": "$.water_temperature"},
+  {"column": "dewpoint", "path": "$.dewpoint"},
+  {"column": "pressure_tendency", "path": "$.pressure_tendency"},
+  {"column": "visibility", "path": "$.visibility"},
+  {"column": "tide", "path": "$.tide"},
+]
+```
+
+.create-or-alter table [BuoyObservation] ingestion json mapping "BuoyObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "gust", "path": "$.data.gust"},
+  {"column": "wave_height", "path": "$.data.wave_height"},
+  {"column": "dominant_wave_period", "path": "$.data.dominant_wave_period"},
+  {"column": "average_wave_period", "path": "$.data.average_wave_period"},
+  {"column": "mean_wave_direction", "path": "$.data.mean_wave_direction"},
+  {"column": "pressure", "path": "$.data.pressure"},
+  {"column": "air_temperature", "path": "$.data.air_temperature"},
+  {"column": "water_temperature", "path": "$.data.water_temperature"},
+  {"column": "dewpoint", "path": "$.data.dewpoint"},
+  {"column": "pressure_tendency", "path": "$.data.pressure_tendency"},
+  {"column": "visibility", "path": "$.data.visibility"},
+  {"column": "tide", "path": "$.data.tide"},
+]
+```
+
+.drop materialized-view BuoyObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoyObservationLatest on table BuoyObservation {
+    BuoyObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoyObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation') | project['station_id'] = tostring(data.['station_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['timestamp'] = todatetime(data.['timestamp']),['wind_direction'] = toreal(data.['wind_direction']),['wind_speed'] = toreal(data.['wind_speed']),['gust'] = toreal(data.['gust']),['wave_height'] = toreal(data.['wave_height']),['dominant_wave_period'] = toreal(data.['dominant_wave_period']),['average_wave_period'] = toreal(data.['average_wave_period']),['mean_wave_direction'] = toreal(data.['mean_wave_direction']),['pressure'] = toreal(data.['pressure']),['air_temperature'] = toreal(data.['air_temperature']),['water_temperature'] = toreal(data.['water_temperature']),['dewpoint'] = toreal(data.['dewpoint']),['pressure_tendency'] = toreal(data.['pressure_tendency']),['visibility'] = toreal(data.['visibility']),['tide'] = toreal(data.['tide']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoyStation] (
+   [station_id]: string,
+   [owner]: string,
+   [station_type]: string,
+   [hull]: string,
+   [name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [timezone]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoyStation] docstring "{\"description\": \"Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform.\"}";
+
+.alter table [BuoyStation] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products.\"}",
+   [owner]: "{\"description\": \"Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency.\"}",
+   [station_type]: "{\"description\": \"Platform type from the station table, such as Weather Buoy or C-MAN Station.\"}",
+   [hull]: "{\"description\": \"Hull or platform class reported in the station table, for example DISCUS or 3-meter.\"}",
+   [name]: "{\"description\": \"Human-readable station name from the NDBC station table.\"}",
+   [latitude]: "{\"description\": \"Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere.\"}",
+   [longitude]: "{\"description\": \"Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere.\"}",
+   [timezone]: "{\"description\": \"Single-letter time-zone code carried in the NDBC station table for display and forecast products.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoyStation] ingestion json mapping "BuoyStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "owner", "path": "$.owner"},
+  {"column": "station_type", "path": "$.station_type"},
+  {"column": "hull", "path": "$.hull"},
+  {"column": "name", "path": "$.name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "timezone", "path": "$.timezone"},
+]
+```
+
+.create-or-alter table [BuoyStation] ingestion json mapping "BuoyStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "owner", "path": "$.data.owner"},
+  {"column": "station_type", "path": "$.data.station_type"},
+  {"column": "hull", "path": "$.data.hull"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "timezone", "path": "$.data.timezone"},
+]
+```
+
+.drop materialized-view BuoyStationLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoyStationLatest on table BuoyStation {
+    BuoyStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoyStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation') | project['station_id'] = tostring(data.['station_id']),['owner'] = tostring(data.['owner']),['station_type'] = tostring(data.['station_type']),['hull'] = tostring(data.['hull']),['name'] = tostring(data.['name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['timezone'] = tostring(data.['timezone']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoySolarRadiationObservation] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [shortwave_radiation_licor]: real,
+   [shortwave_radiation_eppley]: real,
+   [longwave_radiation]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoySolarRadiationObservation] docstring "{\"description\": \"Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station.\"}";
+
+.alter table [BuoySolarRadiationObservation] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier. The .srad realtime2 file is published per station and keyed by this identifier.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file.\"}",
+   [shortwave_radiation_licor]: "{\"description\": \"Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter.\"}",
+   [shortwave_radiation_eppley]: "{\"description\": \"Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter.\"}",
+   [longwave_radiation]: "{\"description\": \"Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoySolarRadiationObservation] ingestion json mapping "BuoySolarRadiationObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "shortwave_radiation_licor", "path": "$.shortwave_radiation_licor"},
+  {"column": "shortwave_radiation_eppley", "path": "$.shortwave_radiation_eppley"},
+  {"column": "longwave_radiation", "path": "$.longwave_radiation"},
+]
+```
+
+.create-or-alter table [BuoySolarRadiationObservation] ingestion json mapping "BuoySolarRadiationObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "shortwave_radiation_licor", "path": "$.data.shortwave_radiation_licor"},
+  {"column": "shortwave_radiation_eppley", "path": "$.data.shortwave_radiation_eppley"},
+  {"column": "longwave_radiation", "path": "$.data.longwave_radiation"},
+]
+```
+
+.drop materialized-view BuoySolarRadiationObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoySolarRadiationObservationLatest on table BuoySolarRadiationObservation {
+    BuoySolarRadiationObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoySolarRadiationObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['shortwave_radiation_licor'] = toreal(data.['shortwave_radiation_licor']),['shortwave_radiation_eppley'] = toreal(data.['shortwave_radiation_eppley']),['longwave_radiation'] = toreal(data.['longwave_radiation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoyOceanographicObservation] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [depth]: real,
+   [ocean_temperature]: real,
+   [conductivity]: real,
+   [salinity]: real,
+   [oxygen_saturation]: real,
+   [oxygen_concentration]: real,
+   [chlorophyll_concentration]: real,
+   [turbidity]: real,
+   [ph]: real,
+   [redox_potential]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoyOceanographicObservation] docstring "{\"description\": \"Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp.\"}";
+
+.alter table [BuoyOceanographicObservation] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier. The .ocean realtime2 file is published per station and keyed by this identifier.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .ocean realtime2 file.\"}",
+   [depth]: "{\"description\": \"Depth in meters at which the oceanographic measurements in this record were taken.\"}",
+   [ocean_temperature]: "{\"description\": \"Direct ocean temperature measurement from the OTMP column. Unit: degrees Celsius.\"}",
+   [conductivity]: "{\"description\": \"Electrical conductivity of seawater from the COND column. Unit: millisiemens per centimeter.\"}",
+   [salinity]: "{\"description\": \"Practical salinity computed from conductivity, temperature, and pressure using the Practical Salinity Scale of 1978. Unit: practical salinity units.\"}",
+   [oxygen_saturation]: "{\"description\": \"Dissolved oxygen saturation percentage from the O2% column.\"}",
+   [oxygen_concentration]: "{\"description\": \"Dissolved oxygen concentration from the O2PPM column. Unit: parts per million.\"}",
+   [chlorophyll_concentration]: "{\"description\": \"Chlorophyll concentration from the CLCON column. Unit: micrograms per liter.\"}",
+   [turbidity]: "{\"description\": \"Turbidity from the TURB column. Unit: Formazin Turbidity Units.\"}",
+   [ph]: "{\"description\": \"Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless.\"}",
+   [redox_potential]: "{\"description\": \"Oxidation-reduction potential of seawater from the EH column. Unit: millivolts.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoyOceanographicObservation] ingestion json mapping "BuoyOceanographicObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "depth", "path": "$.depth"},
+  {"column": "ocean_temperature", "path": "$.ocean_temperature"},
+  {"column": "conductivity", "path": "$.conductivity"},
+  {"column": "salinity", "path": "$.salinity"},
+  {"column": "oxygen_saturation", "path": "$.oxygen_saturation"},
+  {"column": "oxygen_concentration", "path": "$.oxygen_concentration"},
+  {"column": "chlorophyll_concentration", "path": "$.chlorophyll_concentration"},
+  {"column": "turbidity", "path": "$.turbidity"},
+  {"column": "ph", "path": "$.ph"},
+  {"column": "redox_potential", "path": "$.redox_potential"},
+]
+```
+
+.create-or-alter table [BuoyOceanographicObservation] ingestion json mapping "BuoyOceanographicObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "depth", "path": "$.data.depth"},
+  {"column": "ocean_temperature", "path": "$.data.ocean_temperature"},
+  {"column": "conductivity", "path": "$.data.conductivity"},
+  {"column": "salinity", "path": "$.data.salinity"},
+  {"column": "oxygen_saturation", "path": "$.data.oxygen_saturation"},
+  {"column": "oxygen_concentration", "path": "$.data.oxygen_concentration"},
+  {"column": "chlorophyll_concentration", "path": "$.data.chlorophyll_concentration"},
+  {"column": "turbidity", "path": "$.data.turbidity"},
+  {"column": "ph", "path": "$.data.ph"},
+  {"column": "redox_potential", "path": "$.data.redox_potential"},
+]
+```
+
+.drop materialized-view BuoyOceanographicObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoyOceanographicObservationLatest on table BuoyOceanographicObservation {
+    BuoyOceanographicObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoyOceanographicObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['depth'] = toreal(data.['depth']),['ocean_temperature'] = toreal(data.['ocean_temperature']),['conductivity'] = toreal(data.['conductivity']),['salinity'] = toreal(data.['salinity']),['oxygen_saturation'] = toreal(data.['oxygen_saturation']),['oxygen_concentration'] = toreal(data.['oxygen_concentration']),['chlorophyll_concentration'] = toreal(data.['chlorophyll_concentration']),['turbidity'] = toreal(data.['turbidity']),['ph'] = toreal(data.['ph']),['redox_potential'] = toreal(data.['redox_potential']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoyDartMeasurement] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [measurement_type_code]: int,
+   [water_column_height]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoyDartMeasurement] docstring "{\"description\": \"Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station.\"}";
+
+.alter table [BuoyDartMeasurement] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file.\"}",
+   [measurement_type_code]: "{\"description\": \"Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement.\"}",
+   [water_column_height]: "{\"description\": \"Height of the measured water column from the HEIGHT column in the DART file. Unit: meters.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoyDartMeasurement] ingestion json mapping "BuoyDartMeasurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "measurement_type_code", "path": "$.measurement_type_code"},
+  {"column": "water_column_height", "path": "$.water_column_height"},
+]
+```
+
+.create-or-alter table [BuoyDartMeasurement] ingestion json mapping "BuoyDartMeasurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "measurement_type_code", "path": "$.data.measurement_type_code"},
+  {"column": "water_column_height", "path": "$.data.water_column_height"},
+]
+```
+
+.drop materialized-view BuoyDartMeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoyDartMeasurementLatest on table BuoyDartMeasurement {
+    BuoyDartMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoyDartMeasurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['measurement_type_code'] = toint(data.['measurement_type_code']),['water_column_height'] = toreal(data.['water_column_height']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoyContinuousWindObservation] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [wind_direction]: real,
+   [wind_speed]: real,
+   [gust_direction]: real,
+   [gust]: real,
+   [gust_time_code]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoyContinuousWindObservation] docstring "{\"description\": \"Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred.\"}";
+
+.alter table [BuoyContinuousWindObservation] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .cwind realtime2 file.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file.\"}",
+   [wind_direction]: "{\"description\": \"Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true.\"}",
+   [wind_speed]: "{\"description\": \"Ten-minute average wind speed from the WSPD column. Unit: meters per second.\"}",
+   [gust_direction]: "{\"description\": \"Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true.\"}",
+   [gust]: "{\"description\": \"Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second.\"}",
+   [gust_time_code]: "{\"description\": \"HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoyContinuousWindObservation] ingestion json mapping "BuoyContinuousWindObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "gust_direction", "path": "$.gust_direction"},
+  {"column": "gust", "path": "$.gust"},
+  {"column": "gust_time_code", "path": "$.gust_time_code"},
+]
+```
+
+.create-or-alter table [BuoyContinuousWindObservation] ingestion json mapping "BuoyContinuousWindObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "gust_direction", "path": "$.data.gust_direction"},
+  {"column": "gust", "path": "$.data.gust"},
+  {"column": "gust_time_code", "path": "$.data.gust_time_code"},
+]
+```
+
+.drop materialized-view BuoyContinuousWindObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoyContinuousWindObservationLatest on table BuoyContinuousWindObservation {
+    BuoyContinuousWindObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoyContinuousWindObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['wind_direction'] = toreal(data.['wind_direction']),['wind_speed'] = toreal(data.['wind_speed']),['gust_direction'] = toreal(data.['gust_direction']),['gust'] = toreal(data.['gust']),['gust_time_code'] = tostring(data.['gust_time_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoySupplementalMeasurement] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [lowest_pressure]: real,
+   [lowest_pressure_time_code]: string,
+   [highest_wind_speed]: real,
+   [highest_wind_direction]: real,
+   [highest_wind_time_code]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoySupplementalMeasurement] docstring "{\"description\": \"Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times.\"}";
+
+.alter table [BuoySupplementalMeasurement] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .supl realtime2 file.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file.\"}",
+   [lowest_pressure]: "{\"description\": \"Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals.\"}",
+   [lowest_pressure_time_code]: "{\"description\": \"HHMM UTC time code from the PTIME column indicating when the lowest one-minute pressure occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.\"}",
+   [highest_wind_speed]: "{\"description\": \"Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second.\"}",
+   [highest_wind_direction]: "{\"description\": \"Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true.\"}",
+   [highest_wind_time_code]: "{\"description\": \"HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoySupplementalMeasurement] ingestion json mapping "BuoySupplementalMeasurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "lowest_pressure", "path": "$.lowest_pressure"},
+  {"column": "lowest_pressure_time_code", "path": "$.lowest_pressure_time_code"},
+  {"column": "highest_wind_speed", "path": "$.highest_wind_speed"},
+  {"column": "highest_wind_direction", "path": "$.highest_wind_direction"},
+  {"column": "highest_wind_time_code", "path": "$.highest_wind_time_code"},
+]
+```
+
+.create-or-alter table [BuoySupplementalMeasurement] ingestion json mapping "BuoySupplementalMeasurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "lowest_pressure", "path": "$.data.lowest_pressure"},
+  {"column": "lowest_pressure_time_code", "path": "$.data.lowest_pressure_time_code"},
+  {"column": "highest_wind_speed", "path": "$.data.highest_wind_speed"},
+  {"column": "highest_wind_direction", "path": "$.data.highest_wind_direction"},
+  {"column": "highest_wind_time_code", "path": "$.data.highest_wind_time_code"},
+]
+```
+
+.drop materialized-view BuoySupplementalMeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoySupplementalMeasurementLatest on table BuoySupplementalMeasurement {
+    BuoySupplementalMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoySupplementalMeasurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['lowest_pressure'] = toreal(data.['lowest_pressure']),['lowest_pressure_time_code'] = tostring(data.['lowest_pressure_time_code']),['highest_wind_speed'] = toreal(data.['highest_wind_speed']),['highest_wind_direction'] = toreal(data.['highest_wind_direction']),['highest_wind_time_code'] = tostring(data.['highest_wind_time_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoyDetailedWaveSummary] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [significant_wave_height]: real,
+   [swell_height]: real,
+   [swell_period]: real,
+   [wind_wave_height]: real,
+   [wind_wave_period]: real,
+   [swell_direction]: string,
+   [wind_wave_direction]: string,
+   [steepness]: string,
+   [average_wave_period]: real,
+   [mean_wave_direction]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoyDetailedWaveSummary] docstring "{\"description\": \"Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp.\"}";
+
+.alter table [BuoyDetailedWaveSummary] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .spec realtime2 file.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file.\"}",
+   [significant_wave_height]: "{\"description\": \"Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters.\"}",
+   [swell_height]: "{\"description\": \"Swell-wave height from the SwH column. Unit: meters.\"}",
+   [swell_period]: "{\"description\": \"Swell-wave period from the SwP column. Unit: seconds.\"}",
+   [wind_wave_height]: "{\"description\": \"Wind-wave height from the WWH column. Unit: meters.\"}",
+   [wind_wave_period]: "{\"description\": \"Wind-wave period from the WWP column. Unit: seconds.\"}",
+   [swell_direction]: "{\"description\": \"Swell direction from the SwD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value.\"}",
+   [wind_wave_direction]: "{\"description\": \"Wind-wave direction from the WWD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value.\"}",
+   [steepness]: "{\"description\": \"Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP.\"}",
+   [average_wave_period]: "{\"description\": \"Average wave period from the APD column. Unit: seconds.\"}",
+   [mean_wave_direction]: "{\"description\": \"Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoyDetailedWaveSummary] ingestion json mapping "BuoyDetailedWaveSummary_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "significant_wave_height", "path": "$.significant_wave_height"},
+  {"column": "swell_height", "path": "$.swell_height"},
+  {"column": "swell_period", "path": "$.swell_period"},
+  {"column": "wind_wave_height", "path": "$.wind_wave_height"},
+  {"column": "wind_wave_period", "path": "$.wind_wave_period"},
+  {"column": "swell_direction", "path": "$.swell_direction"},
+  {"column": "wind_wave_direction", "path": "$.wind_wave_direction"},
+  {"column": "steepness", "path": "$.steepness"},
+  {"column": "average_wave_period", "path": "$.average_wave_period"},
+  {"column": "mean_wave_direction", "path": "$.mean_wave_direction"},
+]
+```
+
+.create-or-alter table [BuoyDetailedWaveSummary] ingestion json mapping "BuoyDetailedWaveSummary_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "significant_wave_height", "path": "$.data.significant_wave_height"},
+  {"column": "swell_height", "path": "$.data.swell_height"},
+  {"column": "swell_period", "path": "$.data.swell_period"},
+  {"column": "wind_wave_height", "path": "$.data.wind_wave_height"},
+  {"column": "wind_wave_period", "path": "$.data.wind_wave_period"},
+  {"column": "swell_direction", "path": "$.data.swell_direction"},
+  {"column": "wind_wave_direction", "path": "$.data.wind_wave_direction"},
+  {"column": "steepness", "path": "$.data.steepness"},
+  {"column": "average_wave_period", "path": "$.data.average_wave_period"},
+  {"column": "mean_wave_direction", "path": "$.data.mean_wave_direction"},
+]
+```
+
+.drop materialized-view BuoyDetailedWaveSummaryLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoyDetailedWaveSummaryLatest on table BuoyDetailedWaveSummary {
+    BuoyDetailedWaveSummary | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoyDetailedWaveSummary] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['significant_wave_height'] = toreal(data.['significant_wave_height']),['swell_height'] = toreal(data.['swell_height']),['swell_period'] = toreal(data.['swell_period']),['wind_wave_height'] = toreal(data.['wind_wave_height']),['wind_wave_period'] = toreal(data.['wind_wave_period']),['swell_direction'] = tostring(data.['swell_direction']),['wind_wave_direction'] = tostring(data.['wind_wave_direction']),['steepness'] = tostring(data.['steepness']),['average_wave_period'] = toreal(data.['average_wave_period']),['mean_wave_direction'] = toreal(data.['mean_wave_direction']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BuoyHourlyRainMeasurement] (
+   [station_id]: string,
+   [timestamp]: datetime,
+   [accumulation]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BuoyHourlyRainMeasurement] docstring "{\"description\": \"Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp.\"}";
+
+.alter table [BuoyHourlyRainMeasurement] column-docstrings (
+   [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .rain realtime2 file.\"}",
+   [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file.\"}",
+   [accumulation]: "{\"description\": \"Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BuoyHourlyRainMeasurement] ingestion json mapping "BuoyHourlyRainMeasurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "accumulation", "path": "$.accumulation"},
+]
+```
+
+.create-or-alter table [BuoyHourlyRainMeasurement] ingestion json mapping "BuoyHourlyRainMeasurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "accumulation", "path": "$.data.accumulation"},
+]
+```
+
+.drop materialized-view BuoyHourlyRainMeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) BuoyHourlyRainMeasurementLatest on table BuoyHourlyRainMeasurement {
+    BuoyHourlyRainMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BuoyHourlyRainMeasurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = todatetime(data.['timestamp']),['accumulation'] = toreal(data.['accumulation']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

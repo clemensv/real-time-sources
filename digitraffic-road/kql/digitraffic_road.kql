@@ -1,0 +1,822 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [TmsSensorData] (
+   [station_id]: int,
+   [sensor_id]: int,
+   [value]: real,
+   [time]: int,
+   [start]: int,
+   [end]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TmsSensorData] docstring "{\"description\": \"Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows. Over 500 stations across the Finnish road network report data every minute. See https://www.digitraffic.fi/en/road-traffic/ and the TMS documentation at https://www.digitraffic.fi/en/road-traffic/lam/ for full sensor descriptions.\"}";
+
+.alter table [TmsSensorData] column-docstrings (
+   [station_id]: "{\"description\": \"TMS station numeric identifier as assigned by Fintraffic. Each station is located at a fixed point on the Finnish road network and identified by a unique integer (e.g. 23001). Station metadata including road address, municipality, and free-flow speeds is available from the /api/tms/v1/stations REST endpoint.\"}",
+   [sensor_id]: "{\"description\": \"Computational sensor identifier within the TMS station. Each sensor measures a specific traffic parameter in a given direction and time window. Common sensor families include OHITUKSET (vehicle passings, unit kpl/h), KESKINOPEUS (average speed, unit km/h), and LIUKUVA_NOPEUS (rolling speed per lane, unit km/h). Sensor metadata is available from /api/tms/v1/sensors.\"}",
+   [value]: "{\"description\": \"Measured value in the sensor's native unit. Units vary by sensor family: kpl/h (vehicles per hour) for OHITUKSET passings sensors, km/h for KESKINOPEUS and LIUKUVA_NOPEUS speed sensors, and dimensionless percentage ratios for traffic situation indicators (VVAPAAS, MS suffixed sensors).\"}",
+   [time]: "{\"description\": \"Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken or the aggregation period was last updated.\"}",
+   [start]: "{\"description\": \"Start of the fixed time window as Unix epoch seconds (UTC). Present for fixed-window aggregate sensors such as OHITUKSET_5MIN_KIINTEA (5-minute fixed passings), KESKINOPEUS_60MIN_KIINTEA (60-minute fixed average speed), and OHITUKSET_60MIN_KIINTEA. Null or absent for rolling-window sensors (LIUKUVA suffix) and per-lane sensors.\"}",
+   [end]: "{\"description\": \"End of the fixed time window as Unix epoch seconds (UTC). Present for fixed-window aggregate sensors. Null or absent for rolling-window and per-lane sensors.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TmsSensorData] ingestion json mapping "TmsSensorData_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "value", "path": "$.value"},
+  {"column": "time", "path": "$.time"},
+  {"column": "start", "path": "$.start"},
+  {"column": "end", "path": "$.end"},
+]
+```
+
+.create-or-alter table [TmsSensorData] ingestion json mapping "TmsSensorData_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "start", "path": "$.data.start"},
+  {"column": "end", "path": "$.data.end"},
+]
+```
+
+.drop materialized-view TmsSensorDataLatest ifexists;
+
+.create materialized-view with (backfill=true) TmsSensorDataLatest on table TmsSensorData {
+    TmsSensorData | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TmsSensorData] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.road.sensors.TmsSensorData') | project['station_id'] = toint(data.['station_id']),['sensor_id'] = toint(data.['sensor_id']),['value'] = toreal(data.['value']),['time'] = toint(data.['time']),['start'] = toint(data.['start']),['end'] = toint(data.['end']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherSensorData] (
+   [station_id]: int,
+   [sensor_id]: int,
+   [value]: real,
+   [time]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherSensorData] docstring "{\"description\": \"Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Over 350 road weather stations measure parameters including air temperature (ILMA), road surface temperature (TIE_1), ground temperature (MAA_1), dew point (KASTEPISTE), freezing point (J\\u00c4\\u00c4TYMISPISTE_1), wind speed (KESKITUULI, MAKSIMITUULI), humidity (ILMAN_KOSTEUS), and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.\"}";
+
+.alter table [WeatherSensorData] column-docstrings (
+   [station_id]: "{\"description\": \"Road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). Station metadata including road address, municipality, and available sensors is available from the /api/weather/v1/stations REST endpoint.\"}",
+   [sensor_id]: "{\"description\": \"Sensor identifier within the road weather station. Each sensor measures a specific weather or road surface parameter. Common sensors: ILMA (id 1, air temperature \\u00b0C), ILMA_DERIVAATTA (id 2, air temp derivative \\u00b0C/h), TIE_1 (id 3, road surface temp \\u00b0C), MAA_1 (id 7, ground temp \\u00b0C), KASTEPISTE (id 9, dew point \\u00b0C), J\\u00c4\\u00c4TYMISPISTE_1 (id 10, freezing point \\u00b0C), KESKITUULI (id 16, avg wind m/s), MAKSIMITUULI (id 17, max wind m/s), ILMAN_KOSTEUS (id 19, relative humidity %). Full sensor list at /api/weather/v1/sensors.\"}",
+   [value]: "{\"description\": \"Measured value in the sensor's native unit. Units vary by sensor: \\u00b0C for temperatures and dew/freezing points, \\u00b0C/h for temperature derivatives, m/s for wind speed, % for relative humidity, mm for precipitation amounts.\"}",
+   [time]: "{\"description\": \"Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherSensorData] ingestion json mapping "WeatherSensorData_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "value", "path": "$.value"},
+  {"column": "time", "path": "$.time"},
+]
+```
+
+.create-or-alter table [WeatherSensorData] ingestion json mapping "WeatherSensorData_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "time", "path": "$.data.time"},
+]
+```
+
+.drop materialized-view WeatherSensorDataLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherSensorDataLatest on table WeatherSensorData {
+    WeatherSensorData | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherSensorData] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.road.sensors.WeatherSensorData') | project['station_id'] = toint(data.['station_id']),['sensor_id'] = toint(data.['sensor_id']),['value'] = toreal(data.['value']),['time'] = toint(data.['time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TrafficMessage] (
+   [situation_id]: string,
+   [situation_type]: string,
+   [traffic_announcement_type]: string,
+   [version]: int,
+   [release_time]: string,
+   [version_time]: string,
+   [title]: string,
+   [language]: string,
+   [sender]: string,
+   [location_description]: string,
+   [start_time]: string,
+   [end_time]: string,
+   [features_json]: string,
+   [road_work_phases_json]: string,
+   [comment]: string,
+   [additional_information]: string,
+   [contact_phone]: string,
+   [contact_email]: string,
+   [announcements_json]: string,
+   [geometry_type]: string,
+   [geometry_coordinates_json]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TrafficMessage] docstring "{\"description\": \"Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail. The MQTT payload is gzip-compressed and base64-encoded Simple JSON derived from the GeoJSON-based Digitraffic traffic-message API. See https://www.digitraffic.fi/en/road-traffic/ for the full API documentation and situation type taxonomy.\"}";
+
+.alter table [TrafficMessage] column-docstrings (
+   [situation_id]: "{\"description\": \"Unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). Stable across all version updates for a given situation.\"}",
+   [situation_type]: "{\"description\": \"Situation category as defined by Fintraffic. Values: 'traffic announcement' (incidents, lane closures, ramp closures), 'road work' (planned and active road works with phases), 'weight restriction' (load-bearing limits on roads or bridges), 'exempted transport' (oversize or heavy transports requiring advance notice). Mapped from the MQTT topic situationType segment.\"}",
+   [traffic_announcement_type]: "{\"description\": \"Sub-classification for traffic announcements. Values include 'preliminary accident report', 'accident report', 'general', 'unconfirmed observation', and others. Present only when situation_type is 'traffic announcement'; null otherwise.\"}",
+   [version]: "{\"description\": \"Monotonically increasing version counter for this situation. Starts at 1 and increments with each update to the situation's announcements, timing, or status.\"}",
+   [release_time]: "{\"description\": \"ISO 8601 UTC timestamp when the first version of this situation was released (e.g. '2025-10-22T06:39:54.787Z').\"}",
+   [version_time]: "{\"description\": \"ISO 8601 UTC timestamp when this version of the situation was published (e.g. '2025-10-22T07:09:57.237Z').\"}",
+   [title]: "{\"description\": \"Human-readable title from the first announcement, typically identifying the road, municipality, and situation type in Finnish (e.g. 'Tie 4, eli Ivalontie, Sodankyl\\u00e4. Ensitiedote liikenneonnettomuudesta.').\"}",
+   [language]: "{\"description\": \"ISO 639-1 language code for the announcement text. Typically 'fi' (Finnish).\"}",
+   [sender]: "{\"description\": \"Traffic management center that issued the announcement (e.g. 'Fintraffic Tieliikennekeskus Tampere', 'Fintraffic Tieliikennekeskus Helsinki').\"}",
+   [location_description]: "{\"description\": \"Human-readable location description from the first announcement's location object, typically including road number, section, and municipality in Finnish.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp for the start of the situation's time-and-duration window from the first announcement. Null if no time window is specified.\"}",
+   [end_time]: "{\"description\": \"ISO 8601 UTC timestamp for the expected end of the situation. Null if the end time is unknown or the situation is open-ended.\"}",
+   [features_json]: "{\"description\": \"JSON-serialized array of feature objects from the first announcement. Features describe traffic impacts such as lane closures, detours, or speed reductions. Null if no features are listed.\"}",
+   [road_work_phases_json]: "{\"description\": \"JSON-serialized array of road work phase objects from the first announcement. Each phase includes work types, restrictions (speed limits, lane narrowing), severity, and independent time windows. Present only for 'road work' situations; null otherwise.\"}",
+   [comment]: "{\"description\": \"Free-text comment from the first announcement, providing additional context such as detour instructions or situation details.\"}",
+   [additional_information]: "{\"description\": \"Supplementary information text from the first announcement, often including a link to the Fintraffic traffic situation portal.\"}",
+   [contact_phone]: "{\"description\": \"Contact telephone number for the issuing traffic management center (e.g. '02002100').\"}",
+   [contact_email]: "{\"description\": \"Contact email address for the issuing traffic management center.\"}",
+   [announcements_json]: "{\"description\": \"JSON-serialized array of all announcement objects in the situation, preserving the full upstream structure including nested location details, road addresses, ALERT-C codes, road work phases, restrictions, and work types. Provided for consumers needing the complete upstream detail beyond the flattened first-announcement fields.\"}",
+   [geometry_type]: "{\"description\": \"GeoJSON geometry type of the situation's spatial extent (e.g. 'Point', 'LineString', 'MultiLineString'). Null if no geometry is available.\"}",
+   [geometry_coordinates_json]: "{\"description\": \"JSON-serialized GeoJSON coordinates array for the situation's spatial extent. Coordinates are in [longitude, latitude] order per the GeoJSON specification (WGS84). Null if no geometry is available.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TrafficMessage] ingestion json mapping "TrafficMessage_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_id", "path": "$.situation_id"},
+  {"column": "situation_type", "path": "$.situation_type"},
+  {"column": "traffic_announcement_type", "path": "$.traffic_announcement_type"},
+  {"column": "version", "path": "$.version"},
+  {"column": "release_time", "path": "$.release_time"},
+  {"column": "version_time", "path": "$.version_time"},
+  {"column": "title", "path": "$.title"},
+  {"column": "language", "path": "$.language"},
+  {"column": "sender", "path": "$.sender"},
+  {"column": "location_description", "path": "$.location_description"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "end_time", "path": "$.end_time"},
+  {"column": "features_json", "path": "$.features_json"},
+  {"column": "road_work_phases_json", "path": "$.road_work_phases_json"},
+  {"column": "comment", "path": "$.comment"},
+  {"column": "additional_information", "path": "$.additional_information"},
+  {"column": "contact_phone", "path": "$.contact_phone"},
+  {"column": "contact_email", "path": "$.contact_email"},
+  {"column": "announcements_json", "path": "$.announcements_json"},
+  {"column": "geometry_type", "path": "$.geometry_type"},
+  {"column": "geometry_coordinates_json", "path": "$.geometry_coordinates_json"},
+]
+```
+
+.create-or-alter table [TrafficMessage] ingestion json mapping "TrafficMessage_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_id", "path": "$.data.situation_id"},
+  {"column": "situation_type", "path": "$.data.situation_type"},
+  {"column": "traffic_announcement_type", "path": "$.data.traffic_announcement_type"},
+  {"column": "version", "path": "$.data.version"},
+  {"column": "release_time", "path": "$.data.release_time"},
+  {"column": "version_time", "path": "$.data.version_time"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "language", "path": "$.data.language"},
+  {"column": "sender", "path": "$.data.sender"},
+  {"column": "location_description", "path": "$.data.location_description"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "end_time", "path": "$.data.end_time"},
+  {"column": "features_json", "path": "$.data.features_json"},
+  {"column": "road_work_phases_json", "path": "$.data.road_work_phases_json"},
+  {"column": "comment", "path": "$.data.comment"},
+  {"column": "additional_information", "path": "$.data.additional_information"},
+  {"column": "contact_phone", "path": "$.data.contact_phone"},
+  {"column": "contact_email", "path": "$.data.contact_email"},
+  {"column": "announcements_json", "path": "$.data.announcements_json"},
+  {"column": "geometry_type", "path": "$.data.geometry_type"},
+  {"column": "geometry_coordinates_json", "path": "$.data.geometry_coordinates_json"},
+]
+```
+
+.drop materialized-view TrafficMessageLatest ifexists;
+
+.create materialized-view with (backfill=true) TrafficMessageLatest on table TrafficMessage {
+    TrafficMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TrafficMessage] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type in ('fi.digitraffic.road.messages.TrafficAnnouncement', 'fi.digitraffic.road.messages.RoadWork', 'fi.digitraffic.road.messages.WeightRestriction', 'fi.digitraffic.road.messages.ExemptedTransport')) | project['situation_id'] = tostring(data.['situation_id']),['situation_type'] = tostring(data.['situation_type']),['traffic_announcement_type'] = tostring(data.['traffic_announcement_type']),['version'] = toint(data.['version']),['release_time'] = tostring(data.['release_time']),['version_time'] = tostring(data.['version_time']),['title'] = tostring(data.['title']),['language'] = tostring(data.['language']),['sender'] = tostring(data.['sender']),['location_description'] = tostring(data.['location_description']),['start_time'] = tostring(data.['start_time']),['end_time'] = tostring(data.['end_time']),['features_json'] = tostring(data.['features_json']),['road_work_phases_json'] = tostring(data.['road_work_phases_json']),['comment'] = tostring(data.['comment']),['additional_information'] = tostring(data.['additional_information']),['contact_phone'] = tostring(data.['contact_phone']),['contact_email'] = tostring(data.['contact_email']),['announcements_json'] = tostring(data.['announcements_json']),['geometry_type'] = tostring(data.['geometry_type']),['geometry_coordinates_json'] = tostring(data.['geometry_coordinates_json']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MaintenanceTracking] (
+   [domain]: string,
+   [time]: int,
+   [source]: string,
+   [tasks]: dynamic,
+   [x]: real,
+   [y]: real,
+   [direction]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MaintenanceTracking] docstring "{\"description\": \"Road maintenance vehicle tracking update from the Finnish national road network operated by Fintraffic. Each message represents a position and task report from a maintenance vehicle, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic maintenance-v2/routes/{domain}. Data originates from the Finnish Transport Infrastructure Agency's Harja system for state roads and from municipal systems for other domains. Updates arrive approximately every minute. A new tracking event is created when the vehicle's task changes, the gap between consecutive positions exceeds 5 minutes, or the calculated speed exceeds 140 km/h. See https://www.digitraffic.fi/en/road-traffic/ for the full API documentation and task type taxonomy at /api/maintenance/v1/tracking/tasks.\"}";
+
+.alter table [MaintenanceTracking] column-docstrings (
+   [domain]: "{\"description\": \"Data domain identifying the source system. Primary domain is 'state-roads' for data from the Finnish Transport Infrastructure Agency's Harja system. Other domains include municipal systems such as 'autori-kuopio', 'autori-oulu', and 'paikannin-kuopio'. The domain value comes from the MQTT topic path.\"}",
+   [time]: "{\"description\": \"Tracking timestamp as Unix epoch seconds (UTC). Indicates when the position and task were recorded by the vehicle.\"}",
+   [source]: "{\"description\": \"Name of the source system that produced the tracking data (e.g. 'Harja/V\\u00e4yl\\u00e4virasto' for the state road maintenance system). May be null if the source system is not identified.\"}",
+   [tasks]: "{\"description\": \"Array of maintenance task type identifiers being performed by the vehicle at this position. Task types follow the Fintraffic taxonomy, e.g. 'BRUSHING', 'SALTING', 'PLOUGHING_AND_SLUSH_REMOVAL', 'LEVELLING_GRAVEL_ROAD_SURFACE'. Full task type list with Finnish, English, and Swedish names is available at /api/maintenance/v1/tracking/tasks.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"description\": \"Array of maintenance task type identifiers being performed by the vehicle at this position. Task types follow the Fintraffic taxonomy, e.g. 'BRUSHING', 'SALTING', 'PLOUGHING_AND_SLUSH_REMOVAL', 'LEVELLING_GRAVEL_ROAD_SURFACE'. Full task type list with Finnish, English, and Swedish names is available at /api/maintenance/v1/tracking/tasks.\"}}",
+   [x]: "{\"description\": \"Longitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees.\"}",
+   [y]: "{\"description\": \"Latitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees.\"}",
+   [direction]: "{\"description\": \"Vehicle heading in degrees (0-360, clockwise from north). May be null or absent if heading information is not available from the tracking device.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MaintenanceTracking] ingestion json mapping "MaintenanceTracking_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "domain", "path": "$.domain"},
+  {"column": "time", "path": "$.time"},
+  {"column": "source", "path": "$.source"},
+  {"column": "tasks", "path": "$.tasks"},
+  {"column": "x", "path": "$.x"},
+  {"column": "y", "path": "$.y"},
+  {"column": "direction", "path": "$.direction"},
+]
+```
+
+.create-or-alter table [MaintenanceTracking] ingestion json mapping "MaintenanceTracking_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "domain", "path": "$.data.domain"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "source", "path": "$.data.source"},
+  {"column": "tasks", "path": "$.data.tasks"},
+  {"column": "x", "path": "$.data.x"},
+  {"column": "y", "path": "$.data.y"},
+  {"column": "direction", "path": "$.data.direction"},
+]
+```
+
+.drop materialized-view MaintenanceTrackingLatest ifexists;
+
+.create materialized-view with (backfill=true) MaintenanceTrackingLatest on table MaintenanceTracking {
+    MaintenanceTracking | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MaintenanceTracking] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.road.maintenance.MaintenanceTracking') | project['domain'] = tostring(data.['domain']),['time'] = toint(data.['time']),['source'] = tostring(data.['source']),['tasks'] = todynamic(data.['tasks']),['x'] = toreal(data.['x']),['y'] = toreal(data.['y']),['direction'] = toreal(data.['direction']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TmsStation] (
+   [station_id]: int,
+   [name]: string,
+   [tms_number]: int,
+   [names_fi]: string,
+   [names_sv]: string,
+   [names_en]: string,
+   [longitude]: real,
+   [latitude]: real,
+   [altitude]: real,
+   [municipality]: string,
+   [municipality_code]: int,
+   [province]: string,
+   [province_code]: int,
+   [road_number]: int,
+   [road_section]: int,
+   [distance_from_section_start]: int,
+   [carriageway]: string,
+   [side]: string,
+   [station_type]: string,
+   [collection_status]: string,
+   [state]: string,
+   [free_flow_speed_1]: real,
+   [free_flow_speed_2]: real,
+   [bearing]: int,
+   [start_time]: string,
+   [livi_id]: string,
+   [sensors]: dynamic,
+   [data_updated_time]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TmsStation] docstring "{\"description\": \"Traffic Measurement System (TMS) station metadata from the Finnish national road network operated by Fintraffic. Each TMS station is a fixed roadside installation that measures traffic volumes and speeds. Over 500 TMS stations are deployed across the Finnish road network. Station metadata includes geographic location, road address, municipality, available sensor list, free-flow reference speeds, and collection status. This reference data contextualizes the real-time TmsSensorData telemetry events and is fetched from the Digitraffic REST API at https://tie.digitraffic.fi/api/tms/v1/stations. See https://www.digitraffic.fi/en/road-traffic/lam/ for full TMS station documentation.\"}";
+
+.alter table [TmsStation] column-docstrings (
+   [station_id]: "{\"description\": \"TMS station numeric identifier as assigned by Fintraffic (e.g. 23001). Unique across all TMS stations in the Finnish road network. Corresponds to the station_id in TmsSensorData telemetry events.\"}",
+   [name]: "{\"description\": \"Internal station name used by Fintraffic, typically encoding road and location (e.g. \\\"vt7_Rita\\\"). Not intended for display; use names_fi/sv/en for human-readable names.\"}",
+   [tms_number]: "{\"description\": \"Legacy TMS numbering used in older Fintraffic systems. May differ from station_id. Null if not assigned.\"}",
+   [names_fi]: "{\"description\": \"Finnish display name for the station, typically including road number, municipality, and local area (e.g. \\\"Tie 7 Porvoo, Rita\\\").\"}",
+   [names_sv]: "{\"description\": \"Swedish display name for the station (e.g. \\\"V\\u00e4g 7 Borg\\u00e5, Rita\\\"). Null if no Swedish translation is available.\"}",
+   [names_en]: "{\"description\": \"English display name for the station (e.g. \\\"Road 7 Porvoo, Rita\\\"). Null if no English translation is available.\"}",
+   [longitude]: "{\"description\": \"Station longitude in WGS84 (EPSG:4326) decimal degrees.\"}",
+   [latitude]: "{\"description\": \"Station latitude in WGS84 (EPSG:4326) decimal degrees.\"}",
+   [altitude]: "{\"description\": \"Station altitude in meters above sea level. Null or 0.0 if altitude data is not available.\"}",
+   [municipality]: "{\"description\": \"Name of the Finnish municipality where the station is located (e.g. \\\"Porvoo\\\", \\\"Espoo\\\").\"}",
+   [municipality_code]: "{\"description\": \"Finnish municipality code as defined by Statistics Finland (e.g. 638 for Porvoo, 49 for Espoo).\"}",
+   [province]: "{\"description\": \"Name of the Finnish province (maakunta) where the station is located (e.g. \\\"Uusimaa\\\", \\\"Pirkanmaa\\\").\"}",
+   [province_code]: "{\"description\": \"Finnish province code as defined by Statistics Finland (e.g. 1 for Uusimaa).\"}",
+   [road_number]: "{\"description\": \"Finnish road number where the station is installed (e.g. 7 for Highway 7 / E18).\"}",
+   [road_section]: "{\"description\": \"Road section number within the road, part of the Finnish road addressing system.\"}",
+   [distance_from_section_start]: "{\"description\": \"Distance from the start of the road section in meters, part of the Finnish road addressing system.\"}",
+   [carriageway]: "{\"description\": \"Carriageway type at the station location. Values from the Digitraffic API include \\\"DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION\\\", \\\"DUAL_CARRIAGEWAY_LEFT_IN_INCREASING_DIRECTION\\\", \\\"ONE_CARRIAGEWAY\\\". Null if not specified.\"}",
+   [side]: "{\"description\": \"Side of the road where the station is located. Values: \\\"LEFT\\\", \\\"RIGHT\\\", \\\"BETWEEN\\\", \\\"UNKNOWN\\\". Null if not specified.\"}",
+   [station_type]: "{\"description\": \"TMS station type code indicating the hardware configuration (e.g. \\\"DSL_6\\\" for a 6-loop DSL station). Determines which sensor families are available.\"}",
+   [collection_status]: "{\"description\": \"Current data collection status of the station. Values: \\\"GATHERING\\\" (actively collecting), \\\"REMOVED_TEMPORARILY\\\", \\\"REMOVED_PERMANENTLY\\\". Only stations with GATHERING status produce telemetry.\"}",
+   [state]: "{\"description\": \"Operational state of the station hardware. Values include \\\"OK\\\", \\\"FAULT\\\", \\\"DISABLED\\\". Null if state information is not available.\"}",
+   [free_flow_speed_1]: "{\"description\": \"Reference free-flow speed for traffic direction 1 in km/h. Used to calculate traffic fluency ratios for VVAPAAS-suffixed sensors. Null if not calibrated.\"}",
+   [free_flow_speed_2]: "{\"description\": \"Reference free-flow speed for traffic direction 2 in km/h. Used to calculate traffic fluency ratios. Null if not calibrated or station is on a one-way road.\"}",
+   [bearing]: "{\"description\": \"Bearing of the road at the station in degrees (0-360, clockwise from north). Indicates the direction of increasing road section numbering. Null if not measured.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp when the station started collecting data (e.g. \\\"2001-11-07T00:00:00Z\\\").\"}",
+   [livi_id]: "{\"description\": \"Legacy identifier used by the Finnish Transport Infrastructure Agency (V\\u00e4yl\\u00e4virasto, formerly Liikennevirasto) for the station (e.g. \\\"Livi968639\\\"). Null if not assigned.\"}",
+   [sensors]: "{\"description\": \"Array of computational sensor identifiers available at this station. Each ID corresponds to a sensor that produces TmsSensorData telemetry events. Common sensor families: OHITUKSET (passings), KESKINOPEUS (average speed), LIUKUVA_NOPEUS (rolling speed). Sensor metadata is available at /api/tms/v1/sensors.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"int32\"}, \"description\": \"Array of computational sensor identifiers available at this station. Each ID corresponds to a sensor that produces TmsSensorData telemetry events. Common sensor families: OHITUKSET (passings), KESKINOPEUS (average speed), LIUKUVA_NOPEUS (rolling speed). Sensor metadata is available at /api/tms/v1/sensors.\"}}",
+   [data_updated_time]: "{\"description\": \"ISO 8601 UTC timestamp when the station metadata was last updated in the Digitraffic system. Null if not tracked.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TmsStation] ingestion json mapping "TmsStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "tms_number", "path": "$.tms_number"},
+  {"column": "names_fi", "path": "$.names_fi"},
+  {"column": "names_sv", "path": "$.names_sv"},
+  {"column": "names_en", "path": "$.names_en"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "altitude", "path": "$.altitude"},
+  {"column": "municipality", "path": "$.municipality"},
+  {"column": "municipality_code", "path": "$.municipality_code"},
+  {"column": "province", "path": "$.province"},
+  {"column": "province_code", "path": "$.province_code"},
+  {"column": "road_number", "path": "$.road_number"},
+  {"column": "road_section", "path": "$.road_section"},
+  {"column": "distance_from_section_start", "path": "$.distance_from_section_start"},
+  {"column": "carriageway", "path": "$.carriageway"},
+  {"column": "side", "path": "$.side"},
+  {"column": "station_type", "path": "$.station_type"},
+  {"column": "collection_status", "path": "$.collection_status"},
+  {"column": "state", "path": "$.state"},
+  {"column": "free_flow_speed_1", "path": "$.free_flow_speed_1"},
+  {"column": "free_flow_speed_2", "path": "$.free_flow_speed_2"},
+  {"column": "bearing", "path": "$.bearing"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "livi_id", "path": "$.livi_id"},
+  {"column": "sensors", "path": "$.sensors"},
+  {"column": "data_updated_time", "path": "$.data_updated_time"},
+]
+```
+
+.create-or-alter table [TmsStation] ingestion json mapping "TmsStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "tms_number", "path": "$.data.tms_number"},
+  {"column": "names_fi", "path": "$.data.names_fi"},
+  {"column": "names_sv", "path": "$.data.names_sv"},
+  {"column": "names_en", "path": "$.data.names_en"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "altitude", "path": "$.data.altitude"},
+  {"column": "municipality", "path": "$.data.municipality"},
+  {"column": "municipality_code", "path": "$.data.municipality_code"},
+  {"column": "province", "path": "$.data.province"},
+  {"column": "province_code", "path": "$.data.province_code"},
+  {"column": "road_number", "path": "$.data.road_number"},
+  {"column": "road_section", "path": "$.data.road_section"},
+  {"column": "distance_from_section_start", "path": "$.data.distance_from_section_start"},
+  {"column": "carriageway", "path": "$.data.carriageway"},
+  {"column": "side", "path": "$.data.side"},
+  {"column": "station_type", "path": "$.data.station_type"},
+  {"column": "collection_status", "path": "$.data.collection_status"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "free_flow_speed_1", "path": "$.data.free_flow_speed_1"},
+  {"column": "free_flow_speed_2", "path": "$.data.free_flow_speed_2"},
+  {"column": "bearing", "path": "$.data.bearing"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "livi_id", "path": "$.data.livi_id"},
+  {"column": "sensors", "path": "$.data.sensors"},
+  {"column": "data_updated_time", "path": "$.data.data_updated_time"},
+]
+```
+
+.drop materialized-view TmsStationLatest ifexists;
+
+.create materialized-view with (backfill=true) TmsStationLatest on table TmsStation {
+    TmsStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TmsStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.road.stations.TmsStation') | project['station_id'] = toint(data.['station_id']),['name'] = tostring(data.['name']),['tms_number'] = toint(data.['tms_number']),['names_fi'] = tostring(data.['names_fi']),['names_sv'] = tostring(data.['names_sv']),['names_en'] = tostring(data.['names_en']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['altitude'] = toreal(data.['altitude']),['municipality'] = tostring(data.['municipality']),['municipality_code'] = toint(data.['municipality_code']),['province'] = tostring(data.['province']),['province_code'] = toint(data.['province_code']),['road_number'] = toint(data.['road_number']),['road_section'] = toint(data.['road_section']),['distance_from_section_start'] = toint(data.['distance_from_section_start']),['carriageway'] = tostring(data.['carriageway']),['side'] = tostring(data.['side']),['station_type'] = tostring(data.['station_type']),['collection_status'] = tostring(data.['collection_status']),['state'] = tostring(data.['state']),['free_flow_speed_1'] = toreal(data.['free_flow_speed_1']),['free_flow_speed_2'] = toreal(data.['free_flow_speed_2']),['bearing'] = toint(data.['bearing']),['start_time'] = tostring(data.['start_time']),['livi_id'] = tostring(data.['livi_id']),['sensors'] = todynamic(data.['sensors']),['data_updated_time'] = tostring(data.['data_updated_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherStation] (
+   [station_id]: int,
+   [name]: string,
+   [names_fi]: string,
+   [names_sv]: string,
+   [names_en]: string,
+   [longitude]: real,
+   [latitude]: real,
+   [altitude]: real,
+   [municipality]: string,
+   [municipality_code]: int,
+   [province]: string,
+   [province_code]: int,
+   [road_number]: int,
+   [road_section]: int,
+   [distance_from_section_start]: int,
+   [carriageway]: string,
+   [side]: string,
+   [contract_area]: string,
+   [contract_area_code]: int,
+   [station_type]: string,
+   [master]: bool,
+   [collection_status]: string,
+   [collection_interval]: int,
+   [state]: string,
+   [start_time]: string,
+   [livi_id]: string,
+   [sensors]: dynamic,
+   [data_updated_time]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherStation] docstring "{\"description\": \"Road weather station metadata from the Finnish national road network operated by Fintraffic. Over 350 road weather stations measure atmospheric and road surface conditions. Station metadata includes geographic location, road address, municipality, sensor list, collection parameters, and administrative details. This reference data contextualizes the real-time WeatherSensorData telemetry events and is fetched from the Digitraffic REST API at https://tie.digitraffic.fi/api/weather/v1/stations. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.\"}";
+
+.alter table [WeatherStation] column-docstrings (
+   [station_id]: "{\"description\": \"Road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). Uniqueness scope is road weather stations. Corresponds to the station_id in WeatherSensorData telemetry events.\"}",
+   [name]: "{\"description\": \"Internal station name used by Fintraffic, typically encoding road type, municipality and area (e.g. \\\"kt51_Espoo_Kivenlahti\\\"). Not intended for display.\"}",
+   [names_fi]: "{\"description\": \"Finnish display name for the station (e.g. \\\"Tie 51 Espoo, Kivenlahti\\\").\"}",
+   [names_sv]: "{\"description\": \"Swedish display name for the station (e.g. \\\"V\\u00e4g 51 Esbo, Stensvik\\\"). Null if no translation available.\"}",
+   [names_en]: "{\"description\": \"English display name for the station (e.g. \\\"Road 51 Espoo, Kivenlahti\\\"). Null if no translation available.\"}",
+   [longitude]: "{\"description\": \"Station longitude in WGS84 (EPSG:4326) decimal degrees.\"}",
+   [latitude]: "{\"description\": \"Station latitude in WGS84 (EPSG:4326) decimal degrees.\"}",
+   [altitude]: "{\"description\": \"Station altitude in meters above sea level. Null or 0.0 if altitude data is not available.\"}",
+   [municipality]: "{\"description\": \"Name of the Finnish municipality where the station is located.\"}",
+   [municipality_code]: "{\"description\": \"Finnish municipality code as defined by Statistics Finland.\"}",
+   [province]: "{\"description\": \"Name of the Finnish province (maakunta) where the station is located.\"}",
+   [province_code]: "{\"description\": \"Finnish province code as defined by Statistics Finland.\"}",
+   [road_number]: "{\"description\": \"Finnish road number where the station is installed.\"}",
+   [road_section]: "{\"description\": \"Road section number within the road.\"}",
+   [distance_from_section_start]: "{\"description\": \"Distance from the start of the road section in meters.\"}",
+   [carriageway]: "{\"description\": \"Carriageway type at the station location. Values include \\\"DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION\\\", \\\"DUAL_CARRIAGEWAY_LEFT_IN_INCREASING_DIRECTION\\\", \\\"ONE_CARRIAGEWAY\\\". Null if not specified.\"}",
+   [side]: "{\"description\": \"Side of the road. Values: \\\"LEFT\\\", \\\"RIGHT\\\", \\\"BETWEEN\\\", \\\"UNKNOWN\\\". Null if not specified.\"}",
+   [contract_area]: "{\"description\": \"Road maintenance contract area name (e.g. \\\"Espoo 19-24\\\"). Identifies the maintenance contract responsible for the road section. Null if not assigned.\"}",
+   [contract_area_code]: "{\"description\": \"Numeric code for the maintenance contract area (e.g. 142). Null if not assigned.\"}",
+   [station_type]: "{\"description\": \"Weather station type code indicating the hardware configuration (e.g. \\\"RWS_200\\\" for a Rosa RWS-200 station). Determines available sensor capabilities.\"}",
+   [master]: "{\"description\": \"Whether this is a master station. Master stations are the primary data source; non-master stations may be auxiliary or backup installations at the same location.\"}",
+   [collection_status]: "{\"description\": \"Current data collection status. Values: \\\"GATHERING\\\" (actively collecting), \\\"REMOVED_TEMPORARILY\\\", \\\"REMOVED_PERMANENTLY\\\".\"}",
+   [collection_interval]: "{\"description\": \"Data collection interval in seconds. Typical value is 300 (5 minutes) for road weather stations.\"}",
+   [state]: "{\"description\": \"Operational state of the station hardware. Null if state information is not available from the upstream API.\"}",
+   [start_time]: "{\"description\": \"ISO 8601 UTC timestamp when the station started collecting data.\"}",
+   [livi_id]: "{\"description\": \"Legacy identifier from the Finnish Transport Infrastructure Agency. Null if not assigned.\"}",
+   [sensors]: "{\"description\": \"Array of sensor identifiers available at this station. Each ID corresponds to a sensor producing WeatherSensorData telemetry. Common sensors: ILMA (1, air temp), TIE_1 (3, road surface temp), KASTEPISTE (9, dew point), KESKITUULI (16, avg wind), ILMAN_KOSTEUS (19, humidity). Full list at /api/weather/v1/sensors.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"int32\"}, \"description\": \"Array of sensor identifiers available at this station. Each ID corresponds to a sensor producing WeatherSensorData telemetry. Common sensors: ILMA (1, air temp), TIE_1 (3, road surface temp), KASTEPISTE (9, dew point), KESKITUULI (16, avg wind), ILMAN_KOSTEUS (19, humidity). Full list at /api/weather/v1/sensors.\"}}",
+   [data_updated_time]: "{\"description\": \"ISO 8601 UTC timestamp when the station metadata was last updated. Null if not tracked.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "names_fi", "path": "$.names_fi"},
+  {"column": "names_sv", "path": "$.names_sv"},
+  {"column": "names_en", "path": "$.names_en"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "altitude", "path": "$.altitude"},
+  {"column": "municipality", "path": "$.municipality"},
+  {"column": "municipality_code", "path": "$.municipality_code"},
+  {"column": "province", "path": "$.province"},
+  {"column": "province_code", "path": "$.province_code"},
+  {"column": "road_number", "path": "$.road_number"},
+  {"column": "road_section", "path": "$.road_section"},
+  {"column": "distance_from_section_start", "path": "$.distance_from_section_start"},
+  {"column": "carriageway", "path": "$.carriageway"},
+  {"column": "side", "path": "$.side"},
+  {"column": "contract_area", "path": "$.contract_area"},
+  {"column": "contract_area_code", "path": "$.contract_area_code"},
+  {"column": "station_type", "path": "$.station_type"},
+  {"column": "master", "path": "$.master"},
+  {"column": "collection_status", "path": "$.collection_status"},
+  {"column": "collection_interval", "path": "$.collection_interval"},
+  {"column": "state", "path": "$.state"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "livi_id", "path": "$.livi_id"},
+  {"column": "sensors", "path": "$.sensors"},
+  {"column": "data_updated_time", "path": "$.data_updated_time"},
+]
+```
+
+.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "names_fi", "path": "$.data.names_fi"},
+  {"column": "names_sv", "path": "$.data.names_sv"},
+  {"column": "names_en", "path": "$.data.names_en"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "altitude", "path": "$.data.altitude"},
+  {"column": "municipality", "path": "$.data.municipality"},
+  {"column": "municipality_code", "path": "$.data.municipality_code"},
+  {"column": "province", "path": "$.data.province"},
+  {"column": "province_code", "path": "$.data.province_code"},
+  {"column": "road_number", "path": "$.data.road_number"},
+  {"column": "road_section", "path": "$.data.road_section"},
+  {"column": "distance_from_section_start", "path": "$.data.distance_from_section_start"},
+  {"column": "carriageway", "path": "$.data.carriageway"},
+  {"column": "side", "path": "$.data.side"},
+  {"column": "contract_area", "path": "$.data.contract_area"},
+  {"column": "contract_area_code", "path": "$.data.contract_area_code"},
+  {"column": "station_type", "path": "$.data.station_type"},
+  {"column": "master", "path": "$.data.master"},
+  {"column": "collection_status", "path": "$.data.collection_status"},
+  {"column": "collection_interval", "path": "$.data.collection_interval"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "livi_id", "path": "$.data.livi_id"},
+  {"column": "sensors", "path": "$.data.sensors"},
+  {"column": "data_updated_time", "path": "$.data.data_updated_time"},
+]
+```
+
+.drop materialized-view WeatherStationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherStationLatest on table WeatherStation {
+    WeatherStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.road.stations.WeatherStation') | project['station_id'] = toint(data.['station_id']),['name'] = tostring(data.['name']),['names_fi'] = tostring(data.['names_fi']),['names_sv'] = tostring(data.['names_sv']),['names_en'] = tostring(data.['names_en']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['altitude'] = toreal(data.['altitude']),['municipality'] = tostring(data.['municipality']),['municipality_code'] = toint(data.['municipality_code']),['province'] = tostring(data.['province']),['province_code'] = toint(data.['province_code']),['road_number'] = toint(data.['road_number']),['road_section'] = toint(data.['road_section']),['distance_from_section_start'] = toint(data.['distance_from_section_start']),['carriageway'] = tostring(data.['carriageway']),['side'] = tostring(data.['side']),['contract_area'] = tostring(data.['contract_area']),['contract_area_code'] = toint(data.['contract_area_code']),['station_type'] = tostring(data.['station_type']),['master'] = tobool(data.['master']),['collection_status'] = tostring(data.['collection_status']),['collection_interval'] = toint(data.['collection_interval']),['state'] = tostring(data.['state']),['start_time'] = tostring(data.['start_time']),['livi_id'] = tostring(data.['livi_id']),['sensors'] = todynamic(data.['sensors']),['data_updated_time'] = tostring(data.['data_updated_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [MaintenanceTaskType] (
+   [task_id]: string,
+   [name_fi]: string,
+   [name_en]: string,
+   [name_sv]: string,
+   [data_updated_time]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [MaintenanceTaskType] docstring "{\"description\": \"Maintenance task type reference from the Finnish road maintenance system operated by Fintraffic. Each task type classifies a specific road maintenance activity such as ploughing, salting, or brush clearing. Task type identifiers appear in the tasks array of MaintenanceTracking telemetry events. This reference data provides multilingual human-readable names for each task identifier and is fetched from the Digitraffic REST API at https://tie.digitraffic.fi/api/maintenance/v1/tracking/tasks. Approximately 40 task types are defined. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.\"}";
+
+.alter table [MaintenanceTaskType] column-docstrings (
+   [task_id]: "{\"description\": \"Unique task type identifier using SCREAMING_SNAKE_CASE convention (e.g. \\\"PLOUGHING_AND_SLUSH_REMOVAL\\\", \\\"SALTING\\\", \\\"BRUSHING\\\"). This identifier appears in the tasks array of MaintenanceTracking telemetry events.\"}",
+   [name_fi]: "{\"description\": \"Finnish name for the maintenance task type (e.g. \\\"Auraus ja sohjonpoisto\\\", \\\"Suolaus\\\", \\\"Harjaus\\\").\"}",
+   [name_en]: "{\"description\": \"English name for the maintenance task type (e.g. \\\"Ploughing and slush removal\\\", \\\"Salting\\\", \\\"Brushing\\\").\"}",
+   [name_sv]: "{\"description\": \"Swedish name for the maintenance task type (e.g. \\\"Pl\\u00f6jning och sn\\u00f6slaskborttagning\\\", \\\"Saltning\\\", \\\"Borstning\\\").\"}",
+   [data_updated_time]: "{\"description\": \"ISO 8601 UTC timestamp when this task type definition was last updated in the Digitraffic system (e.g. \\\"2020-03-30T00:00:00Z\\\"). Null if not tracked.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [MaintenanceTaskType] ingestion json mapping "MaintenanceTaskType_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "task_id", "path": "$.task_id"},
+  {"column": "name_fi", "path": "$.name_fi"},
+  {"column": "name_en", "path": "$.name_en"},
+  {"column": "name_sv", "path": "$.name_sv"},
+  {"column": "data_updated_time", "path": "$.data_updated_time"},
+]
+```
+
+.create-or-alter table [MaintenanceTaskType] ingestion json mapping "MaintenanceTaskType_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "task_id", "path": "$.data.task_id"},
+  {"column": "name_fi", "path": "$.data.name_fi"},
+  {"column": "name_en", "path": "$.data.name_en"},
+  {"column": "name_sv", "path": "$.data.name_sv"},
+  {"column": "data_updated_time", "path": "$.data.data_updated_time"},
+]
+```
+
+.drop materialized-view MaintenanceTaskTypeLatest ifexists;
+
+.create materialized-view with (backfill=true) MaintenanceTaskTypeLatest on table MaintenanceTaskType {
+    MaintenanceTaskType | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [MaintenanceTaskType] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType') | project['task_id'] = tostring(data.['task_id']),['name_fi'] = tostring(data.['name_fi']),['name_en'] = tostring(data.['name_en']),['name_sv'] = tostring(data.['name_sv']),['data_updated_time'] = tostring(data.['data_updated_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

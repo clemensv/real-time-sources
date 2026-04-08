@@ -1,0 +1,414 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [ChargingLocation] (
+   [location_id]: string,
+   [country_code]: string,
+   [party_id]: string,
+   [publish]: bool,
+   [name]: string,
+   [address]: string,
+   [city]: string,
+   [postal_code]: string,
+   [state]: string,
+   [country]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [parking_type]: string,
+   [operator_name]: string,
+   [operator_website]: string,
+   [suboperator_name]: string,
+   [owner_name]: string,
+   [facilities]: dynamic,
+   [time_zone]: string,
+   [opening_times_twentyfourseven]: bool,
+   [charging_when_closed]: bool,
+   [energy_mix_is_green_energy]: bool,
+   [energy_mix_supplier_name]: string,
+   [evse_count]: int,
+   [connector_count]: int,
+   [last_updated]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ChargingLocation] docstring "{\"description\": \"Reference data for an EV charging location from the NDL. Contains the static properties of an OCPI v2.2 Location object including address, coordinates, operator details, and aggregate counts of EVSEs and connectors.\"}";
+
+.alter table [ChargingLocation] column-docstrings (
+   [location_id]: "{\"description\": \"OCPI Location.id. Uniquely identifies the charging location within the CPO's platform. This field is the CloudEvents subject and Kafka key. OCPI type: CiString(36).\"}",
+   [country_code]: "{\"description\": \"ISO-3166 alpha-2 country code of the CPO that owns this Location. OCPI type: CiString(2).\"}",
+   [party_id]: "{\"description\": \"CPO party identifier following ISO-15118. Together with country_code this uniquely identifies the operator. OCPI type: CiString(3).\"}",
+   [publish]: "{\"description\": \"Whether the location may be published on websites or apps. When false, only tokens in publish_allowed_to may see this location. OCPI type: boolean.\"}",
+   [name]: "{\"description\": \"Display name of the location. OCPI type: string(255).\"}",
+   [address]: "{\"description\": \"Street/block name and house number if available. OCPI type: string(45).\"}",
+   [city]: "{\"description\": \"City or town. OCPI type: string(45).\"}",
+   [postal_code]: "{\"description\": \"Postal code of the location. May be omitted when the location has no postal code, e.g. highway charging locations. OCPI type: string(10).\"}",
+   [state]: "{\"description\": \"State or province of the location, only used when relevant. OCPI type: string(20).\"}",
+   [country]: "{\"description\": \"ISO 3166-1 alpha-3 code for the country of this location. OCPI type: string(3).\"}",
+   [latitude]: "{\"description\": \"Latitude of the location in decimal degrees (WGS 84). Extracted from the OCPI GeoLocation coordinates object.\"}",
+   [longitude]: "{\"description\": \"Longitude of the location in decimal degrees (WGS 84). Extracted from the OCPI GeoLocation coordinates object.\"}",
+   [parking_type]: "{\"description\": \"General type of parking at the charge point location. OCPI ParkingType enum: ALONG_MOTORWAY (rest area along highway), PARKING_GARAGE (multistorey), PARKING_LOT (cleared area, e.g. supermarket), ON_DRIVEWAY (house/building driveway), ON_STREET (public street), UNDERGROUND_GARAGE (mainly underground).\"}",
+   [operator_name]: "{\"description\": \"Name of the charge point operator. Flattened from OCPI BusinessDetails operator.name. OCPI type: string(100).\"}",
+   [operator_website]: "{\"description\": \"URL to the operator's website. Flattened from OCPI BusinessDetails operator.website.\"}",
+   [suboperator_name]: "{\"description\": \"Name of the suboperator if available. Flattened from OCPI BusinessDetails suboperator.name. OCPI type: string(100).\"}",
+   [owner_name]: "{\"description\": \"Name of the location owner if available. Flattened from OCPI BusinessDetails owner.name. OCPI type: string(100).\"}",
+   [facilities]: "{\"description\": \"Optional list of facilities at this charging location. OCPI Facility OpenEnum values include HOTEL, RESTAURANT, CAFE, MALL, SUPERMARKET, SPORT, RECREATION_AREA, NATURE, MUSEUM, BUS_STOP, TAXI_STAND, TRAIN_STATION, AIRPORT, PARKING_LOT, FUEL_STATION, WIFI, etc.\"}",
+   [time_zone]: "{\"description\": \"IANA TZ-value representing the time zone of the location, e.g. 'Europe/Amsterdam'. OCPI type: string(255).\"}",
+   [opening_times_twentyfourseven]: "{\"description\": \"Whether the location is open 24/7. Extracted from OCPI Hours.twentyfourseven field of the opening_times object.\"}",
+   [charging_when_closed]: "{\"description\": \"Whether EVSEs continue charging outside opening hours, e.g. when a parking garage closes its barriers overnight. OCPI default is true.\"}",
+   [energy_mix_is_green_energy]: "{\"description\": \"Whether 100% of energy is from regenerative sources (CO2 and nuclear waste is zero). Flattened from OCPI EnergyMix.is_green_energy.\"}",
+   [energy_mix_supplier_name]: "{\"description\": \"Name of the energy supplier delivering energy for this location. Flattened from OCPI EnergyMix.supplier_name. OCPI type: string(64).\"}",
+   [evse_count]: "{\"description\": \"Total number of EVSEs at this location. Computed by the bridge from the length of the OCPI evses array.\"}",
+   [connector_count]: "{\"description\": \"Total number of connectors across all EVSEs at this location. Computed by the bridge as the sum of all EVSE connector counts.\"}",
+   [last_updated]: "{\"description\": \"Timestamp when this Location or one of its EVSEs or Connectors was last updated or created. OCPI type: DateTime (ISO 8601).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ChargingLocation] ingestion json mapping "ChargingLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "country_code", "path": "$.country_code"},
+  {"column": "party_id", "path": "$.party_id"},
+  {"column": "publish", "path": "$.publish"},
+  {"column": "name", "path": "$.name"},
+  {"column": "address", "path": "$.address"},
+  {"column": "city", "path": "$.city"},
+  {"column": "postal_code", "path": "$.postal_code"},
+  {"column": "state", "path": "$.state"},
+  {"column": "country", "path": "$.country"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "parking_type", "path": "$.parking_type"},
+  {"column": "operator_name", "path": "$.operator_name"},
+  {"column": "operator_website", "path": "$.operator_website"},
+  {"column": "suboperator_name", "path": "$.suboperator_name"},
+  {"column": "owner_name", "path": "$.owner_name"},
+  {"column": "facilities", "path": "$.facilities"},
+  {"column": "time_zone", "path": "$.time_zone"},
+  {"column": "opening_times_twentyfourseven", "path": "$.opening_times_twentyfourseven"},
+  {"column": "charging_when_closed", "path": "$.charging_when_closed"},
+  {"column": "energy_mix_is_green_energy", "path": "$.energy_mix_is_green_energy"},
+  {"column": "energy_mix_supplier_name", "path": "$.energy_mix_supplier_name"},
+  {"column": "evse_count", "path": "$.evse_count"},
+  {"column": "connector_count", "path": "$.connector_count"},
+  {"column": "last_updated", "path": "$.last_updated"},
+]
+```
+
+.create-or-alter table [ChargingLocation] ingestion json mapping "ChargingLocation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "country_code", "path": "$.data.country_code"},
+  {"column": "party_id", "path": "$.data.party_id"},
+  {"column": "publish", "path": "$.data.publish"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "address", "path": "$.data.address"},
+  {"column": "city", "path": "$.data.city"},
+  {"column": "postal_code", "path": "$.data.postal_code"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "parking_type", "path": "$.data.parking_type"},
+  {"column": "operator_name", "path": "$.data.operator_name"},
+  {"column": "operator_website", "path": "$.data.operator_website"},
+  {"column": "suboperator_name", "path": "$.data.suboperator_name"},
+  {"column": "owner_name", "path": "$.data.owner_name"},
+  {"column": "facilities", "path": "$.data.facilities"},
+  {"column": "time_zone", "path": "$.data.time_zone"},
+  {"column": "opening_times_twentyfourseven", "path": "$.data.opening_times_twentyfourseven"},
+  {"column": "charging_when_closed", "path": "$.data.charging_when_closed"},
+  {"column": "energy_mix_is_green_energy", "path": "$.data.energy_mix_is_green_energy"},
+  {"column": "energy_mix_supplier_name", "path": "$.data.energy_mix_supplier_name"},
+  {"column": "evse_count", "path": "$.data.evse_count"},
+  {"column": "connector_count", "path": "$.data.connector_count"},
+  {"column": "last_updated", "path": "$.data.last_updated"},
+]
+```
+
+.drop materialized-view ChargingLocationLatest ifexists;
+
+.create materialized-view with (backfill=true) ChargingLocationLatest on table ChargingLocation {
+    ChargingLocation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ChargingLocation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Charging.ChargingLocation') | project['location_id'] = tostring(data.['location_id']),['country_code'] = tostring(data.['country_code']),['party_id'] = tostring(data.['party_id']),['publish'] = tobool(data.['publish']),['name'] = tostring(data.['name']),['address'] = tostring(data.['address']),['city'] = tostring(data.['city']),['postal_code'] = tostring(data.['postal_code']),['state'] = tostring(data.['state']),['country'] = tostring(data.['country']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['parking_type'] = tostring(data.['parking_type']),['operator_name'] = tostring(data.['operator_name']),['operator_website'] = tostring(data.['operator_website']),['suboperator_name'] = tostring(data.['suboperator_name']),['owner_name'] = tostring(data.['owner_name']),['facilities'] = todynamic(data.['facilities']),['time_zone'] = tostring(data.['time_zone']),['opening_times_twentyfourseven'] = tobool(data.['opening_times_twentyfourseven']),['charging_when_closed'] = tobool(data.['charging_when_closed']),['energy_mix_is_green_energy'] = tobool(data.['energy_mix_is_green_energy']),['energy_mix_supplier_name'] = tostring(data.['energy_mix_supplier_name']),['evse_count'] = toint(data.['evse_count']),['connector_count'] = toint(data.['connector_count']),['last_updated'] = todatetime(data.['last_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [EvseStatus] (
+   [location_id]: string,
+   [evse_uid]: string,
+   [evse_id]: string,
+   [status]: string,
+   [capabilities]: dynamic,
+   [floor_level]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [physical_reference]: string,
+   [parking_restrictions]: dynamic,
+   [connectors]: dynamic,
+   [last_updated]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [EvseStatus] docstring "{\"description\": \"Telemetry event for an EVSE status change from the NDL. Contains the EVSE identification, current status, and a summary of its connectors.\"}";
+
+.alter table [EvseStatus] column-docstrings (
+   [location_id]: "{\"description\": \"OCPI Location.id of the parent location. Together with evse_uid forms the composite CloudEvents subject and Kafka key. OCPI type: CiString(36).\"}",
+   [evse_uid]: "{\"description\": \"OCPI EVSE.uid. Uniquely identifies the EVSE within the CPO's platform. This is the technical identifier, not the human-readable evse_id. OCPI type: CiString(36).\"}",
+   [evse_id]: "{\"description\": \"Human-readable EVSE identifier compliant with eMI3 standard 'E-mobility ID-codes'. May be absent if the EVSE status is REMOVED. OCPI type: CiString(48).\"}",
+   [status]: "{\"description\": \"Current status of the EVSE. OCPI Status enum: AVAILABLE (ready for new session), BLOCKED (physical barrier e.g. parked car), CHARGING (in use), INOPERATIVE (temporarily unavailable but not broken), OUTOFORDER (broken/defect), PLANNED (not yet active), REMOVED (discontinued), RESERVED (reserved for a specific driver), UNKNOWN (no status info available or offline).\"}",
+   [capabilities]: "{\"description\": \"List of functionalities the EVSE is capable of. OCPI Capability OpenEnum values include CHARGING_PROFILE_CAPABLE, CHIP_CARD_SUPPORT, CONTACTLESS_CARD_SUPPORT, CREDIT_CARD_PAYABLE, DEBIT_CARD_PAYABLE, PED_TERMINAL, REMOTE_START_STOP_CAPABLE, RESERVABLE, RFID_READER, UNLOCK_CAPABLE.\"}",
+   [floor_level]: "{\"description\": \"Level on which the EVSE is located in a garage building, in locally displayed numbering. OCPI type: string(4).\"}",
+   [latitude]: "{\"description\": \"Latitude of the EVSE in decimal degrees (WGS 84) if different from the parent location. Extracted from OCPI EVSE.coordinates.\"}",
+   [longitude]: "{\"description\": \"Longitude of the EVSE in decimal degrees (WGS 84) if different from the parent location. Extracted from OCPI EVSE.coordinates.\"}",
+   [physical_reference]: "{\"description\": \"A number/string printed on the outside of the EVSE for visual identification. OCPI type: string(16).\"}",
+   [parking_restrictions]: "{\"description\": \"Restrictions on who can charge at this EVSE. OCPI ParkingRestriction OpenEnum: CUSTOMERS, DISABLED, EMPLOYEES, EV_ONLY, MOTORCYCLES, PLUGGED, TAXIS, TENANTS.\"}",
+   [connectors]: "{\"description\": \"List of connectors on this EVSE. Only one connector per EVSE can be used at any time. Each entry carries connector standard, format, power specs, and tariff references.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/ConnectorSummary\"}, \"minItems\": 1, \"description\": \"List of connectors on this EVSE. Only one connector per EVSE can be used at any time. Each entry carries connector standard, format, power specs, and tariff references.\"}}",
+   [last_updated]: "{\"description\": \"Timestamp when this EVSE or one of its Connectors was last updated or created. OCPI type: DateTime (ISO 8601).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [EvseStatus] ingestion json mapping "EvseStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "evse_uid", "path": "$.evse_uid"},
+  {"column": "evse_id", "path": "$.evse_id"},
+  {"column": "status", "path": "$.status"},
+  {"column": "capabilities", "path": "$.capabilities"},
+  {"column": "floor_level", "path": "$.floor_level"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "physical_reference", "path": "$.physical_reference"},
+  {"column": "parking_restrictions", "path": "$.parking_restrictions"},
+  {"column": "connectors", "path": "$.connectors"},
+  {"column": "last_updated", "path": "$.last_updated"},
+]
+```
+
+.create-or-alter table [EvseStatus] ingestion json mapping "EvseStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "evse_uid", "path": "$.data.evse_uid"},
+  {"column": "evse_id", "path": "$.data.evse_id"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "capabilities", "path": "$.data.capabilities"},
+  {"column": "floor_level", "path": "$.data.floor_level"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "physical_reference", "path": "$.data.physical_reference"},
+  {"column": "parking_restrictions", "path": "$.data.parking_restrictions"},
+  {"column": "connectors", "path": "$.data.connectors"},
+  {"column": "last_updated", "path": "$.data.last_updated"},
+]
+```
+
+.drop materialized-view EvseStatusLatest ifexists;
+
+.create materialized-view with (backfill=true) EvseStatusLatest on table EvseStatus {
+    EvseStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [EvseStatus] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Charging.EvseStatus') | project['location_id'] = tostring(data.['location_id']),['evse_uid'] = tostring(data.['evse_uid']),['evse_id'] = tostring(data.['evse_id']),['status'] = tostring(data.['status']),['capabilities'] = todynamic(data.['capabilities']),['floor_level'] = tostring(data.['floor_level']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['physical_reference'] = tostring(data.['physical_reference']),['parking_restrictions'] = todynamic(data.['parking_restrictions']),['connectors'] = todynamic(data.['connectors']),['last_updated'] = todatetime(data.['last_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ChargingTariff] (
+   [tariff_id]: string,
+   [country_code]: string,
+   [party_id]: string,
+   [currency]: string,
+   [tariff_type]: string,
+   [tariff_alt_text]: string,
+   [tariff_alt_url]: string,
+   [min_price_excl_vat]: real,
+   [min_price_incl_vat]: real,
+   [max_price_excl_vat]: real,
+   [max_price_incl_vat]: real,
+   [elements]: dynamic,
+   [start_date_time]: datetime,
+   [end_date_time]: datetime,
+   [energy_mix_is_green_energy]: bool,
+   [last_updated]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ChargingTariff] docstring "{\"description\": \"Reference data for an EV charging tariff from the NDL. Contains the OCPI v2.2 Tariff object fields including pricing elements, validity period, and tax information.\"}";
+
+.alter table [ChargingTariff] column-docstrings (
+   [tariff_id]: "{\"description\": \"OCPI Tariff.id. Uniquely identifies the tariff within the CPO's platform. This field is the CloudEvents subject and Kafka key. OCPI type: CiString(36).\"}",
+   [country_code]: "{\"description\": \"ISO-3166 alpha-2 country code of the CPO that owns this Tariff. OCPI type: CiString(2).\"}",
+   [party_id]: "{\"description\": \"CPO party identifier following ISO-15118. OCPI type: CiString(3).\"}",
+   [currency]: "{\"description\": \"ISO-4217 currency code for this tariff, e.g. 'EUR'. OCPI type: string(3).\"}",
+   [tariff_type]: "{\"description\": \"Type of tariff for distinguishing charging preferences. When omitted, valid for all sessions. OCPI TariffType enum: AD_HOC_PAYMENT (card terminal), PROFILE_CHEAP, PROFILE_FAST, PROFILE_GREEN, REGULAR (RFID or default).\"}",
+   [tariff_alt_text]: "{\"description\": \"Human-readable alternative tariff text. First available language variant from the OCPI DisplayText array, if any. OCPI type: DisplayText list.\"}",
+   [tariff_alt_url]: "{\"description\": \"URL to a web page with human-readable tariff explanation. OCPI type: URL.\"}",
+   [min_price_excl_vat]: "{\"description\": \"Minimum session cost excluding taxes. Flattened from OCPI PriceLimit min_price.before_taxes.\"}",
+   [min_price_incl_vat]: "{\"description\": \"Minimum session cost including taxes. Flattened from OCPI PriceLimit min_price.after_taxes.\"}",
+   [max_price_excl_vat]: "{\"description\": \"Maximum session cost excluding taxes. Flattened from OCPI PriceLimit max_price.before_taxes.\"}",
+   [max_price_incl_vat]: "{\"description\": \"Maximum session cost including taxes. Flattened from OCPI PriceLimit max_price.after_taxes.\"}",
+   [elements]: "{\"description\": \"List of tariff elements. Each contains price components and optional restrictions. First element with a matching dimension and restriction wins. To define 'free of charge', use one element with FLAT type and price 0.00.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/TariffElement\"}, \"minItems\": 1, \"description\": \"List of tariff elements. Each contains price components and optional restrictions. First element with a matching dimension and restriction wins. To define 'free of charge', use one element with FLAT type and price 0.00.\"}}",
+   [start_date_time]: "{\"description\": \"When this tariff becomes active (UTC). Used for pre-announced tariffs at a location before they take effect. OCPI type: DateTime.\"}",
+   [end_date_time]: "{\"description\": \"When this tariff ceases to be valid (UTC). Used when a tariff is being replaced by a new one. OCPI type: DateTime.\"}",
+   [energy_mix_is_green_energy]: "{\"description\": \"Whether 100% of energy supplied under this tariff is from regenerative sources. Flattened from OCPI EnergyMix.is_green_energy.\"}",
+   [last_updated]: "{\"description\": \"Timestamp when this Tariff was last updated or created. OCPI type: DateTime (ISO 8601).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ChargingTariff] ingestion json mapping "ChargingTariff_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tariff_id", "path": "$.tariff_id"},
+  {"column": "country_code", "path": "$.country_code"},
+  {"column": "party_id", "path": "$.party_id"},
+  {"column": "currency", "path": "$.currency"},
+  {"column": "tariff_type", "path": "$.tariff_type"},
+  {"column": "tariff_alt_text", "path": "$.tariff_alt_text"},
+  {"column": "tariff_alt_url", "path": "$.tariff_alt_url"},
+  {"column": "min_price_excl_vat", "path": "$.min_price_excl_vat"},
+  {"column": "min_price_incl_vat", "path": "$.min_price_incl_vat"},
+  {"column": "max_price_excl_vat", "path": "$.max_price_excl_vat"},
+  {"column": "max_price_incl_vat", "path": "$.max_price_incl_vat"},
+  {"column": "elements", "path": "$.elements"},
+  {"column": "start_date_time", "path": "$.start_date_time"},
+  {"column": "end_date_time", "path": "$.end_date_time"},
+  {"column": "energy_mix_is_green_energy", "path": "$.energy_mix_is_green_energy"},
+  {"column": "last_updated", "path": "$.last_updated"},
+]
+```
+
+.create-or-alter table [ChargingTariff] ingestion json mapping "ChargingTariff_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tariff_id", "path": "$.data.tariff_id"},
+  {"column": "country_code", "path": "$.data.country_code"},
+  {"column": "party_id", "path": "$.data.party_id"},
+  {"column": "currency", "path": "$.data.currency"},
+  {"column": "tariff_type", "path": "$.data.tariff_type"},
+  {"column": "tariff_alt_text", "path": "$.data.tariff_alt_text"},
+  {"column": "tariff_alt_url", "path": "$.data.tariff_alt_url"},
+  {"column": "min_price_excl_vat", "path": "$.data.min_price_excl_vat"},
+  {"column": "min_price_incl_vat", "path": "$.data.min_price_incl_vat"},
+  {"column": "max_price_excl_vat", "path": "$.data.max_price_excl_vat"},
+  {"column": "max_price_incl_vat", "path": "$.data.max_price_incl_vat"},
+  {"column": "elements", "path": "$.data.elements"},
+  {"column": "start_date_time", "path": "$.data.start_date_time"},
+  {"column": "end_date_time", "path": "$.data.end_date_time"},
+  {"column": "energy_mix_is_green_energy", "path": "$.data.energy_mix_is_green_energy"},
+  {"column": "last_updated", "path": "$.data.last_updated"},
+]
+```
+
+.drop materialized-view ChargingTariffLatest ifexists;
+
+.create materialized-view with (backfill=true) ChargingTariffLatest on table ChargingTariff {
+    ChargingTariff | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ChargingTariff] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NL.NDW.Charging.ChargingTariff') | project['tariff_id'] = tostring(data.['tariff_id']),['country_code'] = tostring(data.['country_code']),['party_id'] = tostring(data.['party_id']),['currency'] = tostring(data.['currency']),['tariff_type'] = tostring(data.['tariff_type']),['tariff_alt_text'] = tostring(data.['tariff_alt_text']),['tariff_alt_url'] = tostring(data.['tariff_alt_url']),['min_price_excl_vat'] = toreal(data.['min_price_excl_vat']),['min_price_incl_vat'] = toreal(data.['min_price_incl_vat']),['max_price_excl_vat'] = toreal(data.['max_price_excl_vat']),['max_price_incl_vat'] = toreal(data.['max_price_incl_vat']),['elements'] = todynamic(data.['elements']),['start_date_time'] = todatetime(data.['start_date_time']),['end_date_time'] = todatetime(data.['end_date_time']),['energy_mix_is_green_energy'] = tobool(data.['energy_mix_is_green_energy']),['last_updated'] = todatetime(data.['last_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

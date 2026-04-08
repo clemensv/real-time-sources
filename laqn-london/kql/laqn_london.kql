@@ -1,0 +1,359 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Site] (
+   [site_code]: string,
+   [site_name]: string,
+   [site_type]: string,
+   [local_authority_code]: string,
+   [local_authority_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [date_opened]: string,
+   [date_closed]: string,
+   [data_owner]: string,
+   [data_manager]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Site] docstring "{\"description\": \"Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.\"}";
+
+.alter table [Site] column-docstrings (
+   [site_code]: "{\"description\": \"Stable LAQN site code that identifies the monitoring site, such as BX1.\"}",
+   [site_name]: "{\"description\": \"Human-readable LAQN site name published for the monitoring site.\"}",
+   [site_type]: "{\"description\": \"Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.\"}",
+   [local_authority_code]: "{\"description\": \"Stable local authority code associated with the site in the LAQN reference data.\"}",
+   [local_authority_name]: "{\"description\": \"Human-readable local authority name associated with the site in the LAQN reference data.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the monitoring site in decimal degrees. This bridge uses the decimal latitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the monitoring site in decimal degrees. This bridge uses the decimal longitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.\"}",
+   [date_opened]: "{\"description\": \"Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.\"}",
+   [date_closed]: "{\"description\": \"Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.\"}",
+   [data_owner]: "{\"description\": \"Organisation listed by LAQN as the owner of the site's data.\"}",
+   [data_manager]: "{\"description\": \"Organisation listed by LAQN as the manager of the monitoring site data.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Site] ingestion json mapping "Site_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_code", "path": "$.site_code"},
+  {"column": "site_name", "path": "$.site_name"},
+  {"column": "site_type", "path": "$.site_type"},
+  {"column": "local_authority_code", "path": "$.local_authority_code"},
+  {"column": "local_authority_name", "path": "$.local_authority_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "date_opened", "path": "$.date_opened"},
+  {"column": "date_closed", "path": "$.date_closed"},
+  {"column": "data_owner", "path": "$.data_owner"},
+  {"column": "data_manager", "path": "$.data_manager"},
+]
+```
+
+.create-or-alter table [Site] ingestion json mapping "Site_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_code", "path": "$.data.site_code"},
+  {"column": "site_name", "path": "$.data.site_name"},
+  {"column": "site_type", "path": "$.data.site_type"},
+  {"column": "local_authority_code", "path": "$.data.local_authority_code"},
+  {"column": "local_authority_name", "path": "$.data.local_authority_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "date_opened", "path": "$.data.date_opened"},
+  {"column": "date_closed", "path": "$.data.date_closed"},
+  {"column": "data_owner", "path": "$.data.data_owner"},
+  {"column": "data_manager", "path": "$.data.data_manager"},
+]
+```
+
+.drop materialized-view SiteLatest ifexists;
+
+.create materialized-view with (backfill=true) SiteLatest on table Site {
+    Site | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Site] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.kcl.laqn.Site') | project['site_code'] = tostring(data.['site_code']),['site_name'] = tostring(data.['site_name']),['site_type'] = tostring(data.['site_type']),['local_authority_code'] = tostring(data.['local_authority_code']),['local_authority_name'] = tostring(data.['local_authority_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['date_opened'] = tostring(data.['date_opened']),['date_closed'] = tostring(data.['date_closed']),['data_owner'] = tostring(data.['data_owner']),['data_manager'] = tostring(data.['data_manager']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Measurement] (
+   [site_code]: string,
+   [species_code]: string,
+   [measurement_date_gmt]: string,
+   [value]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Measurement] docstring "{\"description\": \"Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.\"}";
+
+.alter table [Measurement] column-docstrings (
+   [site_code]: "{\"description\": \"Stable LAQN site code for the monitoring site that produced the measurement.\"}",
+   [species_code]: "{\"description\": \"Stable LAQN pollutant code for the measured species.\"}",
+   [measurement_date_gmt]: "{\"description\": \"Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS.\"}",
+   [value]: "{\"description\": \"Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_code", "path": "$.site_code"},
+  {"column": "species_code", "path": "$.species_code"},
+  {"column": "measurement_date_gmt", "path": "$.measurement_date_gmt"},
+  {"column": "value", "path": "$.value"},
+]
+```
+
+.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_code", "path": "$.data.site_code"},
+  {"column": "species_code", "path": "$.data.species_code"},
+  {"column": "measurement_date_gmt", "path": "$.data.measurement_date_gmt"},
+  {"column": "value", "path": "$.data.value"},
+]
+```
+
+.drop materialized-view MeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) MeasurementLatest on table Measurement {
+    Measurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Measurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.kcl.laqn.Measurement') | project['site_code'] = tostring(data.['site_code']),['species_code'] = tostring(data.['species_code']),['measurement_date_gmt'] = tostring(data.['measurement_date_gmt']),['value'] = toreal(data.['value']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DailyIndex] (
+   [site_code]: string,
+   [bulletin_date]: string,
+   [species_code]: string,
+   [air_quality_index]: int,
+   [air_quality_band]: string,
+   [index_source]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DailyIndex] docstring "{\"description\": \"Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.\"}";
+
+.alter table [DailyIndex] column-docstrings (
+   [site_code]: "{\"description\": \"Stable LAQN site code for the monitoring site to which the daily index applies.\"}",
+   [bulletin_date]: "{\"description\": \"Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS.\"}",
+   [species_code]: "{\"description\": \"Stable LAQN pollutant code for the species to which the daily index applies.\"}",
+   [air_quality_index]: "{\"description\": \"LAQN Daily Air Quality Index value from 1 to 10, where 1 to 3 is Low, 4 to 6 is Moderate, 7 to 9 is High, and 10 is Very High.\"}",
+   [air_quality_band]: "{\"description\": \"Textual Daily Air Quality Index band published by LAQN: Low, Moderate, High, or Very High.\"}",
+   [index_source]: "{\"description\": \"Origin of the daily index published by LAQN, typically Measurement or Forecast.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DailyIndex] ingestion json mapping "DailyIndex_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_code", "path": "$.site_code"},
+  {"column": "bulletin_date", "path": "$.bulletin_date"},
+  {"column": "species_code", "path": "$.species_code"},
+  {"column": "air_quality_index", "path": "$.air_quality_index"},
+  {"column": "air_quality_band", "path": "$.air_quality_band"},
+  {"column": "index_source", "path": "$.index_source"},
+]
+```
+
+.create-or-alter table [DailyIndex] ingestion json mapping "DailyIndex_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_code", "path": "$.data.site_code"},
+  {"column": "bulletin_date", "path": "$.data.bulletin_date"},
+  {"column": "species_code", "path": "$.data.species_code"},
+  {"column": "air_quality_index", "path": "$.data.air_quality_index"},
+  {"column": "air_quality_band", "path": "$.data.air_quality_band"},
+  {"column": "index_source", "path": "$.data.index_source"},
+]
+```
+
+.drop materialized-view DailyIndexLatest ifexists;
+
+.create materialized-view with (backfill=true) DailyIndexLatest on table DailyIndex {
+    DailyIndex | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DailyIndex] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.kcl.laqn.DailyIndex') | project['site_code'] = tostring(data.['site_code']),['bulletin_date'] = tostring(data.['bulletin_date']),['species_code'] = tostring(data.['species_code']),['air_quality_index'] = toint(data.['air_quality_index']),['air_quality_band'] = tostring(data.['air_quality_band']),['index_source'] = tostring(data.['index_source']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Species] (
+   [species_code]: string,
+   [species_name]: string,
+   [description]: string,
+   [health_effect]: string,
+   [link]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Species] docstring "{\"description\": \"Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.\"}";
+
+.alter table [Species] column-docstrings (
+   [species_code]: "{\"description\": \"Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO.\"}",
+   [species_name]: "{\"description\": \"Human-readable pollutant name published by LAQN for the pollutant code.\"}",
+   [description]: "{\"description\": \"LAQN explanatory description of the pollutant and how it is formed or encountered.\"}",
+   [health_effect]: "{\"description\": \"LAQN health effect guidance describing the health impacts associated with exposure to the pollutant.\"}",
+   [link]: "{\"description\": \"HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Species] ingestion json mapping "Species_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "species_code", "path": "$.species_code"},
+  {"column": "species_name", "path": "$.species_name"},
+  {"column": "description", "path": "$.description"},
+  {"column": "health_effect", "path": "$.health_effect"},
+  {"column": "link", "path": "$.link"},
+]
+```
+
+.create-or-alter table [Species] ingestion json mapping "Species_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "species_code", "path": "$.data.species_code"},
+  {"column": "species_name", "path": "$.data.species_name"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "health_effect", "path": "$.data.health_effect"},
+  {"column": "link", "path": "$.data.link"},
+]
+```
+
+.drop materialized-view SpeciesLatest ifexists;
+
+.create materialized-view with (backfill=true) SpeciesLatest on table Species {
+    Species | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Species] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.kcl.laqn.Species') | project['species_code'] = tostring(data.['species_code']),['species_name'] = tostring(data.['species_name']),['description'] = tostring(data.['description']),['health_effect'] = tostring(data.['health_effect']),['link'] = tostring(data.['link']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

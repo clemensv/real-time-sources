@@ -10,7 +10,6 @@
     [data]: dynamic
 );
 
-
 .create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
 ```
 [
@@ -25,7 +24,6 @@
   {"column": "data", "path": "$.data"}
 ]
 ```
-
 
 .create-merge table [FeedItem] (
    [author]: dynamic,
@@ -49,6 +47,32 @@
    [___id]: string,
    [___time]: datetime,
    [___subject]: string
+);
+
+.alter table [FeedItem] docstring "{\"description\": \"Represents an item in an RSS feed, containing metadata such as the author, title, and content.\"}";
+
+.alter table [FeedItem] column-docstrings (
+   [author]: "{\"description\": \"Information about the feed item's author.\"}",
+   [publisher]: "{\"description\": \"Information about the feed item's publisher.\"}",
+   [summary]: "{\"description\": \"A short summary of the feed item.\"}",
+   [title]: "{\"description\": \"The feed item's title.\"}",
+   [source]: "{\"description\": \"Information about the source feed of the item.\"}",
+   [content]: "{\"description\": \"The content of the feed item, potentially including multiple formats.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/FeedItemContent\"}, \"default\": null, \"description\": \"The content of the feed item, potentially including multiple formats.\"}}",
+   [enclosures]: "{\"description\": \"Media attachments associated with the feed item.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/FeedItemEnclosure\"}, \"default\": null, \"description\": \"Media attachments associated with the feed item.\"}}",
+   [published]: "{\"description\": \"The publication date and time of the feed item.\"}",
+   [updated]: "{\"description\": \"The last updated date and time of the feed item.\"}",
+   [created]: "{\"description\": \"The creation date and time of the feed item.\"}",
+   [expired]: "{\"description\": \"The expiration date and time of the feed item.\"}",
+   [id]: "{\"description\": \"A unique identifier for the feed item.\"}",
+   [license]: "{\"description\": \"License information for the feed item.\"}",
+   [comments]: "{\"description\": \"A link to comments or feedback related to the feed item.\"}",
+   [contributors]: "{\"description\": \"A list of individuals who contributed to the feed item.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor\"}, \"default\": null, \"description\": \"A list of individuals who contributed to the feed item.\"}}",
+   [links]: "{\"description\": \"A collection of links related to the feed item.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/Microsoft/OpenData/RssFeeds/Link\"}, \"default\": null, \"description\": \"A collection of links related to the feed item.\"}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
 );
 
 .create-or-alter table [FeedItem] ingestion json mapping "FeedItem_json_flat"
@@ -78,7 +102,6 @@
 ]
 ```
 
-
 .create-or-alter table [FeedItem] ingestion json mapping "FeedItem_json_ce_structured"
 ```
 [
@@ -106,7 +129,6 @@
 ]
 ```
 
-
 .drop materialized-view FeedItemLatest ifexists;
 
 .create materialized-view with (backfill=true) FeedItemLatest on table FeedItem {
@@ -123,3 +145,4 @@
   "PropagateIngestionProperties": true,
 }]
 ```
+

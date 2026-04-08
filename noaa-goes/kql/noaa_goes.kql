@@ -1,0 +1,809 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [SpaceWeatherAlert] (
+   [product_id]: string,
+   [issue_datetime]: string,
+   [message]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SpaceWeatherAlert] docstring "{\"description\": \"NOAA Space Weather Prediction Center alert, watch, or warning bulletin. Alerts are issued for observed or expected space weather conditions that may affect technology systems on Earth or in space, including geomagnetic storms (ALTK/WARK), solar radiation storms (ALTPC/WARPC), and radio blackouts (ALTXR/SUM).\"}";
+
+.alter table [SpaceWeatherAlert] column-docstrings (
+   [product_id]: "{\"description\": \"Unique SWPC product identifier for this alert bulletin, combining the alert type code and serial number or date (e.g., 'ALTK04-20240101'). Used as the Kafka message key.\"}",
+   [issue_datetime]: "{\"description\": \"Date and time the alert was issued by SWPC, formatted as 'YYYY Mon DD HHMM UTC' (e.g., '2024 Jan 01 0030 UTC').\"}",
+   [message]: "{\"description\": \"Full text body of the SWPC alert bulletin, including the message code, serial number, issue time, IP code, validity period, and detailed description of the observed or expected space weather condition with numerical thresholds.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SpaceWeatherAlert] ingestion json mapping "SpaceWeatherAlert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "product_id", "path": "$.product_id"},
+  {"column": "issue_datetime", "path": "$.issue_datetime"},
+  {"column": "message", "path": "$.message"},
+]
+```
+
+.create-or-alter table [SpaceWeatherAlert] ingestion json mapping "SpaceWeatherAlert_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "product_id", "path": "$.data.product_id"},
+  {"column": "issue_datetime", "path": "$.data.issue_datetime"},
+  {"column": "message", "path": "$.data.message"},
+]
+```
+
+.drop materialized-view SpaceWeatherAlertLatest ifexists;
+
+.create materialized-view with (backfill=true) SpaceWeatherAlertLatest on table SpaceWeatherAlert {
+    SpaceWeatherAlert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SpaceWeatherAlert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert') | project['product_id'] = tostring(data.['product_id']),['issue_datetime'] = tostring(data.['issue_datetime']),['message'] = tostring(data.['message']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [PlanetaryKIndex] (
+   [observation_time]: string,
+   [kp]: real,
+   [a_running]: real,
+   [station_count]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PlanetaryKIndex] docstring "{\"description\": \"Planetary K-index (Kp) observation from the NOAA Space Weather Prediction Center. The Kp index quantifies disturbances in the horizontal component of Earth's magnetic field on a 0-9 quasi-logarithmic scale, derived from 3-hour standardized K values at a global network of ground magnetometer stations. Values of Kp >= 5 indicate geomagnetic storm conditions (G1-G5 on the NOAA scale).\"}";
+
+.alter table [PlanetaryKIndex] column-docstrings (
+   [observation_time]: "{\"description\": \"UTC date-time marking the start of the 3-hour Kp observation period, in 'YYYY-MM-DD HH:MM:SS.fff' format from the SWPC noaa-planetary-k-index endpoint.\"}",
+   [kp]: "{\"description\": \"Planetary K-index value for this 3-hour period, ranging from 0.00 (quiet) to 9.00 (extreme storm). Each unit increase corresponds to roughly a doubling of geomagnetic disturbance amplitude. Storm thresholds: G1 (Kp=5), G2 (Kp=6), G3 (Kp=7), G4 (Kp=8), G5 (Kp=9).\"}",
+   [a_running]: "{\"description\": \"Running daily planetary A-index (Ap), a linear measure of geomagnetic activity derived from the eight 3-hour Kp values via a standard conversion table. Ap is measured in units of 2 nT.\"}",
+   [station_count]: "{\"description\": \"Number of ground magnetometer stations contributing data to this Kp determination. Typical station count is 8-13; fewer stations may reduce measurement confidence.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PlanetaryKIndex] ingestion json mapping "PlanetaryKIndex_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "kp", "path": "$.kp"},
+  {"column": "a_running", "path": "$.a_running"},
+  {"column": "station_count", "path": "$.station_count"},
+]
+```
+
+.create-or-alter table [PlanetaryKIndex] ingestion json mapping "PlanetaryKIndex_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "kp", "path": "$.data.kp"},
+  {"column": "a_running", "path": "$.data.a_running"},
+  {"column": "station_count", "path": "$.data.station_count"},
+]
+```
+
+.drop materialized-view PlanetaryKIndexLatest ifexists;
+
+.create materialized-view with (backfill=true) PlanetaryKIndexLatest on table PlanetaryKIndex {
+    PlanetaryKIndex | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PlanetaryKIndex] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex') | project['observation_time'] = tostring(data.['observation_time']),['kp'] = toreal(data.['kp']),['a_running'] = toreal(data.['a_running']),['station_count'] = toint(data.['station_count']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SolarWindSummary] (
+   [observation_time]: string,
+   [wind_speed]: real,
+   [bt]: real,
+   [bz]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SolarWindSummary] docstring "{\"description\": \"Latest solar wind conditions summary from the DSCOVR satellite at the L1 Lagrange point (~1.5 million km sunward of Earth), combining proton bulk speed from the summary/solar-wind-speed endpoint and interplanetary magnetic field from the summary/solar-wind-mag-field endpoint. Provides a single snapshot of current conditions, updated approximately every minute.\"}";
+
+.alter table [SolarWindSummary] column-docstrings (
+   [observation_time]: "{\"description\": \"UTC date-time of the solar wind measurement from DSCOVR, in ISO 8601 format.\"}",
+   [wind_speed]: "{\"description\": \"Solar wind proton bulk speed measured by DSCOVR at L1. Typical slow-wind values are 300-400 km/s; fast streams and CME passages can reach 500-1000+ km/s.\"}",
+   [bt]: "{\"description\": \"Interplanetary magnetic field total magnitude (Bt) measured by the DSCOVR magnetometer at L1. Quiet-time values are typically 3-6 nT; values above 20 nT indicate strong solar wind driving.\"}",
+   [bz]: "{\"description\": \"Interplanetary magnetic field north-south component in Geocentric Solar Magnetospheric (GSM) coordinates (Bz GSM). Sustained negative (southward) Bz is the primary driver of geomagnetic storms via magnetic reconnection at Earth's magnetopause.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SolarWindSummary] ingestion json mapping "SolarWindSummary_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "wind_speed", "path": "$.wind_speed"},
+  {"column": "bt", "path": "$.bt"},
+  {"column": "bz", "path": "$.bz"},
+]
+```
+
+.create-or-alter table [SolarWindSummary] ingestion json mapping "SolarWindSummary_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "wind_speed", "path": "$.data.wind_speed"},
+  {"column": "bt", "path": "$.data.bt"},
+  {"column": "bz", "path": "$.data.bz"},
+]
+```
+
+.drop materialized-view SolarWindSummaryLatest ifexists;
+
+.create materialized-view with (backfill=true) SolarWindSummaryLatest on table SolarWindSummary {
+    SolarWindSummary | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SolarWindSummary] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary') | project['observation_time'] = tostring(data.['observation_time']),['wind_speed'] = toreal(data.['wind_speed']),['bt'] = toreal(data.['bt']),['bz'] = toreal(data.['bz']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SolarWindPlasma] (
+   [observation_time]: string,
+   [density]: real,
+   [speed]: real,
+   [temperature]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SolarWindPlasma] docstring "{\"description\": \"One-minute resolution solar wind plasma measurement from the DSCOVR satellite Faraday Cup instrument at the L1 Lagrange point, as reported by the SWPC solar-wind/plasma-7-day endpoint. Includes proton density, bulk speed, and ion temperature. DSCOVR provides approximately 15-45 minutes of advance warning before solar wind structures reach Earth's magnetosphere.\"}";
+
+.alter table [SolarWindPlasma] column-docstrings (
+   [observation_time]: "{\"description\": \"UTC date-time of the plasma measurement, in 'YYYY-MM-DD HH:MM:SS.fff' format.\"}",
+   [density]: "{\"description\": \"Solar wind proton number density measured by the DSCOVR Faraday Cup. Typical quiet-time values are 3-10 n/cm\\u00b3; values above 20 n/cm\\u00b3 may indicate a coronal mass ejection passage or a compressed solar wind region.\"}",
+   [speed]: "{\"description\": \"Solar wind proton bulk speed measured by DSCOVR. Typical quiet-time values are 300-400 km/s (slow wind); high-speed streams reach 500-800 km/s and CME-driven shocks can exceed 1000 km/s.\"}",
+   [temperature]: "{\"description\": \"Solar wind ion temperature measured by DSCOVR. Typical values are 10,000-200,000 K; elevated temperatures often accompany high-speed streams and interplanetary shock passages.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SolarWindPlasma] ingestion json mapping "SolarWindPlasma_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "density", "path": "$.density"},
+  {"column": "speed", "path": "$.speed"},
+  {"column": "temperature", "path": "$.temperature"},
+]
+```
+
+.create-or-alter table [SolarWindPlasma] ingestion json mapping "SolarWindPlasma_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "density", "path": "$.data.density"},
+  {"column": "speed", "path": "$.data.speed"},
+  {"column": "temperature", "path": "$.data.temperature"},
+]
+```
+
+.drop materialized-view SolarWindPlasmaLatest ifexists;
+
+.create materialized-view with (backfill=true) SolarWindPlasmaLatest on table SolarWindPlasma {
+    SolarWindPlasma | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SolarWindPlasma] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma') | project['observation_time'] = tostring(data.['observation_time']),['density'] = toreal(data.['density']),['speed'] = toreal(data.['speed']),['temperature'] = toreal(data.['temperature']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SolarWindMagField] (
+   [observation_time]: string,
+   [bx_gsm]: real,
+   [by_gsm]: real,
+   [bz_gsm]: real,
+   [lon_gsm]: real,
+   [lat_gsm]: real,
+   [bt]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SolarWindMagField] docstring "{\"description\": \"One-minute resolution interplanetary magnetic field (IMF) vector measurement from the DSCOVR satellite magnetometer at the L1 Lagrange point, as reported by the SWPC solar-wind/mag-7-day endpoint. Provides the full magnetic field vector in Geocentric Solar Magnetospheric (GSM) coordinates plus total magnitude. The Bz GSM component is the primary indicator of geomagnetic storm potential.\"}";
+
+.alter table [SolarWindMagField] column-docstrings (
+   [observation_time]: "{\"description\": \"UTC date-time of the magnetic field measurement, in 'YYYY-MM-DD HH:MM:SS.fff' format.\"}",
+   [bx_gsm]: "{\"description\": \"IMF X-component in GSM coordinates, directed from Earth toward the Sun along the Earth-Sun line.\"}",
+   [by_gsm]: "{\"description\": \"IMF Y-component in GSM coordinates, perpendicular to the Earth-Sun line in the magnetic equatorial plane. Influences the dawn-dusk electric field in the magnetosphere.\"}",
+   [bz_gsm]: "{\"description\": \"IMF Z-component in GSM coordinates (north-south). Sustained negative (southward) Bz is the primary driver of geomagnetic storms through magnetic reconnection at the dayside magnetopause. Values below -10 nT can produce G2+ storms.\"}",
+   [lon_gsm]: "{\"description\": \"IMF longitude angle in GSM coordinates, measured in the GSM X-Y plane from the Earth-Sun line.\"}",
+   [lat_gsm]: "{\"description\": \"IMF latitude angle in GSM coordinates, measured from the GSM X-Y plane toward the Z-axis.\"}",
+   [bt]: "{\"description\": \"Total interplanetary magnetic field magnitude, computed as the vector sum sqrt(Bx\\u00b2 + By\\u00b2 + Bz\\u00b2). Typical quiet-time values are 3-6 nT; values above 20 nT indicate strong solar wind magnetic driving.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SolarWindMagField] ingestion json mapping "SolarWindMagField_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "bx_gsm", "path": "$.bx_gsm"},
+  {"column": "by_gsm", "path": "$.by_gsm"},
+  {"column": "bz_gsm", "path": "$.bz_gsm"},
+  {"column": "lon_gsm", "path": "$.lon_gsm"},
+  {"column": "lat_gsm", "path": "$.lat_gsm"},
+  {"column": "bt", "path": "$.bt"},
+]
+```
+
+.create-or-alter table [SolarWindMagField] ingestion json mapping "SolarWindMagField_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "bx_gsm", "path": "$.data.bx_gsm"},
+  {"column": "by_gsm", "path": "$.data.by_gsm"},
+  {"column": "bz_gsm", "path": "$.data.bz_gsm"},
+  {"column": "lon_gsm", "path": "$.data.lon_gsm"},
+  {"column": "lat_gsm", "path": "$.data.lat_gsm"},
+  {"column": "bt", "path": "$.data.bt"},
+]
+```
+
+.drop materialized-view SolarWindMagFieldLatest ifexists;
+
+.create materialized-view with (backfill=true) SolarWindMagFieldLatest on table SolarWindMagField {
+    SolarWindMagField | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SolarWindMagField] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField') | project['observation_time'] = tostring(data.['observation_time']),['bx_gsm'] = toreal(data.['bx_gsm']),['by_gsm'] = toreal(data.['by_gsm']),['bz_gsm'] = toreal(data.['bz_gsm']),['lon_gsm'] = toreal(data.['lon_gsm']),['lat_gsm'] = toreal(data.['lat_gsm']),['bt'] = toreal(data.['bt']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GoesXrayFlux] (
+   [time_tag]: string,
+   [satellite]: int,
+   [flux]: real,
+   [energy]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [GoesXrayFlux] docstring "{\"description\": \"One-minute resolution full-disk solar X-ray flux measurement from the GOES primary satellite XRS (X-Ray Sensor) instrument, as reported by the SWPC goes/primary/xrays-7-day endpoint. Two energy bands are reported: 0.05-0.4 nm (short, harder X-rays) and 0.1-0.8 nm (long, softer X-rays). The 0.1-0.8 nm band is used for the official solar flare classification scale (A < B < C < M < X).\"}";
+
+.alter table [GoesXrayFlux] column-docstrings (
+   [time_tag]: "{\"description\": \"UTC date-time of the X-ray flux measurement from the GOES XRS instrument, in ISO 8601 format (e.g., '2024-01-01T00:00:00Z').\"}",
+   [satellite]: "{\"description\": \"GOES satellite number providing the measurement (e.g., 18 for GOES-18, 19 for GOES-19). The primary operational GOES satellite changes when new spacecraft are commissioned.\"}",
+   [flux]: "{\"description\": \"Solar X-ray irradiance in the specified energy band. Flare classification thresholds for the 0.1-0.8 nm band: A (< 1e-7), B (1e-7 to 1e-6), C (1e-6 to 1e-5), M (1e-5 to 1e-4), X (>= 1e-4). Background is typically A1-B1 level during solar minimum.\"}",
+   [energy]: "{\"description\": \"X-ray energy band identifier: '0.05-0.4nm' (short wavelength, harder X-rays) or '0.1-0.8nm' (long wavelength, softer X-rays used for flare classification).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [GoesXrayFlux] ingestion json mapping "GoesXrayFlux_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.time_tag"},
+  {"column": "satellite", "path": "$.satellite"},
+  {"column": "flux", "path": "$.flux"},
+  {"column": "energy", "path": "$.energy"},
+]
+```
+
+.create-or-alter table [GoesXrayFlux] ingestion json mapping "GoesXrayFlux_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.data.time_tag"},
+  {"column": "satellite", "path": "$.data.satellite"},
+  {"column": "flux", "path": "$.data.flux"},
+  {"column": "energy", "path": "$.data.energy"},
+]
+```
+
+.drop materialized-view GoesXrayFluxLatest ifexists;
+
+.create materialized-view with (backfill=true) GoesXrayFluxLatest on table GoesXrayFlux {
+    GoesXrayFlux | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GoesXrayFlux] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux') | project['time_tag'] = tostring(data.['time_tag']),['satellite'] = toint(data.['satellite']),['flux'] = toreal(data.['flux']),['energy'] = tostring(data.['energy']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GoesProtonFlux] (
+   [time_tag]: string,
+   [satellite]: int,
+   [flux]: real,
+   [energy]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [GoesProtonFlux] docstring "{\"description\": \"Five-minute resolution integral proton flux measurement from the GOES primary satellite SEISS/SGPS (Space Environment In-Situ Suite / Solar and Galactic Proton Sensor) instrument, as reported by the SWPC goes/primary/integral-protons-7-day endpoint. Four energy thresholds are reported. The >= 10 MeV channel is used for the official NOAA S-scale solar radiation storm classification (S1-S5).\"}";
+
+.alter table [GoesProtonFlux] column-docstrings (
+   [time_tag]: "{\"description\": \"UTC date-time of the proton flux measurement in ISO 8601 format.\"}",
+   [satellite]: "{\"description\": \"GOES satellite number providing the measurement (e.g., 19 for GOES-19).\"}",
+   [flux]: "{\"description\": \"Integral proton flux above the specified energy threshold, in particle flux units (pfu = protons/cm\\u00b2/sr/s). An S1 minor radiation storm is declared when >= 10 MeV flux exceeds 10 pfu. S5 extreme: >= 100,000 pfu.\"}",
+   [energy]: "{\"description\": \"Proton energy threshold identifier: '>=10 MeV' (NOAA S-scale metric), '>=50 MeV', '>=100 MeV', or '>=500 MeV'. Higher thresholds indicate more energetic and penetrating radiation.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [GoesProtonFlux] ingestion json mapping "GoesProtonFlux_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.time_tag"},
+  {"column": "satellite", "path": "$.satellite"},
+  {"column": "flux", "path": "$.flux"},
+  {"column": "energy", "path": "$.energy"},
+]
+```
+
+.create-or-alter table [GoesProtonFlux] ingestion json mapping "GoesProtonFlux_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.data.time_tag"},
+  {"column": "satellite", "path": "$.data.satellite"},
+  {"column": "flux", "path": "$.data.flux"},
+  {"column": "energy", "path": "$.data.energy"},
+]
+```
+
+.drop materialized-view GoesProtonFluxLatest ifexists;
+
+.create materialized-view with (backfill=true) GoesProtonFluxLatest on table GoesProtonFlux {
+    GoesProtonFlux | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GoesProtonFlux] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux') | project['time_tag'] = tostring(data.['time_tag']),['satellite'] = toint(data.['satellite']),['flux'] = toreal(data.['flux']),['energy'] = tostring(data.['energy']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GoesElectronFlux] (
+   [time_tag]: string,
+   [satellite]: int,
+   [flux]: real,
+   [energy]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [GoesElectronFlux] docstring "{\"description\": \"Five-minute resolution integral electron flux measurement from the GOES primary satellite SEISS/SGPS instrument, as reported by the SWPC goes/primary/integral-electrons-3-day endpoint. The >= 2 MeV channel is monitored for deep dielectric charging risk to geosynchronous spacecraft. Elevated fluxes (> 1000 e/cm\\u00b2/sr/s) sustained for several days can cause internal charging failures in satellite electronics.\"}";
+
+.alter table [GoesElectronFlux] column-docstrings (
+   [time_tag]: "{\"description\": \"UTC date-time of the electron flux measurement in ISO 8601 format.\"}",
+   [satellite]: "{\"description\": \"GOES satellite number providing the measurement (e.g., 19 for GOES-19).\"}",
+   [flux]: "{\"description\": \"Integral electron flux above the specified energy threshold, in electrons per cm\\u00b2 per steradian per second. Values above 1000 indicate elevated deep dielectric charging risk for geosynchronous satellites.\"}",
+   [energy]: "{\"description\": \"Electron energy threshold identifier, currently '>=2 MeV'. This channel is monitored for spacecraft internal charging hazard assessment.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [GoesElectronFlux] ingestion json mapping "GoesElectronFlux_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.time_tag"},
+  {"column": "satellite", "path": "$.satellite"},
+  {"column": "flux", "path": "$.flux"},
+  {"column": "energy", "path": "$.energy"},
+]
+```
+
+.create-or-alter table [GoesElectronFlux] ingestion json mapping "GoesElectronFlux_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.data.time_tag"},
+  {"column": "satellite", "path": "$.data.satellite"},
+  {"column": "flux", "path": "$.data.flux"},
+  {"column": "energy", "path": "$.data.energy"},
+]
+```
+
+.drop materialized-view GoesElectronFluxLatest ifexists;
+
+.create materialized-view with (backfill=true) GoesElectronFluxLatest on table GoesElectronFlux {
+    GoesElectronFlux | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GoesElectronFlux] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux') | project['time_tag'] = tostring(data.['time_tag']),['satellite'] = toint(data.['satellite']),['flux'] = toreal(data.['flux']),['energy'] = tostring(data.['energy']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [GoesMagnetometer] (
+   [time_tag]: string,
+   [satellite]: int,
+   [he]: real,
+   [hp]: real,
+   [hn]: real,
+   [total]: real,
+   [arcjet_flag]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [GoesMagnetometer] docstring "{\"description\": \"One-minute resolution magnetic field measurement from the GOES primary satellite magnetometer at geostationary orbit (~6.6 Earth radii), as reported by the SWPC goes/primary/magnetometers-7-day endpoint. The field is measured in the spacecraft-centered HEN coordinate system where Hp is parallel to Earth's rotation axis, He is perpendicular in the east-west direction, and Hn is radially earthward. During geomagnetic storms, Hp can drop dramatically or even become negative, indicating magnetopause compression.\"}";
+
+.alter table [GoesMagnetometer] column-docstrings (
+   [time_tag]: "{\"description\": \"UTC date-time of the magnetic field measurement in ISO 8601 format.\"}",
+   [satellite]: "{\"description\": \"GOES satellite number providing the measurement (e.g., 19 for GOES-19).\"}",
+   [he]: "{\"description\": \"Magnetic field He component: perpendicular to the satellite-Earth direction and the dipole axis, positive eastward. Measures the east-west distortion of the geomagnetic field at geostationary orbit.\"}",
+   [hp]: "{\"description\": \"Magnetic field Hp component: parallel to Earth's dipole axis, positive northward. During quiet times Hp is typically 80-120 nT; during intense geomagnetic storms (G4-G5) it can drop below zero, indicating the magnetopause has been compressed inside geostationary orbit.\"}",
+   [hn]: "{\"description\": \"Magnetic field Hn component: along the satellite-Earth direction, positive radially earthward.\"}",
+   [total]: "{\"description\": \"Total magnetic field magnitude at geostationary orbit, computed as sqrt(He\\u00b2 + Hp\\u00b2 + Hn\\u00b2). Typical quiet-time values are 100-120 nT.\"}",
+   [arcjet_flag]: "{\"description\": \"When true, the satellite's electric propulsion (arcjet) thrusters are firing, which causes magnetic field contamination. Magnetometer readings during arcjet events should be treated with caution as they may not reflect the ambient geomagnetic field.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [GoesMagnetometer] ingestion json mapping "GoesMagnetometer_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.time_tag"},
+  {"column": "satellite", "path": "$.satellite"},
+  {"column": "he", "path": "$.he"},
+  {"column": "hp", "path": "$.hp"},
+  {"column": "hn", "path": "$.hn"},
+  {"column": "total", "path": "$.total"},
+  {"column": "arcjet_flag", "path": "$.arcjet_flag"},
+]
+```
+
+.create-or-alter table [GoesMagnetometer] ingestion json mapping "GoesMagnetometer_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.data.time_tag"},
+  {"column": "satellite", "path": "$.data.satellite"},
+  {"column": "he", "path": "$.data.he"},
+  {"column": "hp", "path": "$.data.hp"},
+  {"column": "hn", "path": "$.data.hn"},
+  {"column": "total", "path": "$.data.total"},
+  {"column": "arcjet_flag", "path": "$.data.arcjet_flag"},
+]
+```
+
+.drop materialized-view GoesMagnetometerLatest ifexists;
+
+.create materialized-view with (backfill=true) GoesMagnetometerLatest on table GoesMagnetometer {
+    GoesMagnetometer | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [GoesMagnetometer] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer') | project['time_tag'] = tostring(data.['time_tag']),['satellite'] = toint(data.['satellite']),['he'] = toreal(data.['he']),['hp'] = toreal(data.['hp']),['hn'] = toreal(data.['hn']),['total'] = toreal(data.['total']),['arcjet_flag'] = tobool(data.['arcjet_flag']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [XrayFlare] (
+   [time_tag]: string,
+   [begin_time]: string,
+   [begin_class]: string,
+   [max_time]: string,
+   [max_class]: string,
+   [max_xrlong]: real,
+   [max_ratio]: real,
+   [max_ratio_time]: string,
+   [current_int_xrlong]: real,
+   [end_time]: string,
+   [end_class]: string,
+   [satellite]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [XrayFlare] docstring "{\"description\": \"Individual solar X-ray flare event detected by the GOES primary satellite XRS instrument, as reported by the SWPC goes/primary/xray-flares-7-day endpoint. Each record represents a discrete flare event with onset, peak, and end times plus X-ray classifications on the standard A/B/C/M/X logarithmic scale. The flare classification is based on peak 0.1-0.8 nm X-ray flux: C-class (1e-6 W/m\\u00b2), M-class (1e-5), X-class (1e-4).\"}";
+
+.alter table [XrayFlare] column-docstrings (
+   [time_tag]: "{\"description\": \"UTC date-time when this flare record was reported/filed by SWPC, in ISO 8601 format.\"}",
+   [begin_time]: "{\"description\": \"UTC date-time of the flare onset (start of the X-ray flux rise above background), in ISO 8601 format. Used as part of the Kafka key to uniquely identify each flare event.\"}",
+   [begin_class]: "{\"description\": \"X-ray classification at flare onset, e.g., 'B6.9' or 'C1.0'. Format is a letter (A/B/C/M/X) followed by a decimal multiplier within that decade of flux.\"}",
+   [max_time]: "{\"description\": \"UTC date-time of the peak X-ray flux during the flare, in ISO 8601 format.\"}",
+   [max_class]: "{\"description\": \"X-ray classification at flare peak, e.g., 'C1.2', 'M5.3', 'X1.0'. This is the official flare magnitude used in space weather bulletins.\"}",
+   [max_xrlong]: "{\"description\": \"Peak X-ray flux in the 0.1-0.8 nm (long wavelength) band at the time of maximum.\"}",
+   [max_ratio]: "{\"description\": \"Ratio of 0.05-0.4 nm (short) to 0.1-0.8 nm (long) X-ray flux at flare maximum. Higher ratios indicate a spectrally harder (more energetic) flare, which correlates with stronger ionospheric effects.\"}",
+   [max_ratio_time]: "{\"description\": \"UTC date-time of the maximum short/long flux ratio, in ISO 8601 format. May differ from max_time.\"}",
+   [current_int_xrlong]: "{\"description\": \"Current time-integrated X-ray flux in the 0.1-0.8 nm band since flare onset, representing total X-ray energy delivered.\"}",
+   [end_time]: "{\"description\": \"UTC date-time when the flare X-ray flux returned to half the peak value above background, in ISO 8601 format. Null if the flare is still in progress.\"}",
+   [end_class]: "{\"description\": \"X-ray classification at the declared end of the flare event.\"}",
+   [satellite]: "{\"description\": \"GOES satellite number that detected this flare event (e.g., 18 for GOES-18, 19 for GOES-19).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [XrayFlare] ingestion json mapping "XrayFlare_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.time_tag"},
+  {"column": "begin_time", "path": "$.begin_time"},
+  {"column": "begin_class", "path": "$.begin_class"},
+  {"column": "max_time", "path": "$.max_time"},
+  {"column": "max_class", "path": "$.max_class"},
+  {"column": "max_xrlong", "path": "$.max_xrlong"},
+  {"column": "max_ratio", "path": "$.max_ratio"},
+  {"column": "max_ratio_time", "path": "$.max_ratio_time"},
+  {"column": "current_int_xrlong", "path": "$.current_int_xrlong"},
+  {"column": "end_time", "path": "$.end_time"},
+  {"column": "end_class", "path": "$.end_class"},
+  {"column": "satellite", "path": "$.satellite"},
+]
+```
+
+.create-or-alter table [XrayFlare] ingestion json mapping "XrayFlare_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "time_tag", "path": "$.data.time_tag"},
+  {"column": "begin_time", "path": "$.data.begin_time"},
+  {"column": "begin_class", "path": "$.data.begin_class"},
+  {"column": "max_time", "path": "$.data.max_time"},
+  {"column": "max_class", "path": "$.data.max_class"},
+  {"column": "max_xrlong", "path": "$.data.max_xrlong"},
+  {"column": "max_ratio", "path": "$.data.max_ratio"},
+  {"column": "max_ratio_time", "path": "$.data.max_ratio_time"},
+  {"column": "current_int_xrlong", "path": "$.data.current_int_xrlong"},
+  {"column": "end_time", "path": "$.data.end_time"},
+  {"column": "end_class", "path": "$.data.end_class"},
+  {"column": "satellite", "path": "$.data.satellite"},
+]
+```
+
+.drop materialized-view XrayFlareLatest ifexists;
+
+.create materialized-view with (backfill=true) XrayFlareLatest on table XrayFlare {
+    XrayFlare | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [XrayFlare] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare') | project['time_tag'] = tostring(data.['time_tag']),['begin_time'] = tostring(data.['begin_time']),['begin_class'] = tostring(data.['begin_class']),['max_time'] = tostring(data.['max_time']),['max_class'] = tostring(data.['max_class']),['max_xrlong'] = toreal(data.['max_xrlong']),['max_ratio'] = toreal(data.['max_ratio']),['max_ratio_time'] = tostring(data.['max_ratio_time']),['current_int_xrlong'] = toreal(data.['current_int_xrlong']),['end_time'] = tostring(data.['end_time']),['end_class'] = tostring(data.['end_class']),['satellite'] = toint(data.['satellite']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -1,0 +1,286 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Community] (
+   [province]: string,
+   [community_name]: string,
+   [cgndb_code]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [observation_url]: string,
+   [forecast_url]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Community] docstring "{\"description\": \"Reference record for an AQHI community from the official ECCC AQHI city lists. It links the public community name and province code to the CGNDB key and current XML feeds used by the bridge.\"}";
+
+.alter table [Community] column-docstrings (
+   [province]: "{\"description\": \"Two-letter Canadian province or territory abbreviation resolved for the AQHI community.\"}",
+   [community_name]: "{\"description\": \"English AQHI community name as published by Environment and Climate Change Canada.\"}",
+   [cgndb_code]: "{\"description\": \"Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.\"}",
+   [latitude]: "{\"description\": \"Latitude of the AQHI community reference point in WGS84 decimal degrees.\"}",
+   [longitude]: "{\"description\": \"Longitude of the AQHI community reference point in WGS84 decimal degrees.\"}",
+   [observation_url]: "{\"description\": \"Current XML observation feed URL for the AQHI community, or null when observations are not distributed for that community.\"}",
+   [forecast_url]: "{\"description\": \"Current XML forecast feed URL for the AQHI community, or null when a public forecast feed is not available.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Community] ingestion json mapping "Community_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "province", "path": "$.province"},
+  {"column": "community_name", "path": "$.community_name"},
+  {"column": "cgndb_code", "path": "$.cgndb_code"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "observation_url", "path": "$.observation_url"},
+  {"column": "forecast_url", "path": "$.forecast_url"},
+]
+```
+
+.create-or-alter table [Community] ingestion json mapping "Community_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "province", "path": "$.data.province"},
+  {"column": "community_name", "path": "$.data.community_name"},
+  {"column": "cgndb_code", "path": "$.data.cgndb_code"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "observation_url", "path": "$.data.observation_url"},
+  {"column": "forecast_url", "path": "$.data.forecast_url"},
+]
+```
+
+.drop materialized-view CommunityLatest ifexists;
+
+.create materialized-view with (backfill=true) CommunityLatest on table Community {
+    Community | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Community] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'ca.gc.weather.aqhi.Community') | project['province'] = tostring(data.['province']),['community_name'] = tostring(data.['community_name']),['cgndb_code'] = tostring(data.['cgndb_code']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['observation_url'] = tostring(data.['observation_url']),['forecast_url'] = tostring(data.['forecast_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Observation] (
+   [province]: string,
+   [community_name]: string,
+   [cgndb_code]: string,
+   [observation_datetime]: string,
+   [aqhi]: real,
+   [aqhi_category]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Observation] docstring "{\"description\": \"Latest AQHI observation for a reporting community. The value reflects short-term health risk from air pollution and may be null when the upstream feed has not published a value yet.\"}";
+
+.alter table [Observation] column-docstrings (
+   [province]: "{\"description\": \"Two-letter Canadian province or territory abbreviation resolved for the AQHI community.\"}",
+   [community_name]: "{\"description\": \"English AQHI community name as published by Environment and Climate Change Canada.\"}",
+   [cgndb_code]: "{\"description\": \"Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.\"}",
+   [observation_datetime]: "{\"description\": \"UTC timestamp of the AQHI observation in ISO 8601 format.\"}",
+   [aqhi]: "{\"description\": \"Observed AQHI value for the community. Observation feeds publish AQHI with decimal precision.\"}",
+   [aqhi_category]: "{\"description\": \"Public AQHI health-risk category derived from the AQHI value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "province", "path": "$.province"},
+  {"column": "community_name", "path": "$.community_name"},
+  {"column": "cgndb_code", "path": "$.cgndb_code"},
+  {"column": "observation_datetime", "path": "$.observation_datetime"},
+  {"column": "aqhi", "path": "$.aqhi"},
+  {"column": "aqhi_category", "path": "$.aqhi_category"},
+]
+```
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "province", "path": "$.data.province"},
+  {"column": "community_name", "path": "$.data.community_name"},
+  {"column": "cgndb_code", "path": "$.data.cgndb_code"},
+  {"column": "observation_datetime", "path": "$.data.observation_datetime"},
+  {"column": "aqhi", "path": "$.data.aqhi"},
+  {"column": "aqhi_category", "path": "$.data.aqhi_category"},
+]
+```
+
+.drop materialized-view ObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) ObservationLatest on table Observation {
+    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Observation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'ca.gc.weather.aqhi.Observation') | project['province'] = tostring(data.['province']),['community_name'] = tostring(data.['community_name']),['cgndb_code'] = tostring(data.['cgndb_code']),['observation_datetime'] = tostring(data.['observation_datetime']),['aqhi'] = toreal(data.['aqhi']),['aqhi_category'] = tostring(data.['aqhi_category']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Forecast] (
+   [province]: string,
+   [community_name]: string,
+   [cgndb_code]: string,
+   [publication_datetime]: string,
+   [forecast_date]: string,
+   [forecast_period]: string,
+   [forecast_period_label]: string,
+   [aqhi]: int,
+   [aqhi_category]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Forecast] docstring "{\"description\": \"Public AQHI forecast for a community and one of the four standard forecast periods published by ECCC.\"}";
+
+.alter table [Forecast] column-docstrings (
+   [province]: "{\"description\": \"Two-letter Canadian province or territory abbreviation resolved for the AQHI community.\"}",
+   [community_name]: "{\"description\": \"English AQHI community name as published by Environment and Climate Change Canada.\"}",
+   [cgndb_code]: "{\"description\": \"Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.\"}",
+   [publication_datetime]: "{\"description\": \"UTC timestamp at which the public AQHI forecast bulletin was issued.\"}",
+   [forecast_date]: "{\"description\": \"Forecast target date expressed as YYYYMMDD. Periods 1 and 2 use the bulletin issue date; periods 3 and 4 use the following day.\"}",
+   [forecast_period]: "{\"description\": \"AQHI public forecast period number: 1 Today, 2 Tonight, 3 Tomorrow, 4 Tomorrow Night.\"}",
+   [forecast_period_label]: "{\"description\": \"English public label for the AQHI forecast period.\"}",
+   [aqhi]: "{\"description\": \"Forecast AQHI value for the forecast period. Public forecasts are published as whole numbers.\"}",
+   [aqhi_category]: "{\"description\": \"Public AQHI health-risk category derived from the forecast AQHI value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Forecast] ingestion json mapping "Forecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "province", "path": "$.province"},
+  {"column": "community_name", "path": "$.community_name"},
+  {"column": "cgndb_code", "path": "$.cgndb_code"},
+  {"column": "publication_datetime", "path": "$.publication_datetime"},
+  {"column": "forecast_date", "path": "$.forecast_date"},
+  {"column": "forecast_period", "path": "$.forecast_period"},
+  {"column": "forecast_period_label", "path": "$.forecast_period_label"},
+  {"column": "aqhi", "path": "$.aqhi"},
+  {"column": "aqhi_category", "path": "$.aqhi_category"},
+]
+```
+
+.create-or-alter table [Forecast] ingestion json mapping "Forecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "province", "path": "$.data.province"},
+  {"column": "community_name", "path": "$.data.community_name"},
+  {"column": "cgndb_code", "path": "$.data.cgndb_code"},
+  {"column": "publication_datetime", "path": "$.data.publication_datetime"},
+  {"column": "forecast_date", "path": "$.data.forecast_date"},
+  {"column": "forecast_period", "path": "$.data.forecast_period"},
+  {"column": "forecast_period_label", "path": "$.data.forecast_period_label"},
+  {"column": "aqhi", "path": "$.data.aqhi"},
+  {"column": "aqhi_category", "path": "$.data.aqhi_category"},
+]
+```
+
+.drop materialized-view ForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) ForecastLatest on table Forecast {
+    Forecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Forecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'ca.gc.weather.aqhi.Forecast') | project['province'] = tostring(data.['province']),['community_name'] = tostring(data.['community_name']),['cgndb_code'] = tostring(data.['cgndb_code']),['publication_datetime'] = tostring(data.['publication_datetime']),['forecast_date'] = tostring(data.['forecast_date']),['forecast_period'] = tostring(data.['forecast_period']),['forecast_period_label'] = tostring(data.['forecast_period_label']),['aqhi'] = toint(data.['aqhi']),['aqhi_category'] = tostring(data.['aqhi_category']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

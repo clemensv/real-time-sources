@@ -1,0 +1,213 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: string,
+   [station_code]: string,
+   [name]: string,
+   [postal_code]: string,
+   [site_status]: int,
+   [site_status_text]: string,
+   [kid]: int,
+   [height_above_sea]: real,
+   [longitude]: real,
+   [latitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Metadata for a BfS ODL gamma dose rate monitoring station. Each station is a stationary probe in the IMIS (Integrated Measuring and Information System) network operated by the German Federal Office for Radiation Protection (Bundesamt f\\u00fcr Strahlenschutz). Stations continuously measure ambient gamma dose rate and report hourly averaged values.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_id]: "{\"description\": \"Nine-digit station identifier (Kennziffer) assigned by BfS in the IMIS network. Composed of the official municipality key (AGS) prefix and a station sequence number. Example: '033510091'. This is the stable key used for timeseries retrieval.\"}",
+   [station_code]: "{\"description\": \"Short alphanumeric station code assigned by BfS, consisting of a 'DEZ' prefix followed by a four-digit number. Example: 'DEZ0305'. Used in the BfS web interface and download area.\"}",
+   [name]: "{\"description\": \"Human-readable name of the station location, typically a German municipality or locality name. Example: 'Flensburg'.\"}",
+   [postal_code]: "{\"description\": \"German postal code (Postleitzahl / PLZ) of the station location. Five digits as a string.\"}",
+   [site_status]: "{\"description\": \"Numeric operational status code. 1 = in operation (in Betrieb), 0 or other values indicate the station is decommissioned or under maintenance.\"}",
+   [site_status_text]: "{\"description\": \"Human-readable German text describing the operational status. Example: 'in Betrieb' (in operation).\"}",
+   [kid]: "{\"description\": \"Numeric region identifier (Kreis-ID) used internally by BfS to group stations into geographic regions.\"}",
+   [height_above_sea]: "{\"description\": \"Elevation of the station above mean sea level in meters (Normalh\\u00f6hennull / NHN). Determines the cosmic radiation component. Null if unknown.\"}",
+   [longitude]: "{\"description\": \"Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates.\"}",
+   [latitude]: "{\"description\": \"Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_code", "path": "$.station_code"},
+  {"column": "name", "path": "$.name"},
+  {"column": "postal_code", "path": "$.postal_code"},
+  {"column": "site_status", "path": "$.site_status"},
+  {"column": "site_status_text", "path": "$.site_status_text"},
+  {"column": "kid", "path": "$.kid"},
+  {"column": "height_above_sea", "path": "$.height_above_sea"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_code", "path": "$.data.station_code"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "postal_code", "path": "$.data.postal_code"},
+  {"column": "site_status", "path": "$.data.site_status"},
+  {"column": "site_status_text", "path": "$.data.site_status_text"},
+  {"column": "kid", "path": "$.data.kid"},
+  {"column": "height_above_sea", "path": "$.data.height_above_sea"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.bfs.odl.Station') | project['station_id'] = tostring(data.['station_id']),['station_code'] = tostring(data.['station_code']),['name'] = tostring(data.['name']),['postal_code'] = tostring(data.['postal_code']),['site_status'] = toint(data.['site_status']),['site_status_text'] = tostring(data.['site_status_text']),['kid'] = toint(data.['kid']),['height_above_sea'] = toreal(data.['height_above_sea']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DoseRateMeasurement] (
+   [station_id]: string,
+   [start_measure]: string,
+   [end_measure]: string,
+   [value]: real,
+   [value_cosmic]: real,
+   [value_terrestrial]: real,
+   [validated]: int,
+   [nuclide]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DoseRateMeasurement] docstring "{\"description\": \"A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station. The gross dose rate value is the total ambient dose equivalent rate H*(10) at 1 meter above ground, expressed in microsieverts per hour (\\u00b5Sv/h). It may be decomposed into a cosmic component (secondary cosmic radiation, altitude-dependent) and a terrestrial component (naturally occurring radionuclides in soil, geology-dependent). Normal background levels in Germany range from approximately 0.05 to 0.18 \\u00b5Sv/h depending on local geology and altitude.\"}";
+
+.alter table [DoseRateMeasurement] column-docstrings (
+   [station_id]: "{\"description\": \"Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema.\"}",
+   [start_measure]: "{\"description\": \"Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'.\"}",
+   [end_measure]: "{\"description\": \"End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'.\"}",
+   [value]: "{\"description\": \"Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (\\u00b5Sv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval.\"}",
+   [value_cosmic]: "{\"description\": \"Cosmic radiation component of the ambient gamma dose rate in microsieverts per hour (\\u00b5Sv/h). Estimated from the station's altitude using a standard model. Null when the BfS system has not yet computed the decomposition for this measurement.\"}",
+   [value_terrestrial]: "{\"description\": \"Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (\\u00b5Sv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available.\"}",
+   [validated]: "{\"description\": \"Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated.\"}",
+   [nuclide]: "{\"description\": \"Nuclide identifier describing the type of radiation measured. For standard ODL probes this is always 'Gamma-ODL-Brutto' (gross gamma ambient dose rate).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DoseRateMeasurement] ingestion json mapping "DoseRateMeasurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "start_measure", "path": "$.start_measure"},
+  {"column": "end_measure", "path": "$.end_measure"},
+  {"column": "value", "path": "$.value"},
+  {"column": "value_cosmic", "path": "$.value_cosmic"},
+  {"column": "value_terrestrial", "path": "$.value_terrestrial"},
+  {"column": "validated", "path": "$.validated"},
+  {"column": "nuclide", "path": "$.nuclide"},
+]
+```
+
+.create-or-alter table [DoseRateMeasurement] ingestion json mapping "DoseRateMeasurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "start_measure", "path": "$.data.start_measure"},
+  {"column": "end_measure", "path": "$.data.end_measure"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "value_cosmic", "path": "$.data.value_cosmic"},
+  {"column": "value_terrestrial", "path": "$.data.value_terrestrial"},
+  {"column": "validated", "path": "$.data.validated"},
+  {"column": "nuclide", "path": "$.data.nuclide"},
+]
+```
+
+.drop materialized-view DoseRateMeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) DoseRateMeasurementLatest on table DoseRateMeasurement {
+    DoseRateMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DoseRateMeasurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.bfs.odl.DoseRateMeasurement') | project['station_id'] = tostring(data.['station_id']),['start_measure'] = tostring(data.['start_measure']),['end_measure'] = tostring(data.['end_measure']),['value'] = toreal(data.['value']),['value_cosmic'] = toreal(data.['value_cosmic']),['value_terrestrial'] = toreal(data.['value_terrestrial']),['validated'] = toint(data.['validated']),['nuclide'] = tostring(data.['nuclide']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

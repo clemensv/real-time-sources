@@ -1,0 +1,318 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: int,
+   [station_code]: string,
+   [station_name]: string,
+   [station_city]: string,
+   [station_synonym]: string,
+   [active_from]: string,
+   [active_to]: string,
+   [longitude]: real,
+   [latitude]: real,
+   [network_id]: int,
+   [network_code]: string,
+   [network_name]: string,
+   [setting_name]: string,
+   [setting_short]: string,
+   [type_name]: string,
+   [street]: string,
+   [street_nr]: string,
+   [zip_code]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference data for a station in the Umweltbundesamt air_data/v3 station catalog. The station payload describes the UBA station identifier, official station code, station naming, active period, WGS84 coordinates, the denormalized federal state monitoring network, and the station environment classification.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_id]: "{\"description\": \"Stable numeric UBA station identifier from the 'station id' column. This is the station key used for CloudEvents subject and Kafka key.\"}",
+   [station_code]: "{\"description\": \"Official station code from the 'station code' column, typically the European Environment Agency style identifier such as 'DEBE021' or 'DEBB003'.\"}",
+   [station_name]: "{\"description\": \"Human-readable station name from the 'station name' column as published by UBA.\"}",
+   [station_city]: "{\"description\": \"City or locality from the 'station city' column where the monitoring station is located.\"}",
+   [station_synonym]: "{\"description\": \"Legacy or alternate station short code from the 'station synonym' column. UBA may publish an empty value when no synonym exists.\"}",
+   [active_from]: "{\"description\": \"Station activation date from the 'station active from' column in ISO date form 'YYYY-MM-DD'.\"}",
+   [active_to]: "{\"description\": \"Station deactivation date from the 'station active to' column in ISO date form 'YYYY-MM-DD'. Null means the station is still active.\"}",
+   [longitude]: "{\"description\": \"Station longitude from the 'station longitude' column in WGS84 decimal degrees.\"}",
+   [latitude]: "{\"description\": \"Station latitude from the 'station latitude' column in WGS84 decimal degrees.\"}",
+   [network_id]: "{\"description\": \"Stable numeric monitoring network identifier from the 'network id' column. This maps to the federal state or the UBA-operated network.\"}",
+   [network_code]: "{\"description\": \"Short network code from the 'network code' column, usually a two-letter German state code such as 'BE' or 'BB', or 'UB' for UBA.\"}",
+   [network_name]: "{\"description\": \"Monitoring network name from the 'network name' column, typically the English federal state name such as 'Berlin' or 'Brandenburg'.\"}",
+   [setting_name]: "{\"description\": \"Station environment description from the 'station setting name' column, for example 'urban area'.\"}",
+   [setting_short]: "{\"description\": \"Short station environment code from the 'station setting short name' column, for example 'urban'.\"}",
+   [type_name]: "{\"description\": \"Station type classification from the 'station type name' column, for example 'traffic', 'background', or 'industrial'.\"}",
+   [street]: "{\"description\": \"Street name from the 'station street' column. Null is used when UBA does not publish a street value.\"}",
+   [street_nr]: "{\"description\": \"Street number from the 'station street nr' column. Null is used when the source publishes an empty value.\"}",
+   [zip_code]: "{\"description\": \"Postal code from the 'station zip code' column. Null is used when the source publishes an empty value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_code", "path": "$.station_code"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "station_city", "path": "$.station_city"},
+  {"column": "station_synonym", "path": "$.station_synonym"},
+  {"column": "active_from", "path": "$.active_from"},
+  {"column": "active_to", "path": "$.active_to"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "network_id", "path": "$.network_id"},
+  {"column": "network_code", "path": "$.network_code"},
+  {"column": "network_name", "path": "$.network_name"},
+  {"column": "setting_name", "path": "$.setting_name"},
+  {"column": "setting_short", "path": "$.setting_short"},
+  {"column": "type_name", "path": "$.type_name"},
+  {"column": "street", "path": "$.street"},
+  {"column": "street_nr", "path": "$.street_nr"},
+  {"column": "zip_code", "path": "$.zip_code"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_code", "path": "$.data.station_code"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "station_city", "path": "$.data.station_city"},
+  {"column": "station_synonym", "path": "$.data.station_synonym"},
+  {"column": "active_from", "path": "$.data.active_from"},
+  {"column": "active_to", "path": "$.data.active_to"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "network_id", "path": "$.data.network_id"},
+  {"column": "network_code", "path": "$.data.network_code"},
+  {"column": "network_name", "path": "$.data.network_name"},
+  {"column": "setting_name", "path": "$.data.setting_name"},
+  {"column": "setting_short", "path": "$.data.setting_short"},
+  {"column": "type_name", "path": "$.data.type_name"},
+  {"column": "street", "path": "$.data.street"},
+  {"column": "street_nr", "path": "$.data.street_nr"},
+  {"column": "zip_code", "path": "$.data.zip_code"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.uba.airdata.Station') | project['station_id'] = toint(data.['station_id']),['station_code'] = tostring(data.['station_code']),['station_name'] = tostring(data.['station_name']),['station_city'] = tostring(data.['station_city']),['station_synonym'] = tostring(data.['station_synonym']),['active_from'] = tostring(data.['active_from']),['active_to'] = tostring(data.['active_to']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['network_id'] = toint(data.['network_id']),['network_code'] = tostring(data.['network_code']),['network_name'] = tostring(data.['network_name']),['setting_name'] = tostring(data.['setting_name']),['setting_short'] = tostring(data.['setting_short']),['type_name'] = tostring(data.['type_name']),['street'] = tostring(data.['street']),['street_nr'] = tostring(data.['street_nr']),['zip_code'] = tostring(data.['zip_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Measure] (
+   [station_id]: int,
+   [component_id]: int,
+   [scope_id]: int,
+   [date_start]: string,
+   [date_end]: string,
+   [value]: real,
+   [quality_index]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Measure] docstring "{\"description\": \"Hourly air quality measurement record from the UBA air_data/v3 measures endpoint. The upstream API returns measurements grouped by station and measurement start time for a requested component and averaging scope.\"}";
+
+.alter table [Measure] column-docstrings (
+   [station_id]: "{\"description\": \"Stable numeric UBA station identifier for the station that reported the measurement.\"}",
+   [component_id]: "{\"description\": \"Stable numeric UBA pollutant component identifier from the first element of the measure value array, for example 5 for NO\\u2082.\"}",
+   [scope_id]: "{\"description\": \"Stable numeric UBA averaging scope identifier from the second element of the measure value array. Scope 2 represents the one-hour average used by this bridge.\"}",
+   [date_start]: "{\"description\": \"Measurement period start timestamp from the nested measures object key, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'.\"}",
+   [date_end]: "{\"description\": \"Measurement period end timestamp from the fourth element of the measure value array, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'.\"}",
+   [value]: "{\"description\": \"Measured pollutant value from the third element of the measure value array, expressed in the unit defined by the referenced component. Null means the source returned no numeric measurement value.\"}",
+   [quality_index]: "{\"description\": \"UBA quality or confidence flag from the fifth element of the measure value array. The published documentation commonly references 0 valid, 1 provisional, and 2 estimated; live payloads have also been observed with the code 3.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Measure] ingestion json mapping "Measure_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "component_id", "path": "$.component_id"},
+  {"column": "scope_id", "path": "$.scope_id"},
+  {"column": "date_start", "path": "$.date_start"},
+  {"column": "date_end", "path": "$.date_end"},
+  {"column": "value", "path": "$.value"},
+  {"column": "quality_index", "path": "$.quality_index"},
+]
+```
+
+.create-or-alter table [Measure] ingestion json mapping "Measure_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "component_id", "path": "$.data.component_id"},
+  {"column": "scope_id", "path": "$.data.scope_id"},
+  {"column": "date_start", "path": "$.data.date_start"},
+  {"column": "date_end", "path": "$.data.date_end"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "quality_index", "path": "$.data.quality_index"},
+]
+```
+
+.drop materialized-view MeasureLatest ifexists;
+
+.create materialized-view with (backfill=true) MeasureLatest on table Measure {
+    Measure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Measure] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.uba.airdata.Measure') | project['station_id'] = toint(data.['station_id']),['component_id'] = toint(data.['component_id']),['scope_id'] = toint(data.['scope_id']),['date_start'] = tostring(data.['date_start']),['date_end'] = tostring(data.['date_end']),['value'] = toreal(data.['value']),['quality_index'] = tostring(data.['quality_index']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Component] (
+   [component_id]: int,
+   [component_code]: string,
+   [symbol]: string,
+   [unit]: string,
+   [name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Component] docstring "{\"description\": \"Reference data for a pollutant component from the UBA air_data/v3 components catalog. Each component defines the stable numeric component identifier, short code, published symbol, published unit string, and English display name.\"}";
+
+.alter table [Component] column-docstrings (
+   [component_id]: "{\"description\": \"Stable numeric UBA component identifier from the 'component id' column. This is the CloudEvents subject and Kafka key for component events.\"}",
+   [component_code]: "{\"description\": \"Short UBA component code from the 'component code' column, such as 'PM10', 'NO2', 'O3', or 'PM2'.\"}",
+   [symbol]: "{\"description\": \"Published component symbol from the 'component symbol' column. This may include Unicode subscripts, for example 'PM\\u2081\\u2080' or 'NO\\u2082'.\"}",
+   [unit]: "{\"description\": \"Published measurement unit string from the 'component unit' column, such as '\\u00b5g/m\\u00b3', 'mg/m\\u00b3', or 'ng/m\\u00b3'.\"}",
+   [name]: "{\"description\": \"English component display name from the 'component name' column, such as 'Particulate matter' or 'Nitrogen dioxide'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Component] ingestion json mapping "Component_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "component_id", "path": "$.component_id"},
+  {"column": "component_code", "path": "$.component_code"},
+  {"column": "symbol", "path": "$.symbol"},
+  {"column": "unit", "path": "$.unit"},
+  {"column": "name", "path": "$.name"},
+]
+```
+
+.create-or-alter table [Component] ingestion json mapping "Component_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "component_id", "path": "$.data.component_id"},
+  {"column": "component_code", "path": "$.data.component_code"},
+  {"column": "symbol", "path": "$.data.symbol"},
+  {"column": "unit", "path": "$.data.unit"},
+  {"column": "name", "path": "$.data.name"},
+]
+```
+
+.drop materialized-view ComponentLatest ifexists;
+
+.create materialized-view with (backfill=true) ComponentLatest on table Component {
+    Component | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Component] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'de.uba.airdata.components.Component') | project['component_id'] = toint(data.['component_id']),['component_code'] = tostring(data.['component_code']),['symbol'] = tostring(data.['symbol']),['unit'] = tostring(data.['unit']),['name'] = tostring(data.['name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

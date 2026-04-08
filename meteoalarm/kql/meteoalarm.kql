@@ -1,0 +1,184 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [WeatherWarning] (
+   [identifier]: string,
+   [sender]: string,
+   [sent]: datetime,
+   [status]: string,
+   [msg_type]: string,
+   [scope]: string,
+   [country]: string,
+   [event]: string,
+   [category]: string,
+   [severity]: string,
+   [urgency]: string,
+   [certainty]: string,
+   [headline]: string,
+   [description]: string,
+   [instruction]: string,
+   [effective]: datetime,
+   [onset]: datetime,
+   [expires]: datetime,
+   [web]: string,
+   [contact]: string,
+   [awareness_level]: string,
+   [awareness_type]: string,
+   [area_desc]: string,
+   [geocodes]: string,
+   [language]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherWarning] docstring "{\"description\": \"A severe weather warning from the EUMETNET Meteoalarm system. Contains CAP-structured alert data with awareness level and type, geographic area with EMMA/NUTS geocodes, and multilingual info blocks.\"}";
+
+.alter table [WeatherWarning] column-docstrings (
+   [identifier]: "{\"description\": \"The unique CAP alert identifier assigned by the issuing national meteorological service.\"}",
+   [sender]: "{\"description\": \"The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de').\"}",
+   [sent]: "{\"description\": \"The date and time when the warning was issued, in ISO-8601 format.\"}",
+   [status]: "{\"description\": \"The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.\"}",
+   [msg_type]: "{\"description\": \"The CAP message type indicating the nature of the alert.\"}",
+   [scope]: "{\"description\": \"The CAP scope of the alert. Typically 'Public' for weather warnings.\"}",
+   [country]: "{\"description\": \"The country where the warning applies, derived from the feed name (e.g., 'germany', 'france').\"}",
+   [event]: "{\"description\": \"The weather event description, typically in the national language of the issuing service (e.g., 'STURMB\\u00d6EN', 'Thunderstorm').\"}",
+   [category]: "{\"description\": \"The CAP alert category. 'Met' for meteorological warnings.\"}",
+   [severity]: "{\"description\": \"The CAP severity level indicating the intensity of the weather event.\"}",
+   [urgency]: "{\"description\": \"The CAP urgency level indicating the time-frame for protective action.\"}",
+   [certainty]: "{\"description\": \"The CAP certainty level indicating the confidence in the forecast.\"}",
+   [headline]: "{\"description\": \"A brief human-readable headline summarizing the warning, often in the national language.\"}",
+   [description]: "{\"description\": \"A detailed description of the weather warning, often in the national language.\"}",
+   [instruction]: "{\"description\": \"Recommended protective actions for the public.\"}",
+   [effective]: "{\"description\": \"The date and time when the warning becomes effective, in ISO-8601 format.\"}",
+   [onset]: "{\"description\": \"The expected date and time of onset of the weather event, in ISO-8601 format.\"}",
+   [expires]: "{\"description\": \"The date and time when the warning expires, in ISO-8601 format.\"}",
+   [web]: "{\"description\": \"A URL to the full warning details on the issuing service's website.\"}",
+   [contact]: "{\"description\": \"Contact information for the issuing meteorological service.\"}",
+   [awareness_level]: "{\"description\": \"The Meteoalarm awareness level as a string combining the numeric level and color, e.g., '2; yellow; Moderate'. Values range from '1; green' (no significant weather) to '4; red' (very dangerous).\"}",
+   [awareness_type]: "{\"description\": \"The Meteoalarm awareness type code identifying the hazard, e.g., '1; Wind', '2; Snow/Ice', '3; Thunderstorm', '4; Fog', '5; Extreme high temperature', '6; Extreme low temperature', '7; Coastal Event', '8; Forestfire', '9; Avalanches', '10; Rain', '11; Flooding', '12; Rain-Flood', '13; Coastalevent'.\"}",
+   [area_desc]: "{\"description\": \"A textual description of the affected geographic area.\"}",
+   [geocodes]: "{\"description\": \"A semicolon-separated list of geocode values (EMMA_ID or WARNCELLID) identifying the specific warning zones.\"}",
+   [language]: "{\"description\": \"The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB').\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherWarning] ingestion json mapping "WeatherWarning_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "sender", "path": "$.sender"},
+  {"column": "sent", "path": "$.sent"},
+  {"column": "status", "path": "$.status"},
+  {"column": "msg_type", "path": "$.msg_type"},
+  {"column": "scope", "path": "$.scope"},
+  {"column": "country", "path": "$.country"},
+  {"column": "event", "path": "$.event"},
+  {"column": "category", "path": "$.category"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "urgency", "path": "$.urgency"},
+  {"column": "certainty", "path": "$.certainty"},
+  {"column": "headline", "path": "$.headline"},
+  {"column": "description", "path": "$.description"},
+  {"column": "instruction", "path": "$.instruction"},
+  {"column": "effective", "path": "$.effective"},
+  {"column": "onset", "path": "$.onset"},
+  {"column": "expires", "path": "$.expires"},
+  {"column": "web", "path": "$.web"},
+  {"column": "contact", "path": "$.contact"},
+  {"column": "awareness_level", "path": "$.awareness_level"},
+  {"column": "awareness_type", "path": "$.awareness_type"},
+  {"column": "area_desc", "path": "$.area_desc"},
+  {"column": "geocodes", "path": "$.geocodes"},
+  {"column": "language", "path": "$.language"},
+]
+```
+
+.create-or-alter table [WeatherWarning] ingestion json mapping "WeatherWarning_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "sender", "path": "$.data.sender"},
+  {"column": "sent", "path": "$.data.sent"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "msg_type", "path": "$.data.msg_type"},
+  {"column": "scope", "path": "$.data.scope"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "event", "path": "$.data.event"},
+  {"column": "category", "path": "$.data.category"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "urgency", "path": "$.data.urgency"},
+  {"column": "certainty", "path": "$.data.certainty"},
+  {"column": "headline", "path": "$.data.headline"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "instruction", "path": "$.data.instruction"},
+  {"column": "effective", "path": "$.data.effective"},
+  {"column": "onset", "path": "$.data.onset"},
+  {"column": "expires", "path": "$.data.expires"},
+  {"column": "web", "path": "$.data.web"},
+  {"column": "contact", "path": "$.data.contact"},
+  {"column": "awareness_level", "path": "$.data.awareness_level"},
+  {"column": "awareness_type", "path": "$.data.awareness_type"},
+  {"column": "area_desc", "path": "$.data.area_desc"},
+  {"column": "geocodes", "path": "$.data.geocodes"},
+  {"column": "language", "path": "$.data.language"},
+]
+```
+
+.drop materialized-view WeatherWarningLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherWarningLatest on table WeatherWarning {
+    WeatherWarning | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherWarning] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Meteoalarm.WeatherWarning') | project['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = todatetime(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['scope'] = tostring(data.['scope']),['country'] = tostring(data.['country']),['event'] = tostring(data.['event']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['instruction'] = tostring(data.['instruction']),['effective'] = todatetime(data.['effective']),['onset'] = todatetime(data.['onset']),['expires'] = todatetime(data.['expires']),['web'] = tostring(data.['web']),['contact'] = tostring(data.['contact']),['awareness_level'] = tostring(data.['awareness_level']),['awareness_type'] = tostring(data.['awareness_type']),['area_desc'] = tostring(data.['area_desc']),['geocodes'] = tostring(data.['geocodes']),['language'] = tostring(data.['language']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -1,0 +1,335 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_number]: string,
+   [location]: string,
+   [type]: string,
+   [organisation]: string,
+   [municipality]: string,
+   [province]: string,
+   [longitude]: real,
+   [latitude]: real,
+   [year_start]: string,
+   [components]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Metadata for a Luchtmeetnet measuring station, combining the station list resource with the station detail resource so downstream consumers can interpret later measurements and LKI values in temporal context.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_number]: "{\"description\": \"Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests.\"}",
+   [location]: "{\"description\": \"Human-readable station location label published by Luchtmeetnet.\"}",
+   [type]: "{\"description\": \"Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional.\"}",
+   [organisation]: "{\"description\": \"Organisation operating or publishing the station in the Luchtmeetnet network, such as RIVM or a regional environmental agency.\"}",
+   [municipality]: "{\"description\": \"Municipality name for the station location when present in the detail response; null when the API does not provide one.\"}",
+   [province]: "{\"description\": \"Province name for the station location when present in the detail response; null when the API omits it.\"}",
+   [longitude]: "{\"description\": \"Longitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[0].\"}",
+   [latitude]: "{\"description\": \"Latitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[1].\"}",
+   [year_start]: "{\"description\": \"Year in which the station became operational according to the detail response. The upstream can return an empty string when the start year is not populated.\"}",
+   [components]: "{\"description\": \"Ordered list of formula codes measured at the station, as returned by the station detail endpoint.\", \"schema\": {\"type\": \"array\", \"description\": \"Ordered list of formula codes measured at the station, as returned by the station detail endpoint.\", \"items\": {\"type\": \"string\", \"description\": \"Component formula code measured at this station, such as NO2, PM10, FN, or BCWB.\"}}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.station_number"},
+  {"column": "location", "path": "$.location"},
+  {"column": "type", "path": "$.type"},
+  {"column": "organisation", "path": "$.organisation"},
+  {"column": "municipality", "path": "$.municipality"},
+  {"column": "province", "path": "$.province"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "year_start", "path": "$.year_start"},
+  {"column": "components", "path": "$.components"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.data.station_number"},
+  {"column": "location", "path": "$.data.location"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "organisation", "path": "$.data.organisation"},
+  {"column": "municipality", "path": "$.data.municipality"},
+  {"column": "province", "path": "$.data.province"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "year_start", "path": "$.data.year_start"},
+  {"column": "components", "path": "$.data.components"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nl.rivm.luchtmeetnet.Station') | project['station_number'] = tostring(data.['station_number']),['location'] = tostring(data.['location']),['type'] = tostring(data.['type']),['organisation'] = tostring(data.['organisation']),['municipality'] = tostring(data.['municipality']),['province'] = tostring(data.['province']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['year_start'] = tostring(data.['year_start']),['components'] = todynamic(data.['components']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Measurement] (
+   [station_number]: string,
+   [formula]: string,
+   [value]: real,
+   [timestamp_measured]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Measurement] docstring "{\"description\": \"Hourly Luchtmeetnet measurement for a station and a single component formula. The API returns the latest values on page 1 and orders the series by measurement time.\"}";
+
+.alter table [Measurement] column-docstrings (
+   [station_number]: "{\"description\": \"Stable Luchtmeetnet station code identifying where the measurement was taken.\"}",
+   [formula]: "{\"description\": \"Component formula code identifying what was measured, for example NO2, O3, PM10, or FN.\"}",
+   [value]: "{\"description\": \"Numeric measurement value published by the API for the station and formula at the given timestamp. Standard gaseous and particulate concentration formulas are expressed in micrograms per cubic meter; some specialised formulas such as particle counts or black-carbon indicators may use different domain-specific units, so consumers should interpret the formula-specific semantics together with the component catalog.\"}",
+   [timestamp_measured]: "{\"description\": \"Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.station_number"},
+  {"column": "formula", "path": "$.formula"},
+  {"column": "value", "path": "$.value"},
+  {"column": "timestamp_measured", "path": "$.timestamp_measured"},
+]
+```
+
+.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.data.station_number"},
+  {"column": "formula", "path": "$.data.formula"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "timestamp_measured", "path": "$.data.timestamp_measured"},
+]
+```
+
+.drop materialized-view MeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) MeasurementLatest on table Measurement {
+    Measurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Measurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nl.rivm.luchtmeetnet.Measurement') | project['station_number'] = tostring(data.['station_number']),['formula'] = tostring(data.['formula']),['value'] = toreal(data.['value']),['timestamp_measured'] = tostring(data.['timestamp_measured']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [LKI] (
+   [station_number]: string,
+   [value]: int,
+   [timestamp_measured]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [LKI] docstring "{\"description\": \"Hourly Dutch national air quality index value for a station. The LKI scale runs from 1 to 11, where lower values indicate better air quality.\"}";
+
+.alter table [LKI] column-docstrings (
+   [station_number]: "{\"description\": \"Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated.\"}",
+   [value]: "{\"description\": \"Luchtkwaliteitsindex value on the Dutch 1 to 11 scale, where 1 to 3 is good, 4 to 6 is moderate, 7 to 9 is bad, and 10 to 11 is very bad.\"}",
+   [timestamp_measured]: "{\"description\": \"Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [LKI] ingestion json mapping "LKI_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.station_number"},
+  {"column": "value", "path": "$.value"},
+  {"column": "timestamp_measured", "path": "$.timestamp_measured"},
+]
+```
+
+.create-or-alter table [LKI] ingestion json mapping "LKI_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.data.station_number"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "timestamp_measured", "path": "$.data.timestamp_measured"},
+]
+```
+
+.drop materialized-view LKILatest ifexists;
+
+.create materialized-view with (backfill=true) LKILatest on table LKI {
+    LKI | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [LKI] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nl.rivm.luchtmeetnet.LKI') | project['station_number'] = tostring(data.['station_number']),['value'] = toint(data.['value']),['timestamp_measured'] = tostring(data.['timestamp_measured']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Component] (
+   [formula]: string,
+   [name_nl]: string,
+   [name_en]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Component] docstring "{\"description\": \"Reference definition for a Luchtmeetnet monitored component formula as returned by the component catalog endpoint.\"}";
+
+.alter table [Component] column-docstrings (
+   [formula]: "{\"description\": \"Stable component formula code used in measurement queries and in station component lists, such as NO2, PM25, O3, or BCWB.\"}",
+   [name_nl]: "{\"description\": \"Dutch display name for the component from the component catalog.\"}",
+   [name_en]: "{\"description\": \"English display name for the component from the component catalog.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Component] ingestion json mapping "Component_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "formula", "path": "$.formula"},
+  {"column": "name_nl", "path": "$.name_nl"},
+  {"column": "name_en", "path": "$.name_en"},
+]
+```
+
+.create-or-alter table [Component] ingestion json mapping "Component_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "formula", "path": "$.data.formula"},
+  {"column": "name_nl", "path": "$.data.name_nl"},
+  {"column": "name_en", "path": "$.data.name_en"},
+]
+```
+
+.drop materialized-view ComponentLatest ifexists;
+
+.create materialized-view with (backfill=true) ComponentLatest on table Component {
+    Component | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Component] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nl.rivm.luchtmeetnet.components.Component') | project['formula'] = tostring(data.['formula']),['name_nl'] = tostring(data.['name_nl']),['name_en'] = tostring(data.['name_en']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

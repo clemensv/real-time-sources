@@ -1,0 +1,200 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [DisasterAlert] (
+   [event_type]: string,
+   [event_id]: string,
+   [episode_id]: string,
+   [alert_level]: string,
+   [alert_score]: real,
+   [episode_alert_level]: string,
+   [episode_alert_score]: real,
+   [event_name]: string,
+   [severity_value]: real,
+   [severity_unit]: string,
+   [severity_text]: string,
+   [country]: string,
+   [iso3]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [from_date]: datetime,
+   [to_date]: datetime,
+   [population_value]: real,
+   [population_unit]: string,
+   [vulnerability]: real,
+   [bbox_min_lon]: real,
+   [bbox_max_lon]: real,
+   [bbox_min_lat]: real,
+   [bbox_max_lat]: real,
+   [is_current]: bool,
+   [version]: int,
+   [description]: string,
+   [link]: string,
+   [pub_date]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DisasterAlert] docstring "{\"description\": \"A disaster alert from the Global Disaster Alert and Coordination System (GDACS), representing a single episode of a natural disaster event such as an earthquake, tropical cyclone, flood, volcano eruption, forest fire, or drought.\"}";
+
+.alter table [DisasterAlert] column-docstrings (
+   [event_type]: "{\"description\": \"The type of natural disaster reported by GDACS. EQ = Earthquake, TC = Tropical Cyclone, FL = Flood, VO = Volcano, FF = Forest Fire, DR = Drought.\"}",
+   [event_id]: "{\"description\": \"The unique numeric identifier assigned to the disaster event by GDACS, stable across all episodes and updates for the same event.\"}",
+   [episode_id]: "{\"description\": \"The unique numeric identifier for a specific episode within an event. Events such as tropical cyclones may have multiple episodes as they evolve over time.\"}",
+   [alert_level]: "{\"description\": \"The overall GDACS alert level for the event, indicating the expected humanitarian impact. Green = low impact, Orange = moderate impact, Red = high impact requiring international response.\"}",
+   [alert_score]: "{\"description\": \"A numeric score (0.0\\u20133.0) representing the overall alert severity. Higher values indicate greater expected impact. Derived from severity, population exposure, and vulnerability.\"}",
+   [episode_alert_level]: "{\"description\": \"The GDACS alert level specific to this episode, which may differ from the overall event alert level as conditions evolve.\"}",
+   [episode_alert_score]: "{\"description\": \"A numeric score (0.0\\u20133.0) representing the alert severity for this specific episode.\"}",
+   [event_name]: "{\"description\": \"The human-readable name assigned to the event by GDACS, such as a cyclone name or descriptive location label.\"}",
+   [severity_value]: "{\"description\": \"The numeric severity measure for the event. The meaning depends on the event type: magnitude for earthquakes, wind speed for cyclones, water level for floods, VEI for volcanoes.\"}",
+   [severity_unit]: "{\"description\": \"The unit of measurement for the severity value. Examples: 'M' (Richter magnitude), 'km/h' (wind speed), 'm' (water level), 'VEI' (Volcanic Explosivity Index).\"}",
+   [severity_text]: "{\"description\": \"A human-readable text description of the severity, as provided in the GDACS RSS feed severity element text content.\"}",
+   [country]: "{\"description\": \"The name of the country or countries affected by the disaster event, as reported by GDACS.\"}",
+   [iso3]: "{\"description\": \"The ISO 3166-1 alpha-3 country code(s) for the affected country or countries.\"}",
+   [latitude]: "{\"description\": \"The latitude of the disaster event epicenter or centroid in decimal degrees (WGS84).\"}",
+   [longitude]: "{\"description\": \"The longitude of the disaster event epicenter or centroid in decimal degrees (WGS84).\"}",
+   [from_date]: "{\"description\": \"The date and time when the disaster event was first detected or began, in ISO-8601 format.\"}",
+   [to_date]: "{\"description\": \"The date and time when the disaster event ended or was last observed, in ISO-8601 format. May be absent for ongoing events.\"}",
+   [population_value]: "{\"description\": \"The estimated number of people exposed to or affected by the disaster event, as calculated by GDACS impact models.\"}",
+   [population_unit]: "{\"description\": \"The unit for the population value, typically 'Pop' (population count) or a radius-based exposure descriptor.\"}",
+   [vulnerability]: "{\"description\": \"A GDACS-calculated vulnerability score (0.0\\u20133.0) that reflects the affected region's capacity to cope with the disaster, factoring in infrastructure, governance, and socioeconomic conditions.\"}",
+   [bbox_min_lon]: "{\"description\": \"The minimum longitude of the bounding box that encloses the affected area, in decimal degrees.\"}",
+   [bbox_max_lon]: "{\"description\": \"The maximum longitude of the bounding box that encloses the affected area, in decimal degrees.\"}",
+   [bbox_min_lat]: "{\"description\": \"The minimum latitude of the bounding box that encloses the affected area, in decimal degrees.\"}",
+   [bbox_max_lat]: "{\"description\": \"The maximum latitude of the bounding box that encloses the affected area, in decimal degrees.\"}",
+   [is_current]: "{\"description\": \"Whether this disaster event is currently ongoing according to GDACS. True if the event is still active, false if it has concluded.\"}",
+   [version]: "{\"description\": \"The version number of this event record in GDACS. Incremented each time the event data is updated or revised.\"}",
+   [description]: "{\"description\": \"The RSS item description text, typically a brief HTML or plain-text summary of the disaster event with key impact details.\"}",
+   [link]: "{\"description\": \"The URL linking to the full GDACS event report page for this disaster event.\"}",
+   [pub_date]: "{\"description\": \"The date and time when this RSS item was published or last updated, in ISO-8601 format.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DisasterAlert] ingestion json mapping "DisasterAlert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_type", "path": "$.event_type"},
+  {"column": "event_id", "path": "$.event_id"},
+  {"column": "episode_id", "path": "$.episode_id"},
+  {"column": "alert_level", "path": "$.alert_level"},
+  {"column": "alert_score", "path": "$.alert_score"},
+  {"column": "episode_alert_level", "path": "$.episode_alert_level"},
+  {"column": "episode_alert_score", "path": "$.episode_alert_score"},
+  {"column": "event_name", "path": "$.event_name"},
+  {"column": "severity_value", "path": "$.severity_value"},
+  {"column": "severity_unit", "path": "$.severity_unit"},
+  {"column": "severity_text", "path": "$.severity_text"},
+  {"column": "country", "path": "$.country"},
+  {"column": "iso3", "path": "$.iso3"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "from_date", "path": "$.from_date"},
+  {"column": "to_date", "path": "$.to_date"},
+  {"column": "population_value", "path": "$.population_value"},
+  {"column": "population_unit", "path": "$.population_unit"},
+  {"column": "vulnerability", "path": "$.vulnerability"},
+  {"column": "bbox_min_lon", "path": "$.bbox_min_lon"},
+  {"column": "bbox_max_lon", "path": "$.bbox_max_lon"},
+  {"column": "bbox_min_lat", "path": "$.bbox_min_lat"},
+  {"column": "bbox_max_lat", "path": "$.bbox_max_lat"},
+  {"column": "is_current", "path": "$.is_current"},
+  {"column": "version", "path": "$.version"},
+  {"column": "description", "path": "$.description"},
+  {"column": "link", "path": "$.link"},
+  {"column": "pub_date", "path": "$.pub_date"},
+]
+```
+
+.create-or-alter table [DisasterAlert] ingestion json mapping "DisasterAlert_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_type", "path": "$.data.event_type"},
+  {"column": "event_id", "path": "$.data.event_id"},
+  {"column": "episode_id", "path": "$.data.episode_id"},
+  {"column": "alert_level", "path": "$.data.alert_level"},
+  {"column": "alert_score", "path": "$.data.alert_score"},
+  {"column": "episode_alert_level", "path": "$.data.episode_alert_level"},
+  {"column": "episode_alert_score", "path": "$.data.episode_alert_score"},
+  {"column": "event_name", "path": "$.data.event_name"},
+  {"column": "severity_value", "path": "$.data.severity_value"},
+  {"column": "severity_unit", "path": "$.data.severity_unit"},
+  {"column": "severity_text", "path": "$.data.severity_text"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "iso3", "path": "$.data.iso3"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "from_date", "path": "$.data.from_date"},
+  {"column": "to_date", "path": "$.data.to_date"},
+  {"column": "population_value", "path": "$.data.population_value"},
+  {"column": "population_unit", "path": "$.data.population_unit"},
+  {"column": "vulnerability", "path": "$.data.vulnerability"},
+  {"column": "bbox_min_lon", "path": "$.data.bbox_min_lon"},
+  {"column": "bbox_max_lon", "path": "$.data.bbox_max_lon"},
+  {"column": "bbox_min_lat", "path": "$.data.bbox_min_lat"},
+  {"column": "bbox_max_lat", "path": "$.data.bbox_max_lat"},
+  {"column": "is_current", "path": "$.data.is_current"},
+  {"column": "version", "path": "$.data.version"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "link", "path": "$.data.link"},
+  {"column": "pub_date", "path": "$.data.pub_date"},
+]
+```
+
+.drop materialized-view DisasterAlertLatest ifexists;
+
+.create materialized-view with (backfill=true) DisasterAlertLatest on table DisasterAlert {
+    DisasterAlert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DisasterAlert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GDACS.DisasterAlert') | project['event_type'] = tostring(data.['event_type']),['event_id'] = tostring(data.['event_id']),['episode_id'] = tostring(data.['episode_id']),['alert_level'] = tostring(data.['alert_level']),['alert_score'] = toreal(data.['alert_score']),['episode_alert_level'] = tostring(data.['episode_alert_level']),['episode_alert_score'] = toreal(data.['episode_alert_score']),['event_name'] = tostring(data.['event_name']),['severity_value'] = toreal(data.['severity_value']),['severity_unit'] = tostring(data.['severity_unit']),['severity_text'] = tostring(data.['severity_text']),['country'] = tostring(data.['country']),['iso3'] = tostring(data.['iso3']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['from_date'] = todatetime(data.['from_date']),['to_date'] = todatetime(data.['to_date']),['population_value'] = toreal(data.['population_value']),['population_unit'] = tostring(data.['population_unit']),['vulnerability'] = toreal(data.['vulnerability']),['bbox_min_lon'] = toreal(data.['bbox_min_lon']),['bbox_max_lon'] = toreal(data.['bbox_max_lon']),['bbox_min_lat'] = toreal(data.['bbox_min_lat']),['bbox_max_lat'] = toreal(data.['bbox_max_lat']),['is_current'] = tobool(data.['is_current']),['version'] = toint(data.['version']),['description'] = tostring(data.['description']),['link'] = tostring(data.['link']),['pub_date'] = todatetime(data.['pub_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

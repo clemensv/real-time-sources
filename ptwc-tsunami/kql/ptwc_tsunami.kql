@@ -1,0 +1,136 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [TsunamiBulletin] (
+   [bulletin_id]: string,
+   [feed]: string,
+   [center]: string,
+   [title]: string,
+   [updated]: datetime,
+   [latitude]: real,
+   [longitude]: real,
+   [category]: string,
+   [magnitude]: string,
+   [affected_region]: string,
+   [note]: string,
+   [bulletin_url]: string,
+   [cap_url]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TsunamiBulletin] docstring "{\"description\": \"A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.\"}";
+
+.alter table [TsunamiBulletin] column-docstrings (
+   [bulletin_id]: "{\"description\": \"The unique bulletin identifier as a URN UUID from the Atom entry (e.g., 'urn:uuid:7a6b0584-8201-4ef6-aac6-e512d77cbfb9').\"}",
+   [feed]: "{\"description\": \"The feed this bulletin was obtained from.\"}",
+   [center]: "{\"description\": \"The issuing tsunami warning center name (e.g., 'NWS National Tsunami Warning Center Palmer AK', 'NWS PACIFIC TSUNAMI WARNING CENTER HONOLULU HI').\"}",
+   [title]: "{\"description\": \"The title of the bulletin, typically the location of the seismic event (e.g., '60 miles SW of Buldir I., Alaska').\"}",
+   [updated]: "{\"description\": \"The date and time when the bulletin was last updated, in ISO-8601 format.\"}",
+   [latitude]: "{\"description\": \"The latitude of the seismic event epicenter in decimal degrees.\"}",
+   [longitude]: "{\"description\": \"The longitude of the seismic event epicenter in decimal degrees.\"}",
+   [category]: "{\"description\": \"The tsunami bulletin category indicating the level of threat.\"}",
+   [magnitude]: "{\"description\": \"The preliminary earthquake magnitude and type (e.g., '5.2(mb)', '7.1(Mw)').\"}",
+   [affected_region]: "{\"description\": \"The affected region description from the bulletin summary.\"}",
+   [note]: "{\"description\": \"Additional notes from the bulletin (e.g., 'There is NO tsunami danger from this earthquake.').\"}",
+   [bulletin_url]: "{\"description\": \"URL to the full text bulletin on tsunami.gov.\"}",
+   [cap_url]: "{\"description\": \"URL to the CAP XML document for this bulletin.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TsunamiBulletin] ingestion json mapping "TsunamiBulletin_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "bulletin_id", "path": "$.bulletin_id"},
+  {"column": "feed", "path": "$.feed"},
+  {"column": "center", "path": "$.center"},
+  {"column": "title", "path": "$.title"},
+  {"column": "updated", "path": "$.updated"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "category", "path": "$.category"},
+  {"column": "magnitude", "path": "$.magnitude"},
+  {"column": "affected_region", "path": "$.affected_region"},
+  {"column": "note", "path": "$.note"},
+  {"column": "bulletin_url", "path": "$.bulletin_url"},
+  {"column": "cap_url", "path": "$.cap_url"},
+]
+```
+
+.create-or-alter table [TsunamiBulletin] ingestion json mapping "TsunamiBulletin_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "bulletin_id", "path": "$.data.bulletin_id"},
+  {"column": "feed", "path": "$.data.feed"},
+  {"column": "center", "path": "$.data.center"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "updated", "path": "$.data.updated"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "category", "path": "$.data.category"},
+  {"column": "magnitude", "path": "$.data.magnitude"},
+  {"column": "affected_region", "path": "$.data.affected_region"},
+  {"column": "note", "path": "$.data.note"},
+  {"column": "bulletin_url", "path": "$.data.bulletin_url"},
+  {"column": "cap_url", "path": "$.data.cap_url"},
+]
+```
+
+.drop materialized-view TsunamiBulletinLatest ifexists;
+
+.create materialized-view with (backfill=true) TsunamiBulletinLatest on table TsunamiBulletin {
+    TsunamiBulletin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TsunamiBulletin] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'PTWC.TsunamiBulletin') | project['bulletin_id'] = tostring(data.['bulletin_id']),['feed'] = tostring(data.['feed']),['center'] = tostring(data.['center']),['title'] = tostring(data.['title']),['updated'] = todatetime(data.['updated']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['category'] = tostring(data.['category']),['magnitude'] = tostring(data.['magnitude']),['affected_region'] = tostring(data.['affected_region']),['note'] = tostring(data.['note']),['bulletin_url'] = tostring(data.['bulletin_url']),['cap_url'] = tostring(data.['cap_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

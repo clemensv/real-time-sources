@@ -1,13 +1,6 @@
-$scriptPath = Split-Path -Parent $PSCommandPath
-$jsonFiles = Get-ChildItem -Path "$scriptPath/../xreg" -Filter "*.avsc" | Select-Object -ExpandProperty FullName
-$outputFile = ".schemas.avsc"
+$scriptDir = Split-Path -Parent $PSCommandPath
+$inputFile = Join-Path $scriptDir "..\xreg\pegelonline.xreg.json"
+$kqlFile = Join-Path $scriptDir "pegelonline.kql"
+$generatorScript = Join-Path $scriptDir "..\..\tools\generate-kql-from-xreg.ps1"
 
-$mergedArray = @()
-foreach ($file in $jsonFiles) {
-    $jsonContent = Get-Content $file -Raw | ConvertFrom-Json
-    $mergedArray += $jsonContent
-}
-$mergedArray | ConvertTo-Json -Depth 20 | Out-File $outputFile -Encoding UTF8
-
-avrotize a2k $outputFile --emit-cloudevents-dispatch --emit-cloudevents-columns > pegelonline.kql
-Remove-Item $outputFile
+& $generatorScript -XregPath $inputFile -OutputPath $kqlFile

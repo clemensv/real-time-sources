@@ -1,0 +1,180 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [CivilWarning] (
+   [warning_id]: string,
+   [provider]: string,
+   [version]: int,
+   [sender]: string,
+   [sender_name]: string,
+   [sent]: datetime,
+   [status]: string,
+   [msg_type]: string,
+   [scope]: string,
+   [references]: string,
+   [event]: string,
+   [event_code]: string,
+   [category]: string,
+   [severity]: string,
+   [urgency]: string,
+   [certainty]: string,
+   [headline]: string,
+   [description]: string,
+   [instruction]: string,
+   [web]: string,
+   [contact]: string,
+   [area_desc]: string,
+   [verwaltungsbereiche]: string,
+   [language]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [CivilWarning] docstring "{\"description\": \"A civil protection warning from Germany's NINA/BBK system. Contains CAP-structured alert data with multi-language info blocks, BBK event codes, and German administrative area geocodes (Verwaltungsbereiche).\"}";
+
+.alter table [CivilWarning] column-docstrings (
+   [warning_id]: "{\"description\": \"The unique warning identifier assigned by the NINA/BBK system (e.g., 'mow.DE-HE-DA-W184-20240723-000').\"}",
+   [provider]: "{\"description\": \"The NINA provider that issued the warning.\"}",
+   [version]: "{\"description\": \"The version number of this warning, incremented with each update.\"}",
+   [sender]: "{\"description\": \"The identifier of the issuing authority (e.g., 'DE-HE-DA-W184').\"}",
+   [sender_name]: "{\"description\": \"The human-readable long name of the issuing authority (e.g., 'Integrierte Leitstelle Stadt Darmstadt').\"}",
+   [sent]: "{\"description\": \"The date and time when the warning was issued, in ISO-8601 format.\"}",
+   [status]: "{\"description\": \"The CAP alert status.\"}",
+   [msg_type]: "{\"description\": \"The CAP message type indicating the nature of the warning.\"}",
+   [scope]: "{\"description\": \"The CAP scope of the warning. Typically 'Public'.\"}",
+   [references]: "{\"description\": \"CAP references to prior related warnings, in the format 'sender,identifier,sent'.\"}",
+   [event]: "{\"description\": \"The event type description (e.g., 'Gefahreninformation', 'Hochwasserinformation').\"}",
+   [event_code]: "{\"description\": \"The BBK event code identifying the hazard type (e.g., 'BBK-EVC-067' for animal disease, 'BBK-EVC-045' for flood).\"}",
+   [category]: "{\"description\": \"The CAP alert category.\"}",
+   [severity]: "{\"description\": \"The CAP severity level.\"}",
+   [urgency]: "{\"description\": \"The CAP urgency level.\"}",
+   [certainty]: "{\"description\": \"The CAP certainty level.\"}",
+   [headline]: "{\"description\": \"A brief human-readable headline summarizing the warning.\"}",
+   [description]: "{\"description\": \"A detailed description of the warning situation.\"}",
+   [instruction]: "{\"description\": \"Recommended protective actions for the public.\"}",
+   [web]: "{\"description\": \"A URL to further information about the warning.\"}",
+   [contact]: "{\"description\": \"Contact information for the issuing authority.\"}",
+   [area_desc]: "{\"description\": \"A textual description of the affected geographic area.\"}",
+   [verwaltungsbereiche]: "{\"description\": \"Comma-separated German administrative area codes (Amtliche Gemeindeschl\\u00fcssel) affected by the warning.\"}",
+   [language]: "{\"description\": \"The language of the info block used to populate this event (e.g., 'de', 'EN').\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [CivilWarning] ingestion json mapping "CivilWarning_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "warning_id", "path": "$.warning_id"},
+  {"column": "provider", "path": "$.provider"},
+  {"column": "version", "path": "$.version"},
+  {"column": "sender", "path": "$.sender"},
+  {"column": "sender_name", "path": "$.sender_name"},
+  {"column": "sent", "path": "$.sent"},
+  {"column": "status", "path": "$.status"},
+  {"column": "msg_type", "path": "$.msg_type"},
+  {"column": "scope", "path": "$.scope"},
+  {"column": "references", "path": "$.references"},
+  {"column": "event", "path": "$.event"},
+  {"column": "event_code", "path": "$.event_code"},
+  {"column": "category", "path": "$.category"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "urgency", "path": "$.urgency"},
+  {"column": "certainty", "path": "$.certainty"},
+  {"column": "headline", "path": "$.headline"},
+  {"column": "description", "path": "$.description"},
+  {"column": "instruction", "path": "$.instruction"},
+  {"column": "web", "path": "$.web"},
+  {"column": "contact", "path": "$.contact"},
+  {"column": "area_desc", "path": "$.area_desc"},
+  {"column": "verwaltungsbereiche", "path": "$.verwaltungsbereiche"},
+  {"column": "language", "path": "$.language"},
+]
+```
+
+.create-or-alter table [CivilWarning] ingestion json mapping "CivilWarning_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "warning_id", "path": "$.data.warning_id"},
+  {"column": "provider", "path": "$.data.provider"},
+  {"column": "version", "path": "$.data.version"},
+  {"column": "sender", "path": "$.data.sender"},
+  {"column": "sender_name", "path": "$.data.sender_name"},
+  {"column": "sent", "path": "$.data.sent"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "msg_type", "path": "$.data.msg_type"},
+  {"column": "scope", "path": "$.data.scope"},
+  {"column": "references", "path": "$.data.references"},
+  {"column": "event", "path": "$.data.event"},
+  {"column": "event_code", "path": "$.data.event_code"},
+  {"column": "category", "path": "$.data.category"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "urgency", "path": "$.data.urgency"},
+  {"column": "certainty", "path": "$.data.certainty"},
+  {"column": "headline", "path": "$.data.headline"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "instruction", "path": "$.data.instruction"},
+  {"column": "web", "path": "$.data.web"},
+  {"column": "contact", "path": "$.data.contact"},
+  {"column": "area_desc", "path": "$.data.area_desc"},
+  {"column": "verwaltungsbereiche", "path": "$.data.verwaltungsbereiche"},
+  {"column": "language", "path": "$.data.language"},
+]
+```
+
+.drop materialized-view CivilWarningLatest ifexists;
+
+.create materialized-view with (backfill=true) CivilWarningLatest on table CivilWarning {
+    CivilWarning | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [CivilWarning] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NINA.CivilWarning') | project['warning_id'] = tostring(data.['warning_id']),['provider'] = tostring(data.['provider']),['version'] = toint(data.['version']),['sender'] = tostring(data.['sender']),['sender_name'] = tostring(data.['sender_name']),['sent'] = todatetime(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['scope'] = tostring(data.['scope']),['references'] = tostring(data.['references']),['event'] = tostring(data.['event']),['event_code'] = tostring(data.['event_code']),['category'] = tostring(data.['category']),['severity'] = tostring(data.['severity']),['urgency'] = tostring(data.['urgency']),['certainty'] = tostring(data.['certainty']),['headline'] = tostring(data.['headline']),['description'] = tostring(data.['description']),['instruction'] = tostring(data.['instruction']),['web'] = tostring(data.['web']),['contact'] = tostring(data.['contact']),['area_desc'] = tostring(data.['area_desc']),['verwaltungsbereiche'] = tostring(data.['verwaltungsbereiche']),['language'] = tostring(data.['language']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

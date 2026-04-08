@@ -10,7 +10,6 @@
     [data]: dynamic
 );
 
-
 .create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
 ```
 [
@@ -25,7 +24,6 @@
   {"column": "data", "path": "$.data"}
 ]
 ```
-
 
 .create-merge table [Post] (
    [uri]: string,
@@ -56,15 +54,15 @@
    [uri]: "{\"description\": \"AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)\"}",
    [cid]: "{\"description\": \"Content Identifier (CID) of the post\"}",
    [did]: "{\"description\": \"Decentralized Identifier of the author\"}",
-   [handle]: "{\"description\": \"Handle of the author\", \"schema\": [\"null\", \"string\"]}",
+   [handle]: "{\"description\": \"Handle of the author\"}",
    [text]: "{\"description\": \"Text content of the post\"}",
-   [langs]: "{\"description\": \"Language codes for the post\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
-   [reply_parent]: "{\"description\": \"AT-URI of parent post if this is a reply\", \"schema\": [\"null\", \"string\"]}",
-   [reply_root]: "{\"description\": \"AT-URI of root post in thread\", \"schema\": [\"null\", \"string\"]}",
-   [embed_type]: "{\"description\": \"Type of embedded content (images, external, record, etc.)\", \"schema\": [\"null\", \"string\"]}",
-   [embed_uri]: "{\"description\": \"URI of embedded content\", \"schema\": [\"null\", \"string\"]}",
-   [facets]: "{\"description\": \"JSON string of rich text facets (mentions, links, tags)\", \"schema\": [\"null\", \"string\"]}",
-   [tags]: "{\"description\": \"Hashtags in the post\", \"schema\": {\"type\": \"array\", \"items\": \"string\"}}",
+   [langs]: "{\"description\": \"Language codes for the post\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"default\": null, \"description\": \"Language codes for the post\"}}",
+   [reply_parent]: "{\"description\": \"AT-URI of parent post if this is a reply\"}",
+   [reply_root]: "{\"description\": \"AT-URI of root post in thread\"}",
+   [embed_type]: "{\"description\": \"Type of embedded content (images, external, record, etc.)\"}",
+   [embed_uri]: "{\"description\": \"URI of embedded content\"}",
+   [facets]: "{\"description\": \"JSON string of rich text facets (mentions, links, tags)\"}",
+   [tags]: "{\"description\": \"Hashtags in the post\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"default\": null, \"description\": \"Hashtags in the post\"}}",
    [created_at]: "{\"description\": \"ISO 8601 timestamp of post creation\"}",
    [indexed_at]: "{\"description\": \"ISO 8601 timestamp of when the post was indexed\"}",
    [seq]: "{\"description\": \"Firehose sequence number\"}",
@@ -101,7 +99,6 @@
 ]
 ```
 
-
 .create-or-alter table [Post] ingestion json mapping "Post_json_ce_structured"
 ```
 [
@@ -127,7 +124,6 @@
   {"column": "seq", "path": "$.data.seq"},
 ]
 ```
-
 
 .drop materialized-view PostLatest ifexists;
 
@@ -169,7 +165,7 @@
    [uri]: "{\"description\": \"AT-URI of the like record\"}",
    [cid]: "{\"description\": \"Content Identifier of the like\"}",
    [did]: "{\"description\": \"DID of the user who liked\"}",
-   [handle]: "{\"description\": \"Handle of the user who liked\", \"schema\": [\"null\", \"string\"]}",
+   [handle]: "{\"description\": \"Handle of the user who liked\"}",
    [subject_uri]: "{\"description\": \"AT-URI of the liked post\"}",
    [subject_cid]: "{\"description\": \"CID of the liked post\"}",
    [created_at]: "{\"description\": \"ISO 8601 timestamp of like creation\"}",
@@ -202,7 +198,6 @@
 ]
 ```
 
-
 .create-or-alter table [Like] ingestion json mapping "Like_json_ce_structured"
 ```
 [
@@ -222,7 +217,6 @@
   {"column": "seq", "path": "$.data.seq"},
 ]
 ```
-
 
 .drop materialized-view LikeLatest ifexists;
 
@@ -264,7 +258,7 @@
    [uri]: "{\"description\": \"AT-URI of the repost record\"}",
    [cid]: "{\"description\": \"Content Identifier of the repost\"}",
    [did]: "{\"description\": \"DID of the user who reposted\"}",
-   [handle]: "{\"description\": \"Handle of the user who reposted\", \"schema\": [\"null\", \"string\"]}",
+   [handle]: "{\"description\": \"Handle of the user who reposted\"}",
    [subject_uri]: "{\"description\": \"AT-URI of the reposted post\"}",
    [subject_cid]: "{\"description\": \"CID of the reposted post\"}",
    [created_at]: "{\"description\": \"ISO 8601 timestamp of repost creation\"}",
@@ -297,7 +291,6 @@
 ]
 ```
 
-
 .create-or-alter table [Repost] ingestion json mapping "Repost_json_ce_structured"
 ```
 [
@@ -317,7 +310,6 @@
   {"column": "seq", "path": "$.data.seq"},
 ]
 ```
-
 
 .drop materialized-view RepostLatest ifexists;
 
@@ -359,9 +351,9 @@
    [uri]: "{\"description\": \"AT-URI of the follow record\"}",
    [cid]: "{\"description\": \"Content Identifier of the follow\"}",
    [did]: "{\"description\": \"DID of the follower\"}",
-   [handle]: "{\"description\": \"Handle of the follower\", \"schema\": [\"null\", \"string\"]}",
+   [handle]: "{\"description\": \"Handle of the follower\"}",
    [subject]: "{\"description\": \"DID of the followed user\"}",
-   [subject_handle]: "{\"description\": \"Handle of the followed user\", \"schema\": [\"null\", \"string\"]}",
+   [subject_handle]: "{\"description\": \"Handle of the followed user\"}",
    [created_at]: "{\"description\": \"ISO 8601 timestamp of follow creation\"}",
    [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
    [seq]: "{\"description\": \"Firehose sequence number\"}",
@@ -392,7 +384,6 @@
 ]
 ```
 
-
 .create-or-alter table [Follow] ingestion json mapping "Follow_json_ce_structured"
 ```
 [
@@ -412,7 +403,6 @@
   {"column": "seq", "path": "$.data.seq"},
 ]
 ```
-
 
 .drop materialized-view FollowLatest ifexists;
 
@@ -454,9 +444,9 @@
    [uri]: "{\"description\": \"AT-URI of the block record\"}",
    [cid]: "{\"description\": \"Content Identifier of the block\"}",
    [did]: "{\"description\": \"DID of the blocker\"}",
-   [handle]: "{\"description\": \"Handle of the blocker\", \"schema\": [\"null\", \"string\"]}",
+   [handle]: "{\"description\": \"Handle of the blocker\"}",
    [subject]: "{\"description\": \"DID of the blocked user\"}",
-   [subject_handle]: "{\"description\": \"Handle of the blocked user\", \"schema\": [\"null\", \"string\"]}",
+   [subject_handle]: "{\"description\": \"Handle of the blocked user\"}",
    [created_at]: "{\"description\": \"ISO 8601 timestamp of block creation\"}",
    [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
    [seq]: "{\"description\": \"Firehose sequence number\"}",
@@ -487,7 +477,6 @@
 ]
 ```
 
-
 .create-or-alter table [Block] ingestion json mapping "Block_json_ce_structured"
 ```
 [
@@ -507,7 +496,6 @@
   {"column": "seq", "path": "$.data.seq"},
 ]
 ```
-
 
 .drop materialized-view BlockLatest ifexists;
 
@@ -548,10 +536,10 @@
 .alter table [Profile] column-docstrings (
    [did]: "{\"description\": \"Decentralized Identifier\"}",
    [handle]: "{\"description\": \"User handle\"}",
-   [display_name]: "{\"description\": \"Display name\", \"schema\": [\"null\", \"string\"]}",
-   [description]: "{\"description\": \"Bio/description\", \"schema\": [\"null\", \"string\"]}",
-   [avatar]: "{\"description\": \"Avatar image URL\", \"schema\": [\"null\", \"string\"]}",
-   [banner]: "{\"description\": \"Banner image URL\", \"schema\": [\"null\", \"string\"]}",
+   [display_name]: "{\"description\": \"Display name\"}",
+   [description]: "{\"description\": \"Bio/description\"}",
+   [avatar]: "{\"description\": \"Avatar image URL\"}",
+   [banner]: "{\"description\": \"Banner image URL\"}",
    [created_at]: "{\"description\": \"ISO 8601 timestamp of profile creation\"}",
    [indexed_at]: "{\"description\": \"ISO 8601 timestamp of indexing\"}",
    [seq]: "{\"description\": \"Firehose sequence number\"}",
@@ -582,7 +570,6 @@
 ]
 ```
 
-
 .create-or-alter table [Profile] ingestion json mapping "Profile_json_ce_structured"
 ```
 [
@@ -603,7 +590,6 @@
 ]
 ```
 
-
 .drop materialized-view ProfileLatest ifexists;
 
 .create materialized-view with (backfill=true) ProfileLatest on table Profile {
@@ -620,3 +606,4 @@
   "PropagateIngestionProperties": true,
 }]
 ```
+

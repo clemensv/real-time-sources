@@ -1,0 +1,241 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [SensorInfo] (
+   [sensor_id]: int,
+   [sensor_type_id]: int,
+   [sensor_type_name]: string,
+   [sensor_type_manufacturer]: string,
+   [pin]: string,
+   [location_id]: int,
+   [latitude]: real,
+   [longitude]: real,
+   [altitude]: real,
+   [country]: string,
+   [indoor]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SensorInfo] docstring "{\"description\": \"Schema for Sensor.Community sensor reference data, capturing the stable sensor identifier, hardware type, and latest known location metadata published in the Airrohr API payload.\"}";
+
+.alter table [SensorInfo] column-docstrings (
+   [sensor_id]: "{\"description\": \"Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key.\"}",
+   [sensor_type_id]: "{\"description\": \"Numeric upstream identifier for the sensor hardware type, such as the Sensor.Community type id for SDS011 or BME280.\"}",
+   [sensor_type_name]: "{\"description\": \"Upstream sensor hardware type name published under sensor.sensor_type.name, for example SDS011, SPS30, BME280, or DHT22.\"}",
+   [sensor_type_manufacturer]: "{\"description\": \"Manufacturer name published by Sensor.Community for the sensor hardware type, taken from sensor.sensor_type.manufacturer.\"}",
+   [pin]: "{\"description\": \"Sensor pin designation reported by the upstream payload under sensor.pin.\"}",
+   [location_id]: "{\"description\": \"Stable integer identifier of the Sensor.Community location object associated with the reading.\"}",
+   [latitude]: "{\"description\": \"Latitude of the sensor location in WGS84 decimal degrees.\"}",
+   [longitude]: "{\"description\": \"Longitude of the sensor location in WGS84 decimal degrees.\"}",
+   [altitude]: "{\"description\": \"Altitude of the sensor location in meters above sea level when supplied by the upstream payload.\"}",
+   [country]: "{\"description\": \"ISO 3166-1 alpha-2 country code published in the Sensor.Community location record.\"}",
+   [indoor]: "{\"description\": \"True when the upstream location.indoor flag marks the sensor as indoor; false when the sensor is marked as outdoor.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SensorInfo] ingestion json mapping "SensorInfo_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "sensor_type_id", "path": "$.sensor_type_id"},
+  {"column": "sensor_type_name", "path": "$.sensor_type_name"},
+  {"column": "sensor_type_manufacturer", "path": "$.sensor_type_manufacturer"},
+  {"column": "pin", "path": "$.pin"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "altitude", "path": "$.altitude"},
+  {"column": "country", "path": "$.country"},
+  {"column": "indoor", "path": "$.indoor"},
+]
+```
+
+.create-or-alter table [SensorInfo] ingestion json mapping "SensorInfo_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "sensor_type_id", "path": "$.data.sensor_type_id"},
+  {"column": "sensor_type_name", "path": "$.data.sensor_type_name"},
+  {"column": "sensor_type_manufacturer", "path": "$.data.sensor_type_manufacturer"},
+  {"column": "pin", "path": "$.data.pin"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "altitude", "path": "$.data.altitude"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "indoor", "path": "$.data.indoor"},
+]
+```
+
+.drop materialized-view SensorInfoLatest ifexists;
+
+.create materialized-view with (backfill=true) SensorInfoLatest on table SensorInfo {
+    SensorInfo | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SensorInfo] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'io.sensor.community.SensorInfo') | project['sensor_id'] = toint(data.['sensor_id']),['sensor_type_id'] = toint(data.['sensor_type_id']),['sensor_type_name'] = tostring(data.['sensor_type_name']),['sensor_type_manufacturer'] = tostring(data.['sensor_type_manufacturer']),['pin'] = tostring(data.['pin']),['location_id'] = toint(data.['location_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['altitude'] = toreal(data.['altitude']),['country'] = tostring(data.['country']),['indoor'] = tobool(data.['indoor']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SensorReading] (
+   [sensor_id]: int,
+   [timestamp]: string,
+   [sensor_type_name]: string,
+   [pm10_ug_m3]: real,
+   [pm2_5_ug_m3]: real,
+   [pm1_0_ug_m3]: real,
+   [pm4_0_ug_m3]: real,
+   [temperature_celsius]: real,
+   [humidity_percent]: real,
+   [pressure_pa]: real,
+   [pressure_sealevel_pa]: real,
+   [noise_laeq_db]: real,
+   [noise_la_min_db]: real,
+   [noise_la_max_db]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SensorReading] docstring "{\"description\": \"Schema for the latest normalized Sensor.Community telemetry reading for a single sensor and timestamp, covering particulate matter, temperature, humidity, pressure, and supported noise measurements.\"}";
+
+.alter table [SensorReading] column-docstrings (
+   [sensor_id]: "{\"description\": \"Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key.\"}",
+   [timestamp]: "{\"description\": \"UTC timestamp published by Sensor.Community for the reading in the format YYYY-MM-DD HH:mm:ss.\"}",
+   [sensor_type_name]: "{\"description\": \"Upstream sensor hardware type name published under sensor.sensor_type.name for the device that emitted the reading.\"}",
+   [pm10_ug_m3]: "{\"description\": \"Particulate matter mass concentration for PM10 in micrograms per cubic meter when the upstream feed publishes value type P1.\"}",
+   [pm2_5_ug_m3]: "{\"description\": \"Particulate matter mass concentration for PM2.5 in micrograms per cubic meter when the upstream feed publishes value type P2.\"}",
+   [pm1_0_ug_m3]: "{\"description\": \"Particulate matter mass concentration for PM1.0 in micrograms per cubic meter when the upstream feed publishes value type P0, typically for SPS30-family sensors.\"}",
+   [pm4_0_ug_m3]: "{\"description\": \"Particulate matter mass concentration for PM4.0 in micrograms per cubic meter when the upstream feed publishes value type P4, typically for SPS30-family sensors.\"}",
+   [temperature_celsius]: "{\"description\": \"Ambient temperature measurement in degrees Celsius when the upstream feed publishes value type temperature.\"}",
+   [humidity_percent]: "{\"description\": \"Relative humidity in percent when the upstream feed publishes value type humidity.\"}",
+   [pressure_pa]: "{\"description\": \"Atmospheric pressure in pascals when the upstream feed publishes value type pressure.\"}",
+   [pressure_sealevel_pa]: "{\"description\": \"Atmospheric pressure reduced to sea level in pascals when the upstream feed publishes value type pressure_at_sealevel.\"}",
+   [noise_laeq_db]: "{\"description\": \"Equivalent continuous sound level in A-weighted decibels when the upstream feed publishes value type noise_LAeq.\"}",
+   [noise_la_min_db]: "{\"description\": \"Minimum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_min.\"}",
+   [noise_la_max_db]: "{\"description\": \"Maximum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_max.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SensorReading] ingestion json mapping "SensorReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "sensor_type_name", "path": "$.sensor_type_name"},
+  {"column": "pm10_ug_m3", "path": "$.pm10_ug_m3"},
+  {"column": "pm2_5_ug_m3", "path": "$.pm2_5_ug_m3"},
+  {"column": "pm1_0_ug_m3", "path": "$.pm1_0_ug_m3"},
+  {"column": "pm4_0_ug_m3", "path": "$.pm4_0_ug_m3"},
+  {"column": "temperature_celsius", "path": "$.temperature_celsius"},
+  {"column": "humidity_percent", "path": "$.humidity_percent"},
+  {"column": "pressure_pa", "path": "$.pressure_pa"},
+  {"column": "pressure_sealevel_pa", "path": "$.pressure_sealevel_pa"},
+  {"column": "noise_laeq_db", "path": "$.noise_laeq_db"},
+  {"column": "noise_la_min_db", "path": "$.noise_la_min_db"},
+  {"column": "noise_la_max_db", "path": "$.noise_la_max_db"},
+]
+```
+
+.create-or-alter table [SensorReading] ingestion json mapping "SensorReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "sensor_type_name", "path": "$.data.sensor_type_name"},
+  {"column": "pm10_ug_m3", "path": "$.data.pm10_ug_m3"},
+  {"column": "pm2_5_ug_m3", "path": "$.data.pm2_5_ug_m3"},
+  {"column": "pm1_0_ug_m3", "path": "$.data.pm1_0_ug_m3"},
+  {"column": "pm4_0_ug_m3", "path": "$.data.pm4_0_ug_m3"},
+  {"column": "temperature_celsius", "path": "$.data.temperature_celsius"},
+  {"column": "humidity_percent", "path": "$.data.humidity_percent"},
+  {"column": "pressure_pa", "path": "$.data.pressure_pa"},
+  {"column": "pressure_sealevel_pa", "path": "$.data.pressure_sealevel_pa"},
+  {"column": "noise_laeq_db", "path": "$.data.noise_laeq_db"},
+  {"column": "noise_la_min_db", "path": "$.data.noise_la_min_db"},
+  {"column": "noise_la_max_db", "path": "$.data.noise_la_max_db"},
+]
+```
+
+.drop materialized-view SensorReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) SensorReadingLatest on table SensorReading {
+    SensorReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SensorReading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'io.sensor.community.SensorReading') | project['sensor_id'] = toint(data.['sensor_id']),['timestamp'] = tostring(data.['timestamp']),['sensor_type_name'] = tostring(data.['sensor_type_name']),['pm10_ug_m3'] = toreal(data.['pm10_ug_m3']),['pm2_5_ug_m3'] = toreal(data.['pm2_5_ug_m3']),['pm1_0_ug_m3'] = toreal(data.['pm1_0_ug_m3']),['pm4_0_ug_m3'] = toreal(data.['pm4_0_ug_m3']),['temperature_celsius'] = toreal(data.['temperature_celsius']),['humidity_percent'] = toreal(data.['humidity_percent']),['pressure_pa'] = toreal(data.['pressure_pa']),['pressure_sealevel_pa'] = toreal(data.['pressure_sealevel_pa']),['noise_laeq_db'] = toreal(data.['noise_laeq_db']),['noise_la_min_db'] = toreal(data.['noise_la_min_db']),['noise_la_max_db'] = toreal(data.['noise_la_max_db']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

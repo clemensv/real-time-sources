@@ -1,0 +1,173 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [code_station]: string,
+   [libelle_station]: string,
+   [code_site]: string,
+   [longitude_station]: real,
+   [latitude_station]: real,
+   [libelle_cours_eau]: string,
+   [libelle_commune]: string,
+   [code_departement]: string,
+   [en_service]: bool,
+   [date_ouverture_station]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Station\"}";
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "code_station", "path": "$.code_station"},
+  {"column": "libelle_station", "path": "$.libelle_station"},
+  {"column": "code_site", "path": "$.code_site"},
+  {"column": "longitude_station", "path": "$.longitude_station"},
+  {"column": "latitude_station", "path": "$.latitude_station"},
+  {"column": "libelle_cours_eau", "path": "$.libelle_cours_eau"},
+  {"column": "libelle_commune", "path": "$.libelle_commune"},
+  {"column": "code_departement", "path": "$.code_departement"},
+  {"column": "en_service", "path": "$.en_service"},
+  {"column": "date_ouverture_station", "path": "$.date_ouverture_station"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "code_station", "path": "$.data.code_station"},
+  {"column": "libelle_station", "path": "$.data.libelle_station"},
+  {"column": "code_site", "path": "$.data.code_site"},
+  {"column": "longitude_station", "path": "$.data.longitude_station"},
+  {"column": "latitude_station", "path": "$.data.latitude_station"},
+  {"column": "libelle_cours_eau", "path": "$.data.libelle_cours_eau"},
+  {"column": "libelle_commune", "path": "$.data.libelle_commune"},
+  {"column": "code_departement", "path": "$.data.code_departement"},
+  {"column": "en_service", "path": "$.data.en_service"},
+  {"column": "date_ouverture_station", "path": "$.data.date_ouverture_station"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station') | project['code_station'] = tostring(data.['code_station']),['libelle_station'] = tostring(data.['libelle_station']),['code_site'] = tostring(data.['code_site']),['longitude_station'] = toreal(data.['longitude_station']),['latitude_station'] = toreal(data.['latitude_station']),['libelle_cours_eau'] = tostring(data.['libelle_cours_eau']),['libelle_commune'] = tostring(data.['libelle_commune']),['code_departement'] = tostring(data.['code_departement']),['en_service'] = tobool(data.['en_service']),['date_ouverture_station'] = tostring(data.['date_ouverture_station']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Observation] (
+   [code_station]: string,
+   [date_obs]: datetime,
+   [resultat_obs]: real,
+   [grandeur_hydro]: string,
+   [libelle_methode_obs]: string,
+   [libelle_qualification_obs]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Observation] docstring "{\"description\": \"Observation\"}";
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "code_station", "path": "$.code_station"},
+  {"column": "date_obs", "path": "$.date_obs"},
+  {"column": "resultat_obs", "path": "$.resultat_obs"},
+  {"column": "grandeur_hydro", "path": "$.grandeur_hydro"},
+  {"column": "libelle_methode_obs", "path": "$.libelle_methode_obs"},
+  {"column": "libelle_qualification_obs", "path": "$.libelle_qualification_obs"},
+]
+```
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "code_station", "path": "$.data.code_station"},
+  {"column": "date_obs", "path": "$.data.date_obs"},
+  {"column": "resultat_obs", "path": "$.data.resultat_obs"},
+  {"column": "grandeur_hydro", "path": "$.data.grandeur_hydro"},
+  {"column": "libelle_methode_obs", "path": "$.data.libelle_methode_obs"},
+  {"column": "libelle_qualification_obs", "path": "$.data.libelle_qualification_obs"},
+]
+```
+
+.drop materialized-view ObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) ObservationLatest on table Observation {
+    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Observation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation') | project['code_station'] = tostring(data.['code_station']),['date_obs'] = todatetime(data.['date_obs']),['resultat_obs'] = toreal(data.['resultat_obs']),['grandeur_hydro'] = tostring(data.['grandeur_hydro']),['libelle_methode_obs'] = tostring(data.['libelle_methode_obs']),['libelle_qualification_obs'] = tostring(data.['libelle_qualification_obs']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -10,7 +10,6 @@
     [data]: dynamic
 );
 
-
 .create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
 ```
 [
@@ -26,6 +25,256 @@
 ]
 ```
 
+.create-merge table [VehiclePosition] (
+   [trip]: dynamic,
+   [vehicle]: dynamic,
+   [position]: dynamic,
+   [current_stop_sequence]: int,
+   [stop_id]: string,
+   [current_status]: string,
+   [timestamp]: long,
+   [congestion_level]: string,
+   [occupancy_status]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [VehiclePosition] docstring "{\"description\": \"Realtime positioning information for a given vehicle.\"}";
+
+.alter table [VehiclePosition] column-docstrings (
+   [trip]: "{\"description\": \"The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance.\"}",
+   [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\"}",
+   [position]: "{\"description\": \"Current position of this vehicle. The stop sequence index of the current stop. The meaning of\"}",
+   [current_stop_sequence]: "{\"description\": \"current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in\"}",
+   [stop_id]: "{\"description\": \"the corresponding GTFS feed.\"}",
+   [current_status]: "{\"description\": \"The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time\"}",
+   [timestamp]: "{\"description\": \"(i.e., number of seconds since January 1st 1970 00:00:00 UTC).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.trip"},
+  {"column": "vehicle", "path": "$.vehicle"},
+  {"column": "position", "path": "$.position"},
+  {"column": "current_stop_sequence", "path": "$.current_stop_sequence"},
+  {"column": "stop_id", "path": "$.stop_id"},
+  {"column": "current_status", "path": "$.current_status"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "congestion_level", "path": "$.congestion_level"},
+  {"column": "occupancy_status", "path": "$.occupancy_status"},
+]
+```
+
+.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.data.trip"},
+  {"column": "vehicle", "path": "$.data.vehicle"},
+  {"column": "position", "path": "$.data.position"},
+  {"column": "current_stop_sequence", "path": "$.data.current_stop_sequence"},
+  {"column": "stop_id", "path": "$.data.stop_id"},
+  {"column": "current_status", "path": "$.data.current_status"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "congestion_level", "path": "$.data.congestion_level"},
+  {"column": "occupancy_status", "path": "$.data.occupancy_status"},
+]
+```
+
+.drop materialized-view VehiclePositionLatest ifexists;
+
+.create materialized-view with (backfill=true) VehiclePositionLatest on table VehiclePosition {
+    VehiclePosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [VehiclePosition] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition') | project['trip'] = todynamic(data.['trip']),['vehicle'] = todynamic(data.['vehicle']),['position'] = todynamic(data.['position']),['current_stop_sequence'] = toint(data.['current_stop_sequence']),['stop_id'] = tostring(data.['stop_id']),['current_status'] = tostring(data.['current_status']),['timestamp'] = tolong(data.['timestamp']),['congestion_level'] = tostring(data.['congestion_level']),['occupancy_status'] = tostring(data.['occupancy_status']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [TripUpdate] (
+   [trip]: dynamic,
+   [vehicle]: dynamic,
+   [stop_time_update]: dynamic,
+   [timestamp]: long,
+   [delay]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TripUpdate] docstring "{\"description\": \"Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop o...\"}";
+
+.alter table [TripUpdate] column-docstrings (
+   [trip]: "{\"description\": \"The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule.\"}",
+   [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\"}",
+   [stop_time_update]: "{\"description\": \"Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+   [timestamp]: "{\"description\": \"time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip.  Delay should only be\"}",
+   [delay]: "{\"description\": \"specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.trip"},
+  {"column": "vehicle", "path": "$.vehicle"},
+  {"column": "stop_time_update", "path": "$.stop_time_update"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "delay", "path": "$.delay"},
+]
+```
+
+.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip", "path": "$.data.trip"},
+  {"column": "vehicle", "path": "$.data.vehicle"},
+  {"column": "stop_time_update", "path": "$.data.stop_time_update"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "delay", "path": "$.data.delay"},
+]
+```
+
+.drop materialized-view TripUpdateLatest ifexists;
+
+.create materialized-view with (backfill=true) TripUpdateLatest on table TripUpdate {
+    TripUpdate | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TripUpdate] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Trip.TripUpdate') | project['trip'] = todynamic(data.['trip']),['vehicle'] = todynamic(data.['vehicle']),['stop_time_update'] = todynamic(data.['stop_time_update']),['timestamp'] = tolong(data.['timestamp']),['delay'] = toint(data.['delay']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Alert] (
+   [active_period]: dynamic,
+   [informed_entity]: dynamic,
+   [cause]: string,
+   [effect]: string,
+   [url]: dynamic,
+   [header_text]: dynamic,
+   [description_text]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Alert] docstring "{\"description\": \"An alert, indicating some sort of incident in the public transit network.\"}";
+
+.alter table [Alert] column-docstrings (
+   [active_period]: "{\"description\": \"Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/GeneralTransitFeedRealTime/Alert/TimeRange\"}, \"description\": \"Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.\"}}",
+   [informed_entity]: "{\"description\": \"Entities whose users we should notify of this alert.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/GeneralTransitFeedRealTime/Alert/EntitySelector\"}, \"description\": \"Entities whose users we should notify of this alert.\"}}",
+   [url]: "{\"description\": \"The URL which provides additional information about the alert.\"}",
+   [header_text]: "{\"description\": \"Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the\"}",
+   [description_text]: "{\"description\": \"description should add to the information of the header.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Alert] ingestion json mapping "Alert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "active_period", "path": "$.active_period"},
+  {"column": "informed_entity", "path": "$.informed_entity"},
+  {"column": "cause", "path": "$.cause"},
+  {"column": "effect", "path": "$.effect"},
+  {"column": "url", "path": "$.url"},
+  {"column": "header_text", "path": "$.header_text"},
+  {"column": "description_text", "path": "$.description_text"},
+]
+```
+
+.create-or-alter table [Alert] ingestion json mapping "Alert_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "active_period", "path": "$.data.active_period"},
+  {"column": "informed_entity", "path": "$.data.informed_entity"},
+  {"column": "cause", "path": "$.data.cause"},
+  {"column": "effect", "path": "$.data.effect"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "header_text", "path": "$.data.header_text"},
+  {"column": "description_text", "path": "$.data.description_text"},
+]
+```
+
+.drop materialized-view AlertLatest ifexists;
+
+.create materialized-view with (backfill=true) AlertLatest on table Alert {
+    Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Alert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Alert.Alert') | project['active_period'] = todynamic(data.['active_period']),['informed_entity'] = todynamic(data.['informed_entity']),['cause'] = tostring(data.['cause']),['effect'] = tostring(data.['effect']),['url'] = todynamic(data.['url']),['header_text'] = todynamic(data.['header_text']),['description_text'] = todynamic(data.['description_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
 
 .create-merge table [Agency] (
    [agencyId]: string,
@@ -50,10 +299,10 @@
    [agencyName]: "{\"description\": \"Full name of the transit agency.\"}",
    [agencyUrl]: "{\"description\": \"URL of the transit agency.\"}",
    [agencyTimezone]: "{\"description\": \"Timezone where the transit agency is located.\"}",
-   [agencyLang]: "{\"description\": \"Primary language used by this transit agency.\", \"schema\": [\"null\", \"string\"]}",
-   [agencyPhone]: "{\"description\": \"A voice telephone number for the specified agency.\", \"schema\": [\"null\", \"string\"]}",
-   [agencyFareUrl]: "{\"description\": \"URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.\", \"schema\": [\"null\", \"string\"]}",
-   [agencyEmail]: "{\"description\": \"Email address actively monitored by the agency\\u2019s customer service department.\", \"schema\": [\"null\", \"string\"]}",
+   [agencyLang]: "{\"description\": \"Primary language used by this transit agency.\"}",
+   [agencyPhone]: "{\"description\": \"A voice telephone number for the specified agency.\"}",
+   [agencyFareUrl]: "{\"description\": \"URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.\"}",
+   [agencyEmail]: "{\"description\": \"Email address actively monitored by the agency\\u2019s customer service department.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -80,7 +329,6 @@
 ]
 ```
 
-
 .create-or-alter table [Agency] ingestion json mapping "Agency_json_ce_structured"
 ```
 [
@@ -99,7 +347,6 @@
   {"column": "agencyEmail", "path": "$.data.agencyEmail"},
 ]
 ```
-
 
 .drop materialized-view AgencyLatest ifexists;
 
@@ -135,8 +382,8 @@
 .alter table [Areas] column-docstrings (
    [areaId]: "{\"description\": \"Identifies an area.\"}",
    [areaName]: "{\"description\": \"Name of the area.\"}",
-   [areaDesc]: "{\"description\": \"Description of the area.\", \"schema\": [\"null\", \"string\"]}",
-   [areaUrl]: "{\"description\": \"URL of a web page about the area.\", \"schema\": [\"null\", \"string\"]}",
+   [areaDesc]: "{\"description\": \"Description of the area.\"}",
+   [areaUrl]: "{\"description\": \"URL of a web page about the area.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -159,7 +406,6 @@
 ]
 ```
 
-
 .create-or-alter table [Areas] ingestion json mapping "Areas_json_ce_structured"
 ```
 [
@@ -174,7 +420,6 @@
   {"column": "areaUrl", "path": "$.data.areaUrl"},
 ]
 ```
-
 
 .drop materialized-view AreasLatest ifexists;
 
@@ -215,17 +460,17 @@
 .alter table [Attributions] docstring "{\"description\": \"Provides information about the attributions.\"}";
 
 .alter table [Attributions] column-docstrings (
-   [attributionId]: "{\"description\": \"Identifies an attribution for the dataset.\", \"schema\": [\"null\", \"string\"]}",
-   [agencyId]: "{\"description\": \"Identifies the agency associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
-   [routeId]: "{\"description\": \"Identifies the route associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
-   [tripId]: "{\"description\": \"Identifies the trip associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [attributionId]: "{\"description\": \"Identifies an attribution for the dataset.\"}",
+   [agencyId]: "{\"description\": \"Identifies the agency associated with the attribution.\"}",
+   [routeId]: "{\"description\": \"Identifies the route associated with the attribution.\"}",
+   [tripId]: "{\"description\": \"Identifies the trip associated with the attribution.\"}",
    [organizationName]: "{\"description\": \"Name of the organization associated with the attribution.\"}",
-   [isProducer]: "{\"description\": \"Indicates if the organization is a producer.\", \"schema\": [\"null\", \"int\"]}",
-   [isOperator]: "{\"description\": \"Indicates if the organization is an operator.\", \"schema\": [\"null\", \"int\"]}",
-   [isAuthority]: "{\"description\": \"Indicates if the organization is an authority.\", \"schema\": [\"null\", \"int\"]}",
-   [attributionUrl]: "{\"description\": \"URL of a web page about the attribution.\", \"schema\": [\"null\", \"string\"]}",
-   [attributionEmail]: "{\"description\": \"Email address associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
-   [attributionPhone]: "{\"description\": \"Phone number associated with the attribution.\", \"schema\": [\"null\", \"string\"]}",
+   [isProducer]: "{\"description\": \"Indicates if the organization is a producer.\"}",
+   [isOperator]: "{\"description\": \"Indicates if the organization is an operator.\"}",
+   [isAuthority]: "{\"description\": \"Indicates if the organization is an authority.\"}",
+   [attributionUrl]: "{\"description\": \"URL of a web page about the attribution.\"}",
+   [attributionEmail]: "{\"description\": \"Email address associated with the attribution.\"}",
+   [attributionPhone]: "{\"description\": \"Phone number associated with the attribution.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -255,7 +500,6 @@
 ]
 ```
 
-
 .create-or-alter table [Attributions] ingestion json mapping "Attributions_json_ce_structured"
 ```
 [
@@ -277,7 +521,6 @@
   {"column": "attributionPhone", "path": "$.data.attributionPhone"},
 ]
 ```
-
 
 .drop materialized-view AttributionsLatest ifexists;
 
@@ -313,8 +556,8 @@
 .alter table [BookingRules] column-docstrings (
    [bookingRuleId]: "{\"description\": \"Identifies a booking rule.\"}",
    [bookingRuleName]: "{\"description\": \"Name of the booking rule.\"}",
-   [bookingRuleDesc]: "{\"description\": \"Description of the booking rule.\", \"schema\": [\"null\", \"string\"]}",
-   [bookingRuleUrl]: "{\"description\": \"URL of a web page about the booking rule.\", \"schema\": [\"null\", \"string\"]}",
+   [bookingRuleDesc]: "{\"description\": \"Description of the booking rule.\"}",
+   [bookingRuleUrl]: "{\"description\": \"URL of a web page about the booking rule.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -337,7 +580,6 @@
 ]
 ```
 
-
 .create-or-alter table [BookingRules] ingestion json mapping "BookingRules_json_ce_structured"
 ```
 [
@@ -353,7 +595,6 @@
 ]
 ```
 
-
 .drop materialized-view BookingRulesLatest ifexists;
 
 .create materialized-view with (backfill=true) BookingRulesLatest on table BookingRules {
@@ -365,7 +606,7 @@
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedStatic.BookingRules') | project['bookingRuleId'] = tostring(data.['bookingRuleId']),['bookingRuleName'] = tostring(data.['bookingRuleName']),['bookingRuleDesc'] = tostring(data.['bookingRuleDesc']),['bookingRuleUrl'] = tostring(data.['bookingRuleUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeed.BookingRules') | project['bookingRuleId'] = tostring(data.['bookingRuleId']),['bookingRuleName'] = tostring(data.['bookingRuleName']),['bookingRuleDesc'] = tostring(data.['bookingRuleDesc']),['bookingRuleUrl'] = tostring(data.['bookingRuleUrl']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
@@ -393,9 +634,9 @@
    [price]: "{\"description\": \"Fare price, in the unit specified by currency_type.\"}",
    [currencyType]: "{\"description\": \"Currency type used to pay the fare.\"}",
    [paymentMethod]: "{\"description\": \"When 0, fare must be paid on board. When 1, fare must be paid before boarding.\"}",
-   [transfers]: "{\"description\": \"Specifies the number of transfers permitted on this fare.\", \"schema\": [\"null\", \"int\"]}",
-   [agencyId]: "{\"description\": \"Identifies the agency for the specified fare.\", \"schema\": [\"null\", \"string\"]}",
-   [transferDuration]: "{\"description\": \"Length of time in seconds before a transfer expires.\", \"schema\": [\"null\", \"long\"]}",
+   [transfers]: "{\"description\": \"Specifies the number of transfers permitted on this fare.\"}",
+   [agencyId]: "{\"description\": \"Identifies the agency for the specified fare.\"}",
+   [transferDuration]: "{\"description\": \"Length of time in seconds before a transfer expires.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -421,7 +662,6 @@
 ]
 ```
 
-
 .create-or-alter table [FareAttributes] ingestion json mapping "FareAttributes_json_ce_structured"
 ```
 [
@@ -439,7 +679,6 @@
   {"column": "transferDuration", "path": "$.data.transferDuration"},
 ]
 ```
-
 
 .drop materialized-view FareAttributesLatest ifexists;
 
@@ -477,10 +716,10 @@
 .alter table [FareLegRules] column-docstrings (
    [fareLegRuleId]: "{\"description\": \"Identifies a fare leg rule.\"}",
    [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
-   [legGroupId]: "{\"description\": \"Identifies a group of legs.\", \"schema\": [\"null\", \"string\"]}",
-   [networkId]: "{\"description\": \"Identifies a network.\", \"schema\": [\"null\", \"string\"]}",
-   [fromAreaId]: "{\"description\": \"Identifies the origin area.\", \"schema\": [\"null\", \"string\"]}",
-   [toAreaId]: "{\"description\": \"Identifies the destination area.\", \"schema\": [\"null\", \"string\"]}",
+   [legGroupId]: "{\"description\": \"Identifies a group of legs.\"}",
+   [networkId]: "{\"description\": \"Identifies a network.\"}",
+   [fromAreaId]: "{\"description\": \"Identifies the origin area.\"}",
+   [toAreaId]: "{\"description\": \"Identifies the destination area.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -505,7 +744,6 @@
 ]
 ```
 
-
 .create-or-alter table [FareLegRules] ingestion json mapping "FareLegRules_json_ce_structured"
 ```
 [
@@ -522,7 +760,6 @@
   {"column": "toAreaId", "path": "$.data.toAreaId"},
 ]
 ```
-
 
 .drop materialized-view FareLegRulesLatest ifexists;
 
@@ -558,8 +795,8 @@
 .alter table [FareMedia] column-docstrings (
    [fareMediaId]: "{\"description\": \"Identifies a fare media.\"}",
    [fareMediaName]: "{\"description\": \"Name of the fare media.\"}",
-   [fareMediaDesc]: "{\"description\": \"Description of the fare media.\", \"schema\": [\"null\", \"string\"]}",
-   [fareMediaUrl]: "{\"description\": \"URL of a web page about the fare media.\", \"schema\": [\"null\", \"string\"]}",
+   [fareMediaDesc]: "{\"description\": \"Description of the fare media.\"}",
+   [fareMediaUrl]: "{\"description\": \"URL of a web page about the fare media.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -582,7 +819,6 @@
 ]
 ```
 
-
 .create-or-alter table [FareMedia] ingestion json mapping "FareMedia_json_ce_structured"
 ```
 [
@@ -597,7 +833,6 @@
   {"column": "fareMediaUrl", "path": "$.data.fareMediaUrl"},
 ]
 ```
-
 
 .drop materialized-view FareMediaLatest ifexists;
 
@@ -633,8 +868,8 @@
 .alter table [FareProducts] column-docstrings (
    [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
    [fareProductName]: "{\"description\": \"Name of the fare product.\"}",
-   [fareProductDesc]: "{\"description\": \"Description of the fare product.\", \"schema\": [\"null\", \"string\"]}",
-   [fareProductUrl]: "{\"description\": \"URL of a web page about the fare product.\", \"schema\": [\"null\", \"string\"]}",
+   [fareProductDesc]: "{\"description\": \"Description of the fare product.\"}",
+   [fareProductUrl]: "{\"description\": \"URL of a web page about the fare product.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -657,7 +892,6 @@
 ]
 ```
 
-
 .create-or-alter table [FareProducts] ingestion json mapping "FareProducts_json_ce_structured"
 ```
 [
@@ -672,7 +906,6 @@
   {"column": "fareProductUrl", "path": "$.data.fareProductUrl"},
 ]
 ```
-
 
 .drop materialized-view FareProductsLatest ifexists;
 
@@ -708,10 +941,10 @@
 
 .alter table [FareRules] column-docstrings (
    [fareId]: "{\"description\": \"Identifies a fare class.\"}",
-   [routeId]: "{\"description\": \"Identifies a route associated with the fare.\", \"schema\": [\"null\", \"string\"]}",
-   [originId]: "{\"description\": \"Identifies the fare zone of the origin.\", \"schema\": [\"null\", \"string\"]}",
-   [destinationId]: "{\"description\": \"Identifies the fare zone of the destination.\", \"schema\": [\"null\", \"string\"]}",
-   [containsId]: "{\"description\": \"Identifies the fare zone that a rider will enter or leave.\", \"schema\": [\"null\", \"string\"]}",
+   [routeId]: "{\"description\": \"Identifies a route associated with the fare.\"}",
+   [originId]: "{\"description\": \"Identifies the fare zone of the origin.\"}",
+   [destinationId]: "{\"description\": \"Identifies the fare zone of the destination.\"}",
+   [containsId]: "{\"description\": \"Identifies the fare zone that a rider will enter or leave.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -735,7 +968,6 @@
 ]
 ```
 
-
 .create-or-alter table [FareRules] ingestion json mapping "FareRules_json_ce_structured"
 ```
 [
@@ -751,7 +983,6 @@
   {"column": "containsId", "path": "$.data.containsId"},
 ]
 ```
-
 
 .drop materialized-view FareRulesLatest ifexists;
 
@@ -790,11 +1021,11 @@
 .alter table [FareTransferRules] column-docstrings (
    [fareTransferRuleId]: "{\"description\": \"Identifies a fare transfer rule.\"}",
    [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
-   [transferCount]: "{\"description\": \"Number of transfers permitted.\", \"schema\": [\"null\", \"int\"]}",
-   [fromLegGroupId]: "{\"description\": \"Identifies the leg group from which the transfer starts.\", \"schema\": [\"null\", \"string\"]}",
-   [toLegGroupId]: "{\"description\": \"Identifies the leg group to which the transfer applies.\", \"schema\": [\"null\", \"string\"]}",
-   [duration]: "{\"description\": \"Length of time in seconds before a transfer expires.\", \"schema\": [\"null\", \"long\"]}",
-   [durationType]: "{\"description\": \"Type of duration for the transfer.\", \"schema\": [\"null\", \"string\"]}",
+   [transferCount]: "{\"description\": \"Number of transfers permitted.\"}",
+   [fromLegGroupId]: "{\"description\": \"Identifies the leg group from which the transfer starts.\"}",
+   [toLegGroupId]: "{\"description\": \"Identifies the leg group to which the transfer applies.\"}",
+   [duration]: "{\"description\": \"Length of time in seconds before a transfer expires.\"}",
+   [durationType]: "{\"description\": \"Type of duration for the transfer.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -820,7 +1051,6 @@
 ]
 ```
 
-
 .create-or-alter table [FareTransferRules] ingestion json mapping "FareTransferRules_json_ce_structured"
 ```
 [
@@ -838,7 +1068,6 @@
   {"column": "durationType", "path": "$.data.durationType"},
 ]
 ```
-
 
 .drop materialized-view FareTransferRulesLatest ifexists;
 
@@ -880,12 +1109,12 @@
    [feedPublisherName]: "{\"description\": \"Full name of the organization that publishes the feed.\"}",
    [feedPublisherUrl]: "{\"description\": \"URL of the feed publishing organization's website.\"}",
    [feedLang]: "{\"description\": \"Default language for the text in this feed.\"}",
-   [defaultLang]: "{\"description\": \"Specifies the language used when the data consumer doesn\\u2019t know the language of the user.\", \"schema\": [\"null\", \"string\"]}",
-   [feedStartDate]: "{\"description\": \"The start date for the dataset.\", \"schema\": [\"null\", \"string\"]}",
-   [feedEndDate]: "{\"description\": \"The end date for the dataset.\", \"schema\": [\"null\", \"string\"]}",
-   [feedVersion]: "{\"description\": \"Version string that indicates the current version of their GTFS dataset.\", \"schema\": [\"null\", \"string\"]}",
-   [feedContactEmail]: "{\"description\": \"Email address for communication with the data publisher.\", \"schema\": [\"null\", \"string\"]}",
-   [feedContactUrl]: "{\"description\": \"URL for a web page that allows a feed consumer to contact the data publisher.\", \"schema\": [\"null\", \"string\"]}",
+   [defaultLang]: "{\"description\": \"Specifies the language used when the data consumer doesn\\u2019t know the language of the user.\"}",
+   [feedStartDate]: "{\"description\": \"The start date for the dataset.\"}",
+   [feedEndDate]: "{\"description\": \"The end date for the dataset.\"}",
+   [feedVersion]: "{\"description\": \"Version string that indicates the current version of their GTFS dataset.\"}",
+   [feedContactEmail]: "{\"description\": \"Email address for communication with the data publisher.\"}",
+   [feedContactUrl]: "{\"description\": \"URL for a web page that allows a feed consumer to contact the data publisher.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -913,7 +1142,6 @@
 ]
 ```
 
-
 .create-or-alter table [FeedInfo] ingestion json mapping "FeedInfo_json_ce_structured"
 ```
 [
@@ -933,7 +1161,6 @@
   {"column": "feedContactUrl", "path": "$.data.feedContactUrl"},
 ]
 ```
-
 
 .drop materialized-view FeedInfoLatest ifexists;
 
@@ -972,7 +1199,7 @@
    [startTime]: "{\"description\": \"Time at which service begins with the specified frequency.\"}",
    [endTime]: "{\"description\": \"Time at which service ends with the specified frequency.\"}",
    [headwaySecs]: "{\"description\": \"Time between departures from the same stop (headway) for this trip, in seconds.\"}",
-   [exactTimes]: "{\"description\": \"When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled.\", \"schema\": [\"null\", \"int\"]}",
+   [exactTimes]: "{\"description\": \"When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -996,7 +1223,6 @@
 ]
 ```
 
-
 .create-or-alter table [Frequencies] ingestion json mapping "Frequencies_json_ce_structured"
 ```
 [
@@ -1012,7 +1238,6 @@
   {"column": "exactTimes", "path": "$.data.exactTimes"},
 ]
 ```
-
 
 .drop materialized-view FrequenciesLatest ifexists;
 
@@ -1047,7 +1272,7 @@
 .alter table [Levels] column-docstrings (
    [levelId]: "{\"description\": \"Identifies a level.\"}",
    [levelIndex]: "{\"description\": \"Numeric index of the level that indicates relative position of the level in relation to other levels.\"}",
-   [levelName]: "{\"description\": \"Name of the level.\", \"schema\": [\"null\", \"string\"]}",
+   [levelName]: "{\"description\": \"Name of the level.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1069,7 +1294,6 @@
 ]
 ```
 
-
 .create-or-alter table [Levels] ingestion json mapping "Levels_json_ce_structured"
 ```
 [
@@ -1083,7 +1307,6 @@
   {"column": "levelName", "path": "$.data.levelName"},
 ]
 ```
-
 
 .drop materialized-view LevelsLatest ifexists;
 
@@ -1140,7 +1363,6 @@
 ]
 ```
 
-
 .create-or-alter table [LocationGeoJson] ingestion json mapping "LocationGeoJson_json_ce_structured"
 ```
 [
@@ -1154,7 +1376,6 @@
   {"column": "locationGeoJsonData", "path": "$.data.locationGeoJsonData"},
 ]
 ```
-
 
 .drop materialized-view LocationGeoJsonLatest ifexists;
 
@@ -1190,8 +1411,8 @@
 .alter table [LocationGroups] column-docstrings (
    [locationGroupId]: "{\"description\": \"Identifies a location group.\"}",
    [locationGroupName]: "{\"description\": \"Name of the location group.\"}",
-   [locationGroupDesc]: "{\"description\": \"Description of the location group.\", \"schema\": [\"null\", \"string\"]}",
-   [locationGroupUrl]: "{\"description\": \"URL of a web page about the location group.\", \"schema\": [\"null\", \"string\"]}",
+   [locationGroupDesc]: "{\"description\": \"Description of the location group.\"}",
+   [locationGroupUrl]: "{\"description\": \"URL of a web page about the location group.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1214,7 +1435,6 @@
 ]
 ```
 
-
 .create-or-alter table [LocationGroups] ingestion json mapping "LocationGroups_json_ce_structured"
 ```
 [
@@ -1229,7 +1449,6 @@
   {"column": "locationGroupUrl", "path": "$.data.locationGroupUrl"},
 ]
 ```
-
 
 .drop materialized-view LocationGroupsLatest ifexists;
 
@@ -1286,7 +1505,6 @@
 ]
 ```
 
-
 .create-or-alter table [LocationGroupStores] ingestion json mapping "LocationGroupStores_json_ce_structured"
 ```
 [
@@ -1300,7 +1518,6 @@
   {"column": "storeId", "path": "$.data.storeId"},
 ]
 ```
-
 
 .drop materialized-view LocationGroupStoresLatest ifexists;
 
@@ -1336,8 +1553,8 @@
 .alter table [Networks] column-docstrings (
    [networkId]: "{\"description\": \"Identifies a network.\"}",
    [networkName]: "{\"description\": \"Name of the network.\"}",
-   [networkDesc]: "{\"description\": \"Description of the network.\", \"schema\": [\"null\", \"string\"]}",
-   [networkUrl]: "{\"description\": \"URL of a web page about the network.\", \"schema\": [\"null\", \"string\"]}",
+   [networkDesc]: "{\"description\": \"Description of the network.\"}",
+   [networkUrl]: "{\"description\": \"URL of a web page about the network.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1360,7 +1577,6 @@
 ]
 ```
 
-
 .create-or-alter table [Networks] ingestion json mapping "Networks_json_ce_structured"
 ```
 [
@@ -1375,7 +1591,6 @@
   {"column": "networkUrl", "path": "$.data.networkUrl"},
 ]
 ```
-
 
 .drop materialized-view NetworksLatest ifexists;
 
@@ -1422,13 +1637,13 @@
    [toStopId]: "{\"description\": \"Identifies a stop or station where the pathway ends.\"}",
    [pathwayMode]: "{\"description\": \"Type of pathway between the specified (from_stop_id, to_stop_id) pair.\"}",
    [isBidirectional]: "{\"description\": \"When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id).\"}",
-   [length]: "{\"description\": \"Length of the pathway, in meters.\", \"schema\": [\"null\", \"double\"]}",
-   [traversalTime]: "{\"description\": \"Average time, in seconds, needed to walk through the pathway.\", \"schema\": [\"null\", \"int\"]}",
-   [stairCount]: "{\"description\": \"Number of stairs of the pathway.\", \"schema\": [\"null\", \"int\"]}",
-   [maxSlope]: "{\"description\": \"Maximum slope of the pathway, in percent.\", \"schema\": [\"null\", \"double\"]}",
-   [minWidth]: "{\"description\": \"Minimum width of the pathway, in meters.\", \"schema\": [\"null\", \"double\"]}",
-   [signpostedAs]: "{\"description\": \"Signposting information for the pathway.\", \"schema\": [\"null\", \"string\"]}",
-   [reversedSignpostedAs]: "{\"description\": \"Reversed signposting information for the pathway.\", \"schema\": [\"null\", \"string\"]}",
+   [length]: "{\"description\": \"Length of the pathway, in meters.\"}",
+   [traversalTime]: "{\"description\": \"Average time, in seconds, needed to walk through the pathway.\"}",
+   [stairCount]: "{\"description\": \"Number of stairs of the pathway.\"}",
+   [maxSlope]: "{\"description\": \"Maximum slope of the pathway, in percent.\"}",
+   [minWidth]: "{\"description\": \"Minimum width of the pathway, in meters.\"}",
+   [signpostedAs]: "{\"description\": \"Signposting information for the pathway.\"}",
+   [reversedSignpostedAs]: "{\"description\": \"Reversed signposting information for the pathway.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1459,7 +1674,6 @@
 ]
 ```
 
-
 .create-or-alter table [Pathways] ingestion json mapping "Pathways_json_ce_structured"
 ```
 [
@@ -1482,7 +1696,6 @@
   {"column": "reversedSignpostedAs", "path": "$.data.reversedSignpostedAs"},
 ]
 ```
-
 
 .drop materialized-view PathwaysLatest ifexists;
 
@@ -1539,7 +1752,6 @@
 ]
 ```
 
-
 .create-or-alter table [RouteNetworks] ingestion json mapping "RouteNetworks_json_ce_structured"
 ```
 [
@@ -1553,7 +1765,6 @@
   {"column": "networkId", "path": "$.data.networkId"},
 ]
 ```
-
 
 .drop materialized-view RouteNetworksLatest ifexists;
 
@@ -1597,18 +1808,18 @@
 
 .alter table [Routes] column-docstrings (
    [routeId]: "{\"description\": \"Identifies a route.\"}",
-   [agencyId]: "{\"description\": \"Agency for the specified route.\", \"schema\": [\"null\", \"string\"]}",
-   [routeShortName]: "{\"description\": \"Short name of a route.\", \"schema\": [\"null\", \"string\"]}",
-   [routeLongName]: "{\"description\": \"Full name of a route.\", \"schema\": [\"null\", \"string\"]}",
-   [routeDesc]: "{\"description\": \"Description of a route that provides useful, quality information.\", \"schema\": [\"null\", \"string\"]}",
-   [routeType]: "{\"description\": \"Indicates the type of transportation used on a route.\", \"schema\": {\"type\": \"enum\", \"name\": \"RouteType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"TRAM\", \"SUBWAY\", \"RAIL\", \"BUS\", \"FERRY\", \"CABLE_TRAM\", \"AERIAL_LIFT\", \"FUNICULAR\", \"RESERVED_1\", \"RESERVED_2\", \"RESERVED_3\", \"TROLLEYBUS\", \"MONORAIL\", \"OTHER\"], \"doc\": \"Indicates the type of transportation used on a route. Symbols: TRAM - Tram, streetcar, light rail; SUBWAY - Subway, metro; RAIL - Intercity or long-distance travel; BUS - Short- and long-distance bus routes; FERRY - Boat service; CABLE_TRAM - Street-level rail cars with a cable running beneath the vehicle; AERIAL_LIFT - Cable transport with suspended cabins or chairs; FUNICULAR - Rail system designed for steep inclines; TROLLEYBUS - Electric buses with overhead wires; MONORAIL - Railway with a single rail or beam.\"}}",
-   [routeUrl]: "{\"description\": \"URL of a web page about the particular route.\", \"schema\": [\"null\", \"string\"]}",
-   [routeColor]: "{\"description\": \"Route color designation that matches public facing material.\", \"schema\": [\"null\", \"string\"]}",
-   [routeTextColor]: "{\"description\": \"Legible color to use for text drawn against a background of route_color.\", \"schema\": [\"null\", \"string\"]}",
-   [routeSortOrder]: "{\"description\": \"Orders the routes in a way which is ideal for presentation to customers.\", \"schema\": [\"null\", \"int\"]}",
-   [continuousPickup]: "{\"description\": \"Indicates that the rider can board the transit vehicle at any point along the vehicle\\u2019s travel path.\", \"schema\": {\"type\": \"enum\", \"name\": \"ContinuousPickup\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can board the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.\"}}",
-   [continuousDropOff]: "{\"description\": \"Indicates that the rider can alight from the transit vehicle at any point along the vehicle\\u2019s travel path.\", \"schema\": {\"type\": \"enum\", \"name\": \"ContinuousDropOff\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can alight from the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.\"}}",
-   [networkId]: "{\"description\": \"Identifies a group of routes.\", \"schema\": [\"null\", \"string\"]}",
+   [agencyId]: "{\"description\": \"Agency for the specified route.\"}",
+   [routeShortName]: "{\"description\": \"Short name of a route.\"}",
+   [routeLongName]: "{\"description\": \"Full name of a route.\"}",
+   [routeDesc]: "{\"description\": \"Description of a route that provides useful, quality information.\"}",
+   [routeType]: "{\"description\": \"Indicates the type of transportation used on a route.\"}",
+   [routeUrl]: "{\"description\": \"URL of a web page about the particular route.\"}",
+   [routeColor]: "{\"description\": \"Route color designation that matches public facing material.\"}",
+   [routeTextColor]: "{\"description\": \"Legible color to use for text drawn against a background of route_color.\"}",
+   [routeSortOrder]: "{\"description\": \"Orders the routes in a way which is ideal for presentation to customers.\"}",
+   [continuousPickup]: "{\"description\": \"Indicates that the rider can board the transit vehicle at any point along the vehicle\\u2019s travel path.\"}",
+   [continuousDropOff]: "{\"description\": \"Indicates that the rider can alight from the transit vehicle at any point along the vehicle\\u2019s travel path.\"}",
+   [networkId]: "{\"description\": \"Identifies a group of routes.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1640,7 +1851,6 @@
 ]
 ```
 
-
 .create-or-alter table [Routes] ingestion json mapping "Routes_json_ce_structured"
 ```
 [
@@ -1664,7 +1874,6 @@
   {"column": "networkId", "path": "$.data.networkId"},
 ]
 ```
-
 
 .drop materialized-view RoutesLatest ifexists;
 
@@ -1703,7 +1912,7 @@
    [shapePtLat]: "{\"description\": \"Latitude of a shape point.\"}",
    [shapePtLon]: "{\"description\": \"Longitude of a shape point.\"}",
    [shapePtSequence]: "{\"description\": \"Sequence in which the shape points connect to form the shape.\"}",
-   [shapeDistTraveled]: "{\"description\": \"Actual distance traveled along the shape from the first shape point to the specified shape point.\", \"schema\": [\"null\", \"double\"]}",
+   [shapeDistTraveled]: "{\"description\": \"Actual distance traveled along the shape from the first shape point to the specified shape point.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1727,7 +1936,6 @@
 ]
 ```
 
-
 .create-or-alter table [Shapes] ingestion json mapping "Shapes_json_ce_structured"
 ```
 [
@@ -1743,7 +1951,6 @@
   {"column": "shapeDistTraveled", "path": "$.data.shapeDistTraveled"},
 ]
 ```
-
 
 .drop materialized-view ShapesLatest ifexists;
 
@@ -1800,7 +2007,6 @@
 ]
 ```
 
-
 .create-or-alter table [StopAreas] ingestion json mapping "StopAreas_json_ce_structured"
 ```
 [
@@ -1814,7 +2020,6 @@
   {"column": "areaId", "path": "$.data.areaId"},
 ]
 ```
-
 
 .drop materialized-view StopAreasLatest ifexists;
 
@@ -1860,20 +2065,20 @@
 
 .alter table [Stops] column-docstrings (
    [stopId]: "{\"description\": \"Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area.\"}",
-   [stopCode]: "{\"description\": \"Short text or a number that identifies the location for riders.\", \"schema\": [\"null\", \"string\"]}",
-   [stopName]: "{\"description\": \"Name of the location.\", \"schema\": [\"null\", \"string\"]}",
-   [ttsStopName]: "{\"description\": \"Readable version of the stop_name.\", \"schema\": [\"null\", \"string\"]}",
-   [stopDesc]: "{\"description\": \"Description of the location that provides useful, quality information.\", \"schema\": [\"null\", \"string\"]}",
-   [stopLat]: "{\"description\": \"Latitude of the location.\", \"schema\": [\"null\", \"double\"]}",
-   [stopLon]: "{\"description\": \"Longitude of the location.\", \"schema\": [\"null\", \"double\"]}",
-   [zoneId]: "{\"description\": \"Identifies the fare zone for a stop.\", \"schema\": [\"null\", \"string\"]}",
-   [stopUrl]: "{\"description\": \"URL of a web page about the location.\", \"schema\": [\"null\", \"string\"]}",
-   [locationType]: "{\"description\": \"Location type.\", \"schema\": {\"type\": \"enum\", \"name\": \"LocationType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"STOP\", \"STATION\", \"ENTRANCE_EXIT\", \"GENERIC_NODE\", \"BOARDING_AREA\"], \"doc\": \"Location type. Symbols: STOP - Stop or platform; STATION - Physical structure or area that contains one or more platforms; ENTRANCE_EXIT - Location where passengers can enter or exit a station; GENERIC_NODE - Location within a station used to link pathways; BOARDING_AREA - Specific location on a platform where passengers can board and/or alight vehicles.\"}}",
-   [parentStation]: "{\"description\": \"Defines hierarchy between the different locations.\", \"schema\": [\"null\", \"string\"]}",
-   [stopTimezone]: "{\"description\": \"Timezone of the location.\", \"schema\": [\"null\", \"string\"]}",
-   [wheelchairBoarding]: "{\"description\": \"Indicates whether wheelchair boardings are possible from the location.\", \"schema\": {\"type\": \"enum\", \"name\": \"WheelchairBoarding\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"NO_INFO\", \"SOME_VEHICLES\", \"NOT_POSSIBLE\"], \"doc\": \"Indicates whether wheelchair boardings are possible from the location. Symbols: NO_INFO - No accessibility information; SOME_VEHICLES - Some vehicles at this stop can be boarded by a rider in a wheelchair; NOT_POSSIBLE - Wheelchair boarding is not possible at this stop.\"}}",
-   [levelId]: "{\"description\": \"Level of the location.\", \"schema\": [\"null\", \"string\"]}",
-   [platformCode]: "{\"description\": \"Platform identifier for a platform stop.\", \"schema\": [\"null\", \"string\"]}",
+   [stopCode]: "{\"description\": \"Short text or a number that identifies the location for riders.\"}",
+   [stopName]: "{\"description\": \"Name of the location.\"}",
+   [ttsStopName]: "{\"description\": \"Readable version of the stop_name.\"}",
+   [stopDesc]: "{\"description\": \"Description of the location that provides useful, quality information.\"}",
+   [stopLat]: "{\"description\": \"Latitude of the location.\"}",
+   [stopLon]: "{\"description\": \"Longitude of the location.\"}",
+   [zoneId]: "{\"description\": \"Identifies the fare zone for a stop.\"}",
+   [stopUrl]: "{\"description\": \"URL of a web page about the location.\"}",
+   [locationType]: "{\"description\": \"Location type.\"}",
+   [parentStation]: "{\"description\": \"Defines hierarchy between the different locations.\"}",
+   [stopTimezone]: "{\"description\": \"Timezone of the location.\"}",
+   [wheelchairBoarding]: "{\"description\": \"Indicates whether wheelchair boardings are possible from the location.\"}",
+   [levelId]: "{\"description\": \"Level of the location.\"}",
+   [platformCode]: "{\"description\": \"Platform identifier for a platform stop.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1907,7 +2112,6 @@
 ]
 ```
 
-
 .create-or-alter table [Stops] ingestion json mapping "Stops_json_ce_structured"
 ```
 [
@@ -1933,7 +2137,6 @@
   {"column": "platformCode", "path": "$.data.platformCode"},
 ]
 ```
-
 
 .drop materialized-view StopsLatest ifexists;
 
@@ -1976,17 +2179,17 @@
 
 .alter table [StopTimes] column-docstrings (
    [tripId]: "{\"description\": \"Identifies a trip.\"}",
-   [arrivalTime]: "{\"description\": \"Arrival time at the stop for a specific trip.\", \"schema\": [\"null\", \"string\"]}",
-   [departureTime]: "{\"description\": \"Departure time from the stop for a specific trip.\", \"schema\": [\"null\", \"string\"]}",
-   [stopId]: "{\"description\": \"Identifies the serviced stop.\", \"schema\": [\"null\", \"string\"]}",
+   [arrivalTime]: "{\"description\": \"Arrival time at the stop for a specific trip.\"}",
+   [departureTime]: "{\"description\": \"Departure time from the stop for a specific trip.\"}",
+   [stopId]: "{\"description\": \"Identifies the serviced stop.\"}",
    [stopSequence]: "{\"description\": \"Order of stops for a particular trip.\"}",
-   [stopHeadsign]: "{\"description\": \"Text that appears on signage identifying the trip's destination to riders.\", \"schema\": [\"null\", \"string\"]}",
-   [pickupType]: "{\"description\": \"Indicates pickup method.\", \"schema\": {\"type\": \"enum\", \"name\": \"PickupType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"REGULAR\", \"NO_PICKUP\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates pickup method. Symbols: REGULAR - Regularly scheduled pickup; NO_PICKUP - No pickup available; PHONE_AGENCY - Must phone agency to arrange pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange pickup.\"}}",
-   [dropOffType]: "{\"description\": \"Indicates drop off method.\", \"schema\": {\"type\": \"enum\", \"name\": \"DropOffType\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"REGULAR\", \"NO_DROP_OFF\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates drop off method. Symbols: REGULAR - Regularly scheduled drop off; NO_DROP_OFF - No drop off available; PHONE_AGENCY - Must phone agency to arrange drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange drop off.\"}}",
-   [continuousPickup]: "{\"description\": \"Indicates continuous stopping pickup.\", \"schema\": [\"null\", {\"type\": \"enum\", \"name\": \"ContinuousPickup\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can board the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.\"}]}",
-   [continuousDropOff]: "{\"description\": \"Indicates continuous stopping drop off.\", \"schema\": [\"null\", {\"type\": \"enum\", \"name\": \"ContinuousDropOff\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"CONTINUOUS_STOPPING\", \"NO_CONTINUOUS_STOPPING\", \"PHONE_AGENCY\", \"COORDINATE_WITH_DRIVER\"], \"doc\": \"Indicates that the rider can alight from the transit vehicle at any point along the vehicle\\u2019s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.\"}]}",
-   [shapeDistTraveled]: "{\"description\": \"Actual distance traveled along the shape from the first stop to the stop specified in this record.\", \"schema\": [\"null\", \"double\"]}",
-   [timepoint]: "{\"description\": \"Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times.\", \"schema\": {\"type\": \"enum\", \"name\": \"Timepoint\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"APPROXIMATE\", \"EXACT\"], \"doc\": \"Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times. Symbols: APPROXIMATE - Times are considered approximate; EXACT - Times are considered exact.\"}}",
+   [stopHeadsign]: "{\"description\": \"Text that appears on signage identifying the trip's destination to riders.\"}",
+   [pickupType]: "{\"description\": \"Indicates pickup method.\"}",
+   [dropOffType]: "{\"description\": \"Indicates drop off method.\"}",
+   [continuousPickup]: "{\"description\": \"Indicates continuous stopping pickup.\"}",
+   [continuousDropOff]: "{\"description\": \"Indicates continuous stopping drop off.\"}",
+   [shapeDistTraveled]: "{\"description\": \"Actual distance traveled along the shape from the first stop to the stop specified in this record.\"}",
+   [timepoint]: "{\"description\": \"Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -2017,7 +2220,6 @@
 ]
 ```
 
-
 .create-or-alter table [StopTimes] ingestion json mapping "StopTimes_json_ce_structured"
 ```
 [
@@ -2040,7 +2242,6 @@
   {"column": "timepoint", "path": "$.data.timepoint"},
 ]
 ```
-
 
 .drop materialized-view StopTimesLatest ifexists;
 
@@ -2075,9 +2276,9 @@
 
 .alter table [Timeframes] column-docstrings (
    [timeframeGroupId]: "{\"description\": \"Identifies a timeframe or set of timeframes.\"}",
-   [startTime]: "{\"description\": \"Defines the beginning of a timeframe.\", \"schema\": [\"null\", \"string\"]}",
-   [endTime]: "{\"description\": \"Defines the end of a timeframe.\", \"schema\": [\"null\", \"string\"]}",
-   [serviceDates]: "{\"description\": \"Identifies a set of dates when service is available for one or more routes.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
+   [startTime]: "{\"description\": \"Defines the beginning of a timeframe.\"}",
+   [endTime]: "{\"description\": \"Defines the end of a timeframe.\"}",
+   [serviceDates]: "{\"description\": \"Identifies a set of dates when service is available for one or more routes.\", \"schema\": {\"type\": \"choice\", \"choices\": {\"Calendar\": {\"$ref\": \"#/definitions/GeneralTransitFeedStatic/Calendar\"}, \"CalendarDates\": {\"$ref\": \"#/definitions/GeneralTransitFeedStatic/CalendarDates\"}}, \"description\": \"Identifies a set of dates when service is available for one or more routes.\"}}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -2100,7 +2301,6 @@
 ]
 ```
 
-
 .create-or-alter table [Timeframes] ingestion json mapping "Timeframes_json_ce_structured"
 ```
 [
@@ -2115,7 +2315,6 @@
   {"column": "serviceDates", "path": "$.data.serviceDates"},
 ]
 ```
-
 
 .drop materialized-view TimeframesLatest ifexists;
 
@@ -2152,7 +2351,7 @@
    [fromStopId]: "{\"description\": \"Identifies a stop or station where a connection between routes begins.\"}",
    [toStopId]: "{\"description\": \"Identifies a stop or station where a connection between routes ends.\"}",
    [transferType]: "{\"description\": \"Type of connection for the specified (from_stop_id, to_stop_id) pair.\"}",
-   [minTransferTime]: "{\"description\": \"Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id).\", \"schema\": [\"null\", \"int\"]}",
+   [minTransferTime]: "{\"description\": \"Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id).\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -2175,7 +2374,6 @@
 ]
 ```
 
-
 .create-or-alter table [Transfers] ingestion json mapping "Transfers_json_ce_structured"
 ```
 [
@@ -2190,7 +2388,6 @@
   {"column": "minTransferTime", "path": "$.data.minTransferTime"},
 ]
 ```
-
 
 .drop materialized-view TransfersLatest ifexists;
 
@@ -2250,7 +2447,6 @@
 ]
 ```
 
-
 .create-or-alter table [Translations] ingestion json mapping "Translations_json_ce_structured"
 ```
 [
@@ -2265,7 +2461,6 @@
   {"column": "translation", "path": "$.data.translation"},
 ]
 ```
-
 
 .drop materialized-view TranslationsLatest ifexists;
 
@@ -2308,13 +2503,13 @@
 .alter table [Trips] column-docstrings (
    [routeId]: "{\"description\": \"Identifies a route.\"}",
    [tripId]: "{\"description\": \"Identifies a trip.\"}",
-   [tripHeadsign]: "{\"description\": \"Text that appears on signage identifying the trip's destination to riders.\", \"schema\": [\"null\", \"string\"]}",
-   [tripShortName]: "{\"description\": \"Public facing text used to identify the trip to riders.\", \"schema\": [\"null\", \"string\"]}",
-   [directionId]: "{\"description\": \"Indicates the direction of travel for a trip.\", \"schema\": {\"type\": \"enum\", \"name\": \"DirectionId\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"OUTBOUND\", \"INBOUND\"], \"doc\": \"Indicates the direction of travel for a trip. Symbols: OUTBOUND - Travel in one direction; INBOUND - Travel in the opposite direction.\"}}",
-   [blockId]: "{\"description\": \"Identifies the block to which the trip belongs.\", \"schema\": [\"null\", \"string\"]}",
-   [shapeId]: "{\"description\": \"Identifies a geospatial shape describing the vehicle travel path for a trip.\", \"schema\": [\"null\", \"string\"]}",
-   [wheelchairAccessible]: "{\"description\": \"Indicates wheelchair accessibility.\", \"schema\": {\"type\": \"enum\", \"name\": \"WheelchairAccessible\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"NO_INFO\", \"WHEELCHAIR_ACCESSIBLE\", \"NOT_WHEELCHAIR_ACCESSIBLE\"], \"doc\": \"Indicates wheelchair accessibility. Symbols: NO_INFO - No accessibility information for the trip; WHEELCHAIR_ACCESSIBLE - Vehicle can accommodate at least one rider in a wheelchair; NOT_WHEELCHAIR_ACCESSIBLE - No riders in wheelchairs can be accommodated on this trip.\"}}",
-   [bikesAllowed]: "{\"description\": \"Indicates whether bikes are allowed.\", \"schema\": {\"type\": \"enum\", \"name\": \"BikesAllowed\", \"namespace\": \"GeneralTransitFeedStatic\", \"symbols\": [\"NO_INFO\", \"BICYCLE_ALLOWED\", \"BICYCLE_NOT_ALLOWED\"], \"doc\": \"Indicates whether bikes are allowed. Symbols: NO_INFO - No bike information for the trip; BICYCLE_ALLOWED - Vehicle can accommodate at least one bicycle; BICYCLE_NOT_ALLOWED - No bicycles are allowed on this trip.\"}}",
+   [tripHeadsign]: "{\"description\": \"Text that appears on signage identifying the trip's destination to riders.\"}",
+   [tripShortName]: "{\"description\": \"Public facing text used to identify the trip to riders.\"}",
+   [directionId]: "{\"description\": \"Indicates the direction of travel for a trip.\"}",
+   [blockId]: "{\"description\": \"Identifies the block to which the trip belongs.\"}",
+   [shapeId]: "{\"description\": \"Identifies a geospatial shape describing the vehicle travel path for a trip.\"}",
+   [wheelchairAccessible]: "{\"description\": \"Indicates wheelchair accessibility.\"}",
+   [bikesAllowed]: "{\"description\": \"Indicates whether bikes are allowed.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -2344,7 +2539,6 @@
 ]
 ```
 
-
 .create-or-alter table [Trips] ingestion json mapping "Trips_json_ce_structured"
 ```
 [
@@ -2367,7 +2561,6 @@
 ]
 ```
 
-
 .drop materialized-view TripsLatest ifexists;
 
 .create materialized-view with (backfill=true) TripsLatest on table Trips {
@@ -2385,329 +2578,6 @@
 }]
 ```
 
-.create-merge table [Alert] (
-   [active_period]: dynamic,
-   [informed_entity]: dynamic,
-   [cause]: string,
-   [effect]: string,
-   [url]: dynamic,
-   [header_text]: dynamic,
-   [description_text]: dynamic,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-);
-
-.alter table [Alert] docstring "{\"description\": \"An alert, indicating some sort of incident in the public transit network.\"}";
-
-.alter table [Alert] column-docstrings (
-   [active_period]: "{\"description\": \"Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"TimeRange\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"start\", \"type\": [\"null\", \"long\"], \"doc\": \"Start time, in POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC). If missing, the interval starts at minus infinity.\"}, {\"name\": \"end\", \"type\": [\"null\", \"long\"], \"doc\": \"End time, in POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC). If missing, the interval ends at plus infinity.\"}], \"doc\": \"Low level data structures used above. A time interval. The interval is considered active at time 't' if 't' is greater than or equal to the start time and less than the end time.\"}}}",
-   [informed_entity]: "{\"description\": \"Entities whose users we should notify of this alert.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
-   [url]: "{\"description\": \"The URL which provides additional information about the alert.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TranslatedString\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"translation\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Translation\", \"namespace\": \"GeneralTransitFeedRealTime.Alert.TranslatedString_types\", \"fields\": [{\"name\": \"text\", \"type\": \"string\", \"doc\": \"A UTF-8 string containing the message.\"}, {\"name\": \"language\", \"type\": [\"null\", \"string\"], \"doc\": \"BCP-47 language code. Can be omitted if the language is unknown or if no i18n is done at all for the feed. At most one translation is allowed to have an unspecified language tag.\"}]}}, \"doc\": \"At least one translation must be provided.\"}]}]}",
-   [header_text]: "{\"description\": \"Alert header. Contains a short summary of the alert text as plain-text. Full description for the alert as plain-text. The information in the\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TranslatedString\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"translation\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Translation\", \"namespace\": \"GeneralTransitFeedRealTime.Alert.TranslatedString_types\", \"fields\": [{\"name\": \"text\", \"type\": \"string\", \"doc\": \"A UTF-8 string containing the message.\"}, {\"name\": \"language\", \"type\": [\"null\", \"string\"], \"doc\": \"BCP-47 language code. Can be omitted if the language is unknown or if no i18n is done at all for the feed. At most one translation is allowed to have an unspecified language tag.\"}]}}, \"doc\": \"At least one translation must be provided.\"}]}]}",
-   [description_text]: "{\"description\": \"description should add to the information of the header.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TranslatedString\", \"namespace\": \"GeneralTransitFeedRealTime.Alert\", \"fields\": [{\"name\": \"translation\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Translation\", \"namespace\": \"GeneralTransitFeedRealTime.Alert.TranslatedString_types\", \"fields\": [{\"name\": \"text\", \"type\": \"string\", \"doc\": \"A UTF-8 string containing the message.\"}, {\"name\": \"language\", \"type\": [\"null\", \"string\"], \"doc\": \"BCP-47 language code. Can be omitted if the language is unknown or if no i18n is done at all for the feed. At most one translation is allowed to have an unspecified language tag.\"}]}}, \"doc\": \"At least one translation must be provided.\"}]}]}",
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
-.create-or-alter table [Alert] ingestion json mapping "Alert_json_flat"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "active_period", "path": "$.active_period"},
-  {"column": "informed_entity", "path": "$.informed_entity"},
-  {"column": "cause", "path": "$.cause"},
-  {"column": "effect", "path": "$.effect"},
-  {"column": "url", "path": "$.url"},
-  {"column": "header_text", "path": "$.header_text"},
-  {"column": "description_text", "path": "$.description_text"},
-]
-```
-
-
-.create-or-alter table [Alert] ingestion json mapping "Alert_json_ce_structured"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "active_period", "path": "$.data.active_period"},
-  {"column": "informed_entity", "path": "$.data.informed_entity"},
-  {"column": "cause", "path": "$.data.cause"},
-  {"column": "effect", "path": "$.data.effect"},
-  {"column": "url", "path": "$.data.url"},
-  {"column": "header_text", "path": "$.data.header_text"},
-  {"column": "description_text", "path": "$.data.description_text"},
-]
-```
-
-
-.drop materialized-view AlertLatest ifexists;
-
-.create materialized-view with (backfill=true) AlertLatest on table Alert {
-    Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
-}
-
-.alter table [Alert] policy update
-```
-[{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Alert.Alert') | project['active_period'] = todynamic(data.['active_period']),['informed_entity'] = todynamic(data.['informed_entity']),['cause'] = tostring(data.['cause']),['effect'] = tostring(data.['effect']),['url'] = todynamic(data.['url']),['header_text'] = todynamic(data.['header_text']),['description_text'] = todynamic(data.['description_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
-}]
-```
-
-.create-merge table [FeedMessage] (
-   [header]: dynamic,
-   [entity]: dynamic,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-);
-
-.alter table [FeedMessage] docstring "{\"description\": \"The contents of a feed message. A feed is a continuous stream of feed messages. Each message in the stream is obtained as a response to an appropriate HTTP GET request. A realtime feed is always defined with relation to an existing GTFS feed. All the entity ids are resolved with respect to the GTFS feed. Note that \\\"required\\\" and \\\"optional\\\" as stated in this file refer to Protocol Buffer cardinality, not semantic cardinality.  See reference.md at https:github.com/google/transit/tree/master/gtfs-realtime for field semantic cardinality.\"}";
-
-.alter table [FeedMessage] column-docstrings (
-   [header]: "{\"description\": \"Metadata about this feed and feed message.\", \"schema\": {\"type\": \"record\", \"name\": \"FeedHeader\", \"namespace\": \"GeneralTransitFeed\", \"fields\": [{\"name\": \"gtfs_realtime_version\", \"type\": \"string\"}, {\"name\": \"incrementality\", \"type\": [\"null\", {\"name\": \"Incrementality\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeed.FeedHeader_types\", \"symbols\": [\"FULL_DATASET\", \"DIFFERENTIAL\"]}]}, {\"name\": \"timestamp\", \"type\": [\"null\", \"long\"], \"doc\": \"This timestamp identifies the moment when the content of this feed has been created (in server time). In POSIX time (i.e., number of seconds since January 1st 1970 00:00:00 UTC).\"}]}}",
-   [entity]: "{\"description\": \"Contents of the feed.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
-.create-or-alter table [FeedMessage] ingestion json mapping "FeedMessage_json_flat"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "header", "path": "$.header"},
-  {"column": "entity", "path": "$.entity"},
-]
-```
-
-
-.create-or-alter table [FeedMessage] ingestion json mapping "FeedMessage_json_ce_structured"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "header", "path": "$.data.header"},
-  {"column": "entity", "path": "$.data.entity"},
-]
-```
-
-
-.drop materialized-view FeedMessageLatest ifexists;
-
-.create materialized-view with (backfill=true) FeedMessageLatest on table FeedMessage {
-    FeedMessage | summarize arg_max(___time, *) by ___type, ___source, ___subject
-}
-
-.alter table [FeedMessage] policy update
-```
-[{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeed.FeedMessage') | project['header'] = todynamic(data.['header']),['entity'] = todynamic(data.['entity']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
-}]
-```
-
-.create-merge table [TripUpdate] (
-   [trip]: dynamic,
-   [vehicle]: dynamic,
-   [stop_time_update]: dynamic,
-   [timestamp]: long,
-   [delay]: int,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-);
-
-.alter table [TripUpdate] docstring "{\"description\": \"Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop o...\"}";
-
-.alter table [TripUpdate] column-docstrings (
-   [trip]: "{\"description\": \"The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
-   [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"VehicleDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Trip\", \"fields\": [{\"name\": \"id\", \"type\": [\"null\", \"string\"], \"doc\": \"Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to\"}, {\"name\": \"label\", \"type\": [\"null\", \"string\"], \"doc\": \"help identify the correct vehicle.\"}, {\"name\": \"license_plate\", \"type\": [\"null\", \"string\"], \"doc\": \"The license plate of the vehicle.\"}], \"doc\": \"Identification information for the vehicle performing the trip.\"}]}",
-   [stop_time_update]: "{\"description\": \"Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the Avro schema for more details.\\\" }\"}",
-   [timestamp]: "{\"description\": \"time (i.e., the number of seconds since January 1st 1970 00:00:00 UTC). The current schedule deviation for the trip.  Delay should only be\", \"schema\": [\"null\", \"long\"]}",
-   [delay]: "{\"description\": \"specified when the prediction is given relative to some existing schedule in GTFS. Delay (in seconds) can be positive (meaning that the vehicle is late) or negative (meaning that the vehicle is ahead of schedule). Delay of 0 means that the vehicle is exactly on time. Delay information in StopTimeUpdates take precedent of trip-level delay information, such that trip-level delay is only propagated until the next stop along the trip with a StopTimeUpdate delay value specified. Feed providers are strongly encouraged to provide a TripUpdate.timestamp value indicating when the delay value was last updated, in order to evaluate the freshness of the data. NOTE: This field is still experimental, and subject to change. It may be formally adopted in the future.\", \"schema\": [\"null\", \"int\"]}",
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
-.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_flat"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "trip", "path": "$.trip"},
-  {"column": "vehicle", "path": "$.vehicle"},
-  {"column": "stop_time_update", "path": "$.stop_time_update"},
-  {"column": "timestamp", "path": "$.timestamp"},
-  {"column": "delay", "path": "$.delay"},
-]
-```
-
-
-.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_ce_structured"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "trip", "path": "$.data.trip"},
-  {"column": "vehicle", "path": "$.data.vehicle"},
-  {"column": "stop_time_update", "path": "$.data.stop_time_update"},
-  {"column": "timestamp", "path": "$.data.timestamp"},
-  {"column": "delay", "path": "$.data.delay"},
-]
-```
-
-
-.drop materialized-view TripUpdateLatest ifexists;
-
-.create materialized-view with (backfill=true) TripUpdateLatest on table TripUpdate {
-    TripUpdate | summarize arg_max(___time, *) by ___type, ___source, ___subject
-}
-
-.alter table [TripUpdate] policy update
-```
-[{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Trip.TripUpdate') | project['trip'] = todynamic(data.['trip']),['vehicle'] = todynamic(data.['vehicle']),['stop_time_update'] = todynamic(data.['stop_time_update']),['timestamp'] = tolong(data.['timestamp']),['delay'] = toint(data.['delay']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
-}]
-```
-
-.create-merge table [VehiclePosition] (
-   [trip]: dynamic,
-   [vehicle]: dynamic,
-   [position]: dynamic,
-   [current_stop_sequence]: int,
-   [stop_id]: string,
-   [current_status]: string,
-   [timestamp]: long,
-   [congestion_level]: string,
-   [occupancy_status]: string,
-   [___type]: string,
-   [___source]: string,
-   [___id]: string,
-   [___time]: datetime,
-   [___subject]: string
-);
-
-.alter table [VehiclePosition] docstring "{\"description\": \"Realtime positioning information for a given vehicle.\"}";
-
-.alter table [VehiclePosition] column-docstrings (
-   [trip]: "{\"description\": \"The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"TripDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"trip_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"route_id\", \"type\": [\"null\", \"string\"]}, {\"name\": \"direction_id\", \"type\": [\"null\", \"int\"]}, {\"name\": \"start_time\", \"type\": [\"null\", \"string\"]}, {\"name\": \"start_date\", \"type\": [\"null\", \"string\"]}, {\"name\": \"schedule_relationship\", \"type\": [\"null\", {\"name\": \"ScheduleRelationship\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.TripDescriptor_types\", \"symbols\": [\"SCHEDULED\", \"ADDED\", \"UNSCHEDULED\", \"CANCELED\"], \"ordinals\": {\"SCHEDULED\": 0, \"ADDED\": 1, \"UNSCHEDULED\": 2, \"CANCELED\": 3}}]}]}]}",
-   [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"VehicleDescriptor\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"id\", \"type\": [\"null\", \"string\"], \"doc\": \"Internal system identification of the vehicle. Should be unique per vehicle, and can be used for tracking the vehicle as it proceeds through the system. User visible label, i.e., something that must be shown to the passenger to\"}, {\"name\": \"label\", \"type\": [\"null\", \"string\"], \"doc\": \"help identify the correct vehicle.\"}, {\"name\": \"license_plate\", \"type\": [\"null\", \"string\"], \"doc\": \"The license plate of the vehicle.\"}], \"doc\": \"Identification information for the vehicle performing the trip.\"}]}",
-   [position]: "{\"description\": \"Current position of this vehicle. The stop sequence index of the current stop. The meaning of\", \"schema\": [\"null\", {\"type\": \"record\", \"name\": \"Position\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle\", \"fields\": [{\"name\": \"latitude\", \"type\": \"float\"}, {\"name\": \"longitude\", \"type\": \"float\", \"doc\": \"Degrees East, in the WGS-84 coordinate system.\"}, {\"name\": \"bearing\", \"type\": [\"null\", \"float\"], \"doc\": \"Bearing, in degrees, clockwise from North, i.e., 0 is North and 90 is East. This can be the compass bearing, or the direction towards the next stop or intermediate location. This should not be direction deduced from the sequence of previous positions, which can be computed from previous data.\"}, {\"name\": \"odometer\", \"type\": [\"null\", \"double\"], \"doc\": \"Odometer value, in meters.\"}, {\"name\": \"speed\", \"type\": [\"null\", \"float\"], \"doc\": \"Momentary speed measured by the vehicle, in meters per second.\"}]}]}",
-   [current_stop_sequence]: "{\"description\": \"current_stop_sequence (i.e., the stop that it refers to) is determined by current_status. If current_status is missing IN_TRANSIT_TO is assumed. Identifies the current stop. The value must be the same as in stops.txt in\", \"schema\": [\"null\", \"int\"]}",
-   [stop_id]: "{\"description\": \"the corresponding GTFS feed.\", \"schema\": [\"null\", \"string\"]}",
-   [current_status]: "{\"description\": \"The exact status of the vehicle with respect to the current stop. Ignored if current_stop_sequence is missing. Moment at which the vehicle's position was measured. In POSIX time\", \"schema\": [\"null\", {\"name\": \"VehicleStopStatus\", \"type\": \"enum\", \"namespace\": \"GeneralTransitFeedRealTime.Vehicle.VehiclePosition_types\", \"symbols\": [\"INCOMING_AT\", \"STOPPED_AT\", \"IN_TRANSIT_TO\"], \"ordinals\": {\"INCOMING_AT\": 0, \"STOPPED_AT\": 1, \"IN_TRANSIT_TO\": 2}}]}",
-   [timestamp]: "{\"description\": \"(i.e., number of seconds since January 1st 1970 00:00:00 UTC).\", \"schema\": [\"null\", \"long\"]}",
-   [___type] : 'Event type',
-   [___source]: 'Context origin/source of the event',
-   [___id]: 'Event identifier',
-   [___time]: 'Event generation time',
-   [___subject]: 'Context subject of the event'
-);
-
-.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_flat"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "trip", "path": "$.trip"},
-  {"column": "vehicle", "path": "$.vehicle"},
-  {"column": "position", "path": "$.position"},
-  {"column": "current_stop_sequence", "path": "$.current_stop_sequence"},
-  {"column": "stop_id", "path": "$.stop_id"},
-  {"column": "current_status", "path": "$.current_status"},
-  {"column": "timestamp", "path": "$.timestamp"},
-  {"column": "congestion_level", "path": "$.congestion_level"},
-  {"column": "occupancy_status", "path": "$.occupancy_status"},
-]
-```
-
-
-.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_ce_structured"
-```
-[
-  {"column": "___type", "path": "$.type"},
-  {"column": "___source", "path": "$.source"},
-  {"column": "___id", "path": "$.id"},
-  {"column": "___time", "path": "$.time"},
-  {"column": "___subject", "path": "$.subject"},
-  {"column": "trip", "path": "$.data.trip"},
-  {"column": "vehicle", "path": "$.data.vehicle"},
-  {"column": "position", "path": "$.data.position"},
-  {"column": "current_stop_sequence", "path": "$.data.current_stop_sequence"},
-  {"column": "stop_id", "path": "$.data.stop_id"},
-  {"column": "current_status", "path": "$.data.current_status"},
-  {"column": "timestamp", "path": "$.data.timestamp"},
-  {"column": "congestion_level", "path": "$.data.congestion_level"},
-  {"column": "occupancy_status", "path": "$.data.occupancy_status"},
-]
-```
-
-
-.drop materialized-view VehiclePositionLatest ifexists;
-
-.create materialized-view with (backfill=true) VehiclePositionLatest on table VehiclePosition {
-    VehiclePosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
-}
-
-.alter table [VehiclePosition] policy update
-```
-[{
-  "IsEnabled": true,
-  "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition') | project['trip'] = todynamic(data.['trip']),['vehicle'] = todynamic(data.['vehicle']),['position'] = todynamic(data.['position']),['current_stop_sequence'] = toint(data.['current_stop_sequence']),['stop_id'] = tostring(data.['stop_id']),['current_status'] = tostring(data.['current_status']),['timestamp'] = tolong(data.['timestamp']),['congestion_level'] = tostring(data.['congestion_level']),['occupancy_status'] = tostring(data.['occupancy_status']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
-  "IsTransactional": false,
-  "PropagateIngestionProperties": true,
-}]
-```
 
 .create table VehiclePositionsFlat (
     trip_id:string,
@@ -2735,10 +2605,9 @@
     ___id:string,
     ___time:datetime,
     ___subject:string
-)
 
 .alter table VehiclePositionsFlat policy update
-```
+`
 [
   {
     "IsEnabled": true,
@@ -2748,8 +2617,7 @@
     "PropagateIngestionProperties": true
   }
 ]
-```
-
+`
 
 .create-merge table TripUpdateFlattened (
     trip_id: string,
@@ -2835,13 +2703,10 @@
         ___subject
 }
 
-.alter table TripUpdateFlattened policy update 
-```
-[{
+.alter table TripUpdateFlattened policy update @'[{
     "IsEnabled": true,
     "Source": "TripUpdate",
     "Query": "TripUpdateFlattenFunction()",
     "IsTransactional": false,
     "PropagateIngestionProperties": false
-}]
-```
+}]'
