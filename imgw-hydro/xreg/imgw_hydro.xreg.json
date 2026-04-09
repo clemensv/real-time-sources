@@ -84,22 +84,46 @@
                 "name": "Station",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:pl": "id_stacji"
+                    }
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:pl": "stacja"
+                    }
                   },
                   "river": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "rzeka"
+                    }
                   },
                   "voivodeship": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "wojewodztwo"
+                    }
                   },
                   "longitude": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ]
                   },
                   "latitude": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ]
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/Station",
@@ -127,40 +151,100 @@
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:pl": "id_stacji"
+                    }
                   },
                   "station_name": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:pl": "stacja"
+                    }
                   },
                   "river": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "rzeka"
+                    }
                   },
                   "voivodeship": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "wojewodztwo"
+                    }
                   },
                   "water_level": {
-                    "type": "double"
+                    "type": "double",
+                    "altnames": {
+                      "lang:pl": "stan_wody"
+                    }
                   },
                   "water_level_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "altnames": {
+                      "lang:pl": "stan_wody_data_pomiaru"
+                    }
                   },
                   "water_temperature": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "temperatura_wody"
+                    }
                   },
                   "water_temperature_timestamp": {
-                    "type": ["datetime", "null"]
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "temperatura_wody_data_pomiaru"
+                    }
                   },
                   "discharge": {
-                    "type": ["double", "null"]
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "przeplyw"
+                    }
                   },
                   "discharge_timestamp": {
-                    "type": ["datetime", "null"]
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "przeplyw_data"
+                    }
                   },
                   "ice_phenomenon_code": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "zjawisko_lodowe"
+                    }
                   },
                   "overgrowth_code": {
-                    "type": ["string", "null"]
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "altnames": {
+                      "lang:pl": "zjawisko_zarastania"
+                    }
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/WaterLevelObservation",
