@@ -1324,4 +1324,19 @@ class TestMadridTrafficDockerFlow:
             kafka, madrid_traffic_image, self.TOPIC,
             reference_types=['MeasurementPoint'],
             telemetry_types=['TrafficReading'],
+# Paris Bicycle Counters (hourly bicycle counts)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def paris_bicycle_counters_image():
+    return build_image('paris-bicycle-counters')
+
+class TestParisBicycleCountersDockerFlow:
+    TOPIC = 'test-paris-bicycle-counters'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, paris_bicycle_counters_image):
+        _run_kafka_flow_test(
+            kafka, paris_bicycle_counters_image, self.TOPIC,
+            reference_types=['Counter'],
+            telemetry_types=['BicycleCount'],
         )
