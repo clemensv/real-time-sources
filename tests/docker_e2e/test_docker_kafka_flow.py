@@ -233,6 +233,8 @@ def ndl_netherlands_image():
     return build_image('ndl-netherlands')
 def eaws_albina_image():
     return build_image('eaws-albina')
+def geosphere_austria_image():
+    return build_image('geosphere-austria')
 
 
 # ---------------------------------------------------------------------------
@@ -1366,4 +1368,17 @@ class TestSnotelDockerFlow:
             kafka, snotel_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['SnowObservation'],
+# GeoSphere Austria TAWES (10-minute weather observations)
+# ---------------------------------------------------------------------------
+
+class TestGeoSphereAustriaDockerFlow:
+    TOPIC = 'test-geosphere-austria'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, geosphere_austria_image):
+        _run_kafka_flow_test(
+            kafka, geosphere_austria_image, self.TOPIC,
+            reference_types=['WeatherStation'],
+            telemetry_types=['WeatherObservation'],
+            required_types=['WeatherStation', 'WeatherObservation'],
+            extra_env={'POLLING_INTERVAL': '5', 'STATION_REFRESH_INTERVAL': '5'},
         )
