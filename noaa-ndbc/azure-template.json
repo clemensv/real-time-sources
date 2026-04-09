@@ -1,146 +1,165 @@
 {
-  "variables": {
-    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
-    "fileShareName": "fileshare"
-  },
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the Noaa Ndbc bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
+  },
   "parameters": {
-    "connectionStringSecret": {
+    "connectionString": {
       "type": "securestring",
+      "minLength": 1,
       "metadata": {
-        "description": "The Microsoft Fabric Event Stream custom input endpoint connection string."
+        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
       }
     },
-    "imageName": {
+    "containerGroupName": {
       "type": "string",
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-noaa-ndbc:latest",
+      "defaultValue": "noaa-ndbc",
       "metadata": {
-        "description": "The name of the container image."
-      }
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
     },
-    "logAnalyticsWorkspaceKey": {
-      "type": "securestring",
-      "metadata": {
-        "description": "The primary or secondary key of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
-      }
-    },
-    "appName": {
+    "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "maxLength": 64,
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "The name of the container instance."
-      }
-    },
-    "logAnalyticsWorkspaceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The Id of the Log Analytics workspace. In the portal, you find this under Settings -> Agents -> Windows/Linux Servers -> Agent Instructions."
+        "description": "Azure region for all resources."
       }
     }
   },
+  "variables": {
+    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg'), 24)]",
+    "fileShareName": "bridge-state",
+    "imageName": "ghcr.io/clemensv/real-time-sources-noaa-ndbc:latest",
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
   "resources": [
     {
-      "kind": "StorageV2",
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
       "properties": {
-        "accessTier": "Hot"
-      },
-      "location": "[resourceGroup().location]",
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
       "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
       "sku": {
         "name": "Standard_LRS"
       },
-      "apiVersion": "2021-04-01",
-      "name": "[variables('storageAccountName')]"
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2"
+      }
     },
     {
-      "properties": {
-        "protocolSettings": {
-          "smb": {
-            "enabled": true
-          }
-        }
-      },
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-      ],
-      "location": "[resourceGroup().location]",
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2021-04-01",
-      "name": "[concat(variables('storageAccountName'), '/default/')]"
-    },
-    {
-      "properties": {
-        "shareQuota": 5120
-      },
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "location": "[resourceGroup().location]",
-      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-      "apiVersion": "2021-04-01",
-      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]"
+      "properties": {}
     },
     {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
       "properties": {
-        "diagnostics": {
-          "logAnalytics": {
-            "workspaceKey": "[parameters('logAnalyticsWorkspaceKey')]",
-            "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
-          }
-        },
+        "shareQuota": 1
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+      ],
+      "properties": {
         "osType": "Linux",
         "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
         "containers": [
           {
+            "name": "[parameters('containerGroupName')]",
             "properties": {
-              "volumeMounts": [
-                {
-                  "mountPath": "/mnt/fileshare",
-                  "name": "azurefilevolume"
-                }
-              ],
-              "image": "[parameters('imageName')]",
-              "environmentVariables": [
-                {
-                  "secureValue": "[parameters('connectionStringSecret')]",
-                  "name": "CONNECTION_STRING"
-                },
-                {
-                  "value": "/mnt/fileshare/ndbc_last_polled.json",
-                  "name": "NDBC_LAST_POLLED_FILE"
-                }
-              ],
+              "image": "[variables('imageName')]",
               "resources": {
                 "requests": {
                   "cpu": 0.5,
-                  "memoryInGB": 1
+                  "memoryInGB": 1.0
                 }
-              }
-            },
-            "name": "[parameters('appName')]"
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "NDBC_LAST_POLLED_FILE",
+                  "value": "/mnt/bridge-state/ndbc_last_polled.json"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
+              ]
+            }
           }
         ],
         "volumes": [
           {
+            "name": "bridge-state",
             "azureFile": {
-              "storageAccountName": "[variables('storageAccountName')]",
               "shareName": "[variables('fileShareName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
-            },
-            "name": "azurefilevolume"
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
+            }
           }
         ]
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
-      ],
-      "location": "[resourceGroup().location]",
-      "type": "Microsoft.ContainerInstance/containerGroups",
-      "apiVersion": "2021-09-01",
-      "name": "[parameters('appName')]"
+      }
     }
   ],
-  "contentVersion": "1.0.0.0"
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+    }
+  }
 }

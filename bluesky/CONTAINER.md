@@ -106,13 +106,21 @@ Sampling rate for events (0.0 to 1.0). For example, `0.1` processes 10% of event
 
 ## Deploying into Azure Container Instances
 
-You can deploy the Bluesky firehose bridge as a container directly to Azure Container Instances providing the information explained above. Just click the button below and go.
+You can deploy this bridge directly to Azure Container Instances. Two deployment
+options are available:
+
+### Option 1: Bring your own Event Hub
+
+Deploy the container and provide your own Azure Event Hubs or Fabric Event
+Streams connection string. The template creates a storage account and file share
+for persistent state.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template.json)
 
-## Notes
+### Option 2: Deploy with a new Event Hub
 
-- The Bluesky firehose is a high-volume stream. Consider using `BLUESKY_SAMPLE_RATE` to reduce load during testing or for use cases that don't require all events.
-- The firehose typically produces 50-100 posts per second, 200-400 likes per second, and varying amounts of other event types.
-- Ensure sufficient network bandwidth and Kafka/Event Hub capacity to handle the event volume.
-- The bridge automatically handles reconnection if the firehose connection is interrupted.
+Deploy the container together with a new Event Hub namespace (Standard SKU, 1
+throughput unit) and event hub. The connection string is automatically
+configured.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template-with-eventhub.json)

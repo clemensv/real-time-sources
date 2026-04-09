@@ -120,3 +120,24 @@ If you want to build a full data pipeline with all events ingested into a databa
 - **Source Code**: [GitHub Repository](https://github.com/clemensv/real-time-sources/tree/main/entsoe)
 - **ENTSO-E API Documentation**: [Transparency Platform RESTful API Guide](https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html)
 - **License**: MIT
+
+## Deploying into Azure Container Instances
+
+You can deploy this bridge directly to Azure Container Instances. Two deployment
+options are available:
+
+### Option 1: Bring your own Event Hub
+
+Deploy the container and provide your own Azure Event Hubs or Fabric Event
+Streams connection string. The template creates a storage account and file share
+for persistent state.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template.json)
+
+### Option 2: Deploy with a new Event Hub
+
+Deploy the container together with a new Event Hub namespace (Standard SKU, 1
+throughput unit) and event hub. The connection string is automatically
+configured.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentsoe%2Fazure-template-with-eventhub.json)

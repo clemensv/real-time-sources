@@ -172,29 +172,21 @@ files have not changed since the last fetch.
 
 ## Deploying into Azure Container Instances
 
-You can deploy the RSS/Atom bridge as a container directly to Azure Container
-Instances providing the information explained above. Just click the button below and go.
+You can deploy this bridge directly to Azure Container Instances. Two deployment
+options are available:
+
+### Option 1: Bring your own Event Hub
+
+Deploy the container and provide your own Azure Event Hubs or Fabric Event
+Streams connection string. The template creates a storage account and file share
+for persistent state.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template.json)
 
+### Option 2: Deploy with a new Event Hub
 
-### Example
+Deploy the container together with a new Event Hub namespace (Standard SKU, 1
+throughput unit) and event hub. The connection string is automatically
+configured.
 
-The following example shows how to start the bridge with a set of feeds for the
-Seattle metropolitan area, sending to an Event Hub.
-
-The corresponding entries in the mobility database are:
-*  [Puget Sound Consolidated GTFS](https://mobilitydatabase.org/feeds/mdb-1080)
-*  [King County Metro GTFS-RT Trip Updates](https://mobilitydatabase.org/feeds/mdb-1540)
-*  [King County Metro GTFS-RT Vehicle Positions](https://mobilitydatabase.org/feeds/mdb-1542)
-*  [King County Metro GTFS-RT Alerts](https://mobilitydatabase.org/feeds/mdb-1541)
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    -e GTFS_RT_URLS='https://api-endpoint.com/gtfs-rt' \
-    -e GTFS_URLS='https://gtfs.sound.obaweb.org/prod/1_gtfs.zip' \
-    -e GTFS_RT_URLS='https://s3.amazonaws.com/kcm-alerts-realtime-prod/tripupdates.pb,https://s3.amazonaws.com/kcm-alerts-realtime-prod/alerts.pb,https://s3.amazonaws.com/kcm-alerts-realtime-prod/vehiclepositions.pb' \
-    -e AGENCY='KingCountyMetro' \
-    ghcr.io/clemensv/real-time-sources-gtfs:latest
-```
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template-with-eventhub.json)

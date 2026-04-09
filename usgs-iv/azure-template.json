@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the USGS Instantaneous Values bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
+    "description": "Deploys the Usgs Iv bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
   },
   "parameters": {
     "connectionString": {
@@ -120,10 +120,6 @@
                 {
                   "name": "LOG_LEVEL",
                   "value": "INFO"
-                },
-                {
-                  "name": "USGS_LAST_POLLED_FILE",
-                  "value": "/mnt/bridge-state/last_polled.json"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",
