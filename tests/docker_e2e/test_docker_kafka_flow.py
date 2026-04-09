@@ -195,6 +195,8 @@ def bfs_odl_image():
 @pytest.fixture(scope='module')
 def gios_poland_image():
     return build_image('gios-poland')
+def wallonia_issep_image():
+    return build_image('wallonia-issep')
 
 @pytest.fixture(scope='module')
 def irail_image():
@@ -1125,4 +1127,15 @@ class TestDWDPollenflugDockerFlow:
             kafka, dwd_pollenflug_image, self.TOPIC,
             reference_types=['Region'],
             telemetry_types=['PollenForecast'],
+# Wallonia ISSeP (Belgium – air quality sensors)
+# ---------------------------------------------------------------------------
+
+class TestWalloniaISsePDockerFlow:
+    TOPIC = 'test-wallonia-issep'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, wallonia_issep_image):
+        _run_kafka_flow_test(
+            kafka, wallonia_issep_image, self.TOPIC,
+            reference_types=['SensorConfiguration'],
+            telemetry_types=['Observation'],
         )
