@@ -14,6 +14,8 @@ from typing import Dict, List, Optional
 
 import requests
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from king_county_marine_producer_data import Station, WaterQualityReading
 from king_county_marine_producer_kafka_producer.producer import USWAKingCountyMarineEventProducer
@@ -27,6 +29,10 @@ DEFAULT_POLL_INTERVAL_SECONDS = 900
 REFERENCE_REFRESH_SECONDS = 86400
 MAX_SEEN_IDS = 50000
 PST_FIXED = timezone(timedelta(hours=-8))
+HTTP_TIMEOUT = (15, 60)
+HTTP_RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
+HTTP_RETRY_TOTAL = 5
+HTTP_RETRY_BACKOFF_FACTOR = 2.0
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -123,6 +129,26 @@ def infer_sensor_level(name: str) -> str:
     return "surface"
 
 
+def create_retrying_session() -> requests.Session:
+    """Create an HTTP session with retry policy for transient upstream failures."""
+    session = requests.Session()
+    retry = Retry(
+        total=HTTP_RETRY_TOTAL,
+        connect=HTTP_RETRY_TOTAL,
+        read=HTTP_RETRY_TOTAL,
+        status=HTTP_RETRY_TOTAL,
+        backoff_factor=HTTP_RETRY_BACKOFF_FACTOR,
+        allowed_methods=frozenset({"GET", "HEAD", "OPTIONS"}),
+        status_forcelist=HTTP_RETRY_STATUS_CODES,
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    return session
+
+
 def is_current_buoy_dataset(item: dict) -> bool:
     """Filter catalog search results down to active raw buoy/mooring datasets."""
     resource = item.get("resource", {})
@@ -157,8 +183,7 @@ class KingCountyMarineBridge:
 
     def __init__(self, state_file: str = ""):
         self.state_file = state_file
-        self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+        self.session = create_retrying_session()
         state = _load_state(state_file)
         seen_ids = [str(value) for value in state.get("seen_reading_ids", [])][-MAX_SEEN_IDS:]
         self.seen_reading_ids = set(seen_ids)
@@ -186,7 +211,7 @@ class KingCountyMarineBridge:
 
     def discover_datasets(self) -> List[dict]:
         """Discover active King County raw buoy datasets from the Socrata catalog."""
-        response = self.session.get(CATALOG_URL, timeout=60)
+        response = self.session.get(CATALOG_URL, timeout=HTTP_TIMEOUT)
         response.raise_for_status()
         payload = response.json()
         datasets = []
@@ -198,7 +223,7 @@ class KingCountyMarineBridge:
 
     def fetch_view(self, dataset_id: str) -> dict:
         """Fetch Socrata view metadata for one dataset."""
-        response = self.session.get(VIEW_URL.format(dataset_id=dataset_id), timeout=60)
+        response = self.session.get(VIEW_URL.format(dataset_id=dataset_id), timeout=HTTP_TIMEOUT)
         response.raise_for_status()
         return response.json()
 
@@ -210,11 +235,6 @@ class KingCountyMarineBridge:
         dataset_id = view["id"]
         dataset_url = f"https://data.kingcounty.gov/d/{dataset_id}"
         sensor_level = infer_sensor_level(station_name)
-        self.station_metadata[dataset_id] = {
-            "station_id": station_id,
-            "station_name": station_name,
-            "sensor_level": sensor_level,
-        }
         return Station(
             station_id=station_id,
             station_name=station_name,
@@ -233,7 +253,7 @@ class KingCountyMarineBridge:
             params["$order"] = "datetime DESC"
         else:
             params["$order"] = "unixtimestamp DESC"
-        response = self.session.get(ROWS_URL.format(dataset_id=dataset_id), params=params, timeout=60)
+        response = self.session.get(ROWS_URL.format(dataset_id=dataset_id), params=params, timeout=HTTP_TIMEOUT)
         response.raise_for_status()
         return response.json()
 
@@ -271,18 +291,32 @@ class KingCountyMarineBridge:
     def emit_reference_data(self, producer: USWAKingCountyMarineEventProducer) -> int:
         """Discover stations and emit reference events."""
         count = 0
-        self.station_metadata = OrderedDict()
+        refreshed_metadata: "OrderedDict[str, dict]" = OrderedDict()
         for dataset in self.discover_datasets():
-            view = self.fetch_view(dataset["id"])
-            station = self.build_station(view)
+            dataset_id = dataset["id"]
+            try:
+                view = self.fetch_view(dataset_id)
+                station = self.build_station(view)
+            except (KeyError, ValueError, requests.RequestException) as exc:
+                LOGGER.warning("Skipping station metadata for dataset %s: %s", dataset_id, exc)
+                continue
             producer.send_us_wa_king_county_marine_station(
                 station.station_id,
                 station,
                 flush_producer=False,
             )
+            refreshed_metadata[dataset_id] = {
+                "station_id": station.station_id,
+                "station_name": station.station_name,
+                "sensor_level": station.sensor_level,
+            }
             count += 1
-        producer.producer.flush()
-        self.last_reference_refresh = datetime.now(timezone.utc).isoformat()
+        if refreshed_metadata:
+            self.station_metadata = refreshed_metadata
+            producer.producer.flush()
+            self.last_reference_refresh = datetime.now(timezone.utc).isoformat()
+        elif self.station_metadata:
+            LOGGER.warning("Station refresh produced no usable datasets; continuing with cached metadata")
         return count
 
     def poll_and_send(self, producer: USWAKingCountyMarineEventProducer, once: bool = False) -> None:
@@ -294,12 +328,25 @@ class KingCountyMarineBridge:
                     last = datetime.fromisoformat(self.last_reference_refresh)
                     refresh_references = (datetime.now(timezone.utc) - last).total_seconds() >= REFERENCE_REFRESH_SECONDS
                 if refresh_references or not self.station_metadata:
-                    sent_stations = self.emit_reference_data(producer)
-                    LOGGER.info("Sent %d station reference events", sent_stations)
+                    try:
+                        sent_stations = self.emit_reference_data(producer)
+                        if sent_stations:
+                            LOGGER.info("Sent %d station reference events", sent_stations)
+                    except requests.RequestException as exc:
+                        if self.station_metadata:
+                            LOGGER.warning("Station refresh failed; continuing with cached metadata: %s", exc)
+                        else:
+                            raise
 
                 sent = 0
                 for dataset_id in list(self.station_metadata.keys()):
-                    for row in self.fetch_rows(dataset_id):
+                    try:
+                        rows = self.fetch_rows(dataset_id)
+                    except requests.RequestException as exc:
+                        LOGGER.warning("Skipping dataset %s after row fetch failure: %s", dataset_id, exc)
+                        continue
+
+                    for row in rows:
                         reading = self.build_reading(dataset_id, row)
                         reading_id = f"{reading.station_id}|{reading.observation_time}"
                         if reading_id in self.seen_reading_ids:

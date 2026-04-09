@@ -1,11 +1,14 @@
 """Unit tests for the King County marine bridge."""
 
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 import pytest
+import requests
 
 from king_county_marine.king_county_marine import (
     KingCountyMarineBridge,
+    create_retrying_session,
     infer_sensor_level,
     infer_station_id,
     is_current_buoy_dataset,
@@ -41,6 +44,14 @@ ROW = {
 
 @pytest.mark.unit
 class TestHelpers:
+    def test_create_retrying_session(self):
+        session = create_retrying_session()
+        https_adapter = session.get_adapter("https://data.kingcounty.gov")
+
+        assert session.headers["User-Agent"] == "GitHub-Copilot-CLI/1.0"
+        assert https_adapter.max_retries.total == 5
+        assert https_adapter.max_retries.backoff_factor == 2.0
+
     def test_parse_float(self):
         assert parse_float("1.23") == pytest.approx(1.23)
         assert parse_float("-99.99") is None
@@ -83,6 +94,44 @@ class TestNormalization:
 
 @pytest.mark.unit
 class TestPolling:
+    def test_emit_reference_data_keeps_successful_datasets(self):
+        bridge = KingCountyMarineBridge()
+        bridge.discover_datasets = Mock(return_value=[{"id": "6trh-ufm8"}, {"id": "broken"}])
+        bridge.fetch_view = Mock(side_effect=[VIEW, requests.RequestException("reset by peer")])
+        producer = Mock()
+        producer.producer = Mock()
+
+        sent = bridge.emit_reference_data(producer)
+
+        assert sent == 1
+        assert list(bridge.station_metadata) == ["6trh-ufm8"]
+        assert producer.send_us_wa_king_county_marine_station.call_count == 1
+        producer.producer.flush.assert_called_once()
+
+    @patch("king_county_marine.king_county_marine._save_state")
+    def test_poll_and_send_continues_after_dataset_fetch_failure(self, _mock_save_state):
+        bridge = KingCountyMarineBridge(state_file="state.json")
+        bridge.last_reference_refresh = datetime.now(timezone.utc).isoformat()
+        bridge.station_metadata = {
+            "good": {
+                "station_id": "coupeville-wharf-mooring",
+                "station_name": "Coupeville Wharf Mooring Raw Data Output",
+                "sensor_level": "water-column",
+            },
+            "bad": {
+                "station_id": "bad-station",
+                "station_name": "Bad Station",
+                "sensor_level": "surface",
+            },
+        }
+        bridge.fetch_rows = Mock(side_effect=[requests.RequestException("timeout"), [ROW]])
+        producer = Mock()
+        producer.producer = Mock()
+
+        bridge.poll_and_send(producer, once=True)
+
+        assert producer.send_us_wa_king_county_marine_water_quality_reading.call_count == 1
+
     @patch("king_county_marine.king_county_marine._save_state")
     def test_poll_and_send_emits_reference_and_telemetry(self, _mock_save_state):
         bridge = KingCountyMarineBridge(state_file="state.json")
