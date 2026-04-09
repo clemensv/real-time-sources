@@ -1,0 +1,446 @@
+{
+  "endpoints": {
+    "info.energy_charts.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "energy-charts",
+          "key": "{country}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/info.energy_charts"
+      ]
+    }
+  },
+  "messagegroups": {
+    "info.energy_charts": {
+      "messages": {
+        "info.energy_charts.PublicPower": {
+          "name": "PublicPower",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "info.energy_charts.PublicPower"
+            },
+            "source": {
+              "value": "https://api.energy-charts.info"
+            },
+            "subject": {
+              "value": "{country}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/info.energy_charts.jstruct/schemas/info.energy_charts.PublicPower"
+        },
+        "info.energy_charts.SpotPrice": {
+          "name": "SpotPrice",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "info.energy_charts.SpotPrice"
+            },
+            "source": {
+              "value": "https://api.energy-charts.info"
+            },
+            "subject": {
+              "value": "{country}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/info.energy_charts.jstruct/schemas/info.energy_charts.SpotPrice"
+        },
+        "info.energy_charts.GridSignal": {
+          "name": "GridSignal",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "info.energy_charts.GridSignal"
+            },
+            "source": {
+              "value": "https://api.energy-charts.info"
+            },
+            "subject": {
+              "value": "{country}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/info.energy_charts.jstruct/schemas/info.energy_charts.GridSignal"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "info.energy_charts.jstruct": {
+      "schemas": {
+        "info.energy_charts.PublicPower": {
+          "name": "PublicPower",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.energy-charts.info/schemas/info/energy_charts/PublicPower",
+                "type": "object",
+                "name": "PublicPower",
+                "description": "Net electricity generation by fuel type for a given country at a specific 15-minute interval. Sourced from the Energy-Charts /public_power endpoint (Fraunhofer ISE) which aggregates ENTSO-E transparency platform data. Each record represents one timestamp in the parallel-array response, with individual production types flattened into named fields in megawatts (MW). Negative values for hydro pumped storage consumption and cross-border trading indicate consumption or export. The renewable_share_of_generation and renewable_share_of_load fields are percentages (0–100). Load represents total grid demand.",
+                "required": [
+                  "country",
+                  "timestamp",
+                  "unix_seconds"
+                ],
+                "properties": {
+                  "country": {
+                    "type": "string",
+                    "description": "ISO 3166-1 alpha-2 country code identifying the electricity market area (e.g. 'de' for Germany, 'fr' for France). Used as the query parameter in the Energy-Charts API."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "UTC timestamp derived from the unix_seconds value. Marks the start of the 15-minute measurement interval."
+                  },
+                  "unix_seconds": {
+                    "type": "int64",
+                    "description": "Unix epoch timestamp in seconds as returned by the Energy-Charts API. Each value corresponds to one row in the parallel arrays of production_types."
+                  },
+                  "hydro_pumped_storage_consumption_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net power consumed by pumped-storage hydroelectric plants (MW). Values are typically negative, indicating the plant is pumping water uphill (consuming electricity). Corresponds to the 'Hydro pumped storage consumption' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "cross_border_electricity_trading_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net cross-border electricity exchange (MW). Positive values indicate net imports; negative values indicate net exports. Corresponds to the 'Cross border electricity trading' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "hydro_run_of_river_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from run-of-river hydroelectric plants (MW). These plants generate electricity from the natural flow of rivers without significant storage. Corresponds to the 'Hydro Run-of-River' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "biomass_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from biomass power plants (MW). Includes solid biomass, biogas, and bioliquids. Corresponds to the 'Biomass' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "fossil_brown_coal_lignite_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from brown coal (lignite) power plants (MW). Lignite is a low-grade coal with high moisture content used primarily in Germany. Corresponds to the 'Fossil brown coal / lignite' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "fossil_hard_coal_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from hard coal power plants (MW). Hard coal (anthracite/bituminous) has higher energy density than lignite. Corresponds to the 'Fossil hard coal' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "fossil_oil_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from oil-fired power plants (MW). Includes heavy fuel oil and light oil combustion turbines. Corresponds to the 'Fossil oil' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "fossil_coal_derived_gas_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from coal-derived gas power plants (MW). Includes blast furnace gas, coke oven gas, and coal mine methane. Corresponds to the 'Fossil coal-derived gas' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "fossil_gas_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from natural gas power plants (MW). Includes combined-cycle gas turbines (CCGT) and open-cycle gas turbines (OCGT). Corresponds to the 'Fossil gas' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "geothermal_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from geothermal power plants (MW). Uses heat from the earth's interior to generate electricity. Corresponds to the 'Geothermal' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "hydro_water_reservoir_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from reservoir hydroelectric plants (MW). These plants store water behind a dam and release it to generate electricity on demand. Corresponds to the 'Hydro water reservoir' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "hydro_pumped_storage_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from pumped-storage hydroelectric plants when generating (MW). Positive values indicate the plant is releasing stored water to generate electricity. Corresponds to the 'Hydro pumped storage' (generation) production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "others_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from other power sources not classified into specific categories (MW). May include mixed-fuel plants or uncategorized sources. Corresponds to the 'Others' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "waste_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from waste incineration power plants (MW). Includes municipal solid waste and industrial waste combustion. Corresponds to the 'Waste' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "wind_offshore_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from offshore wind turbines (MW). Offshore wind farms are located in bodies of water, typically on the continental shelf. Corresponds to the 'Wind offshore' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "wind_onshore_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from onshore wind turbines (MW). Onshore wind farms are located on land. Corresponds to the 'Wind onshore' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "solar_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from solar photovoltaic (PV) and concentrated solar power (CSP) plants (MW). Corresponds to the 'Solar' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "nuclear_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net generation from nuclear power plants (MW). Not present for all countries (e.g. absent for Germany after nuclear phase-out). Corresponds to the 'Nuclear' production type when available.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "load_mw": {
+                    "type": ["double", "null"],
+                    "description": "Total electricity grid load (demand) for the country (MW). Represents the sum of all electricity consumption at the given timestamp. Corresponds to the 'Load' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "residual_load_mw": {
+                    "type": ["double", "null"],
+                    "description": "Residual load (MW). Calculated as total load minus generation from variable renewable sources (wind and solar). A high residual load indicates that conventional or dispatchable power plants must cover most of the demand. Corresponds to the 'Residual load' production type.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "renewable_share_of_generation_pct": {
+                    "type": ["double", "null"],
+                    "description": "Percentage of total electricity generation that comes from renewable sources (0–100). Calculated by dividing renewable generation by total generation. Corresponds to the 'Renewable share of generation' production type."
+                  },
+                  "renewable_share_of_load_pct": {
+                    "type": ["double", "null"],
+                    "description": "Percentage of the total grid load that is covered by renewable generation (0–100). Calculated by dividing renewable generation by total load. Corresponds to the 'Renewable share of load' production type."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "info.energy_charts.SpotPrice": {
+          "name": "SpotPrice",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.energy-charts.info/schemas/info/energy_charts/SpotPrice",
+                "type": "object",
+                "name": "SpotPrice",
+                "description": "Day-ahead electricity spot price for a given bidding zone at a specific timestamp. Sourced from the Energy-Charts /price endpoint (Fraunhofer ISE) which provides wholesale electricity market prices from ENTSO-E and national exchanges. Prices are the day-ahead auction clearing price in EUR per MWh. The bidding zone identifies the market area (e.g. 'DE-LU' for the Germany-Luxembourg zone).",
+                "required": [
+                  "country",
+                  "bidding_zone",
+                  "timestamp",
+                  "unix_seconds"
+                ],
+                "properties": {
+                  "country": {
+                    "type": "string",
+                    "description": "ISO 3166-1 alpha-2 country code derived from the bidding zone (e.g. 'de' from 'DE-LU'). Used for Kafka key partitioning."
+                  },
+                  "bidding_zone": {
+                    "type": "string",
+                    "description": "European electricity bidding zone identifier as used by ENTSO-E (e.g. 'DE-LU' for Germany-Luxembourg, 'FR' for France, 'NO1' for Norway zone 1). The bzn parameter in the Energy-Charts /price API."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "UTC timestamp derived from the unix_seconds value. Marks the start of the price interval (typically 15-minute or hourly depending on the market)."
+                  },
+                  "unix_seconds": {
+                    "type": "int64",
+                    "description": "Unix epoch timestamp in seconds as returned by the Energy-Charts API."
+                  },
+                  "price_eur_per_mwh": {
+                    "type": ["double", "null"],
+                    "description": "Day-ahead electricity spot price in EUR per megawatt-hour (EUR/MWh). This is the clearing price from the day-ahead auction on the relevant power exchange. Can be negative during periods of excess generation.",
+                    "unit": "EUR/MWh",
+                    "symbol": "EUR/MWh"
+                  },
+                  "unit": {
+                    "type": ["string", "null"],
+                    "description": "Unit label as returned by the Energy-Charts API (e.g. 'EUR / MWh'). Included for traceability with the upstream response."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "info.energy_charts.GridSignal": {
+          "name": "GridSignal",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://api.energy-charts.info/schemas/info/energy_charts/GridSignal",
+                "type": "object",
+                "name": "GridSignal",
+                "description": "Grid carbon signal for a given country at a specific timestamp. Sourced from the Energy-Charts /signal endpoint (Fraunhofer ISE). Provides a traffic-light signal (0=green, 1=yellow, 2=red) indicating how carbon-intensive the current electricity mix is. Green (0) means high renewable share and low carbon intensity — a good time to consume electricity. Red (2) means low renewable share and high carbon intensity. The renewable share percentage is also included for precise analysis.",
+                "required": [
+                  "country",
+                  "timestamp",
+                  "unix_seconds"
+                ],
+                "properties": {
+                  "country": {
+                    "type": "string",
+                    "description": "ISO 3166-1 alpha-2 country code identifying the electricity market area (e.g. 'de' for Germany). Used as the query parameter in the Energy-Charts API."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "UTC timestamp derived from the unix_seconds value. Marks the start of the 15-minute measurement interval."
+                  },
+                  "unix_seconds": {
+                    "type": "int64",
+                    "description": "Unix epoch timestamp in seconds as returned by the Energy-Charts API."
+                  },
+                  "signal": {
+                    "type": ["int32", "null"],
+                    "description": "Traffic-light carbon signal: 0 = green (high renewable share, low carbon — good time to consume), 1 = yellow (moderate renewable share), 2 = red (low renewable share, high carbon — avoid consumption if possible). The thresholds are defined by Fraunhofer ISE based on the renewable share of generation."
+                  },
+                  "renewable_share_pct": {
+                    "type": ["double", "null"],
+                    "description": "Renewable share of generation as a percentage (0–100) at this timestamp. This is the precise numerical value underlying the traffic-light signal."
+                  },
+                  "substitute": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether this signal value is a substitute (forecast or estimate) rather than based on actual metered data. True indicates the value is projected; false indicates it is based on real measurements."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "info.energy_charts.avro": {
+      "schemas": {
+        "info.energy_charts.PublicPower": {
+          "name": "PublicPower",
+          "format": "Avro/1.11.1",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.1",
+              "schema": {
+                "type": "record",
+                "name": "PublicPower",
+                "namespace": "info.energy_charts",
+                "fields": [
+                  {"name": "country", "type": "string"},
+                  {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+                  {"name": "unix_seconds", "type": "long"},
+                  {"name": "hydro_pumped_storage_consumption_mw", "type": ["null", "double"], "default": null},
+                  {"name": "cross_border_electricity_trading_mw", "type": ["null", "double"], "default": null},
+                  {"name": "hydro_run_of_river_mw", "type": ["null", "double"], "default": null},
+                  {"name": "biomass_mw", "type": ["null", "double"], "default": null},
+                  {"name": "fossil_brown_coal_lignite_mw", "type": ["null", "double"], "default": null},
+                  {"name": "fossil_hard_coal_mw", "type": ["null", "double"], "default": null},
+                  {"name": "fossil_oil_mw", "type": ["null", "double"], "default": null},
+                  {"name": "fossil_coal_derived_gas_mw", "type": ["null", "double"], "default": null},
+                  {"name": "fossil_gas_mw", "type": ["null", "double"], "default": null},
+                  {"name": "geothermal_mw", "type": ["null", "double"], "default": null},
+                  {"name": "hydro_water_reservoir_mw", "type": ["null", "double"], "default": null},
+                  {"name": "hydro_pumped_storage_mw", "type": ["null", "double"], "default": null},
+                  {"name": "others_mw", "type": ["null", "double"], "default": null},
+                  {"name": "waste_mw", "type": ["null", "double"], "default": null},
+                  {"name": "wind_offshore_mw", "type": ["null", "double"], "default": null},
+                  {"name": "wind_onshore_mw", "type": ["null", "double"], "default": null},
+                  {"name": "solar_mw", "type": ["null", "double"], "default": null},
+                  {"name": "nuclear_mw", "type": ["null", "double"], "default": null},
+                  {"name": "load_mw", "type": ["null", "double"], "default": null},
+                  {"name": "residual_load_mw", "type": ["null", "double"], "default": null},
+                  {"name": "renewable_share_of_generation_pct", "type": ["null", "double"], "default": null},
+                  {"name": "renewable_share_of_load_pct", "type": ["null", "double"], "default": null}
+                ]
+              }
+            }
+          }
+        },
+        "info.energy_charts.SpotPrice": {
+          "name": "SpotPrice",
+          "format": "Avro/1.11.1",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.1",
+              "schema": {
+                "type": "record",
+                "name": "SpotPrice",
+                "namespace": "info.energy_charts",
+                "fields": [
+                  {"name": "country", "type": "string"},
+                  {"name": "bidding_zone", "type": "string"},
+                  {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+                  {"name": "unix_seconds", "type": "long"},
+                  {"name": "price_eur_per_mwh", "type": ["null", "double"], "default": null},
+                  {"name": "unit", "type": ["null", "string"], "default": null}
+                ]
+              }
+            }
+          }
+        },
+        "info.energy_charts.GridSignal": {
+          "name": "GridSignal",
+          "format": "Avro/1.11.1",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.1",
+              "schema": {
+                "type": "record",
+                "name": "GridSignal",
+                "namespace": "info.energy_charts",
+                "fields": [
+                  {"name": "country", "type": "string"},
+                  {"name": "timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+                  {"name": "unix_seconds", "type": "long"},
+                  {"name": "signal", "type": ["null", "int"], "default": null},
+                  {"name": "renewable_share_pct", "type": ["null", "double"], "default": null},
+                  {"name": "substitute", "type": ["null", "boolean"], "default": null}
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

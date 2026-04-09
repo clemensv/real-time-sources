@@ -215,6 +215,8 @@ def cbp_border_wait_image():
     return build_image('cbp-border-wait')
 def elexon_bmrs_image():
     return build_image('elexon-bmrs')
+def energy_charts_image():
+    return build_image('energy-charts')
 
 
 # ---------------------------------------------------------------------------
@@ -1179,4 +1181,14 @@ class TestElexonBMRSDockerFlow:
         _run_kafka_flow_test(
             kafka, elexon_bmrs_image, self.TOPIC,
             telemetry_types=['GenerationMix', 'DemandOutturn'],
+# Energy-Charts (European electricity generation, prices & grid signals)
+# ---------------------------------------------------------------------------
+
+class TestEnergyChartsDockerFlow:
+    TOPIC = 'test-energy-charts'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, energy_charts_image):
+        _run_kafka_flow_test(
+            kafka, energy_charts_image, self.TOPIC,
+            telemetry_types=['PublicPower', 'SpotPrice', 'GridSignal'],
         )
