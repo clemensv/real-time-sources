@@ -1,0 +1,2 @@
+pip install .\elexon_bmrs_producer_data
+pip install .\elexon_bmrs_producer_kafka_producer

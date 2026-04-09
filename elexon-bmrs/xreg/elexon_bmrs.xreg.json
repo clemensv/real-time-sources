@@ -1,0 +1,258 @@
+{
+  "endpoints": {
+    "UK.Co.Elexon.BMRS.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "elexon-bmrs",
+          "key": "{settlement_period}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Co.Elexon.BMRS"
+      ]
+    }
+  },
+  "messagegroups": {
+    "UK.Co.Elexon.BMRS": {
+      "messages": {
+        "UK.Co.Elexon.BMRS.GenerationMix": {
+          "name": "GenerationMix",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "UK.Co.Elexon.BMRS.GenerationMix"
+            },
+            "source": {
+              "value": "https://data.elexon.co.uk/bmrs"
+            },
+            "subject": {
+              "value": "{settlement_period}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.GenerationMix"
+        },
+        "UK.Co.Elexon.BMRS.DemandOutturn": {
+          "name": "DemandOutturn",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "UK.Co.Elexon.BMRS.DemandOutturn"
+            },
+            "source": {
+              "value": "https://data.elexon.co.uk/bmrs"
+            },
+            "subject": {
+              "value": "{settlement_period}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.DemandOutturn"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "UK.Co.Elexon.BMRS.jstruct": {
+      "schemas": {
+        "UK.Co.Elexon.BMRS.GenerationMix": {
+          "name": "GenerationMix",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "settlement_period",
+                  "start_time"
+                ],
+                "name": "GenerationMix",
+                "properties": {
+                  "settlement_period": {
+                    "type": "int32",
+                    "description": "GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC. Period 1 covers 00:00-00:30, period 2 covers 00:30-01:00, and so on."
+                  },
+                  "start_time": {
+                    "type": "datetime",
+                    "description": "UTC start time of the settlement period as reported by the BMRS generation outturn summary endpoint."
+                  },
+                  "biomass_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from biomass-fuelled power stations in megawatts (MW). Biomass includes dedicated biomass plants and biomass co-firing units.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "ccgt_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from combined cycle gas turbine (CCGT) power stations in megawatts (MW). CCGT is the primary gas-fired generation technology in GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "coal_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from coal-fired power stations in megawatts (MW).",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "nuclear_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from nuclear power stations in megawatts (MW).",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "wind_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from wind farms (onshore and offshore combined) in megawatts (MW).",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "ocgt_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from open cycle gas turbine (OCGT) power stations in megawatts (MW). OCGT units are typically used for peaking and reserve.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "oil_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from oil-fired power stations in megawatts (MW).",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "npshyd_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from non-pumped-storage hydroelectric power stations in megawatts (MW).",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "ps_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from pumped storage hydroelectric power stations in megawatts (MW). PS units can act as both generation and demand.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "intfr_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net import via the France interconnector (IFA) in megawatts (MW). Positive values indicate import to GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "intned_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net import via the Netherlands interconnector (BritNed) in megawatts (MW). Positive values indicate import to GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "intnem_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net import via the Belgium interconnector (Nemo Link) in megawatts (MW). Positive values indicate import to GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "intelec_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net import via the East-West Interconnector (EWIC) to Ireland in megawatts (MW). Positive values indicate import to GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "intifa2_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net import via the IFA2 interconnector to France in megawatts (MW). Positive values indicate import to GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "intnsl_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net import via the North Sea Link interconnector to Norway in megawatts (MW). Positive values indicate import to GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "intvkl_mw": {
+                    "type": ["double", "null"],
+                    "description": "Net import via the Viking Link interconnector to Denmark in megawatts (MW). Positive values indicate import to GB.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "other_mw": {
+                    "type": ["double", "null"],
+                    "description": "Generation output from other fuel types not individually categorised in megawatts (MW).",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  }
+                },
+                "$id": "https://data.elexon.co.uk/schemas/UK/Co/Elexon/BMRS/GenerationMix",
+                "description": "Half-hourly generation outturn summary for the GB electricity system from the Elexon BMRS API. Each record represents one settlement period and contains the generation output in megawatts (MW) broken down by fuel type, including domestic generation (biomass, CCGT, coal, nuclear, wind, OCGT, oil, hydro, pumped storage) and interconnector imports (France IFA, France IFA2, Netherlands BritNed, Belgium Nemo, Ireland EWIC, Norway NSL, Denmark Viking Link). Sourced from the BMRS /generation/outturn/summary endpoint."
+              }
+            }
+          }
+        },
+        "UK.Co.Elexon.BMRS.DemandOutturn": {
+          "name": "DemandOutturn",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "settlement_period",
+                  "settlement_date",
+                  "start_time"
+                ],
+                "name": "DemandOutturn",
+                "properties": {
+                  "settlement_period": {
+                    "type": "int32",
+                    "description": "GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC."
+                  },
+                  "settlement_date": {
+                    "type": "string",
+                    "description": "Settlement date in ISO 8601 format (YYYY-MM-DD) as reported by the BMRS demand outturn endpoint."
+                  },
+                  "start_time": {
+                    "type": "datetime",
+                    "description": "UTC start time of the settlement period as reported by the BMRS demand outturn endpoint."
+                  },
+                  "publish_time": {
+                    "type": "datetime",
+                    "description": "UTC timestamp when the demand outturn data was published by Elexon."
+                  },
+                  "initial_demand_outturn_mw": {
+                    "type": ["double", "null"],
+                    "description": "Initial national demand outturn (INDO) in megawatts (MW). This is the metered generation output less station transformer, unit transformer, and pumped storage demand, measured at the Grid Supply Point (GSP).",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  },
+                  "initial_transmission_system_demand_outturn_mw": {
+                    "type": ["double", "null"],
+                    "description": "Initial transmission system demand outturn (ITSDO) in megawatts (MW). This represents the national demand plus station demand, pumping, and interconnector exports.",
+                    "unit": "MW",
+                    "symbol": "MW"
+                  }
+                },
+                "$id": "https://data.elexon.co.uk/schemas/UK/Co/Elexon/BMRS/DemandOutturn",
+                "description": "Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
