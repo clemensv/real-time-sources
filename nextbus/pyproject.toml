@@ -15,5 +15,9 @@ requests = "^2.31.0"
 azure-eventhub = "^5.11.3"
 cloudevents = ">=1.9.0,<2.0.0"
 
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+requests-mock = ">=1.12.1"
+
 [tool.poetry.scripts]
 nextbus = "nextbus:main"

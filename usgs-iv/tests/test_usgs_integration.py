@@ -7,7 +7,7 @@ import pytest
 import json
 import asyncio
 from unittest.mock import Mock, patch, AsyncMock, MagicMock
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import aiohttp
 from usgs_iv.usgs_iv import USGSDataPoller
 
@@ -299,3 +299,99 @@ class TestHelperFunctions:
         assert isfloat('abc') is False
         assert isfloat('') is False
         assert isfloat('12.34.56') is False
+
+
+class TestPollAndSendResilience:
+    """Station staleness gate and flush-batching resilience tests for poll_and_send."""
+
+    @staticmethod
+    def _make_poller():
+        with patch('usgs_iv.usgs_iv.Producer'), \
+             patch('usgs_iv.usgs_iv.USGSSitesEventProducer') as mock_site_ep_cls, \
+             patch('usgs_iv.usgs_iv.USGSInstantaneousValuesEventProducer') as mock_iv_ep_cls:
+            mock_site_ep = MagicMock()
+            mock_site_ep.producer = MagicMock()
+            mock_site_ep_cls.return_value = mock_site_ep
+            mock_iv_ep = MagicMock()
+            mock_iv_ep.producer = MagicMock()
+            mock_iv_ep_cls.return_value = mock_iv_ep
+            poller = USGSDataPoller(
+                kafka_config={'bootstrap.servers': 'localhost:9092'},
+                kafka_topic='test-topic',
+                state='MD',
+            )
+        return poller, mock_site_ep, mock_iv_ep
+
+    @staticmethod
+    async def _empty_data_gen(state):
+        """Async generator that yields no data records."""
+        return
+        yield  # pragma: no cover
+
+    @staticmethod
+    async def _one_site_gen(state):
+        """Async generator that yields one mock site."""
+        site = MagicMock()
+        site.agency_cd = 'USGS'
+        site.site_no = '01646500'
+        yield site
+
+    @pytest.mark.asyncio
+    async def test_station_emit_skipped_when_refreshed_recently(self):
+        """Stations are NOT sent when last_polled_times shows a refresh within the past 7 days."""
+        poller, mock_site_ep, _ = self._make_poller()
+        poller.get_data_by_state = self._empty_data_gen
+
+        recent = datetime.now(timezone.utc) - timedelta(days=1)
+        last_polled = {'stations': {'MD': recent}}
+
+        with patch.object(poller, 'load_last_polled_times', return_value=last_polled), \
+             patch.object(poller, 'save_last_polled_times'), \
+             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen), \
+             patch('asyncio.sleep', side_effect=asyncio.CancelledError):
+            try:
+                await poller.poll_and_send()
+            except (asyncio.CancelledError, Exception):
+                pass
+
+        mock_site_ep.send_usgs_sites_site.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_station_emit_triggered_when_stale(self):
+        """Stations ARE sent when last_polled_times shows the last refresh was more than 7 days ago."""
+        poller, mock_site_ep, _ = self._make_poller()
+        poller.get_data_by_state = self._empty_data_gen
+
+        stale = datetime.now(timezone.utc) - timedelta(days=8)
+        last_polled = {'stations': {'MD': stale}}
+
+        with patch.object(poller, 'load_last_polled_times', return_value=last_polled), \
+             patch.object(poller, 'save_last_polled_times'), \
+             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen), \
+             patch('asyncio.sleep', side_effect=asyncio.CancelledError):
+            try:
+                await poller.poll_and_send()
+            except (asyncio.CancelledError, Exception):
+                pass
+
+        assert mock_site_ep.send_usgs_sites_site.call_count >= 1
+        site_call = mock_site_ep.send_usgs_sites_site.call_args
+        assert site_call.kwargs.get('flush_producer') is False
+
+    @pytest.mark.asyncio
+    async def test_flush_called_at_end_of_state_processing(self):
+        """producer.flush() is called at the end of each state's record batch, not per record."""
+        poller, _, mock_iv_ep = self._make_poller()
+        poller.get_data_by_state = self._empty_data_gen
+
+        with patch.object(poller, 'load_last_polled_times', return_value={}), \
+             patch.object(poller, 'save_last_polled_times'), \
+             patch.object(poller, 'get_sites_in_state', side_effect=self._one_site_gen), \
+             patch('asyncio.sleep', side_effect=asyncio.CancelledError):
+            try:
+                await poller.poll_and_send()
+            except (asyncio.CancelledError, Exception):
+                pass
+
+        # flush() called at least once after the state loop (end-of-state flush)
+        assert mock_iv_ep.producer.flush.call_count >= 1

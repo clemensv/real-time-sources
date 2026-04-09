@@ -48,5 +48,6 @@
 - Starting from ad hoc Python dataclasses instead of the xreg manifest.
 - Using mutable names or descriptive labels as Kafka keys.
 - Combining unrelated identity models in one message group.
+- **Forgetting that multiple message groups produce multiple generated producer classes.** If the contract splits the source into several message groups, plan for the runtime to import and instantiate all corresponding `*EventProducer` classes. Do not assume one generated producer wrapper owns every `send_*` method.
 - Adding a source folder without container docs or without a generator script.
 - Copying a superficially similar source when the transport pattern is wrong.

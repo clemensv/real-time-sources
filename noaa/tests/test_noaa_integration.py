@@ -8,7 +8,7 @@ import json
 import requests
 import requests_mock
 from datetime import datetime, timezone
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
 from noaa.noaa import NOAADataPoller
 
 
@@ -224,6 +224,102 @@ class TestConnectionString:
         assert 'sb://test.servicebus.windows.net/' in parts['Endpoint']
         assert parts.get('SharedAccessKeyName') == 'test'
         assert parts.get('EntityPath') == 'test-topic'
+
+
+@pytest.mark.integration
+class TestPollAndSendResilience:
+    """Flush-batching and partial-failure resilience tests for NOAA poll_and_send."""
+
+    _KAFKA_CFG = {
+        'bootstrap.servers': 'localhost:9092',
+        'security.protocol': 'SASL_SSL',
+        'sasl.mechanisms': 'PLAIN',
+        'sasl.username': 'test',
+        'sasl.password': 'test',
+    }
+
+    def _make_poller(self, mock_ep_cls, stations):
+        """Create a NOAADataPoller with pre-loaded stations and a mocked event producer."""
+        with requests_mock.Mocker() as m:
+            m.get('https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json',
+                  json={'stations': []})
+            with patch('noaa.noaa.Station.schema') as mock_schema:
+                mock_schema.return_value.load.return_value = stations
+                return NOAADataPoller(
+                    kafka_config=self._KAFKA_CFG,
+                    kafka_topic='test-topic',
+                    last_polled_file='nonexistent_state.json',
+                )
+
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    def test_station_batch_uses_flush_producer_false_with_single_flush(self, mock_ep_cls):
+        """Station CloudEvents use flush_producer=False; producer.flush() called once after the batch."""
+        mock_ep = MagicMock()
+        mock_ep.producer = MagicMock()
+        mock_ep_cls.return_value = mock_ep
+
+        mock_station = MagicMock()
+        mock_station.station_id = '8454000'
+        mock_station.name = 'Providence'
+
+        poller = self._make_poller(mock_ep_cls, [mock_station])
+
+        with patch.object(poller, 'load_last_polled_times', return_value={}), \
+             patch.object(poller, 'poll_noaa_api', side_effect=KeyboardInterrupt):
+            try:
+                poller.poll_and_send()
+            except KeyboardInterrupt:
+                pass
+
+        station_calls = mock_ep.send_microsoft_open_data_us_noaa_station.call_args_list
+        assert len(station_calls) == 1
+        assert station_calls[0].kwargs.get('flush_producer') is False
+        assert mock_ep.producer.flush.call_count >= 1
+
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    def test_poll_noaa_api_network_error_returns_empty_list(self, mock_ep_cls):
+        """poll_noaa_api returns [] on a network error; no exception propagates."""
+        mock_ep_cls.return_value = MagicMock()
+
+        mock_station = MagicMock()
+        mock_station.station_id = '8454000'
+        mock_station.tideType = 'Harmonic'
+        poller = self._make_poller(mock_ep_cls, [mock_station])
+
+        with requests_mock.Mocker() as m:
+            m.get(requests_mock.ANY, exc=requests.exceptions.ConnectionError("unreachable"))
+            from datetime import datetime, timezone, timedelta
+            result = poller.poll_noaa_api(
+                'water_level', '8454000',
+                datetime.now(timezone.utc) - timedelta(hours=1)
+            )
+
+        assert result == []
+
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    def test_stations_cached_at_startup_not_refetched(self, mock_ep_cls):
+        """fetch_all_stations is called once during __init__; the cached list is reused for all poll cycles."""
+        mock_ep_cls.return_value = MagicMock()
+
+        mock_station = MagicMock()
+        mock_station.station_id = '8454000'
+
+        with requests_mock.Mocker() as m:
+            m.get('https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json',
+                  json={'stations': []})
+            with patch('noaa.noaa.Station.schema') as mock_schema:
+                mock_schema.return_value.load.return_value = [mock_station]
+                poller = NOAADataPoller(
+                    kafka_config=self._KAFKA_CFG,
+                    kafka_topic='test-topic',
+                    last_polled_file='nonexistent.json',
+                )
+            # Only one HTTP request was made (the __init__ station fetch)
+            assert m.call_count == 1
+
+        # Calling poll_noaa_api does NOT re-fetch stations
+        assert len(poller.stations) == 1
+        assert poller.stations[0].station_id == '8454000'
 
 
 if __name__ == '__main__':

@@ -252,3 +252,99 @@ class TestAPIRequests:
         result = api.get_latest_observations(["s1", "s2", "s3"])
         assert mock_post.call_count == 2  # 2 batches: [s1,s2], [s3]
         assert len(result) == 2  # 1 item per batch
+
+
+class TestFeedStationsResilience:
+    """Flush-batching and state-preservation resilience tests for the feed loop."""
+
+    _KAFKA_CFG = {'bootstrap.servers': 'localhost:9092'}
+    _STATION_LOC = {"Code": "HOlv", "Naam": "Hoek van Holland", "Lat": 51.98, "Lon": 4.12, "Coordinatenstelsel": "25831"}
+    _OBSERVATION = {
+        "Locatie": {"Code": "HOlv", "Naam": "Hoek van Holland", "Lat": 51.98, "Lon": 4.12},
+        "AquoMetadata": {"Eenheid": {"Code": "cm"}},
+        "MetingenLijst": [
+            {
+                "Tijdstip": "2026-03-25T10:00:00.000+01:00",
+                "Meetwaarde": {"Waarde_Numeriek": 100.0},
+                "WaarnemingMetadata": {"Kwaliteitswaardecode": "00", "Statuswaarde": "Ongecontroleerd"},
+            }
+        ],
+    }
+
+    def _run_feed(self, api, mock_raw_producer, mock_ep, observations, extra_patches=None):
+        """Drive feed_stations through one poll cycle and exit on the first sleep."""
+        patches = [
+            patch.object(api, 'get_water_level_stations', return_value=[self._STATION_LOC]),
+            patch.object(api, 'get_latest_observations', return_value=observations),
+            patch('confluent_kafka.Producer', return_value=mock_raw_producer),
+            patch('rws_waterwebservices.rws_waterwebservices.NLRWSWaterwebservicesEventProducer', return_value=mock_ep),
+            patch('rws_waterwebservices.rws_waterwebservices.Station', return_value=MagicMock()),
+            patch('rws_waterwebservices.rws_waterwebservices.WaterLevelObservation', return_value=MagicMock()),
+            patch('rws_waterwebservices.rws_waterwebservices._save_state'),
+            patch('rws_waterwebservices.rws_waterwebservices.time.sleep', side_effect=KeyboardInterrupt),
+        ]
+        if extra_patches:
+            patches.extend(extra_patches)
+        try:
+            with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6], patches[7]:
+                api.feed_stations(kafka_config=self._KAFKA_CFG, kafka_topic='test-topic', polling_interval=600)
+        except KeyboardInterrupt:
+            pass
+
+    def test_station_batch_uses_flush_producer_false_with_single_flush(self):
+        """All station CloudEvents use flush_producer=False; producer.flush() called once after the batch."""
+        api = RWSWaterwebservicesAPI()
+        mock_ep = MagicMock()
+        mock_raw_producer = MagicMock()
+
+        self._run_feed(api, mock_raw_producer, mock_ep, observations=[])
+
+        assert mock_ep.send_nl_rws_waterwebservices_station.call_count == 1
+        for call in mock_ep.send_nl_rws_waterwebservices_station.call_args_list:
+            assert call.kwargs.get('flush_producer') is False
+        assert mock_raw_producer.flush.call_count >= 1
+
+    def test_observation_send_failure_preserves_dedup_state(self):
+        """When observation send raises, previous_readings is still updated; same observation not retried next cycle."""
+        api = RWSWaterwebservicesAPI()
+        mock_ep = MagicMock()
+        mock_ep.send_nl_rws_waterwebservices_water_level_observation.side_effect = RuntimeError("broker down")
+        mock_raw_producer = MagicMock()
+
+        # Two poll cycles with the same observation; sleep does nothing on first, raises on second
+        with patch.object(api, 'get_water_level_stations', return_value=[self._STATION_LOC]), \
+             patch.object(api, 'get_latest_observations', return_value=[self._OBSERVATION]), \
+             patch('confluent_kafka.Producer', return_value=mock_raw_producer), \
+             patch('rws_waterwebservices.rws_waterwebservices.NLRWSWaterwebservicesEventProducer', return_value=mock_ep), \
+             patch('rws_waterwebservices.rws_waterwebservices.Station', return_value=MagicMock()), \
+             patch('rws_waterwebservices.rws_waterwebservices.WaterLevelObservation', return_value=MagicMock()), \
+             patch('rws_waterwebservices.rws_waterwebservices._save_state'), \
+             patch('rws_waterwebservices.rws_waterwebservices.time.sleep',
+                   side_effect=[None, KeyboardInterrupt()]):
+            try:
+                api.feed_stations(kafka_config=self._KAFKA_CFG, kafka_topic='test-topic', polling_interval=600)
+            except KeyboardInterrupt:
+                pass
+
+        # Send attempted once only; dedup state preserved across the failed send
+        assert mock_ep.send_nl_rws_waterwebservices_water_level_observation.call_count == 1
+
+    def test_get_observations_failure_caught_in_loop(self):
+        """A transient failure in get_latest_observations is caught; no observation sends attempted."""
+        api = RWSWaterwebservicesAPI()
+        mock_ep = MagicMock()
+        mock_raw_producer = MagicMock()
+
+        with patch.object(api, 'get_water_level_stations', return_value=[self._STATION_LOC]), \
+             patch.object(api, 'get_latest_observations', side_effect=ConnectionError("API down")), \
+             patch('confluent_kafka.Producer', return_value=mock_raw_producer), \
+             patch('rws_waterwebservices.rws_waterwebservices.NLRWSWaterwebservicesEventProducer', return_value=mock_ep), \
+             patch('rws_waterwebservices.rws_waterwebservices.Station', return_value=MagicMock()), \
+             patch('rws_waterwebservices.rws_waterwebservices.WaterLevelObservation', return_value=MagicMock()), \
+             patch('rws_waterwebservices.rws_waterwebservices.time.sleep', side_effect=KeyboardInterrupt):
+            try:
+                api.feed_stations(kafka_config=self._KAFKA_CFG, kafka_topic='test-topic', polling_interval=600)
+            except KeyboardInterrupt:
+                pass
+
+        mock_ep.send_nl_rws_waterwebservices_water_level_observation.assert_not_called()

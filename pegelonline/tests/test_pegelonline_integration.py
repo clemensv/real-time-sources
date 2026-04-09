@@ -317,3 +317,97 @@ class TestBulkWaterLevels:
             assert len(levels) == 1
             assert 'station-1' not in levels
             assert 'station-2' in levels
+
+
+@pytest.mark.integration
+class TestFlushAndStateResilience:
+    """Flush-batching and state-preservation resilience tests for the feed loop."""
+
+    _KAFKA_CFG = {'bootstrap.servers': 'localhost:9092'}
+    _STATION = {
+        "uuid": "s1", "number": "1", "shortname": "ST1", "longname": "ST1",
+        "km": 100.0, "agency": "WSV", "longitude": 8.0, "latitude": 50.0,
+        "water": {"shortname": "RHEIN", "longname": "RHEIN"},
+    }
+    _MEASUREMENT = {
+        "timestamp": "2024-01-15T12:00:00+01:00",
+        "value": 450, "stateMnwMhw": "normal", "stateNswHsw": "unknown", "uuid": "s1",
+    }
+
+    def _run_feed(self, api, **kwargs):
+        """Drive feed_stations to completion, absorbing the KeyboardInterrupt exit."""
+        try:
+            asyncio.run(api.feed_stations(**kwargs))
+        except KeyboardInterrupt:
+            pass
+
+    def test_station_batch_uses_flush_producer_false_with_single_flush(self):
+        """All station CloudEvents use flush_producer=False; producer.flush() called once after the batch."""
+        api = PegelOnlineAPI()
+        mock_ep = MagicMock()
+        mock_raw_producer = MagicMock()
+
+        with patch.object(api, 'list_stations', return_value=[self._STATION, {**self._STATION, "uuid": "s2", "shortname": "ST2"}]), \
+             patch.object(api, 'get_water_levels', return_value={}), \
+             patch('pegelonline.pegelonline.Producer', return_value=mock_raw_producer), \
+             patch('pegelonline.pegelonline.DeWsvPegelonlineEventProducer', return_value=mock_ep), \
+             patch('pegelonline.pegelonline.time.sleep', side_effect=KeyboardInterrupt):
+            self._run_feed(api, kafka_config=self._KAFKA_CFG, kafka_topic='test-topic', polling_interval=60)
+
+        assert mock_ep.send_de_wsv_pegelonline_station.call_count == 2
+        for call in mock_ep.send_de_wsv_pegelonline_station.call_args_list:
+            assert call.kwargs.get('flush_producer') is False
+        assert mock_raw_producer.flush.call_count >= 1
+
+    def test_measurement_batch_uses_flush_producer_false_with_flush_per_cycle(self):
+        """Measurement CloudEvents use flush_producer=False; producer.flush() called once per poll cycle."""
+        api = PegelOnlineAPI()
+        mock_ep = MagicMock()
+        mock_raw_producer = MagicMock()
+
+        with patch.object(api, 'list_stations', return_value=[]), \
+             patch.object(api, 'get_water_levels', return_value={"s1": self._MEASUREMENT}), \
+             patch('pegelonline.pegelonline.Producer', return_value=mock_raw_producer), \
+             patch('pegelonline.pegelonline.DeWsvPegelonlineEventProducer', return_value=mock_ep), \
+             patch('pegelonline.pegelonline._save_state'), \
+             patch('pegelonline.pegelonline.time.sleep', side_effect=KeyboardInterrupt):
+            self._run_feed(api, kafka_config=self._KAFKA_CFG, kafka_topic='test-topic', polling_interval=60)
+
+        assert mock_ep.send_de_wsv_pegelonline_current_measurement.call_count == 1
+        send_call = mock_ep.send_de_wsv_pegelonline_current_measurement.call_args
+        assert send_call.kwargs.get('flush_producer') is False
+        # Flush after station batch (empty) and after the measurement batch
+        assert mock_raw_producer.flush.call_count >= 1
+
+    def test_send_failure_still_updates_dedup_state(self):
+        """When Kafka send raises, previous_readings is still updated; same measurement not retried next cycle."""
+        api = PegelOnlineAPI()
+        mock_ep = MagicMock()
+        mock_ep.send_de_wsv_pegelonline_current_measurement.side_effect = RuntimeError("broker down")
+        mock_raw_producer = MagicMock()
+
+        with patch.object(api, 'list_stations', return_value=[]), \
+             patch.object(api, 'get_water_levels', return_value={"s1": self._MEASUREMENT}), \
+             patch('pegelonline.pegelonline.Producer', return_value=mock_raw_producer), \
+             patch('pegelonline.pegelonline.DeWsvPegelonlineEventProducer', return_value=mock_ep), \
+             patch('pegelonline.pegelonline._save_state'), \
+             patch('pegelonline.pegelonline.time.sleep', side_effect=[None, KeyboardInterrupt()]):
+            self._run_feed(api, kafka_config=self._KAFKA_CFG, kafka_topic='test-topic', polling_interval=60)
+
+        # Send attempted once (first cycle); second cycle skips because state was preserved
+        assert mock_ep.send_de_wsv_pegelonline_current_measurement.call_count == 1
+
+    def test_get_water_levels_failure_is_caught_and_loop_continues(self):
+        """A transient upstream failure in get_water_levels is caught; no measurements sent; loop retries."""
+        api = PegelOnlineAPI()
+        mock_ep = MagicMock()
+        mock_raw_producer = MagicMock()
+
+        with patch.object(api, 'list_stations', return_value=[]), \
+             patch.object(api, 'get_water_levels', side_effect=ConnectionError("upstream timeout")), \
+             patch('pegelonline.pegelonline.Producer', return_value=mock_raw_producer), \
+             patch('pegelonline.pegelonline.DeWsvPegelonlineEventProducer', return_value=mock_ep), \
+             patch('pegelonline.pegelonline.time.sleep', side_effect=KeyboardInterrupt):
+            self._run_feed(api, kafka_config=self._KAFKA_CFG, kafka_topic='test-topic', polling_interval=60)
+
+        mock_ep.send_de_wsv_pegelonline_current_measurement.assert_not_called()

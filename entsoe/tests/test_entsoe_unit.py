@@ -382,7 +382,10 @@ class TestEntsoePoller:
         state_file = str(tmp_path / "state.json")
         return EntsoePoller(
             security_token="test-token",
-            producer=mock_producer,
+            domain_producer=mock_producer,
+            domain_psr_producer=mock_producer,
+            cross_border_producer=mock_producer,
+            kafka_producer=mock_producer.producer,
             state_file=state_file,
             domains=["10YDE-AT-LU---Q"],
             document_types=["A75"],
@@ -395,11 +398,14 @@ class TestEntsoePoller:
         """A poll cycle with data emits events and advances checkpoint."""
         poller = EntsoePoller(
             security_token="test-token",
-            producer=mock_producer,
+            domain_producer=mock_producer,
+            domain_psr_producer=mock_producer,
+            cross_border_producer=mock_producer,
+            kafka_producer=mock_producer.producer,
             state_file=str(tmp_path / "state.json"),
             domains=["10YDE-AT-LU---Q"],
             document_types=["A75"],
-        lookback_hours=24,
+            lookback_hours=24,
             polling_interval=60,
         )
         mock_response = Mock()
@@ -463,7 +469,10 @@ class TestEntsoePoller:
 
         poller = EntsoePoller(
             security_token="test",
-            producer=mock_producer,
+            domain_producer=mock_producer,
+            domain_psr_producer=mock_producer,
+            cross_border_producer=mock_producer,
+            kafka_producer=mock_producer.producer,
             state_file=str(tmp_path / "state.json"),
             domains=["10YFR-RTE------C"],
             document_types=["A44"],
@@ -490,7 +499,10 @@ class TestEntsoePoller:
 
         poller = EntsoePoller(
             security_token="test",
-            producer=mock_producer,
+            domain_producer=mock_producer,
+            domain_psr_producer=mock_producer,
+            cross_border_producer=mock_producer,
+            kafka_producer=mock_producer.producer,
             state_file=str(tmp_path / "state.json"),
             domains=["10YES-REE------0"],
             document_types=["A65"],
@@ -678,7 +690,11 @@ class TestNewDocTypeEmission:
         mock_producer.producer.flush = Mock()
 
         poller = EntsoePoller(
-            security_token="test", producer=mock_producer,
+            security_token="test",
+            domain_producer=mock_producer,
+            domain_psr_producer=mock_producer,
+            cross_border_producer=mock_producer,
+            kafka_producer=mock_producer.producer,
             state_file=str(tmp_path / "state.json"),
             domains=["10Y1001A1001A83F"], document_types=["A69"],
             lookback_hours=720, polling_interval=60,
@@ -701,7 +717,11 @@ class TestNewDocTypeEmission:
         mock_producer.producer.flush = Mock()
 
         poller = EntsoePoller(
-            security_token="test", producer=mock_producer,
+            security_token="test",
+            domain_producer=mock_producer,
+            domain_psr_producer=mock_producer,
+            cross_border_producer=mock_producer,
+            kafka_producer=mock_producer.producer,
             state_file=str(tmp_path / "state.json"),
             domains=[], document_types=["A11"],
             cross_border_pairs=[("10YFR-RTE------C", "10YES-REE------0")],
@@ -725,7 +745,11 @@ class TestNewDocTypeEmission:
         mock_producer.producer.flush = Mock()
 
         poller = EntsoePoller(
-            security_token="test", producer=mock_producer,
+            security_token="test",
+            domain_producer=mock_producer,
+            domain_psr_producer=mock_producer,
+            cross_border_producer=mock_producer,
+            kafka_producer=mock_producer.producer,
             state_file=str(tmp_path / "state.json"),
             domains=["10Y1001A1001A83F"], document_types=["A71"],
             lookback_hours=720, polling_interval=60,

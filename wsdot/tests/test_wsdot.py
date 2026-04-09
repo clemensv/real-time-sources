@@ -12,6 +12,7 @@ from wsdot.wsdot import (
     _parse_connection_string,
     _parse_wcf_date,
     _FLOW_READING_MAP,
+    _emit_batch,
 )
 
 
@@ -901,3 +902,172 @@ class TestFeedProducerRouting:
             "border_crossing",
             "vessel_location",
         ]
+
+
+# ---------------------------------------------------------------------------
+# Resilience: _emit_batch per-item errors and partial channel failures
+# ---------------------------------------------------------------------------
+
+class TestEmitBatchResilience:
+    def test_item_error_does_not_stop_batch(self):
+        """A per-item exception inside _emit_batch does not prevent remaining items from being sent."""
+        sent = []
+        errors = []
+
+        def send_fn(item):
+            if item == "bad":
+                raise ValueError("bad item")
+            sent.append(item)
+
+        producer = MagicMock()
+        count = _emit_batch(producer, send_fn, ["ok1", "bad", "ok2"], "test")
+
+        assert sent == ["ok1", "ok2"]
+        assert count == 2
+        producer.flush.assert_called_once()
+
+    def test_all_items_fail_returns_zero(self):
+        """When every item raises, _emit_batch returns 0 and still calls flush."""
+        def _always_raise(item):
+            raise RuntimeError("fail")
+
+        producer = MagicMock()
+        count = _emit_batch(producer, _always_raise, ["a", "b"], "test")
+        assert count == 0
+        producer.flush.assert_called_once()
+
+
+class TestPartialChannelFailure:
+    """One channel fetch raises; unaffected channels still emit events."""
+
+    def _make_fake_producer(self, sent, event_type):
+        class FakeEP:
+            def __init__(self, *a, **kw):
+                pass
+            def __getattr__(self, name):
+                def _send(**kwargs):
+                    sent.append(event_type)
+                return _send
+        return FakeEP
+
+    def test_traffic_failure_does_not_prevent_travel_times(self):
+        """fetch_traffic_flows raising does not stop travel_time events from being sent."""
+        sent = []
+        args = Namespace(
+            connection_string="BootstrapServer=localhost:9092;EntityPath=test-topic",
+            access_code="test-key",
+            polling_interval="120",
+            region_filter="",
+        )
+
+        fake_kafka = MagicMock()
+
+        class FakeTrafficEP:
+            def __init__(self, *a, **kw): pass
+            def send_us_wa_wsdot_traffic_traffic_flow_station(self, **kw): sent.append("traffic_station")
+            def send_us_wa_wsdot_traffic_traffic_flow_reading(self, **kw): sent.append("traffic_reading")
+
+        class FakeTraveltimesEP:
+            def __init__(self, *a, **kw): pass
+            def send_us_wa_wsdot_traveltimes_travel_time_route(self, **kw): sent.append("travel_time")
+
+        # Remaining producers are silent no-ops
+        class _NoOpEP:
+            def __init__(self, *a, **kw): pass
+            def __getattr__(self, name):
+                return lambda **kw: None
+
+        with patch("wsdot.wsdot._parse_connection_string",
+                   return_value=({"bootstrap.servers": "localhost:9092"}, "test-topic")), \
+             patch("wsdot.wsdot.Producer", return_value=fake_kafka), \
+             patch("wsdot.wsdot.UsWaWsdotTrafficEventProducer", FakeTrafficEP), \
+             patch("wsdot.wsdot.UsWaWsdotTraveltimesEventProducer", FakeTraveltimesEP), \
+             patch("wsdot.wsdot.UsWaWsdotMountainpassEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotWeatherEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotTollsEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotCvrestrictionsEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotBorderEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotFerriesEventProducer", _NoOpEP), \
+             patch.object(WSDOTApi, "fetch_traffic_flows", side_effect=RuntimeError("API down")), \
+             patch.object(WSDOTApi, "fetch_travel_times", return_value=[SAMPLE_TRAVEL_TIME]), \
+             patch.object(WSDOTApi, "fetch_mountain_pass_conditions", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_weather_stations", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_weather_information", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_toll_rates", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_cv_restrictions", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_border_crossings", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_vessel_locations", return_value=[]), \
+             patch("wsdot.wsdot.time.sleep", side_effect=KeyboardInterrupt):
+            feed(args)
+
+        # Traffic failed but travel times still emitted
+        assert "traffic_station" not in sent
+        assert "traffic_reading" not in sent
+        assert "travel_time" in sent
+
+
+class TestReferenceRefreshInterval:
+    """Reference data only re-emitted once the 6-hour window has elapsed."""
+
+    def test_reference_not_re_emitted_before_6h(self):
+        """With time.sleep mocked to advance < 6 hours, reference events are not re-emitted on the second cycle."""
+        reference_sent = []
+        telemetry_sent = []
+
+        class FakeTrafficEP:
+            def __init__(self, *a, **kw): pass
+            def send_us_wa_wsdot_traffic_traffic_flow_station(self, **kw):
+                reference_sent.append("traffic_station")
+            def send_us_wa_wsdot_traffic_traffic_flow_reading(self, **kw):
+                telemetry_sent.append("traffic_reading")
+
+        class _NoOpEP:
+            def __init__(self, *a, **kw): pass
+            def __getattr__(self, name):
+                return lambda **kw: None
+
+        fake_kafka = MagicMock()
+        args = Namespace(
+            connection_string="BootstrapServer=localhost:9092;EntityPath=test-topic",
+            access_code="test-key",
+            polling_interval="1",
+            region_filter="",
+        )
+
+        # Simulate two polling cycles: first sleep does nothing (enters loop a second time),
+        # second sleep raises KeyboardInterrupt (exits).
+        call_count = [0]
+
+        def _fake_sleep(_t):
+            call_count[0] += 1
+            if call_count[0] >= 2:
+                raise KeyboardInterrupt
+
+        with patch("wsdot.wsdot._parse_connection_string",
+                   return_value=({"bootstrap.servers": "localhost:9092"}, "test-topic")), \
+             patch("wsdot.wsdot.Producer", return_value=fake_kafka), \
+             patch("wsdot.wsdot.UsWaWsdotTrafficEventProducer", FakeTrafficEP), \
+             patch("wsdot.wsdot.UsWaWsdotTraveltimesEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotMountainpassEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotWeatherEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotTollsEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotCvrestrictionsEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotBorderEventProducer", _NoOpEP), \
+             patch("wsdot.wsdot.UsWaWsdotFerriesEventProducer", _NoOpEP), \
+             patch.object(WSDOTApi, "fetch_traffic_flows", return_value=[SAMPLE_FLOW_DATA]), \
+             patch.object(WSDOTApi, "fetch_travel_times", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_mountain_pass_conditions", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_weather_stations", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_weather_information", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_toll_rates", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_cv_restrictions", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_border_crossings", return_value=[]), \
+             patch.object(WSDOTApi, "fetch_vessel_locations", return_value=[]), \
+             patch("wsdot.wsdot.time.sleep", side_effect=_fake_sleep):
+            feed(args)
+
+        # Reference station emitted once (initial batch) but NOT on the second cycle
+        # (< 6 h elapsed since the reference was last sent)
+        assert reference_sent.count("traffic_station") == 1
+        # Telemetry (readings) emitted on both cycles
+        assert telemetry_sent.count("traffic_reading") >= 2
