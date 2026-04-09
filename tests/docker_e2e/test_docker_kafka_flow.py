@@ -217,6 +217,10 @@ def irail_image():
     return build_image('irail')
 
 @pytest.fixture(scope='module')
+def vatsim_image():
+    return build_image('vatsim')
+
+@pytest.fixture(scope='module')
 def wsdot_image():
     return build_image('wsdot')
 
@@ -1428,6 +1432,17 @@ class TestNIFCUSAWildfiresDockerFlow:
             reference_types=None,
             telemetry_types=['WildfireIncident'],
             min_messages=1,
+# VATSIM (live aviation network positions)
+# ---------------------------------------------------------------------------
+
+class TestVatsimDockerFlow:
+    TOPIC = 'test-vatsim'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, vatsim_image):
+        _run_kafka_flow_test(
+            kafka, vatsim_image, self.TOPIC,
+            telemetry_types=['PilotPosition', 'ControllerPosition', 'NetworkStatus'],
+            extra_env={'POLLING_INTERVAL': '5'},
         )
 # INPE DETER Brazil (deforestation alerts)
 # ---------------------------------------------------------------------------

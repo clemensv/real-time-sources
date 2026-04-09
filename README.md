@@ -107,6 +107,7 @@ documentation, and the README in each project directory has full details.
 | Source | Coverage | Link |
 |---|---|---|
 | Mode-S | Local (ADS-B via dump1090 receivers) | [Container](mode-s/CONTAINER.md) |
+| VATSIM | Global (700–2,000 pilots, 50–150 controllers on the VATSIM network) | [Container](vatsim/CONTAINER.md) |
 
 ### Road Transport
 
@@ -336,6 +337,11 @@ Norwegian economic zone, Svalbard, and Jan Mayen. ~34 messages/second (~2.9M/day
 
 **[Mode-S](mode-s/README.md)** -- ADS-B aircraft position and telemetry data
 from dump1090 receivers. Polled every 60 seconds.
+
+**[VATSIM](vatsim/README.md)** -- VATSIM virtual aviation network live data feed.
+Pilot positions, controller positions, and network status from the public v3
+JSON endpoint. Typically 700–2,000 simultaneous pilots and 50–150 controllers.
+Polled every 15 seconds with per-callsign deduplication.
 
 ### Road Transport
 

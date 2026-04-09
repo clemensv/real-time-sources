@@ -42,6 +42,7 @@ PROJECTS = [
     ('uk-ea-flood-monitoring', 'uk_ea_flood_monitoring', 'Dockerfile'),
     ('usgs-earthquakes', 'usgs_earthquakes', 'Dockerfile'),
     ('usgs-iv', 'usgs_iv', 'Dockerfile'),
+    ('vatsim', 'vatsim', 'Dockerfile'),
     ('waterinfo-vmm', 'waterinfo_vmm', 'Dockerfile'),
 ]
 
