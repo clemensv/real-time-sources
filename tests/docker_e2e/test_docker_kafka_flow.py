@@ -227,6 +227,8 @@ def french_road_traffic_image():
     return build_image('french-road-traffic')
 def ndl_netherlands_image():
     return build_image('ndl-netherlands')
+def eaws_albina_image():
+    return build_image('eaws-albina')
 
 
 # ---------------------------------------------------------------------------
@@ -1339,4 +1341,14 @@ class TestParisBicycleCountersDockerFlow:
             kafka, paris_bicycle_counters_image, self.TOPIC,
             reference_types=['Counter'],
             telemetry_types=['BicycleCount'],
+# EAWS ALBINA Avalanche Bulletins
+# ---------------------------------------------------------------------------
+
+class TestEAWSAlbinaDockerFlow:
+    TOPIC = 'test-eaws-albina'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, eaws_albina_image):
+        _run_kafka_flow_test(
+            kafka, eaws_albina_image, self.TOPIC,
+            telemetry_types=['AvalancheBulletin'],
         )
