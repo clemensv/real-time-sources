@@ -237,6 +237,8 @@ def eaws_albina_image():
     return build_image('eaws-albina')
 def geosphere_austria_image():
     return build_image('geosphere-austria')
+def wikimedia_osm_diffs_image():
+    return build_image('wikimedia-osm-diffs')
 
 
 # ---------------------------------------------------------------------------
@@ -1394,4 +1396,18 @@ class TestJMAJapanDockerFlow:
             kafka, jma_japan_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['WeatherBulletin'],
+# Wikimedia OSM Diffs (OpenStreetMap minutely diffs, telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestWikimediaOsmDiffsDockerFlow:
+    TOPIC = 'test-wikimedia-osm-diffs'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, wikimedia_osm_diffs_image):
+        _run_kafka_flow_test(
+            kafka, wikimedia_osm_diffs_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['MapChange'],
+            extra_env={'KAFKA_TOPIC': self.TOPIC},
+            min_messages=1,
+            timeout=180,
         )

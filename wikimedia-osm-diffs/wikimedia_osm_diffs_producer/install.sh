@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./wikimedia_osm_diffs_producer_data
+pip install ./wikimedia_osm_diffs_producer_kafka_producer
