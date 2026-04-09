@@ -1,0 +1,223 @@
+{
+  "endpoints": {
+    "USGS.WaterQuality.Sites.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "usgs-nwis-wq",
+          "key": "{site_number}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/USGS.WaterQuality.Sites"
+      ]
+    },
+    "USGS.WaterQuality.Readings.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "usgs-nwis-wq",
+          "key": "{site_number}/{parameter_code}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/USGS.WaterQuality.Readings"
+      ]
+    }
+  },
+  "messagegroups": {
+    "USGS.WaterQuality.Sites": {
+      "messages": {
+        "USGS.WaterQuality.Sites.MonitoringSite": {
+          "name": "MonitoringSite",
+          "envelope": "CloudEvents/1.0",
+          "description": "USGS water quality monitoring site reference data. Describes a physical monitoring location equipped with continuous water quality sensors.",
+          "envelopemetadata": {
+            "type": {
+              "value": "USGS.WaterQuality.Sites.MonitoringSite"
+            },
+            "source": {
+              "value": "{source_uri}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{site_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Sites.jstruct/schemas/USGS.WaterQuality.Sites.MonitoringSite"
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings": {
+      "messages": {
+        "USGS.WaterQuality.Readings.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "A single water quality observation from a USGS continuous monitoring sensor, including dissolved oxygen, pH, water temperature, specific conductance, turbidity, and nitrate readings.",
+          "envelopemetadata": {
+            "type": {
+              "value": "USGS.WaterQuality.Readings.WaterQualityReading"
+            },
+            "source": {
+              "value": "{source_uri}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{site_number}/{parameter_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/USGS.WaterQuality.Readings.jstruct/schemas/USGS.WaterQuality.Readings.WaterQualityReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "USGS.WaterQuality.Sites.jstruct": {
+      "schemas": {
+        "USGS.WaterQuality.Sites.MonitoringSite": {
+          "format": "JsonStructure/draft-02",
+          "versions": {
+            "1.0": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$id": "gov.usgs.waterservices.wq.MonitoringSite",
+                "type": "record",
+                "name": "MonitoringSite",
+                "description": "USGS water quality monitoring site. Describes a physical surface-water or groundwater monitoring location equipped with continuous water quality sensors. Site metadata is extracted from the WaterML 2.0 JSON response sourceInfo block returned by the USGS Instantaneous Values Service.",
+                "fields": [
+                  {
+                    "name": "site_number",
+                    "type": "string",
+                    "description": "USGS site identification number. A unique 8-to-15-digit number assigned by the USGS to each monitoring location (e.g. '01646500')."
+                  },
+                  {
+                    "name": "site_name",
+                    "type": "string",
+                    "description": "Official USGS station name describing the monitoring location (e.g. 'POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA')."
+                  },
+                  {
+                    "name": "agency_code",
+                    "type": "string",
+                    "description": "Code identifying the agency responsible for the site. Typically 'USGS' for United States Geological Survey."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": ["double", "null"],
+                    "description": "Decimal latitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": ["double", "null"],
+                    "description": "Decimal longitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system."
+                  },
+                  {
+                    "name": "site_type",
+                    "type": ["string", "null"],
+                    "description": "USGS site type code indicating the category of the monitoring location. Common values include 'ST' (stream), 'LK' (lake), 'GW' (groundwater), 'ES' (estuary)."
+                  },
+                  {
+                    "name": "state_code",
+                    "type": ["string", "null"],
+                    "description": "Two-digit FIPS state code for the state or territory where the site is located (e.g. '24' for Maryland)."
+                  },
+                  {
+                    "name": "county_code",
+                    "type": ["string", "null"],
+                    "description": "Five-digit FIPS county code for the county where the site is located (e.g. '24031' for Montgomery County, MD)."
+                  },
+                  {
+                    "name": "huc_code",
+                    "type": ["string", "null"],
+                    "description": "Hydrologic Unit Code (HUC) identifying the watershed or drainage basin containing the site."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.jstruct": {
+      "schemas": {
+        "USGS.WaterQuality.Readings.WaterQualityReading": {
+          "format": "JsonStructure/draft-02",
+          "versions": {
+            "1.0": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$id": "gov.usgs.waterservices.wq.WaterQualityReading",
+                "type": "record",
+                "name": "WaterQualityReading",
+                "description": "A single water quality observation from a USGS continuous monitoring sensor. The USGS Instantaneous Values Service returns time series of sensor readings in WaterML 2.0 JSON format. Each reading represents one measurement at a specific date_time for one parameter at one site.",
+                "fields": [
+                  {
+                    "name": "site_number",
+                    "type": "string",
+                    "description": "USGS site identification number for the monitoring location that produced this reading (e.g. '01646500')."
+                  },
+                  {
+                    "name": "site_name",
+                    "type": "string",
+                    "description": "Official USGS station name for the monitoring location."
+                  },
+                  {
+                    "name": "parameter_code",
+                    "type": "string",
+                    "description": "Five-digit USGS parameter code identifying the measured quantity. Key water quality codes: 00010 (water temperature °C), 00300 (dissolved oxygen mg/L), 00400 (pH), 00095 (specific conductance µS/cm), 63680 (turbidity FNU), 99133 (nitrate+nitrite mg/L as N)."
+                  },
+                  {
+                    "name": "parameter_name",
+                    "type": "string",
+                    "description": "Human-readable name of the measured parameter as provided in the USGS variable description (e.g. 'Temperature, water, degrees Celsius')."
+                  },
+                  {
+                    "name": "value",
+                    "type": ["double", "null"],
+                    "description": "Numeric sensor reading for the parameter at the given date_time. Null when the sensor did not return a valid numeric value (e.g. equipment malfunction, ice-affected, or the USGS noDataValue sentinel -999999.0)."
+                  },
+                  {
+                    "name": "unit",
+                    "type": "string",
+                    "description": "Unit of measurement for the reading as reported by the USGS (e.g. 'deg C', 'mg/l', 'uS/cm @25C', 'FNU', 'mg/l as N')."
+                  },
+                  {
+                    "name": "qualifier",
+                    "type": ["string", "null"],
+                    "description": "USGS data qualifier code indicating the quality or status of the reading. Common values: 'P' (provisional), 'A' (approved), 'e' (estimated). Null when no qualifier is provided."
+                  },
+                  {
+                    "name": "date_time",
+                    "type": "string",
+                    "description": "ISO 8601 date-time string of the observation in UTC (e.g. '2024-11-15T16:45:00+00:00'). Converted from the site-local timestamp using the timezone information provided in the WaterML 2.0 response."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

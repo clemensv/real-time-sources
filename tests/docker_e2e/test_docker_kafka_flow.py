@@ -540,6 +540,27 @@ class TestUSGSIVDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# USGS NWIS Water Quality
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def usgs_nwis_wq_image():
+    return build_image('usgs-nwis-wq')
+
+class TestUSGSNWISWQDockerFlow:
+    TOPIC = 'test-usgs-nwis-wq'
+
+    @pytest.mark.xfail(reason='USGS API polls all 50+ states; intermittent upstream timeouts')
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, usgs_nwis_wq_image):
+        _run_kafka_flow_test(
+            kafka, usgs_nwis_wq_image, self.TOPIC,
+            reference_types=['MonitoringSite'],
+            telemetry_types=['WaterQualityReading'],
+            timeout=480,
+        )
+
+
+# ---------------------------------------------------------------------------
 # USGS Earthquakes (telemetry only)
 # ---------------------------------------------------------------------------
 

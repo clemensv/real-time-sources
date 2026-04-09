@@ -1,0 +1,2 @@
+pip install .\usgs_nwis_wq_producer_data
+pip install .\usgs_nwis_wq_producer_kafka_producer
