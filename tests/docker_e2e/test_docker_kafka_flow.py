@@ -85,6 +85,10 @@ def usgs_earthquakes_image():
     return build_image('usgs-earthquakes')
 
 @pytest.fixture(scope='module')
+def nifc_usa_wildfires_image():
+    return build_image('nifc-usa-wildfires')
+
+@pytest.fixture(scope='module')
 def pegelonline_image():
     return build_image('pegelonline')
 
@@ -1410,4 +1414,16 @@ class TestWikimediaOsmDiffsDockerFlow:
             extra_env={'KAFKA_TOPIC': self.TOPIC},
             min_messages=1,
             timeout=180,
+# NIFC USA Wildfires (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestNIFCUSAWildfiresDockerFlow:
+    TOPIC = 'test-nifc-usa-wildfires'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, nifc_usa_wildfires_image):
+        _run_kafka_flow_test(
+            kafka, nifc_usa_wildfires_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['WildfireIncident'],
+            min_messages=1,
         )
