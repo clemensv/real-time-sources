@@ -1,0 +1,161 @@
+{
+  "endpoints": {
+    "AU.Gov.Emergency.Wildfires.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "australia-wildfires",
+          "key": "{state}/{incident_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/AU.Gov.Emergency.Wildfires"
+      ]
+    }
+  },
+  "messagegroups": {
+    "AU.Gov.Emergency.Wildfires": {
+      "messages": {
+        "AU.Gov.Emergency.Wildfires.FireIncident": {
+          "name": "FireIncident",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.Emergency.Wildfires.FireIncident"
+            },
+            "source": {
+              "value": "https://github.com/clemensv/real-time-sources/tree/main/australia-wildfires"
+            },
+            "subject": {
+              "value": "{state}/{incident_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/AU.Gov.Emergency.Wildfires.jstruct/schemas/AU.Gov.Emergency.Wildfires.FireIncident"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "AU.Gov.Emergency.Wildfires.jstruct": {
+      "schemas": {
+        "AU.Gov.Emergency.Wildfires.FireIncident": {
+          "name": "FireIncident",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://emergency.gov.au/schemas/AU/Gov/Emergency/Wildfires/FireIncident",
+                "type": "object",
+                "name": "FireIncident",
+                "description": "Normalized bushfire or grass fire incident record aggregated from three Australian state emergency services: NSW Rural Fire Service (GeoJSON major-incidents feed), VicEmergency (GeoJSON all-hazards feed filtered to fire events), and Queensland Fire Department (GeoJSON bushfire-alert feed). Each record represents a single active fire incident with its alert level, location, size, and responsible agency.",
+                "required": [
+                  "incident_id",
+                  "state",
+                  "title",
+                  "alert_level",
+                  "updated",
+                  "source_url"
+                ],
+                "properties": {
+                  "incident_id": {
+                    "type": "string",
+                    "description": "Stable identifier for the fire incident, derived from the source system. NSW: numeric incident ID extracted from the RFS GUID URL. VIC: numeric sourceId from the VicEmergency feed. QLD: alphanumeric UniqueID from the QFD feed (e.g. 'IF39-5661721')."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Australian state abbreviation indicating which emergency service reported this incident. One of 'NSW' (New South Wales Rural Fire Service), 'VIC' (VicEmergency / Country Fire Authority / Fire Rescue Victoria), or 'QLD' (Queensland Fire Department)."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Human-readable title or headline for the incident as provided by the source agency. NSW: location-based title from the RFS feed (e.g. '(GWYDIR HWY), MATHESON'). VIC: warning name or sourceTitle from VicEmergency. QLD: WarningTitle from the QFD feed."
+                  },
+                  "alert_level": {
+                    "type": "string",
+                    "description": "Fire danger alert level as classified by the issuing agency. Common values across states: 'Advice' (fire is under control or low threat), 'Watch and Act' (conditions are changing, prepare to leave), 'Emergency Warning' (immediate danger, take action now). NSW uses 'category' field, VIC uses 'action' or category1, QLD uses 'WarningLevel'."
+                  },
+                  "status": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Current operational status of the incident as reported by the source agency. NSW: extracted from the HTML description field (e.g. 'Under control', 'Being controlled', 'Out of control'). VIC: status field from VicEmergency (e.g. 'Unknown', 'Safe'). QLD: not typically provided, may be null."
+                  },
+                  "location": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable location description for the incident. NSW: full location string extracted from the HTML description (e.g. 'B76 (GWYDIR HWY), MATHESON 2370'). VIC: locality names from the location field. QLD: derived from the WarningTitle or Header text."
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Latitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry. Negative values indicate Southern Hemisphere.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Longitude of the incident centroid in decimal degrees (WGS84). Extracted from the GeoJSON Point geometry where available, or computed as the centroid of a Polygon geometry.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "size_hectares": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Estimated area of the fire in hectares as reported by the source agency. NSW: extracted from the SIZE field in the HTML description. VIC: parsed from sizeFmt if available. QLD: not typically provided, may be null.",
+                    "unit": "hectare",
+                    "symbol": "ha"
+                  },
+                  "type": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Classification of the fire type as reported by the source agency. NSW: extracted from the TYPE field in the HTML description (e.g. 'Bush Fire', 'Grass Fire', 'Hazard Reduction'). VIC: event field from the CAP envelope (e.g. 'Grass Fire', 'Scrub Fire', 'Bush Fire'). QLD: derived from CallToAction text."
+                  },
+                  "responsible_agency": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Name of the fire-fighting agency responsible for the incident. NSW: extracted from RESPONSIBLE AGENCY in the HTML description (e.g. 'Rural Fire Service', 'Fire and Rescue NSW'). VIC: senderName from the CAP envelope (e.g. 'Country Fire Authority', 'Fire Rescue Victoria'). QLD: defaults to 'Queensland Fire Department'."
+                  },
+                  "updated": {
+                    "type": "datetime",
+                    "description": "Timestamp when the incident record was last updated by the source agency, in ISO 8601 format with UTC timezone. NSW: parsed from the UPDATED field in the HTML description or pubDate. VIC: 'updated' field from the VicEmergency feed. QLD: parsed from the WarningTitle date reference or current fetch time."
+                  },
+                  "source_url": {
+                    "type": "string",
+                    "description": "URL pointing to the original incident details or the source feed. NSW: GUID permalink from the RFS feed (e.g. 'https://incidents.rfs.nsw.gov.au/api/v1/incidents/653509'). VIC: constructed URL to the VicEmergency warning page. QLD: static URL of the QFD bushfire alert feed."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -32,15 +32,14 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from ndl_netherlands_producer_kafka_producer.producer import NLNDWChargingLocationsEventProducer
-from ndl_netherlands_producer_kafka_producer.producer import NLNDWChargingEvseEventProducer
-from ndl_netherlands_producer_kafka_producer.producer import NLNDWChargingTariffsEventProducer
+from ndl_netherlands_producer_kafka_producer.producer import NLNDWTrafficMeasurementsEventProducer
+from ndl_netherlands_producer_kafka_producer.producer import NLNDWTrafficSituationsEventProducer
 
 # imports for the data classes for each event
 
-from ndl_netherlands_producer_data.charginglocation import ChargingLocation
-from ndl_netherlands_producer_data.evsestatus import EvseStatus
-from ndl_netherlands_producer_data.chargingtariff import ChargingTariff
+from ndl_netherlands_producer_data.trafficspeed import TrafficSpeed
+from ndl_netherlands_producer_data.traveltime import TravelTime
+from ndl_netherlands_producer_data.trafficsituation import TrafficSituation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -54,51 +53,43 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        nlndwcharging_locations_event_producer = NLNDWChargingLocationsEventProducer.from_connection_string(connection_string, topic, 'binary')
+        nlndwtraffic_measurements_event_producer = NLNDWTrafficMeasurementsEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        nlndwcharging_locations_event_producer = NLNDWChargingLocationsEventProducer(kafka_producer, topic, 'binary')
+        nlndwtraffic_measurements_event_producer = NLNDWTrafficMeasurementsEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- NL.NDW.Charging.ChargingLocation ----
-    # TODO: Supply event data for the NL.NDW.Charging.ChargingLocation event
-    _charging_location = ChargingLocation()
+    # ---- NL.NDW.Traffic.TrafficSpeed ----
+    # TODO: Supply event data for the NL.NDW.Traffic.TrafficSpeed event
+    _traffic_speed = TrafficSpeed()
 
-    # sends the 'NL.NDW.Charging.ChargingLocation' event to Kafka topic.
-    await nlndwcharging_locations_event_producer.send_nl_ndw_charging_charging_location(_location_id = 'TODO: replace me', _last_updated = 'TODO: replace me', data = _charging_location)
-    print(f"Sent 'NL.NDW.Charging.ChargingLocation' event: {_charging_location.to_json()}")
+    # sends the 'NL.NDW.Traffic.TrafficSpeed' event to Kafka topic.
+    await nlndwtraffic_measurements_event_producer.send_nl_ndw_traffic_traffic_speed(_site_id = 'TODO: replace me', data = _traffic_speed)
+    print(f"Sent 'NL.NDW.Traffic.TrafficSpeed' event: {_traffic_speed.to_json()}")
+
+    # ---- NL.NDW.Traffic.TravelTime ----
+    # TODO: Supply event data for the NL.NDW.Traffic.TravelTime event
+    _travel_time = TravelTime()
+
+    # sends the 'NL.NDW.Traffic.TravelTime' event to Kafka topic.
+    await nlndwtraffic_measurements_event_producer.send_nl_ndw_traffic_travel_time(_site_id = 'TODO: replace me', data = _travel_time)
+    print(f"Sent 'NL.NDW.Traffic.TravelTime' event: {_travel_time.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        nlndwcharging_evse_event_producer = NLNDWChargingEvseEventProducer.from_connection_string(connection_string, topic, 'binary')
+        nlndwtraffic_situations_event_producer = NLNDWTrafficSituationsEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        nlndwcharging_evse_event_producer = NLNDWChargingEvseEventProducer(kafka_producer, topic, 'binary')
+        nlndwtraffic_situations_event_producer = NLNDWTrafficSituationsEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- NL.NDW.Charging.EvseStatus ----
-    # TODO: Supply event data for the NL.NDW.Charging.EvseStatus event
-    _evse_status = EvseStatus()
+    # ---- NL.NDW.Traffic.TrafficSituation ----
+    # TODO: Supply event data for the NL.NDW.Traffic.TrafficSituation event
+    _traffic_situation = TrafficSituation()
 
-    # sends the 'NL.NDW.Charging.EvseStatus' event to Kafka topic.
-    await nlndwcharging_evse_event_producer.send_nl_ndw_charging_evse_status(_location_id = 'TODO: replace me', _evse_uid = 'TODO: replace me', _last_updated = 'TODO: replace me', data = _evse_status)
-    print(f"Sent 'NL.NDW.Charging.EvseStatus' event: {_evse_status.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        nlndwcharging_tariffs_event_producer = NLNDWChargingTariffsEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        nlndwcharging_tariffs_event_producer = NLNDWChargingTariffsEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- NL.NDW.Charging.ChargingTariff ----
-    # TODO: Supply event data for the NL.NDW.Charging.ChargingTariff event
-    _charging_tariff = ChargingTariff()
-
-    # sends the 'NL.NDW.Charging.ChargingTariff' event to Kafka topic.
-    await nlndwcharging_tariffs_event_producer.send_nl_ndw_charging_charging_tariff(_tariff_id = 'TODO: replace me', _last_updated = 'TODO: replace me', data = _charging_tariff)
-    print(f"Sent 'NL.NDW.Charging.ChargingTariff' event: {_charging_tariff.to_json()}")
+    # sends the 'NL.NDW.Traffic.TrafficSituation' event to Kafka topic.
+    await nlndwtraffic_situations_event_producer.send_nl_ndw_traffic_traffic_situation(_situation_id = 'TODO: replace me', data = _traffic_situation)
+    print(f"Sent 'NL.NDW.Traffic.TrafficSituation' event: {_traffic_situation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

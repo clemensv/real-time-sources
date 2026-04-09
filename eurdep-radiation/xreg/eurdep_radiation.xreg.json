@@ -1,0 +1,359 @@
+{
+  "endpoints": {
+    "eu.jrc.eurdep.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "eurdep-radiation",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/eu.jrc.eurdep"
+      ]
+    }
+  },
+  "messagegroups": {
+    "eu.jrc.eurdep": {
+      "messages": {
+        "eu.jrc.eurdep.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP (European Radiological Data Exchange Platform) network. EURDEP aggregates data from approximately 5,500 stations across 39 European countries. Each station continuously measures ambient gamma dose rate and reports hourly averaged values. Station metadata includes the geographic position, elevation above sea level, country of origin, and operational status.",
+          "envelopemetadata": {
+            "type": {
+              "value": "eu.jrc.eurdep.Station"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.jstruct/schemas/eu.jrc.eurdep.Station"
+        },
+        "eu.jrc.eurdep.DoseRateReading": {
+          "name": "DoseRateReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "An ambient gamma dose rate reading from a EURDEP monitoring station. Each reading reports the gross gamma dose rate in microsieverts per hour (µSv/h) averaged over a one-hour measurement window. Readings include validation status, the nuclide type measured, measurement duration, and the analysis time range. Normal European background levels range from approximately 0.04 to 0.20 µSv/h depending on local geology and altitude.",
+          "envelopemetadata": {
+            "type": {
+              "value": "eu.jrc.eurdep.DoseRateReading"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.jstruct/schemas/eu.jrc.eurdep.DoseRateReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "eu.jrc.eurdep.jstruct": {
+      "schemas": {
+        "eu.jrc.eurdep.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/eu/jrc/eurdep/Station",
+                "name": "Station",
+                "$root": "#/definitions/eu/jrc/eurdep/Station",
+                "definitions": {
+                  "eu": {
+                    "jrc": {
+                      "eurdep": {
+                        "Station": {
+                          "name": "Station",
+                          "type": "object",
+                          "description": "Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. EURDEP (European Radiological Data Exchange Platform) is operated by the European Commission's Joint Research Centre (JRC) and aggregates real-time radiological monitoring data from national networks across 39 European countries. Each station is identified by a country-prefixed alphanumeric code (e.g. 'AT0001' for Austria, 'DE0123' for Germany).",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "Alphanumeric station identifier assigned within the EURDEP network. The first two characters are the ISO 3166-1 alpha-2 country code of the operating country, followed by a numeric station sequence. Example: 'AT0001' (Austria), 'DE0123' (Germany), 'FR0456' (France). This is the stable key used for data retrieval and cross-referencing."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'."
+                            },
+                            "country_code": {
+                              "type": "string",
+                              "description": "ISO 3166-1 alpha-2 country code extracted from the first two characters of the station_id. Identifies the country operating the monitoring station. Example: 'AT' for Austria, 'DE' for Germany, 'CZ' for Czech Republic."
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.",
+                              "unit": "deg",
+                              "symbol": "°"
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.",
+                              "unit": "deg",
+                              "symbol": "°"
+                            },
+                            "height_above_sea": {
+                              "type": ["double", "null"],
+                              "description": "Elevation of the station above mean sea level in meters. Determines the cosmic radiation component contribution. Null if the elevation is not reported by the national network.",
+                              "unit": "m",
+                              "symbol": "m"
+                            },
+                            "site_status": {
+                              "type": "int32",
+                              "description": "Numeric operational status code of the station. 1 = active and reporting, other values indicate the station is inactive, under maintenance, or decommissioned."
+                            },
+                            "site_status_text": {
+                              "type": "string",
+                              "description": "Human-readable text describing the operational status of the station. Language depends on the reporting country. Example: 'in Betrieb' (German for 'in operation')."
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "name",
+                            "country_code",
+                            "latitude",
+                            "longitude",
+                            "height_above_sea",
+                            "site_status",
+                            "site_status_text"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "eu.jrc.eurdep.DoseRateReading": {
+          "name": "DoseRateReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/eu/jrc/eurdep/DoseRateReading",
+                "name": "DoseRateReading",
+                "$root": "#/definitions/eu/jrc/eurdep/DoseRateReading",
+                "definitions": {
+                  "eu": {
+                    "jrc": {
+                      "eurdep": {
+                        "DoseRateReading": {
+                          "name": "DoseRateReading",
+                          "type": "object",
+                          "description": "An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (µSv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 µSv/h depending on local geology and altitude.",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "Alphanumeric station identifier from the EURDEP network. Matches the station_id in the Station schema. Example: 'AT0001'."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join."
+                            },
+                            "value": {
+                              "type": ["double", "null"],
+                              "description": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). Null if the station did not report a valid measurement for this interval.",
+                              "unit": "uSv/h",
+                              "symbol": "µSv/h"
+                            },
+                            "unit": {
+                              "type": "string",
+                              "description": "Unit of the dose rate value as reported by the upstream EURDEP system. Typically 'µSv/h' (microsieverts per hour), though encoding artifacts may appear in the raw API response."
+                            },
+                            "start_measure": {
+                              "type": "string",
+                              "description": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T19:00:00Z'."
+                            },
+                            "end_measure": {
+                              "type": "string",
+                              "description": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T20:00:00Z'."
+                            },
+                            "nuclide": {
+                              "type": "string",
+                              "description": "Nuclide identifier describing the type of radiation measured. For standard gamma dose rate probes this is 'Gamma-ODL-Brutto' (gross gamma ambient dose rate)."
+                            },
+                            "duration": {
+                              "type": "string",
+                              "description": "Measurement integration period as reported by the upstream system. Example: '1h' for one hour."
+                            },
+                            "validated": {
+                              "type": "int32",
+                              "description": "Data validation status flag. 0 = not validated, 1 = validated by national authority, 2 = validated by EURDEP system. Higher values indicate stronger quality assurance."
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "name",
+                            "value",
+                            "unit",
+                            "start_measure",
+                            "end_measure",
+                            "nuclide",
+                            "duration",
+                            "validated"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "eu.jrc.eurdep.avro": {
+      "schemas": {
+        "eu.jrc.eurdep.Station": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "eu.jrc.eurdep",
+                "doc": "Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Alphanumeric station identifier with country prefix (e.g. 'AT0001')."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station location name."
+                  },
+                  {
+                    "name": "country_code",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code extracted from station_id."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "height_above_sea",
+                    "type": ["null", "double"],
+                    "doc": "Elevation above sea level in meters. Null if unknown.",
+                    "default": null
+                  },
+                  {
+                    "name": "site_status",
+                    "type": "int",
+                    "doc": "Numeric operational status code. 1 = active."
+                  },
+                  {
+                    "name": "site_status_text",
+                    "type": "string",
+                    "doc": "Human-readable operational status text."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        },
+        "eu.jrc.eurdep.DoseRateReading": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DoseRateReading",
+                "namespace": "eu.jrc.eurdep",
+                "doc": "An ambient gamma dose rate reading from a EURDEP monitoring station.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Alphanumeric station identifier from the EURDEP network."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station location name."
+                  },
+                  {
+                    "name": "value",
+                    "type": ["null", "double"],
+                    "doc": "Gross ambient gamma dose rate in µSv/h. Null if not reported.",
+                    "default": null
+                  },
+                  {
+                    "name": "unit",
+                    "type": "string",
+                    "doc": "Unit of the dose rate value, typically 'µSv/h'."
+                  },
+                  {
+                    "name": "start_measure",
+                    "type": "string",
+                    "doc": "Start of measurement period in ISO 8601 UTC."
+                  },
+                  {
+                    "name": "end_measure",
+                    "type": "string",
+                    "doc": "End of measurement period in ISO 8601 UTC."
+                  },
+                  {
+                    "name": "nuclide",
+                    "type": "string",
+                    "doc": "Nuclide identifier, typically 'Gamma-ODL-Brutto'."
+                  },
+                  {
+                    "name": "duration",
+                    "type": "string",
+                    "doc": "Measurement integration period (e.g. '1h')."
+                  },
+                  {
+                    "name": "validated",
+                    "type": "int",
+                    "doc": "Validation status flag. 0 = not validated, 1 = nationally validated, 2 = EURDEP validated."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}

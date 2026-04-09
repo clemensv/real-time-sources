@@ -1,0 +1,168 @@
+{
+  "endpoints": {
+    "org.EAWS.ALBINA.Bulletins.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "eaws-albina",
+          "key": "{region_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.EAWS.ALBINA.Bulletins"
+      ]
+    }
+  },
+  "messagegroups": {
+    "org.EAWS.ALBINA.Bulletins": {
+      "messages": {
+        "org.EAWS.ALBINA.AvalancheBulletin": {
+          "name": "AvalancheBulletin",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.EAWS.ALBINA.AvalancheBulletin"
+            },
+            "source": {
+              "value": "https://avalanche.report"
+            },
+            "subject": {
+              "value": "{region_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.jstruct/schemas/org.EAWS.ALBINA.AvalancheBulletin"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.EAWS.ALBINA.jstruct": {
+      "schemas": {
+        "org.EAWS.ALBINA.AvalancheBulletin": {
+          "name": "AvalancheBulletin",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "AvalancheBulletin",
+                "required": [
+                  "region_id",
+                  "region_name",
+                  "bulletin_id",
+                  "publication_time",
+                  "valid_time_start",
+                  "valid_time_end",
+                  "lang",
+                  "danger_ratings_json",
+                  "avalanche_problems_json"
+                ],
+                "properties": {
+                  "region_id": {
+                    "type": "string",
+                    "description": "EAWS micro-region identifier from the CAAMLv6 regions array, e.g. AT-07-04-02 for Karwendel Mountains East."
+                  },
+                  "region_name": {
+                    "type": "string",
+                    "description": "Human-readable name of the EAWS micro-region, e.g. 'Karwendel Mountains East'."
+                  },
+                  "bulletin_id": {
+                    "type": "string",
+                    "description": "Unique UUID assigned to this bulletin by the ALBINA system, from the CAAMLv6 bulletinID field."
+                  },
+                  "publication_time": {
+                    "type": "datetime",
+                    "description": "ISO 8601 timestamp when this bulletin was published by the avalanche warning service."
+                  },
+                  "valid_time_start": {
+                    "type": "datetime",
+                    "description": "ISO 8601 start of the validity period for this bulletin."
+                  },
+                  "valid_time_end": {
+                    "type": "datetime",
+                    "description": "ISO 8601 end of the validity period for this bulletin."
+                  },
+                  "lang": {
+                    "type": "string",
+                    "description": "ISO 639-1 language code of the bulletin text, e.g. 'en', 'de', 'it'."
+                  },
+                  "max_danger_rating": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Highest EAWS danger rating across all elevation bands and time periods in this bulletin. One of: low, moderate, considerable, high, very_high, or null if no ratings are present.",
+                    "enum": [
+                      "low",
+                      "moderate",
+                      "considerable",
+                      "high",
+                      "very_high"
+                    ]
+                  },
+                  "max_danger_rating_value": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Numeric value (1-5) of the highest EAWS danger rating: 1=low, 2=moderate, 3=considerable, 4=high, 5=very_high. Null if no ratings are present."
+                  },
+                  "danger_ratings_json": {
+                    "type": "string",
+                    "description": "JSON-encoded array of CAAMLv6 dangerRatings objects, each with mainValue (string), optional elevation (object with upperBound/lowerBound), and validTimePeriod (string: all_day, earlier, later)."
+                  },
+                  "avalanche_problems_json": {
+                    "type": "string",
+                    "description": "JSON-encoded array of CAAMLv6 avalancheProblems objects, each with problemType (e.g. wet_snow, persistent_weak_layers, wind_slab, new_snow, gliding_snow), snowpackStability, frequency, avalancheSize (1-5), aspects array, and optional elevation bounds."
+                  },
+                  "tendency_type": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Overall tendency of avalanche danger from the first tendency entry: decreasing, steady, or increasing. Null if no tendency data is present."
+                  },
+                  "danger_patterns_json": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "JSON-encoded array of LWD Tyrol danger pattern codes from customData.LWD_Tyrol.dangerPatterns, e.g. [\"DP10\",\"DP4\"]. Null if not present (non-Tyrol regions)."
+                  },
+                  "avalanche_activity_highlights": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Summary of current avalanche activity conditions from avalancheActivity.highlights. May contain HTML markup. Null if not provided."
+                  },
+                  "snowpack_structure_comment": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Description of current snowpack structure and layering from snowpackStructure.comment. May contain HTML markup. Null if not provided."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

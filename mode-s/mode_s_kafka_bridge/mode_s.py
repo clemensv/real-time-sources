@@ -160,7 +160,7 @@ class ADSBClient(TcpClient):
                         self.records_since_last_flush += len(bundle.messages)
                         messages_since_last_log += 1
                         records_since_last_log += len(bundle.messages)
-                        await self.producer.send_mode_s_messages(
+                        self.producer.send_mode_s_messages(
                             _feedurl=self.feedurl,
                             _stationid=self.stationid,
                             data=bundle,

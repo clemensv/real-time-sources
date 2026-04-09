@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aviationweather_producer_kafka_producer"
+version = "0.1.0"
+description = "AviationWeather.gov Kafka producer"
+requires-python = ">=3.10"
+dependencies = [
+    "confluent-kafka>=2.5.3",
+    "cloudevents>=1.11.0,<2.0.0",
+    "aviationweather_producer_data",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

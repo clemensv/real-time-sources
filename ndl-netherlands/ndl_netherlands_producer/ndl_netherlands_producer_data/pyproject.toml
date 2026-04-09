@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "ndl-netherlands-producer-data"
 version = "0.1.0"
-description = "A package for handling JSON Structure schema data"
+description = "A package for handling Avro schema data"
 authors = ["Your Name"]
 license = "MIT"
 packages = [ { include = "ndl_netherlands_producer_data", from="src" } ]

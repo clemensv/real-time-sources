@@ -1,64 +1,65 @@
-# Netherlands NDL EV Charging Infrastructure bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# NDW Netherlands Road Traffic bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 
-This container image bridges the Nationale Databank Laadinfrastructuur (NDL)
-open data feed at `https://opendata.ndw.nu` to Apache Kafka, Azure Event Hubs,
-and Fabric Event Streams. It polls OCPI v2.2 charging location and tariff data
-and emits CloudEvents documented in [EVENTS.md](EVENTS.md).
+This container image bridges the NDW (Nationaal Dataportaal Wegverkeer)
+open data feeds at `https://opendata.ndw.nu` to Apache Kafka, Azure Event Hubs,
+and Fabric Event Streams. It downloads gzip-compressed DATEX II XML files
+containing traffic speed measurements, travel times, and current traffic
+situations from the entire Dutch road network, and emits them as CloudEvents.
 
-## Functionality
+Events are emitted in CloudEvents structured JSON format. See [EVENTS.md](EVENTS.md)
+for the full event catalog.
 
-The upstream publishes gzip-compressed JSON snapshots of all Dutch EV charging
-locations and tariffs. The bridge downloads these files, decompresses them, and
-applies change detection against a local state file to emit EVSE status change
-events. Location reference data and tariff reference data are emitted on the
-first poll.
+## Topics
 
-The data uses the OCPI (Open Charge Point Interface) v2.2 standard with a
-three-level hierarchy: Location → EVSE → Connector.
-
-## Database Schemas and Handling
-
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
-
-## Installing the Container Image
-
-Pull the container image from the GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-ndl-netherlands:latest
-```
-
-## Using the Container Image
-
-Run the bridge against a Kafka broker:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='broker:9092' \
-    -e NDL_CHARGING_TOPIC='ndl-charging' \
-    -e NDL_TARIFFS_TOPIC='ndl-charging-tariffs' \
-    ghcr.io/clemensv/real-time-sources-ndl-netherlands:latest
-```
-
-Or use an Event Hubs or Fabric Event Streams connection string:
-
-```shell
-$ docker run --rm \
-    -e NDL_CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-ndl-netherlands:latest
-```
-
-## Environment Variables
-
-| Variable | Required | Description |
+| Topic | Key | Content |
 |---|---|---|
-| `NDL_CONNECTION_STRING` | No | Event Hubs/Fabric connection string. |
-| `KAFKA_BOOTSTRAP_SERVERS` | No | Kafka bootstrap servers (alternative to connection string). |
-| `KAFKA_SASL_USERNAME` | No | SASL username when using bootstrap servers with auth. |
-| `KAFKA_SASL_PASSWORD` | No | SASL password when using bootstrap servers with auth. |
-| `NDL_CHARGING_TOPIC` | No | Kafka topic for charging location and EVSE status events (default: `ndl-charging`). |
-| `NDL_TARIFFS_TOPIC` | No | Kafka topic for tariff reference events (default: `ndl-charging-tariffs`). |
-| `NDL_STATE_FILE` | No | Path to the state file for change detection (default: `~/.ndl_netherlands_state.json`). |
-| `NDL_POLL_INTERVAL` | No | Polling interval in seconds (default: `300`). |
+| `ndl-traffic` | `{site_id}` | Speed and travel time per measurement site |
+| `ndl-traffic-situations` | `{situation_id}` | Road works, closures, incidents |
+
+## Environment variables
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `CONNECTION_STRING` | **Yes** | — | Kafka or Event Hubs connection string |
+| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` for plain Kafka |
+| `KAFKA_TOPIC` | No | `ndl-traffic` | Override measurements topic |
+| `MEASUREMENTS_TOPIC` | No | `ndl-traffic` | Override measurements topic |
+| `SITUATIONS_TOPIC` | No | `ndl-traffic-situations` | Override situations topic |
+| `POLLING_INTERVAL` | No | `60` | Seconds between poll cycles |
+| `STATE_FILE` | No | `~/.ndl_netherlands_state.json` | Dedup state persistence |
+
+## Docker
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest
+```
+
+### Plain Kafka
+
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ndl-traffic" \
+  -e KAFKA_ENABLE_TLS=false \
+  ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest
+```
+
+### Azure Event Hubs
+
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=ndl-traffic" \
+  ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest
+```
+
+### Azure Container Instance
+
+```bash
+az container create \
+  --resource-group myRG \
+  --name ndl-netherlands \
+  --image ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest \
+  --restart-policy Always \
+  --environment-variables \
+    CONNECTION_STRING="Endpoint=sb://..." \
+    POLLING_INTERVAL=60
+```

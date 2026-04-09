@@ -1,0 +1,3 @@
+from paris_bicycle_counters.paris_bicycle_counters import main
+
+main()

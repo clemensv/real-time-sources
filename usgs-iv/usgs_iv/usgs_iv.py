@@ -308,11 +308,11 @@ class USGSDataPoller:
             return result
 
 
-        async def send_data(parameter_name, producer_method, data, agency_cd):
+        def send_data(parameter_name, producer_method, data, agency_cd):
             """
             Consolidated method to send data to Kafka.
             """
-            await producer_method(
+            producer_method(
                 _source_uri=self.BASE_URL,
                 _agency_cd=agency_cd,
                 _site_no=data.site_no,
@@ -345,7 +345,7 @@ class USGSDataPoller:
                         last_polled_times['stations'][state_code] = datetime.now(timezone.utc)
                         async for site in self.get_sites_in_state(state_code):
                             count_stations += 1
-                            await self.site_producer.send_usgs_sites_site(
+                            self.site_producer.send_usgs_sites_site(
                                 _source_uri=self.BASE_URL, _agency_cd=site.agency_cd, _site_no=site.site_no, data=site, flush_producer=False
                             )
                             if count_stations % 1000 == 0:
@@ -435,7 +435,7 @@ class USGSDataPoller:
                                         parameter_cd=parameter_cd,
                                         timeseries_cd=timeseries_cd
                                     )
-                                    await self.values_producer.send_usgs_instantaneous_values_equipment_status(
+                                    self.values_producer.send_usgs_instantaneous_values_equipment_status(
                                         _source_uri=self.BASE_URL,
                                         _agency_cd=agency_cd,
                                         _site_no=site_no,
@@ -457,7 +457,7 @@ class USGSDataPoller:
                                         exception=exception
                                     )
                                     producer_method = getattr(self.values_producer, f'send_usgs_instantaneous_values_{snake(parameter_name)}')
-                                    await send_data(parameter_name, producer_method, data, agency_cd)
+                                    send_data(parameter_name, producer_method, data, agency_cd)
                                 else:
                                     data = OtherParameter(
                                         site_no=site_no,
@@ -468,7 +468,7 @@ class USGSDataPoller:
                                         timeseries_cd=timeseries_cd,
                                         exception=exception
                                     )
-                                    await self.values_producer.send_usgs_instantaneous_values_other_parameter(
+                                    self.values_producer.send_usgs_instantaneous_values_other_parameter(
                                        _source_uri=self.BASE_URL,
                                         _agency_cd=agency_cd,
                                         _site_no=site_no,

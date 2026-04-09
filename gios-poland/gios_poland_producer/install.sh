@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./gios_poland_producer_data
+pip install ./gios_poland_producer_kafka_producer

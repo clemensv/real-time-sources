@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./nepal_bipad_hydrology_producer_data
+pip install ./nepal_bipad_hydrology_producer_kafka_producer

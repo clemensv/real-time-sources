@@ -1,0 +1,2 @@
+pip install .\carbon_intensity_producer_data
+pip install .\carbon_intensity_producer_kafka_producer

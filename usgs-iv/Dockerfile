@@ -19,6 +19,7 @@ RUN pip install .
 # Define environment variables (default values)
 ENV CONNECTION_STRING=""
 ENV LOG_LEVEL="INFO"
+ENV PYTHONUNBUFFERED="1"
 
 # Run the application
 CMD ["python", "-m", "usgs_iv", "feed"]

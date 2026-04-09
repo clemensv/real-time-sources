@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./dwd_pollenflug_producer_data
+pip install ./dwd_pollenflug_producer_kafka_producer

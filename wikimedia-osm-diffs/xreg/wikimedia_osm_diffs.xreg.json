@@ -1,0 +1,220 @@
+{
+  "endpoints": {
+    "Org.OpenStreetMap.Diffs.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wikimedia-osm-diffs",
+          "key": "{element_type}/{element_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Org.OpenStreetMap.Diffs"
+      ]
+    },
+    "Org.OpenStreetMap.Diffs.State.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wikimedia-osm-diffs",
+          "key": "replication_state"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Org.OpenStreetMap.Diffs.State"
+      ]
+    }
+  },
+  "messagegroups": {
+    "Org.OpenStreetMap.Diffs": {
+      "messages": {
+        "Org.OpenStreetMap.Diffs.MapChange": {
+          "name": "MapChange",
+          "envelope": "CloudEvents/1.0",
+          "description": "An individual element change from the OpenStreetMap minutely replication diff feed. Each event represents a single create, modify, or delete operation on a node, way, or relation in the OSM database. The diff files are OsmChange XML documents published every 60 seconds at https://planet.openstreetmap.org/replication/minute/.",
+          "envelopemetadata": {
+            "type": {
+              "value": "Org.OpenStreetMap.Diffs.MapChange"
+            },
+            "source": {
+              "value": "https://planet.openstreetmap.org/replication/minute"
+            },
+            "subject": {
+              "value": "{element_type}/{element_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.jstruct/schemas/Org.OpenStreetMap.Diffs.MapChange"
+        }
+      }
+    },
+    "Org.OpenStreetMap.Diffs.State": {
+      "messages": {
+        "Org.OpenStreetMap.Diffs.ReplicationState": {
+          "name": "ReplicationState",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current replication state from the OpenStreetMap minutely diff feed. Emitted once per poll cycle to record which replication sequence was just processed. The state is read from https://planet.openstreetmap.org/replication/minute/state.txt.",
+          "envelopemetadata": {
+            "type": {
+              "value": "Org.OpenStreetMap.Diffs.ReplicationState"
+            },
+            "source": {
+              "value": "https://planet.openstreetmap.org/replication/minute"
+            },
+            "subject": {
+              "value": "replication_state",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Org.OpenStreetMap.Diffs.jstruct/schemas/Org.OpenStreetMap.Diffs.ReplicationState"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Org.OpenStreetMap.Diffs.jstruct": {
+      "schemas": {
+        "Org.OpenStreetMap.Diffs.MapChange": {
+          "name": "MapChange",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/Org/OpenStreetMap/Diffs/MapChange",
+                "name": "MapChange",
+                "type": "object",
+                "description": "An individual element change from the OpenStreetMap minutely replication diff feed. Each event describes a create, modify, or delete of a node, way, or relation. Latitude and longitude are present only for node elements. Tags are JSON-encoded because xreg does not support map types natively.",
+                "properties": {
+                  "change_type": {
+                    "type": "string",
+                    "description": "The type of change applied to the element in this replication diff: create, modify, or delete, corresponding to the OsmChange XML sections."
+                  },
+                  "element_type": {
+                    "type": "string",
+                    "description": "The OSM element type: node, way, or relation. Nodes carry geographic coordinates; ways and relations reference other elements."
+                  },
+                  "element_id": {
+                    "type": "int64",
+                    "description": "The unique numeric identifier of the OSM element within its element type namespace. Combined with element_type, this forms the globally unique OSM element identity."
+                  },
+                  "version": {
+                    "type": "int32",
+                    "description": "The version number of this element. Each edit to an element increments the version by one."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "The UTC timestamp when this element version was created or last modified in the OSM database, as recorded in the OsmChange XML."
+                  },
+                  "changeset_id": {
+                    "type": "int64",
+                    "description": "The numeric identifier of the OSM changeset that contains this element change. A changeset groups related edits by a single user."
+                  },
+                  "user_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "The display name of the OSM user who made this edit. May be null for redacted or anonymous edits."
+                  },
+                  "user_id": {
+                    "type": [
+                      "int64",
+                      "null"
+                    ],
+                    "description": "The numeric user identifier of the OSM contributor. May be null for redacted or anonymous edits."
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "The WGS-84 latitude of the node in decimal degrees. Present only when element_type is node; null for ways and relations."
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "The WGS-84 longitude of the node in decimal degrees. Present only when element_type is node; null for ways and relations."
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "JSON-encoded object of key-value tag pairs attached to this element. Tags describe the element's real-world features such as name, highway type, or building classification. Encoded as a JSON string because xreg does not natively support map types."
+                  },
+                  "sequence_number": {
+                    "type": "int64",
+                    "description": "The replication sequence number of the minutely diff file that contained this change. Useful for correlating changes back to specific replication state."
+                  }
+                },
+                "required": [
+                  "change_type",
+                  "element_type",
+                  "element_id",
+                  "version",
+                  "timestamp",
+                  "changeset_id",
+                  "tags",
+                  "sequence_number"
+                ]
+              }
+            }
+          }
+        },
+        "Org.OpenStreetMap.Diffs.ReplicationState": {
+          "name": "ReplicationState",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/Org/OpenStreetMap/Diffs/ReplicationState",
+                "name": "ReplicationState",
+                "type": "object",
+                "description": "The current replication state of the OpenStreetMap minutely diff feed. Published once per poll cycle. The sequence_number and timestamp are parsed from the Java-properties-style state.txt file at https://planet.openstreetmap.org/replication/minute/state.txt.",
+                "properties": {
+                  "sequence_number": {
+                    "type": "int64",
+                    "description": "The monotonically increasing sequence number of the latest processed minutely diff file. Each diff file corresponds to exactly one sequence number."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "The UTC timestamp associated with the replication state, indicating the point in time up to which the diff file covers OSM edits."
+                  }
+                },
+                "required": [
+                  "sequence_number",
+                  "timestamp"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

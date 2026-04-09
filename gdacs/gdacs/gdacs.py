@@ -298,7 +298,7 @@ class GDACSPoller:
                     count_updated += 1
 
                 if self.event_producer:
-                    await self.event_producer.send_gdacs_disaster_alert(
+                    self.event_producer.send_gdacs_disaster_alert(
                         _event_type=alert.event_type,
                         _event_id=alert.event_id,
                         data=alert,

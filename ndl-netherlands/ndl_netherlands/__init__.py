@@ -1,3 +1,3 @@
-from .ndl_netherlands import main
+"""NDW Netherlands Road Traffic bridge — entry point."""
 
-__all__ = ["main"]
+from ndl_netherlands.ndl_netherlands import main  # noqa: F401

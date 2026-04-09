@@ -1,0 +1,495 @@
+{
+  "endpoints": {
+    "net.vatsim.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "vatsim",
+          "key": "{callsign}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/net.vatsim.pilots"
+      ]
+    },
+    "net.vatsim.controllers.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "vatsim",
+          "key": "{callsign}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/net.vatsim.controllers"
+      ]
+    },
+    "net.vatsim.status.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "vatsim",
+          "key": "{callsign}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/net.vatsim.status"
+      ]
+    }
+  },
+  "messagegroups": {
+    "net.vatsim.pilots": {
+      "messages": {
+        "net.vatsim.PilotPosition": {
+          "name": "PilotPosition",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "net.vatsim.PilotPosition"
+            },
+            "source": {
+              "value": "https://data.vatsim.net/v3/vatsim-data.json"
+            },
+            "subject": {
+              "value": "{callsign}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/net.vatsim.jstruct/schemas/net.vatsim.PilotPosition"
+        }
+      }
+    },
+    "net.vatsim.controllers": {
+      "messages": {
+        "net.vatsim.ControllerPosition": {
+          "name": "ControllerPosition",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "net.vatsim.ControllerPosition"
+            },
+            "source": {
+              "value": "https://data.vatsim.net/v3/vatsim-data.json"
+            },
+            "subject": {
+              "value": "{callsign}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/net.vatsim.jstruct/schemas/net.vatsim.ControllerPosition"
+        }
+      }
+    },
+    "net.vatsim.status": {
+      "messages": {
+        "net.vatsim.NetworkStatus": {
+          "name": "NetworkStatus",
+          "envelope": "CloudEvents/1.0",
+          "description": "Aggregate network status snapshot from the VATSIM data feed, emitted once per poll cycle.",
+          "envelopemetadata": {
+            "type": {
+              "value": "net.vatsim.NetworkStatus"
+            },
+            "source": {
+              "value": "https://data.vatsim.net/v3/vatsim-data.json"
+            },
+            "subject": {
+              "value": "{callsign}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/net.vatsim.jstruct/schemas/net.vatsim.NetworkStatus"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "net.vatsim.jstruct": {
+      "schemas": {
+        "net.vatsim.PilotPosition": {
+          "name": "PilotPosition",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/net/vatsim/PilotPosition",
+                "name": "PilotPosition",
+                "$root": "#/definitions/net/vatsim/PilotPosition",
+                "definitions": {
+                  "net": {
+                    "vatsim": {
+                      "PilotPosition": {
+                        "name": "PilotPosition",
+                        "type": "object",
+                        "description": "Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network. Updated every 15 seconds at the source.",
+                        "properties": {
+                          "cid": {
+                            "type": "int32",
+                            "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
+                          },
+                          "callsign": {
+                            "type": "string",
+                            "description": "ATC-style callsign chosen by the pilot for this session (e.g. 'BAW123', 'N12345')."
+                          },
+                          "latitude": {
+                            "type": "double",
+                            "description": "Aircraft latitude in decimal degrees (WGS-84). Positive is north.",
+                            "unit": "degree",
+                            "symbol": "°"
+                          },
+                          "longitude": {
+                            "type": "double",
+                            "description": "Aircraft longitude in decimal degrees (WGS-84). Positive is east.",
+                            "unit": "degree",
+                            "symbol": "°"
+                          },
+                          "altitude": {
+                            "type": "int32",
+                            "description": "Indicated altitude of the aircraft in feet above mean sea level.",
+                            "unit": "foot",
+                            "symbol": "ft"
+                          },
+                          "groundspeed": {
+                            "type": "int32",
+                            "description": "Ground speed of the aircraft in knots.",
+                            "unit": "knot",
+                            "symbol": "kn"
+                          },
+                          "heading": {
+                            "type": "int32",
+                            "description": "Magnetic heading of the aircraft in degrees (0-359).",
+                            "unit": "degree",
+                            "symbol": "°"
+                          },
+                          "transponder": {
+                            "type": "string",
+                            "description": "Four-digit transponder (squawk) code currently set by the pilot."
+                          },
+                          "qnh_mb": {
+                            "type": "int32",
+                            "description": "Altimeter setting (QNH) in millibars / hectopascals as reported by the pilot client.",
+                            "unit": "millibar",
+                            "symbol": "mb"
+                          },
+                          "flight_rules": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Flight rules filed in the flight plan: 'I' for Instrument Flight Rules, 'V' for Visual Flight Rules. Null if no flight plan is filed."
+                          },
+                          "aircraft_short": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ICAO aircraft type designator from the filed flight plan (e.g. 'B738', 'A320'). Null if no flight plan is filed."
+                          },
+                          "departure": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ICAO code of the departure airport from the filed flight plan. Null if no flight plan is filed."
+                          },
+                          "arrival": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "ICAO code of the arrival airport from the filed flight plan. Null if no flight plan is filed."
+                          },
+                          "route": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Route string from the filed flight plan. Null if no flight plan is filed."
+                          },
+                          "cruise_altitude": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Planned cruise altitude or flight level from the filed flight plan (e.g. '36000' or 'FL350'). Null if no flight plan is filed."
+                          },
+                          "pilot_rating": {
+                            "type": "int32",
+                            "description": "VATSIM pilot rating bitmask. 0 = New Member (P0), 1 = PPL, 3 = IR, 7 = CMEL, 15 = ATPL."
+                          },
+                          "last_updated": {
+                            "type": "datetime",
+                            "description": "UTC timestamp of the last position update received by the VATSIM data servers."
+                          }
+                        },
+                        "required": [
+                          "cid",
+                          "callsign",
+                          "latitude",
+                          "longitude",
+                          "altitude",
+                          "groundspeed",
+                          "heading",
+                          "transponder",
+                          "qnh_mb",
+                          "pilot_rating",
+                          "last_updated"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "net.vatsim.ControllerPosition": {
+          "name": "ControllerPosition",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/net/vatsim/ControllerPosition",
+                "name": "ControllerPosition",
+                "$root": "#/definitions/net/vatsim/ControllerPosition",
+                "definitions": {
+                  "net": {
+                    "vatsim": {
+                      "ControllerPosition": {
+                        "name": "ControllerPosition",
+                        "type": "object",
+                        "description": "Current state and frequency of an air traffic controller or observer connected to the VATSIM virtual aviation network.",
+                        "properties": {
+                          "cid": {
+                            "type": "int32",
+                            "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
+                          },
+                          "callsign": {
+                            "type": "string",
+                            "description": "Controller position callsign (e.g. 'EGLL_TWR', 'KJFK_APP')."
+                          },
+                          "frequency": {
+                            "type": "string",
+                            "description": "Radio frequency the controller is operating on, in MHz with three decimal places (e.g. '118.500')."
+                          },
+                          "facility": {
+                            "type": "int32",
+                            "description": "VATSIM facility type code. 0 = Observer, 1 = Flight Service Station, 2 = Delivery, 3 = Ground, 4 = Tower, 5 = Approach/Departure, 6 = Center/Enroute."
+                          },
+                          "rating": {
+                            "type": "int32",
+                            "description": "VATSIM ATC rating. 1 = OBS, 2 = S1, 3 = S2, 4 = S3, 5 = C1, 6 = C2, 7 = C3, 8 = I1, 9 = I2, 10 = I3, 11 = SUP, 12 = ADM."
+                          },
+                          "text_atis": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Controller information or ATIS text, with individual lines joined by newline characters. Null when the controller has not set any ATIS text."
+                          },
+                          "last_updated": {
+                            "type": "datetime",
+                            "description": "UTC timestamp of the last update received by the VATSIM data servers."
+                          }
+                        },
+                        "required": [
+                          "cid",
+                          "callsign",
+                          "frequency",
+                          "facility",
+                          "rating",
+                          "last_updated"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "net.vatsim.NetworkStatus": {
+          "name": "NetworkStatus",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/net/vatsim/NetworkStatus",
+                "name": "NetworkStatus",
+                "$root": "#/definitions/net/vatsim/NetworkStatus",
+                "definitions": {
+                  "net": {
+                    "vatsim": {
+                      "NetworkStatus": {
+                        "name": "NetworkStatus",
+                        "type": "object",
+                        "description": "Aggregate VATSIM network status snapshot emitted once per poll cycle, summarising connected client counts.",
+                        "properties": {
+                          "callsign": {
+                            "type": "string",
+                            "description": "Constant key value 'status' used to identify this network status record."
+                          },
+                          "update_timestamp": {
+                            "type": "datetime",
+                            "description": "UTC timestamp of the VATSIM data snapshot as reported by the data feed."
+                          },
+                          "connected_clients": {
+                            "type": "int32",
+                            "description": "Total number of clients (pilots, controllers, observers) currently connected to the network."
+                          },
+                          "unique_users": {
+                            "type": "int32",
+                            "description": "Number of unique VATSIM user IDs currently connected."
+                          },
+                          "pilot_count": {
+                            "type": "int32",
+                            "description": "Number of pilots currently connected and flying."
+                          },
+                          "controller_count": {
+                            "type": "int32",
+                            "description": "Number of controllers (including observers) currently connected and providing ATC services."
+                          }
+                        },
+                        "required": [
+                          "callsign",
+                          "update_timestamp",
+                          "connected_clients",
+                          "unique_users",
+                          "pilot_count",
+                          "controller_count"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "net.vatsim.avro": {
+      "schemas": {
+        "net.vatsim.PilotPosition": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PilotPosition",
+                "namespace": "net.vatsim",
+                "doc": "Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.",
+                "fields": [
+                  {"name": "cid", "type": "int", "doc": "VATSIM Certificate Identifier (CID) — unique numeric member ID."},
+                  {"name": "callsign", "type": "string", "doc": "ATC-style callsign chosen by the pilot for this session."},
+                  {"name": "latitude", "type": "double", "doc": "Aircraft latitude in decimal degrees (WGS-84)."},
+                  {"name": "longitude", "type": "double", "doc": "Aircraft longitude in decimal degrees (WGS-84)."},
+                  {"name": "altitude", "type": "int", "doc": "Indicated altitude in feet above mean sea level."},
+                  {"name": "groundspeed", "type": "int", "doc": "Ground speed in knots."},
+                  {"name": "heading", "type": "int", "doc": "Magnetic heading in degrees (0-359)."},
+                  {"name": "transponder", "type": "string", "doc": "Four-digit transponder (squawk) code."},
+                  {"name": "qnh_mb", "type": "int", "doc": "Altimeter setting (QNH) in millibars."},
+                  {"name": "flight_rules", "type": ["null", "string"], "doc": "Flight rules: I or V. Null if no flight plan.", "default": null},
+                  {"name": "aircraft_short", "type": ["null", "string"], "doc": "ICAO aircraft type designator. Null if no flight plan.", "default": null},
+                  {"name": "departure", "type": ["null", "string"], "doc": "ICAO departure airport code. Null if no flight plan.", "default": null},
+                  {"name": "arrival", "type": ["null", "string"], "doc": "ICAO arrival airport code. Null if no flight plan.", "default": null},
+                  {"name": "route", "type": ["null", "string"], "doc": "Route string from flight plan. Null if no flight plan.", "default": null},
+                  {"name": "cruise_altitude", "type": ["null", "string"], "doc": "Planned cruise altitude. Null if no flight plan.", "default": null},
+                  {"name": "pilot_rating", "type": "int", "doc": "VATSIM pilot rating bitmask."},
+                  {"name": "last_updated", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "UTC timestamp of last position update."}
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        },
+        "net.vatsim.ControllerPosition": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "ControllerPosition",
+                "namespace": "net.vatsim",
+                "doc": "Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.",
+                "fields": [
+                  {"name": "cid", "type": "int", "doc": "VATSIM Certificate Identifier (CID)."},
+                  {"name": "callsign", "type": "string", "doc": "Controller position callsign."},
+                  {"name": "frequency", "type": "string", "doc": "Radio frequency in MHz."},
+                  {"name": "facility", "type": "int", "doc": "VATSIM facility type code."},
+                  {"name": "rating", "type": "int", "doc": "VATSIM ATC rating."},
+                  {"name": "text_atis", "type": ["null", "string"], "doc": "Controller ATIS text, lines joined by newline. Null when not set.", "default": null},
+                  {"name": "last_updated", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "UTC timestamp of last update."}
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        },
+        "net.vatsim.NetworkStatus": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "NetworkStatus",
+                "namespace": "net.vatsim",
+                "doc": "Aggregate VATSIM network status snapshot emitted once per poll cycle.",
+                "fields": [
+                  {"name": "callsign", "type": "string", "doc": "Constant key value 'status'."},
+                  {"name": "update_timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "UTC timestamp of the VATSIM data snapshot."},
+                  {"name": "connected_clients", "type": "int", "doc": "Total connected clients."},
+                  {"name": "unique_users", "type": "int", "doc": "Unique connected user IDs."},
+                  {"name": "pilot_count", "type": "int", "doc": "Number of pilots currently flying."},
+                  {"name": "controller_count", "type": "int", "doc": "Number of controllers connected."}
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}

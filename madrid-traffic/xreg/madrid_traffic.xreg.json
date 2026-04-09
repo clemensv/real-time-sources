@@ -1,0 +1,214 @@
+{
+  "endpoints": {
+    "es.madrid.informo.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "madrid-traffic",
+          "key": "{sensor_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/es.madrid.informo"
+      ]
+    }
+  },
+  "messagegroups": {
+    "es.madrid.informo": {
+      "messages": {
+        "es.madrid.informo.MeasurementPoint": {
+          "name": "MeasurementPoint",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "es.madrid.informo.MeasurementPoint"
+            },
+            "source": {
+              "value": "https://informo.madrid.es/informo/tmadrid/pm.xml"
+            },
+            "subject": {
+              "value": "{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.jstruct/schemas/es.madrid.informo.MeasurementPoint"
+        },
+        "es.madrid.informo.TrafficReading": {
+          "name": "TrafficReading",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "es.madrid.informo.TrafficReading"
+            },
+            "source": {
+              "value": "https://informo.madrid.es/informo/tmadrid/pm.xml"
+            },
+            "subject": {
+              "value": "{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/es.madrid.informo.jstruct/schemas/es.madrid.informo.TrafficReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "es.madrid.informo.jstruct": {
+      "schemas": {
+        "es.madrid.informo.MeasurementPoint": {
+          "name": "MeasurementPoint",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "sensor_id",
+                  "description"
+                ],
+                "name": "MeasurementPoint",
+                "properties": {
+                  "sensor_id": {
+                    "type": "string",
+                    "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point.",
+                    "altnames": {
+                      "lang:es": "idelem"
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish.",
+                    "altnames": {
+                      "lang:es": "descripcion"
+                    }
+                  },
+                  "element_type": {
+                    "type": ["string", "null"],
+                    "description": "Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway.",
+                    "altnames": {
+                      "lang:es": "tipo_elem"
+                    }
+                  },
+                  "subarea": {
+                    "type": ["string", "null"],
+                    "description": "Traffic management zone code for this sensor. Corresponds to 'subarea' in the upstream XML. Used by Madrid's traffic management center for geographic grouping of sensors."
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Longitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM easting in 'st_x' in the upstream XML, which uses European comma decimal separators.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Latitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM northing in 'st_y' in the upstream XML, which uses European comma decimal separators.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "saturation_intensity": {
+                    "type": ["integer", "null"],
+                    "description": "Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios.",
+                    "unit": "1/h",
+                    "symbol": "veh/h",
+                    "altnames": {
+                      "lang:es": "intensidadSat"
+                    }
+                  }
+                },
+                "$id": "https://informo.madrid.es/schemas/es/madrid/informo/MeasurementPoint",
+                "description": "Reference data for a traffic measurement point (sensor) in Madrid's Informo road traffic monitoring system. Each measurement point is installed on a specific road segment and reports traffic intensity, occupancy, and service level readings. This data is relatively static and describes the sensor installation, not the real-time traffic conditions."
+              }
+            }
+          }
+        },
+        "es.madrid.informo.TrafficReading": {
+          "name": "TrafficReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "sensor_id",
+                  "timestamp"
+                ],
+                "name": "TrafficReading",
+                "properties": {
+                  "sensor_id": {
+                    "type": "string",
+                    "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data.",
+                    "altnames": {
+                      "lang:es": "idelem"
+                    }
+                  },
+                  "intensity": {
+                    "type": ["integer", "null"],
+                    "description": "Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode.",
+                    "unit": "1/h",
+                    "symbol": "veh/h",
+                    "altnames": {
+                      "lang:es": "intensidad"
+                    }
+                  },
+                  "occupancy": {
+                    "type": ["integer", "null"],
+                    "description": "Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100.",
+                    "unit": "%",
+                    "symbol": "%",
+                    "altnames": {
+                      "lang:es": "ocupacion"
+                    }
+                  },
+                  "load": {
+                    "type": ["integer", "null"],
+                    "description": "Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100.",
+                    "unit": "%",
+                    "symbol": "%",
+                    "altnames": {
+                      "lang:es": "carga"
+                    }
+                  },
+                  "service_level": {
+                    "type": ["integer", "null"],
+                    "description": "Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested.",
+                    "altnames": {
+                      "lang:es": "nivelServicio"
+                    }
+                  },
+                  "error_flag": {
+                    "type": ["string", "null"],
+                    "description": "Error status flag for this reading. Corresponds to 'error' in the upstream XML. 'N' indicates a normal reading, 'S' or 'Y' indicates the sensor is reporting an error and the data may be unreliable."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "Timestamp of the traffic reading in UTC. Since the upstream XML does not include per-sensor timestamps, this is derived from the poll time rounded to the nearest 5-minute interval, reflecting the upstream update cadence."
+                  }
+                },
+                "$id": "https://informo.madrid.es/schemas/es/madrid/informo/TrafficReading",
+                "description": "Real-time traffic reading from a measurement point in Madrid's Informo road traffic monitoring system. Updated approximately every 5 minutes. Each reading provides the current traffic intensity, road occupancy, load, and service level for a specific sensor on Madrid's road network, including the M-30 ring motorway and urban streets."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

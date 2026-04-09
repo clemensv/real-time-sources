@@ -233,7 +233,7 @@ class USGSEarthquakePoller:
                 else:
                     count_updated += 1
 
-                await self.event_producer.send_usgs_earthquakes_event(
+                self.event_producer.send_usgs_earthquakes_event(
                     _source_uri=self.BASE_URL,
                     _net=event.net,
                     _code=event.code,

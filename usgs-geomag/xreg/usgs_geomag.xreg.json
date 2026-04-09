@@ -1,0 +1,199 @@
+{
+  "endpoints": {
+    "gov.usgs.geomag.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "usgs-geomag",
+          "key": "{iaga_code}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.usgs.geomag"
+      ]
+    }
+  },
+  "messagegroups": {
+    "gov.usgs.geomag": {
+      "messages": {
+        "gov.usgs.geomag.Observatory": {
+          "name": "Observatory",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.usgs.geomag.Observatory"
+            },
+            "source": {
+              "value": "https://geomag.usgs.gov"
+            },
+            "subject": {
+              "value": "{iaga_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.usgs.geomag.jstruct/schemas/gov.usgs.geomag.Observatory"
+        },
+        "gov.usgs.geomag.MagneticFieldReading": {
+          "name": "MagneticFieldReading",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.usgs.geomag.MagneticFieldReading"
+            },
+            "source": {
+              "value": "https://geomag.usgs.gov"
+            },
+            "subject": {
+              "value": "{iaga_code}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.usgs.geomag.jstruct/schemas/gov.usgs.geomag.MagneticFieldReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "gov.usgs.geomag.jstruct": {
+      "schemas": {
+        "gov.usgs.geomag.Observatory": {
+          "name": "Observatory",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "iaga_code",
+                  "name"
+                ],
+                "name": "Observatory",
+                "properties": {
+                  "iaga_code": {
+                    "type": "string",
+                    "description": "IAGA (International Association of Geomagnetism and Aeronomy) three- or four-character observatory code, e.g. BOU for Boulder, BRW for Barrow. This is the primary stable identifier for an observatory."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable name of the observatory, e.g. 'Boulder', 'Barrow', 'College'."
+                  },
+                  "agency": {
+                    "type": ["string", "null"],
+                    "description": "Short identifier of the operating agency, e.g. 'USGS' for United States Geological Survey."
+                  },
+                  "agency_name": {
+                    "type": ["string", "null"],
+                    "description": "Full name of the operating agency, e.g. 'United States Geological Survey (USGS)'."
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Geodetic latitude of the observatory in decimal degrees. Positive values indicate north of the equator.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Geodetic longitude of the observatory in decimal degrees east. Values above 180 represent west longitudes expressed as 360 minus the west longitude (e.g. 254.763 = -105.237 W).",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "elevation": {
+                    "type": ["double", "null"],
+                    "description": "Elevation of the observatory above mean sea level in meters.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "sensor_orientation": {
+                    "type": ["string", "null"],
+                    "description": "Orientation of the magnetometer sensor, e.g. 'HDZ' indicating sensors measure horizontal intensity (H), declination (D), and vertical intensity (Z)."
+                  },
+                  "sensor_sampling_rate": {
+                    "type": ["double", "null"],
+                    "description": "Native sampling rate of the magnetometer sensor in hertz.",
+                    "unit": "Hz",
+                    "symbol": "Hz"
+                  },
+                  "declination_base": {
+                    "type": ["double", "null"],
+                    "description": "Declination baseline value in minutes of arc. Used as a reference for variation measurements of the D element."
+                  }
+                },
+                "$id": "https://geomag.usgs.gov/schemas/gov/usgs/geomag/Observatory",
+                "description": "Reference data for a USGS Geomagnetism Program observatory, sourced from the INTERMAGNET-compatible observatories GeoJSON endpoint at https://geomag.usgs.gov/ws/observatories/. Each feature represents a ground-based magnetometer station that continuously records geomagnetic field variations."
+              }
+            }
+          }
+        },
+        "gov.usgs.geomag.MagneticFieldReading": {
+          "name": "MagneticFieldReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "iaga_code",
+                  "timestamp"
+                ],
+                "name": "MagneticFieldReading",
+                "properties": {
+                  "iaga_code": {
+                    "type": "string",
+                    "description": "IAGA observatory code identifying the station that produced this reading, e.g. BOU, BRW, FRN."
+                  },
+                  "timestamp": {
+                    "type": "datetime",
+                    "description": "UTC timestamp of the 1-minute magnetic field sample, in ISO 8601 format. Derived from the 'times' array in the USGS Geomagnetism web-service timeseries response."
+                  },
+                  "h": {
+                    "type": ["double", "null"],
+                    "description": "Horizontal intensity component of the geomagnetic field vector. Represents the magnitude of the horizontal projection of the total field vector. Null when the observatory does not report this element or the value is missing for this minute.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  },
+                  "d": {
+                    "type": ["double", "null"],
+                    "description": "Declination angle — the angular difference between magnetic north and geographic north. Positive values indicate east declination. Null when the observatory does not report this element or the value is missing for this minute.",
+                    "unit": "'",
+                    "symbol": "′"
+                  },
+                  "z": {
+                    "type": ["double", "null"],
+                    "description": "Vertical intensity component of the geomagnetic field vector. Positive values indicate downward (into the Earth in the northern hemisphere). Null when the observatory does not report this element or the value is missing for this minute.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  },
+                  "f": {
+                    "type": ["double", "null"],
+                    "description": "Total field intensity — the scalar magnitude of the full geomagnetic field vector. Measured by an independent proton or Overhauser magnetometer. Null when the observatory does not report this element or the value is missing for this minute.",
+                    "unit": "nT",
+                    "symbol": "nT"
+                  }
+                },
+                "$id": "https://geomag.usgs.gov/schemas/gov/usgs/geomag/MagneticFieldReading",
+                "description": "One-minute resolution geomagnetic field variation reading from a USGS Geomagnetism Program observatory, sourced from the timeseries web-service at https://geomag.usgs.gov/ws/data/. The H, D, Z, and F elements correspond to the four standard INTERMAGNET variation data components. The timeseries API returns parallel arrays (times + per-element value arrays) which the bridge transforms into individual timestamped events."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

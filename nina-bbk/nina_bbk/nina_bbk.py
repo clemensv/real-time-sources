@@ -252,7 +252,7 @@ class NINABBKPoller:
                             count_updated += 1
 
                         if self.event_producer:
-                            await self.event_producer.send_nina_civil_warning(
+                            self.event_producer.send_nina_civil_warning(
                                 _warning_id=warning.warning_id,
                                 data=warning,
                                 flush_producer=False,

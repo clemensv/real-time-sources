@@ -1,0 +1,181 @@
+{
+  "endpoints": {
+    "gov.usda.nrcs.snotel.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "snotel",
+          "key": "{station_triplet}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.usda.nrcs.snotel"
+      ]
+    }
+  },
+  "messagegroups": {
+    "gov.usda.nrcs.snotel": {
+      "messages": {
+        "gov.usda.nrcs.snotel.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.usda.nrcs.snotel.Station"
+            },
+            "source": {
+              "value": "https://wcc.sc.egov.usda.gov"
+            },
+            "subject": {
+              "value": "{station_triplet}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.jstruct/schemas/gov.usda.nrcs.snotel.Station"
+        },
+        "gov.usda.nrcs.snotel.SnowObservation": {
+          "name": "SnowObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.usda.nrcs.snotel.SnowObservation"
+            },
+            "source": {
+              "value": "https://wcc.sc.egov.usda.gov"
+            },
+            "subject": {
+              "value": "{station_triplet}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.jstruct/schemas/gov.usda.nrcs.snotel.SnowObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "gov.usda.nrcs.snotel.jstruct": {
+      "schemas": {
+        "gov.usda.nrcs.snotel.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_triplet",
+                  "name",
+                  "state",
+                  "elevation",
+                  "latitude",
+                  "longitude"
+                ],
+                "name": "Station",
+                "properties": {
+                  "station_triplet": {
+                    "type": "string",
+                    "description": "SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. This is the canonical identifier used by the USDA NRCS Water and Climate Center to uniquely reference each SNOTEL site (e.g. '838:CO:SNTL' for University Camp, Colorado)."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable station name assigned by the USDA NRCS (e.g. 'University Camp', 'Berthoud Summit'). Station names are generally geographic references to the site location."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Two-letter US state or territory code where the station is located (e.g. 'CO', 'AK', 'MT'). Stations are distributed across the western United States and Alaska."
+                  },
+                  "elevation": {
+                    "type": "double",
+                    "description": "Station elevation above sea level. Reported by the NRCS in feet. SNOTEL stations are typically located at high elevations in mountainous terrain to monitor snowpack.",
+                    "unit": "[ft_i]",
+                    "symbol": "ft"
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "Latitude of the SNOTEL station in decimal degrees north. All SNOTEL stations are in the northern hemisphere (positive values)."
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Longitude of the SNOTEL station in decimal degrees east. Western US stations have negative values indicating west of the Prime Meridian."
+                  }
+                },
+                "$id": "https://wcc.sc.egov.usda.gov/schemas/gov/usda/nrcs/snotel/Station",
+                "description": "Reference metadata for a USDA NRCS SNOTEL (SNOwpack TELemetry) station. SNOTEL is an automated system of over 900 snowpack monitoring sites in the western United States and Alaska operated by the Natural Resources Conservation Service. Each station reports snowpack, precipitation, and temperature data via satellite telemetry. This reference record provides the station identity and geographic context for the hourly telemetry observations."
+              }
+            }
+          }
+        },
+        "gov.usda.nrcs.snotel.SnowObservation": {
+          "name": "SnowObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_triplet",
+                  "date_time"
+                ],
+                "name": "SnowObservation",
+                "properties": {
+                  "station_triplet": {
+                    "type": "string",
+                    "description": "SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. Links this observation to the station that reported it."
+                  },
+                  "date_time": {
+                    "type": "datetime",
+                    "description": "Observation timestamp reported by the SNOTEL station. Hourly readings are transmitted via satellite telemetry, typically at the top of each hour. The time is in the station's local standard time as reported by the NRCS Report Generator."
+                  },
+                  "snow_water_equivalent": {
+                    "type": ["double", "null"],
+                    "description": "Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.",
+                    "unit": "[in_i]",
+                    "symbol": "in"
+                  },
+                  "snow_depth": {
+                    "type": ["double", "null"],
+                    "description": "Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise.",
+                    "unit": "[in_i]",
+                    "symbol": "in"
+                  },
+                  "precipitation": {
+                    "type": ["double", "null"],
+                    "description": "Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year.",
+                    "unit": "[in_i]",
+                    "symbol": "in"
+                  },
+                  "air_temperature": {
+                    "type": ["double", "null"],
+                    "description": "Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit.",
+                    "unit": "[degF]",
+                    "symbol": "°F"
+                  }
+                },
+                "$id": "https://wcc.sc.egov.usda.gov/schemas/gov/usda/nrcs/snotel/SnowObservation",
+                "description": "Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings — the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

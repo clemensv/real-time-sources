@@ -1,0 +1,379 @@
+{
+  "endpoints": {
+    "gov.noaa.aviationweather.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "aviationweather",
+          "key": "{icao_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.noaa.aviationweather"
+      ]
+    }
+  },
+  "messagegroups": {
+    "gov.noaa.aviationweather": {
+      "messages": {
+        "gov.noaa.aviationweather.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Station"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{icao_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Station"
+        },
+        "gov.noaa.aviationweather.Metar": {
+          "name": "Metar",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Metar"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{icao_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Metar"
+        },
+        "gov.noaa.aviationweather.Sigmet": {
+          "name": "Sigmet",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.noaa.aviationweather.Sigmet"
+            },
+            "source": {
+              "value": "https://aviationweather.gov"
+            },
+            "subject": {
+              "value": "{icao_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Sigmet"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "gov.noaa.aviationweather.jstruct": {
+      "schemas": {
+        "gov.noaa.aviationweather.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "icao_id",
+                  "name",
+                  "latitude",
+                  "longitude"
+                ],
+                "name": "Station",
+                "properties": {
+                  "icao_id": {
+                    "type": "string",
+                    "description": "ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport)."
+                  },
+                  "iata_id": {
+                    "type": ["string", "null"],
+                    "description": "IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations."
+                  },
+                  "faa_id": {
+                    "type": ["string", "null"],
+                    "description": "FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations."
+                  },
+                  "wmo_id": {
+                    "type": ["string", "null"],
+                    "description": "WMO station identifier. Five-digit numeric code assigned by the World Meteorological Organization. May be null."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable site name from the AviationWeather station database, e.g. 'New York/JF Kennedy Intl'."
+                  },
+                  "latitude": {
+                    "type": "double",
+                    "description": "Station latitude in decimal degrees north. Negative values indicate southern hemisphere.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": "double",
+                    "description": "Station longitude in decimal degrees east. Negative values indicate western hemisphere.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "elevation": {
+                    "type": ["double", "null"],
+                    "description": "Station field elevation in meters above mean sea level.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "state": {
+                    "type": ["string", "null"],
+                    "description": "State or province code where the station is located (e.g. 'NY'). May be null for non-US stations."
+                  },
+                  "country": {
+                    "type": ["string", "null"],
+                    "description": "Two-character ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB')."
+                  },
+                  "site_type": {
+                    "type": ["string", "null"],
+                    "description": "Comma-separated list of data products available at this station from the siteType array (e.g. 'METAR,TAF')."
+                  }
+                },
+                "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Station",
+                "description": "Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products."
+              }
+            }
+          }
+        },
+        "gov.noaa.aviationweather.Metar": {
+          "name": "Metar",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "icao_id",
+                  "obs_time",
+                  "raw_ob"
+                ],
+                "name": "Metar",
+                "properties": {
+                  "icao_id": {
+                    "type": "string",
+                    "description": "ICAO station identifier for the reporting station (e.g. 'KJFK')."
+                  },
+                  "obs_time": {
+                    "type": "datetime",
+                    "description": "Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response."
+                  },
+                  "report_time": {
+                    "type": ["datetime", "null"],
+                    "description": "Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported."
+                  },
+                  "temp": {
+                    "type": ["double", "null"],
+                    "description": "Air temperature at the station. Unit: degrees Celsius.",
+                    "unit": "CEL",
+                    "symbol": "°C"
+                  },
+                  "dewp": {
+                    "type": ["double", "null"],
+                    "description": "Dewpoint temperature at the station. Unit: degrees Celsius.",
+                    "unit": "CEL",
+                    "symbol": "°C"
+                  },
+                  "wdir": {
+                    "type": ["int32", "null"],
+                    "description": "Wind direction in degrees true (the direction from which the wind is blowing), averaged over the observation period. Value of 0 indicates variable or calm.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "wspd": {
+                    "type": ["int32", "null"],
+                    "description": "Sustained wind speed in knots.",
+                    "unit": "[kn_i]",
+                    "symbol": "kt"
+                  },
+                  "wgst": {
+                    "type": ["int32", "null"],
+                    "description": "Wind gust speed in knots. Null if no gusts reported.",
+                    "unit": "[kn_i]",
+                    "symbol": "kt"
+                  },
+                  "visib": {
+                    "type": ["string", "null"],
+                    "description": "Prevailing visibility as reported. Value is a string because it can contain qualifiers like '10+' (greater than 10 statute miles) or fractional values. Unit: statute miles."
+                  },
+                  "altim": {
+                    "type": ["double", "null"],
+                    "description": "Altimeter setting (QNH) in hectopascals.",
+                    "unit": "hPa",
+                    "symbol": "hPa"
+                  },
+                  "slp": {
+                    "type": ["double", "null"],
+                    "description": "Sea level pressure in hectopascals. May be null if not reported.",
+                    "unit": "hPa",
+                    "symbol": "hPa"
+                  },
+                  "qc_field": {
+                    "type": ["int32", "null"],
+                    "description": "Quality control flag bitmask from the qcField in the API response."
+                  },
+                  "wx_string": {
+                    "type": ["string", "null"],
+                    "description": "Present weather string using standard METAR codes (e.g. '-RA' for light rain, 'BR' for mist)."
+                  },
+                  "metar_type": {
+                    "type": ["string", "null"],
+                    "description": "METAR report type: 'METAR' for routine, 'SPECI' for special observation."
+                  },
+                  "raw_ob": {
+                    "type": "string",
+                    "description": "The full raw METAR observation text as received, e.g. 'METAR KJFK 061051Z 32013KT 10SM SCT050 05/M05 A3001'."
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Station latitude in decimal degrees north from the METAR response.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Station longitude in decimal degrees east from the METAR response.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "elevation": {
+                    "type": ["double", "null"],
+                    "description": "Station elevation in meters above mean sea level from the METAR response.",
+                    "unit": "m",
+                    "symbol": "m"
+                  },
+                  "flt_cat": {
+                    "type": ["string", "null"],
+                    "description": "Flight category derived from ceiling and visibility: VFR, MVFR, IFR, or LIFR."
+                  },
+                  "clouds": {
+                    "type": ["string", "null"],
+                    "description": "JSON-encoded array of cloud layer objects. Each object has 'cover' (string: SKC, CLR, FEW, SCT, BKN, OVC) and 'base' (integer or null: cloud base in feet AGL). Example: '[{\"cover\":\"SCT\",\"base\":5000}]'."
+                  },
+                  "name": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable station name included in the METAR response (e.g. 'New York/JF Kennedy Intl, NY, US')."
+                  }
+                },
+                "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Metar",
+                "description": "METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station."
+              }
+            }
+          }
+        },
+        "gov.noaa.aviationweather.Sigmet": {
+          "name": "Sigmet",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "icao_id",
+                  "series_id",
+                  "valid_time_from",
+                  "valid_time_to"
+                ],
+                "name": "Sigmet",
+                "properties": {
+                  "icao_id": {
+                    "type": "string",
+                    "description": "ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs."
+                  },
+                  "series_id": {
+                    "type": "string",
+                    "description": "SIGMET series identifier combining alphanumeric sequence (e.g. '6W' for domestic, '8' for international)."
+                  },
+                  "valid_time_from": {
+                    "type": "datetime",
+                    "description": "Start of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z)."
+                  },
+                  "valid_time_to": {
+                    "type": "datetime",
+                    "description": "End of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z)."
+                  },
+                  "hazard": {
+                    "type": ["string", "null"],
+                    "description": "Weather hazard type: 'CONVECTIVE' for US convective SIGMETs, 'TS' (thunderstorm), 'TURB' (turbulence), 'ICE' (icing), 'VA' (volcanic ash), 'MTW' (mountain wave), etc."
+                  },
+                  "qualifier": {
+                    "type": ["string", "null"],
+                    "description": "Hazard qualifier for international SIGMETs (e.g. 'EMBD' for embedded, 'SEV' for severe, 'OBSC' for obscured). Null for US domestic SIGMETs."
+                  },
+                  "sigmet_type": {
+                    "type": ["string", "null"],
+                    "description": "SIGMET classification: 'SIGMET' for US domestic, 'ISIGMET' for international SIGMETs."
+                  },
+                  "altitude_hi": {
+                    "type": ["int32", "null"],
+                    "description": "Upper altitude limit of the hazard area in feet. From altitudeHi1 for US SIGMETs or top for international SIGMETs.",
+                    "unit": "[ft_i]",
+                    "symbol": "ft"
+                  },
+                  "altitude_low": {
+                    "type": ["int32", "null"],
+                    "description": "Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs.",
+                    "unit": "[ft_i]",
+                    "symbol": "ft"
+                  },
+                  "movement_dir": {
+                    "type": ["string", "null"],
+                    "description": "Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international."
+                  },
+                  "movement_spd": {
+                    "type": ["string", "null"],
+                    "description": "Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international."
+                  },
+                  "severity": {
+                    "type": ["int32", "null"],
+                    "description": "Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity."
+                  },
+                  "raw_sigmet": {
+                    "type": ["string", "null"],
+                    "description": "Full raw SIGMET text as received from the upstream source."
+                  },
+                  "coords": {
+                    "type": ["string", "null"],
+                    "description": "JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{\"lat\":41.88,\"lon\":-123.70},{\"lat\":40.00,\"lon\":-124.23}]'."
+                  }
+                },
+                "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Sigmet",
+                "description": "SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

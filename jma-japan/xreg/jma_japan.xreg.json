@@ -1,0 +1,111 @@
+{
+  "endpoints": {
+    "jp.go.jma.WeatherBulletins.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "jma-japan",
+          "key": "{bulletin_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/jp.go.jma.WeatherBulletins"
+      ]
+    }
+  },
+  "messagegroups": {
+    "jp.go.jma.WeatherBulletins": {
+      "messages": {
+        "jp.go.jma.WeatherBulletin": {
+          "name": "WeatherBulletin",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "jp.go.jma.WeatherBulletin"
+            },
+            "source": {
+              "value": "https://www.data.jma.go.jp"
+            },
+            "subject": {
+              "value": "{bulletin_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/jp.go.jma.jstruct/schemas/jp.go.jma.WeatherBulletin"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "jp.go.jma.jstruct": {
+      "schemas": {
+        "jp.go.jma.WeatherBulletin": {
+          "name": "WeatherBulletin",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "bulletin_id",
+                  "title",
+                  "updated"
+                ],
+                "name": "WeatherBulletin",
+                "properties": {
+                  "bulletin_id": {
+                    "type": "string",
+                    "description": "Unique identifier for the bulletin, derived from the Atom entry ID (typically a URL to the full XML document)."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the weather bulletin in Japanese, e.g. '気象特別警報・警報・注意報' (Special weather warnings/advisories)."
+                  },
+                  "author": {
+                    "type": ["string", "null"],
+                    "description": "Issuing authority name in Japanese, e.g. '気象庁' (JMA) or a regional observatory name like '松江地方気象台'."
+                  },
+                  "updated": {
+                    "type": "datetime",
+                    "description": "UTC timestamp when the bulletin was last updated."
+                  },
+                  "link": {
+                    "type": ["string", "null"],
+                    "description": "URL to the full XML document for this bulletin on the JMA data server."
+                  },
+                  "content": {
+                    "type": ["string", "null"],
+                    "description": "Brief text summary of the bulletin content in Japanese."
+                  },
+                  "feed_type": {
+                    "type": "string",
+                    "description": "Which JMA Atom feed this bulletin originated from.",
+                    "enum": [
+                      "regular",
+                      "extra"
+                    ]
+                  }
+                },
+                "$id": "https://www.data.jma.go.jp/schemas/jp/go/jma/WeatherBulletin",
+                "description": "Weather bulletin entry from the JMA XML Atom feed. Covers forecasts, warnings, advisories, and risk notifications published by the Japan Meteorological Agency and its regional observatories."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

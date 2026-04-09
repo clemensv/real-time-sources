@@ -377,7 +377,7 @@ def fetch_feed(url: str, etag: Optional[str] = None) -> requests.Response:
         raise e
 
 
-async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftOpenDataRssFeedsEventProducer):
+def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftOpenDataRssFeedsEventProducer):
     """
     Process the feed and update the state.
 
@@ -468,7 +468,7 @@ async def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftO
         if new_items:
             for item in new_items:
                 logging.info("Sending item %s for feed %s", item.id, feed_url)
-                await producer_instance.send_microsoft_open_data_rss_feeds_feed_item(_sourceurl=feed_url, _item_id=item.id, data=item, flush_producer=False)
+                producer_instance.send_microsoft_open_data_rss_feeds_feed_item(_sourceurl=feed_url, _item_id=item.id, data=item, flush_producer=False)
         producer_instance.producer.flush()
 
     except RequestException as e:
@@ -500,7 +500,7 @@ async def poll_feeds(feed_urls: List[str], state, producer_instance: MicrosoftOp
     """
     while True:
         for feed_url in feed_urls:
-            await process_feed(feed_url, state, producer_instance)
+            process_feed(feed_url, state, producer_instance)
         save_state(state)
         next_poll = min([
             (datetime.fromisoformat(state.get(feed_url, {}).get("next_check_time", datetime.now(timezone.utc).isoformat())).astimezone(timezone.utc)-datetime.now(timezone.utc)).total_seconds()

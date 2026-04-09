@@ -235,7 +235,7 @@ class MeteoalarmPoller:
                             count_updated += 1
 
                         if self.event_producer:
-                            await self.event_producer.send_meteoalarm_weather_warning(
+                            self.event_producer.send_meteoalarm_weather_warning(
                                 _identifier=warning.identifier,
                                 data=warning,
                                 flush_producer=False,

@@ -85,6 +85,10 @@ def usgs_earthquakes_image():
     return build_image('usgs-earthquakes')
 
 @pytest.fixture(scope='module')
+def nifc_usa_wildfires_image():
+    return build_image('nifc-usa-wildfires')
+
+@pytest.fixture(scope='module')
 def pegelonline_image():
     return build_image('pegelonline')
 
@@ -193,16 +197,62 @@ def blitzortung_image():
     return build_image('blitzortung')
 
 @pytest.fixture(scope='module')
+def snotel_image():
+    return build_image('snotel')
+
+@pytest.fixture(scope='module')
 def bfs_odl_image():
     return build_image('bfs-odl')
+
+@pytest.fixture(scope='module')
+def gios_poland_image():
+    return build_image('gios-poland')
+def wallonia_issep_image():
+    return build_image('wallonia-issep')
+def carbon_intensity_image():
+    return build_image('carbon-intensity')
+def energidataservice_dk_image():
+    return build_image('energidataservice-dk')
+def jma_japan_image():
+    return build_image('jma-japan')
 
 @pytest.fixture(scope='module')
 def irail_image():
     return build_image('irail')
 
 @pytest.fixture(scope='module')
+def vatsim_image():
+    return build_image('vatsim')
+
+@pytest.fixture(scope='module')
 def wsdot_image():
     return build_image('wsdot')
+
+@pytest.fixture(scope='module')
+def gracedb_image():
+    return build_image('gracedb')
+def aviationweather_image():
+    return build_image('aviationweather')
+def cbp_border_wait_image():
+    return build_image('cbp-border-wait')
+def elexon_bmrs_image():
+    return build_image('elexon-bmrs')
+def energy_charts_image():
+    return build_image('energy-charts')
+def usgs_geomag_image():
+    return build_image('usgs-geomag')
+def french_road_traffic_image():
+    return build_image('french-road-traffic')
+def ndl_netherlands_image():
+    return build_image('ndl-netherlands')
+def eaws_albina_image():
+    return build_image('eaws-albina')
+def geosphere_austria_image():
+    return build_image('geosphere-austria')
+def wikimedia_osm_diffs_image():
+    return build_image('wikimedia-osm-diffs')
+def inpe_deter_brazil_image():
+    return build_image('inpe-deter-brazil')
 
 
 # ---------------------------------------------------------------------------
@@ -588,6 +638,27 @@ class TestUSGSIVDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# USGS NWIS Water Quality
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def usgs_nwis_wq_image():
+    return build_image('usgs-nwis-wq')
+
+class TestUSGSNWISWQDockerFlow:
+    TOPIC = 'test-usgs-nwis-wq'
+
+    @pytest.mark.xfail(reason='USGS API polls all 50+ states; intermittent upstream timeouts')
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, usgs_nwis_wq_image):
+        _run_kafka_flow_test(
+            kafka, usgs_nwis_wq_image, self.TOPIC,
+            reference_types=['MonitoringSite'],
+            telemetry_types=['WaterQualityReading'],
+            timeout=480,
+        )
+
+
+# ---------------------------------------------------------------------------
 # USGS Earthquakes (telemetry only)
 # ---------------------------------------------------------------------------
 
@@ -600,6 +671,22 @@ class TestUSGSEarthquakesDockerFlow:
             kafka, usgs_earthquakes_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['Earthquakes.Event'],
+            min_messages=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# GraceDB Gravitational Wave Alerts (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestGraceDBDockerFlow:
+    TOPIC = 'test-gracedb'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, gracedb_image):
+        _run_kafka_flow_test(
+            kafka, gracedb_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['Superevent'],
             min_messages=1,
         )
 
@@ -821,6 +908,24 @@ class TestBOMAustraliaDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# Australia Wildfires (bushfire incidents from NSW, VIC, QLD)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def australia_wildfires_image():
+    return build_image('australia-wildfires')
+
+class TestAustraliaWildfiresDockerFlow:
+    TOPIC = 'test-australia-wildfires'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, australia_wildfires_image):
+        _run_kafka_flow_test(
+            kafka, australia_wildfires_image, self.TOPIC,
+            telemetry_types=['FireIncident'],
+        )
+
+
+# ---------------------------------------------------------------------------
 # SMHI Weather (Sweden – meteorological observations)
 # ---------------------------------------------------------------------------
 
@@ -847,6 +952,27 @@ class TestHKODockerFlow:
             kafka, hko_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['WeatherObservation'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# CDEC California Reservoirs (reservoir storage, elevation, inflow, outflow)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def cdec_reservoirs_image():
+    return build_image('cdec-reservoirs')
+
+
+class TestCdecReservoirsDockerFlow:
+    TOPIC = 'test-cdec-reservoirs'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, cdec_reservoirs_image):
+        _run_kafka_flow_test(
+            kafka, cdec_reservoirs_image, self.TOPIC,
+            telemetry_types=['ReservoirReading'],
+            min_messages=1,
+            timeout=180,
         )
 
 
@@ -1067,3 +1193,322 @@ class TestBfsOdlDockerFlow:
             reference_types=['Station'],
             telemetry_types=['DoseRateMeasurement'],
         )
+
+
+# ---------------------------------------------------------------------------
+# GIOŚ Poland (air quality)
+# ---------------------------------------------------------------------------
+
+class TestGIOSPolandDockerFlow:
+    TOPIC = 'test-gios-poland'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, gios_poland_image):
+        _run_kafka_flow_test(
+            kafka, gios_poland_image, self.TOPIC,
+            reference_types=['Station', 'Sensor'],
+            telemetry_types=['Measurement', 'AirQualityIndex'],
+            required_types=['Station', 'Sensor', 'Measurement', 'AirQualityIndex'],
+# DWD Pollenflug (German pollen forecast)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def dwd_pollenflug_image():
+    return build_image('dwd-pollenflug')
+
+class TestDWDPollenflugDockerFlow:
+    TOPIC = 'test-dwd-pollenflug'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, dwd_pollenflug_image):
+        _run_kafka_flow_test(
+            kafka, dwd_pollenflug_image, self.TOPIC,
+            reference_types=['Region'],
+            telemetry_types=['PollenForecast'],
+# Wallonia ISSeP (Belgium – air quality sensors)
+# ---------------------------------------------------------------------------
+
+class TestWalloniaISsePDockerFlow:
+    TOPIC = 'test-wallonia-issep'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, wallonia_issep_image):
+        _run_kafka_flow_test(
+            kafka, wallonia_issep_image, self.TOPIC,
+            reference_types=['SensorConfiguration'],
+            telemetry_types=['Observation'],
+# AviationWeather.gov (METAR observations, SIGMETs, station data)
+# ---------------------------------------------------------------------------
+
+class TestAviationWeatherDockerFlow:
+    TOPIC = 'test-aviationweather'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, aviationweather_image):
+        _run_kafka_flow_test(
+            kafka, aviationweather_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['Metar'],
+            extra_env={
+                'AVIATIONWEATHER_STATIONS': 'KJFK,EGLL,LFPG',
+            },
+# CBP Border Wait Times (US – border crossing wait times)
+# ---------------------------------------------------------------------------
+
+class TestCbpBorderWaitDockerFlow:
+    TOPIC = 'test-cbp-border-wait'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, cbp_border_wait_image):
+        _run_kafka_flow_test(
+            kafka, cbp_border_wait_image, self.TOPIC,
+            reference_types=['Port'],
+            telemetry_types=['WaitTime'],
+# Elexon BMRS (GB electricity market)
+# ---------------------------------------------------------------------------
+
+class TestElexonBMRSDockerFlow:
+    TOPIC = 'test-elexon-bmrs'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, elexon_bmrs_image):
+        _run_kafka_flow_test(
+            kafka, elexon_bmrs_image, self.TOPIC,
+            telemetry_types=['GenerationMix', 'DemandOutturn'],
+# Energy-Charts (European electricity generation, prices & grid signals)
+# ---------------------------------------------------------------------------
+
+class TestEnergyChartsDockerFlow:
+    TOPIC = 'test-energy-charts'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, energy_charts_image):
+        _run_kafka_flow_test(
+            kafka, energy_charts_image, self.TOPIC,
+            telemetry_types=['PublicPower', 'SpotPrice', 'GridSignal'],
+# Carbon Intensity UK (telemetry only – no reference/station data)
+# ---------------------------------------------------------------------------
+
+class TestCarbonIntensityDockerFlow:
+    TOPIC = 'test-carbon-intensity'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, carbon_intensity_image):
+        _run_kafka_flow_test(
+            kafka, carbon_intensity_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['Intensity', 'GenerationMix', 'RegionalIntensity'],
+            min_messages=3,
+            timeout=120,
+# Energi Data Service Denmark (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestEnergiDataServiceDkDockerFlow:
+    TOPIC = 'test-energidataservice-dk'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, energidataservice_dk_image):
+        _run_kafka_flow_test(
+            kafka, energidataservice_dk_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['PowerSystemSnapshot', 'SpotPrice'],
+            min_messages=1,
+# USGS Geomagnetism (geomagnetic field measurements)
+# ---------------------------------------------------------------------------
+
+class TestUSGSGeomagDockerFlow:
+    TOPIC = 'test-usgs-geomag'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, usgs_geomag_image):
+        _run_kafka_flow_test(
+            kafka, usgs_geomag_image, self.TOPIC,
+            reference_types=['Observatory'],
+            telemetry_types=['MagneticFieldReading'],
+# Ireland OPW waterlevel.ie (Irish water levels)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def ireland_opw_waterlevel_image():
+    return build_image('ireland-opw-waterlevel')
+
+
+class TestIrelandOPWWaterlevelDockerFlow:
+    TOPIC = 'test-ireland-opw-waterlevel'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, ireland_opw_waterlevel_image):
+        _run_kafka_flow_test(
+            kafka, ireland_opw_waterlevel_image, self.TOPIC,
+            reference_types=['Station'],
+# Nepal BIPAD Hydrology (Nepal river water levels)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def nepal_bipad_image():
+    return build_image('nepal-bipad-hydrology')
+
+class TestNepalBipadHydrologyDockerFlow:
+    TOPIC = 'test-nepal-bipad-hydrology'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nepal_bipad_image):
+        _run_kafka_flow_test(
+            kafka, nepal_bipad_image, self.TOPIC,
+            reference_types=['RiverStation'],
+            telemetry_types=['WaterLevelReading'],
+# ---------------------------------------------------------------------------
+# EURDEP Radiation (European ambient gamma dose rate)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def eurdep_radiation_image():
+    return build_image('eurdep-radiation')
+
+class TestEurdepRadiationDockerFlow:
+    TOPIC = 'test-eurdep-radiation'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, eurdep_radiation_image):
+        _run_kafka_flow_test(
+            kafka, eurdep_radiation_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['DoseRateReading'],
+# French Road Traffic (DATEX II – flow measurements & road events)
+# ---------------------------------------------------------------------------
+
+class TestFrenchRoadTrafficDockerFlow:
+    TOPIC = 'test-french-road-traffic'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, french_road_traffic_image):
+        _run_kafka_flow_test(
+            kafka, french_road_traffic_image, self.TOPIC,
+            telemetry_types=['TrafficFlowMeasurement', 'RoadEvent'],
+            min_messages=5,
+            timeout=420,
+# NDW Netherlands Road Traffic (telemetry only – speed, travel time, situations)
+# ---------------------------------------------------------------------------
+
+class TestNDLNetherlandsDockerFlow:
+    TOPIC = 'test-ndl-traffic'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, ndl_netherlands_image):
+        _run_kafka_flow_test(
+            kafka, ndl_netherlands_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['TrafficSpeed', 'TravelTime', 'TrafficSituation'],
+            extra_env={'SITUATIONS_TOPIC': self.TOPIC},
+            min_messages=5,
+            timeout=300,
+# Madrid Traffic (Informo real-time traffic sensors)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def madrid_traffic_image():
+    return build_image('madrid-traffic')
+
+class TestMadridTrafficDockerFlow:
+    TOPIC = 'test-madrid-traffic'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, madrid_traffic_image):
+        _run_kafka_flow_test(
+            kafka, madrid_traffic_image, self.TOPIC,
+            reference_types=['MeasurementPoint'],
+            telemetry_types=['TrafficReading'],
+# Paris Bicycle Counters (hourly bicycle counts)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def paris_bicycle_counters_image():
+    return build_image('paris-bicycle-counters')
+
+class TestParisBicycleCountersDockerFlow:
+    TOPIC = 'test-paris-bicycle-counters'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, paris_bicycle_counters_image):
+        _run_kafka_flow_test(
+            kafka, paris_bicycle_counters_image, self.TOPIC,
+            reference_types=['Counter'],
+            telemetry_types=['BicycleCount'],
+# EAWS ALBINA Avalanche Bulletins
+# ---------------------------------------------------------------------------
+
+class TestEAWSAlbinaDockerFlow:
+    TOPIC = 'test-eaws-albina'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, eaws_albina_image):
+        _run_kafka_flow_test(
+            kafka, eaws_albina_image, self.TOPIC,
+            telemetry_types=['AvalancheBulletin'],
+# SNOTEL (USDA NRCS SNOwpack TELemetry)
+# ---------------------------------------------------------------------------
+
+class TestSnotelDockerFlow:
+    TOPIC = 'test-snotel'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, snotel_image):
+        _run_kafka_flow_test(
+            kafka, snotel_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['SnowObservation'],
+# GeoSphere Austria TAWES (10-minute weather observations)
+# ---------------------------------------------------------------------------
+
+class TestGeoSphereAustriaDockerFlow:
+    TOPIC = 'test-geosphere-austria'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, geosphere_austria_image):
+        _run_kafka_flow_test(
+            kafka, geosphere_austria_image, self.TOPIC,
+            reference_types=['WeatherStation'],
+            telemetry_types=['WeatherObservation'],
+            required_types=['WeatherStation', 'WeatherObservation'],
+            extra_env={'POLLING_INTERVAL': '5', 'STATION_REFRESH_INTERVAL': '5'},
+# JMA Japan (Weather bulletins from Atom feeds)
+# ---------------------------------------------------------------------------
+
+class TestJMAJapanDockerFlow:
+    TOPIC = 'test-jma-japan'
+
+    def test_emits_weather_bulletins(self, kafka: KafkaFixture, jma_japan_image):
+        _run_kafka_flow_test(
+            kafka, jma_japan_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['WeatherBulletin'],
+# Wikimedia OSM Diffs (OpenStreetMap minutely diffs, telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestWikimediaOsmDiffsDockerFlow:
+    TOPIC = 'test-wikimedia-osm-diffs'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, wikimedia_osm_diffs_image):
+        _run_kafka_flow_test(
+            kafka, wikimedia_osm_diffs_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['MapChange'],
+            extra_env={'KAFKA_TOPIC': self.TOPIC},
+            min_messages=1,
+            timeout=180,
+# NIFC USA Wildfires (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestNIFCUSAWildfiresDockerFlow:
+    TOPIC = 'test-nifc-usa-wildfires'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, nifc_usa_wildfires_image):
+        _run_kafka_flow_test(
+            kafka, nifc_usa_wildfires_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['WildfireIncident'],
+            min_messages=1,
+# VATSIM (live aviation network positions)
+# ---------------------------------------------------------------------------
+
+class TestVatsimDockerFlow:
+    TOPIC = 'test-vatsim'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, vatsim_image):
+        _run_kafka_flow_test(
+            kafka, vatsim_image, self.TOPIC,
+            telemetry_types=['PilotPosition', 'ControllerPosition', 'NetworkStatus'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
+# INPE DETER Brazil (deforestation alerts)
+# ---------------------------------------------------------------------------
+
+class TestINPEDeterBrazilDockerFlow:
+    TOPIC = 'test-inpe-deter-brazil'
+
+    def test_emits_deforestation_alerts(self, kafka: KafkaFixture, inpe_deter_brazil_image):
+        _run_kafka_flow_test(
+            kafka, inpe_deter_brazil_image, self.TOPIC,
+            telemetry_types=['DeforestationAlert'],
+        )
+
