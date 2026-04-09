@@ -1,0 +1,627 @@
+{
+  "endpoints": {
+    "dk.energinet.energidataservice.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "energidataservice-dk",
+          "key": "{price_area}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/dk.energinet.energidataservice"
+      ]
+    }
+  },
+  "messagegroups": {
+    "dk.energinet.energidataservice": {
+      "messages": {
+        "dk.energinet.energidataservice.PowerSystemSnapshot": {
+          "name": "PowerSystemSnapshot",
+          "envelope": "CloudEvents/1.0",
+          "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet), including CO2 emission intensity, renewable generation (solar, onshore wind, offshore wind), conventional production bands, total cross-border exchange flows, per-interconnector exchange (DK1\u2013DE, DK1\u2013NL, DK1\u2013GB, DK1\u2013NO, DK1\u2013SE, DK1\u2013DK2, DK2\u2013DE, DK2\u2013SE, Bornholm\u2013SE), automatic and manual frequency restoration reserve activation (aFRR, mFRR) per price area, and grid imbalance per price area.",
+          "envelopemetadata": {
+            "type": {
+              "value": "dk.energinet.energidataservice.PowerSystemSnapshot"
+            },
+            "source": {
+              "value": "https://api.energidataservice.dk"
+            },
+            "subject": {
+              "value": "{price_area}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.PowerSystemSnapshot"
+        },
+        "dk.energinet.energidataservice.SpotPrice": {
+          "name": "SpotPrice",
+          "envelope": "CloudEvents/1.0",
+          "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area (DK1 \u2013 Western Denmark, DK2 \u2013 Eastern Denmark). Prices are published in both DKK and EUR.",
+          "envelopemetadata": {
+            "type": {
+              "value": "dk.energinet.energidataservice.SpotPrice"
+            },
+            "source": {
+              "value": "https://api.energidataservice.dk"
+            },
+            "subject": {
+              "value": "{price_area}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.SpotPrice"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "dk.energinet.energidataservice.jstruct": {
+      "schemas": {
+        "dk.energinet.energidataservice.PowerSystemSnapshot": {
+          "name": "PowerSystemSnapshot",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/dk/energinet/energidataservice/PowerSystemSnapshot",
+                "name": "PowerSystemSnapshot",
+                "$root": "#/definitions/dk/energinet/energidataservice/PowerSystemSnapshot",
+                "definitions": {
+                  "dk": {
+                    "energinet": {
+                      "energidataservice": {
+                        "PowerSystemSnapshot": {
+                          "name": "PowerSystemSnapshot",
+                          "type": "object",
+                          "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet). Published by the PowerSystemRightNow dataset at approximately 1-minute intervals.",
+                          "properties": {
+                            "minutes1_utc": {
+                              "type": "string",
+                              "description": "UTC timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1UTC' field."
+                            },
+                            "minutes1_dk": {
+                              "type": "string",
+                              "description": "Danish local-time timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1DK' field."
+                            },
+                            "price_area": {
+                              "type": "string",
+                              "description": "Price area code. Set to 'DK' for system-wide power system snapshots that cover the entire Danish grid (both DK1 and DK2)."
+                            },
+                            "co2_emission": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "CO2 emission intensity of electricity consumed in Denmark at the time of the snapshot, measured in grams of CO2 per kWh (g/kWh). Sourced from 'CO2Emission'.",
+                              "unit": "g/kWh"
+                            },
+                            "production_ge_100mw": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Total electricity production from centralized power plants with capacity >= 100 MW, in megawatts (MW). Sourced from 'ProductionGe100MW'.",
+                              "unit": "MW"
+                            },
+                            "production_lt_100mw": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Total electricity production from decentralized power plants with capacity < 100 MW, in megawatts (MW). Sourced from 'ProductionLt100MW'.",
+                              "unit": "MW"
+                            },
+                            "solar_power": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Estimated total solar photovoltaic power production in Denmark, in megawatts (MW). Sourced from 'SolarPower'.",
+                              "unit": "MW"
+                            },
+                            "offshore_wind_power": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Total offshore wind power production in Denmark, in megawatts (MW). Sourced from 'OffshoreWindPower'.",
+                              "unit": "MW"
+                            },
+                            "onshore_wind_power": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Total onshore wind power production in Denmark, in megawatts (MW). Sourced from 'OnshoreWindPower'.",
+                              "unit": "MW"
+                            },
+                            "exchange_sum": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Net total cross-border electricity exchange for all Danish interconnectors, in megawatts (MW). Positive values indicate net import; negative values indicate net export. Sourced from 'Exchange_Sum'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk1_de": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK1\u2013Germany interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_DE'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk1_nl": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK1\u2013Netherlands (COBRAcable) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NL'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk1_gb": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK1\u2013Great Britain (Viking Link) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_GB'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk1_no": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK1\u2013Norway (Skagerrak) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NO'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk1_se": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK1\u2013Sweden interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_SE'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk1_dk2": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK1\u2013DK2 (Great Belt) interconnector, in megawatts (MW). Positive = flow from DK1 to DK2, negative = flow from DK2 to DK1. Sourced from 'Exchange_DK1_DK2'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk2_de": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK2\u2013Germany (Kontek) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_DE'.",
+                              "unit": "MW"
+                            },
+                            "exchange_dk2_se": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the DK2\u2013Sweden (\u00d8resund) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_SE'.",
+                              "unit": "MW"
+                            },
+                            "exchange_bornholm_se": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Electricity exchange flow on the Bornholm\u2013Sweden interconnector, in megawatts (MW). Positive = import to Bornholm, negative = export from Bornholm. Sourced from 'Exchange_Bornholm_SE'.",
+                              "unit": "MW"
+                            },
+                            "afrr_activated_dk1": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Automatic Frequency Restoration Reserve (aFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK1'.",
+                              "unit": "MW"
+                            },
+                            "afrr_activated_dk2": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Automatic Frequency Restoration Reserve (aFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK2'.",
+                              "unit": "MW"
+                            },
+                            "mfrr_activated_dk1": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Manual Frequency Restoration Reserve (mFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK1'.",
+                              "unit": "MW"
+                            },
+                            "mfrr_activated_dk2": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Manual Frequency Restoration Reserve (mFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK2'.",
+                              "unit": "MW"
+                            },
+                            "imbalance_dk1": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Net power imbalance in price area DK1, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK1'.",
+                              "unit": "MW"
+                            },
+                            "imbalance_dk2": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Net power imbalance in price area DK2, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK2'.",
+                              "unit": "MW"
+                            }
+                          },
+                          "required": [
+                            "minutes1_utc",
+                            "minutes1_dk",
+                            "price_area"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "dk.energinet.energidataservice.SpotPrice": {
+          "name": "SpotPrice",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/dk/energinet/energidataservice/SpotPrice",
+                "name": "SpotPrice",
+                "$root": "#/definitions/dk/energinet/energidataservice/SpotPrice",
+                "definitions": {
+                  "dk": {
+                    "energinet": {
+                      "energidataservice": {
+                        "SpotPrice": {
+                          "name": "SpotPrice",
+                          "type": "object",
+                          "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area.",
+                          "properties": {
+                            "hour_utc": {
+                              "type": "string",
+                              "description": "UTC hour for which the spot price applies, in ISO 8601 format. Each price applies to the full 60-minute interval starting at this timestamp. Sourced from 'HourUTC'."
+                            },
+                            "hour_dk": {
+                              "type": "string",
+                              "description": "Danish local-time hour for which the spot price applies, in ISO 8601 format. Sourced from 'HourDK'."
+                            },
+                            "price_area": {
+                              "type": "string",
+                              "description": "Nord Pool bidding zone code. 'DK1' is Western Denmark (Jutland and Funen); 'DK2' is Eastern Denmark (Zealand, Lolland-Falster, and Bornholm). Sourced from 'PriceArea'."
+                            },
+                            "spot_price_dkk": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Day-ahead spot price in Danish Kroner per megawatt-hour (DKK/MWh). Sourced from 'SpotPriceDKK'.",
+                              "unit": "DKK/MWh"
+                            },
+                            "spot_price_eur": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Day-ahead spot price in Euros per megawatt-hour (EUR/MWh). Sourced from 'SpotPriceEUR'.",
+                              "unit": "EUR/MWh"
+                            }
+                          },
+                          "required": [
+                            "hour_utc",
+                            "hour_dk",
+                            "price_area"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dk.energinet.energidataservice.avro": {
+      "schemas": {
+        "dk.energinet.energidataservice.PowerSystemSnapshot": {
+          "name": "PowerSystemSnapshot",
+          "format": "Avro/1.11.3",
+          "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet).",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PowerSystemSnapshot",
+                "namespace": "dk.energinet.energidataservice",
+                "doc": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet). Published by the PowerSystemRightNow dataset at approximately 1-minute intervals.",
+                "fields": [
+                  {
+                    "name": "minutes1_utc",
+                    "type": "string",
+                    "doc": "UTC timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format."
+                  },
+                  {
+                    "name": "minutes1_dk",
+                    "type": "string",
+                    "doc": "Danish local-time timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format."
+                  },
+                  {
+                    "name": "price_area",
+                    "type": "string",
+                    "doc": "Price area code. Set to 'DK' for system-wide power system snapshots."
+                  },
+                  {
+                    "name": "co2_emission",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "CO2 emission intensity in g/kWh."
+                  },
+                  {
+                    "name": "production_ge_100mw",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Production from plants >= 100 MW in MW."
+                  },
+                  {
+                    "name": "production_lt_100mw",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Production from plants < 100 MW in MW."
+                  },
+                  {
+                    "name": "solar_power",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Solar PV production in MW."
+                  },
+                  {
+                    "name": "offshore_wind_power",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Offshore wind production in MW."
+                  },
+                  {
+                    "name": "onshore_wind_power",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Onshore wind production in MW."
+                  },
+                  {
+                    "name": "exchange_sum",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Net total cross-border exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk1_de",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK1-Germany exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk1_nl",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK1-Netherlands exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk1_gb",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK1-Great Britain exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk1_no",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK1-Norway exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk1_se",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK1-Sweden exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk1_dk2",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK1-DK2 (Great Belt) exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk2_de",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK2-Germany exchange in MW."
+                  },
+                  {
+                    "name": "exchange_dk2_se",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "DK2-Sweden exchange in MW."
+                  },
+                  {
+                    "name": "exchange_bornholm_se",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Bornholm-Sweden exchange in MW."
+                  },
+                  {
+                    "name": "afrr_activated_dk1",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "aFRR activated in DK1 in MW."
+                  },
+                  {
+                    "name": "afrr_activated_dk2",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "aFRR activated in DK2 in MW."
+                  },
+                  {
+                    "name": "mfrr_activated_dk1",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "mFRR activated in DK1 in MW."
+                  },
+                  {
+                    "name": "mfrr_activated_dk2",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "mFRR activated in DK2 in MW."
+                  },
+                  {
+                    "name": "imbalance_dk1",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Grid imbalance in DK1 in MW."
+                  },
+                  {
+                    "name": "imbalance_dk2",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Grid imbalance in DK2 in MW."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "dk.energinet.energidataservice.SpotPrice": {
+          "name": "SpotPrice",
+          "format": "Avro/1.11.3",
+          "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool).",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SpotPrice",
+                "namespace": "dk.energinet.energidataservice",
+                "doc": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area.",
+                "fields": [
+                  {
+                    "name": "hour_utc",
+                    "type": "string",
+                    "doc": "UTC hour for which the spot price applies, in ISO 8601 format."
+                  },
+                  {
+                    "name": "hour_dk",
+                    "type": "string",
+                    "doc": "Danish local-time hour, in ISO 8601 format."
+                  },
+                  {
+                    "name": "price_area",
+                    "type": "string",
+                    "doc": "Nord Pool bidding zone code (DK1 or DK2)."
+                  },
+                  {
+                    "name": "spot_price_dkk",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Day-ahead spot price in DKK/MWh."
+                  },
+                  {
+                    "name": "spot_price_eur",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Day-ahead spot price in EUR/MWh."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
