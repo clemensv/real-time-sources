@@ -1,74 +1,42 @@
-# Netherlands NDL EV Charging Bridge
+# NDW Netherlands Road Traffic Bridge
 
-This bridge downloads the OCPI v2.2 data published by the Dutch Nationale
-Databank Laadinfrastructuur (NDL) at `https://opendata.ndw.nu` and forwards
-charging-location metadata, EVSE status changes, and tariff data to Apache
-Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams as CloudEvents.
+This bridge downloads DATEX II XML data published by the Dutch NDW (Nationaal
+Dataportaal Wegverkeer) at `https://opendata.ndw.nu` and forwards traffic
+speed, travel time, and situation data to Apache Kafka, Azure Event Hubs,
+or Microsoft Fabric Event Streams as CloudEvents.
 
-The upstream files are gzip-compressed JSON snapshots updated every few minutes.
-The bridge polls these files, emits all location and tariff reference data on
-the first cycle, and then tracks EVSE status changes using a local state file
-so only deltas are produced on subsequent cycles.
+## Data Sources
 
-## Data Source
+| Feed | URL | Update | Content |
+|---|---|---|---|
+| Traffic Speed | `trafficspeed.xml.gz` | ~1 min | Per-segment speed and flow |
+| Travel Time | `traveltime.xml.gz` | ~1 min | Segment travel times |
+| Situations | `actueel_beeld.xml.gz` | ~15 min | Road works, closures, incidents |
 
-- Locations: `https://opendata.ndw.nu/charging_point_locations_ocpi.json.gz`
-- Tariffs: `https://opendata.ndw.nu/charging_point_tariffs_ocpi.json.gz`
-- Format: gzip-compressed JSON (OCPI v2.2)
-- Authentication: none
-- Typical volume: ~87,000 locations, ~219,000 EVSEs, ~115,000 tariffs
+All files are gzip-compressed DATEX II XML (v2 for speed/travel time, v3 for
+situations). No authentication is required.
 
-## Events
+## Event Types
 
-See [EVENTS.md](EVENTS.md) for the CloudEvents contract.
+- **TrafficSpeed** — aggregated speed/flow per measurement site
+- **TravelTime** — actual and reference travel time per segment
+- **TrafficSituation** — road works, lane closures, diversions
 
-## Usage
+See [EVENTS.md](EVENTS.md) for the full schema documentation and
+[CONTAINER.md](CONTAINER.md) for deployment instructions.
 
-Start the bridge and publish events to Kafka:
+## Quick Start
 
 ```bash
-python -m ndl_netherlands \
-  --bootstrap-servers "localhost:9092" \
-  --poll-interval 300
+pip install -e .
+CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ndl-traffic" \
+  KAFKA_ENABLE_TLS=false \
+  python -m ndl_netherlands
 ```
 
-Or use an Event Hubs or Fabric Event Streams connection string:
+## Running Tests
 
 ```bash
-python -m ndl_netherlands --connection-string "<connection-string>"
-```
-
-Run a single poll cycle and exit:
-
-```bash
-python -m ndl_netherlands --connection-string "<connection-string>" --once
-```
-
-## Environment Variables
-
-The bridge accepts these environment variables when the corresponding command
-line options are not supplied:
-
-| Variable | Description | Default |
-|---|---|---|
-| `NDL_CONNECTION_STRING` | Event Hubs / Fabric connection string | none |
-| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers | none |
-| `KAFKA_SASL_USERNAME` | SASL/PLAIN username | none |
-| `KAFKA_SASL_PASSWORD` | SASL/PLAIN password | none |
-| `NDL_CHARGING_TOPIC` | Kafka topic for locations and EVSE events | `ndl-charging` |
-| `NDL_TARIFFS_TOPIC` | Kafka topic for tariff events | `ndl-charging-tariffs` |
-| `NDL_STATE_FILE` | State file for change detection | `~/.ndl_netherlands_state.json` |
-| `NDL_POLL_INTERVAL` | Poll interval in seconds | `300` |
-| `LOG_LEVEL` | Logging level | `INFO` |
-
-## Testing
-
-```bash
-pytest tests/test_ndl_netherlands.py
-```
-
-The repo-wide Docker Kafka flow test can also be run from the workspace root:
-
-```bash
-pytest tests/docker_e2e/test_docker_kafka_flow.py -v -k NdlNetherlands
+pip install pytest
+python -m pytest tests/ -v
 ```

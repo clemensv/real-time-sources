@@ -1,791 +1,584 @@
-"""Unit tests for NDL Netherlands bridge normalization and diffing logic."""
+"""Unit and integration tests for NDW Netherlands Road Traffic bridge."""
 
 from __future__ import annotations
 
+import gzip
 import json
-import pytest
+import os
+import textwrap
 from datetime import datetime, timezone
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 from ndl_netherlands.ndl_netherlands import (
-    normalize_location,
-    normalize_evse,
-    normalize_connector,
-    normalize_tariff,
+    parse_traffic_speed_xml,
+    parse_travel_time_xml,
+    parse_situation_xml,
     parse_connection_string,
-    NdlPoller,
-    _parse_optional_float,
-    _parse_optional_bool,
-    _safe_string,
-    _safe_string_list,
-    _to_datetime,
+    _build_kafka_config,
+    download_gzip_xml,
+    StateManager,
+    NdwPoller,
+    BASE_URL,
+    SPEED_FILE,
+    TRAVELTIME_FILE,
+    SITUATION_FILE,
+    DATEX2_NS,
+    D3_SIT,
+    D3_COM,
 )
+from ndl_netherlands_producer_data import TrafficSpeed, TravelTime, TrafficSituation
 
 
-# ── Helper fixtures ──────────────────────────────────────────────────────────
+# ---------------------------------------------------------------------------
+# Helpers – minimal DATEX II v2 speed XML
+# ---------------------------------------------------------------------------
 
-def _make_raw_connector(**overrides):
-    base = {
-        "id": "1",
-        "standard": "IEC_62196_T2",
-        "format": "SOCKET",
-        "power_type": "AC_3_PHASE",
-        "max_voltage": 230,
-        "max_amperage": 32,
-    }
-    base.update(overrides)
-    return base
+def _speed_xml(site_id="SITE01", mtime="2024-06-01T12:00:00Z",
+               speeds=None, flows=None):
+    """Build a minimal DATEX II v2 speed XML."""
+    if speeds is None:
+        speeds = [80]
+    if flows is None:
+        flows = [120]
+    mvs = ""
+    idx = 1
+    for f in flows:
+        mvs += f"""
+        <siteMeasurements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        """  # we build inline
+        break  # handled below
 
+    flow_mvs = ""
+    for i, f in enumerate(flows, 1):
+        flow_mvs += textwrap.dedent(f"""\
+            <measuredValue index="{i}">
+              <measuredValue>
+                <basicData xsi:type="TrafficFlow">
+                  <vehicleFlow><vehicleFlowRate>{f}</vehicleFlowRate></vehicleFlow>
+                </basicData>
+              </measuredValue>
+            </measuredValue>
+        """)
+    speed_mvs = ""
+    for i, s in enumerate(speeds, len(flows) + 1):
+        speed_mvs += textwrap.dedent(f"""\
+            <measuredValue index="{i}">
+              <measuredValue>
+                <basicData xsi:type="TrafficSpeed">
+                  <averageVehicleSpeed numberOfInputValuesUsed="1"><speed>{s}</speed></averageVehicleSpeed>
+                </basicData>
+              </measuredValue>
+            </measuredValue>
+        """)
 
-def _make_raw_evse(**overrides):
-    base = {
-        "uid": "EVSE001",
-        "evse_id": "NL*ABC*E001",
-        "status": "AVAILABLE",
-        "connectors": [_make_raw_connector()],
-        "last_updated": "2024-01-15T10:30:00Z",
-    }
-    base.update(overrides)
-    return base
-
-
-def _make_raw_location(**overrides):
-    base = {
-        "id": "LOC001",
-        "country_code": "NL",
-        "party_id": "ABC",
-        "publish": True,
-        "name": "Test Station",
-        "address": "Keizersgracht 100",
-        "city": "Amsterdam",
-        "postal_code": "1015AA",
-        "country": "NLD",
-        "coordinates": {"latitude": "52.370216", "longitude": "4.895168"},
-        "time_zone": "Europe/Amsterdam",
-        "evses": [_make_raw_evse()],
-        "last_updated": "2024-01-15T10:30:00Z",
-    }
-    base.update(overrides)
-    return base
-
-
-def _make_raw_tariff(**overrides):
-    base = {
-        "id": "TAR001",
-        "country_code": "NL",
-        "party_id": "ABC",
-        "currency": "EUR",
-        "elements": [
-            {
-                "price_components": [
-                    {"type": "ENERGY", "price": 0.25, "step_size": 1}
-                ]
-            }
-        ],
-        "last_updated": "2024-01-15T10:30:00Z",
-    }
-    base.update(overrides)
-    return base
+    return textwrap.dedent(f"""\
+        <?xml version="1.0" encoding="UTF-8"?>
+        <SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP:Body>
+        <d2LogicalModel xmlns="http://datex2.eu/schema/2/2_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <payloadPublication xsi:type="MeasuredDataPublication" lang="nl">
+          <siteMeasurements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <measurementSiteReference id="{site_id}" version="1" targetClass="MeasurementSiteRecord"/>
+            <measurementTimeDefault>{mtime}</measurementTimeDefault>
+            {flow_mvs}
+            {speed_mvs}
+          </siteMeasurements>
+        </payloadPublication>
+        </d2LogicalModel>
+        </SOAP:Body>
+        </SOAP:Envelope>
+    """).strip().encode("utf-8")
 
 
-# ── Utility function tests ───────────────────────────────────────────────────
+def _traveltime_xml(site_id="TT_SITE01", mtime="2024-06-01T12:00:00Z",
+                     duration=26.2, ref_duration=21.4, accuracy=100.0,
+                     data_quality=41.3, n_input=13, data_error=False):
+    """Build a minimal DATEX II v2 travel time XML."""
+    dur_val = -1.0 if data_error else duration
+    ref_val = -1.0 if data_error else ref_duration
+    error_tag = "<dataError>true</dataError>" if data_error else ""
+    ref_error_tag = "<dataError>true</dataError>" if data_error else ""
 
-class TestParseOptionalFloat:
-    @pytest.mark.unit
-    def test_none_returns_none(self):
-        assert _parse_optional_float(None) is None
-
-    @pytest.mark.unit
-    def test_empty_string_returns_none(self):
-        assert _parse_optional_float("") is None
-
-    @pytest.mark.unit
-    def test_valid_float(self):
-        assert _parse_optional_float("52.37") == 52.37
-
-    @pytest.mark.unit
-    def test_comma_decimal(self):
-        assert _parse_optional_float("52,37") == 52.37
-
-    @pytest.mark.unit
-    def test_integer_value(self):
-        assert _parse_optional_float(230) == 230.0
-
-    @pytest.mark.unit
-    def test_undefined_returns_none(self):
-        assert _parse_optional_float("undefined") is None
-
-    @pytest.mark.unit
-    def test_invalid_string_returns_none(self):
-        assert _parse_optional_float("not-a-number") is None
-
-
-class TestParseOptionalBool:
-    @pytest.mark.unit
-    def test_none_returns_none(self):
-        assert _parse_optional_bool(None) is None
-
-    @pytest.mark.unit
-    def test_true_bool(self):
-        assert _parse_optional_bool(True) is True
-
-    @pytest.mark.unit
-    def test_false_bool(self):
-        assert _parse_optional_bool(False) is False
-
-    @pytest.mark.unit
-    def test_true_string(self):
-        assert _parse_optional_bool("true") is True
-
-    @pytest.mark.unit
-    def test_false_string(self):
-        assert _parse_optional_bool("false") is False
-
-    @pytest.mark.unit
-    def test_yes_string(self):
-        assert _parse_optional_bool("yes") is True
+    return textwrap.dedent(f"""\
+        <?xml version="1.0" encoding="UTF-8"?>
+        <SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP:Body>
+        <d2LogicalModel xmlns="http://datex2.eu/schema/2/2_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <payloadPublication xsi:type="MeasuredDataPublication" lang="nl">
+          <siteMeasurements xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <measurementSiteReference targetClass="MeasurementSiteRecord" id="{site_id}" version="1"/>
+            <measurementTimeDefault>{mtime}</measurementTimeDefault>
+            <measuredValue index="1">
+              <measuredValue>
+                <basicData xsi:type="TravelTimeData">
+                  <travelTimeType>reconstituted</travelTimeType>
+                  <travelTime accuracy="{accuracy}" numberOfInputValuesUsed="{n_input}" supplierCalculatedDataQuality="{data_quality}">
+                    {error_tag}
+                    <duration>{dur_val}</duration>
+                  </travelTime>
+                </basicData>
+                <measuredValueExtension>
+                  <measuredValueExtended>
+                    <basicDataReferenceValue>
+                      <referenceValueType>staticReferenceValue</referenceValueType>
+                      <travelTimeData>
+                        <travelTime accuracy="{accuracy}" numberOfInputValuesUsed="{n_input}" supplierCalculatedDataQuality="{data_quality}">
+                          {ref_error_tag}
+                          <duration>{ref_val}</duration>
+                        </travelTime>
+                      </travelTimeData>
+                    </basicDataReferenceValue>
+                  </measuredValueExtended>
+                </measuredValueExtension>
+              </measuredValue>
+            </measuredValue>
+          </siteMeasurements>
+        </payloadPublication>
+        </d2LogicalModel>
+        </SOAP:Body>
+        </SOAP:Envelope>
+    """).strip().encode("utf-8")
 
 
-class TestSafeString:
-    @pytest.mark.unit
-    def test_none_returns_none(self):
-        assert _safe_string(None) is None
-
-    @pytest.mark.unit
-    def test_empty_returns_none(self):
-        assert _safe_string("") is None
-
-    @pytest.mark.unit
-    def test_whitespace_returns_none(self):
-        assert _safe_string("   ") is None
-
-    @pytest.mark.unit
-    def test_valid_string(self):
-        assert _safe_string("hello") == "hello"
-
-    @pytest.mark.unit
-    def test_strips_whitespace(self):
-        assert _safe_string("  hello  ") == "hello"
-
-
-class TestSafeStringList:
-    @pytest.mark.unit
-    def test_non_list_returns_none(self):
-        assert _safe_string_list("not a list") is None
-
-    @pytest.mark.unit
-    def test_empty_list_returns_none(self):
-        assert _safe_string_list([]) is None
-
-    @pytest.mark.unit
-    def test_valid_list(self):
-        assert _safe_string_list(["a", "b"]) == ["a", "b"]
-
-    @pytest.mark.unit
-    def test_filters_nones(self):
-        assert _safe_string_list(["a", None, "b"]) == ["a", "b"]
+def _situation_xml(sit_id="RWS01_SM001", version_time="2024-06-01T10:00:00Z",
+                    severity="medium", record_type="RoadOrCarriagewayOrLaneManagement",
+                    cause="roadMaintenance", info_status="real",
+                    start_time="2024-06-01T08:00:00Z",
+                    end_time="2024-07-01T10:00:00Z"):
+    """Build a minimal DATEX II v3 situation XML."""
+    cause_block = ""
+    if cause:
+        cause_block = f"<sit:cause><sit:causeType>{cause}</sit:causeType></sit:cause>"
+    return textwrap.dedent(f"""\
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <mc:messageContainer xmlns:sit="http://datex2.eu/schema/3/situation"
+            xmlns:mc="http://datex2.eu/schema/3/messageContainer"
+            xmlns:com="http://datex2.eu/schema/3/common"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <mc:payload xsi:type="sit:SituationPublication" lang="nl">
+            <sit:situation id="{sit_id}">
+              <sit:overallSeverity>{severity}</sit:overallSeverity>
+              <sit:situationVersionTime>{version_time}</sit:situationVersionTime>
+              <sit:headerInformation>
+                <com:informationStatus>{info_status}</com:informationStatus>
+              </sit:headerInformation>
+              <sit:situationRecord xsi:type="sit:{record_type}" id="REC001" version="1">
+                {cause_block}
+                <sit:validity>
+                  <com:validityTimeSpecification>
+                    <com:overallStartTime>{start_time}</com:overallStartTime>
+                    <com:overallEndTime>{end_time}</com:overallEndTime>
+                  </com:validityTimeSpecification>
+                </sit:validity>
+              </sit:situationRecord>
+            </sit:situation>
+          </mc:payload>
+        </mc:messageContainer>
+    """).strip().encode("utf-8")
 
 
-class TestToDatetime:
-    @pytest.mark.unit
-    def test_iso_string(self):
-        result = _to_datetime("2024-01-15T10:30:00Z")
-        assert isinstance(result, datetime)
-        assert result.year == 2024
-        assert result.month == 1
+# ═══════════════════════════════════════════════════════════════════════════
+# 1. parse_traffic_speed_xml
+# ═══════════════════════════════════════════════════════════════════════════
 
-    @pytest.mark.unit
-    def test_datetime_passthrough(self):
-        dt = datetime(2024, 1, 15, tzinfo=timezone.utc)
-        assert _to_datetime(dt) is dt
+@pytest.mark.unit
+class TestParseTrafficSpeedXml:
 
-    @pytest.mark.unit
-    def test_none_returns_now(self):
-        result = _to_datetime(None)
-        assert isinstance(result, datetime)
+    def test_basic_parsing(self):
+        records = parse_traffic_speed_xml(_speed_xml(speeds=[80], flows=[120]))
+        assert len(records) == 1
+        r = records[0]
+        assert r["site_id"] == "SITE01"
+        assert r["measurement_time"] == "2024-06-01T12:00:00Z"
+        assert r["average_speed"] == 80.0
+        assert r["vehicle_flow_rate"] == 120
+        assert r["number_of_lanes_with_data"] == 1
+
+    def test_multiple_lanes(self):
+        records = parse_traffic_speed_xml(_speed_xml(speeds=[80, 90, 70], flows=[100, 200, 150]))
+        r = records[0]
+        assert r["average_speed"] == 80.0  # (80+90+70)/3
+        assert r["vehicle_flow_rate"] == 450  # 100+200+150
+        assert r["number_of_lanes_with_data"] == 3
+
+    def test_negative_speed_excluded(self):
+        records = parse_traffic_speed_xml(_speed_xml(speeds=[-1, 80, -1], flows=[0, 120, 0]))
+        r = records[0]
+        assert r["average_speed"] == 80.0
+        assert r["vehicle_flow_rate"] == 120
+        assert r["number_of_lanes_with_data"] == 3  # 3 flows parsed
+
+    def test_all_negative_speeds(self):
+        records = parse_traffic_speed_xml(_speed_xml(speeds=[-1, -1], flows=[0, 0]))
+        r = records[0]
+        assert r["average_speed"] is None
+        assert r["vehicle_flow_rate"] == 0
+        assert r["number_of_lanes_with_data"] == 2
+
+    def test_no_flows(self):
+        records = parse_traffic_speed_xml(_speed_xml(speeds=[60], flows=[]))
+        r = records[0]
+        assert r["average_speed"] == 60.0
+        assert r["vehicle_flow_rate"] is None
+        assert r["number_of_lanes_with_data"] == 1
+
+    def test_empty_xml(self):
+        xml = b"""<?xml version="1.0"?>
+        <SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP:Body>
+        <d2LogicalModel xmlns="http://datex2.eu/schema/2/2_0">
+        <payloadPublication/>
+        </d2LogicalModel>
+        </SOAP:Body></SOAP:Envelope>"""
+        assert parse_traffic_speed_xml(xml) == []
+
+    def test_site_id_preserved(self):
+        records = parse_traffic_speed_xml(_speed_xml(site_id="PZH01_MST_0029-00"))
+        assert records[0]["site_id"] == "PZH01_MST_0029-00"
+
+    def test_measurement_time_preserved(self):
+        records = parse_traffic_speed_xml(_speed_xml(mtime="2026-04-08T23:16:00Z"))
+        assert records[0]["measurement_time"] == "2026-04-08T23:16:00Z"
 
 
-# ── Connector normalization ──────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════════════════
+# 2. parse_travel_time_xml
+# ═══════════════════════════════════════════════════════════════════════════
 
-class TestNormalizeConnector:
-    @pytest.mark.unit
-    def test_basic_connector(self):
-        raw = _make_raw_connector()
-        result = normalize_connector(raw)
-        assert result["connector_id"] == "1"
-        assert result["standard"] == "IEC_62196_T2"
-        assert result["format"] == "SOCKET"
-        assert result["power_type"] == "AC_3_PHASE"
-        assert result["max_voltage"] == 230
-        assert result["max_amperage"] == 32
-        assert result["max_electric_power"] is None
-        assert result["tariff_ids"] is None
+@pytest.mark.unit
+class TestParseTravelTimeXml:
 
-    @pytest.mark.unit
-    def test_connector_with_max_power(self):
-        raw = _make_raw_connector(max_electric_power=150000)
-        result = normalize_connector(raw)
-        assert result["max_electric_power"] == 150000
+    def test_basic_parsing(self):
+        records = parse_travel_time_xml(_traveltime_xml())
+        assert len(records) == 1
+        r = records[0]
+        assert r["site_id"] == "TT_SITE01"
+        assert r["measurement_time"] == "2024-06-01T12:00:00Z"
+        assert r["duration"] == 26.2
+        assert r["reference_duration"] == 21.4
+        assert r["accuracy"] == 100.0
+        assert r["data_quality"] == 41.3
+        assert r["number_of_input_values"] == 13
 
-    @pytest.mark.unit
-    def test_connector_with_tariff_ids(self):
-        raw = _make_raw_connector(tariff_ids=["TAR001", "TAR002"])
-        result = normalize_connector(raw)
-        assert result["tariff_ids"] == ["TAR001", "TAR002"]
+    def test_data_error_sets_null(self):
+        records = parse_travel_time_xml(_traveltime_xml(data_error=True))
+        r = records[0]
+        assert r["duration"] is None
+        assert r["reference_duration"] is None
 
-    @pytest.mark.unit
-    def test_dc_connector(self):
-        raw = _make_raw_connector(
-            standard="IEC_62196_T2_COMBO",
-            format="CABLE",
-            power_type="DC",
-            max_voltage=920,
-            max_amperage=400,
-            max_electric_power=350000,
+    def test_site_id_with_special_chars(self):
+        records = parse_travel_time_xml(_traveltime_xml(site_id="PNB05_BRE_Keizerstraat_N01"))
+        assert records[0]["site_id"] == "PNB05_BRE_Keizerstraat_N01"
+
+    def test_empty_xml(self):
+        xml = b"""<?xml version="1.0"?>
+        <SOAP:Envelope xmlns:SOAP="http://schemas.xmlsoap.org/soap/envelope/">
+        <SOAP:Body>
+        <d2LogicalModel xmlns="http://datex2.eu/schema/2/2_0">
+        <payloadPublication/>
+        </d2LogicalModel>
+        </SOAP:Body></SOAP:Envelope>"""
+        assert parse_travel_time_xml(xml) == []
+
+    def test_zero_duration_valid(self):
+        records = parse_travel_time_xml(_traveltime_xml(duration=0.0))
+        assert records[0]["duration"] == 0.0
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 3. parse_situation_xml
+# ═══════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.unit
+class TestParseSituationXml:
+
+    def test_basic_parsing(self):
+        records = parse_situation_xml(_situation_xml())
+        assert len(records) == 1
+        r = records[0]
+        assert r["situation_id"] == "RWS01_SM001"
+        assert r["version_time"] == "2024-06-01T10:00:00Z"
+        assert r["severity"] == "medium"
+        assert r["record_type"] == "RoadOrCarriagewayOrLaneManagement"
+        assert r["cause_type"] == "roadMaintenance"
+        assert r["start_time"] == "2024-06-01T08:00:00Z"
+        assert r["end_time"] == "2024-07-01T10:00:00Z"
+        assert r["information_status"] == "real"
+
+    def test_no_cause(self):
+        records = parse_situation_xml(_situation_xml(cause=None))
+        assert records[0]["cause_type"] is None
+
+    def test_high_severity(self):
+        records = parse_situation_xml(_situation_xml(severity="high"))
+        assert records[0]["severity"] == "high"
+
+    def test_test_information_status(self):
+        records = parse_situation_xml(_situation_xml(info_status="test"))
+        assert records[0]["information_status"] == "test"
+
+    def test_empty_xml(self):
+        xml = b"""<?xml version="1.0"?>
+        <mc:messageContainer xmlns:mc="http://datex2.eu/schema/3/messageContainer"
+            xmlns:sit="http://datex2.eu/schema/3/situation">
+          <mc:payload/>
+        </mc:messageContainer>"""
+        assert parse_situation_xml(xml) == []
+
+    def test_multiple_situations(self):
+        xml = b"""<?xml version="1.0"?>
+        <mc:messageContainer xmlns:mc="http://datex2.eu/schema/3/messageContainer"
+            xmlns:sit="http://datex2.eu/schema/3/situation"
+            xmlns:com="http://datex2.eu/schema/3/common"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <mc:payload xsi:type="sit:SituationPublication" lang="nl">
+            <sit:situation id="SIT_A">
+              <sit:overallSeverity>low</sit:overallSeverity>
+              <sit:situationVersionTime>2024-01-01T00:00:00Z</sit:situationVersionTime>
+              <sit:headerInformation>
+                <com:informationStatus>real</com:informationStatus>
+              </sit:headerInformation>
+            </sit:situation>
+            <sit:situation id="SIT_B">
+              <sit:overallSeverity>high</sit:overallSeverity>
+              <sit:situationVersionTime>2024-01-02T00:00:00Z</sit:situationVersionTime>
+              <sit:headerInformation>
+                <com:informationStatus>real</com:informationStatus>
+              </sit:headerInformation>
+            </sit:situation>
+          </mc:payload>
+        </mc:messageContainer>"""
+        records = parse_situation_xml(xml)
+        assert len(records) == 2
+        assert records[0]["situation_id"] == "SIT_A"
+        assert records[1]["situation_id"] == "SIT_B"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 4. Data class construction
+# ═══════════════════════════════════════════════════════════════════════════
+
+@pytest.mark.unit
+class TestDataClasses:
+
+    def test_traffic_speed_roundtrip(self):
+        ts = TrafficSpeed(
+            site_id="S1", measurement_time="2024-01-01T00:00:00Z",
+            average_speed=80.5, vehicle_flow_rate=200, number_of_lanes_with_data=3,
         )
-        result = normalize_connector(raw)
-        assert result["standard"] == "IEC_62196_T2_COMBO"
-        assert result["format"] == "CABLE"
-        assert result["power_type"] == "DC"
-        assert result["max_electric_power"] == 350000
+        d = ts.to_serializer_dict()
+        assert d["site_id"] == "S1"
+        assert d["average_speed"] == 80.5
+        ts2 = TrafficSpeed.from_serializer_dict(d)
+        assert ts2.site_id == ts.site_id
 
-
-# ── EVSE normalization ───────────────────────────────────────────────────────
-
-class TestNormalizeEvse:
-    @pytest.mark.unit
-    def test_basic_evse(self):
-        raw = _make_raw_evse()
-        result = normalize_evse("LOC001", raw)
-        assert result is not None
-        assert result["location_id"] == "LOC001"
-        assert result["evse_uid"] == "EVSE001"
-        assert result["evse_id"] == "NL*ABC*E001"
-        assert result["status"] == "AVAILABLE"
-        assert len(result["connectors"]) == 1
-        assert result["last_updated"] == "2024-01-15T10:30:00Z"
-
-    @pytest.mark.unit
-    def test_missing_uid_returns_none(self):
-        raw = _make_raw_evse()
-        del raw["uid"]
-        assert normalize_evse("LOC001", raw) is None
-
-    @pytest.mark.unit
-    def test_no_connectors_returns_none(self):
-        raw = _make_raw_evse(connectors=[])
-        assert normalize_evse("LOC001", raw) is None
-
-    @pytest.mark.unit
-    def test_evse_with_coordinates(self):
-        raw = _make_raw_evse(coordinates={"latitude": "52.1", "longitude": "4.9"})
-        result = normalize_evse("LOC001", raw)
-        assert result["latitude"] == 52.1
-        assert result["longitude"] == 4.9
-
-    @pytest.mark.unit
-    def test_evse_without_coordinates(self):
-        raw = _make_raw_evse()
-        result = normalize_evse("LOC001", raw)
-        assert result["latitude"] is None
-        assert result["longitude"] is None
-
-    @pytest.mark.unit
-    def test_evse_with_capabilities(self):
-        raw = _make_raw_evse(capabilities=["RFID_READER", "REMOTE_START_STOP_CAPABLE"])
-        result = normalize_evse("LOC001", raw)
-        assert result["capabilities"] == ["RFID_READER", "REMOTE_START_STOP_CAPABLE"]
-
-    @pytest.mark.unit
-    def test_evse_removed_status(self):
-        raw = _make_raw_evse(status="REMOVED", evse_id=None)
-        result = normalize_evse("LOC001", raw)
-        assert result["status"] == "REMOVED"
-        assert result["evse_id"] is None
-
-    @pytest.mark.unit
-    def test_evse_all_statuses(self):
-        for status in ("AVAILABLE", "BLOCKED", "CHARGING", "INOPERATIVE",
-                       "OUTOFORDER", "PLANNED", "REMOVED", "RESERVED", "UNKNOWN"):
-            raw = _make_raw_evse(status=status)
-            result = normalize_evse("LOC001", raw)
-            assert result["status"] == status
-
-    @pytest.mark.unit
-    def test_evse_multiple_connectors(self):
-        raw = _make_raw_evse(connectors=[
-            _make_raw_connector(id="1", standard="IEC_62196_T2"),
-            _make_raw_connector(id="2", standard="IEC_62196_T2_COMBO"),
-        ])
-        result = normalize_evse("LOC001", raw)
-        assert len(result["connectors"]) == 2
-        assert result["connectors"][0]["standard"] == "IEC_62196_T2"
-        assert result["connectors"][1]["standard"] == "IEC_62196_T2_COMBO"
-
-
-# ── Location normalization ───────────────────────────────────────────────────
-
-class TestNormalizeLocation:
-    @pytest.mark.unit
-    def test_basic_location(self):
-        raw = _make_raw_location()
-        result = normalize_location(raw)
-        assert result is not None
-        assert result["location_id"] == "LOC001"
-        assert result["country_code"] == "NL"
-        assert result["party_id"] == "ABC"
-        assert result["publish"] is True
-        assert result["name"] == "Test Station"
-        assert result["address"] == "Keizersgracht 100"
-        assert result["city"] == "Amsterdam"
-        assert result["postal_code"] == "1015AA"
-        assert result["country"] == "NLD"
-        assert result["latitude"] == pytest.approx(52.370216)
-        assert result["longitude"] == pytest.approx(4.895168)
-        assert result["time_zone"] == "Europe/Amsterdam"
-        assert result["evse_count"] == 1
-        assert result["connector_count"] == 1
-
-    @pytest.mark.unit
-    def test_missing_id_returns_none(self):
-        raw = _make_raw_location()
-        del raw["id"]
-        assert normalize_location(raw) is None
-
-    @pytest.mark.unit
-    def test_missing_coordinates_returns_none(self):
-        raw = _make_raw_location(coordinates={})
-        assert normalize_location(raw) is None
-
-    @pytest.mark.unit
-    def test_location_with_operator(self):
-        raw = _make_raw_location(operator={"name": "Allego", "website": "https://allego.eu"})
-        result = normalize_location(raw)
-        assert result["operator_name"] == "Allego"
-        assert result["operator_website"] == "https://allego.eu"
-
-    @pytest.mark.unit
-    def test_location_with_parking_type(self):
-        raw = _make_raw_location(parking_type="ON_STREET")
-        result = normalize_location(raw)
-        assert result["parking_type"] == "ON_STREET"
-
-    @pytest.mark.unit
-    def test_location_with_facilities(self):
-        raw = _make_raw_location(facilities=["SUPERMARKET", "WIFI"])
-        result = normalize_location(raw)
-        assert result["facilities"] == ["SUPERMARKET", "WIFI"]
-
-    @pytest.mark.unit
-    def test_location_with_energy_mix(self):
-        raw = _make_raw_location(energy_mix={"is_green_energy": True, "supplier_name": "GreenChoice"})
-        result = normalize_location(raw)
-        assert result["energy_mix_is_green_energy"] is True
-        assert result["energy_mix_supplier_name"] == "GreenChoice"
-
-    @pytest.mark.unit
-    def test_location_with_opening_times(self):
-        raw = _make_raw_location(opening_times={"twentyfourseven": True})
-        result = normalize_location(raw)
-        assert result["opening_times_twentyfourseven"] is True
-
-    @pytest.mark.unit
-    def test_location_evse_count(self):
-        raw = _make_raw_location(evses=[
-            _make_raw_evse(uid="E1"),
-            _make_raw_evse(uid="E2", connectors=[_make_raw_connector(id="1"), _make_raw_connector(id="2")]),
-        ])
-        result = normalize_location(raw)
-        assert result["evse_count"] == 2
-        assert result["connector_count"] == 3
-
-    @pytest.mark.unit
-    def test_location_no_evses(self):
-        raw = _make_raw_location(evses=[])
-        result = normalize_location(raw)
-        assert result["evse_count"] == 0
-        assert result["connector_count"] == 0
-
-    @pytest.mark.unit
-    def test_location_null_optional_fields(self):
-        raw = _make_raw_location()
-        raw["name"] = None
-        raw["postal_code"] = None
-        raw["state"] = None
-        result = normalize_location(raw)
-        assert result["name"] is None
-        assert result["postal_code"] is None
-        assert result["state"] is None
-
-
-# ── Tariff normalization ─────────────────────────────────────────────────────
-
-class TestNormalizeTariff:
-    @pytest.mark.unit
-    def test_basic_tariff(self):
-        raw = _make_raw_tariff()
-        result = normalize_tariff(raw)
-        assert result is not None
-        assert result["tariff_id"] == "TAR001"
-        assert result["country_code"] == "NL"
-        assert result["party_id"] == "ABC"
-        assert result["currency"] == "EUR"
-        assert len(result["elements"]) == 1
-        assert result["elements"][0]["price_components"][0]["type"] == "ENERGY"
-        assert result["elements"][0]["price_components"][0]["price"] == 0.25
-
-    @pytest.mark.unit
-    def test_missing_id_returns_none(self):
-        raw = _make_raw_tariff()
-        del raw["id"]
-        assert normalize_tariff(raw) is None
-
-    @pytest.mark.unit
-    def test_no_elements_returns_none(self):
-        raw = _make_raw_tariff(elements=[])
-        assert normalize_tariff(raw) is None
-
-    @pytest.mark.unit
-    def test_tariff_with_vat(self):
-        raw = _make_raw_tariff(elements=[
-            {"price_components": [{"type": "ENERGY", "price": 0.25, "vat": 21.0, "step_size": 1}]}
-        ])
-        result = normalize_tariff(raw)
-        assert result["elements"][0]["price_components"][0]["vat"] == 21.0
-
-    @pytest.mark.unit
-    def test_tariff_with_parking_time(self):
-        raw = _make_raw_tariff(elements=[
-            {"price_components": [
-                {"type": "ENERGY", "price": 0.25, "step_size": 1},
-                {"type": "PARKING_TIME", "price": 2.0, "step_size": 900},
-            ]}
-        ])
-        result = normalize_tariff(raw)
-        pcs = result["elements"][0]["price_components"]
-        assert len(pcs) == 2
-        assert pcs[1]["type"] == "PARKING_TIME"
-        assert pcs[1]["step_size"] == 900
-
-    @pytest.mark.unit
-    def test_tariff_with_restrictions(self):
-        raw = _make_raw_tariff(elements=[
-            {
-                "price_components": [{"type": "ENERGY", "price": 0.25, "step_size": 1}],
-                "restrictions": {
-                    "day_of_week": ["MONDAY", "TUESDAY"],
-                    "start_time": "08:00",
-                    "end_time": "20:00",
-                    "max_power": 22.0,
-                },
-            }
-        ])
-        result = normalize_tariff(raw)
-        r = result["elements"][0]["restrictions"]
-        assert r is not None
-        assert r["day_of_week"] == ["MONDAY", "TUESDAY"]
-        assert r["start_time"] == "08:00"
-        assert r["end_time"] == "20:00"
-        assert r["max_power"] == 22.0
-
-    @pytest.mark.unit
-    def test_tariff_with_alt_text(self):
-        raw = _make_raw_tariff(tariff_alt_text=[{"language": "nl", "text": "€0,25 per kWh"}])
-        result = normalize_tariff(raw)
-        assert result["tariff_alt_text"] == "€0,25 per kWh"
-
-    @pytest.mark.unit
-    def test_tariff_with_type(self):
-        raw = _make_raw_tariff(type="AD_HOC_PAYMENT")
-        result = normalize_tariff(raw)
-        assert result["tariff_type"] == "AD_HOC_PAYMENT"
-
-    @pytest.mark.unit
-    def test_tariff_with_price_limits(self):
-        raw = _make_raw_tariff(
-            min_price={"excl_vat": 1.0, "incl_vat": 1.21},
-            max_price={"excl_vat": 50.0, "incl_vat": 60.5},
+    def test_traffic_speed_null_speed(self):
+        ts = TrafficSpeed(
+            site_id="S2", measurement_time="2024-01-01T00:00:00Z",
+            average_speed=None, vehicle_flow_rate=None, number_of_lanes_with_data=0,
         )
-        result = normalize_tariff(raw)
-        assert result["min_price_excl_vat"] == 1.0
-        assert result["min_price_incl_vat"] == 1.21
-        assert result["max_price_excl_vat"] == 50.0
-        assert result["max_price_incl_vat"] == 60.5
+        d = ts.to_serializer_dict()
+        assert d["average_speed"] is None
+        assert d["vehicle_flow_rate"] is None
 
-    @pytest.mark.unit
-    def test_tariff_with_validity_period(self):
-        raw = _make_raw_tariff(
-            start_date_time="2024-01-01T00:00:00Z",
-            end_date_time="2024-12-31T23:59:59Z",
+    def test_travel_time_roundtrip(self):
+        tt = TravelTime(
+            site_id="TT1", measurement_time="2024-01-01T00:00:00Z",
+            duration=26.2, reference_duration=21.4, accuracy=100.0,
+            data_quality=41.3, number_of_input_values=13,
         )
-        result = normalize_tariff(raw)
-        assert result["start_date_time"] == "2024-01-01T00:00:00Z"
-        assert result["end_date_time"] == "2024-12-31T23:59:59Z"
+        d = tt.to_serializer_dict()
+        assert d["duration"] == 26.2
+        assert d["reference_duration"] == 21.4
+        tt2 = TravelTime.from_serializer_dict(d)
+        assert tt2.site_id == tt.site_id
 
-    @pytest.mark.unit
-    def test_tariff_all_dimension_types(self):
-        for dim in ("ENERGY", "FLAT", "PARKING_TIME", "TIME"):
-            raw = _make_raw_tariff(elements=[
-                {"price_components": [{"type": dim, "price": 1.0, "step_size": 1}]}
-            ])
-            result = normalize_tariff(raw)
-            assert result["elements"][0]["price_components"][0]["type"] == dim
+    def test_travel_time_null_fields(self):
+        tt = TravelTime(
+            site_id="TT2", measurement_time="2024-01-01T00:00:00Z",
+            duration=None, reference_duration=None,
+            accuracy=None, data_quality=None, number_of_input_values=None,
+        )
+        d = tt.to_serializer_dict()
+        assert d["duration"] is None
 
-    @pytest.mark.unit
-    def test_tariff_with_reservation_restriction(self):
-        raw = _make_raw_tariff(elements=[
-            {
-                "price_components": [{"type": "TIME", "price": 5.0, "step_size": 60}],
-                "restrictions": {"reservation": "RESERVATION"},
-            }
-        ])
-        result = normalize_tariff(raw)
-        assert result["elements"][0]["restrictions"]["reservation"] == "RESERVATION"
+    def test_traffic_situation_roundtrip(self):
+        sit = TrafficSituation(
+            situation_id="SIT1", version_time="2024-06-01T10:00:00Z",
+            severity="medium", record_type="RoadOrCarriagewayOrLaneManagement",
+            cause_type="roadMaintenance", start_time="2024-06-01T08:00:00Z",
+            end_time="2024-07-01T10:00:00Z", information_status="real",
+        )
+        d = sit.to_serializer_dict()
+        assert d["situation_id"] == "SIT1"
+        sit2 = TrafficSituation.from_serializer_dict(d)
+        assert sit2.situation_id == sit.situation_id
 
-    @pytest.mark.unit
-    def test_tariff_multiple_elements(self):
-        raw = _make_raw_tariff(elements=[
-            {"price_components": [{"type": "FLAT", "price": 0.5, "step_size": 1}]},
-            {"price_components": [{"type": "ENERGY", "price": 0.25, "step_size": 1}]},
-            {
-                "price_components": [{"type": "PARKING_TIME", "price": 2.0, "step_size": 900}],
-                "restrictions": {"start_time": "18:00", "end_time": "08:00"},
-            },
-        ])
-        result = normalize_tariff(raw)
-        assert len(result["elements"]) == 3
+    def test_traffic_situation_null_fields(self):
+        sit = TrafficSituation(
+            situation_id="SIT2", version_time="2024-06-01T10:00:00Z",
+            severity=None, record_type=None, cause_type=None,
+            start_time=None, end_time=None, information_status="real",
+        )
+        d = sit.to_serializer_dict()
+        assert d["severity"] is None
+        assert d["cause_type"] is None
+
+    def test_traffic_speed_json_roundtrip(self):
+        ts = TrafficSpeed(
+            site_id="S3", measurement_time="2024-01-01T00:00:00Z",
+            average_speed=60.0, vehicle_flow_rate=100, number_of_lanes_with_data=2,
+        )
+        json_bytes = ts.to_byte_array("application/json")
+        ts2 = TrafficSpeed.from_data(json_bytes, "application/json")
+        assert ts2.site_id == "S3"
+        assert ts2.average_speed == 60.0
 
 
-# ── Connection string parsing ────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════════════════
+# 5. Connection string parsing
+# ═══════════════════════════════════════════════════════════════════════════
 
-class TestParseConnectionString:
-    @pytest.mark.unit
-    def test_event_hub_connection_string(self):
-        cs = "Endpoint=sb://test.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=abc123;EntityPath=my-topic"
-        config = parse_connection_string(cs)
-        assert "bootstrap.servers" in config
-        assert config["bootstrap.servers"] == "test.servicebus.windows.net:9093"
-        assert config["sasl.username"] == "$ConnectionString"
-        assert config["security.protocol"] == "SASL_SSL"
-        assert config["kafka_topic"] == "my-topic"
+@pytest.mark.unit
+class TestConnectionString:
 
-    @pytest.mark.unit
-    def test_bootstrap_server_config(self):
-        cs = "BootstrapServer=localhost:9092"
-        config = parse_connection_string(cs)
+    def test_event_hubs_connection_string(self):
+        cs = "Endpoint=sb://myhub.servicebus.windows.net/;SharedAccessKeyName=key;SharedAccessKey=secret;EntityPath=topic1"
+        result = parse_connection_string(cs)
+        assert "myhub.servicebus.windows.net:9093" in result["bootstrap.servers"]
+        assert result["entity_path"] == "topic1"
+
+    def test_build_kafka_config_simple(self):
+        cs = "BootstrapServer=localhost:9092;EntityPath=test-topic"
+        config, topic = _build_kafka_config(cs, enable_tls=False)
         assert config["bootstrap.servers"] == "localhost:9092"
+        assert topic == "test-topic"
+
+    def test_build_kafka_config_tls_disabled(self):
+        cs = "BootstrapServer=broker:9092;EntityPath=t"
+        config, _ = _build_kafka_config(cs, enable_tls=False)
+        assert config.get("security.protocol") == "PLAINTEXT"
 
 
-# ── Poller state and diffing ─────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════════════════
+# 6. StateManager deduplication
+# ═══════════════════════════════════════════════════════════════════════════
 
-class TestPollerProcessLocations:
-    @pytest.mark.unit
-    def test_first_poll_emits_all(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_locations = [_make_raw_location()]
-        stats = poller.process_locations(raw_locations)
-        assert stats["locations"]["emitted"] == 1
-        assert stats["evse"]["appeared"] == 1
+@pytest.mark.unit
+class TestStateManager:
 
-    @pytest.mark.unit
-    def test_second_poll_no_change(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_locations = [_make_raw_location()]
-        poller.process_locations(raw_locations)
-        # Second poll: same data, no changes
-        poller._first_poll = False
-        stats = poller.process_locations(raw_locations)
-        assert stats["locations"]["emitted"] == 0
-        assert stats["evse"]["unchanged"] == 1
-        assert stats["evse"]["appeared"] == 0
-        assert stats["evse"]["updated"] == 0
+    def test_new_speed_detected(self, tmp_path):
+        sm = StateManager(str(tmp_path / "state.json"))
+        assert sm.is_new_speed("S1", "T1") is True
+        assert sm.is_new_speed("S1", "T1") is False
+        assert sm.is_new_speed("S1", "T2") is True
 
-    @pytest.mark.unit
-    def test_status_change_detected(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_locations = [_make_raw_location()]
-        poller.process_locations(raw_locations)
-        # Change EVSE status
-        poller._first_poll = False
-        raw_locations[0]["evses"][0]["status"] = "CHARGING"
-        stats = poller.process_locations(raw_locations)
-        assert stats["evse"]["updated"] == 1
+    def test_new_traveltime_detected(self, tmp_path):
+        sm = StateManager(str(tmp_path / "state.json"))
+        assert sm.is_new_traveltime("TT1", "T1") is True
+        assert sm.is_new_traveltime("TT1", "T1") is False
 
-    @pytest.mark.unit
-    def test_new_evse_appears(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_locations = [_make_raw_location()]
-        poller.process_locations(raw_locations)
-        # Add a new EVSE
-        poller._first_poll = False
-        raw_locations[0]["evses"].append(_make_raw_evse(uid="EVSE002"))
-        stats = poller.process_locations(raw_locations)
-        assert stats["evse"]["appeared"] == 1
-        assert stats["evse"]["unchanged"] == 1
+    def test_new_situation_detected(self, tmp_path):
+        sm = StateManager(str(tmp_path / "state.json"))
+        assert sm.is_new_situation("SIT1", "V1") is True
+        assert sm.is_new_situation("SIT1", "V1") is False
+        assert sm.is_new_situation("SIT1", "V2") is True
 
-    @pytest.mark.unit
-    def test_evse_disappears(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_locations = [_make_raw_location(evses=[
-            _make_raw_evse(uid="E1"),
-            _make_raw_evse(uid="E2"),
-        ])]
-        poller.process_locations(raw_locations)
-        # Remove one EVSE
-        poller._first_poll = False
-        raw_locations[0]["evses"] = [_make_raw_evse(uid="E1")]
-        stats = poller.process_locations(raw_locations)
-        assert stats["evse"]["resolved"] == 1
+    def test_save_and_load(self, tmp_path):
+        path = str(tmp_path / "state.json")
+        sm1 = StateManager(path)
+        sm1.is_new_speed("S1", "T1")
+        sm1.save()
 
-    @pytest.mark.unit
-    def test_skips_invalid_locations(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        stats = poller.process_locations([{"invalid": True}, None, "not a dict"])
-        assert stats["locations"]["skipped"] == 1  # only the dict without id
+        sm2 = StateManager(path)
+        assert sm2.is_new_speed("S1", "T1") is False
+        assert sm2.is_new_speed("S1", "T2") is True
 
-    @pytest.mark.unit
-    def test_multiple_locations(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_locations = [
-            _make_raw_location(id="LOC1", evses=[_make_raw_evse(uid="E1")]),
-            _make_raw_location(id="LOC2", evses=[
-                _make_raw_evse(uid="E2"),
-                _make_raw_evse(uid="E3"),
-            ]),
-        ]
-        stats = poller.process_locations(raw_locations)
-        assert stats["locations"]["emitted"] == 2
-        assert stats["evse"]["appeared"] == 3
-
-    @pytest.mark.unit
-    def test_location_reference_not_emitted_second_poll(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_locations = [_make_raw_location()]
-        poller.process_locations(raw_locations)
-        poller._first_poll = False
-        stats = poller.process_locations(raw_locations)
-        assert stats["locations"]["emitted"] == 0
+    def test_corrupt_state_file(self, tmp_path):
+        path = str(tmp_path / "state.json")
+        with open(path, "w") as f:
+            f.write("NOT JSON")
+        sm = StateManager(path)
+        assert sm.is_new_speed("S1", "T1") is True
 
 
-class TestPollerProcessTariffs:
-    @pytest.mark.unit
-    def test_first_poll_emits_tariffs(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_tariffs = [_make_raw_tariff()]
-        stats = poller.process_tariffs(raw_tariffs)
-        assert stats["emitted"] == 1
+# ═══════════════════════════════════════════════════════════════════════════
+# 7. NdwPoller integration
+# ═══════════════════════════════════════════════════════════════════════════
 
-    @pytest.mark.unit
-    def test_second_poll_skips_tariffs(self):
-        poller = NdlPoller()
-        poller._first_poll = False
-        raw_tariffs = [_make_raw_tariff()]
-        stats = poller.process_tariffs(raw_tariffs)
-        assert stats["emitted"] == 0
+@pytest.mark.unit
+class TestNdwPoller:
 
-    @pytest.mark.unit
-    def test_skips_invalid_tariffs(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        stats = poller.process_tariffs([{"no_id": True}, _make_raw_tariff(elements=[])])
-        assert stats["skipped"] == 2
-        assert stats["emitted"] == 0
+    def _make_poller(self, tmp_path):
+        mock_meas = MagicMock()
+        mock_meas.producer = MagicMock()
+        mock_sit = MagicMock()
+        mock_sit.producer = MagicMock()
+        state = StateManager(str(tmp_path / "state.json"))
+        poller = NdwPoller(mock_meas, mock_sit, state, poll_interval=60)
+        return poller, mock_meas, mock_sit
 
-    @pytest.mark.unit
-    def test_multiple_tariffs(self):
-        poller = NdlPoller()
-        poller._first_poll = True
-        raw_tariffs = [
-            _make_raw_tariff(id="T1"),
-            _make_raw_tariff(id="T2"),
-            _make_raw_tariff(id="T3"),
-        ]
-        stats = poller.process_tariffs(raw_tariffs)
-        assert stats["emitted"] == 3
+    @patch("ndl_netherlands.ndl_netherlands.download_gzip_xml")
+    def test_poll_speed_emits_events(self, mock_dl, tmp_path):
+        mock_dl.return_value = _speed_xml(speeds=[90], flows=[200])
+        poller, mock_meas, _ = self._make_poller(tmp_path)
+        count = poller._poll_speed()
+        assert count == 1
+        mock_meas.send_nl_ndw_traffic_traffic_speed.assert_called_once()
+        call_args = mock_meas.send_nl_ndw_traffic_traffic_speed.call_args
+        assert call_args[0][0] == "SITE01"
 
+    @patch("ndl_netherlands.ndl_netherlands.download_gzip_xml")
+    def test_poll_speed_dedup(self, mock_dl, tmp_path):
+        mock_dl.return_value = _speed_xml()
+        poller, mock_meas, _ = self._make_poller(tmp_path)
+        poller._poll_speed()
+        mock_meas.reset_mock()
+        mock_dl.return_value = _speed_xml()
+        count = poller._poll_speed()
+        assert count == 0
+        mock_meas.send_nl_ndw_traffic_traffic_speed.assert_not_called()
 
-# ── State persistence ────────────────────────────────────────────────────────
+    @patch("ndl_netherlands.ndl_netherlands.download_gzip_xml")
+    def test_poll_traveltime_emits_events(self, mock_dl, tmp_path):
+        mock_dl.return_value = _traveltime_xml()
+        poller, mock_meas, _ = self._make_poller(tmp_path)
+        count = poller._poll_traveltime()
+        assert count == 1
+        mock_meas.send_nl_ndw_traffic_travel_time.assert_called_once()
 
-class TestPollerState:
-    @pytest.mark.unit
-    def test_save_and_load_state(self, tmp_path):
-        state_file = str(tmp_path / "state.json")
-        poller = NdlPoller(state_file=state_file)
-        poller.evse_state = {"LOC1/E1": "AVAILABLE", "LOC1/E2": "CHARGING"}
-        poller.save_state()
+    @patch("ndl_netherlands.ndl_netherlands.download_gzip_xml")
+    def test_poll_situations_emits_events(self, mock_dl, tmp_path):
+        mock_dl.return_value = _situation_xml()
+        poller, _, mock_sit = self._make_poller(tmp_path)
+        count = poller._poll_situations()
+        assert count == 1
+        mock_sit.send_nl_ndw_traffic_traffic_situation.assert_called_once()
 
-        poller2 = NdlPoller(state_file=state_file)
-        poller2.load_state()
-        assert poller2.evse_state == {"LOC1/E1": "AVAILABLE", "LOC1/E2": "CHARGING"}
-        assert poller2._first_poll is False
+    @patch("ndl_netherlands.ndl_netherlands.download_gzip_xml")
+    def test_poll_and_send_first_cycle(self, mock_dl, tmp_path):
+        """First cycle polls speed + traveltime + situations (since last_situation_poll=0)."""
+        def side_effect(url, **kw):
+            if "trafficspeed" in url:
+                return _speed_xml()
+            elif "traveltime" in url:
+                return _traveltime_xml()
+            elif "actueel_beeld" in url:
+                return _situation_xml()
+            return b""
+        mock_dl.side_effect = side_effect
+        poller, mock_meas, mock_sit = self._make_poller(tmp_path)
+        s, t, sit = poller.poll_and_send()
+        assert s == 1
+        assert t == 1
+        assert sit == 1
 
-    @pytest.mark.unit
-    def test_load_missing_state(self, tmp_path):
-        state_file = str(tmp_path / "nonexistent.json")
-        poller = NdlPoller(state_file=state_file)
-        poller.load_state()
-        assert poller.evse_state == {}
-        assert poller._first_poll is True
-
-    @pytest.mark.unit
-    def test_load_corrupted_state(self, tmp_path):
-        state_file = tmp_path / "state.json"
-        state_file.write_text("not valid json")
-        poller = NdlPoller(state_file=str(state_file))
-        poller.load_state()
-        assert poller.evse_state == {}
-
-
-# ── Edge cases ───────────────────────────────────────────────────────────────
-
-class TestEdgeCases:
-    @pytest.mark.unit
-    def test_location_with_null_coordinates_value(self):
-        raw = _make_raw_location(coordinates={"latitude": None, "longitude": None})
-        assert normalize_location(raw) is None
-
-    @pytest.mark.unit
-    def test_evse_with_non_dict_connectors(self):
-        raw = _make_raw_evse(connectors=["not a dict"])
-        assert normalize_evse("LOC1", raw) is None
-
-    @pytest.mark.unit
-    def test_tariff_with_non_dict_elements(self):
-        raw = _make_raw_tariff(elements=["not a dict"])
-        assert normalize_tariff(raw) is None
-
-    @pytest.mark.unit
-    def test_tariff_with_empty_price_components(self):
-        raw = _make_raw_tariff(elements=[{"price_components": []}])
-        assert normalize_tariff(raw) is None
-
-    @pytest.mark.unit
-    def test_location_string_coordinates(self):
-        raw = _make_raw_location(coordinates={"latitude": "52.370", "longitude": "4.895"})
-        result = normalize_location(raw)
-        assert result["latitude"] == pytest.approx(52.370)
-        assert result["longitude"] == pytest.approx(4.895)
-
-    @pytest.mark.unit
-    def test_connector_missing_optional_fields(self):
-        raw = {"id": "1", "standard": "CHADEMO", "format": "CABLE", "power_type": "DC", "max_voltage": 500, "max_amperage": 200}
-        result = normalize_connector(raw)
-        assert result["max_electric_power"] is None
-        assert result["tariff_ids"] is None
-
-    @pytest.mark.unit
-    def test_tariff_restrictions_all_none(self):
-        raw = _make_raw_tariff(elements=[
-            {"price_components": [{"type": "FLAT", "price": 0, "step_size": 1}], "restrictions": {}}
-        ])
-        result = normalize_tariff(raw)
-        r = result["elements"][0]["restrictions"]
-        assert all(v is None for v in r.values())
+    @patch("ndl_netherlands.ndl_netherlands.download_gzip_xml")
+    def test_download_failure_returns_zero(self, mock_dl, tmp_path):
+        mock_dl.side_effect = Exception("Network error")
+        poller, _, _ = self._make_poller(tmp_path)
+        assert poller._poll_speed() == 0
+        assert poller._poll_traveltime() == 0
+        assert poller._poll_situations() == 0
