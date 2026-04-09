@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./ireland_opw_waterlevel_producer_data
+pip install ./ireland_opw_waterlevel_producer_kafka_producer

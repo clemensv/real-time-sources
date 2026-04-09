@@ -1,0 +1,293 @@
+{
+  "endpoints": {
+    "ie.gov.opw.waterlevel.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ireland-opw-waterlevel",
+          "key": "{station_ref}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/ie.gov.opw.waterlevel"
+      ]
+    }
+  },
+  "messagegroups": {
+    "ie.gov.opw.waterlevel": {
+      "messages": {
+        "ie.gov.opw.waterlevel.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for an OPW hydrometric station in Ireland, including location and region.",
+          "envelopemetadata": {
+            "type": {
+              "value": "ie.gov.opw.waterlevel.Station"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_ref}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.jstruct/schemas/ie.gov.opw.waterlevel.Station"
+        },
+        "ie.gov.opw.waterlevel.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.",
+          "envelopemetadata": {
+            "type": {
+              "value": "ie.gov.opw.waterlevel.WaterLevelReading"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_ref}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/ie.gov.opw.waterlevel.jstruct/schemas/ie.gov.opw.waterlevel.WaterLevelReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "ie.gov.opw.waterlevel.jstruct": {
+      "schemas": {
+        "ie.gov.opw.waterlevel.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/ie/gov/opw/waterlevel/Station",
+                "name": "Station",
+                "$root": "#/definitions/ie/gov/opw/waterlevel/Station",
+                "definitions": {
+                  "ie": {
+                    "gov": {
+                      "opw": {
+                        "waterlevel": {
+                          "Station": {
+                            "name": "Station",
+                            "type": "object",
+                            "properties": {
+                              "station_ref": {
+                                "type": "string",
+                                "description": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041')."
+                              },
+                              "station_name": {
+                                "type": "string",
+                                "description": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills')."
+                              },
+                              "region_id": {
+                                "type": "int32",
+                                "description": "Integer identifier of the OPW hydrometric region the station belongs to."
+                              },
+                              "longitude": {
+                                "type": "double",
+                                "description": "Longitude of the station location in WGS84 decimal degrees."
+                              },
+                              "latitude": {
+                                "type": "double",
+                                "description": "Latitude of the station location in WGS84 decimal degrees."
+                              }
+                            },
+                            "required": [
+                              "station_ref",
+                              "station_name",
+                              "region_id",
+                              "longitude",
+                              "latitude"
+                            ],
+                            "description": "Reference data for an OPW hydrometric station in Ireland, including location and region."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ie.gov.opw.waterlevel.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/ie/gov/opw/waterlevel/WaterLevelReading",
+                "name": "WaterLevelReading",
+                "$root": "#/definitions/ie/gov/opw/waterlevel/WaterLevelReading",
+                "definitions": {
+                  "ie": {
+                    "gov": {
+                      "opw": {
+                        "waterlevel": {
+                          "WaterLevelReading": {
+                            "name": "WaterLevelReading",
+                            "type": "object",
+                            "properties": {
+                              "station_ref": {
+                                "type": "string",
+                                "description": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041')."
+                              },
+                              "station_name": {
+                                "type": "string",
+                                "description": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills')."
+                              },
+                              "sensor_ref": {
+                                "type": "string",
+                                "description": "Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres)."
+                              },
+                              "value": {
+                                "type": ["double", "null"],
+                                "description": "Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation."
+                              },
+                              "datetime": {
+                                "type": "string",
+                                "description": "ISO 8601 timestamp of the sensor reading as provided by the upstream API (e.g. '2024-01-15T12:00:00Z')."
+                              },
+                              "err_code": {
+                                "type": "int32",
+                                "description": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."
+                              }
+                            },
+                            "required": [
+                              "station_ref",
+                              "station_name",
+                              "sensor_ref",
+                              "value",
+                              "datetime",
+                              "err_code"
+                            ],
+                            "description": "A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ie.gov.opw.waterlevel.avro": {
+      "schemas": {
+        "ie.gov.opw.waterlevel.Station": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "ie.gov.opw.waterlevel",
+                "doc": "Reference data for an OPW hydrometric station in Ireland, including location and region.",
+                "fields": [
+                  {
+                    "name": "station_ref",
+                    "type": "string",
+                    "doc": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041')."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills')."
+                  },
+                  {
+                    "name": "region_id",
+                    "type": "int",
+                    "doc": "Integer identifier of the OPW hydrometric region the station belongs to."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station location in WGS84 decimal degrees."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station location in WGS84 decimal degrees."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        },
+        "ie.gov.opw.waterlevel.WaterLevelReading": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WaterLevelReading",
+                "namespace": "ie.gov.opw.waterlevel",
+                "doc": "A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.",
+                "fields": [
+                  {
+                    "name": "station_ref",
+                    "type": "string",
+                    "doc": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041')."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills')."
+                  },
+                  {
+                    "name": "sensor_ref",
+                    "type": "string",
+                    "doc": "Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres)."
+                  },
+                  {
+                    "name": "value",
+                    "type": ["null", "double"],
+                    "doc": "Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation."
+                  },
+                  {
+                    "name": "datetime",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of the sensor reading as provided by the upstream API (e.g. '2024-01-15T12:00:00Z')."
+                  },
+                  {
+                    "name": "err_code",
+                    "type": "int",
+                    "doc": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}
