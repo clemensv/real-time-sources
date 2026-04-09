@@ -1,0 +1,2 @@
+pip install .\inpe_deter_brazil_producer_data
+pip install .\inpe_deter_brazil_producer_kafka_producer
