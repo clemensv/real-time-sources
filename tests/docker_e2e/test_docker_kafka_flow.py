@@ -205,6 +205,8 @@ def carbon_intensity_image():
     return build_image('carbon-intensity')
 def energidataservice_dk_image():
     return build_image('energidataservice-dk')
+def jma_japan_image():
+    return build_image('jma-japan')
 
 @pytest.fixture(scope='module')
 def irail_image():
@@ -1381,4 +1383,15 @@ class TestGeoSphereAustriaDockerFlow:
             telemetry_types=['WeatherObservation'],
             required_types=['WeatherStation', 'WeatherObservation'],
             extra_env={'POLLING_INTERVAL': '5', 'STATION_REFRESH_INTERVAL': '5'},
+# JMA Japan (Weather bulletins from Atom feeds)
+# ---------------------------------------------------------------------------
+
+class TestJMAJapanDockerFlow:
+    TOPIC = 'test-jma-japan'
+
+    def test_emits_weather_bulletins(self, kafka: KafkaFixture, jma_japan_image):
+        _run_kafka_flow_test(
+            kafka, jma_japan_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['WeatherBulletin'],
         )
