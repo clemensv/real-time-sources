@@ -203,7 +203,7 @@ class NIFCWildfirePoller:
                 else:
                     count_updated += 1
 
-                await self.event_producer.send_gov_nifc_wildfires_wildfire_incident(
+                self.event_producer.send_gov_nifc_wildfires_wildfire_incident(
                     _source_uri=SOURCE_URI,
                     _irwin_id=incident.irwin_id,
                     _modified_on_datetime=incident.modified_on_datetime,

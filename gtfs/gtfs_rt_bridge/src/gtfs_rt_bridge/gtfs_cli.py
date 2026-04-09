@@ -195,7 +195,7 @@ hashes_vehicles: Dict[str, int] = {}
 hashes_trip: Dict[str, int] = {}
 hashes_alert: Dict[str, int] = {}
 
-async def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransitFeedRealTimeEventProducer, feed_url: str, gtfs_rt_headers: List[List[str]], route: str | None):
+def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransitFeedRealTimeEventProducer, feed_url: str, gtfs_rt_headers: List[List[str]], route: str | None):
     """Polls vehicle locations and submits them to an Event Hub"""
 
     # pylint: disable=global-variable-not-assigned
@@ -240,7 +240,7 @@ async def poll_and_submit_realtime_feed(agency_id: str, producer_client: General
                     logger.debug("Skipping vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
                     continue
             logger.debug("Sending vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
-            await producer_client.send_general_transit_feed_real_time_vehicle_vehicle_position(feed_url, agency_id, vehicle, "application/json", flush_producer=False)
+            producer_client.send_general_transit_feed_real_time_vehicle_vehicle_position(feed_url, agency_id, vehicle, "application/json", flush_producer=False)
             hashes_vehicles[vehicle.vehicle.id] = hash_vph
         elif entity.trip_update and entity.trip_update.trip and entity.trip_update.trip.trip_id:
             trip_update=map_trip_update(entity)
@@ -257,7 +257,7 @@ async def poll_and_submit_realtime_feed(agency_id: str, producer_client: General
                     logger.debug("Skipping trip update: %s, %s", trip_update.trip.trip_id, entity.id)
                     continue
             logger.debug("Sending trip update: %s, %s", trip_update.trip.trip_id, entity.id)
-            await producer_client.send_general_transit_feed_real_time_trip_trip_update(feed_url, agency_id, trip_update, "application/json", flush_producer=False)
+            producer_client.send_general_transit_feed_real_time_trip_trip_update(feed_url, agency_id, trip_update, "application/json", flush_producer=False)
             hashes_trip[trip_update.trip.trip_id] = hash_tuh
         elif entity.alert and len(entity.alert.header_text.translation) > 0:
             alert=map_alert(entity)
@@ -272,7 +272,7 @@ async def poll_and_submit_realtime_feed(agency_id: str, producer_client: General
                     logger.debug("Skipping alert: %s, %s", alert.header_text, entity.id)
                     continue
             logger.debug("Sending alert: %s, %s", alert.header_text, entity.id)
-            await producer_client.send_general_transit_feed_real_time_alert_alert(feed_url, agency_id, alert, "application/json", flush_producer=False)
+            producer_client.send_general_transit_feed_real_time_alert_alert(feed_url, agency_id, alert, "application/json", flush_producer=False)
             hashes_alert[hash_sah] = hash_sah
     producer_client.producer.flush()
 
@@ -686,78 +686,58 @@ def map_trips(trip_rows: List[Dict[str, Any]], calendar_rows: List[Dict[str, Any
     return trips
 
 
-async def send_agency_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Agency]):
-    tasks = []
+def send_agency_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Agency]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_agency(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_agency(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_areas_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Areas]):
-    tasks = []
+def send_areas_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Areas]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_areas(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_areas(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_attributions_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Attributions]):
-    tasks = []
+def send_attributions_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[Attributions]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_attributions(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_attributions(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_booking_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[BookingRules]):
-    tasks = []
+def send_booking_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[BookingRules]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_booking_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_booking_rules(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_fare_attributes_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareAttributes]):
-    tasks = []
+def send_fare_attributes_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareAttributes]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_attributes(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_fare_attributes(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_fare_leg_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareLegRules]):
-    tasks = []
+def send_fare_leg_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareLegRules]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_leg_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_fare_leg_rules(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_fare_media_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareMedia]):
-    tasks = []
+def send_fare_media_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareMedia]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_media(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_fare_media(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_fare_products_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareProducts]):
-    tasks = []
+def send_fare_products_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareProducts]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_products(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_fare_products(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_fare_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareRules]):
-    tasks = []
+def send_fare_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareRules]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_fare_rules(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 
-async def send_fare_transfer_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareTransferRules]):
-    tasks = []
+def send_fare_transfer_rules_events(reference_producer_client: GeneralTransitFeedStaticEventProducer, feed_url: str, agency_id: str, entities: List[FareTransferRules]):
     for entity in entities:
-        tasks.append(await reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(feed_url, agency_id, entity, "application/json", flush_producer=False))
-    await asyncio.gather(*tasks)
+        reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(feed_url, agency_id, entity, "application/json", flush_producer=False)
 
 etags = {}
 
-async def fetch_and_process_schedule(agency_id: str, reference_producer_client: GeneralTransitFeedStaticEventProducer, gtfs_urls: List[str], headers: List[List[str]], force_refresh: bool = False, cache_dir: str | None = None):
+def fetch_and_process_schedule(agency_id: str, reference_producer_client: GeneralTransitFeedStaticEventProducer, gtfs_urls: List[str], headers: List[List[str]], force_refresh: bool = False, cache_dir: str | None = None):
     """Fetches the schedule file, calculates file hashes, and processes new/changed files"""
 
     # pylint: disable=global-variable-not-assigned
@@ -800,7 +780,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_agency(file_contents)
                 logger.info("Processing %s agency entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_agency(agency_url, (entity.agencyId if entity.agencyId else agency_id), entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_agency(agency_url, (entity.agencyId if entity.agencyId else agency_id), entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -808,7 +788,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_areas(file_contents)
                 logger.info("Processing %s areas entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_areas(agency_url, agency_id+"/"+entity.areaId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_areas(agency_url, agency_id+"/"+entity.areaId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -816,7 +796,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_attributions(file_contents)
                 logger.info("Processing %s attributions entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_attributions(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.attributionId+"/"+(entity.routeId if entity.routeId else "any")+"/"+entity.tripId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_attributions(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.attributionId+"/"+(entity.routeId if entity.routeId else "any")+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -824,7 +804,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_booking_rules(file_contents)
                 logger.info("Processing %s booking_rules entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_booking_rules(agency_url, agency_id+"/"+entity.bookingRuleId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_booking_rules(agency_url, agency_id+"/"+entity.bookingRuleId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -832,7 +812,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_fare_attributes(file_contents)
                 logger.info("Processing %s fare_attributes entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_fare_attributes(agency_url, (entity.agencyId if entity.agencyId else agency_id) +"/"+entity.fareId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_fare_attributes(agency_url, (entity.agencyId if entity.agencyId else agency_id) +"/"+entity.fareId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -840,7 +820,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_fare_leg_rules(file_contents)
                 logger.info("Processing %s fare_leg_rules entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_fare_leg_rules(agency_url, agency_id+"/"+entity.fareLegRuleId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_fare_leg_rules(agency_url, agency_id+"/"+entity.fareLegRuleId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -848,7 +828,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_fare_media(file_contents)
                 logger.info("Processing %s fare_media entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_fare_media(agency_url, agency_id+"/"+entity.fareMediaId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_fare_media(agency_url, agency_id+"/"+entity.fareMediaId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -856,7 +836,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_fare_products(file_contents)
                 logger.info("Processing %s fare_products entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_fare_products(agency_url, agency_id+"/"+entity.fareProductId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_fare_products(agency_url, agency_id+"/"+entity.fareProductId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -864,7 +844,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_fare_rules(file_contents)
                 logger.info("Processing %s fare_rules entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_fare_rules(agency_url, agency_id+"/"+entity.fareId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_fare_rules(agency_url, agency_id+"/"+entity.fareId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -872,7 +852,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_fare_transfer_rules(file_contents)
                 logger.info("Processing %s fare_transfer_rules entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(agency_url, agency_id+"/"+entity.fareTransferRuleId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(agency_url, agency_id+"/"+entity.fareTransferRuleId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -880,7 +860,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_feed_info(file_contents)
                 logger.info("Processing %s feed_info entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_feed_info(agency_url, agency_id+"/"+entity.feedVersion, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_feed_info(agency_url, agency_id+"/"+entity.feedVersion, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -888,7 +868,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_frequencies(file_contents)
                 logger.info("Processing %s frequencies entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_frequencies(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_frequencies(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -896,7 +876,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_levels(file_contents)
                 logger.info("Processing %s levels entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_levels(agency_url, agency_id+"/"+entity.levelId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_levels(agency_url, agency_id+"/"+entity.levelId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -904,7 +884,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_location_groups(file_contents)
                 logger.info("Processing %s location_groups entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_location_groups(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_location_groups(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -912,7 +892,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_location_group_stores(file_contents)
                 logger.info("Processing %s location_group_stores entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_location_group_stores(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_location_group_stores(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -920,7 +900,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_networks(file_contents)
                 logger.info("Processing %s networks entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_networks(agency_url, agency_id+"/"+entity.networkId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_networks(agency_url, agency_id+"/"+entity.networkId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -928,7 +908,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_pathways(file_contents)
                 logger.info("Processing %s pathways entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_pathways(agency_url, agency_id+"/"+entity.pathwayId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_pathways(agency_url, agency_id+"/"+entity.pathwayId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -936,7 +916,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_route_networks(file_contents)
                 logger.info("Processing %s route_networks entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_route_networks(agency_url, agency_id+"/"+entity.routeNetworkId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_route_networks(agency_url, agency_id+"/"+entity.routeNetworkId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -944,7 +924,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_routes(file_contents)
                 logger.info("Processing %s routes entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_routes(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.routeId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_routes(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.routeId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -952,7 +932,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_shapes(file_contents)
                 logger.info("Processing %s shapes entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_shapes(agency_url, agency_id+"/"+entity.shapeId+"/"+str(entity.shapePtSequence), entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_shapes(agency_url, agency_id+"/"+entity.shapeId+"/"+str(entity.shapePtSequence), entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -960,7 +940,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_stop_areas(file_contents)
                 logger.info("Processing %s stop_areas entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_stop_areas(agency_url, agency_id+"/"+entity.stopAreaId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_stop_areas(agency_url, agency_id+"/"+entity.stopAreaId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -968,7 +948,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_stops(file_contents)
                 logger.info("Processing %s stops entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_stops(agency_url, agency_id+"/"+entity.stopId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_stops(agency_url, agency_id+"/"+entity.stopId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -976,7 +956,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_stop_times(file_contents)
                 logger.info("Processing %s stop_times entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_stop_times(agency_url, agency_id+"/"+entity.stopId+"/"+entity.tripId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_stop_times(agency_url, agency_id+"/"+entity.stopId+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -984,7 +964,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_timeframes(file_contents, calendar_rows, calendar_dates_rows)
                 logger.info("Processing %s timeframes entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_timeframes(agency_url, agency_id+"/"+entity.timeframeGroupId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_timeframes(agency_url, agency_id+"/"+entity.timeframeGroupId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -992,7 +972,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_transfers(file_contents)
                 logger.info("Processing %s transfers entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_transfers(agency_url, agency_id+"/"+entity.fromStopId+"/"+entity.toStopId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_transfers(agency_url, agency_id+"/"+entity.fromStopId+"/"+entity.toStopId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -1000,7 +980,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_translations(file_contents)
                 logger.info("Processing %s translations entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_translations(agency_url, agency_id+"/"+entity.tableName+"/"+entity.fieldName, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_translations(agency_url, agency_id+"/"+entity.tableName+"/"+entity.fieldName, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -1008,7 +988,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
                 entities = map_trips(file_contents, calendar_rows, calendar_dates_rows)
                 logger.info("Processing %s trips entities", len(entities))
                 for entity in entities:
-                    await reference_producer_client.send_general_transit_feed_static_trips(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
+                    reference_producer_client.send_general_transit_feed_static_trips(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     if send_count % 100 == 0:
                         reference_producer_client.producer.flush()
@@ -1017,7 +997,7 @@ async def fetch_and_process_schedule(agency_id: str, reference_producer_client: 
         write_file_hashes(schedule_file_path, new_hashes, cache_dir)
 
 
-async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_topic:str, sasl_username:str|None, sasl_password:str|None,
+def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_topic:str, sasl_username:str|None, sasl_password:str|None,
                                  gtfs_rt_urls: List[str], gtfs_rt_headers: List[List[str]], gtfs_urls: List[str], gtfs_headers: List[List[str]],
                                  mdb_source_id: str, route: str | None, poll_interval: int, schedule_poll_interval: int, cloudevents_mode: str, cache_dir: str | None, force_schedule_refresh: bool):
     """Poll vehicle locations and submit to an Event Hub"""
@@ -1066,7 +1046,7 @@ async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, k
                     try:
                         last_schedule_run = datetime.now()
                         logger.info("Fetching schedule from %s", gtfs_urls)
-                        await fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_schedule_refresh, cache_dir=cache_dir)
+                        fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_schedule_refresh, cache_dir=cache_dir)
                         force_schedule_refresh = False
                     except Exception as e:
                         logger.error("Failed to fetch and process schedule: %s", e)
@@ -1074,7 +1054,7 @@ async def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, k
                 logger.info("Polling feed updates from %s", gtfs_rt_urls)
                 for gtfs_feed_url in gtfs_rt_urls:
                     try:
-                        await poll_and_submit_realtime_feed(agency_id, gtfs_rt_producer, gtfs_feed_url, gtfs_rt_headers, route)
+                        poll_and_submit_realtime_feed(agency_id, gtfs_rt_producer, gtfs_feed_url, gtfs_rt_headers, route)
                     except Exception as e:
                         logger.error("Failed to poll and submit feed updates from %s: %s", gtfs_feed_url, e)
             logger.info("Sleeping for %s seconds. Press Ctrl+C to stop.", poll_interval)
@@ -1556,7 +1536,7 @@ async def run_feed(args):
         sasl_username = args.sasl_username
         sasl_password = args.sasl_password
 
-    await feed_realtime_messages(args.agency, kafka_bootstrap_servers, kafka_topic, sasl_username, sasl_password,
+    feed_realtime_messages(args.agency, kafka_bootstrap_servers, kafka_topic, sasl_username, sasl_password,
                            args.gtfs_rt_urls, gtfs_rt_headers, args.gtfs_urls, gtfs_headers, args.mdb_source_id, args.route, args.poll_interval, args.schedule_poll_interval, args.cloudevents_mode, args.cache_dir, args.force_schedule_refresh)
 
 

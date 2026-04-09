@@ -143,7 +143,7 @@ class GraceDBPoller:
                 if superevent.superevent_id in seen_ids:
                     continue
 
-                await self.event_producer.send_org_ligo_gracedb_superevent(
+                self.event_producer.send_org_ligo_gracedb_superevent(
                     _source_uri=BASE_API_URL,
                     _superevent_id=superevent.superevent_id,
                     _created=superevent.created,

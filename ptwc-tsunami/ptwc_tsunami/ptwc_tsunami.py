@@ -240,7 +240,7 @@ class PTWCTsunamiPoller:
                             count_updated += 1
 
                         if self.event_producer:
-                            await self.event_producer.send_ptwc_tsunami_bulletin(
+                            self.event_producer.send_ptwc_tsunami_bulletin(
                                 _bulletin_id=bulletin.bulletin_id,
                                 data=bulletin,
                                 flush_producer=False,

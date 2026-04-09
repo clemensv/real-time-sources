@@ -292,7 +292,7 @@ class INPEDeterPoller:
                         continue
 
                     if self.event_producer:
-                        await self.event_producer.send_br_inpe_deter_deforestation_alert(
+                        self.event_producer.send_br_inpe_deter_deforestation_alert(
                             _source_uri=SOURCE_URI,
                             _biome=alert.biome,
                             _alert_id=alert.alert_id,

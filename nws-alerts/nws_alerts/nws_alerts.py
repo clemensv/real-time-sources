@@ -184,7 +184,7 @@ class NWSAlertsPoller:
                     count_updated += 1
 
                 if self.event_producer:
-                    await self.event_producer.send_nws_weather_alert(
+                    self.event_producer.send_nws_weather_alert(
                         _alert_id=alert.alert_id,
                         data=alert,
                         flush_producer=False,
