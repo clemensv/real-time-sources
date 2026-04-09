@@ -98,3 +98,11 @@ The tool supports the following environment variables to avoid passing them via 
 
 The tool handles state internally for efficient API polling and sending updates.
 
+## Deploy to Azure
+
+You can deploy this bridge directly to Azure Container Instances:
+
+**With your own Event Hub:** [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template.json)
+
+**With a new Event Hub:** [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template-with-eventhub.json)
+

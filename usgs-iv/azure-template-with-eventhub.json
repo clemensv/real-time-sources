@@ -2,23 +2,28 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the USGS Instantaneous Values bridge as an Azure Container Instance with persistent state storage."
+    "description": "Deploys the USGS Instantaneous Values bridge with a new Event Hub namespace, event hub, and Azure Container Instance."
   },
   "parameters": {
-    "connectionString": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
-      }
-    },
     "containerGroupName": {
       "type": "string",
       "defaultValue": "usgs-iv",
       "metadata": {
-        "description": "Name for the container group resource."
+        "description": "Name for the container group and base name for all resources."
       },
       "maxLength": 63,
       "minLength": 1
+    },
+    "eventHubSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Event Hub namespace SKU."
+      }
     },
     "location": {
       "type": "string",
@@ -31,9 +36,55 @@
   "variables": {
     "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg'), 24)]",
     "fileShareName": "bridge-state",
-    "imageName": "ghcr.io/clemensv/real-time-sources-usgs-iv:latest"
+    "imageName": "ghcr.io/clemensv/real-time-sources-usgs-iv:latest",
+    "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
+    "eventHubName": "[parameters('containerGroupName')]",
+    "authRuleName": "bridge-send-listen",
+    "authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('authRuleName'))]"
   },
   "resources": [
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2024-01-01",
+      "name": "[variables('eventHubNamespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('eventHubSku')]",
+        "tier": "[parameters('eventHubSku')]",
+        "capacity": 1
+      },
+      "properties": {
+        "minimumTlsVersion": "1.2",
+        "isAutoInflateEnabled": false,
+        "kafkaEnabled": true
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(variables('eventHubNamespaceName'), '/', variables('eventHubName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+      ],
+      "properties": {
+        "partitionCount": 4,
+        "messageRetentionInDays": 1
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(variables('eventHubNamespaceName'), '/', variables('eventHubName'), '/', variables('authRuleName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('eventHubNamespaceName'), variables('eventHubName'))]"
+      ],
+      "properties": {
+        "rights": [
+          "Send",
+          "Listen"
+        ]
+      }
+    },
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2023-05-01",
@@ -74,6 +125,7 @@
       "name": "[parameters('containerGroupName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
+        "[variables('authRuleResourceId')]",
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
       ],
       "properties": {
@@ -93,7 +145,7 @@
               "environmentVariables": [
                 {
                   "name": "CONNECTION_STRING",
-                  "secureValue": "[parameters('connectionString')]"
+                  "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
                 },
                 {
                   "name": "LOG_LEVEL",
@@ -130,6 +182,14 @@
     "containerGroupId": {
       "type": "string",
       "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "eventHubNamespaceName": {
+      "type": "string",
+      "value": "[variables('eventHubNamespaceName')]"
+    },
+    "eventHubName": {
+      "type": "string",
+      "value": "[variables('eventHubName')]"
     }
   }
 }
