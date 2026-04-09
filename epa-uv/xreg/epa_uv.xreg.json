@@ -1,0 +1,166 @@
+{
+  "endpoints": {
+    "US.EPA.UVIndex.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "epa-uv",
+          "key": "{location_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/US.EPA.UVIndex"]
+    }
+  },
+  "messagegroups": {
+    "US.EPA.UVIndex": {
+      "messages": {
+        "US.EPA.UVIndex.HourlyForecast": {
+          "name": "HourlyForecast",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "US.EPA.UVIndex.HourlyForecast"
+            },
+            "source": {
+              "value": "https://www.epa.gov/enviro/web-services"
+            },
+            "subject": {
+              "value": "{location_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast"
+        },
+        "US.EPA.UVIndex.DailyForecast": {
+          "name": "DailyForecast",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "US.EPA.UVIndex.DailyForecast"
+            },
+            "source": {
+              "value": "https://www.epa.gov/enviro/web-services"
+            },
+            "subject": {
+              "value": "{location_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "US.EPA.UVIndex.jstruct": {
+      "schemas": {
+        "US.EPA.UVIndex.HourlyForecast": {
+          "name": "HourlyForecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/epa-uv/schemas/US.EPA.UVIndex.HourlyForecast.json",
+                "type": "object",
+                "required": [
+                  "location_id",
+                  "city",
+                  "state",
+                  "forecast_datetime",
+                  "uv_index"
+                ],
+                "name": "HourlyForecast",
+                "description": "Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.",
+                "properties": {
+                  "location_id": {
+                    "type": "string",
+                    "description": "Stable slug derived from the configured city and state."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "City for which the hourly UV forecast was requested."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Two-letter state abbreviation for the requested city."
+                  },
+                  "forecast_datetime": {
+                    "type": "string",
+                    "description": "Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset."
+                  },
+                  "uv_index": {
+                    "type": "integer",
+                    "description": "Hourly UV Index forecast value."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "US.EPA.UVIndex.DailyForecast": {
+          "name": "DailyForecast",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/epa-uv/schemas/US.EPA.UVIndex.DailyForecast.json",
+                "type": "object",
+                "required": [
+                  "location_id",
+                  "city",
+                  "state",
+                  "forecast_date",
+                  "uv_index",
+                  "uv_alert"
+                ],
+                "name": "DailyForecast",
+                "description": "Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.",
+                "properties": {
+                  "location_id": {
+                    "type": "string",
+                    "description": "Stable slug derived from the configured city and state."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "City for which the daily UV forecast was requested."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Two-letter state abbreviation for the requested city."
+                  },
+                  "forecast_date": {
+                    "type": "string",
+                    "description": "Forecast date normalized to YYYY-MM-DD."
+                  },
+                  "uv_index": {
+                    "type": "integer",
+                    "description": "Daily UV Index forecast value."
+                  },
+                  "uv_alert": {
+                    "type": "string",
+                    "description": "Character flag indicating whether a UV alert is issued for the forecast day."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

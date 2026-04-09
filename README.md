@@ -21,7 +21,7 @@ information. The supported authentication scheme for the Kafka endpoint is
 
 The sources are organized by domain below. Each entry links to the container
 documentation, and the README in each project directory has full details. There
-are 82 containers in total.
+are 86 containers in total.
 
 ### Hydrology and Water Monitoring
 
@@ -37,6 +37,7 @@ are 82 containers in total.
 | Nepal BIPAD Hydrology | Nepal (Himalayan river basins, BIPAD) | [📖](nepal-bipad-hydrology/README.md) | [🐳](nepal-bipad-hydrology/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nepal-bipad-hydrology) |
 | NOAA Tides and Currents | United States (~3,000 stations) | [📖](noaa/README.md) | [🐳](noaa/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-noaa) [![Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-noaa.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-noaa.yml) |
 | NOAA NDBC | United States (buoy observations) | [📖](noaa-ndbc/README.md) | [🐳](noaa-ndbc/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-noaa-ndbc) |
+| King County Marine | Washington State / Puget Sound (current raw buoy and mooring telemetry) | [📖](king-county-marine/README.md) | [🐳](king-county-marine/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-king-county-marine) |
 | NVE Hydro | Norway (NVE) | [📖](nve-hydro/README.md) | [🐳](nve-hydro/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nve-hydro) |
 | Pegelonline | Germany (federal waterways, ~3,000 stations) | [📖](pegelonline/README.md) | [🐳](pegelonline/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-pegelonline) [![Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-pegelonline.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-pegelonline.yml) |
 | RWS Waterwebservices | Netherlands (~785 stations) | [📖](rws-waterwebservices/README.md) | [🐳](rws-waterwebservices/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-rws-waterwebservices) |
@@ -80,6 +81,7 @@ are 82 containers in total.
 | IRCELINE Belgium | Belgium (station, timeseries, and hourly observations) | [📖](irceline-belgium/README.md) | [🐳](irceline-belgium/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-irceline-belgium) |
 | LAQN London | London, UK (site metadata, species, hourly measurements, Daily AQI) | [📖](laqn-london/README.md) | [🐳](laqn-london/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-laqn-london) |
 | Luchtmeetnet Netherlands | Netherlands (station measurements, components, and LKI index) | [📖](luchtmeetnet-nl/README.md) | [🐳](luchtmeetnet-nl/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-luchtmeetnet-nl) |
+| EPA UV Index | United States (city-scoped hourly and daily UV forecasts) | [📖](epa-uv/README.md) | [🐳](epa-uv/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-epa-uv) |
 | Sensor.Community | Global (citizen air sensors, PM and climate readings) | [📖](sensor-community/README.md) | [🐳](sensor-community/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-sensor-community) |
 | Singapore NEA Air Quality | Singapore (regional PSI and PM2.5 readings) | [📖](singapore-nea/README.md) | [🐳](singapore-nea/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-singapore-nea) |
 | UBA AirData | Germany (stations, pollutant components, hourly measures) | [📖](uba-airdata/README.md) | [🐳](uba-airdata/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-uba-airdata) |
@@ -96,6 +98,7 @@ are 82 containers in total.
 | NIFC USA Wildfires | United States (active wildfire incidents, NIFC) | [📖](nifc-usa-wildfires/README.md) | [🐳](nifc-usa-wildfires/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nifc-usa-wildfires) |
 | NINA/BBK | Germany (MOWAS, KATWARN, BIWAPP, DWD, LHP, Police) | [📖](nina-bbk/README.md) | [🐳](nina-bbk/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nina-bbk) |
 | PTWC Tsunami | Pacific and Atlantic (NOAA tsunami bulletins) | [📖](ptwc-tsunami/README.md) | [🐳](ptwc-tsunami/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ptwc-tsunami) |
+| Seattle Fire 911 | Seattle, Washington (real-time fire dispatch incidents) | [📖](seattle-911/README.md) | [🐳](seattle-911/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-seattle-911) |
 | USGS Earthquakes | Global (seismic events) | [📖](usgs-earthquakes/README.md) | [🐳](usgs-earthquakes/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-usgs-earthquakes) |
 
 ### Radiation Monitoring
@@ -133,6 +136,7 @@ are 82 containers in total.
 | NDW Netherlands Traffic | Netherlands (national road traffic, DATEX II) | [📖](ndl-netherlands/README.md) | [🐳](ndl-netherlands/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ndl-netherlands) |
 | Nextbus | North America (public transit arrivals) | [📖](nextbus/README.md) | — | — |
 | Paris Bicycle Counters | Paris (~141 counting stations, hourly counts) | [📖](paris-bicycle-counters/README.md) | [🐳](paris-bicycle-counters/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-paris-bicycle-counters) |
+| Seattle Street Closures | Seattle, Washington (permit-driven street closure windows) | [📖](seattle-street-closures/README.md) | [🐳](seattle-street-closures/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-seattle-street-closures) |
 | US CBP Border Wait | US-Canada & US-Mexico borders (~81 ports of entry) | [📖](cbp-border-wait/README.md) | [🐳](cbp-border-wait/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-cbp-border-wait) |
 | WSDOT | Washington State (~1,000 traffic flow sensors, LOS readings) | [📖](wsdot/README.md) | [🐳](wsdot/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wsdot) |
 
@@ -218,6 +222,11 @@ current data for over 3,000 US stations. Updated every 6 minutes.
 
 **[NOAA NDBC](noaa-ndbc/README.md)** -- National Data Buoy Center buoy
 observations across the United States. Polled every 5 minutes.
+
+**[King County Marine](king-county-marine/README.md)** -- Current raw buoy and
+mooring telemetry from King County marine monitoring datasets. Emits station
+reference events plus normalized water-quality readings for the active marine
+datasets.
 
 **[NVE Hydro](nve-hydro/README.md)** -- Norwegian Water Resources and Energy
 Directorate (NVE). Water level and discharge observations. Requires a free API
@@ -350,6 +359,10 @@ Air Quality Index bulletin records for London.
 Luchtmeetnet open API. Station and component reference data, hourly station
 measurements, and Dutch LKI air-quality-index readings.
 
+**[EPA UV Index](epa-uv/README.md)** -- United States EPA Envirofacts UV
+forecast service. Location-keyed hourly and daily UV forecast events for
+configured city/state pairs.
+
 **[Sensor.Community](sensor-community/README.md)** -- Sensor.Community public
 JSON sensor feeds. Sensor reference metadata plus particulate and climate sensor
 readings from the community network worldwide.
@@ -397,6 +410,10 @@ discovery date.
 **[PTWC Tsunami](ptwc-tsunami/README.md)** -- NOAA National Tsunami Warning
 Center (NTWC) and Pacific Tsunami Warning Center (PTWC). Tsunami bulletins from
 two Atom XML feeds covering the Pacific, Atlantic, and Caribbean.
+
+**[Seattle Fire 911](seattle-911/README.md)** -- Seattle Open Data real-time
+Fire 911 calls feed. Incident-keyed dispatch events with address and published
+coordinates.
 
 **[USGS Earthquakes](usgs-earthquakes/README.md)** -- Real-time earthquake
 events from the USGS GeoJSON feeds with deduplication. Polled every 60 seconds.
@@ -476,6 +493,10 @@ service.
 **[Paris Bicycle Counters](paris-bicycle-counters/README.md)** -- Paris Open
 Data bicycle counting stations. Hourly bicycle counts from 141 permanent
 counting stations across Paris with counter location reference data.
+
+**[Seattle Street Closures](seattle-street-closures/README.md)** -- Seattle
+Open Data street closure schedule feed. Permit-keyed closure windows with
+street segments, dates, and serialized geometry snapshots.
 
 **[US CBP Border Wait](cbp-border-wait/README.md)** -- US Customs and Border
 Protection border wait times. Real-time delay data for approximately 81 land

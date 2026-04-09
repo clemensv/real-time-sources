@@ -1,0 +1,2 @@
+pip install .\king_county_marine_producer_data
+pip install .\king_county_marine_producer_kafka_producer

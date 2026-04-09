@@ -254,6 +254,22 @@ def wikimedia_osm_diffs_image():
 def inpe_deter_brazil_image():
     return build_image('inpe-deter-brazil')
 
+@pytest.fixture(scope='module')
+def epa_uv_image():
+    return build_image('epa-uv')
+
+@pytest.fixture(scope='module')
+def king_county_marine_image():
+    return build_image('king-county-marine')
+
+@pytest.fixture(scope='module')
+def seattle_911_image():
+    return build_image('seattle-911')
+
+@pytest.fixture(scope='module')
+def seattle_street_closures_image():
+    return build_image('seattle-street-closures')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1208,6 +1224,9 @@ class TestGIOSPolandDockerFlow:
             reference_types=['Station', 'Sensor'],
             telemetry_types=['Measurement', 'AirQualityIndex'],
             required_types=['Station', 'Sensor', 'Measurement', 'AirQualityIndex'],
+        )
+
+
 # DWD Pollenflug (German pollen forecast)
 # ---------------------------------------------------------------------------
 
@@ -1223,6 +1242,9 @@ class TestDWDPollenflugDockerFlow:
             kafka, dwd_pollenflug_image, self.TOPIC,
             reference_types=['Region'],
             telemetry_types=['PollenForecast'],
+        )
+
+
 # Wallonia ISSeP (Belgium – air quality sensors)
 # ---------------------------------------------------------------------------
 
@@ -1234,6 +1256,9 @@ class TestWalloniaISsePDockerFlow:
             kafka, wallonia_issep_image, self.TOPIC,
             reference_types=['SensorConfiguration'],
             telemetry_types=['Observation'],
+        )
+
+
 # AviationWeather.gov (METAR observations, SIGMETs, station data)
 # ---------------------------------------------------------------------------
 
@@ -1248,6 +1273,9 @@ class TestAviationWeatherDockerFlow:
             extra_env={
                 'AVIATIONWEATHER_STATIONS': 'KJFK,EGLL,LFPG',
             },
+        )
+
+
 # CBP Border Wait Times (US – border crossing wait times)
 # ---------------------------------------------------------------------------
 
@@ -1259,6 +1287,9 @@ class TestCbpBorderWaitDockerFlow:
             kafka, cbp_border_wait_image, self.TOPIC,
             reference_types=['Port'],
             telemetry_types=['WaitTime'],
+        )
+
+
 # Elexon BMRS (GB electricity market)
 # ---------------------------------------------------------------------------
 
@@ -1269,6 +1300,9 @@ class TestElexonBMRSDockerFlow:
         _run_kafka_flow_test(
             kafka, elexon_bmrs_image, self.TOPIC,
             telemetry_types=['GenerationMix', 'DemandOutturn'],
+        )
+
+
 # Energy-Charts (European electricity generation, prices & grid signals)
 # ---------------------------------------------------------------------------
 
@@ -1279,6 +1313,9 @@ class TestEnergyChartsDockerFlow:
         _run_kafka_flow_test(
             kafka, energy_charts_image, self.TOPIC,
             telemetry_types=['PublicPower', 'SpotPrice', 'GridSignal'],
+        )
+
+
 # Carbon Intensity UK (telemetry only – no reference/station data)
 # ---------------------------------------------------------------------------
 
@@ -1292,6 +1329,9 @@ class TestCarbonIntensityDockerFlow:
             telemetry_types=['Intensity', 'GenerationMix', 'RegionalIntensity'],
             min_messages=3,
             timeout=120,
+        )
+
+
 # Energi Data Service Denmark (telemetry only)
 # ---------------------------------------------------------------------------
 
@@ -1304,6 +1344,9 @@ class TestEnergiDataServiceDkDockerFlow:
             reference_types=None,
             telemetry_types=['PowerSystemSnapshot', 'SpotPrice'],
             min_messages=1,
+        )
+
+
 # USGS Geomagnetism (geomagnetic field measurements)
 # ---------------------------------------------------------------------------
 
@@ -1315,6 +1358,9 @@ class TestUSGSGeomagDockerFlow:
             kafka, usgs_geomag_image, self.TOPIC,
             reference_types=['Observatory'],
             telemetry_types=['MagneticFieldReading'],
+        )
+
+
 # Ireland OPW waterlevel.ie (Irish water levels)
 # ---------------------------------------------------------------------------
 
@@ -1330,6 +1376,10 @@ class TestIrelandOPWWaterlevelDockerFlow:
         _run_kafka_flow_test(
             kafka, ireland_opw_waterlevel_image, self.TOPIC,
             reference_types=['Station'],
+            telemetry_types=['WaterLevelReading'],
+        )
+
+
 # Nepal BIPAD Hydrology (Nepal river water levels)
 # ---------------------------------------------------------------------------
 
@@ -1345,6 +1395,9 @@ class TestNepalBipadHydrologyDockerFlow:
             kafka, nepal_bipad_image, self.TOPIC,
             reference_types=['RiverStation'],
             telemetry_types=['WaterLevelReading'],
+        )
+
+
 # ---------------------------------------------------------------------------
 # EURDEP Radiation (European ambient gamma dose rate)
 # ---------------------------------------------------------------------------
@@ -1361,6 +1414,9 @@ class TestEurdepRadiationDockerFlow:
             kafka, eurdep_radiation_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['DoseRateReading'],
+        )
+
+
 # French Road Traffic (DATEX II – flow measurements & road events)
 # ---------------------------------------------------------------------------
 
@@ -1373,6 +1429,9 @@ class TestFrenchRoadTrafficDockerFlow:
             telemetry_types=['TrafficFlowMeasurement', 'RoadEvent'],
             min_messages=5,
             timeout=420,
+        )
+
+
 # NDW Netherlands Road Traffic (telemetry only – speed, travel time, situations)
 # ---------------------------------------------------------------------------
 
@@ -1387,6 +1446,9 @@ class TestNDLNetherlandsDockerFlow:
             extra_env={'SITUATIONS_TOPIC': self.TOPIC},
             min_messages=5,
             timeout=300,
+        )
+
+
 # Madrid Traffic (Informo real-time traffic sensors)
 # ---------------------------------------------------------------------------
 
@@ -1402,6 +1464,9 @@ class TestMadridTrafficDockerFlow:
             kafka, madrid_traffic_image, self.TOPIC,
             reference_types=['MeasurementPoint'],
             telemetry_types=['TrafficReading'],
+        )
+
+
 # Paris Bicycle Counters (hourly bicycle counts)
 # ---------------------------------------------------------------------------
 
@@ -1417,6 +1482,9 @@ class TestParisBicycleCountersDockerFlow:
             kafka, paris_bicycle_counters_image, self.TOPIC,
             reference_types=['Counter'],
             telemetry_types=['BicycleCount'],
+        )
+
+
 # EAWS ALBINA Avalanche Bulletins
 # ---------------------------------------------------------------------------
 
@@ -1427,6 +1495,9 @@ class TestEAWSAlbinaDockerFlow:
         _run_kafka_flow_test(
             kafka, eaws_albina_image, self.TOPIC,
             telemetry_types=['AvalancheBulletin'],
+        )
+
+
 # SNOTEL (USDA NRCS SNOwpack TELemetry)
 # ---------------------------------------------------------------------------
 
@@ -1438,6 +1509,9 @@ class TestSnotelDockerFlow:
             kafka, snotel_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['SnowObservation'],
+        )
+
+
 # GeoSphere Austria TAWES (10-minute weather observations)
 # ---------------------------------------------------------------------------
 
@@ -1451,6 +1525,9 @@ class TestGeoSphereAustriaDockerFlow:
             telemetry_types=['WeatherObservation'],
             required_types=['WeatherStation', 'WeatherObservation'],
             extra_env={'POLLING_INTERVAL': '5', 'STATION_REFRESH_INTERVAL': '5'},
+        )
+
+
 # JMA Japan (Weather bulletins from Atom feeds)
 # ---------------------------------------------------------------------------
 
@@ -1462,6 +1539,9 @@ class TestJMAJapanDockerFlow:
             kafka, jma_japan_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['WeatherBulletin'],
+        )
+
+
 # Wikimedia OSM Diffs (OpenStreetMap minutely diffs, telemetry only)
 # ---------------------------------------------------------------------------
 
@@ -1476,6 +1556,9 @@ class TestWikimediaOsmDiffsDockerFlow:
             extra_env={'KAFKA_TOPIC': self.TOPIC},
             min_messages=1,
             timeout=180,
+        )
+
+
 # NIFC USA Wildfires (telemetry only)
 # ---------------------------------------------------------------------------
 
@@ -1488,6 +1571,9 @@ class TestNIFCUSAWildfiresDockerFlow:
             reference_types=None,
             telemetry_types=['WildfireIncident'],
             min_messages=1,
+        )
+
+
 # VATSIM (live aviation network positions)
 # ---------------------------------------------------------------------------
 
@@ -1510,5 +1596,70 @@ class TestINPEDeterBrazilDockerFlow:
         _run_kafka_flow_test(
             kafka, inpe_deter_brazil_image, self.TOPIC,
             telemetry_types=['DeforestationAlert'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# EPA UV Index (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestEPAUVDockerFlow:
+    TOPIC = 'test-epa-uv'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, epa_uv_image):
+        _run_kafka_flow_test(
+            kafka, epa_uv_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['HourlyForecast', 'DailyForecast'],
+            required_types=['HourlyForecast', 'DailyForecast'],
+            min_messages=2,
+        )
+
+
+# ---------------------------------------------------------------------------
+# King County Marine
+# ---------------------------------------------------------------------------
+
+class TestKingCountyMarineDockerFlow:
+    TOPIC = 'test-king-county-marine'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, king_county_marine_image):
+        _run_kafka_flow_test(
+            kafka, king_county_marine_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WaterQualityReading'],
+            required_types=['Station', 'WaterQualityReading'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# Seattle Fire 911 (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestSeattle911DockerFlow:
+    TOPIC = 'test-seattle-911'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, seattle_911_image):
+        _run_kafka_flow_test(
+            kafka, seattle_911_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['Incident'],
+            min_messages=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Seattle Street Closures (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestSeattleStreetClosuresDockerFlow:
+    TOPIC = 'test-seattle-street-closures'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, seattle_street_closures_image):
+        _run_kafka_flow_test(
+            kafka, seattle_street_closures_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['StreetClosure'],
+            min_messages=1,
         )
 

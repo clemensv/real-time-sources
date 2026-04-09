@@ -1,0 +1,294 @@
+{
+  "endpoints": {
+    "US.WA.KingCounty.Marine.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "king-county-marine",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/US.WA.KingCounty.Marine"]
+    }
+  },
+  "messagegroups": {
+    "US.WA.KingCounty.Marine": {
+      "messages": {
+        "US.WA.KingCounty.Marine.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "US.WA.KingCounty.Marine.Station"
+            },
+            "source": {
+              "value": "https://data.kingcounty.gov/"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.Station"
+        },
+        "US.WA.KingCounty.Marine.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "US.WA.KingCounty.Marine.WaterQualityReading"
+            },
+            "source": {
+              "value": "https://data.kingcounty.gov/"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/US.WA.KingCounty.Marine.jstruct/schemas/US.WA.KingCounty.Marine.WaterQualityReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "US.WA.KingCounty.Marine.jstruct": {
+      "schemas": {
+        "US.WA.KingCounty.Marine.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.Station.json",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "dataset_id",
+                  "dataset_name",
+                  "dataset_url",
+                  "sensor_level"
+                ],
+                "name": "Station",
+                "description": "Reference metadata for one active King County buoy or mooring raw-data dataset.",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable bridge identifier for the buoy or mooring dataset."
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Human-readable station name derived from the dataset title."
+                  },
+                  "dataset_id": {
+                    "type": "string",
+                    "description": "Socrata dataset identifier for the source dataset."
+                  },
+                  "dataset_name": {
+                    "type": "string",
+                    "description": "Original King County dataset title."
+                  },
+                  "dataset_url": {
+                    "type": "string",
+                    "description": "Dataset page URL on data.kingcounty.gov."
+                  },
+                  "sensor_level": {
+                    "type": "string",
+                    "description": "Sensor position classification inferred from the dataset title, such as surface, bottom, or water-column."
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Station latitude in decimal degrees north, parsed from the dataset description."
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Station longitude in decimal degrees east of Greenwich; King County locations are negative because they lie west of Greenwich."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "US.WA.KingCounty.Marine.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.WaterQualityReading.json",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "station_name",
+                  "observation_time"
+                ],
+                "name": "WaterQualityReading",
+                "description": "Normalized King County buoy or mooring reading carrying the documented water-quality and weather measurements published by the current raw-data datasets.",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable bridge identifier for the buoy or mooring dataset."
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Human-readable station name derived from the dataset title."
+                  },
+                  "observation_time": {
+                    "type": "string",
+                    "description": "Observation timestamp normalized to UTC ISO 8601 form."
+                  },
+                  "water_temperature_c": {
+                    "type": ["double", "null"],
+                    "description": "Water temperature in degrees Celsius.",
+                    "unit": "Cel",
+                    "symbol": "°C"
+                  },
+                  "conductivity_s_m": {
+                    "type": ["double", "null"],
+                    "description": "Electrical conductivity in siemens per meter.",
+                    "unit": "S/m",
+                    "symbol": "S/m"
+                  },
+                  "pressure_dbar": {
+                    "type": ["double", "null"],
+                    "description": "Water pressure in decibar as published by the raw datasets.",
+                    "unit": "dbar",
+                    "symbol": "dbar"
+                  },
+                  "dissolved_oxygen_mg_l": {
+                    "type": ["double", "null"],
+                    "description": "Dissolved oxygen concentration in milligrams per liter.",
+                    "unit": "mg/L",
+                    "symbol": "mg/L"
+                  },
+                  "ph": {
+                    "type": ["double", "null"],
+                    "description": "Measured pH value."
+                  },
+                  "chlorophyll_ug_l": {
+                    "type": ["double", "null"],
+                    "description": "Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter.",
+                    "unit": "ug/L",
+                    "symbol": "µg/L"
+                  },
+                  "turbidity_ntu": {
+                    "type": ["double", "null"],
+                    "description": "Turbidity in nephelometric turbidity units.",
+                    "unit": "NTU",
+                    "symbol": "NTU"
+                  },
+                  "chlorophyll_stddev_ug_l": {
+                    "type": ["double", "null"],
+                    "description": "Standard deviation of chlorophyll fluorescence in micrograms per liter.",
+                    "unit": "ug/L",
+                    "symbol": "µg/L"
+                  },
+                  "turbidity_stddev_ntu": {
+                    "type": ["double", "null"],
+                    "description": "Standard deviation of turbidity in nephelometric turbidity units.",
+                    "unit": "NTU",
+                    "symbol": "NTU"
+                  },
+                  "salinity_psu": {
+                    "type": ["double", "null"],
+                    "description": "Salinity in practical salinity units.",
+                    "unit": "PSU",
+                    "symbol": "PSU"
+                  },
+                  "specific_conductivity_s_m": {
+                    "type": ["double", "null"],
+                    "description": "Specific conductivity in siemens per meter.",
+                    "unit": "S/m",
+                    "symbol": "S/m"
+                  },
+                  "dissolved_oxygen_saturation_pct": {
+                    "type": ["double", "null"],
+                    "description": "Dissolved oxygen saturation as a percentage.",
+                    "unit": "P1",
+                    "symbol": "%"
+                  },
+                  "nitrate_umol": {
+                    "type": ["double", "null"],
+                    "description": "Nitrate or nitrate-plus-nitrite concentration in micromoles.",
+                    "unit": "umol",
+                    "symbol": "µmol"
+                  },
+                  "nitrate_mg_l": {
+                    "type": ["double", "null"],
+                    "description": "Nitrate or nitrate-plus-nitrite concentration in milligrams per liter.",
+                    "unit": "mg/L",
+                    "symbol": "mg/L"
+                  },
+                  "wind_direction_deg": {
+                    "type": ["double", "null"],
+                    "description": "Wind direction in degrees at the buoy surface.",
+                    "unit": "deg",
+                    "symbol": "°"
+                  },
+                  "wind_speed_m_s": {
+                    "type": ["double", "null"],
+                    "description": "Wind speed in meters per second at the buoy surface.",
+                    "unit": "m/s",
+                    "symbol": "m/s"
+                  },
+                  "photosynthetically_active_radiation_umol_s_m2": {
+                    "type": ["double", "null"],
+                    "description": "Photosynthetically active radiation in micromoles per second per square meter.",
+                    "unit": "umol/s/m2",
+                    "symbol": "µmol/s/m²"
+                  },
+                  "air_temperature_f": {
+                    "type": ["double", "null"],
+                    "description": "Air temperature in degrees Fahrenheit.",
+                    "unit": "[degF]",
+                    "symbol": "°F"
+                  },
+                  "air_humidity_pct": {
+                    "type": ["double", "null"],
+                    "description": "Relative humidity percentage.",
+                    "unit": "P1",
+                    "symbol": "%"
+                  },
+                  "air_pressure_in_hg": {
+                    "type": ["double", "null"],
+                    "description": "Air pressure in inches of mercury.",
+                    "unit": "[in_i'Hg]",
+                    "symbol": "inHg"
+                  },
+                  "system_battery_v": {
+                    "type": ["double", "null"],
+                    "description": "System battery voltage in volts.",
+                    "unit": "V",
+                    "symbol": "V"
+                  },
+                  "sensor_battery_v": {
+                    "type": ["double", "null"],
+                    "description": "Sensor or sonde battery voltage in volts.",
+                    "unit": "V",
+                    "symbol": "V"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

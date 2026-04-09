@@ -34,6 +34,7 @@ jobs:
           - { dir: canada-aqhi, module: canada_aqhi }
           - { dir: chmi-hydro, module: chmi_hydro }
           - { dir: defra-aurn, module: defra_aurn }
+          - { dir: epa-uv, module: epa_uv }
           - { dir: fmi-finland, module: fmi_finland }
           - { dir: hongkong-epd, module: hongkong_epd }
           - { dir: irail, module: irail }
@@ -41,6 +42,7 @@ jobs:
           - { dir: gtfs, module: gtfs_rt_bridge }
           - { dir: hubeau-hydrometrie, module: hubeau_hydrometrie }
           - { dir: imgw-hydro, module: imgw_hydro }
+          - { dir: king-county-marine, module: king_county_marine }
           - { dir: laqn-london, module: laqn_london }
           - { dir: luchtmeetnet-nl, module: luchtmeetnet_nl }
           - { dir: mode-s, module: mode_s_kafka_bridge }
@@ -51,6 +53,8 @@ jobs:
           - { dir: pegelonline, module: pegelonline }
           - { dir: rss, module: rssbridge }
           - { dir: rws-waterwebservices, module: rws_waterwebservices }
+          - { dir: seattle-911, module: seattle_911 }
+          - { dir: seattle-street-closures, module: seattle_street_closures }
           - { dir: sensor-community, module: sensor_community }
           - { dir: smhi-hydro, module: smhi_hydro }
           - { dir: uk-ea-flood-monitoring, module: uk_ea_flood_monitoring }
@@ -84,11 +88,13 @@ jobs:
           - { dir: canada-aqhi, test_class: TestCanadaAQHIDockerFlow }
           - { dir: chmi-hydro, test_class: TestCHMIHydroDockerFlow }
           - { dir: defra-aurn, test_class: TestDefraAURNDockerFlow }
+          - { dir: epa-uv, test_class: TestEPAUVDockerFlow }
           - { dir: fmi-finland, test_class: TestFMIFinlandDockerFlow }
           - { dir: hongkong-epd, test_class: TestHongKongEPDDockerFlow }
           - { dir: hubeau-hydrometrie, test_class: TestHubeauDockerFlow }
           - { dir: imgw-hydro, test_class: TestIMGWHydroDockerFlow }
           - { dir: irceline-belgium, test_class: TestIrcelineBelgiumDockerFlow }
+          - { dir: king-county-marine, test_class: TestKingCountyMarineDockerFlow }
           - { dir: laqn-london, test_class: TestLAQNLondonDockerFlow }
           - { dir: luchtmeetnet-nl, test_class: TestLuchtmeetnetNLDockerFlow }
           - { dir: noaa, test_class: TestNOAADockerFlow }
@@ -97,6 +103,8 @@ jobs:
           - { dir: noaa-nws, test_class: TestNOAANwsDockerFlow }
           - { dir: pegelonline, test_class: TestPegelonlineDockerFlow }
           - { dir: rws-waterwebservices, test_class: TestRWSDockerFlow }
+          - { dir: seattle-911, test_class: TestSeattle911DockerFlow }
+          - { dir: seattle-street-closures, test_class: TestSeattleStreetClosuresDockerFlow }
           - { dir: sensor-community, test_class: TestSensorCommunityDockerFlow }
           - { dir: smhi-hydro, test_class: TestSMHIHydroDockerFlow }
           - { dir: singapore-nea, test_class: TestSingaporeNEAAirQualityDockerFlow }

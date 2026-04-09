@@ -1,0 +1,135 @@
+{
+  "endpoints": {
+    "US.WA.Seattle.Fire911.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "seattle-911",
+          "key": "{incident_number}"
+        }
+      },
+      "messagegroups": ["#/messagegroups/US.WA.Seattle.Fire911"]
+    }
+  },
+  "messagegroups": {
+    "US.WA.Seattle.Fire911": {
+      "messages": {
+        "US.WA.Seattle.Fire911.Incident": {
+          "name": "Incident",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "US.WA.Seattle.Fire911.Incident"
+            },
+            "source": {
+              "value": "https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj"
+            },
+            "subject": {
+              "value": "{incident_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/US.WA.Seattle.Fire911.jstruct/schemas/US.WA.Seattle.Fire911.Incident"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "US.WA.Seattle.Fire911.jstruct": {
+      "schemas": {
+        "US.WA.Seattle.Fire911.Incident": {
+          "name": "Incident",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://github.com/clemensv/real-time-sources/seattle-911/schemas/US.WA.Seattle.Fire911.Incident.json",
+                "type": "object",
+                "required": [
+                  "incident_number",
+                  "incident_type",
+                  "incident_datetime"
+                ],
+                "name": "Incident",
+                "description": "Seattle Fire Department 911 dispatch record from the City of Seattle real-time fire calls dataset.",
+                "properties": {
+                  "incident_number": {
+                    "type": "string",
+                    "description": "Stable Seattle Fire Department incident identifier for the dispatch record.",
+                    "alternates": [
+                      {
+                        "name": "incident_number",
+                        "description": "Original field name in the Seattle Open Data dataset."
+                      }
+                    ]
+                  },
+                  "incident_type": {
+                    "type": "string",
+                    "description": "Seattle Fire Department response type for the incident, such as Aid Response or Medic Response.",
+                    "alternates": [
+                      {
+                        "name": "type",
+                        "description": "Original field name in the Seattle Open Data dataset."
+                      }
+                    ]
+                  },
+                  "incident_datetime": {
+                    "type": "string",
+                    "description": "Date and time of the call as published by the Seattle Open Data dataset, in local dataset timestamp form without an explicit UTC offset.",
+                    "alternates": [
+                      {
+                        "name": "datetime",
+                        "description": "Original field name in the Seattle Open Data dataset."
+                      }
+                    ]
+                  },
+                  "address": {
+                    "type": ["string", "null"],
+                    "description": "Incident location text as published by the dataset.",
+                    "alternates": [
+                      {
+                        "name": "address",
+                        "description": "Original field name in the Seattle Open Data dataset."
+                      }
+                    ]
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Latitude of the incident location in decimal degrees north.",
+                    "alternates": [
+                      {
+                        "name": "latitude",
+                        "description": "Original field name in the Seattle Open Data dataset."
+                      }
+                    ]
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Longitude of the incident location in decimal degrees east of Greenwich; Seattle values are negative because they lie west of Greenwich.",
+                    "alternates": [
+                      {
+                        "name": "longitude",
+                        "description": "Original field name in the Seattle Open Data dataset."
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
