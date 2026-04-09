@@ -204,6 +204,10 @@ def irail_image():
 def wsdot_image():
     return build_image('wsdot')
 
+@pytest.fixture(scope='module')
+def gracedb_image():
+    return build_image('gracedb')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -548,6 +552,22 @@ class TestUSGSEarthquakesDockerFlow:
             kafka, usgs_earthquakes_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['Earthquakes.Event'],
+            min_messages=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# GraceDB Gravitational Wave Alerts (telemetry only)
+# ---------------------------------------------------------------------------
+
+class TestGraceDBDockerFlow:
+    TOPIC = 'test-gracedb'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, gracedb_image):
+        _run_kafka_flow_test(
+            kafka, gracedb_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['Superevent'],
             min_messages=1,
         )
 
