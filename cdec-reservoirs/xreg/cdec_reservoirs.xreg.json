@@ -1,0 +1,198 @@
+{
+  "endpoints": {
+    "gov.ca.water.cdec.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "cdec-reservoirs",
+          "key": "{station_id}/{sensor_num}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.ca.water.cdec"
+      ]
+    }
+  },
+  "messagegroups": {
+    "gov.ca.water.cdec": {
+      "messages": {
+        "gov.ca.water.cdec.ReservoirReading": {
+          "name": "ReservoirReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "A single sensor reading from a CDEC reservoir station, representing an hourly (or sub-hourly) observation of storage, elevation, inflow, outflow, or river stage. Each reading corresponds to one station/sensor/timestamp combination as reported by the California Data Exchange Center JSON Data Servlet.",
+          "envelopemetadata": {
+            "type": {
+              "value": "gov.ca.water.cdec.ReservoirReading"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}/{sensor_num}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/gov.ca.water.cdec.jstruct/schemas/gov.ca.water.cdec.ReservoirReading"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "gov.ca.water.cdec.jstruct": {
+      "schemas": {
+        "gov.ca.water.cdec.ReservoirReading": {
+          "name": "ReservoirReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/gov/ca/water/cdec/ReservoirReading",
+                "name": "ReservoirReading",
+                "$root": "#/definitions/gov/ca/water/cdec/ReservoirReading",
+                "definitions": {
+                  "gov": {
+                    "ca": {
+                      "water": {
+                        "cdec": {
+                          "ReservoirReading": {
+                            "name": "ReservoirReading",
+                            "type": "object",
+                            "description": "A single sensor reading from a CDEC reservoir station. The California Data Exchange Center (CDEC) publishes hourly and sub-hourly observations for over 2,600 stations across California. Each reading captures one measurement for a specific station, sensor type, and timestamp.",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "Three-letter CDEC station identifier (e.g. SHA for Shasta Dam, ORO for Oroville Dam, FOL for Folsom Dam). This is the primary key for the monitoring station and is immutable."
+                              },
+                              "sensor_num": {
+                                "type": "int32",
+                                "description": "CDEC numeric sensor identifier. Standard sensor numbers: 15=STORAGE (acre-feet), 6=RESERVOIR ELEVATION (feet), 76=INFLOW (cubic feet per second), 23=OUTFLOW (cubic feet per second), 1=RIVER STAGE (feet)."
+                              },
+                              "sensor_type": {
+                                "type": "string",
+                                "description": "Human-readable sensor type label as returned by the CDEC API (e.g. 'STORAGE', 'RES ELE', 'INFLOW', 'OUTFLOW', 'STAGE')."
+                              },
+                              "value": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Observed measurement value in the units specified by the 'units' field. Null when no observation is available or when the upstream reports the sentinel value -9999."
+                              },
+                              "units": {
+                                "type": "string",
+                                "description": "Engineering units of the measurement as reported by CDEC (e.g. 'AF' for acre-feet, 'FEET' for feet, 'CFS' for cubic feet per second)."
+                              },
+                              "date": {
+                                "type": "string",
+                                "description": "Observation timestamp as reported by CDEC in PST (Pacific Standard Time, UTC-8). Format from the API is 'YYYY-M-D H:MM' and is normalized to ISO 8601 format 'YYYY-MM-DDTHH:MM:SS-08:00'. CDEC always reports in PST regardless of daylight saving time."
+                              },
+                              "dur_code": {
+                                "type": "string",
+                                "description": "Duration code indicating the measurement interval. 'H' for hourly observations, 'D' for daily observations, 'E' for event-based (15-minute or irregular)."
+                              },
+                              "data_flag": {
+                                "type": "string",
+                                "description": "Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data."
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "sensor_num",
+                              "sensor_type",
+                              "value",
+                              "units",
+                              "date",
+                              "dur_code",
+                              "data_flag"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "gov.ca.water.cdec.avro": {
+      "schemas": {
+        "gov.ca.water.cdec.ReservoirReading": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "ReservoirReading",
+                "namespace": "gov.ca.water.cdec",
+                "doc": "A single sensor reading from a CDEC reservoir station. The California Data Exchange Center (CDEC) publishes hourly and sub-hourly observations for over 2,600 stations across California. Each reading captures one measurement for a specific station, sensor type, and timestamp.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Three-letter CDEC station identifier (e.g. SHA for Shasta Dam, ORO for Oroville Dam, FOL for Folsom Dam). This is the primary key for the monitoring station and is immutable."
+                  },
+                  {
+                    "name": "sensor_num",
+                    "type": "int",
+                    "doc": "CDEC numeric sensor identifier. Standard sensor numbers: 15=STORAGE (acre-feet), 6=RESERVOIR ELEVATION (feet), 76=INFLOW (cubic feet per second), 23=OUTFLOW (cubic feet per second), 1=RIVER STAGE (feet)."
+                  },
+                  {
+                    "name": "sensor_type",
+                    "type": "string",
+                    "doc": "Human-readable sensor type label as returned by the CDEC API (e.g. 'STORAGE', 'RES ELE', 'INFLOW', 'OUTFLOW', 'STAGE')."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Observed measurement value in the units specified by the 'units' field. Null when no observation is available or when the upstream reports the sentinel value -9999."
+                  },
+                  {
+                    "name": "units",
+                    "type": "string",
+                    "doc": "Engineering units of the measurement as reported by CDEC (e.g. 'AF' for acre-feet, 'FEET' for feet, 'CFS' for cubic feet per second)."
+                  },
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Observation timestamp as reported by CDEC in PST (Pacific Standard Time, UTC-8). Format from the API is 'YYYY-M-D H:MM' and is normalized to ISO 8601 format 'YYYY-MM-DDTHH:MM:SS-08:00'. CDEC always reports in PST regardless of daylight saving time."
+                  },
+                  {
+                    "name": "dur_code",
+                    "type": "string",
+                    "doc": "Duration code indicating the measurement interval. 'H' for hourly observations, 'D' for daily observations, 'E' for event-based (15-minute or irregular)."
+                  },
+                  {
+                    "name": "data_flag",
+                    "type": "string",
+                    "doc": "Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data."
+                  }
+                ]
+              }
+            }
+          },
+          "format": "Avro/1.11.3"
+        }
+      }
+    }
+  }
+}
