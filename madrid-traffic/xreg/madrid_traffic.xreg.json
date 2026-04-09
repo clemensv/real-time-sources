@@ -85,15 +85,24 @@
                 "properties": {
                   "sensor_id": {
                     "type": "string",
-                    "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point."
+                    "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point.",
+                    "altnames": {
+                      "lang:es": "idelem"
+                    }
                   },
                   "description": {
                     "type": "string",
-                    "description": "Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish."
+                    "description": "Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish.",
+                    "altnames": {
+                      "lang:es": "descripcion"
+                    }
                   },
                   "element_type": {
                     "type": ["string", "null"],
-                    "description": "Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway."
+                    "description": "Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway.",
+                    "altnames": {
+                      "lang:es": "tipo_elem"
+                    }
                   },
                   "subarea": {
                     "type": ["string", "null"],
@@ -115,7 +124,10 @@
                     "type": ["integer", "null"],
                     "description": "Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios.",
                     "unit": "1/h",
-                    "symbol": "veh/h"
+                    "symbol": "veh/h",
+                    "altnames": {
+                      "lang:es": "intensidadSat"
+                    }
                   }
                 },
                 "$id": "https://informo.madrid.es/schemas/es/madrid/informo/MeasurementPoint",
@@ -142,29 +154,44 @@
                 "properties": {
                   "sensor_id": {
                     "type": "string",
-                    "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data."
+                    "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data.",
+                    "altnames": {
+                      "lang:es": "idelem"
+                    }
                   },
                   "intensity": {
                     "type": ["integer", "null"],
                     "description": "Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode.",
                     "unit": "1/h",
-                    "symbol": "veh/h"
+                    "symbol": "veh/h",
+                    "altnames": {
+                      "lang:es": "intensidad"
+                    }
                   },
                   "occupancy": {
                     "type": ["integer", "null"],
                     "description": "Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100.",
                     "unit": "%",
-                    "symbol": "%"
+                    "symbol": "%",
+                    "altnames": {
+                      "lang:es": "ocupacion"
+                    }
                   },
                   "load": {
                     "type": ["integer", "null"],
                     "description": "Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100.",
                     "unit": "%",
-                    "symbol": "%"
+                    "symbol": "%",
+                    "altnames": {
+                      "lang:es": "carga"
+                    }
                   },
                   "service_level": {
                     "type": ["integer", "null"],
-                    "description": "Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested."
+                    "description": "Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested.",
+                    "altnames": {
+                      "lang:es": "nivelServicio"
+                    }
                   },
                   "error_flag": {
                     "type": ["string", "null"],
