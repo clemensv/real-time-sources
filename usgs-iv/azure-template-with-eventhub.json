@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the USGS Instantaneous Values bridge with a new Event Hub namespace, event hub, and Azure Container Instance."
+    "description": "Deploys the USGS Instantaneous Values bridge with a new Event Hub namespace, event hub, and Azure Container Instance with Log Analytics diagnostics."
   },
   "parameters": {
     "containerGroupName": {
@@ -40,9 +40,22 @@
     "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
     "eventHubName": "[parameters('containerGroupName')]",
     "authRuleName": "bridge-send-listen",
-    "authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('authRuleName'))]"
+    "authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('authRuleName'))]",
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
   },
   "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
     {
       "type": "Microsoft.EventHub/namespaces",
       "apiVersion": "2024-01-01",
@@ -125,12 +138,20 @@
       "name": "[parameters('containerGroupName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
         "[variables('authRuleResourceId')]",
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
       ],
       "properties": {
         "osType": "Linux",
         "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
         "containers": [
           {
             "name": "[parameters('containerGroupName')]",
@@ -139,7 +160,7 @@
               "resources": {
                 "requests": {
                   "cpu": 0.5,
-                  "memoryInGB": 0.5
+                  "memoryInGB": 1.0
                 }
               },
               "environmentVariables": [
@@ -154,6 +175,10 @@
                 {
                   "name": "USGS_LAST_POLLED_FILE",
                   "value": "/mnt/bridge-state/last_polled.json"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
                 }
               ],
               "volumeMounts": [
@@ -190,6 +215,10 @@
     "eventHubName": {
       "type": "string",
       "value": "[variables('eventHubName')]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
     }
   }
 }
