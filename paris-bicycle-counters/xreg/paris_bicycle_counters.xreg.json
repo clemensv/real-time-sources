@@ -1,0 +1,229 @@
+{
+  "endpoints": {
+    "FR.Paris.OpenData.Velo.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "paris-bicycle-counters",
+          "key": "{counter_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/FR.Paris.OpenData.Velo"
+      ]
+    }
+  },
+  "messagegroups": {
+    "FR.Paris.OpenData.Velo": {
+      "messages": {
+        "FR.Paris.OpenData.Velo.Counter": {
+          "name": "Counter",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "FR.Paris.OpenData.Velo.Counter"
+            },
+            "source": {
+              "value": "https://opendata.paris.fr/explore/dataset/comptage-velo-compteurs"
+            },
+            "subject": {
+              "value": "{counter_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.jstruct/schemas/FR.Paris.OpenData.Velo.Counter"
+        },
+        "FR.Paris.OpenData.Velo.BicycleCount": {
+          "name": "BicycleCount",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "FR.Paris.OpenData.Velo.BicycleCount"
+            },
+            "source": {
+              "value": "https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs"
+            },
+            "subject": {
+              "value": "{counter_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/FR.Paris.OpenData.Velo.jstruct/schemas/FR.Paris.OpenData.Velo.BicycleCount"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "FR.Paris.OpenData.Velo.jstruct": {
+      "schemas": {
+        "FR.Paris.OpenData.Velo.Counter": {
+          "name": "Counter",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "counter_id",
+                  "counter_name"
+                ],
+                "name": "Counter",
+                "description": "Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.",
+                "properties": {
+                  "counter_id": {
+                    "type": "string",
+                    "description": "Unique identifier for the counting channel, combining the site ID and channel ID (mapped from 'id_compteur').",
+                    "altnames": {
+                      "lang:fr": "id_compteur"
+                    },
+                    "alternates": [
+                      {
+                        "name": "id_compteur",
+                        "description": "Original French field name in the Paris Open Data API."
+                      }
+                    ]
+                  },
+                  "counter_name": {
+                    "type": "string",
+                    "description": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').",
+                    "altnames": {
+                      "lang:fr": "nom_compteur"
+                    },
+                    "alternates": [
+                      {
+                        "name": "nom_compteur",
+                        "description": "Original French field name in the Paris Open Data API."
+                      }
+                    ]
+                  },
+                  "channel_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Directional channel label for the counter, e.g. 'SE-NO' or 'E-O' (mapped from 'channel_name')."
+                  },
+                  "installation_date": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Date when the counter was installed, in ISO 8601 date format (YYYY-MM-DD)."
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Longitude of the counter location in decimal degrees (WGS 84)."
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Latitude of the counter location in decimal degrees (WGS 84)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "FR.Paris.OpenData.Velo.BicycleCount": {
+          "name": "BicycleCount",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "counter_id",
+                  "counter_name",
+                  "date"
+                ],
+                "name": "BicycleCount",
+                "description": "Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.",
+                "properties": {
+                  "counter_id": {
+                    "type": "string",
+                    "description": "Unique identifier for the counting channel (mapped from 'id_compteur').",
+                    "altnames": {
+                      "lang:fr": "id_compteur"
+                    },
+                    "alternates": [
+                      {
+                        "name": "id_compteur",
+                        "description": "Original French field name in the Paris Open Data API."
+                      }
+                    ]
+                  },
+                  "counter_name": {
+                    "type": "string",
+                    "description": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').",
+                    "altnames": {
+                      "lang:fr": "nom_compteur"
+                    },
+                    "alternates": [
+                      {
+                        "name": "nom_compteur",
+                        "description": "Original French field name in the Paris Open Data API."
+                      }
+                    ]
+                  },
+                  "count": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "Number of bicycles counted during the one-hour window (mapped from 'sum_counts').",
+                    "alternates": [
+                      {
+                        "name": "sum_counts",
+                        "description": "Original French field name in the Paris Open Data API."
+                      }
+                    ]
+                  },
+                  "date": {
+                    "type": "datetime",
+                    "description": "Start of the one-hour counting window in ISO 8601 format with timezone offset."
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Longitude of the counter location in decimal degrees (WGS 84)."
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Latitude of the counter location in decimal degrees (WGS 84)."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
