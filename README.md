@@ -114,6 +114,7 @@ documentation, and the README in each project directory has full details.
 |---|---|---|
 | Autobahn | Germany (roadworks, warnings, closures, webcams) | [Container](autobahn/CONTAINER.md) |
 | Digitraffic Road | Finland (TMS sensors, road weather, traffic messages) | [Container](digitraffic-road/CONTAINER.md) |
+| French Road Traffic | France (DATEX II traffic flow and road events, Bison Futé) | [Container](french-road-traffic/CONTAINER.md) |
 | GTFS Realtime | Global (1,000+ transit agencies, vehicles, trips, alerts) | [Container](gtfs/CONTAINER.md) |
 | Nextbus | North America (public transit arrivals) | [README](nextbus/README.md) |
 | WSDOT | Washington State (~1,000 traffic flow sensors, LOS readings) | [Container](wsdot/CONTAINER.md) |
@@ -346,6 +347,12 @@ state to detect changes.
 MQTT stream. TMS sensor readings (vehicle counts and speeds from 500+ stations),
 road weather measurements (350+ stations), traffic messages, and maintenance
 vehicle tracking. Open data (CC 4.0 BY).
+
+**[French Road Traffic](french-road-traffic/README.md)** -- French national road
+traffic data via DATEX II from Bison Futé (tipi.bison-fute.gouv.fr). Traffic flow
+measurements (~1,000 sites with vehicle counts and speeds) and road events (~300
+situations including accidents, roadworks, and restrictions). Polled every 6
+minutes.
 
 **[GTFS Realtime](gtfs/README.md)** -- GTFS and GTFS-RT data from 1,000+ public
 transport agencies worldwide. Vehicle positions, trip updates, and alerts. MTA

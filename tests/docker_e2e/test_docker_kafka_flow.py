@@ -223,6 +223,8 @@ def energy_charts_image():
     return build_image('energy-charts')
 def usgs_geomag_image():
     return build_image('usgs-geomag')
+def french_road_traffic_image():
+    return build_image('french-road-traffic')
 
 
 # ---------------------------------------------------------------------------
@@ -1279,4 +1281,16 @@ class TestEurdepRadiationDockerFlow:
             kafka, eurdep_radiation_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['DoseRateReading'],
+# French Road Traffic (DATEX II – flow measurements & road events)
+# ---------------------------------------------------------------------------
+
+class TestFrenchRoadTrafficDockerFlow:
+    TOPIC = 'test-french-road-traffic'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, french_road_traffic_image):
+        _run_kafka_flow_test(
+            kafka, french_road_traffic_image, self.TOPIC,
+            telemetry_types=['TrafficFlowMeasurement', 'RoadEvent'],
+            min_messages=5,
+            timeout=420,
         )

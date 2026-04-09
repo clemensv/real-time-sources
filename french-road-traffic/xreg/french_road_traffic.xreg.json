@@ -1,0 +1,566 @@
+{
+  "endpoints": {
+    "fr.gouv.transport.bison_fute.traffic_flow.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "french-road-traffic-flow",
+          "key": "{site_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fr.gouv.transport.bison_fute.traffic_flow"
+      ]
+    },
+    "fr.gouv.transport.bison_fute.road_event.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "french-road-traffic-events",
+          "key": "{situation_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/fr.gouv.transport.bison_fute.road_event"
+      ]
+    }
+  },
+  "messagegroups": {
+    "fr.gouv.transport.bison_fute.traffic_flow": {
+      "messages": {
+        "fr.gouv.transport.bison_fute.TrafficFlowMeasurement": {
+          "name": "TrafficFlowMeasurement",
+          "envelope": "CloudEvents/1.0",
+          "description": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fr.gouv.transport.bison_fute.TrafficFlowMeasurement"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.TrafficFlowMeasurement"
+        }
+      }
+    },
+    "fr.gouv.transport.bison_fute.road_event": {
+      "messages": {
+        "fr.gouv.transport.bison_fute.RoadEvent": {
+          "name": "RoadEvent",
+          "envelope": "CloudEvents/1.0",
+          "description": "Real-time road situation record from the French national non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record represents a traffic incident, construction works, lane management, obstruction, or other event affecting road conditions. Record types include Accident, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, AbnormalTraffic, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, and RoadsideServiceDisruption.",
+          "envelopemetadata": {
+            "type": {
+              "value": "fr.gouv.transport.bison_fute.RoadEvent"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{situation_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.RoadEvent"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "fr.gouv.transport.bison_fute.jstruct": {
+      "schemas": {
+        "fr.gouv.transport.bison_fute.TrafficFlowMeasurement": {
+          "name": "TrafficFlowMeasurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/fr/gouv/transport/bison_fute/TrafficFlowMeasurement",
+                "name": "TrafficFlowMeasurement",
+                "$root": "#/definitions/fr/gouv/transport/bison_fute/TrafficFlowMeasurement",
+                "definitions": {
+                  "fr": {
+                    "gouv": {
+                      "transport": {
+                        "bison_fute": {
+                          "TrafficFlowMeasurement": {
+                            "name": "TrafficFlowMeasurement",
+                            "type": "object",
+                            "description": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Each record corresponds to one siteMeasurements element in the Bison Futé MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.",
+                            "properties": {
+                              "site_id": {
+                                "type": "string",
+                                "description": "Unique identifier of the DATEX II measurement site record, as declared in the measurementSiteReference element (e.g. 'MUM76.h1', 'MB631.B8'). Stable across publication snapshots."
+                              },
+                              "measurement_time": {
+                                "type": "string",
+                                "description": "ISO 8601 timestamp of the measurement, taken from the measurementTimeDefault element in the DATEX II siteMeasurements block. Represents the end of the aggregation interval."
+                              },
+                              "vehicle_flow_rate": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Number of vehicles per hour passing the measurement site during the aggregation interval, from the DATEX II TrafficFlow/vehicleFlowRate element. Null when flow data is not available for this site in the current snapshot."
+                              },
+                              "average_speed": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Average speed of vehicles in kilometres per hour at the measurement site during the aggregation interval, from the DATEX II TrafficSpeed/averageVehicleSpeed/speed element. Null when speed data is not available for this site in the current snapshot."
+                              },
+                              "input_values_flow": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Number of individual vehicle observations used to compute the vehicle flow rate, from the numberOfInputValuesUsed attribute on the vehicleFlow element. Null when flow data is not present."
+                              },
+                              "input_values_speed": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Number of individual vehicle observations used to compute the average speed, from the numberOfInputValuesUsed attribute on the averageVehicleSpeed element. Null when speed data is not present."
+                              }
+                            },
+                            "required": [
+                              "site_id",
+                              "measurement_time"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fr.gouv.transport.bison_fute.RoadEvent": {
+          "name": "RoadEvent",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/fr/gouv/transport/bison_fute/RoadEvent",
+                "name": "RoadEvent",
+                "$root": "#/definitions/fr/gouv/transport/bison_fute/RoadEvent",
+                "definitions": {
+                  "fr": {
+                    "gouv": {
+                      "transport": {
+                        "bison_fute": {
+                          "RoadEvent": {
+                            "name": "RoadEvent",
+                            "type": "object",
+                            "description": "Real-time road situation record from the French national non-conceded road network DATEX II SituationPublication feed. Each record represents one situationRecord element within a situation, describing a traffic incident, construction works, lane management, environmental obstruction, or other event affecting road conditions. Location is provided as WGS84 coordinates and road identifiers.",
+                            "properties": {
+                              "situation_id": {
+                                "type": "string",
+                                "description": "Unique identifier of the parent DATEX II situation element (e.g. '230814-001797'). Stable across version updates of the same situation."
+                              },
+                              "record_id": {
+                                "type": "string",
+                                "description": "Unique identifier of this specific situation record within the parent situation (e.g. '230814-001797-1'). Each situation may contain multiple records."
+                              },
+                              "version": {
+                                "type": "string",
+                                "description": "Version number of the parent situation, incremented each time the situation is updated by the publisher."
+                              },
+                              "severity": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Overall severity of the parent situation as published in the overallSeverity element. Possible values include 'low', 'medium', 'high', 'highest'. Null when severity is not provided."
+                              },
+                              "record_type": {
+                                "type": "string",
+                                "description": "DATEX II xsi:type of the situation record, indicating the category of road event. Known values: Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, RoadsideServiceDisruption."
+                              },
+                              "probability": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Probability of occurrence of the event from the probabilityOfOccurrence element. Possible values: 'certain', 'probable', 'riskOf'. Null when not specified."
+                              },
+                              "latitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "WGS84 latitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record."
+                              },
+                              "longitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "WGS84 longitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record."
+                              },
+                              "road_number": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Road identifier (e.g. 'N20', 'A10', 'D906') from the linearElement/roadNumber or tpegOtherPointDescriptor linkName element. Null when no road number is available."
+                              },
+                              "town_name": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Name of the nearest town from the tpegOtherPointDescriptor townName element. Null when no town name is provided."
+                              },
+                              "direction": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Direction of traffic affected by the event from the tpegDirection element. Possible values: 'bothWays', 'positive', 'negative'. Null when direction is not specified."
+                              },
+                              "description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Human-readable description of the event from the generalPublicComment element with commentType 'description'. Null when no description comment is provided."
+                              },
+                              "location_description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Human-readable description of the event location from the generalPublicComment element with commentType 'locationDescriptor'. When multiple location descriptors exist, they are concatenated with ' | '. Null when no location comment is provided."
+                              },
+                              "source_name": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Name of the organization or directorate that published this situation record, from the source/sourceIdentification element. Null when not specified."
+                              },
+                              "validity_status": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Validity status of the situation record from the validity/validityStatus element (e.g. 'definedByValidityTimeSpec', 'active'). Null when not provided."
+                              },
+                              "overall_start_time": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "ISO 8601 start time of the event validity period from the overallStartTime element. Null when the validity period is not defined."
+                              },
+                              "overall_end_time": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "ISO 8601 end time of the event validity period from the overallEndTime element. Null when the event has no defined end time (open-ended)."
+                              },
+                              "creation_time": {
+                                "type": "string",
+                                "description": "ISO 8601 timestamp when the situation record was first created, from the situationRecordCreationTime element."
+                              },
+                              "observation_time": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "ISO 8601 timestamp of the most recent observation of this situation, from the situationRecordObservationTime element. Null when not provided."
+                              }
+                            },
+                            "required": [
+                              "situation_id",
+                              "record_id",
+                              "version",
+                              "record_type",
+                              "creation_time"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fr.gouv.transport.bison_fute.avro": {
+      "schemas": {
+        "fr.gouv.transport.bison_fute.TrafficFlowMeasurement": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "TrafficFlowMeasurement",
+                "namespace": "fr.gouv.transport.bison_fute",
+                "doc": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network.",
+                "fields": [
+                  {
+                    "name": "site_id",
+                    "type": "string",
+                    "doc": "Unique identifier of the DATEX II measurement site record."
+                  },
+                  {
+                    "name": "measurement_time",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of the measurement."
+                  },
+                  {
+                    "name": "vehicle_flow_rate",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Number of vehicles per hour passing the measurement site."
+                  },
+                  {
+                    "name": "average_speed",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Average speed of vehicles in km/h at the measurement site."
+                  },
+                  {
+                    "name": "input_values_flow",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Number of vehicle observations used to compute the flow rate."
+                  },
+                  {
+                    "name": "input_values_speed",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Number of vehicle observations used to compute the average speed."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "fr.gouv.transport.bison_fute.RoadEvent": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "RoadEvent",
+                "namespace": "fr.gouv.transport.bison_fute",
+                "doc": "Real-time road situation record from the French national non-conceded road network.",
+                "fields": [
+                  {
+                    "name": "situation_id",
+                    "type": "string",
+                    "doc": "Unique identifier of the parent DATEX II situation."
+                  },
+                  {
+                    "name": "record_id",
+                    "type": "string",
+                    "doc": "Unique identifier of this situation record within the parent situation."
+                  },
+                  {
+                    "name": "version",
+                    "type": "string",
+                    "doc": "Version number of the parent situation."
+                  },
+                  {
+                    "name": "severity",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Overall severity of the parent situation."
+                  },
+                  {
+                    "name": "record_type",
+                    "type": "string",
+                    "doc": "DATEX II xsi:type of the situation record."
+                  },
+                  {
+                    "name": "probability",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Probability of occurrence of the event."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "WGS84 latitude of the event location."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "WGS84 longitude of the event location."
+                  },
+                  {
+                    "name": "road_number",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Road identifier (e.g. N20, A10)."
+                  },
+                  {
+                    "name": "town_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Name of the nearest town."
+                  },
+                  {
+                    "name": "direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Direction of traffic affected."
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Human-readable description of the event."
+                  },
+                  {
+                    "name": "location_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Human-readable description of the event location."
+                  },
+                  {
+                    "name": "source_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Name of the publishing organization."
+                  },
+                  {
+                    "name": "validity_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Validity status of the situation record."
+                  },
+                  {
+                    "name": "overall_start_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "ISO 8601 start time of the event validity period."
+                  },
+                  {
+                    "name": "overall_end_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "ISO 8601 end time of the event validity period."
+                  },
+                  {
+                    "name": "creation_time",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp when the situation record was first created."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "ISO 8601 timestamp of the most recent observation."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
