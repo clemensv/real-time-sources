@@ -1,0 +1,28 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "airqo-uganda"
+version = "0.1.0"
+description = "AirQo Uganda Air Quality bridge to Apache Kafka"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = "^1.12.1"
+airqo_uganda_producer_data = {path = "airqo_uganda_producer/airqo_uganda_producer_data"}
+airqo_uganda_producer_kafka_producer = {path = "airqo_uganda_producer/airqo_uganda_producer_kafka_producer"}
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.2"
+pytest-cov = ">=5.0.0"
+testcontainers = ">=4.8.1"
+requests-mock = ">=1.12.1"
+
+[tool.poetry.scripts]
+airqo-uganda = "airqo_uganda:main"

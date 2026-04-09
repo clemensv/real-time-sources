@@ -204,6 +204,10 @@ def irail_image():
 def wsdot_image():
     return build_image('wsdot')
 
+@pytest.fixture(scope='module')
+def airqo_uganda_image():
+    return build_image('airqo-uganda')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1030,4 +1034,21 @@ class TestGIOSPolandDockerFlow:
             reference_types=['Station', 'Sensor'],
             telemetry_types=['Measurement', 'AirQualityIndex'],
             required_types=['Station', 'Sensor', 'Measurement', 'AirQualityIndex'],
+# AirQo Uganda (air quality monitoring)
+# ---------------------------------------------------------------------------
+
+class TestAirQoUgandaDockerFlow:
+    TOPIC = 'test-airqo-uganda'
+
+    @pytest.fixture(autouse=True)
+    def _require_api_key(self):
+        if not os.environ.get('AIRQO_API_KEY', ''):
+            pytest.skip('AIRQO_API_KEY not set')
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, airqo_uganda_image):
+        _run_kafka_flow_test(
+            kafka, airqo_uganda_image, self.TOPIC,
+            reference_types=['Site'],
+            telemetry_types=['Measurement'],
+            extra_env={'AIRQO_API_KEY': os.environ['AIRQO_API_KEY']},
         )
