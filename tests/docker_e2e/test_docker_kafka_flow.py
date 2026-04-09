@@ -197,6 +197,8 @@ def gios_poland_image():
     return build_image('gios-poland')
 def wallonia_issep_image():
     return build_image('wallonia-issep')
+def carbon_intensity_image():
+    return build_image('carbon-intensity')
 
 @pytest.fixture(scope='module')
 def irail_image():
@@ -1191,4 +1193,17 @@ class TestEnergyChartsDockerFlow:
         _run_kafka_flow_test(
             kafka, energy_charts_image, self.TOPIC,
             telemetry_types=['PublicPower', 'SpotPrice', 'GridSignal'],
+# Carbon Intensity UK (telemetry only – no reference/station data)
+# ---------------------------------------------------------------------------
+
+class TestCarbonIntensityDockerFlow:
+    TOPIC = 'test-carbon-intensity'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, carbon_intensity_image):
+        _run_kafka_flow_test(
+            kafka, carbon_intensity_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['Intensity', 'GenerationMix', 'RegionalIntensity'],
+            min_messages=3,
+            timeout=120,
         )

@@ -128,6 +128,7 @@ documentation, and the README in each project directory has full details.
 
 | Source | Coverage | Link |
 |---|---|---|
+| Carbon Intensity UK | Great Britain (national & 17 DNO regions, half-hourly intensity + fuel mix) | [Container](carbon-intensity/CONTAINER.md) |
 | ENTSO-E | Europe (electricity generation, prices, load, flows) | [Container](entsoe/CONTAINER.md) |
 | NDL Netherlands | Netherlands (EV charging stations, EVSE status, tariffs) | [Container](ndl-netherlands/CONTAINER.md) |
 
@@ -365,6 +366,10 @@ stations, including delays, platform assignments, cancellations, and occupancy.
 No authentication. Rate-limited to 3 requests/second; full cycle ~3–4 minutes.
 
 ### Energy and Infrastructure
+
+**[Carbon Intensity UK](carbon-intensity/README.md)** -- National Grid ESO Carbon
+Intensity API. Half-hourly GB electricity carbon intensity (forecast and actual),
+generation fuel mix for 10 fuel types, and regional breakdowns for 17 DNO regions.
 
 **[ENTSO-E](entsoe/README.md)** -- European electricity market data from the
 ENTSO-E Transparency Platform. Generation output, day-ahead prices, load,
