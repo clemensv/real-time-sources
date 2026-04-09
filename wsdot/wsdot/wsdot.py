@@ -21,7 +21,16 @@ from wsdot_producer_data.us.wa.wsdot.tolls.tollrate import TollRate
 from wsdot_producer_data.us.wa.wsdot.cvrestrictions.commercialvehiclerestriction import CommercialVehicleRestriction
 from wsdot_producer_data.us.wa.wsdot.border.bordercrossing import BorderCrossing
 from wsdot_producer_data.us.wa.wsdot.ferries.vessellocation import VesselLocation
-from wsdot_producer_kafka_producer.producer import UsWaWsdotTrafficEventProducer
+from wsdot_producer_kafka_producer.producer import (
+    UsWaWsdotBorderEventProducer,
+    UsWaWsdotCvrestrictionsEventProducer,
+    UsWaWsdotFerriesEventProducer,
+    UsWaWsdotMountainpassEventProducer,
+    UsWaWsdotTollsEventProducer,
+    UsWaWsdotTrafficEventProducer,
+    UsWaWsdotTraveltimesEventProducer,
+    UsWaWsdotWeatherEventProducer,
+)
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -102,7 +111,7 @@ class WSDOTApi:
         return self._traveler_get("MountainPassConditions", "MountainPassConditions")
 
     def fetch_weather_information(self) -> List[Dict[str, Any]]:
-        return self._traveler_get("WeatherInformation", "WeatherInformation")
+        return self._traveler_get("WeatherInformation", "CurrentWeatherInformation")
 
     def fetch_weather_stations(self) -> List[Dict[str, Any]]:
         return self._traveler_get("WeatherStations", "WeatherStations")
@@ -396,7 +405,14 @@ def feed(args):
     region_filter = args.region_filter or os.environ.get("REGION_FILTER", "")
 
     producer = Producer(kafka_config)
-    ep = UsWaWsdotTrafficEventProducer(producer, kafka_topic)
+    traffic_ep = UsWaWsdotTrafficEventProducer(producer, kafka_topic)
+    traveltimes_ep = UsWaWsdotTraveltimesEventProducer(producer, kafka_topic)
+    mountainpass_ep = UsWaWsdotMountainpassEventProducer(producer, kafka_topic)
+    weather_ep = UsWaWsdotWeatherEventProducer(producer, kafka_topic)
+    tolls_ep = UsWaWsdotTollsEventProducer(producer, kafka_topic)
+    cvrestrictions_ep = UsWaWsdotCvrestrictionsEventProducer(producer, kafka_topic)
+    border_ep = UsWaWsdotBorderEventProducer(producer, kafka_topic)
+    ferries_ep = UsWaWsdotFerriesEventProducer(producer, kafka_topic)
     api = WSDOTApi(access_code)
 
     logging.info("Starting WSDOT feed to Kafka topic %s", kafka_topic)
@@ -412,13 +428,13 @@ def feed(args):
                 all_flows = [f for f in all_flows if f.get("Region", "") in fs]
 
             if emit_reference:
-                c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_traffic_traffic_flow_station(
+                c = _emit_batch(producer, lambda raw: traffic_ep.send_us_wa_wsdot_traffic_traffic_flow_station(
                     _feedurl=FEED_URL, _flow_data_id=str(raw.get("FlowDataID", "")),
                     data=WSDOTApi.parse_station(raw), flush_producer=False), all_flows, "traffic station")
                 total += c
                 logging.info("Sent %d traffic flow stations", c)
 
-            c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_traffic_traffic_flow_reading(
+            c = _emit_batch(producer, lambda raw: traffic_ep.send_us_wa_wsdot_traffic_traffic_flow_reading(
                 _feedurl=FEED_URL, _flow_data_id=str(raw.get("FlowDataID", "")),
                 data=WSDOTApi.parse_reading(raw), flush_producer=False), all_flows, "traffic reading")
             total += c
@@ -429,7 +445,7 @@ def feed(args):
         # --- Travel Times ---
         try:
             travel_times = api.fetch_travel_times()
-            c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_traveltimes_travel_time_route(
+            c = _emit_batch(producer, lambda raw: traveltimes_ep.send_us_wa_wsdot_traveltimes_travel_time_route(
                 _feedurl=FEED_URL, _travel_time_id=str(raw.get("TravelTimeID", "")),
                 data=WSDOTApi.parse_travel_time(raw), flush_producer=False), travel_times, "travel time")
             total += c
@@ -440,7 +456,7 @@ def feed(args):
         # --- Mountain Pass Conditions ---
         try:
             passes = api.fetch_mountain_pass_conditions()
-            c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_mountainpass_mountain_pass_condition(
+            c = _emit_batch(producer, lambda raw: mountainpass_ep.send_us_wa_wsdot_mountainpass_mountain_pass_condition(
                 _feedurl=FEED_URL, _mountain_pass_id=str(raw.get("MountainPassId", "")),
                 data=WSDOTApi.parse_mountain_pass(raw), flush_producer=False), passes, "mountain pass")
             total += c
@@ -452,14 +468,14 @@ def feed(args):
         try:
             if emit_reference:
                 stations = api.fetch_weather_stations()
-                c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_weather_weather_station(
+                c = _emit_batch(producer, lambda raw: weather_ep.send_us_wa_wsdot_weather_weather_station(
                     _feedurl=FEED_URL, _station_id=str(raw.get("StationCode", "")),
                     data=WSDOTApi.parse_weather_station(raw), flush_producer=False), stations, "weather station")
                 total += c
                 logging.info("Sent %d weather stations", c)
 
             weather = api.fetch_weather_information()
-            c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_weather_weather_reading(
+            c = _emit_batch(producer, lambda raw: weather_ep.send_us_wa_wsdot_weather_weather_reading(
                 _feedurl=FEED_URL, _station_id=str(raw.get("StationID", "")),
                 data=WSDOTApi.parse_weather_reading(raw), flush_producer=False), weather, "weather reading")
             total += c
@@ -470,7 +486,7 @@ def feed(args):
         # --- Toll Rates ---
         try:
             tolls = api.fetch_toll_rates()
-            c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_tolls_toll_rate(
+            c = _emit_batch(producer, lambda raw: tolls_ep.send_us_wa_wsdot_tolls_toll_rate(
                 _feedurl=FEED_URL, _trip_name=raw.get("TripName", ""),
                 data=WSDOTApi.parse_toll_rate(raw), flush_producer=False), tolls, "toll rate")
             total += c
@@ -482,7 +498,7 @@ def feed(args):
         try:
             if emit_reference or is_initial:
                 restrictions = api.fetch_cv_restrictions()
-                c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_cvrestrictions_commercial_vehicle_restriction(
+                c = _emit_batch(producer, lambda raw: cvrestrictions_ep.send_us_wa_wsdot_cvrestrictions_commercial_vehicle_restriction(
                     _feedurl=FEED_URL, _state_route_id=raw.get("StateRouteID", ""),
                     _bridge_number=raw.get("BridgeNumber", ""),
                     data=WSDOTApi.parse_cv_restriction(raw), flush_producer=False), restrictions, "cv restriction")
@@ -494,7 +510,7 @@ def feed(args):
         # --- Border Crossings ---
         try:
             crossings = api.fetch_border_crossings()
-            c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_border_border_crossing(
+            c = _emit_batch(producer, lambda raw: border_ep.send_us_wa_wsdot_border_border_crossing(
                 _feedurl=FEED_URL, _crossing_name=raw.get("CrossingName", ""),
                 data=WSDOTApi.parse_border_crossing(raw), flush_producer=False), crossings, "border crossing")
             total += c
@@ -505,7 +521,7 @@ def feed(args):
         # --- Ferry Vessel Locations ---
         try:
             vessels = api.fetch_vessel_locations()
-            c = _emit_batch(producer, lambda raw: ep.send_us_wa_wsdot_ferries_vessel_location(
+            c = _emit_batch(producer, lambda raw: ferries_ep.send_us_wa_wsdot_ferries_vessel_location(
                 _feedurl=FEED_URL, _vessel_id=str(raw.get("VesselID", "")),
                 data=WSDOTApi.parse_vessel_location(raw), flush_producer=False), vessels, "vessel location")
             total += c

@@ -1,11 +1,13 @@
 """Tests for the WSDOT bridge."""
 
 import json
+from argparse import Namespace
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 from wsdot.wsdot import (
+    feed,
     WSDOTApi,
     _parse_connection_string,
     _parse_wcf_date,
@@ -763,6 +765,14 @@ class TestWSDOTApiExtended:
         call_url = mock_get.call_args[0][0]
         assert "MountainPassConditions" in call_url
 
+    def test_fetch_weather_information_uses_current_endpoint(self):
+        api = WSDOTApi(access_code="test-key")
+        result, mock_get = self._mock_api_call(api, "fetch_weather_information", [SAMPLE_WEATHER_READING])
+        assert len(result) == 1
+        call_url = mock_get.call_args[0][0]
+        assert "WeatherInformation" in call_url
+        assert "GetCurrentWeatherInformationAsJson" in call_url
+
     def test_fetch_toll_rates(self):
         api = WSDOTApi(access_code="test-key")
         result, _ = self._mock_api_call(api, "fetch_toll_rates", [SAMPLE_TOLL_RATE])
@@ -780,3 +790,114 @@ class TestWSDOTApiExtended:
         call_url = mock_get.call_args[0][0]
         assert "ferries" in call_url
         assert mock_get.call_args[1]["params"]["apiaccesscode"] == "test-key"
+
+
+class TestFeedProducerRouting:
+    def test_feed_uses_group_specific_producers(self):
+        sent = []
+
+        class FakeTrafficProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_traffic_traffic_flow_station(self, **_kwargs):
+                sent.append("traffic_station")
+
+            def send_us_wa_wsdot_traffic_traffic_flow_reading(self, **_kwargs):
+                sent.append("traffic_reading")
+
+        class FakeTraveltimesProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_traveltimes_travel_time_route(self, **_kwargs):
+                sent.append("travel_time")
+
+        class FakeMountainpassProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_mountainpass_mountain_pass_condition(self, **_kwargs):
+                sent.append("mountain_pass")
+
+        class FakeWeatherProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_weather_weather_station(self, **_kwargs):
+                sent.append("weather_station")
+
+            def send_us_wa_wsdot_weather_weather_reading(self, **_kwargs):
+                sent.append("weather_reading")
+
+        class FakeTollsProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_tolls_toll_rate(self, **_kwargs):
+                sent.append("toll_rate")
+
+        class FakeCvRestrictionsProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_cvrestrictions_commercial_vehicle_restriction(self, **_kwargs):
+                sent.append("cv_restriction")
+
+        class FakeBorderProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_border_border_crossing(self, **_kwargs):
+                sent.append("border_crossing")
+
+        class FakeFerriesProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_ferries_vessel_location(self, **_kwargs):
+                sent.append("vessel_location")
+
+        fake_kafka_producer = MagicMock()
+
+        args = Namespace(
+            connection_string="BootstrapServer=localhost:9092;EntityPath=test-topic",
+            access_code="test-key",
+            polling_interval="120",
+            region_filter="",
+        )
+
+        with patch("wsdot.wsdot._parse_connection_string", return_value=({"bootstrap.servers": "localhost:9092"}, "test-topic")), \
+             patch("wsdot.wsdot.Producer", return_value=fake_kafka_producer), \
+             patch("wsdot.wsdot.UsWaWsdotTrafficEventProducer", FakeTrafficProducer), \
+             patch("wsdot.wsdot.UsWaWsdotTraveltimesEventProducer", FakeTraveltimesProducer), \
+             patch("wsdot.wsdot.UsWaWsdotMountainpassEventProducer", FakeMountainpassProducer), \
+             patch("wsdot.wsdot.UsWaWsdotWeatherEventProducer", FakeWeatherProducer), \
+             patch("wsdot.wsdot.UsWaWsdotTollsEventProducer", FakeTollsProducer), \
+             patch("wsdot.wsdot.UsWaWsdotCvrestrictionsEventProducer", FakeCvRestrictionsProducer), \
+             patch("wsdot.wsdot.UsWaWsdotBorderEventProducer", FakeBorderProducer), \
+             patch("wsdot.wsdot.UsWaWsdotFerriesEventProducer", FakeFerriesProducer), \
+             patch.object(WSDOTApi, "fetch_traffic_flows", return_value=[SAMPLE_FLOW_DATA]), \
+             patch.object(WSDOTApi, "fetch_travel_times", return_value=[SAMPLE_TRAVEL_TIME]), \
+             patch.object(WSDOTApi, "fetch_mountain_pass_conditions", return_value=[SAMPLE_MOUNTAIN_PASS]), \
+             patch.object(WSDOTApi, "fetch_weather_stations", return_value=[SAMPLE_WEATHER_STATION]), \
+             patch.object(WSDOTApi, "fetch_weather_information", return_value=[SAMPLE_WEATHER_READING]), \
+             patch.object(WSDOTApi, "fetch_toll_rates", return_value=[SAMPLE_TOLL_RATE]), \
+             patch.object(WSDOTApi, "fetch_cv_restrictions", return_value=[SAMPLE_CV_RESTRICTION]), \
+             patch.object(WSDOTApi, "fetch_border_crossings", return_value=[SAMPLE_BORDER_CROSSING]), \
+             patch.object(WSDOTApi, "fetch_vessel_locations", return_value=[SAMPLE_VESSEL_LOCATION]), \
+             patch("wsdot.wsdot.time.sleep", side_effect=KeyboardInterrupt):
+            feed(args)
+
+        assert sent == [
+            "traffic_station",
+            "traffic_reading",
+            "travel_time",
+            "mountain_pass",
+            "weather_station",
+            "weather_reading",
+            "toll_rate",
+            "cv_restriction",
+            "border_crossing",
+            "vessel_location",
+        ]
