@@ -87,6 +87,9 @@
                   "counter_id": {
                     "type": "string",
                     "description": "Unique identifier for the counting channel, combining the site ID and channel ID (mapped from 'id_compteur').",
+                    "altnames": {
+                      "lang:fr": "id_compteur"
+                    },
                     "alternates": [
                       {
                         "name": "id_compteur",
@@ -97,6 +100,9 @@
                   "counter_name": {
                     "type": "string",
                     "description": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').",
+                    "altnames": {
+                      "lang:fr": "nom_compteur"
+                    },
                     "alternates": [
                       {
                         "name": "nom_compteur",
@@ -158,6 +164,9 @@
                   "counter_id": {
                     "type": "string",
                     "description": "Unique identifier for the counting channel (mapped from 'id_compteur').",
+                    "altnames": {
+                      "lang:fr": "id_compteur"
+                    },
                     "alternates": [
                       {
                         "name": "id_compteur",
@@ -168,6 +177,9 @@
                   "counter_name": {
                     "type": "string",
                     "description": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').",
+                    "altnames": {
+                      "lang:fr": "nom_compteur"
+                    },
                     "alternates": [
                       {
                         "name": "nom_compteur",
