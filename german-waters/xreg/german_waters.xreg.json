@@ -92,7 +92,10 @@
                     "type": "string"
                   },
                   "water_body": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "Gewaesser"
+                    }
                   },
                   "state": {
                     "type": "string"
@@ -113,7 +116,10 @@
                     "type": "double"
                   },
                   "altitude": {
-                    "type": "double"
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "Hoehe"
+                    }
                   },
                   "station_type": {
                     "type": "string"

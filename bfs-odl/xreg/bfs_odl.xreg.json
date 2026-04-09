@@ -96,14 +96,16 @@
                               "type": "string",
                               "description": "Nine-digit station identifier (Kennziffer) assigned by BfS in the IMIS network. Composed of the official municipality key (AGS) prefix and a station sequence number. Example: '033510091'. This is the stable key used for timeseries retrieval.",
                               "altnames": {
-                                "json": "kenn"
+                                "json": "kenn",
+                                "lang:de": "Kennziffer"
                               }
                             },
                             "station_code": {
                               "type": "string",
                               "description": "Short alphanumeric station code assigned by BfS, consisting of a 'DEZ' prefix followed by a four-digit number. Example: 'DEZ0305'. Used in the BfS web interface and download area.",
                               "altnames": {
-                                "json": "id"
+                                "json": "id",
+                                "lang:de": "Stationscode"
                               }
                             },
                             "name": {
@@ -114,7 +116,8 @@
                               "type": "string",
                               "description": "German postal code (Postleitzahl / PLZ) of the station location. Five digits as a string.",
                               "altnames": {
-                                "json": "plz"
+                                "json": "plz",
+                                "lang:de": "Postleitzahl"
                               }
                             },
                             "site_status": {
@@ -133,7 +136,10 @@
                               "description": "Numeric region identifier (Kreis-ID) used internally by BfS to group stations into geographic regions."
                             },
                             "height_above_sea": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Elevation of the station above mean sea level in meters (Normalhöhennull / NHN). Determines the cosmic radiation component. Null if unknown.",
                               "unit": "m",
                               "symbol": "m"
@@ -197,7 +203,8 @@
                               "type": "string",
                               "description": "Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema.",
                               "altnames": {
-                                "json": "kenn"
+                                "json": "kenn",
+                                "lang:de": "Kennziffer"
                               }
                             },
                             "start_measure": {
@@ -209,19 +216,28 @@
                               "description": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'."
                             },
                             "value": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval.",
                               "unit": "uSv/h",
                               "symbol": "µSv/h"
                             },
                             "value_cosmic": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Cosmic radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Estimated from the station's altitude using a standard model. Null when the BfS system has not yet computed the decomposition for this measurement.",
                               "unit": "uSv/h",
                               "symbol": "µSv/h"
                             },
                             "value_terrestrial": {
-                              "type": ["double", "null"],
+                              "type": [
+                                "double",
+                                "null"
+                              ],
                               "description": "Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available.",
                               "unit": "uSv/h",
                               "symbol": "µSv/h"
@@ -305,7 +321,10 @@
                   },
                   {
                     "name": "height_above_sea",
-                    "type": ["null", "double"],
+                    "type": [
+                      "null",
+                      "double"
+                    ],
                     "doc": "Elevation above sea level in meters. Null if unknown.",
                     "default": null
                   },
@@ -352,19 +371,28 @@
                   },
                   {
                     "name": "value",
-                    "type": ["null", "double"],
+                    "type": [
+                      "null",
+                      "double"
+                    ],
                     "doc": "Gross ambient gamma dose rate in µSv/h. Null if not reported.",
                     "default": null
                   },
                   {
                     "name": "value_cosmic",
-                    "type": ["null", "double"],
+                    "type": [
+                      "null",
+                      "double"
+                    ],
                     "doc": "Cosmic radiation component in µSv/h. Null when not computed.",
                     "default": null
                   },
                   {
                     "name": "value_terrestrial",
-                    "type": ["null", "double"],
+                    "type": [
+                      "null",
+                      "double"
+                    ],
                     "doc": "Terrestrial radiation component in µSv/h. Null when not computed.",
                     "default": null
                   },

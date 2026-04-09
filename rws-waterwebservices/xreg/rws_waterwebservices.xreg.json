@@ -89,7 +89,10 @@
                     "type": "string"
                   },
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:nl": "Naam"
+                    }
                   },
                   "latitude": {
                     "type": "double"
@@ -98,7 +101,10 @@
                     "type": "double"
                   },
                   "coordinate_system": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:nl": "Coordinatenstelsel"
+                    }
                   }
                 },
                 "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/Station",
@@ -128,22 +134,37 @@
                     "type": "string"
                   },
                   "location_name": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:nl": "Naam"
+                    }
                   },
                   "timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "altnames": {
+                      "lang:nl": "Tijdstip"
+                    }
                   },
                   "value": {
-                    "type": "double"
+                    "type": "double",
+                    "altnames": {
+                      "lang:nl": "Waarde_Numeriek"
+                    }
                   },
                   "unit": {
                     "type": "string"
                   },
                   "quality_code": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:nl": "Kwaliteitswaardecode"
+                    }
                   },
                   "status": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:nl": "Statuswaarde"
+                    }
                   },
                   "compartment": {
                     "type": "string"

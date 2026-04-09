@@ -86,19 +86,34 @@
                 "name": "Station",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:fi": "Paikka_Id"
+                    }
                   },
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:fi": "Nimi"
+                    }
                   },
                   "river_name": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:fi": "PaaVesalNimi"
+                    }
                   },
                   "water_area_name": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:fi": "VesalNimi"
+                    }
                   },
                   "municipality": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:fi": "KuntaNimi"
+                    }
                   },
                   "latitude": {
                     "type": "double"
@@ -129,25 +144,40 @@
                 "name": "WaterLevelObservation",
                 "properties": {
                   "station_id": {
-                    "type": "string"
+                    "type": "string",
+                    "altnames": {
+                      "lang:fi": "Paikka_Id"
+                    }
                   },
                   "water_level": {
-                    "type": "double"
+                    "type": "double",
+                    "altnames": {
+                      "lang:fi": "Arvo"
+                    }
                   },
                   "water_level_unit": {
                     "type": "string"
                   },
                   "water_level_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "altnames": {
+                      "lang:fi": "Aika"
+                    }
                   },
                   "discharge": {
-                    "type": "double"
+                    "type": "double",
+                    "altnames": {
+                      "lang:fi": "Arvo"
+                    }
                   },
                   "discharge_unit": {
                     "type": "string"
                   },
                   "discharge_timestamp": {
-                    "type": "datetime"
+                    "type": "datetime",
+                    "altnames": {
+                      "lang:fi": "Aika"
+                    }
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation",
