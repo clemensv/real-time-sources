@@ -243,6 +243,8 @@ def geosphere_austria_image():
     return build_image('geosphere-austria')
 def wikimedia_osm_diffs_image():
     return build_image('wikimedia-osm-diffs')
+def inpe_deter_brazil_image():
+    return build_image('inpe-deter-brazil')
 
 
 # ---------------------------------------------------------------------------
@@ -1427,3 +1429,15 @@ class TestNIFCUSAWildfiresDockerFlow:
             telemetry_types=['WildfireIncident'],
             min_messages=1,
         )
+# INPE DETER Brazil (deforestation alerts)
+# ---------------------------------------------------------------------------
+
+class TestINPEDeterBrazilDockerFlow:
+    TOPIC = 'test-inpe-deter-brazil'
+
+    def test_emits_deforestation_alerts(self, kafka: KafkaFixture, inpe_deter_brazil_image):
+        _run_kafka_flow_test(
+            kafka, inpe_deter_brazil_image, self.TOPIC,
+            telemetry_types=['DeforestationAlert'],
+        )
+

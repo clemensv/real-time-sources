@@ -1,0 +1,243 @@
+{
+  "endpoints": {
+    "BR.INPE.DETER.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "inpe-deter-brazil",
+          "key": "{biome}/{alert_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/BR.INPE.DETER"
+      ]
+    }
+  },
+  "messagegroups": {
+    "BR.INPE.DETER": {
+      "messages": {
+        "BR.INPE.DETER.DeforestationAlert": {
+          "name": "DeforestationAlert",
+          "envelope": "CloudEvents/1.0",
+          "description": "INPE DETER deforestation alert for Amazon and Cerrado biomes.",
+          "envelopemetadata": {
+            "type": {
+              "value": "BR.INPE.DETER.DeforestationAlert"
+            },
+            "source": {
+              "value": "{source_uri}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{biome}/{alert_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{view_date}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/BR.INPE.DETER.jstruct/schemas/BR.INPE.DETER.DeforestationAlert"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "BR.INPE.DETER.jstruct": {
+      "schemas": {
+        "BR.INPE.DETER.DeforestationAlert": {
+          "name": "DeforestationAlert",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://example.com/schemas/BR/INPE/DETER/DeforestationAlert",
+                "name": "DeforestationAlert",
+                "$root": "#/definitions/BR/INPE/DETER/DeforestationAlert",
+                "definitions": {
+                  "BR": {
+                    "INPE": {
+                      "DETER": {
+                        "DeforestationAlert": {
+                          "name": "DeforestationAlert",
+                          "type": "object",
+                          "properties": {
+                            "alert_id": {
+                              "type": "string",
+                              "description": "Stable reference ID from INPE (gid)."
+                            },
+                            "biome": {
+                              "type": "string",
+                              "description": "Biome of the alert: amazon or cerrado."
+                            },
+                            "classname": {
+                              "type": "string",
+                              "description": "Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc."
+                            },
+                            "view_date": {
+                              "type": "string",
+                              "description": "Observation date in YYYY-MM-DD format."
+                            },
+                            "satellite": {
+                              "type": "string",
+                              "description": "Satellite name (CBERS-4, Amazonia-1, etc.)."
+                            },
+                            "sensor": {
+                              "type": "string",
+                              "description": "Sensor name (AWFI, WFI, MSI)."
+                            },
+                            "area_km2": {
+                              "type": "double",
+                              "description": "Area of the deforestation polygon in square kilometers."
+                            },
+                            "municipality": {
+                              "type": ["string", "null"],
+                              "description": "Municipality name."
+                            },
+                            "state_code": {
+                              "type": ["string", "null"],
+                              "description": "Brazilian state code (UF), e.g. PA, MT."
+                            },
+                            "path_row": {
+                              "type": ["string", "null"],
+                              "description": "Satellite path/row identifier."
+                            },
+                            "publish_month": {
+                              "type": ["string", "null"],
+                              "description": "Publication month in YYYY-MM-DD format."
+                            },
+                            "centroid_latitude": {
+                              "type": "double",
+                              "description": "Latitude of the polygon centroid in decimal degrees."
+                            },
+                            "centroid_longitude": {
+                              "type": "double",
+                              "description": "Longitude of the polygon centroid in decimal degrees."
+                            }
+                          },
+                          "required": [
+                            "alert_id",
+                            "biome",
+                            "classname",
+                            "view_date",
+                            "satellite",
+                            "sensor",
+                            "area_km2",
+                            "centroid_latitude",
+                            "centroid_longitude"
+                          ],
+                          "description": "INPE DETER deforestation alert for Amazon and Cerrado biomes."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "BR.INPE.DETER.avro": {
+      "schemas": {
+        "BR.INPE.DETER.DeforestationAlert": {
+          "name": "DeforestationAlert",
+          "format": "Avro/1.11.3",
+          "description": "INPE DETER deforestation alert for Amazon and Cerrado biomes.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DeforestationAlert",
+                "namespace": "BR.INPE.DETER",
+                "doc": "INPE DETER deforestation alert for Amazon and Cerrado biomes.",
+                "fields": [
+                  {
+                    "name": "alert_id",
+                    "type": "string",
+                    "doc": "Stable reference ID from INPE (gid)."
+                  },
+                  {
+                    "name": "biome",
+                    "type": "string",
+                    "doc": "Biome of the alert: amazon or cerrado."
+                  },
+                  {
+                    "name": "classname",
+                    "type": "string",
+                    "doc": "Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc."
+                  },
+                  {
+                    "name": "view_date",
+                    "type": "string",
+                    "doc": "Observation date in YYYY-MM-DD format."
+                  },
+                  {
+                    "name": "satellite",
+                    "type": "string",
+                    "doc": "Satellite name (CBERS-4, Amazonia-1, etc.)."
+                  },
+                  {
+                    "name": "sensor",
+                    "type": "string",
+                    "doc": "Sensor name (AWFI, WFI, MSI)."
+                  },
+                  {
+                    "name": "area_km2",
+                    "type": "double",
+                    "doc": "Area of the deforestation polygon in square kilometers."
+                  },
+                  {
+                    "name": "municipality",
+                    "type": ["string", "null"],
+                    "doc": "Municipality name."
+                  },
+                  {
+                    "name": "state_code",
+                    "type": ["string", "null"],
+                    "doc": "Brazilian state code (UF), e.g. PA, MT."
+                  },
+                  {
+                    "name": "path_row",
+                    "type": ["string", "null"],
+                    "doc": "Satellite path/row identifier."
+                  },
+                  {
+                    "name": "publish_month",
+                    "type": ["string", "null"],
+                    "doc": "Publication month in YYYY-MM-DD format."
+                  },
+                  {
+                    "name": "centroid_latitude",
+                    "type": "double",
+                    "doc": "Latitude of the polygon centroid in decimal degrees."
+                  },
+                  {
+                    "name": "centroid_longitude",
+                    "type": "double",
+                    "doc": "Longitude of the polygon centroid in decimal degrees."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
