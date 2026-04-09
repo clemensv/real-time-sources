@@ -1,0 +1,546 @@
+{
+  "endpoints": {
+    "at.geosphere.tawes.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "geosphere-austria-tawes",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/at.geosphere.tawes"
+      ]
+    }
+  },
+  "messagegroups": {
+    "at.geosphere.tawes": {
+      "messages": {
+        "at.geosphere.tawes.WeatherStation": {
+          "name": "WeatherStation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for a GeoSphere Austria TAWES automatic weather station, including location, elevation, and federal state.",
+          "envelopemetadata": {
+            "type": {
+              "value": "at.geosphere.tawes.WeatherStation"
+            },
+            "source": {
+              "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min/metadata",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.jstruct/schemas/at.geosphere.tawes.WeatherStation"
+        },
+        "at.geosphere.tawes.WeatherObservation": {
+          "name": "WeatherObservation",
+          "envelope": "CloudEvents/1.0",
+          "description": "10-minute weather observation from a GeoSphere Austria TAWES station, including temperature, humidity, precipitation, wind, pressure, sunshine duration, and global radiation.",
+          "envelopemetadata": {
+            "type": {
+              "value": "at.geosphere.tawes.WeatherObservation"
+            },
+            "source": {
+              "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/at.geosphere.tawes.jstruct/schemas/at.geosphere.tawes.WeatherObservation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "at.geosphere.tawes.jstruct": {
+      "schemas": {
+        "at.geosphere.tawes.WeatherStation": {
+          "name": "WeatherStation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://geosphere.at/schemas/at/geosphere/tawes/WeatherStation",
+                "name": "WeatherStation",
+                "$root": "#/definitions/at/geosphere/tawes/WeatherStation",
+                "definitions": {
+                  "at": {
+                    "geosphere": {
+                      "tawes": {
+                        "WeatherStation": {
+                          "name": "WeatherStation",
+                          "type": "object",
+                          "description": "Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID. Metadata is sourced from the TAWES v1 10-minute current dataset metadata endpoint.",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "Stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata.",
+                              "pattern": "^[0-9]+$"
+                            },
+                            "station_name": {
+                              "type": "string",
+                              "description": "Station name from the GeoSphere metadata, for example 'WIEN HOHE WARTE' or 'INNSBRUCK FLUGHAFEN'. Mapped from the upstream 'name' field."
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "WGS84 latitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lat' field.",
+                              "unit": "degree",
+                              "symbol": "°"
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "WGS84 longitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lon' field.",
+                              "unit": "degree",
+                              "symbol": "°"
+                            },
+                            "altitude": {
+                              "type": "double",
+                              "description": "Station altitude above sea level in meters, sourced from the GeoSphere metadata 'altitude' field.",
+                              "unit": "meter",
+                              "symbol": "m"
+                            },
+                            "state": {
+                              "type": ["string", "null"],
+                              "description": "Austrian federal state (Bundesland) where the station is located, for example 'Wien', 'Tirol', 'Steiermark'. Sourced from the GeoSphere metadata 'state' field. Null when the metadata does not include a state."
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "station_name",
+                            "latitude",
+                            "longitude",
+                            "altitude",
+                            "state"
+                          ]
+                        },
+                        "WeatherObservation": {
+                          "name": "WeatherObservation",
+                          "type": "object",
+                          "description": "10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters. Values are null when the station does not report a parameter or the measurement is missing for the current interval.",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "GeoSphere Austria numeric station identifier for the observing station. Mapped from the upstream 'station' property in the GeoJSON features.",
+                              "pattern": "^[0-9]+$"
+                            },
+                            "observation_time": {
+                              "type": "string",
+                              "description": "Observation timestamp in UTC from the GeoSphere API 'timestamps' array, formatted as an ISO-8601 instant such as '2024-01-15T13:00:00+00:00'."
+                            },
+                            "temperature": {
+                              "type": ["double", "null"],
+                              "description": "Air temperature (Lufttemperatur) in degrees Celsius over the 10-minute interval, from the GeoSphere TL parameter. Null when the station does not report this parameter.",
+                              "unit": "degree Celsius",
+                              "symbol": "°C",
+                              "altnames": {
+                                "json": "TL"
+                              }
+                            },
+                            "humidity": {
+                              "type": ["double", "null"],
+                              "description": "Relative humidity (Relative Feuchte) as a percentage over the 10-minute interval, from the GeoSphere RF parameter. Null when not reported.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "altnames": {
+                                "json": "RF"
+                              }
+                            },
+                            "precipitation": {
+                              "type": ["double", "null"],
+                              "description": "Precipitation (Niederschlag) in millimeters accumulated during the 10-minute interval, from the GeoSphere RR parameter. Null when not reported.",
+                              "unit": "millimeter",
+                              "symbol": "mm",
+                              "altnames": {
+                                "json": "RR"
+                              }
+                            },
+                            "wind_direction": {
+                              "type": ["double", "null"],
+                              "description": "Wind direction (Windrichtung) in degrees over the 10-minute interval, from the GeoSphere DD parameter. 0 indicates north, 90 east, 180 south, 270 west. Null when not reported.",
+                              "unit": "degree",
+                              "symbol": "°",
+                              "altnames": {
+                                "json": "DD"
+                              }
+                            },
+                            "wind_speed": {
+                              "type": ["double", "null"],
+                              "description": "Wind speed (Windgeschwindigkeit) in meters per second over the 10-minute interval, from the GeoSphere FF parameter. Null when not reported.",
+                              "unit": "meter per second",
+                              "symbol": "m/s",
+                              "altnames": {
+                                "json": "FF"
+                              }
+                            },
+                            "pressure": {
+                              "type": ["double", "null"],
+                              "description": "Atmospheric pressure (Luftdruck) in hectopascals at station level over the 10-minute interval, from the GeoSphere P parameter. Null when not reported.",
+                              "unit": "hectopascal",
+                              "symbol": "hPa",
+                              "altnames": {
+                                "json": "P"
+                              }
+                            },
+                            "sunshine_duration": {
+                              "type": ["double", "null"],
+                              "description": "Sunshine duration (Sonnenscheindauer) in seconds during the 10-minute interval, from the GeoSphere SO parameter. Null when the station does not have a sunshine sensor (has_sunshine=false) or the value is missing.",
+                              "unit": "second",
+                              "symbol": "s",
+                              "altnames": {
+                                "json": "SO"
+                              }
+                            },
+                            "global_radiation": {
+                              "type": ["double", "null"],
+                              "description": "Global radiation (Globalstrahlung) in watts per square meter during the 10-minute interval, from the GeoSphere GLOW parameter. Null when the station does not have a radiation sensor (has_global_radiation=false) or the value is missing.",
+                              "unit": "watt per square meter",
+                              "symbol": "W/m²",
+                              "altnames": {
+                                "json": "GLOW"
+                              }
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "observation_time",
+                            "temperature",
+                            "humidity",
+                            "precipitation",
+                            "wind_direction",
+                            "wind_speed",
+                            "pressure",
+                            "sunshine_duration",
+                            "global_radiation"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "at.geosphere.tawes.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://geosphere.at/schemas/at/geosphere/tawes/WeatherObservation",
+                "name": "WeatherObservation",
+                "$root": "#/definitions/at/geosphere/tawes/WeatherObservation",
+                "definitions": {
+                  "at": {
+                    "geosphere": {
+                      "tawes": {
+                        "WeatherStation": {
+                          "name": "WeatherStation",
+                          "type": "object",
+                          "description": "Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID. Metadata is sourced from the TAWES v1 10-minute current dataset metadata endpoint.",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "Stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata.",
+                              "pattern": "^[0-9]+$"
+                            },
+                            "station_name": {
+                              "type": "string",
+                              "description": "Station name from the GeoSphere metadata, for example 'WIEN HOHE WARTE' or 'INNSBRUCK FLUGHAFEN'. Mapped from the upstream 'name' field."
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "WGS84 latitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lat' field.",
+                              "unit": "degree",
+                              "symbol": "°"
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "WGS84 longitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lon' field.",
+                              "unit": "degree",
+                              "symbol": "°"
+                            },
+                            "altitude": {
+                              "type": "double",
+                              "description": "Station altitude above sea level in meters, sourced from the GeoSphere metadata 'altitude' field.",
+                              "unit": "meter",
+                              "symbol": "m"
+                            },
+                            "state": {
+                              "type": ["string", "null"],
+                              "description": "Austrian federal state (Bundesland) where the station is located, for example 'Wien', 'Tirol', 'Steiermark'. Sourced from the GeoSphere metadata 'state' field. Null when the metadata does not include a state."
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "station_name",
+                            "latitude",
+                            "longitude",
+                            "altitude",
+                            "state"
+                          ]
+                        },
+                        "WeatherObservation": {
+                          "name": "WeatherObservation",
+                          "type": "object",
+                          "description": "10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters. Values are null when the station does not report a parameter or the measurement is missing for the current interval.",
+                          "properties": {
+                            "station_id": {
+                              "type": "string",
+                              "description": "GeoSphere Austria numeric station identifier for the observing station. Mapped from the upstream 'station' property in the GeoJSON features.",
+                              "pattern": "^[0-9]+$"
+                            },
+                            "observation_time": {
+                              "type": "string",
+                              "description": "Observation timestamp in UTC from the GeoSphere API 'timestamps' array, formatted as an ISO-8601 instant such as '2024-01-15T13:00:00+00:00'."
+                            },
+                            "temperature": {
+                              "type": ["double", "null"],
+                              "description": "Air temperature (Lufttemperatur) in degrees Celsius over the 10-minute interval, from the GeoSphere TL parameter. Null when the station does not report this parameter.",
+                              "unit": "degree Celsius",
+                              "symbol": "°C",
+                              "altnames": {
+                                "json": "TL"
+                              }
+                            },
+                            "humidity": {
+                              "type": ["double", "null"],
+                              "description": "Relative humidity (Relative Feuchte) as a percentage over the 10-minute interval, from the GeoSphere RF parameter. Null when not reported.",
+                              "unit": "percent",
+                              "symbol": "%",
+                              "altnames": {
+                                "json": "RF"
+                              }
+                            },
+                            "precipitation": {
+                              "type": ["double", "null"],
+                              "description": "Precipitation (Niederschlag) in millimeters accumulated during the 10-minute interval, from the GeoSphere RR parameter. Null when not reported.",
+                              "unit": "millimeter",
+                              "symbol": "mm",
+                              "altnames": {
+                                "json": "RR"
+                              }
+                            },
+                            "wind_direction": {
+                              "type": ["double", "null"],
+                              "description": "Wind direction (Windrichtung) in degrees over the 10-minute interval, from the GeoSphere DD parameter. 0 indicates north, 90 east, 180 south, 270 west. Null when not reported.",
+                              "unit": "degree",
+                              "symbol": "°",
+                              "altnames": {
+                                "json": "DD"
+                              }
+                            },
+                            "wind_speed": {
+                              "type": ["double", "null"],
+                              "description": "Wind speed (Windgeschwindigkeit) in meters per second over the 10-minute interval, from the GeoSphere FF parameter. Null when not reported.",
+                              "unit": "meter per second",
+                              "symbol": "m/s",
+                              "altnames": {
+                                "json": "FF"
+                              }
+                            },
+                            "pressure": {
+                              "type": ["double", "null"],
+                              "description": "Atmospheric pressure (Luftdruck) in hectopascals at station level over the 10-minute interval, from the GeoSphere P parameter. Null when not reported.",
+                              "unit": "hectopascal",
+                              "symbol": "hPa",
+                              "altnames": {
+                                "json": "P"
+                              }
+                            },
+                            "sunshine_duration": {
+                              "type": ["double", "null"],
+                              "description": "Sunshine duration (Sonnenscheindauer) in seconds during the 10-minute interval, from the GeoSphere SO parameter. Null when the station does not have a sunshine sensor (has_sunshine=false) or the value is missing.",
+                              "unit": "second",
+                              "symbol": "s",
+                              "altnames": {
+                                "json": "SO"
+                              }
+                            },
+                            "global_radiation": {
+                              "type": ["double", "null"],
+                              "description": "Global radiation (Globalstrahlung) in watts per square meter during the 10-minute interval, from the GeoSphere GLOW parameter. Null when the station does not have a radiation sensor (has_global_radiation=false) or the value is missing.",
+                              "unit": "watt per square meter",
+                              "symbol": "W/m²",
+                              "altnames": {
+                                "json": "GLOW"
+                              }
+                            }
+                          },
+                          "required": [
+                            "station_id",
+                            "observation_time",
+                            "temperature",
+                            "humidity",
+                            "precipitation",
+                            "wind_direction",
+                            "wind_speed",
+                            "pressure",
+                            "sunshine_duration",
+                            "global_radiation"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "at.geosphere.tawes.avro": {
+      "schemas": {
+        "at.geosphere.tawes.WeatherStation": {
+          "name": "WeatherStation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WeatherStation",
+                "namespace": "at.geosphere.tawes",
+                "doc": "Reference data for a GeoSphere Austria TAWES automatic weather station.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable GeoSphere Austria numeric station identifier."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name from the GeoSphere metadata."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "WGS84 latitude of the station in decimal degrees."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "WGS84 longitude of the station in decimal degrees."
+                  },
+                  {
+                    "name": "altitude",
+                    "type": "double",
+                    "doc": "Station altitude above sea level in meters."
+                  },
+                  {
+                    "name": "state",
+                    "type": ["null", "string"],
+                    "default": null,
+                    "doc": "Austrian federal state (Bundesland) where the station is located."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "at.geosphere.tawes.WeatherObservation": {
+          "name": "WeatherObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "WeatherObservation",
+                "namespace": "at.geosphere.tawes",
+                "doc": "10-minute weather observation from a GeoSphere Austria TAWES station.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "GeoSphere Austria numeric station identifier for the observing station."
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC from the GeoSphere API timestamps array."
+                  },
+                  {
+                    "name": "temperature",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Air temperature in degrees Celsius over the 10-minute interval."
+                  },
+                  {
+                    "name": "humidity",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Relative humidity as a percentage over the 10-minute interval."
+                  },
+                  {
+                    "name": "precipitation",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Precipitation in millimeters accumulated during the 10-minute interval."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Wind direction in degrees over the 10-minute interval."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Wind speed in meters per second over the 10-minute interval."
+                  },
+                  {
+                    "name": "pressure",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Atmospheric pressure in hectopascals at station level."
+                  },
+                  {
+                    "name": "sunshine_duration",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Sunshine duration in seconds during the 10-minute interval."
+                  },
+                  {
+                    "name": "global_radiation",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Global radiation in watts per square meter during the 10-minute interval."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

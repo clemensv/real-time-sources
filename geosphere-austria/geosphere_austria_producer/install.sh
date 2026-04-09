@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./geosphere_austria_producer_data
+pip install ./geosphere_austria_producer_kafka_producer
