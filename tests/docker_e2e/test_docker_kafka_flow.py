@@ -209,6 +209,8 @@ def wsdot_image():
 @pytest.fixture(scope='module')
 def gracedb_image():
     return build_image('gracedb')
+def aviationweather_image():
+    return build_image('aviationweather')
 
 
 # ---------------------------------------------------------------------------
@@ -1138,4 +1140,18 @@ class TestWalloniaISsePDockerFlow:
             kafka, wallonia_issep_image, self.TOPIC,
             reference_types=['SensorConfiguration'],
             telemetry_types=['Observation'],
+# AviationWeather.gov (METAR observations, SIGMETs, station data)
+# ---------------------------------------------------------------------------
+
+class TestAviationWeatherDockerFlow:
+    TOPIC = 'test-aviationweather'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, aviationweather_image):
+        _run_kafka_flow_test(
+            kafka, aviationweather_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['Metar'],
+            extra_env={
+                'AVIATIONWEATHER_STATIONS': 'KJFK,EGLL,LFPG',
+            },
         )
