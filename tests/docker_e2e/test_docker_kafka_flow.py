@@ -810,6 +810,24 @@ class TestBOMAustraliaDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# Australia Wildfires (bushfire incidents from NSW, VIC, QLD)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def australia_wildfires_image():
+    return build_image('australia-wildfires')
+
+class TestAustraliaWildfiresDockerFlow:
+    TOPIC = 'test-australia-wildfires'
+
+    def test_emits_telemetry(self, kafka: KafkaFixture, australia_wildfires_image):
+        _run_kafka_flow_test(
+            kafka, australia_wildfires_image, self.TOPIC,
+            telemetry_types=['FireIncident'],
+        )
+
+
+# ---------------------------------------------------------------------------
 # SMHI Weather (Sweden – meteorological observations)
 # ---------------------------------------------------------------------------
 
