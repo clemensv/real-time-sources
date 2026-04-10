@@ -14,6 +14,8 @@ from datetime import datetime, timedelta, timezone
 
 import requests
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from fmi_finland_producer_data import Observation, Station
 from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirqualityEventProducer
@@ -26,6 +28,7 @@ OBSERVATIONS_STORED_QUERY = "urban::observations::airquality::hourly::simple"
 DEFAULT_TOPIC = "fmi-finland-airquality"
 DEFAULT_POLLING_INTERVAL = 3600
 DEFAULT_STATION_REFRESH_INTERVAL = 86400
+DEFAULT_HTTP_RETRY_TOTAL = 3
 
 NAMESPACES = {
     "wfs": "http://www.opengis.net/wfs/2.0",
@@ -75,7 +78,8 @@ class FMIAirQualityAPI:
     ) -> None:
         self.base_url = base_url
         self.timeout = timeout
-        self.session = session or requests.Session()
+        self.session = session or create_retrying_session()
+        self.cached_registry: StationRegistry | None = None
 
     def _get(self, params: dict[str, str]) -> str:
         response = self.session.get(self.base_url, params=params, timeout=self.timeout)
@@ -108,7 +112,40 @@ class FMIAirQualityAPI:
 
     def get_station_registry(self) -> StationRegistry:
         """Fetch and parse the station registry."""
-        return parse_station_metadata(self.get_station_metadata_xml())
+        registry = parse_station_metadata(self.get_station_metadata_xml())
+        self.cached_registry = registry
+        return registry
+
+
+def create_retrying_session() -> requests.Session:
+    """Create an HTTP session with bounded retries for transient upstream failures."""
+    session = requests.Session()
+    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    retry = Retry(
+        total=DEFAULT_HTTP_RETRY_TOTAL,
+        connect=DEFAULT_HTTP_RETRY_TOTAL,
+        read=DEFAULT_HTTP_RETRY_TOTAL,
+        status=DEFAULT_HTTP_RETRY_TOTAL,
+        backoff_factor=1,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset({"GET"}),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def get_station_registry_with_fallback(api: FMIAirQualityAPI) -> StationRegistry:
+    """Fetch station registry metadata, falling back to the cached copy if available."""
+    try:
+        return api.get_station_registry()
+    except requests.RequestException as exc:
+        if api.cached_registry is not None:
+            logger.warning("Station registry refresh failed; continuing with cached registry: %s", exc)
+            return api.cached_registry
+        raise
 
 
 def parse_connection_string(connection_string: str) -> dict[str, str]:
@@ -425,7 +462,7 @@ def run_feed_cycle(
     force_station_emit: bool = False,
 ) -> dict[str, int]:
     """Run one reference-data and observation emission cycle."""
-    registry = api.get_station_registry()
+    registry = get_station_registry_with_fallback(api)
     start_time, end_time = _observation_window(now)
     stations, observations = parse_observations_xml(api.get_observations_xml(start_time, end_time), registry)
 

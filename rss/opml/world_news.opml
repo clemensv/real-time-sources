@@ -1,66 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <opml version="1.0">
     <head>
         <title>World News Selection</title>
     </head>
     <body>
-        <outline text="NPR News" title="NPR News" type="rss"
-            xmlUrl="https://www.npr.org/rss/rss.php?id=1002"
-            htmlUrl="https://www.npr.org/templates/story/story.php?storyId=1001" />
-        <outline text="FT | World News" title="FT | World News" type="rss"
-            xmlUrl="https://www.ft.com/rss/world" htmlUrl="http://www.ft.com/world" />
-        <outline text="Yahoo News - Top Stories" title="Yahoo News - Top Stories" type="rss"
-            xmlUrl="https://rss.news.yahoo.com/rss/topstories"
-            htmlUrl="https://news.yahoo.com/topstories/" />
-        <outline text="NBC News Top Stories" title="NBC News Top Stories" type="rss"
-            xmlUrl="https://feeds.nbcnews.com/nbcnews/public/news"
-            htmlUrl="https://www.nbcnews.com/" />
-        <outline text="The Telegraph - Telegraph online, Daily Telegraph, Sunday Telegraph"
-            title="The Telegraph - Telegraph online, Daily Telegraph, Sunday Telegraph"
-            type="rss" xmlUrl="https://www.telegraph.co.uk/rss"
-            htmlUrl="https://www.telegraph.co.uk/" />
-        <outline text="ABC News: Top Stories" title="ABC News: Top Stories" type="rss"
-            xmlUrl="https://feeds.abcnews.com/abcnews/topstories"
-            htmlUrl="https://abcnews.go.com/" />
-        <outline text="AL JAZEERA ENGLISH (AJE)" title="AL JAZEERA ENGLISH (AJE)" type="rss"
-            xmlUrl="https://www.aljazeera.com/Services/Rss/?PostingId=2007731105943979989"
-            htmlUrl="https://www.aljazeera.com/default.html" />
-        <outline text="Independent" title="Independent" type="rss"
-            xmlUrl="https://www.independent.co.uk/rss"
-            htmlUrl="https://www.independent.co.uk/news/?service=Rss" />
-        <outline text="Washington Post: Breaking News, World, US, DC News &amp; Analysis"
-            title="Washington Post: Breaking News, World, US, DC News &amp; Analysis" type="rss"
-            xmlUrl="https://feeds.washingtonpost.com/rss/world"
-            htmlUrl="https://www.washingtonpost.com/?wprss=rss_homepage" />
-        <outline text="World news | The Guardian" title="World news | The Guardian" type="rss"
-            xmlUrl="https://feeds.guardian.co.uk/theguardian/world/rss"
-            htmlUrl="https://www.theguardian.com/world" />
-        <outline text="TIME" title="TIME" type="rss" xmlUrl="https://time.com/feed/"
-            htmlUrl="http://time.com/" />
-        <outline text="WSJ: World News" title="WSJ: World News" type="rss"
-            xmlUrl="https://feeds.a.dj.com/rss/RSSWorldNews.xml"
-            htmlUrl="http://online.wsj.com/page/2_0006.html" />
-        <outline text="The New York Times" title="The New York Times" type="rss"
-            xmlUrl="https://www.nytimes.com/services/xml/rss/nyt/HomePage.xml"
-            htmlUrl="https://www.nytimes.com/pages/index.html?partner=rss&amp;emc=rss" />
-        <outline text="BBC News" title="BBC News" type="rss"
-            xmlUrl="https://feeds.bbci.co.uk/news/rss.xml" htmlUrl="https://www.bbc.com" />
-        <outline text="Spiegel auf BlueSky" title="Spiegel auf BlueSky" type="rss"
-            xmlUrl="https://bsky.app/profile/did:plc:6xofcnvvojjnmggqx43zghwh/rss" />
-        <outline text="The Globe and Mail on BlueSky" title="The Globe and Mail on BlueSky"
-            type="rss"
-            xmlUrl="https://bsky.app/profile/did:plc:y3xrmnwvkvsq4tqcsgwch4na/rss" />
-        <outline text="Table Briefings on BlueSky" title="Table Briefings on BlueSky" type="rss"
-            xmlUrl="https://bsky.app/profile/did:plc:7xtnsgkroq5ibqj4xgoytvlm/rss" />
-        <outline />
-        <outline text="Politico.EU on BlueSky" title="Politico.EU on BlueSky" type="rss"
-            xmlUrl="https://bsky.app/profile/did:plc:bak7f4b3jsiqlpyo6o4ejaji/rss" />
-       <outline text="Press Gazette" title="Press Gazette" type="rss"
-            xmlUrl="https://bsky.app/profile/did:plc:m44am22qggkwh6xqvddql3ss/rss" />
-        <outline text="Kyiv Independent" title="Kyiv Independent" type="rss"
-            xmlUrl="https://bsky.app/profile/did:plc:yazbevg3wkzp5llnzb44tqgh/rss" />
-        <outline text="The Jerusalem Post" xmlUrl="https://rss.jpost.com/rss/rssfeedsfrontpage.aspx" />
-        <outline text="Haaretz" xmlUrl="https://www.haaretz.com/srv/haaretz-latest-headlines" />
-        <outline text="Al Jazeera" xmlUrl="https://www.aljazeera.com/xml/rss/all.xml" />
-        <outline text="France 24" xmlurl="https://www.france24.com/en/rss" />
+        <outline text="Al Jazeera Arabic" title="Al Jazeera Arabic" type="rss" xmlUrl="https://www.aljazeera.net/aljazeerarss/a7c186be-1baa-4bd4-9d80-a84db769f779/73d0e1b4-532f-45ef-b135-bfdff8b8cab9" />
+        <outline text="Asharq Al-Awsat" title="Asharq Al-Awsat" type="rss" xmlUrl="http://aawsat.com/feed/all" />
+        <outline text="BBC Arabic" title="BBC Arabic" type="rss" xmlUrl="https://feeds.bbci.co.uk/arabic/rss.xml" />
+        <outline text="DW Arabic" title="DW Arabic" type="rss" xmlUrl="https://rss.dw.com/rdf/rss-ar-all" />
+        <outline text="France 24 Arabic" title="France 24 Arabic" type="rss" xmlUrl="https://www.france24.com/ar/rss" />
+        <outline text="Aktualne.cz" title="Aktualne.cz" type="rss" xmlUrl="https://zpravy.aktualne.cz/rss/" />
+        <outline text="Czech Radio (iROZHLAS)" title="Czech Radio (iROZHLAS)" type="rss" xmlUrl="https://www.irozhlas.cz/rss/irozhlas/feed" />
+        <outline text="Denik N" title="Denik N" type="rss" xmlUrl="https://denikn.cz/feed/" />
+        <outline text="iDnes" title="iDnes" type="rss" xmlUrl="https://servis.idnes.cz/rss.aspx?c=zpravodaj" />
+        <outline text="Novinky.cz" title="Novinky.cz" type="rss" xmlUrl="https://www.novinky.cz/rss" />
+        <outline text="Berlingske" title="Berlingske" type="rss" xmlUrl="https://www.berlingske.dk/content/rss" />
+        <outline text="DR Nyheder" title="DR Nyheder" type="rss" xmlUrl="https://www.dr.dk/nyheder/service/feeds/senestenyt" />
+        <outline text="Politiken" title="Politiken" type="rss" xmlUrl="https://politiken.dk/rss/senestenyt.rss" />
+        <outline text="20 Minuten (CH)" title="20 Minuten (CH)" type="rss" xmlUrl="https://partner-feeds.20min.ch/rss/20minuten" />
+        <outline text="ARD Tagesschau" title="ARD Tagesschau" type="rss" xmlUrl="https://www.tagesschau.de/xml/rss2/" />
+        <outline text="DW Deutsch" title="DW Deutsch" type="rss" xmlUrl="https://rss.dw.com/rdf/rss-de-all" />
+        <outline text="FAZ" title="FAZ" type="rss" xmlUrl="https://www.faz.net/rss/aktuell/" />
+        <outline text="Handelsblatt" title="Handelsblatt" type="rss" xmlUrl="https://www.handelsblatt.com/contentexport/feed/schlagzeilen" />
+        <outline text="NZZ" title="NZZ" type="rss" xmlUrl="https://www.nzz.ch/recent.rss" />
+        <outline text="ORF" title="ORF" type="rss" xmlUrl="https://rss.orf.at/news.xml" />
+        <outline text="Spiegel Online" title="Spiegel Online" type="rss" xmlUrl="https://www.spiegel.de/schlagzeilen/tops/index.rss" />
+        <outline text="Suddeutsche Zeitung" title="Suddeutsche Zeitung" type="rss" xmlUrl="https://rss.sueddeutsche.de/rss/Alles" />
+        <outline text="t-online Nachrichten" title="t-online Nachrichten" type="rss" xmlUrl="https://www.t-online.de/nachrichten/feed.rss" />
+        <outline text="Tagesspiegel" title="Tagesspiegel" type="rss" xmlUrl="https://www.tagesspiegel.de/contentexport/feed/home" />
+        <outline text="Welt" title="Welt" type="rss" xmlUrl="https://www.welt.de/feeds/latest.rss" />
+        <outline text="ZDF heute" title="ZDF heute" type="rss" xmlUrl="https://www.zdf.de/rss/zdf/nachrichten" />
+        <outline text="Zeit Online" title="Zeit Online" type="rss" xmlUrl="https://newsfeed.zeit.de/news/index" />
+        <outline text="Proto Thema" title="Proto Thema" type="rss" xmlUrl="https://www.protothema.gr/rss" />
+        <outline text="TA NEA" title="TA NEA" type="rss" xmlUrl="https://www.tanea.gr/feed/" />
+        <outline text="To Vima" title="To Vima" type="rss" xmlUrl="https://www.tovima.gr/feed/" />
+        <outline text="ABC News" title="ABC News" type="rss" xmlUrl="https://feeds.abcnews.com/abcnews/topstories" />
+        <outline text="Axios" title="Axios" type="rss" xmlUrl="https://api.axios.com/feed/" />
+        <outline text="BBC News World" title="BBC News World" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/world/rss.xml" />
+        <outline text="CBC News" title="CBC News" type="rss" xmlUrl="https://www.cbc.ca/cmlink/rss-topstories" />
+        <outline text="CBS News" title="CBS News" type="rss" xmlUrl="https://www.cbsnews.com/latest/rss/main" />
+        <outline text="Financial Times" title="Financial Times" type="rss" xmlUrl="https://www.ft.com/rss/home" />
+        <outline text="Fox News World" title="Fox News World" type="rss" xmlUrl="https://moxie.foxnews.com/google-publisher/world.xml" />
+        <outline text="Los Angeles Times" title="Los Angeles Times" type="rss" xmlUrl="https://www.latimes.com/world-nation/rss2.0.xml" />
+        <outline text="NBC News" title="NBC News" type="rss" xmlUrl="https://feeds.nbcnews.com/nbcnews/public/news" />
+        <outline text="New York Times" title="New York Times" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" />
+        <outline text="NPR News" title="NPR News" type="rss" xmlUrl="https://www.npr.org/rss/rss.php?id=1001" />
+        <outline text="PBS NewsHour" title="PBS NewsHour" type="rss" xmlUrl="https://www.pbs.org/newshour/feeds/rss/headlines" />
+        <outline text="Politico" title="Politico" type="rss" xmlUrl="https://rss.politico.com/politics-news.xml" />
+        <outline text="Sky News World" title="Sky News World" type="rss" xmlUrl="https://feeds.skynews.com/feeds/rss/world.xml" />
+        <outline text="The Economist" title="The Economist" type="rss" xmlUrl="https://www.economist.com/latest/rss.xml" />
+        <outline text="The Guardian World" title="The Guardian World" type="rss" xmlUrl="https://www.theguardian.com/world/rss" />
+        <outline text="The Independent" title="The Independent" type="rss" xmlUrl="https://www.independent.co.uk/rss" />
+        <outline text="The Telegraph" title="The Telegraph" type="rss" xmlUrl="https://www.telegraph.co.uk/rss.xml" />
+        <outline text="Washington Post" title="Washington Post" type="rss" xmlUrl="https://feeds.washingtonpost.com/rss/world" />
+        <outline text="ABC Espana" title="ABC Espana" type="rss" xmlUrl="https://www.abc.es/rss/feeds/abc_EspanaEspana.xml" />
+        <outline text="BBC Mundo" title="BBC Mundo" type="rss" xmlUrl="https://feeds.bbci.co.uk/mundo/rss.xml" />
+        <outline text="Clarin" title="Clarin" type="rss" xmlUrl="https://www.clarin.com/rss/lo-ultimo/" />
+        <outline text="El Confidencial" title="El Confidencial" type="rss" xmlUrl="https://rss.elconfidencial.com/espana/" />
+        <outline text="El Mundo" title="El Mundo" type="rss" xmlUrl="https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml" />
+        <outline text="El Pais" title="El Pais" type="rss" xmlUrl="https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada" />
+        <outline text="El Tiempo (Colombia)" title="El Tiempo (Colombia)" type="rss" xmlUrl="https://www.eltiempo.com/rss/politica.xml" />
+        <outline text="Expansion" title="Expansion" type="rss" xmlUrl="https://www.expansion.com/rss/portada.xml" />
+        <outline text="Infobae" title="Infobae" type="rss" xmlUrl="https://www.infobae.com/arc/outboundfeeds/rss/" />
+        <outline text="La Nacion (Argentina)" title="La Nacion (Argentina)" type="rss" xmlUrl="https://www.lanacion.com.ar/arcio/rss/" />
+        <outline text="La Vanguardia" title="La Vanguardia" type="rss" xmlUrl="https://www.lavanguardia.com/feed/rss/home" />
+        <outline text="BBC Persian" title="BBC Persian" type="rss" xmlUrl="https://feeds.bbci.co.uk/persian/rss.xml" />
+        <outline text="DW Persian" title="DW Persian" type="rss" xmlUrl="https://rss.dw.com/rdf/rss-per-all" />
+        <outline text="Radio Farda" title="Radio Farda" type="rss" xmlUrl="https://www.radiofarda.com/api/zrttpol-vomx-tpeoogpi" />
+        <outline text="Helsingin Sanomat" title="Helsingin Sanomat" type="rss" xmlUrl="https://www.hs.fi/rss/tuoreimmat.xml" />
+        <outline text="Ilta-Sanomat" title="Ilta-Sanomat" type="rss" xmlUrl="https://www.is.fi/rss/tuoreimmat.xml" />
+        <outline text="MTV Uutiset" title="MTV Uutiset" type="rss" xmlUrl="https://www.mtvuutiset.fi/api/feed/rss/uutiset_uusimmat" />
+        <outline text="Yle Uutiset" title="Yle Uutiset" type="rss" xmlUrl="https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET" />
+        <outline text="20 Minutes FR" title="20 Minutes FR" type="rss" xmlUrl="https://www.20minutes.fr/feeds/rss-une.xml" />
+        <outline text="BFMTV" title="BFMTV" type="rss" xmlUrl="https://www.bfmtv.com/rss/news-24-7/" />
+        <outline text="France 24 French" title="France 24 French" type="rss" xmlUrl="https://www.france24.com/fr/rss" />
+        <outline text="L'Express" title="L'Express" type="rss" xmlUrl="https://www.lexpress.fr/rss/alaune.xml" />
+        <outline text="L'Obs" title="L'Obs" type="rss" xmlUrl="https://www.nouvelobs.com/a-la-une/rss.xml" />
+        <outline text="La Libre Belgique" title="La Libre Belgique" type="rss" xmlUrl="https://www.lalibre.be/arc/outboundfeeds/rss/?outputType=xml" />
+        <outline text="Le Figaro" title="Le Figaro" type="rss" xmlUrl="https://www.lefigaro.fr/rss/figaro_actualites.xml" />
+        <outline text="Le Monde" title="Le Monde" type="rss" xmlUrl="https://www.lemonde.fr/rss/une.xml" />
+        <outline text="Le Parisien" title="Le Parisien" type="rss" xmlUrl="https://feeds.leparisien.fr/leparisien/rss" />
+        <outline text="Liberation" title="Liberation" type="rss" xmlUrl="https://www.liberation.fr/arc/outboundfeeds/rss-all/?outputType=xml" />
+        <outline text="RFI" title="RFI" type="rss" xmlUrl="https://www.rfi.fr/fr/rss" />
+        <outline text="RTBF" title="RTBF" type="rss" xmlUrl="https://rss.rtbf.be/article/rss/rtbfinfo_homepage.xml" />
+        <outline text="RTS Info" title="RTS Info" type="rss" xmlUrl="https://www.rts.ch/info/toute-info/?format=rss/news" />
+        <outline text="Aaj Tak" title="Aaj Tak" type="rss" xmlUrl="https://aajtak.in/rssfeeds/?id=home" />
+        <outline text="ABP News" title="ABP News" type="rss" xmlUrl="https://www.abplive.com/home/feed" />
+        <outline text="Hindustan (Live Hindustan)" title="Hindustan (Live Hindustan)" type="rss" xmlUrl="https://api.livehindustan.com/feeds/rss/news-brief/rssfeed.xml" />
+        <outline text="Vecernji list" title="Vecernji list" type="rss" xmlUrl="https://www.vecernji.hr/feeds/latest" />
+        <outline text="444.hu" title="444.hu" type="rss" xmlUrl="https://444.hu/feed" />
+        <outline text="HVG" title="HVG" type="rss" xmlUrl="https://hvg.hu/rss" />
+        <outline text="Index.hu" title="Index.hu" type="rss" xmlUrl="https://index.hu/24ora/rss/" />
+        <outline text="ANSA" title="ANSA" type="rss" xmlUrl="https://www.ansa.it/sito/notizie/mondo/mondo_rss.xml" />
+        <outline text="Il Fatto Quotidiano" title="Il Fatto Quotidiano" type="rss" xmlUrl="https://www.ilfattoquotidiano.it/feed/" />
+        <outline text="Il Sole 24 Ore" title="Il Sole 24 Ore" type="rss" xmlUrl="https://www.ilsole24ore.com/rss/mondo.xml" />
+        <outline text="La Repubblica" title="La Repubblica" type="rss" xmlUrl="https://www.repubblica.it/rss/homepage/rss2.0.xml" />
+        <outline text="RAI News" title="RAI News" type="rss" xmlUrl="https://www.rainews.it/rss/tutti" />
+        <outline text="Asahi Shimbun" title="Asahi Shimbun" type="rss" xmlUrl="https://rss.asahi.com/rss/asahi/newsheadlines.rdf" />
+        <outline text="Jiji Press" title="Jiji Press" type="rss" xmlUrl="https://www.jiji.com/rss/ranking.rdf" />
+        <outline text="Mainichi Shimbun" title="Mainichi Shimbun" type="rss" xmlUrl="https://mainichi.jp/rss/etc/mainichi-flash.rss" />
+        <outline text="NHK News" title="NHK News" type="rss" xmlUrl="https://www3.nhk.or.jp/rss/news/cat0.xml" />
+        <outline text="Chosun Ilbo" title="Chosun Ilbo" type="rss" xmlUrl="https://www.chosun.com/arc/outboundfeeds/rss/?outputType=xml" />
+        <outline text="Hankyoreh" title="Hankyoreh" type="rss" xmlUrl="https://www.hani.co.kr/rss/" />
+        <outline text="KBS World" title="KBS World" type="rss" xmlUrl="http://world.kbs.co.kr/rss/rss_news.htm?lang=e" />
+        <outline text="SBS News" title="SBS News" type="rss" xmlUrl="https://news.sbs.co.kr/news/newsflashRssFeed.do?plink=RSSREADER" />
+        <outline text="Yonhap News" title="Yonhap News" type="rss" xmlUrl="https://www.yna.co.kr/rss/news.xml" />
+        <outline text="De Telegraaf" title="De Telegraaf" type="rss" xmlUrl="https://www.telegraaf.nl/rss" />
+        <outline text="De Volkskrant" title="De Volkskrant" type="rss" xmlUrl="https://www.volkskrant.nl/rss.xml" />
+        <outline text="NOS" title="NOS" type="rss" xmlUrl="https://feeds.nos.nl/nosnieuwsalgemeen" />
+        <outline text="NRC" title="NRC" type="rss" xmlUrl="https://www.nrc.nl/rss/" />
+        <outline text="Nu.nl" title="Nu.nl" type="rss" xmlUrl="https://www.nu.nl/rss/Algemeen" />
+        <outline text="RTL Nieuws" title="RTL Nieuws" type="rss" xmlUrl="https://www.rtlnieuws.nl/rss.xml" />
+        <outline text="Aftenposten" title="Aftenposten" type="rss" xmlUrl="https://www.aftenposten.no/rss_nyheter.xml" />
+        <outline text="NRK Nyheter" title="NRK Nyheter" type="rss" xmlUrl="https://www.nrk.no/nyheter/siste.rss" />
+        <outline text="VG" title="VG" type="rss" xmlUrl="https://www.vg.no/rss/feed/?limit=10&amp;categories=1068" />
+        <outline text="Gazeta Wyborcza" title="Gazeta Wyborcza" type="rss" xmlUrl="https://wyborcza.pl/pub/rss/najnowsze_wyborcza.xml" />
+        <outline text="Onet Wiadomosci" title="Onet Wiadomosci" type="rss" xmlUrl="https://wiadomosci.onet.pl/.feed" />
+        <outline text="PAP" title="PAP" type="rss" xmlUrl="https://pap-mediaroom.pl/rss.xml" />
+        <outline text="Rzeczpospolita" title="Rzeczpospolita" type="rss" xmlUrl="https://www.rp.pl/rss/1019" />
+        <outline text="Expresso" title="Expresso" type="rss" xmlUrl="https://rss.impresa.pt/feed/latest/expresso.rss" />
+        <outline text="RTP Noticias" title="RTP Noticias" type="rss" xmlUrl="https://www.rtp.pt/noticias/rss/" />
+        <outline text="Agencia Brasil" title="Agencia Brasil" type="rss" xmlUrl="https://agenciabrasil.ebc.com.br/rss/internacional/feed.xml" />
+        <outline text="Estadao" title="Estadao" type="rss" xmlUrl="https://www.estadao.com.br/arc/outboundfeeds/feeds/rss/sections/internacional/" />
+        <outline text="Folha de S.Paulo" title="Folha de S.Paulo" type="rss" xmlUrl="https://feeds.folha.uol.com.br/mundo/rss091.xml" />
+        <outline text="G1 Globo" title="G1 Globo" type="rss" xmlUrl="https://g1.globo.com/dynamo/mundo/rss2.xml" />
+        <outline text="UOL Noticias" title="UOL Noticias" type="rss" xmlUrl="https://rss.uol.com.br/feed/noticias.xml" />
+        <outline text="Digi24" title="Digi24" type="rss" xmlUrl="https://www.digi24.ro/rss" />
+        <outline text="G4Media" title="G4Media" type="rss" xmlUrl="https://www.g4media.ro/feed" />
+        <outline text="ProTV Stiri" title="ProTV Stiri" type="rss" xmlUrl="https://stirileprotv.ro/rss" />
+        <outline text="Interfax" title="Interfax" type="rss" xmlUrl="https://www.interfax.ru/rss.asp" />
+        <outline text="Kommersant" title="Kommersant" type="rss" xmlUrl="https://www.kommersant.ru/RSS/news.xml" />
+        <outline text="Meduza" title="Meduza" type="rss" xmlUrl="https://meduza.io/rss/all" />
+        <outline text="RIA Novosti" title="RIA Novosti" type="rss" xmlUrl="https://ria.ru/export/rss2/archive/index.xml" />
+        <outline text="TASS" title="TASS" type="rss" xmlUrl="https://tass.ru/rss/v2.xml" />
+        <outline text="SME.sk" title="SME.sk" type="rss" xmlUrl="https://www.sme.sk/rss" />
+        <outline text="TASR / Teraz.sk" title="TASR / Teraz.sk" type="rss" xmlUrl="http://www.teraz.sk/rss/vsetky-spravy.rss" />
+        <outline text="N1 Info" title="N1 Info" type="rss" xmlUrl="https://n1info.rs/feed/" />
+        <outline text="Radio Slobodna Evropa (Srbija)" title="Radio Slobodna Evropa (Srbija)" type="rss" xmlUrl="https://www.slobodnaevropa.org/api/zototl-vomx-tpepomq" />
+        <outline text="Aftonbladet" title="Aftonbladet" type="rss" xmlUrl="https://rss.aftonbladet.se/rss2/small/pages/sections/senastenytt/" />
+        <outline text="Dagens Nyheter" title="Dagens Nyheter" type="rss" xmlUrl="https://www.dn.se/rss/" />
+        <outline text="Expressen" title="Expressen" type="rss" xmlUrl="https://www.expressen.se/rss/nyheter/" />
+        <outline text="SVT Nyheter" title="SVT Nyheter" type="rss" xmlUrl="https://www.svt.se/nyheter/rss.xml" />
+        <outline text="Cumhuriyet" title="Cumhuriyet" type="rss" xmlUrl="https://www.cumhuriyet.com.tr/rss/son_dakika.xml" />
+        <outline text="Hurriyet" title="Hurriyet" type="rss" xmlUrl="https://www.hurriyet.com.tr/rss/anasayfa" />
+        <outline text="Milliyet" title="Milliyet" type="rss" xmlUrl="https://www.milliyet.com.tr/rss/rssnew/sondakikarss.xml" />
+        <outline text="Sabah" title="Sabah" type="rss" xmlUrl="https://www.sabah.com.tr/rss/anasayfa.xml" />
+        <outline text="TRT Haber" title="TRT Haber" type="rss" xmlUrl="https://www.trthaber.com/sondakika.rss" />
+        <outline text="Kyiv Post" title="Kyiv Post" type="rss" xmlUrl="https://www.kyivpost.com/feed" />
+        <outline text="Ukrainska Pravda" title="Ukrainska Pravda" type="rss" xmlUrl="https://www.pravda.com.ua/rss/view_news/" />
+        <outline text="Ukrinform" title="Ukrinform" type="rss" xmlUrl="https://www.ukrinform.ua/rss/block-lastnews" />
+        <outline text="UNIAN" title="UNIAN" type="rss" xmlUrl="https://rss.unian.net/site/news_ukr.rss" />
+        <outline text="Global Times" title="Global Times" type="rss" xmlUrl="https://www.globaltimes.cn/rss/outbrain.xml" />
+        <outline text="Liberty Times" title="Liberty Times" type="rss" xmlUrl="https://news.ltn.com.tw/rss/all.xml" />
+        <outline text="RTHK Greater China" title="RTHK Greater China" type="rss" xmlUrl="https://rthk.hk/rthk/news/rss/c_expressnews_greaterchina.xml" />
+        <outline text="RTHK Local News" title="RTHK Local News" type="rss" xmlUrl="https://rthk.hk/rthk/news/rss/c_expressnews_clocal.xml" />
     </body>
 </opml>

@@ -6,6 +6,8 @@ import pytest
 
 from seattle_911.seattle_911 import (
     DATASET_URL,
+    DEFAULT_CONNECT_TIMEOUT_SECONDS,
+    DEFAULT_READ_TIMEOUT_SECONDS,
     SeattleFire911Bridge,
     parse_connection_string,
     parse_incident,
@@ -77,6 +79,10 @@ class TestFetchIncidents:
         first_call = bridge.session.get.call_args_list[0]
         assert first_call.args[0] == DATASET_URL
         assert first_call.kwargs["params"]["$order"] == "datetime ASC"
+        assert first_call.kwargs["timeout"] == (
+            DEFAULT_CONNECT_TIMEOUT_SECONDS,
+            DEFAULT_READ_TIMEOUT_SECONDS,
+        )
 
 
 @pytest.mark.unit
@@ -87,6 +93,7 @@ class TestPolling:
         bridge.fetch_incidents = Mock(return_value=[parse_incident(row) for row in SAMPLE_ROWS])
         producer = Mock()
         producer.producer = Mock()
+        producer.producer.flush.return_value = 0
 
         bridge.poll_and_send(producer, once=True)
         bridge.fetch_incidents = Mock(return_value=[parse_incident(row) for row in SAMPLE_ROWS])
@@ -105,7 +112,24 @@ class TestPolling:
         bridge.fetch_incidents = Mock(return_value=[parse_incident(row) for row in SAMPLE_ROWS])
         producer = Mock()
         producer.producer = Mock()
+        producer.producer.flush.return_value = 0
 
         bridge.poll_and_send(producer, once=True)
 
         assert bridge.last_seen_datetime == "2026-04-09T03:52:00.000"
+
+    @patch("seattle_911.seattle_911._save_state")
+    def test_poll_and_send_does_not_advance_state_on_flush_timeout(self, mock_save_state):
+        bridge = SeattleFire911Bridge(state_file="state.json")
+        bridge.fetch_incidents = Mock(return_value=[parse_incident(row) for row in SAMPLE_ROWS])
+        producer = Mock()
+        producer.producer = Mock()
+        producer.producer.flush.return_value = 1
+
+        bridge.poll_and_send(producer, once=True)
+
+        assert bridge.last_seen_datetime is None
+        assert bridge.sent_incident_numbers == set()
+        assert bridge.sent_incident_order == []
+        mock_save_state.assert_not_called()
+        assert producer.send_us_wa_seattle_fire911_incident.call_count == 2

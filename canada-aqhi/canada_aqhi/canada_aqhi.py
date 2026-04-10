@@ -15,6 +15,8 @@ from typing import Any, Dict, Iterable, Optional, Sequence
 
 import requests
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from canada_aqhi_producer_data.ca.gc.weather.aqhi.community import Community
 from canada_aqhi_producer_data.ca.gc.weather.aqhi.forecast import Forecast
@@ -67,6 +69,7 @@ FORECAST_LABELS = {
 DEFAULT_REFERENCE_REFRESH_INTERVAL = 24 * 60 * 60
 MAX_OBSERVATION_IDS = 50000
 MAX_FORECAST_IDS = 20000
+DEFAULT_HTTP_RETRY_TOTAL = 3
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -160,6 +163,26 @@ def canonicalize_feed_url(feed_url: str | None) -> str | None:
     return f"{AQHI_BASE_URL}/{suffix}"
 
 
+def create_retrying_session() -> requests.Session:
+    """Create an HTTP session with bounded retries for transient upstream failures."""
+    session = requests.Session()
+    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    retry = Retry(
+        total=DEFAULT_HTTP_RETRY_TOTAL,
+        connect=DEFAULT_HTTP_RETRY_TOTAL,
+        read=DEFAULT_HTTP_RETRY_TOTAL,
+        status=DEFAULT_HTTP_RETRY_TOTAL,
+        backoff_factor=1,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset({"GET"}),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
 def _load_state(state_file: str) -> dict:
     try:
         if state_file and os.path.exists(state_file):
@@ -185,8 +208,7 @@ class CanadaAQHIBridge:
 
     def __init__(self, state_file: str = ""):
         self.state_file = state_file
-        self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+        self.session = create_retrying_session()
         state = _load_state(state_file)
         self.province_cache: dict[str, str] = dict(state.get("province_cache", {}))
         observation_ids = state.get("observation_ids", [])
@@ -537,8 +559,14 @@ class CanadaAQHIBridge:
 
         reference_count = 0
         if needs_reference_refresh:
-            communities = self.load_reference_catalogs(selected_provinces)
-            reference_count = self.emit_reference_data(producer, communities)
+            try:
+                communities = self.load_reference_catalogs(selected_provinces)
+                reference_count = self.emit_reference_data(producer, communities)
+            except requests.RequestException as exc:
+                if communities:
+                    LOGGER.warning("Community refresh failed; continuing with cached metadata: %s", exc)
+                else:
+                    raise
 
         ordered_communities = [communities[key] for key in sorted(communities)]
         observation_count = self.emit_observations(producer, ordered_communities)

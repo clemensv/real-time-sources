@@ -1,13 +1,18 @@
 """Unit tests for the FMI Finland air quality bridge."""
 
 from datetime import datetime, timezone
+from unittest.mock import Mock
 
 import pytest
+import requests
 
 from fmi_finland.fmi_finland import (
+    FMIAirQualityAPI,
     PARAM_MAP,
     _measurement_arg,
     _observation_window,
+    create_retrying_session,
+    get_station_registry_with_fallback,
     _resolve_fmisid,
     parse_connection_string,
     parse_observations_xml,
@@ -93,6 +98,25 @@ class TestConnectionStringParsing:
         config = parse_connection_string("BootstrapServer=localhost:9092;EntityPath=fmi-finland-airquality")
         assert config["bootstrap.servers"] == "localhost:9092"
         assert config["_entity_path"] == "fmi-finland-airquality"
+
+
+class TestHttpResilience:
+    def test_create_retrying_session(self):
+        session = create_retrying_session()
+        https_adapter = session.get_adapter("https://opendata.fmi.fi/wfs")
+
+        assert session.headers["User-Agent"] == "GitHub-Copilot-CLI/1.0"
+        assert https_adapter.max_retries.total == 3
+        assert https_adapter.max_retries.backoff_factor == 1
+
+    def test_get_station_registry_with_fallback_uses_cached_registry(self):
+        api = FMIAirQualityAPI()
+        api.cached_registry = parse_station_metadata(STATIONS_XML)
+        api.get_station_registry = Mock(side_effect=requests.RequestException("timeout"))
+
+        registry = get_station_registry_with_fallback(api)
+
+        assert registry.by_id["100662"].station_name == "Helsinki Kallio 2"
 
 
 class TestParsingHelpers:

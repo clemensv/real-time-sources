@@ -1,0 +1,300 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "storageAccountName": "[concat(replace(parameters('appName'), '-', ''), 'stg')]",
+    "fileShareName": "fileshare"
+  },
+  "parameters": {
+    "appName": {
+      "defaultValue": "[resourceGroup().name]",
+      "maxLength": 64,
+      "metadata": {
+        "description": "The name of the Puget Sound container group."
+      },
+      "type": "string"
+    },
+    "connectionStringSecret": {
+      "metadata": {
+        "description": "The Kafka/Event Hub/Fabric Event Stream connection string shared by all containers."
+      },
+      "type": "securestring"
+    },
+    "wsdotAccessCodeSecret": {
+      "metadata": {
+        "description": "Required WSDOT API access code."
+      },
+      "type": "securestring"
+    },
+    "seattle911Image": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-seattle-911:latest",
+      "type": "string"
+    },
+    "seattleStreetClosuresImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-seattle-street-closures:latest",
+      "type": "string"
+    },
+    "kingCountyMarineImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-king-county-marine:latest",
+      "type": "string"
+    },
+    "epaUvImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-epa-uv:latest",
+      "type": "string"
+    },
+    "wsdotImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-wsdot:latest",
+      "type": "string"
+    },
+    "noaaImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-noaa:latest",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "properties": {
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "enabled": true
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 5120
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-09-01",
+      "name": "[parameters('appName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "seattle-911",
+            "properties": {
+              "image": "[parameters('seattle911Image')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "SEATTLE_911_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/seattle_911_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "seattle-street-closures",
+            "properties": {
+              "image": "[parameters('seattleStreetClosuresImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "SEATTLE_STREET_CLOSURES_STATE_FILE",
+                  "value": "/mnt/fileshare/seattle_street_closures_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "king-county-marine",
+            "properties": {
+              "image": "[parameters('kingCountyMarineImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "KING_COUNTY_MARINE_STATE_FILE",
+                  "value": "/mnt/fileshare/king_county_marine_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "epa-uv",
+            "properties": {
+              "image": "[parameters('epaUvImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "EPA_UV_LOCATIONS",
+                  "value": "Seattle,WA"
+                },
+                {
+                  "name": "EPA_UV_STATE_FILE",
+                  "value": "/mnt/fileshare/epa_uv_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "wsdot",
+            "properties": {
+              "image": "[parameters('wsdotImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.5
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "WSDOT_ACCESS_CODE",
+                  "secureValue": "[parameters('wsdotAccessCodeSecret')]"
+                },
+                {
+                  "name": "REGION_FILTER",
+                  "value": "Northwest,Olympic"
+                }
+              ]
+            }
+          },
+          {
+            "name": "noaa",
+            "properties": {
+              "image": "[parameters('noaaImage')]",
+              "command": [
+                "python",
+                "-m",
+                "noaa",
+                "--station",
+                "9447130"
+              ],
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.4
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "azurefilevolume",
+            "azureFile": {
+              "storageAccountName": "[variables('storageAccountName')]",
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01').keys[0].value]"
+            }
+          }
+        ],
+        "restartPolicy": "Always",
+        "osType": "Linux"
+      }
+    }
+  ]
+}

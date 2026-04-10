@@ -11,6 +11,7 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 | [NDW Netherlands](ndw-netherlands.md) | Netherlands | **18/18** | DATEX II v3 files | Per-minute traffic speeds; DATEX II reference implementation |
 | [TfL Road Disruptions London](tfl-road-disruptions-london.md) | UK — London | **18/18** | REST | Incidents, roadworks, closures with GeoJSON geometry; no auth |
 | [French Road Traffic](french-road-traffic.md) | **France (national)** | **18/18** | DATEX II | Real-time circulation + events on national roads; DATEX II reuse |
+| [Luxembourg CITA DATEX](luxembourg-cita-datex.md) | Luxembourg | **17/18** | DATEX II | Live motorway traffic status feeds; compact DATEX validation target |
 | [Madrid Real-Time Traffic](madrid-traffic.md) | Spain — Madrid | 17/18 | REST (XML) | Raw sensor data: intensity, occupancy, service levels; 5-min updates |
 | [Singapore LTA Traffic](singapore-lta-traffic.md) | **Singapore** | 17/18 | REST (OData) | Speed bands, incidents, images, travel times; comprehensive platform |
 | [Paris Bicycle Counters](paris-bicycle-counters.md) | France — Paris | 17/18 | REST (Opendatasoft) | 141 Eco-Compteur stations; hourly bicycle flow data |

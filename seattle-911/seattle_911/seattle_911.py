@@ -11,6 +11,8 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from confluent_kafka import Producer
 
 from seattle_911_producer_data import Incident
@@ -24,6 +26,39 @@ DEFAULT_POLL_INTERVAL_SECONDS = 300
 DEFAULT_LOOKBACK_HOURS = 24
 DEFAULT_OVERLAP_MINUTES = 10
 MAX_SEEN_IDS = 50000
+DEFAULT_CONNECT_TIMEOUT_SECONDS = 10
+DEFAULT_READ_TIMEOUT_SECONDS = 120
+DEFAULT_KAFKA_FLUSH_TIMEOUT_SECONDS = 30
+DEFAULT_HTTP_RETRY_TOTAL = 3
+
+
+def _build_retrying_session() -> requests.Session:
+    """Create an HTTP session with bounded retries for transient upstream failures."""
+    session = requests.Session()
+    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    retry = Retry(
+        total=DEFAULT_HTTP_RETRY_TOTAL,
+        connect=DEFAULT_HTTP_RETRY_TOTAL,
+        read=DEFAULT_HTTP_RETRY_TOTAL,
+        status=DEFAULT_HTTP_RETRY_TOTAL,
+        backoff_factor=1,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset({"GET"}),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def _flush_or_raise(producer: Producer, timeout_seconds: int = DEFAULT_KAFKA_FLUSH_TIMEOUT_SECONDS) -> None:
+    """Flush Kafka and fail the poll when messages remain undelivered."""
+    remaining = producer.flush(timeout=timeout_seconds)
+    if remaining:
+        raise RuntimeError(
+            f"Kafka flush timed out with {remaining} undelivered message(s) still queued"
+        )
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -93,8 +128,7 @@ class SeattleFire911Bridge:
 
     def __init__(self, state_file: str = ""):
         self.state_file = state_file
-        self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+        self.session = _build_retrying_session()
         state = _load_state(state_file)
         sent_ids = [str(value) for value in state.get("sent_incident_numbers", [])]
         self.sent_incident_numbers = set(sent_ids[-MAX_SEEN_IDS:])
@@ -124,7 +158,11 @@ class SeattleFire911Bridge:
             }
             if since is not None:
                 params["$where"] = f"datetime >= '{since.strftime('%Y-%m-%dT%H:%M:%S')}'"
-            response = self.session.get(DATASET_URL, params=params, timeout=60)
+            response = self.session.get(
+                DATASET_URL,
+                params=params,
+                timeout=(DEFAULT_CONNECT_TIMEOUT_SECONDS, DEFAULT_READ_TIMEOUT_SECONDS),
+            )
             response.raise_for_status()
             rows = response.json()
             if not rows:
@@ -144,6 +182,10 @@ class SeattleFire911Bridge:
             removed = self.sent_incident_order.pop(0)
             self.sent_incident_numbers.discard(removed)
 
+    def _remember_incidents(self, incident_numbers: List[str]) -> None:
+        for incident_number in incident_numbers:
+            self._remember_incident(incident_number)
+
     def poll_and_send(self, producer: USWASeattleFire911EventProducer, once: bool = False) -> None:
         """Run the polling loop."""
         LOGGER.info("Starting Seattle Fire 911 bridge for %s", DATASET_PAGE_URL)
@@ -158,6 +200,7 @@ class SeattleFire911Bridge:
                 incidents = self.fetch_incidents(since=since)
                 sent = 0
                 newest: Optional[str] = self.last_seen_datetime
+                sent_incident_numbers: List[str] = []
                 for incident in incidents:
                     if incident.incident_number in self.sent_incident_numbers:
                         newest = max(newest or "", incident.incident_datetime)
@@ -167,10 +210,11 @@ class SeattleFire911Bridge:
                         incident,
                         flush_producer=False,
                     )
-                    self._remember_incident(incident.incident_number)
+                    sent_incident_numbers.append(incident.incident_number)
                     newest = max(newest or "", incident.incident_datetime)
                     sent += 1
-                producer.producer.flush()
+                _flush_or_raise(producer.producer)
+                self._remember_incidents(sent_incident_numbers)
                 if newest:
                     self.last_seen_datetime = newest
                 self.save_state()

@@ -12,6 +12,8 @@ import typing
 
 import requests
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from geosphere_austria_producer_data import WeatherObservation, WeatherStation
 from geosphere_austria_producer_kafka_producer.producer import AtGeosphereTawesEventProducer
@@ -24,6 +26,7 @@ OBSERVATION_PARAMS = "TL,RF,RR,DD,FF,P,SO,GLOW"
 DEFAULT_TOPIC = "geosphere-austria-tawes"
 DEFAULT_POLLING_INTERVAL = 600
 DEFAULT_STATION_REFRESH_INTERVAL = 86400
+DEFAULT_HTTP_RETRY_TOTAL = 3
 
 PARAM_MAP = {
     "TL": "temperature",
@@ -66,6 +69,26 @@ def parse_connection_string(connection_string: str) -> typing.Tuple[typing.Dict[
     raise ValueError(f"Unrecognized connection string format: {cs[:80]}...")
 
 
+def create_retrying_session() -> requests.Session:
+    """Create an HTTP session with bounded retries for transient upstream failures."""
+    session = requests.Session()
+    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    retry = Retry(
+        total=DEFAULT_HTTP_RETRY_TOTAL,
+        connect=DEFAULT_HTTP_RETRY_TOTAL,
+        read=DEFAULT_HTTP_RETRY_TOTAL,
+        status=DEFAULT_HTTP_RETRY_TOTAL,
+        backoff_factor=1,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset({"GET"}),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
 def fetch_station_metadata(session: requests.Session) -> typing.List[typing.Dict]:
     """Fetch station metadata from the GeoSphere TAWES metadata endpoint."""
     resp = session.get(METADATA_URL, timeout=30)
@@ -101,17 +124,21 @@ def fetch_observations(
     for i in range(0, len(station_ids), batch_size):
         batch = station_ids[i : i + batch_size]
         ids_param = ",".join(batch)
-        resp = session.get(
-            OBSERVATIONS_URL,
-            params={
-                "parameters": OBSERVATION_PARAMS,
-                "station_ids": ids_param,
-                "output_format": "geojson",
-            },
-            timeout=60,
-        )
-        resp.raise_for_status()
-        data = resp.json()
+        try:
+            resp = session.get(
+                OBSERVATIONS_URL,
+                params={
+                    "parameters": OBSERVATION_PARAMS,
+                    "station_ids": ids_param,
+                    "output_format": "geojson",
+                },
+                timeout=60,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+        except requests.RequestException as exc:
+            logger.warning("Skipping observation batch %s after HTTP failure: %s", ids_param, exc)
+            continue
         if data.get("timestamps"):
             timestamp = data["timestamps"][0]
         all_features.extend(data.get("features", []))
@@ -224,15 +251,22 @@ def run_feed_cycle(
     session: requests.Session,
     state: typing.Dict,
     station_refresh_due: bool = False,
+    cached_stations: typing.Optional[typing.List[WeatherStation]] = None,
 ) -> typing.Tuple[int, int, typing.List[WeatherStation]]:
     """Run one full poll cycle: optionally refresh stations, then fetch and emit observations.
 
     Returns (stations_emitted, observations_emitted, stations_list).
     """
     stations_emitted = 0
-    stations_raw = fetch_station_metadata(session)
-    stations = [parse_station(s) for s in stations_raw]
-    logger.info("Fetched %d active stations from metadata", len(stations))
+    try:
+        stations_raw = fetch_station_metadata(session)
+        stations = [parse_station(s) for s in stations_raw]
+        logger.info("Fetched %d active stations from metadata", len(stations))
+    except requests.RequestException as exc:
+        if not cached_stations:
+            raise
+        logger.warning("Station metadata refresh failed; continuing with cached stations: %s", exc)
+        stations = cached_stations
 
     if station_refresh_due:
         stations_emitted = send_station_events(producer, stations)
@@ -267,7 +301,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.command == "list":
-        session = requests.Session()
+        session = create_retrying_session()
         stations_raw = fetch_station_metadata(session)
         for s in stations_raw:
             print(f"{s['id']}: {s['name']} ({s.get('state', '?')})")
@@ -289,9 +323,10 @@ def main() -> None:
 
     kafka_producer = Producer(kafka_config)
     producer = AtGeosphereTawesEventProducer(kafka_producer, topic)
-    session = requests.Session()
+    session = create_retrying_session()
     state = load_state(state_file)
     last_station_refresh = 0.0
+    cached_stations: typing.List[WeatherStation] = []
 
     logger.info(
         "Starting GeoSphere Austria TAWES bridge: topic=%s, poll=%ds, station_refresh=%ds",
@@ -302,8 +337,12 @@ def main() -> None:
         try:
             now = time.time()
             station_refresh_due = (now - last_station_refresh) >= station_refresh_interval
-            stations_emitted, obs_emitted, _ = run_feed_cycle(
-                producer, session, state, station_refresh_due=station_refresh_due
+            stations_emitted, obs_emitted, cached_stations = run_feed_cycle(
+                producer,
+                session,
+                state,
+                station_refresh_due=station_refresh_due,
+                cached_stations=cached_stations or None,
             )
             if station_refresh_due:
                 last_station_refresh = now

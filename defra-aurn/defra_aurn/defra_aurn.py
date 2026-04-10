@@ -14,6 +14,8 @@ from typing import Any
 
 import requests
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from defra_aurn_producer_data import Observation, Station, Timeseries
 from defra_aurn_producer_kafka_producer.producer import (
     UkGovDefraAurnStationsEventProducer,
@@ -29,6 +31,7 @@ DEFAULT_TIMEOUT = 30
 DEFAULT_REFERENCE_REFRESH_INTERVAL = 86400
 DEFAULT_LOOKBACK_DURATION = "PT2H"
 DEFAULT_BOOTSTRAP_LOOKBACK_DURATION = "PT6H"
+DEFAULT_HTTP_RETRY_TOTAL = 3
 
 
 def convert_timestamp_ms_to_iso(timestamp_ms: int) -> str:
@@ -109,6 +112,26 @@ def _is_truthy(value: str | None, default: bool = True) -> bool:
     return value.strip().lower() not in {"false", "0", "no", "off"}
 
 
+def create_retrying_session() -> requests.Session:
+    """Create an HTTP session with bounded retries for transient upstream failures."""
+    session = requests.Session()
+    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    retry = Retry(
+        total=DEFAULT_HTTP_RETRY_TOTAL,
+        connect=DEFAULT_HTTP_RETRY_TOTAL,
+        read=DEFAULT_HTTP_RETRY_TOTAL,
+        status=DEFAULT_HTTP_RETRY_TOTAL,
+        backoff_factor=1,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset({"GET"}),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
 class DefraAURNAPI:
     """Client and bridge logic for the Defra AURN SOS Timeseries API."""
 
@@ -122,7 +145,7 @@ class DefraAURNAPI:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.page_limit = page_limit
-        self.session = session or requests.Session()
+        self.session = session or create_retrying_session()
         self.session.headers.setdefault("Accept", "application/json")
 
     def _get_json(self, path: str, params: dict[str, Any] | None = None) -> Any:
@@ -329,6 +352,22 @@ class DefraAURNAPI:
         return emitted
 
 
+def refresh_reference_data(
+    api: DefraAURNAPI,
+    stations_producer: Any,
+    timeseries_producer: Any,
+    existing_catalog: dict[str, Timeseries],
+) -> tuple[dict[str, Timeseries], bool]:
+    """Refresh reference metadata, falling back to the cached catalog when possible."""
+    try:
+        return api.emit_reference_data(stations_producer, timeseries_producer), True
+    except requests.RequestException as exc:
+        if existing_catalog:
+            LOGGER.warning("Reference refresh failed; continuing with cached timeseries catalog: %s", exc)
+            return existing_catalog, False
+        raise
+
+
 def build_kafka_config(args: argparse.Namespace) -> tuple[dict[str, str], str]:
     """Build Kafka configuration from CLI arguments and environment defaults."""
     kafka_config: dict[str, str] = {}
@@ -379,8 +418,14 @@ def run_feed(args: argparse.Namespace) -> None:
         try:
             now = time.time()
             if not timeseries_catalog or now - last_reference_refresh >= reference_refresh_interval:
-                timeseries_catalog = api.emit_reference_data(stations_producer, timeseries_producer)
-                last_reference_refresh = now
+                timeseries_catalog, refreshed = refresh_reference_data(
+                    api,
+                    stations_producer,
+                    timeseries_producer,
+                    timeseries_catalog,
+                )
+                if refreshed:
+                    last_reference_refresh = now
                 _save_state(state_file, state)
 
             emitted = api.emit_observations(timeseries_producer, timeseries_catalog, state)

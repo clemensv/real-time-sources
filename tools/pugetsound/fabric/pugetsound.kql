@@ -1,0 +1,245 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [SeattleFire911Incident] (
+    [incident_number]: string,
+    [incident_type]: string,
+    [incident_datetime]: string,
+    [address]: string,
+    [latitude]: real,
+    [longitude]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view SeattleFire911IncidentLatest ifexists;
+
+.create materialized-view with (backfill=true) SeattleFire911IncidentLatest on table SeattleFire911Incident {
+    SeattleFire911Incident | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SeattleFire911Incident] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.Seattle.Fire911.Incident') | project['incident_number'] = tostring(data.['incident_number']),['incident_type'] = tostring(data.['incident_type']),['incident_datetime'] = tostring(data.['incident_datetime']),['address'] = tostring(data.['address']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SeattleStreetClosure] (
+    [closure_id]: string,
+    [permit_number]: string,
+    [permit_type]: string,
+    [project_name]: string,
+    [project_description]: string,
+    [start_date]: string,
+    [end_date]: string,
+    [sunday]: string,
+    [monday]: string,
+    [tuesday]: string,
+    [wednesday]: string,
+    [thursday]: string,
+    [friday]: string,
+    [saturday]: string,
+    [street_on]: string,
+    [street_from]: string,
+    [street_to]: string,
+    [segkey]: string,
+    [geometry_json]: string,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view SeattleStreetClosureLatest ifexists;
+
+.create materialized-view with (backfill=true) SeattleStreetClosureLatest on table SeattleStreetClosure {
+    SeattleStreetClosure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SeattleStreetClosure] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.Seattle.StreetClosures.StreetClosure') | project['closure_id'] = tostring(data.['closure_id']),['permit_number'] = tostring(data.['permit_number']),['permit_type'] = tostring(data.['permit_type']),['project_name'] = tostring(data.['project_name']),['project_description'] = tostring(data.['project_description']),['start_date'] = tostring(data.['start_date']),['end_date'] = tostring(data.['end_date']),['sunday'] = tostring(data.['sunday']),['monday'] = tostring(data.['monday']),['tuesday'] = tostring(data.['tuesday']),['wednesday'] = tostring(data.['wednesday']),['thursday'] = tostring(data.['thursday']),['friday'] = tostring(data.['friday']),['saturday'] = tostring(data.['saturday']),['street_on'] = tostring(data.['street_on']),['street_from'] = tostring(data.['street_from']),['street_to'] = tostring(data.['street_to']),['segkey'] = tostring(data.['segkey']),['geometry_json'] = tostring(data.['geometry_json']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [KingCountyMarineStation] (
+    [station_id]: string,
+    [station_name]: string,
+    [dataset_id]: string,
+    [dataset_name]: string,
+    [dataset_url]: string,
+    [sensor_level]: string,
+    [latitude]: real,
+    [longitude]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view KingCountyMarineStationLatest ifexists;
+
+.create materialized-view with (backfill=true) KingCountyMarineStationLatest on table KingCountyMarineStation {
+    KingCountyMarineStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [KingCountyMarineStation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.KingCounty.Marine.Station') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['dataset_id'] = tostring(data.['dataset_id']),['dataset_name'] = tostring(data.['dataset_name']),['dataset_url'] = tostring(data.['dataset_url']),['sensor_level'] = tostring(data.['sensor_level']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [KingCountyMarineWaterQualityReading] (
+    [station_id]: string,
+    [station_name]: string,
+    [observation_time]: string,
+    [water_temperature_c]: real,
+    [conductivity_s_m]: real,
+    [pressure_dbar]: real,
+    [dissolved_oxygen_mg_l]: real,
+    [ph]: real,
+    [chlorophyll_ug_l]: real,
+    [turbidity_ntu]: real,
+    [chlorophyll_stddev_ug_l]: real,
+    [turbidity_stddev_ntu]: real,
+    [salinity_psu]: real,
+    [specific_conductivity_s_m]: real,
+    [dissolved_oxygen_saturation_pct]: real,
+    [nitrate_umol]: real,
+    [nitrate_mg_l]: real,
+    [wind_direction_deg]: real,
+    [wind_speed_m_s]: real,
+    [photosynthetically_active_radiation_umol_s_m2]: real,
+    [air_temperature_f]: real,
+    [air_humidity_pct]: real,
+    [air_pressure_in_hg]: real,
+    [system_battery_v]: real,
+    [sensor_battery_v]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view KingCountyMarineWaterQualityReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) KingCountyMarineWaterQualityReadingLatest on table KingCountyMarineWaterQualityReading {
+    KingCountyMarineWaterQualityReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [KingCountyMarineWaterQualityReading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.KingCounty.Marine.WaterQualityReading') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['observation_time'] = tostring(data.['observation_time']),['water_temperature_c'] = toreal(data.['water_temperature_c']),['conductivity_s_m'] = toreal(data.['conductivity_s_m']),['pressure_dbar'] = toreal(data.['pressure_dbar']),['dissolved_oxygen_mg_l'] = toreal(data.['dissolved_oxygen_mg_l']),['ph'] = toreal(data.['ph']),['chlorophyll_ug_l'] = toreal(data.['chlorophyll_ug_l']),['turbidity_ntu'] = toreal(data.['turbidity_ntu']),['chlorophyll_stddev_ug_l'] = toreal(data.['chlorophyll_stddev_ug_l']),['turbidity_stddev_ntu'] = toreal(data.['turbidity_stddev_ntu']),['salinity_psu'] = toreal(data.['salinity_psu']),['specific_conductivity_s_m'] = toreal(data.['specific_conductivity_s_m']),['dissolved_oxygen_saturation_pct'] = toreal(data.['dissolved_oxygen_saturation_pct']),['nitrate_umol'] = toreal(data.['nitrate_umol']),['nitrate_mg_l'] = toreal(data.['nitrate_mg_l']),['wind_direction_deg'] = toreal(data.['wind_direction_deg']),['wind_speed_m_s'] = toreal(data.['wind_speed_m_s']),['photosynthetically_active_radiation_umol_s_m2'] = toreal(data.['photosynthetically_active_radiation_umol_s_m2']),['air_temperature_f'] = toreal(data.['air_temperature_f']),['air_humidity_pct'] = toreal(data.['air_humidity_pct']),['air_pressure_in_hg'] = toreal(data.['air_pressure_in_hg']),['system_battery_v'] = toreal(data.['system_battery_v']),['sensor_battery_v'] = toreal(data.['sensor_battery_v']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [EPAUVHourlyForecast] (
+    [location_id]: string,
+    [city]: string,
+    [state]: string,
+    [forecast_datetime]: string,
+    [uv_index]: int,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view EPAUVHourlyForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) EPAUVHourlyForecastLatest on table EPAUVHourlyForecast {
+    EPAUVHourlyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [EPAUVHourlyForecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.EPA.UVIndex.HourlyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_datetime'] = tostring(data.['forecast_datetime']),['uv_index'] = toint(data.['uv_index']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [EPAUVDailyForecast] (
+    [location_id]: string,
+    [city]: string,
+    [state]: string,
+    [forecast_date]: string,
+    [uv_index]: int,
+    [uv_alert]: string,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view EPAUVDailyForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) EPAUVDailyForecastLatest on table EPAUVDailyForecast {
+    EPAUVDailyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [EPAUVDailyForecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.EPA.UVIndex.DailyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_date'] = tostring(data.['forecast_date']),['uv_index'] = toint(data.['uv_index']),['uv_alert'] = tostring(data.['uv_alert']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```

@@ -1,0 +1,90 @@
+# Puget Sound - Docker Compose
+#
+# Usage:
+#   $env:CONNECTION_STRING="..."
+#   $env:WSDOT_ACCESS_CODE="<code>"
+#   docker compose up -d
+#
+# Or with plain Kafka:
+#   $env:KAFKA_BOOTSTRAP_SERVERS="broker:9092"
+#   $env:KAFKA_TOPIC="pugetsound"
+#   $env:KAFKA_ENABLE_TLS="false"
+#   $env:WSDOT_ACCESS_CODE="<code>"
+#   docker compose up -d
+
+services:
+  seattle-911:
+    image: ghcr.io/clemensv/real-time-sources-seattle-911:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - SEATTLE_911_LAST_POLLED_FILE=/data/seattle_911_last_polled.json
+    volumes:
+      - pugetsound-data:/data
+    restart: unless-stopped
+
+  seattle-street-closures:
+    image: ghcr.io/clemensv/real-time-sources-seattle-street-closures:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - SEATTLE_STREET_CLOSURES_STATE_FILE=/data/seattle_street_closures_state.json
+    volumes:
+      - pugetsound-data:/data
+    restart: unless-stopped
+
+  king-county-marine:
+    image: ghcr.io/clemensv/real-time-sources-king-county-marine:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - KING_COUNTY_MARINE_STATE_FILE=/data/king_county_marine_state.json
+    volumes:
+      - pugetsound-data:/data
+    restart: unless-stopped
+
+  epa-uv:
+    image: ghcr.io/clemensv/real-time-sources-epa-uv:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - EPA_UV_LOCATIONS=Seattle,WA
+      - EPA_UV_STATE_FILE=/data/epa_uv_state.json
+    volumes:
+      - pugetsound-data:/data
+    restart: unless-stopped
+
+  wsdot:
+    image: ghcr.io/clemensv/real-time-sources-wsdot:latest
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - WSDOT_ACCESS_CODE=${WSDOT_ACCESS_CODE:-}
+      - REGION_FILTER=Northwest,Olympic
+    restart: unless-stopped
+
+  noaa:
+    image: ghcr.io/clemensv/real-time-sources-noaa:latest
+    command: ["python", "-m", "noaa", "--station", "9447130"]
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING:-}
+      - KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS:-}
+      - KAFKA_TOPIC=${KAFKA_TOPIC:-}
+      - KAFKA_ENABLE_TLS=${KAFKA_ENABLE_TLS:-true}
+      - NOAA_LAST_POLLED_FILE=/data/noaa_last_polled.json
+    volumes:
+      - pugetsound-data:/data
+    restart: unless-stopped
+
+volumes:
+  pugetsound-data:

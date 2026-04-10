@@ -6,6 +6,8 @@ import pytest
 
 from seattle_street_closures.seattle_street_closures import (
     DATASET_URL,
+    DEFAULT_CONNECT_TIMEOUT_SECONDS,
+    DEFAULT_READ_TIMEOUT_SECONDS,
     SeattleStreetClosuresBridge,
     build_closure_id,
     normalize_date,
@@ -65,6 +67,10 @@ class TestFetchClosures:
         first_call = bridge.session.get.call_args_list[0]
         assert first_call.args[0] == DATASET_URL
         assert first_call.kwargs["params"]["$order"] == "permit_number ASC"
+        assert first_call.kwargs["timeout"] == (
+            DEFAULT_CONNECT_TIMEOUT_SECONDS,
+            DEFAULT_READ_TIMEOUT_SECONDS,
+        )
 
 
 @pytest.mark.unit
@@ -75,8 +81,24 @@ class TestPolling:
         bridge.fetch_closures = Mock(return_value=[parse_closure(SAMPLE_ROWS[0])])
         producer = Mock()
         producer.producer = Mock()
+        producer.producer.flush.return_value = 0
 
         bridge.poll_and_send(producer, once=True)
         bridge.poll_and_send(producer, once=True)
 
+        assert producer.send_us_wa_seattle_street_closures_street_closure.call_count == 1
+
+    @patch("seattle_street_closures.seattle_street_closures._save_state")
+    def test_poll_and_send_does_not_advance_state_on_flush_timeout(self, mock_save_state):
+        bridge = SeattleStreetClosuresBridge(state_file="state.json")
+        closure = parse_closure(SAMPLE_ROWS[0])
+        bridge.fetch_closures = Mock(return_value=[closure])
+        producer = Mock()
+        producer.producer = Mock()
+        producer.producer.flush.return_value = 1
+
+        bridge.poll_and_send(producer, once=True)
+
+        assert bridge.previous_digests == {}
+        mock_save_state.assert_not_called()
         assert producer.send_us_wa_seattle_street_closures_street_closure.call_count == 1

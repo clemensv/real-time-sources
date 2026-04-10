@@ -1,8 +1,10 @@
 """Unit tests for the Canada AQHI bridge."""
 
 from datetime import datetime, timezone
+from unittest.mock import Mock
 
 import pytest
+import requests
 
 from canada_aqhi.canada_aqhi import (
     COMMUNITY_GEOJSON_URL,
@@ -10,6 +12,7 @@ from canada_aqhi.canada_aqhi import (
     CanadaAQHIBridge,
     aqhi_category,
     canonicalize_feed_url,
+    create_retrying_session,
     forecast_date_for_period,
     normalize_provinces,
     parse_connection_string,
@@ -95,6 +98,14 @@ class TestConnectionStringParsing:
     def test_invalid_connection_string_raises(self):
         with pytest.raises(ValueError, match="Invalid connection string format"):
             parse_connection_string("EndpointWithoutEquals")
+
+    def test_create_retrying_session(self):
+        session = create_retrying_session()
+        https_adapter = session.get_adapter("https://dd.weather.gc.ca")
+
+        assert session.headers["User-Agent"] == "GitHub-Copilot-CLI/1.0"
+        assert https_adapter.max_retries.total == 3
+        assert https_adapter.max_retries.backoff_factor == 1
 
 
 @pytest.mark.unit
@@ -269,3 +280,27 @@ class TestCatalogMerging:
         assert list(filtered) == ["FAFFD"]
         assert filtered["FAFFD"]["province"] == "ON"
         assert geolocation_calls == []
+
+    def test_poll_once_uses_cached_communities_when_refresh_fails(self):
+        bridge = CanadaAQHIBridge()
+        bridge.communities = {
+            "AADCE": {
+                "province": "NL",
+                "community_name": "Burin",
+                "cgndb_code": "AADCE",
+                "observation_url": "https://example.test/obs.xml",
+                "forecast_url": "https://example.test/fcst.xml",
+            }
+        }
+        bridge.last_reference_refresh = None
+        bridge.load_reference_catalogs = Mock(side_effect=requests.RequestException("timeout"))
+        bridge.emit_observations = Mock(return_value=1)
+        bridge.emit_forecasts = Mock(return_value=2)
+        bridge.save_state = Mock()
+        producer = Mock()
+
+        counts = bridge.poll_once(producer, {"NL"})
+
+        assert counts == {"communities": 0, "observations": 1, "forecasts": 2}
+        bridge.emit_observations.assert_called_once()
+        bridge.emit_forecasts.assert_called_once()

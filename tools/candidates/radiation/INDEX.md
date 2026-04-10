@@ -22,6 +22,7 @@ web portals with no discoverable APIs.
 | **EURDEP** | Europe (39 countries) | 5,500+ | ★★★ WFS/GeoJSON | 17/18 | [eurdep.md](eurdep.md) |
 | **BfS ODL** | Germany | ~1,700 | ★★★ WFS/GeoJSON | 17/18 | [bfs-odl.md](bfs-odl.md) |
 | **EPA RadNet** | USA | ~140 | ★★☆ REST/CSV | 15/18 | [epa-radnet.md](epa-radnet.md) |
+| **Ireland EPA Radiation** | Ireland | 41 | ★★☆ WFS/GeoJSON | 13/18 | [ireland-epa-radiation.md](ireland-epa-radiation.md) |
 | **Health Canada FPS** | Canada | 85 | ★★☆ CKAN/CSV | 13/18 | [health-canada-fps.md](health-canada-fps.md) |
 | **RIVM Netherlands** | Netherlands | 7 (installations) | ★★☆ WFS/GeoJSON | 13/18 | [rivm-netherlands.md](rivm-netherlands.md) |
 | **Safecast** | Global | Crowdsourced | ★★☆ REST/JSON | 13/18 | [safecast.md](safecast.md) |

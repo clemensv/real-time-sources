@@ -2,14 +2,18 @@
 
 import json
 import pytest
+import requests
 
 from geosphere_austria.geosphere_austria import (
     PARAM_MAP,
+    create_retrying_session,
+    fetch_observations,
     fetch_station_metadata,
     observation_fingerprint,
     parse_connection_string,
     parse_observation,
     parse_station,
+    run_feed_cycle,
     send_observation_events,
     send_station_events,
     load_state,
@@ -154,6 +158,14 @@ class TestParseConnectionString:
         config, topic = parse_connection_string(cs)
         assert config["bootstrap.servers"] == "localhost:9092"
         assert topic is None
+
+    def test_create_retrying_session(self):
+        session = create_retrying_session()
+        https_adapter = session.get_adapter("https://dataset.api.hub.geosphere.at")
+
+        assert session.headers["User-Agent"] == "GitHub-Copilot-CLI/1.0"
+        assert https_adapter.max_retries.total == 3
+        assert https_adapter.max_retries.backoff_factor == 1
 
 
 # ---------------------------------------------------------------------------
@@ -592,3 +604,77 @@ class TestFetchStationMetadata:
         assert "11035" in ids
         assert "99999" in ids
         assert "99998" not in ids
+
+
+class _FakeResponse:
+    def __init__(self, payload=None, status_code=200):
+        self._payload = payload or {}
+        self.status_code = status_code
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise requests.HTTPError(f"HTTP {self.status_code}")
+
+    def json(self):
+        return self._payload
+
+
+class _FakeSession:
+    def __init__(self, responses):
+        self.responses = list(responses)
+
+    def get(self, url, params=None, timeout=None):
+        if not self.responses:
+            raise AssertionError("No fake response queued")
+        response = self.responses.pop(0)
+        if isinstance(response, Exception):
+            raise response
+        return response
+
+
+class TestHttpResilience:
+    def test_fetch_observations_skips_failed_batch(self):
+        session = _FakeSession(
+            [
+                requests.RequestException("reset"),
+                _FakeResponse(
+                    {
+                        "timestamps": ["2024-01-15T13:00+00:00"],
+                        "features": [SAMPLE_FEATURE],
+                    }
+                ),
+            ]
+        )
+
+        features, timestamp = fetch_observations(session, ["11035", "11266"], batch_size=1)
+
+        assert len(features) == 1
+        assert timestamp == "2024-01-15T13:00+00:00"
+
+    def test_run_feed_cycle_uses_cached_stations_when_metadata_fails(self, monkeypatch):
+        fake = FakeProducer()
+        producer = AtGeosphereTawesEventProducer(fake, "test-topic")
+        session = _FakeSession([])
+        state = {}
+        cached_stations = [parse_station(SAMPLE_STATION_RAW)]
+
+        monkeypatch.setattr(
+            "geosphere_austria.geosphere_austria.fetch_station_metadata",
+            lambda _session: (_ for _ in ()).throw(requests.RequestException("timeout")),
+        )
+        monkeypatch.setattr(
+            "geosphere_austria.geosphere_austria.fetch_observations",
+            lambda _session, _station_ids, batch_size=50: ([SAMPLE_FEATURE], "2024-01-15T13:00+00:00"),
+        )
+
+        stations_emitted, obs_emitted, stations = run_feed_cycle(
+            producer,
+            session,
+            state,
+            station_refresh_due=False,
+            cached_stations=cached_stations,
+        )
+
+        assert stations_emitted == 0
+        assert obs_emitted == 1
+        assert [station.station_id for station in stations] == ["11035"]

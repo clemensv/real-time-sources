@@ -11,6 +11,8 @@ import time
 from typing import Dict, List
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from confluent_kafka import Producer
 
 from seattle_street_closures_producer_data import StreetClosure
@@ -22,6 +24,39 @@ LOGGER = logging.getLogger(__name__)
 
 DATASET_URL = "https://data.seattle.gov/resource/ium9-iqtc.json"
 DEFAULT_POLL_INTERVAL_SECONDS = 900
+DEFAULT_CONNECT_TIMEOUT_SECONDS = 10
+DEFAULT_READ_TIMEOUT_SECONDS = 120
+DEFAULT_KAFKA_FLUSH_TIMEOUT_SECONDS = 30
+DEFAULT_HTTP_RETRY_TOTAL = 3
+
+
+def _build_retrying_session() -> requests.Session:
+    """Create an HTTP session with bounded retries for transient upstream failures."""
+    session = requests.Session()
+    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    retry = Retry(
+        total=DEFAULT_HTTP_RETRY_TOTAL,
+        connect=DEFAULT_HTTP_RETRY_TOTAL,
+        read=DEFAULT_HTTP_RETRY_TOTAL,
+        status=DEFAULT_HTTP_RETRY_TOTAL,
+        backoff_factor=1,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset({"GET"}),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
+
+
+def _flush_or_raise(producer: Producer, timeout_seconds: int = DEFAULT_KAFKA_FLUSH_TIMEOUT_SECONDS) -> None:
+    """Flush Kafka and fail the poll when messages remain undelivered."""
+    remaining = producer.flush(timeout=timeout_seconds)
+    if remaining:
+        raise RuntimeError(
+            f"Kafka flush timed out with {remaining} undelivered message(s) still queued"
+        )
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -130,8 +165,7 @@ class SeattleStreetClosuresBridge:
 
     def __init__(self, state_file: str = ""):
         self.state_file = state_file
-        self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+        self.session = _build_retrying_session()
         state = _load_state(state_file)
         self.previous_digests: Dict[str, str] = dict(state.get("previous_digests", {}))
 
@@ -171,7 +205,11 @@ class SeattleStreetClosuresBridge:
                 "$limit": limit,
                 "$offset": offset,
             }
-            response = self.session.get(DATASET_URL, params=params, timeout=60)
+            response = self.session.get(
+                DATASET_URL,
+                params=params,
+                timeout=(DEFAULT_CONNECT_TIMEOUT_SECONDS, DEFAULT_READ_TIMEOUT_SECONDS),
+            )
             response.raise_for_status()
             rows = response.json()
             if not rows:
@@ -200,7 +238,7 @@ class SeattleStreetClosuresBridge:
                         flush_producer=False,
                     )
                     sent += 1
-                producer.producer.flush()
+                _flush_or_raise(producer.producer)
                 self.previous_digests = current_digests
                 self.save_state()
                 LOGGER.info("Fetched %d closures and sent %d new or changed rows", len(closures), sent)

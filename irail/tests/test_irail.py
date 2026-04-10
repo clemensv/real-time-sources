@@ -5,7 +5,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
-from irail.irail import IRailAPI, _parse_connection_string
+from irail.irail import IRailAPI, _parse_connection_string, create_retrying_session
 
 
 # --- Sample API responses ---
@@ -601,6 +601,15 @@ class TestDataClassSerialization(unittest.TestCase):
 
 class TestFetchStations(unittest.TestCase):
     """Test API fetch methods with mocking."""
+
+    def test_create_retrying_session(self):
+        session = create_retrying_session("test-agent")
+        https_adapter = session.get_adapter("https://api.irail.be")
+
+        self.assertEqual(session.headers["Accept"], "application/json")
+        self.assertEqual(session.headers["User-Agent"], "test-agent")
+        self.assertEqual(https_adapter.max_retries.total, 3)
+        self.assertEqual(https_adapter.max_retries.backoff_factor, 1)
 
     @patch("irail.irail.requests.Session")
     def test_fetch_stations(self, mock_session_cls):

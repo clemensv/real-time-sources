@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional
 
 import requests
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from irail_producer_data.be.irail.station import Station
 from irail_producer_data.be.irail.arrival import Arrival
 from irail_producer_data.be.irail.arrivalboard import ArrivalBoard
@@ -28,17 +30,37 @@ FEED_URL = "https://api.irail.be"
 
 # iRail rate limits: 3 requests/sec with 5 burst
 REQUEST_DELAY = 0.35  # slightly over 1/3 sec to stay within limits
+DEFAULT_HTTP_RETRY_TOTAL = 3
+
+
+def create_retrying_session(user_agent: str) -> requests.Session:
+    """Create an HTTP session with bounded retries for transient upstream failures."""
+    session = requests.Session()
+    session.headers.update({
+        "Accept": "application/json",
+        "User-Agent": user_agent,
+    })
+    retry = Retry(
+        total=DEFAULT_HTTP_RETRY_TOTAL,
+        connect=DEFAULT_HTTP_RETRY_TOTAL,
+        read=DEFAULT_HTTP_RETRY_TOTAL,
+        status=DEFAULT_HTTP_RETRY_TOTAL,
+        backoff_factor=1,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=frozenset({"GET"}),
+        raise_on_status=False,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    return session
 
 
 class IRailAPI:
     """Client for the iRail REST API."""
 
     def __init__(self, user_agent: str = "real-time-sources/1.0 (github.com/clemensv/real-time-sources)"):
-        self.session = requests.Session()
-        self.session.headers.update({
-            "Accept": "application/json",
-            "User-Agent": user_agent,
-        })
+        self.session = create_retrying_session(user_agent)
 
     def fetch_stations(self) -> List[Dict[str, Any]]:
         """Fetch all Belgian railway stations."""

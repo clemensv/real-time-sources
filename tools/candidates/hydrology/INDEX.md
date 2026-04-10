@@ -64,6 +64,7 @@
 |--------|---------|-------|--------|------|
 | LHMT Hydro API | Lithuania | 15/18 | Research complete | [lithuania-lhmt-hydro.md](lithuania-lhmt-hydro.md) |
 | OVF vizugy.hu | Hungary | 10/18 | Research complete | [hungary-ovf-vizugy.md](hungary-ovf-vizugy.md) |
+| VANDaH Hydrometry API | Denmark | 16/18 | Research complete | [denmark-vandah.md](denmark-vandah.md) |
 | DMI Met Obs API | Denmark | 14/18 | Research complete | [denmark-dmi-metobs.md](denmark-dmi-metobs.md) |
 | SAIH Confederaciones | Spain | 10/18 | Research complete | [spain-saih.md](spain-saih.md) |
 | ARPA / ISPRA Hydro | Italy | 8/18 | Research complete | [italy-arpa-hydro.md](italy-arpa-hydro.md) |

@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from unittest.mock import Mock
 
 import pytest
+import requests
 
-from defra_aurn.defra_aurn import DefraAURNAPI, convert_timestamp_ms_to_iso, parse_connection_string
+from defra_aurn.defra_aurn import (
+    DefraAURNAPI,
+    convert_timestamp_ms_to_iso,
+    create_retrying_session,
+    parse_connection_string,
+    refresh_reference_data,
+)
 
 
 class FakeResponse:
@@ -70,6 +78,30 @@ class TestDefraAURNAPIInitialization:
         assert api.timeout == 30
         assert api.page_limit == 1000
         assert hasattr(api.session, "get")
+
+    def test_create_retrying_session(self):
+        session = create_retrying_session()
+        https_adapter = session.get_adapter("https://uk-air.defra.gov.uk")
+
+        assert session.headers["User-Agent"] == "GitHub-Copilot-CLI/1.0"
+        assert https_adapter.max_retries.total == 3
+        assert https_adapter.max_retries.backoff_factor == 1
+
+    def test_refresh_reference_data_falls_back_to_existing_catalog(self):
+        api = Mock()
+        api.emit_reference_data.side_effect = requests.RequestException("timeout")
+
+        catalog, refreshed = refresh_reference_data(api, Mock(), Mock(), {"ts-1": Mock()})
+
+        assert refreshed is False
+        assert "ts-1" in catalog
+
+    def test_refresh_reference_data_raises_without_existing_catalog(self):
+        api = Mock()
+        api.emit_reference_data.side_effect = requests.RequestException("timeout")
+
+        with pytest.raises(requests.RequestException):
+            refresh_reference_data(api, Mock(), Mock(), {})
 
 
 @pytest.mark.unit

@@ -14,9 +14,9 @@
 ## What It Provides
 
 Meteorological observations from the Danish weather station network. While primarily a weather API, this is included in the hydrology context because:
-- Denmark has no separate public hydrology API
-- Water level parameters may exist within the meteorological observation set (coastal stations)
-- The API pattern (OGC API Features) is identical to what a hydrology API would look like
+- it was an early Denmark fallback before a dedicated hydrometry API was found in [denmark-vandah.md](denmark-vandah.md)
+- water level parameters may exist within the meteorological observation set (coastal stations)
+- the API pattern (OGC API Features) is still useful as adjacent Danish environmental infrastructure
 
 The API provides two collections:
 - `observation` — actual measurements
@@ -82,6 +82,7 @@ This may include coastal water levels (tide gauges).
 ## Notes
 
 - This is primarily a meteorological API, not a dedicated hydrology API
+- Denmark now also has a dedicated hydrometry candidate in [denmark-vandah.md](denmark-vandah.md)
 - The `oceanObs` collection at DMI may provide coastal water levels (tide gauge data)
 - Denmark's flat terrain and extensive drainage network make water level data particularly relevant
 - The API architecture is exemplary — OGC API Features with GeoJSON — and could serve as a template
