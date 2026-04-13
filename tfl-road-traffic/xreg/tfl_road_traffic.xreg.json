@@ -276,6 +276,24 @@
                                                 "altnames": { "upstream": "sourceSystemKey" }
                                             }
                                         }
+                                    },
+                                    "CorridorIdArray": {
+                                        "name": "CorridorIdArray",
+                                        "type": "array",
+                                        "description": "Array of road corridor identifiers affected by this disruption.",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "StreetArray": {
+                                        "name": "StreetArray",
+                                        "type": "array",
+                                        "description": "Array of street segments affected by this disruption.",
+                                        "items": {
+                                            "type": {
+                                                "$ref": "#/definitions/Street"
+                                            }
+                                        }
                                     }
                                 },
                                 "properties": {
@@ -324,8 +342,9 @@
                                         "altnames": { "upstream": "currentUpdateDateTime" }
                                     },
                                     "corridor_ids": {
-                                        "type": ["array", "null"],
-                                        "items": { "type": "string" },
+                                        "type": [{
+                                            "$ref": "#/definitions/CorridorIdArray"
+                                        }, "null"],
                                         "description": "Array of road corridor identifiers affected by this disruption. Corresponds to 'corridorIds' in the upstream response. Examples: ['a2', 'a12']. May be empty or null for disruptions not associated with a specific named corridor.",
                                         "altnames": { "upstream": "corridorIds" }
                                     },
@@ -364,8 +383,9 @@
                                         "altnames": { "upstream": "hasClosures" }
                                     },
                                     "streets": {
-                                        "type": ["array", "null"],
-                                        "items": { "type": { "$ref": "#/schemagroups/uk.gov.tfl.road.jstruct/schemas/uk.gov.tfl.road.RoadDisruption/versions/1/schema/definitions/Street" } },
+                                        "type": [{
+                                            "$ref": "#/definitions/StreetArray"
+                                        }, "null"],
                                         "description": "Array of street segments affected by this disruption. Corresponds to 'streets' in the upstream response. Each entry describes an individual street with its closure type, affected directions, and geometry."
                                     },
                                     "geography": {
