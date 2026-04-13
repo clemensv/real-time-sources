@@ -12,7 +12,7 @@ mode-s-producer-kafka-producer = {path = "mode_s_producer/mode_s_producer_kafka_
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 avro = "^1.12.1"
-pymodes = ">=2.19"
+pymodes = ">=2.19,<3"
 requests = ">=2.32.3"
 aiohttp = ">=3.10.5"
 asyncio = ">=3.4.3"
