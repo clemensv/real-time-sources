@@ -270,6 +270,10 @@ def seattle_911_image():
 def seattle_street_closures_image():
     return build_image('seattle-street-closures')
 
+@pytest.fixture(scope='module')
+def entur_norway_image():
+    return build_image('entur-norway')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1661,5 +1665,21 @@ class TestSeattleStreetClosuresDockerFlow:
             reference_types=None,
             telemetry_types=['StreetClosure'],
             min_messages=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Entur Norway (SIRI real-time transit)
+# ---------------------------------------------------------------------------
+
+class TestEnturNorwayDockerFlow:
+    TOPIC = 'test-entur-norway'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, entur_norway_image):
+        _run_kafka_flow_test(
+            kafka, entur_norway_image, self.TOPIC,
+            reference_types=['DatedServiceJourney'],
+            telemetry_types=['EstimatedVehicleJourney', 'MonitoredVehicleJourney', 'PtSituationElement'],
+            extra_env={'POLLING_INTERVAL': '5'},
         )
 
