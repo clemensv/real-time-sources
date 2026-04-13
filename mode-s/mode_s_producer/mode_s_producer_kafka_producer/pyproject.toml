@@ -8,7 +8,7 @@ packages = [{include = "mode_s_producer_kafka_producer", from = "src"}]
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
 mode-s-producer-data = {path = "../mode_s_producer_data", develop = true}
-confluent-kafka = ">=2.4.0"
+confluent-kafka = ">=2.14.0"
 cloudevents = ">=1.10.1,<2.0.0"
 
 [tool.poetry.dev-dependencies]
