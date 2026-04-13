@@ -1725,6 +1725,31 @@ class TestSeattleStreetClosuresDockerFlow:
             min_messages=1,
         )
 
+# ---------------------------------------------------------------------------
+# Billetto Public Events (requires BILLETTO_API_KEYPAIR)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def billetto_image():
+    if not os.environ.get('BILLETTO_API_KEYPAIR', ''):
+        pytest.skip('BILLETTO_API_KEYPAIR not set')
+    return build_image('billetto')
+
+
+class TestBillettoDockerFlow:
+    TOPIC = 'test-billetto-events'
+
+    def test_emits_events(self, kafka: KafkaFixture, billetto_image):
+        _run_kafka_flow_test(
+            kafka, billetto_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['Event'],
+            min_messages=1,
+            extra_env={
+                'BILLETTO_API_KEYPAIR': os.environ['BILLETTO_API_KEYPAIR'],
+                'POLLING_INTERVAL': '5',
+            },
+        )
 
 
 # ---------------------------------------------------------------------------

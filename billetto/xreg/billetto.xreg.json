@@ -1,0 +1,258 @@
+{
+  "endpoints": {
+    "Billetto.Events.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "billetto-events",
+          "key": "{event_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Billetto.Events"
+      ]
+    }
+  },
+  "messagegroups": {
+    "Billetto.Events": {
+      "messages": {
+        "Billetto.Events.Event": {
+          "name": "Event",
+          "envelope": "CloudEvents/1.0",
+          "description": "A public ticketed event from the Billetto platform, including title, schedule, venue, organizer, pricing, and ticket availability status.",
+          "envelopemetadata": {
+            "type": {
+              "value": "Billetto.Events.Event"
+            },
+            "source": {
+              "value": "https://billetto.dk/api/v3/public/events"
+            },
+            "subject": {
+              "value": "{event_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{startdate}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Billetto.Events.jstruct/schemas/Billetto.Events.Event"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Billetto.Events.jstruct": {
+      "schemas": {
+        "Billetto.Events.Event": {
+          "name": "Event",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/Billetto/Events/Event",
+                "type": "object",
+                "name": "Event",
+                "description": "A public ticketed event from the Billetto platform. Each record represents a single upcoming or ongoing public event with schedule, venue, organizer, pricing, and availability information.",
+                "required": [
+                  "event_id",
+                  "title",
+                  "startdate"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "int32",
+                    "description": "Unique numeric identifier for the event on the Billetto platform, assigned at event creation. Used as the Kafka key and CloudEvents subject for stable event identity across polls.",
+                    "altnames": {
+                      "upstream": "id"
+                    }
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Event title as set by the organizer."
+                  },
+                  "description": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Full event description in HTML format as provided by the organizer. May be null if not set."
+                  },
+                  "startdate": {
+                    "type": "string",
+                    "description": "Event start date and time in ISO 8601 format (e.g. '2026-06-15T19:00:00'). Used as the CloudEvents time attribute.",
+                    "altnames": {
+                      "upstream": "startdate"
+                    }
+                  },
+                  "enddate": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Event end date and time in ISO 8601 format. Null when no end time is specified by the organizer."
+                  },
+                  "url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Canonical URL of the event page on the Billetto platform."
+                  },
+                  "image_link": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "URL of the cover image for the event as uploaded by the organizer."
+                  },
+                  "status": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Event lifecycle status as reported by the Billetto platform. Common values include 'published', 'cancelled', and 'postponed'."
+                  },
+                  "location_city": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "City where the event is held, from the event location object.",
+                    "altnames": {
+                      "upstream": "location.city"
+                    }
+                  },
+                  "location_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Venue name where the event is held, from the event location object.",
+                    "altnames": {
+                      "upstream": "location.location_name"
+                    }
+                  },
+                  "location_address": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Street address of the event venue, from the event location object.",
+                    "altnames": {
+                      "upstream": "location.address"
+                    }
+                  },
+                  "location_zip_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Postal code of the event venue, from the event location object.",
+                    "altnames": {
+                      "upstream": "location.zip_code"
+                    }
+                  },
+                  "location_country_code": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 3166-1 alpha-2 country code of the event venue (e.g. 'DK' for Denmark, 'GB' for Great Britain, 'DE' for Germany). From the event location object.",
+                    "altnames": {
+                      "upstream": "location.country_code"
+                    }
+                  },
+                  "location_latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS 84 latitude of the event venue in decimal degrees. From the event location object.",
+                    "unit": "degree",
+                    "symbol": "\u00b0",
+                    "altnames": {
+                      "upstream": "location.latitude"
+                    }
+                  },
+                  "location_longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS 84 longitude of the event venue in decimal degrees. From the event location object.",
+                    "unit": "degree",
+                    "symbol": "\u00b0",
+                    "altnames": {
+                      "upstream": "location.longitude"
+                    }
+                  },
+                  "organiser_id": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Unique numeric identifier for the event organizer on the Billetto platform. From the event organiser object.",
+                    "altnames": {
+                      "upstream": "organiser.id"
+                    }
+                  },
+                  "organiser_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Display name of the event organizer as registered on the Billetto platform. From the event organiser object.",
+                    "altnames": {
+                      "upstream": "organiser.name"
+                    }
+                  },
+                  "minimum_price_amount_in_cents": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Minimum ticket price across all available ticket types, expressed in the smallest currency unit (e.g. pence for GBP, øre for DKK, cent for EUR). Zero indicates a free event. From the event minimum_price object.",
+                    "altnames": {
+                      "upstream": "minimum_price.amount_in_cents"
+                    }
+                  },
+                  "minimum_price_currency": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 4217 currency code for the minimum ticket price (e.g. 'GBP', 'DKK', 'EUR', 'NOK', 'SEK'). From the event minimum_price object.",
+                    "altnames": {
+                      "upstream": "minimum_price.currency"
+                    }
+                  },
+                  "availability": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Ticket availability status for the event. 'available' means tickets are currently on sale. 'sold_out' means all tickets have been sold. 'unavailable' means ticket sales are not yet open or have closed. Null when not determinable from the API response."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
