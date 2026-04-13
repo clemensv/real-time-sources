@@ -322,13 +322,17 @@ class EnturNorwayBridge:
                     monitored_text = (mvj_el.findtext(_siri('Monitored')) or 'false').strip().lower()
                     monitored = monitored_text in ('true', '1')
 
+                    if not recorded_at_time:
+                        logging.warning(
+                            'VehicleActivity missing RecordedAtTime for %s/%s; using current time',
+                            operating_day, service_journey_id,
+                        )
+                        recorded_at_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
                     mvj = MonitoredVehicleJourney(
                         service_journey_id=service_journey_id,
                         operating_day=operating_day,
-                        recorded_at_time=(
-                            recorded_at_time
-                            or datetime.datetime.now(datetime.timezone.utc).isoformat()
-                        ),
+                        recorded_at_time=recorded_at_time,
                         line_ref=line_ref,
                         operator_ref=operator_ref,
                         direction_ref=(mvj_el.findtext(_siri('DirectionRef')) or None),
@@ -368,10 +372,15 @@ class EnturNorwayBridge:
                     if not situation_number:
                         continue
 
-                    creation_time = (
-                        sit_el.findtext(_siri('CreationTime'))
-                        or datetime.datetime.now(datetime.timezone.utc).isoformat()
-                    )
+                    creation_time_raw = sit_el.findtext(_siri('CreationTime'))
+                    if not creation_time_raw:
+                        logging.warning(
+                            'PtSituationElement %s missing CreationTime; using current time',
+                            situation_number,
+                        )
+                        creation_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
+                    else:
+                        creation_time = creation_time_raw
 
                     validity_periods: List[ValidityPeriod] = []
                     for vp_el in sit_el.findall('s:ValidityPeriod', NS):
