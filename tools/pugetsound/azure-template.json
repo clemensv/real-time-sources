@@ -247,16 +247,10 @@
             }
           },
           {
-            "name": "noaa",
+            "name": "noaa-port-angeles",
             "properties": {
               "image": "[parameters('noaaImage')]",
-              "command": [
-                "python",
-                "-m",
-                "noaa",
-                "--station",
-                "9447130"
-              ],
+              "command": ["python", "-m", "noaa", "--station", "9444090"],
               "resources": {
                 "requests": {
                   "cpu": 0.2,
@@ -270,7 +264,181 @@
                 },
                 {
                   "name": "NOAA_LAST_POLLED_FILE",
-                  "value": "/mnt/fileshare/noaa_last_polled.json"
+                  "value": "/mnt/fileshare/noaa_9444090_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "noaa-port-townsend",
+            "properties": {
+              "image": "[parameters('noaaImage')]",
+              "command": ["python", "-m", "noaa", "--station", "9444900"],
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.4
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_9444900_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "noaa-bremerton",
+            "properties": {
+              "image": "[parameters('noaaImage')]",
+              "command": ["python", "-m", "noaa", "--station", "9445958"],
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.4
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_9445958_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "noaa-tacoma",
+            "properties": {
+              "image": "[parameters('noaaImage')]",
+              "command": ["python", "-m", "noaa", "--station", "9446484"],
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.4
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_9446484_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "noaa-seattle",
+            "properties": {
+              "image": "[parameters('noaaImage')]",
+              "command": ["python", "-m", "noaa", "--station", "9447130"],
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.4
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_9447130_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "noaa-cherry-point",
+            "properties": {
+              "image": "[parameters('noaaImage')]",
+              "command": ["python", "-m", "noaa", "--station", "9449424"],
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.4
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_9449424_last_polled.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "noaa-friday-harbor",
+            "properties": {
+              "image": "[parameters('noaaImage')]",
+              "command": ["python", "-m", "noaa", "--station", "9449880"],
+              "resources": {
+                "requests": {
+                  "cpu": 0.2,
+                  "memoryInGB": 0.4
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "/mnt/fileshare/noaa_9449880_last_polled.json"
                 }
               ],
               "volumeMounts": [

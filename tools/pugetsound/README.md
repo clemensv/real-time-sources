@@ -12,12 +12,14 @@ container group, sharing one Kafka/Event Hubs/Fabric Event Stream connection.
 | [King County marine](../../king-county-marine/CONTAINER.md) | King County / Puget Sound | Buoy and mooring water quality |
 | [EPA UV](../../epa-uv/CONTAINER.md) | Seattle | UV forecasts |
 | [WSDOT](../../wsdot/CONTAINER.md) | Washington / Puget Sound | Ferries, mountain passes, roads, tolls, weather, traffic |
-| [NOAA](../../noaa/CONTAINER.md) | Seattle tide station 9447130 | Tides, currents, water level, meteorology |
+| [NOAA](../../noaa/CONTAINER.md) | Puget Sound CO-OPS stations | Water level, tide predictions, and available meteorology across Seattle-area stations |
 
 ## Scope choices
 
-- The NOAA bridge is pinned to station `9447130` so this bundle stays Seattle-
-  centered instead of polling the full national CO-OPS catalog.
+- The NOAA coverage is limited to these Puget Sound CO-OPS stations instead of
+  polling the full national catalog: `9444090` Port Angeles, `9444900` Port
+  Townsend, `9445958` Bremerton, `9446484` Tacoma, `9447130` Seattle,
+  `9449424` Cherry Point, and `9449880` Friday Harbor.
 - The EPA UV bridge is pinned to `Seattle,WA`.
 - The WSDOT bridge uses `REGION_FILTER=Northwest,Olympic` for traffic-flow
   scoping, but ferry, mountain-pass, weather, toll, and other statewide WSDOT
@@ -30,8 +32,8 @@ Most bridges here are I/O-bound pollers. A small ACI group is sufficient.
 
 | | Standard container | Heavier containers | Total |
 |---|---|---|---|
-| CPU | 0.1 cores | WSDOT 0.2, NOAA 0.2 | 0.8 cores |
-| Memory | 0.3 GB | WSDOT 0.5, NOAA 0.4 | 2.1 GB |
+| CPU | 0.1 cores | WSDOT 0.2, seven NOAA sidecars at 0.2 each | 2.0 cores |
+| Memory | 0.3 GB | WSDOT 0.5, seven NOAA sidecars at 0.4 each | 4.5 GB |
 
 ## Deploy to Azure Container Instances
 

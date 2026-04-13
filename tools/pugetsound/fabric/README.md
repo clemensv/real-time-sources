@@ -13,7 +13,8 @@ CloudEvents landing.
 │  king-county-marine                                                 │
 │  epa-uv                                                             │
 │  wsdot                                                              │
-│  noaa --station 9447130                                             │
+│  noaa --station 9444090 / 9444900 / 9445958 / 9446484 /             │
+│       9447130 / 9449424 / 9449880                                   │
 └────────────────────────────────────┬─────────────────────────────────┘
                                      │ CONNECTION_STRING
                                      ▼
