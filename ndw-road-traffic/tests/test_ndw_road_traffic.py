@@ -678,6 +678,36 @@ class TestCachePreservation:
 
         assert poller._msi_signs_cache == old_cache
 
+    def test_measurement_sites_cache_preserved_on_batched_flush_failure(self, tmp_path):
+        kafka_mock = MagicMock()
+        kafka_mock.flush.side_effect = [0, 1]
+        prod_mock = MagicMock()
+        prod_mock.producer = kafka_mock
+
+        sm = StateManager(str(tmp_path / "state.json"))
+        poller = NdwPoller(prod_mock, prod_mock, prod_mock, prod_mock, sm)
+        old_cache = [{"measurement_site_id": "OLD_POINT", "name": "Old", "measurement_site_type": None,
+                      "period": None, "latitude": 1.0, "longitude": 2.0, "road_name": None,
+                      "lane_count": None, "carriageway_type": None}]
+        poller._point_sites_cache = old_cache
+
+        new_point = [
+            {"measurement_site_id": "P1", "name": "One", "measurement_site_type": None, "period": None,
+             "latitude": 1.0, "longitude": 2.0, "road_name": None, "lane_count": None, "carriageway_type": None},
+            {"measurement_site_id": "P2", "name": "Two", "measurement_site_type": None, "period": None,
+             "latitude": 1.0, "longitude": 2.0, "road_name": None, "lane_count": None, "carriageway_type": None},
+            {"measurement_site_id": "P3", "name": "Three", "measurement_site_type": None, "period": None,
+             "latitude": 1.0, "longitude": 2.0, "road_name": None, "lane_count": None, "carriageway_type": None},
+        ]
+
+        with patch("ndw_road_traffic.ndw_road_traffic.download_gzip_xml", return_value=b"x"), \
+             patch("ndw_road_traffic.ndw_road_traffic.parse_measurement_site_xml", return_value=(new_point, [])), \
+             patch("ndw_road_traffic.ndw_road_traffic.REFERENCE_FLUSH_BATCH_SIZE", 2):
+            poller._refresh_measurement_sites()
+
+        assert poller._point_sites_cache == old_cache
+        assert prod_mock.send_nl_ndw_avg_point_measurement_site.call_count == 3
+
 
 # ---------------------------------------------------------------------------
 # Tests – multi-family wiring (one-cycle test)

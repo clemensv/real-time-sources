@@ -64,6 +64,8 @@ DEFAULT_POLL_INTERVAL_SECONDS = 60
 DEFAULT_REFERENCE_REFRESH_SECONDS = 3600
 DEFAULT_SITUATION_INTERVAL_SECONDS = 300
 DEFAULT_STATE_FILE = os.path.expanduser("~/.ndw_road_traffic_state.json")
+REFERENCE_FLUSH_BATCH_SIZE = 200
+DEFAULT_MAX_RECORDS_PER_FAMILY: Optional[int] = None
 
 # DATEX II v2 namespaces (trafficspeed, traveltime)
 DATEX2_V2 = "http://datex2.eu/schema/2/2_0"
@@ -969,6 +971,7 @@ class NdwPoller:
         reference_refresh_interval: int = DEFAULT_REFERENCE_REFRESH_SECONDS,
         situation_interval: int = DEFAULT_SITUATION_INTERVAL_SECONDS,
         base_url: str = BASE_URL,
+        max_records_per_family: Optional[int] = DEFAULT_MAX_RECORDS_PER_FAMILY,
     ):
         self.avg_producer = avg_producer
         self.drip_producer = drip_producer
@@ -979,6 +982,7 @@ class NdwPoller:
         self.reference_refresh_interval = reference_refresh_interval
         self.situation_interval = situation_interval
         self.base_url = base_url
+        self.max_records_per_family = max_records_per_family
         self.session = _make_session()
 
         self._point_sites_cache: List[Dict[str, Any]] = []
@@ -995,6 +999,22 @@ class NdwPoller:
             logger.warning("Kafka flush had %d undelivered messages", remainder)
             return False
         return True
+
+    def _flush_reference_batch(self, producer_obj: Any, count: int, label: str) -> bool:
+        if count and count % REFERENCE_FLUSH_BATCH_SIZE == 0:
+            if not self._flush_and_check(producer_obj):
+                logger.warning(
+                    "Flush failed for %s after %d queued reference records; keeping old cache",
+                    label,
+                    count,
+                )
+                return False
+        return True
+
+    def _limit_records(self, records: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        if self.max_records_per_family is None:
+            return records
+        return records[: self.max_records_per_family]
 
     def emit_reference_data(self) -> None:
         logger.info("Fetching reference data (measurement sites, DRIP signs, MSI signs)")
@@ -1017,6 +1037,9 @@ class NdwPoller:
             logger.exception("Failed to parse measurement site XML")
             return
 
+        new_point = self._limit_records(new_point)
+        new_route = self._limit_records(new_route)
+
         # Emit point sites
         count = 0
         for rec in new_point:
@@ -1035,6 +1058,8 @@ class NdwPoller:
                 rec["measurement_site_id"], data, flush_producer=False
             )
             count += 1
+            if not self._flush_reference_batch(self.avg_producer, count, "PointMeasurementSite"):
+                return
 
         if count:
             if self._flush_and_check(self.avg_producer):
@@ -1064,6 +1089,8 @@ class NdwPoller:
                 rec["measurement_site_id"], data, flush_producer=False
             )
             count += 1
+            if not self._flush_reference_batch(self.avg_producer, count, "RouteMeasurementSite"):
+                return
 
         if count:
             if self._flush_and_check(self.avg_producer):
@@ -1086,6 +1113,8 @@ class NdwPoller:
             logger.exception("Failed to parse DRIP XML")
             return
 
+        new_signs = self._limit_records(new_signs)
+
         count = 0
         for rec in new_signs:
             data = DripSign(
@@ -1101,6 +1130,8 @@ class NdwPoller:
                 rec["vms_controller_id"], rec["vms_index"], data, flush_producer=False
             )
             count += 1
+            if not self._flush_reference_batch(self.drip_producer, count, "DripSign"):
+                return
 
         if count:
             if self._flush_and_check(self.drip_producer):
@@ -1123,6 +1154,8 @@ class NdwPoller:
             logger.exception("Failed to parse MSI XML")
             return
 
+        new_signs = self._limit_records(new_signs)
+
         count = 0
         for rec in new_signs:
             data = MsiSign(
@@ -1138,6 +1171,8 @@ class NdwPoller:
                 rec["sign_id"], data, flush_producer=False
             )
             count += 1
+            if not self._flush_reference_batch(self.msi_producer, count, "MsiSign"):
+                return
 
         if count:
             if self._flush_and_check(self.msi_producer):
@@ -1154,7 +1189,7 @@ class NdwPoller:
             logger.exception("Failed to download traffic speed data")
             return 0
 
-        records = parse_traffic_speed_xml(xml_bytes)
+        records = self._limit_records(parse_traffic_speed_xml(xml_bytes))
         pending_state: Dict[str, str] = {}
         count = 0
         for rec in records:
@@ -1193,7 +1228,7 @@ class NdwPoller:
             logger.exception("Failed to download travel time data")
             return 0
 
-        records = parse_travel_time_xml(xml_bytes)
+        records = self._limit_records(parse_travel_time_xml(xml_bytes))
         pending_state: Dict[str, str] = {}
         count = 0
         for rec in records:
@@ -1235,6 +1270,7 @@ class NdwPoller:
             return 0
 
         _, states = parse_drip_xml(xml_bytes)
+        states = self._limit_records(states)
         pending_state: Dict[str, str] = {}
         count = 0
         for rec in states:
@@ -1276,6 +1312,7 @@ class NdwPoller:
             return 0
 
         _, states = parse_msi_xml(xml_bytes)
+        states = self._limit_records(states)
         pending_state: Dict[str, str] = {}
         count = 0
         for rec in states:
@@ -1321,6 +1358,8 @@ class NdwPoller:
             except Exception:
                 logger.exception("Failed to parse situation feed: %s", feed_file)
                 continue
+
+            records = self._limit_records(records)
 
             pending_state: Dict[str, str] = {}
             count = 0
@@ -1483,6 +1522,7 @@ def main() -> None:
         os.environ.get("POLLING_INTERVAL", DEFAULT_POLL_INTERVAL_SECONDS)
     )
     state_file = args.state_file or os.environ.get("STATE_FILE", DEFAULT_STATE_FILE)
+    max_records_per_family = os.environ.get("MAX_RECORDS_PER_FAMILY")
 
     producer = Producer(kafka_config)
 
@@ -1492,7 +1532,15 @@ def main() -> None:
     situations_prod = NLNDWSituationsEventProducer(producer, topic)
 
     state = StateManager(state_file)
-    poller = NdwPoller(avg_prod, drip_prod, msi_prod, situations_prod, state, poll_interval)
+    poller = NdwPoller(
+        avg_prod,
+        drip_prod,
+        msi_prod,
+        situations_prod,
+        state,
+        poll_interval,
+        max_records_per_family=int(max_records_per_family) if max_records_per_family else None,
+    )
     poller.run_forever()
 
 

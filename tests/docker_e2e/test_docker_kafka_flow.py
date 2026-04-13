@@ -1464,6 +1464,7 @@ class TestNDWRoadTrafficDockerFlow:
             kafka, ndw_road_traffic_image, self.TOPIC,
             reference_types=['PointMeasurementSite', 'RouteMeasurementSite', 'DripSign', 'MsiSign'],
             telemetry_types=['TrafficObservation', 'TravelTimeObservation', 'DripDisplayState', 'MsiDisplayState'],
+            extra_env={'MAX_RECORDS_PER_FAMILY': '20'},
             min_messages=5,
             timeout=420,
         )

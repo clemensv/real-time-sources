@@ -12,7 +12,6 @@ RUN pip install --no-cache-dir ndw_road_traffic_producer/ndw_road_traffic_produc
     pip install --no-cache-dir ndw_road_traffic_producer/ndw_road_traffic_producer_kafka_producer && \
     pip install --no-cache-dir .
 
-ENV KAFKA_TOPIC=ndw-road-traffic
 ENV POLLING_INTERVAL=60
 
 CMD ["python", "-m", "ndw_road_traffic"]
