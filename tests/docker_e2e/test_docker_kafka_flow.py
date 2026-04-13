@@ -1092,7 +1092,7 @@ class TestCanadaAQHIDockerFlow:
             reference_types=['Community'],
             telemetry_types=['Observation', 'Forecast'],
             required_types=['Community', 'Observation', 'Forecast'],
-            extra_env={'POLLING_INTERVAL': '5', 'PROVINCES': 'ON'},
+            extra_env={'POLLING_INTERVAL': '5', 'PROVINCES': 'ON', 'MAX_COMMUNITIES': '10'},
         )
 
 
