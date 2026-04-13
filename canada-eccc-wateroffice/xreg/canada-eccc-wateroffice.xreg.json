@@ -1,0 +1,390 @@
+{
+  "endpoints": {
+    "CA.Gov.ECCC.Hydro.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "canada-eccc-wateroffice",
+          "key": "stations/{station_number}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/CA.Gov.ECCC.Hydro"
+      ]
+    }
+  },
+  "messagegroups": {
+    "CA.Gov.ECCC.Hydro": {
+      "messages": {
+        "CA.Gov.ECCC.Hydro.Station": {
+          "name": "Station",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "CA.Gov.ECCC.Hydro.Station"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca/collections/hydrometric-stations"
+            },
+            "subject": {
+              "value": "stations/{station_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.jstruct/schemas/CA.Gov.ECCC.Hydro.Station"
+        },
+        "CA.Gov.ECCC.Hydro.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "CA.Gov.ECCC.Hydro.Observation"
+            },
+            "source": {
+              "value": "https://api.weather.gc.ca/collections/hydrometric-realtime"
+            },
+            "subject": {
+              "value": "stations/{station_number}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/CA.Gov.ECCC.Hydro.jstruct/schemas/CA.Gov.ECCC.Hydro.Observation"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "CA.Gov.ECCC.Hydro.jstruct": {
+      "schemas": {
+        "CA.Gov.ECCC.Hydro.Station": {
+          "name": "Station",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/CA/Gov/ECCC/Hydro/Station",
+                "type": "object",
+                "name": "Station",
+                "description": "Reference data for a Water Survey of Canada hydrometric monitoring station from the ECCC OGC API hydrometric-stations collection.",
+                "required": [
+                  "station_number",
+                  "station_name",
+                  "prov_terr_state_loc"
+                ],
+                "properties": {
+                  "station_number": {
+                    "type": "string",
+                    "description": "Unique WSC station identifier following the scheme 2-digit major drainage area + letter + station digits, e.g. '05BJ004'. Upstream field: STATION_NUMBER.",
+                    "altnames": ["STATION_NUMBER"]
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Official name of the hydrometric station, e.g. 'ELBOW RIVER AT BRAGG CREEK'. Upstream field: STATION_NAME.",
+                    "altnames": ["STATION_NAME"]
+                  },
+                  "prov_terr_state_loc": {
+                    "type": "string",
+                    "description": "Two-letter province, territory or state location code where the station is situated, e.g. 'AB' for Alberta. Upstream field: PROV_TERR_STATE_LOC.",
+                    "altnames": ["PROV_TERR_STATE_LOC"]
+                  },
+                  "status_en": {
+                    "type": ["string", "null"],
+                    "description": "Operational status of the station in English, e.g. 'Active', 'Discontinued'. Upstream field: STATUS_EN.",
+                    "altnames": ["STATUS_EN"]
+                  },
+                  "contributor_en": {
+                    "type": ["string", "null"],
+                    "description": "Name of the contributing agency responsible for operating this station in English, e.g. 'Water Survey of Canada'. Upstream field: CONTRIBUTOR_EN.",
+                    "altnames": ["CONTRIBUTOR_EN"]
+                  },
+                  "drainage_area_gross": {
+                    "type": ["double", "null"],
+                    "description": "Gross drainage area of the watershed upstream of this station in square kilometres. Upstream field: DRAINAGE_AREA_GROSS.",
+                    "altnames": ["DRAINAGE_AREA_GROSS"],
+                    "unit": "square kilometre",
+                    "symbol": "km²"
+                  },
+                  "drainage_area_effect": {
+                    "type": ["double", "null"],
+                    "description": "Effective (contributing) drainage area of the watershed upstream of this station in square kilometres, excluding non-contributing areas. Upstream field: DRAINAGE_AREA_EFFECT.",
+                    "altnames": ["DRAINAGE_AREA_EFFECT"],
+                    "unit": "square kilometre",
+                    "symbol": "km²"
+                  },
+                  "rhbn": {
+                    "type": ["boolean", "null"],
+                    "description": "Indicates whether the station is part of the Reference Hydrometric Basin Network (RHBN), a subset of hydrologically stable, minimally disturbed basins used for climate change studies. Upstream field: RHBN.",
+                    "altnames": ["RHBN"]
+                  },
+                  "real_time": {
+                    "type": ["boolean", "null"],
+                    "description": "Indicates whether real-time data are available for this station via the WSC real-time data service. Upstream field: REAL_TIME.",
+                    "altnames": ["REAL_TIME"]
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "CA.Gov.ECCC.Hydro.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/CA/Gov/ECCC/Hydro/Observation",
+                "type": "object",
+                "name": "Observation",
+                "description": "Real-time hydrometric observation from the ECCC OGC API hydrometric-realtime collection. Data are provisional and updated approximately every 5 minutes.",
+                "required": [
+                  "station_number",
+                  "identifier",
+                  "station_name",
+                  "prov_terr_state_loc",
+                  "observation_datetime"
+                ],
+                "properties": {
+                  "station_number": {
+                    "type": "string",
+                    "description": "Unique WSC station identifier, e.g. '05BJ004'. Upstream field: STATION_NUMBER.",
+                    "altnames": ["STATION_NUMBER"]
+                  },
+                  "identifier": {
+                    "type": "string",
+                    "description": "Unique observation identifier composed of station number and ISO 8601 observation datetime, e.g. '05BJ004.2026-03-07T07:00:00Z'. Upstream field: IDENTIFIER.",
+                    "altnames": ["IDENTIFIER"]
+                  },
+                  "station_name": {
+                    "type": "string",
+                    "description": "Official name of the hydrometric station. Upstream field: STATION_NAME.",
+                    "altnames": ["STATION_NAME"]
+                  },
+                  "prov_terr_state_loc": {
+                    "type": "string",
+                    "description": "Two-letter province, territory or state location code. Upstream field: PROV_TERR_STATE_LOC.",
+                    "altnames": ["PROV_TERR_STATE_LOC"]
+                  },
+                  "observation_datetime": {
+                    "type": "datetime",
+                    "description": "Timestamp of the observation in UTC. Upstream field: DATETIME.",
+                    "altnames": ["DATETIME"]
+                  },
+                  "level": {
+                    "type": ["double", "null"],
+                    "description": "Water level at the station gauge in metres above the station datum. Null when not measured or unavailable. Upstream field: LEVEL.",
+                    "altnames": ["LEVEL"],
+                    "unit": "metre",
+                    "symbol": "m"
+                  },
+                  "discharge": {
+                    "type": ["double", "null"],
+                    "description": "Water discharge (flow rate) at the station in cubic metres per second. Null when not measured or unavailable. Upstream field: DISCHARGE.",
+                    "altnames": ["DISCHARGE"],
+                    "unit": "cubic metre per second",
+                    "symbol": "m³/s"
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
+                    "unit": "degree",
+                    "symbol": "°"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.avro": {
+      "schemas": {
+        "CA.Gov.ECCC.Hydro.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Station",
+                "namespace": "CA.Gov.ECCC.Hydro",
+                "doc": "Reference data for a Water Survey of Canada hydrometric monitoring station.",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Unique WSC station identifier, e.g. '05BJ004'. Upstream field: STATION_NUMBER."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Official name of the hydrometric station. Upstream field: STATION_NAME."
+                  },
+                  {
+                    "name": "prov_terr_state_loc",
+                    "type": "string",
+                    "doc": "Two-letter province, territory or state location code. Upstream field: PROV_TERR_STATE_LOC."
+                  },
+                  {
+                    "name": "status_en",
+                    "type": ["null", "string"],
+                    "default": null,
+                    "doc": "Operational status of the station in English. Upstream field: STATUS_EN."
+                  },
+                  {
+                    "name": "contributor_en",
+                    "type": ["null", "string"],
+                    "default": null,
+                    "doc": "Name of the contributing agency in English. Upstream field: CONTRIBUTOR_EN."
+                  },
+                  {
+                    "name": "drainage_area_gross",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Gross drainage area in km². Upstream field: DRAINAGE_AREA_GROSS."
+                  },
+                  {
+                    "name": "drainage_area_effect",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Effective drainage area in km². Upstream field: DRAINAGE_AREA_EFFECT."
+                  },
+                  {
+                    "name": "rhbn",
+                    "type": ["null", "boolean"],
+                    "default": null,
+                    "doc": "Part of the Reference Hydrometric Basin Network. Upstream field: RHBN."
+                  },
+                  {
+                    "name": "real_time",
+                    "type": ["null", "boolean"],
+                    "default": null,
+                    "doc": "Real-time data availability flag. Upstream field: REAL_TIME."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Station latitude in decimal degrees (WGS84)."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Station longitude in decimal degrees (WGS84)."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "CA.Gov.ECCC.Hydro.Observation": {
+          "name": "Observation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Observation",
+                "namespace": "CA.Gov.ECCC.Hydro",
+                "doc": "Real-time hydrometric observation from ECCC Water Survey of Canada.",
+                "fields": [
+                  {
+                    "name": "station_number",
+                    "type": "string",
+                    "doc": "Unique WSC station identifier. Upstream field: STATION_NUMBER."
+                  },
+                  {
+                    "name": "identifier",
+                    "type": "string",
+                    "doc": "Unique observation identifier. Upstream field: IDENTIFIER."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Official name of the hydrometric station. Upstream field: STATION_NAME."
+                  },
+                  {
+                    "name": "prov_terr_state_loc",
+                    "type": "string",
+                    "doc": "Two-letter province, territory or state location code. Upstream field: PROV_TERR_STATE_LOC."
+                  },
+                  {
+                    "name": "observation_datetime",
+                    "type": {
+                      "type": "string",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "Timestamp of the observation in UTC. Upstream field: DATETIME."
+                  },
+                  {
+                    "name": "level",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Water level in metres. Upstream field: LEVEL."
+                  },
+                  {
+                    "name": "discharge",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Discharge in m³/s. Upstream field: DISCHARGE."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Station latitude in decimal degrees (WGS84)."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": ["null", "double"],
+                    "default": null,
+                    "doc": "Station longitude in decimal degrees (WGS84)."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

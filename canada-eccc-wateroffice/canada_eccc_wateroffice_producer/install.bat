@@ -1,0 +1,2 @@
+pip install .\canada_eccc_wateroffice_producer_data
+pip install .\canada_eccc_wateroffice_producer_kafka_producer
