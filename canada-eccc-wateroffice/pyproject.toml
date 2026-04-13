@@ -18,5 +18,9 @@ avro = ">=1.11.3"
 canada_eccc_wateroffice_producer_data = {path = "canada_eccc_wateroffice_producer/canada_eccc_wateroffice_producer_data"}
 canada_eccc_wateroffice_producer_kafka_producer = {path = "canada_eccc_wateroffice_producer/canada_eccc_wateroffice_producer_kafka_producer"}
 
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.2"
+pytest-cov = ">=5.0.0"
+
 [tool.poetry.scripts]
 canada-eccc-wateroffice = "canada_eccc_wateroffice.canada_eccc_wateroffice:main"
