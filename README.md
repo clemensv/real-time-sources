@@ -150,6 +150,12 @@ are 87 containers in total.
 | Entur Norway | Norway (national real-time transit, SIRI ET/VM/SX) | [📖](entur-norway/README.md) | [🐳](entur-norway/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-entur-norway) | |
 | iRail | Belgium (~600 NMBS/SNCB stations, departures, delays) | [📖](irail/README.md) | [🐳](irail/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-irail) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Firail%2Fazure-template-with-eventhub.json) |
 
+### Nightlife and Live Entertainment
+
+| Source | Coverage | README | Container | Build |
+|---|---|---|---|---|
+| Xceed | Europe (clubs, bars, parties, festivals — event schedules and ticket-state signals) | [📖](xceed/README.md) | [🐳](xceed/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-xceed) |
+
 ### Energy and Infrastructure
 
 | Source | Coverage | README | Container | Build | Deploy |
@@ -528,6 +534,14 @@ readings updated every 90 seconds. Requires a free API access code.
 API. Station metadata and departure boards for approximately 600 NMBS/SNCB
 stations, including delays, platform assignments, cancellations, and occupancy.
 No authentication. Rate-limited to 3 requests/second; full cycle ~3–4 minutes.
+
+### Nightlife and Live Entertainment
+
+**[Xceed](xceed/README.md)** -- Xceed Open Event API. European nightlife and
+live-entertainment events including clubs, bars, parties, and festivals. Emits
+event reference data (schedule, venue, cover image) and admission telemetry
+(per-tier ticket-availability signals including `isSoldOut` and `isSalesClosed`).
+No authentication required. Polled every 5 minutes by default.
 
 ### Energy and Infrastructure
 

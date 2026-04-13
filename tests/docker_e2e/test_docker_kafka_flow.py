@@ -286,6 +286,10 @@ def ticketmaster_image():
 def entur_norway_image():
     return build_image('entur-norway')
 
+@pytest.fixture(scope='module')
+def xceed_image():
+    return build_image('xceed')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1767,6 +1771,7 @@ class TestCanadaECCCWaterOfficeDockerFlow:
             required_types=['Station', 'Observation'],
         )
 
+
 # ---------------------------------------------------------------------------
 # Ticketmaster (public events – reference + telemetry)
 # ---------------------------------------------------------------------------
@@ -1792,6 +1797,7 @@ class TestTicketmasterDockerFlow:
             timeout=300,
         )
 
+
 # ---------------------------------------------------------------------------
 # Entur Norway (SIRI real-time transit)
 # ---------------------------------------------------------------------------
@@ -1805,4 +1811,19 @@ class TestEnturNorwayDockerFlow:
             reference_types=['DatedServiceJourney'],
             telemetry_types=['EstimatedVehicleJourney', 'MonitoredVehicleJourney', 'PtSituationElement'],
             extra_env={'POLLING_INTERVAL': '5'},
+        )
+
+
+# ---------------------------------------------------------------------------
+# Xceed (nightlife and live-entertainment events)
+# ---------------------------------------------------------------------------
+
+class TestXceedDockerFlow:
+    TOPIC = 'test-xceed'
+
+    def test_emits_reference_events(self, kafka: KafkaFixture, xceed_image):
+        _run_kafka_flow_test(
+            kafka, xceed_image, self.TOPIC,
+            reference_types=['xceed.Event'],
+            telemetry_types=None,
         )
