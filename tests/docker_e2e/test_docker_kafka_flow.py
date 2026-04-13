@@ -1663,3 +1663,24 @@ class TestSeattleStreetClosuresDockerFlow:
             min_messages=1,
         )
 
+
+# ---------------------------------------------------------------------------
+# TfL Road Traffic (London — corridor status and disruptions)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def tfl_road_traffic_image():
+    return build_image('tfl-road-traffic')
+
+
+class TestTflRoadTrafficDockerFlow:
+    TOPIC = 'test-tfl-road-traffic'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, tfl_road_traffic_image):
+        _run_kafka_flow_test(
+            kafka, tfl_road_traffic_image, self.TOPIC,
+            reference_types=['RoadCorridor'],
+            telemetry_types=['RoadStatus', 'RoadDisruption'],
+            required_types=['RoadCorridor', 'RoadStatus'],
+            min_messages=5,
+        )
