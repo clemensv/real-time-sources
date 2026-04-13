@@ -12,7 +12,7 @@ confluent-kafka = ">=2.4.0"
 cloudevents = ">=1.10.1,<2.0.0"
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.2.2"
+pytest = ">=9.0.3"
 flake8 = ">=7.1.0"
 pylint = ">=3.2.3"
 mypy = ">=1.10.0"
