@@ -1,0 +1,308 @@
+{
+  "endpoints": {
+    "Com.Fienta.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "fienta",
+          "key": "{event_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Com.Fienta"
+      ]
+    }
+  },
+  "messagegroups": {
+    "Com.Fienta": {
+      "messages": {
+        "Com.Fienta.Event": {
+          "name": "Event",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Com.Fienta.Event"
+            },
+            "source": {
+              "value": "https://fienta.com/api/v1/public/events"
+            },
+            "subject": {
+              "value": "{event_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Com.Fienta.jstruct/schemas/Com.Fienta.Event"
+        },
+        "Com.Fienta.EventSaleStatus": {
+          "name": "EventSaleStatus",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Com.Fienta.EventSaleStatus"
+            },
+            "source": {
+              "value": "https://fienta.com/api/v1/public/events"
+            },
+            "subject": {
+              "value": "{event_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Com.Fienta.jstruct/schemas/Com.Fienta.EventSaleStatus"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Com.Fienta.jstruct": {
+      "schemas": {
+        "Com.Fienta.Event": {
+          "name": "Event",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://fienta.com/schemas/Com/Fienta/Event",
+                "type": "object",
+                "name": "Event",
+                "description": "Reference data for a Fienta public event. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with full event metadata. Sourced from the Fienta public events API at https://fienta.com/api/v1/public/events.",
+                "required": [
+                  "event_id",
+                  "name",
+                  "start",
+                  "url",
+                  "status",
+                  "sale_status"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "description": "Unique stable identifier for the event as assigned by Fienta. Used as the CloudEvents subject and Kafka key. Sourced from the 'id' field in the Fienta API response."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Display name of the event as set by the organizer (e.g., 'Jazz Night at Kultuurikatel'). Sourced from the 'name' field in the Fienta API response."
+                  },
+                  "slug": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "URL-friendly slug for the event derived from the event name (e.g., 'jazz-night-at-kultuurikatel'). Used to construct the event URL. Sourced from the 'slug' field in the Fienta API response."
+                  },
+                  "description": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Full description of the event as provided by the organizer. May contain HTML or plain text depending on the organizer's input. Sourced from the 'description' field in the Fienta API response."
+                  },
+                  "start": {
+                    "type": "string",
+                    "description": "ISO 8601 datetime when the event starts, including timezone offset (e.g., '2024-07-01T10:00:00+03:00'). Sourced from the 'start' field in the Fienta API response."
+                  },
+                  "end": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 8601 datetime when the event ends, including timezone offset. Null if no end time is specified. Sourced from the 'end' field in the Fienta API response."
+                  },
+                  "timezone": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "IANA timezone identifier for the event (e.g., 'Europe/Tallinn', 'Europe/Riga'). Used to interpret start and end times in local time. Sourced from the 'timezone' field in the Fienta API response."
+                  },
+                  "url": {
+                    "type": "string",
+                    "description": "Public web URL of the event page on Fienta (e.g., 'https://fienta.com/jazz-night-at-kultuurikatel'). Sourced from the 'url' field in the Fienta API response."
+                  },
+                  "language": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 639-1 language code of the event content (e.g., 'et' for Estonian, 'en' for English, 'lv' for Latvian). Sourced from the 'language' field in the Fienta API response."
+                  },
+                  "currency": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 4217 currency code for ticket pricing (e.g., 'EUR'). Null for free events. Sourced from the 'currency' field in the Fienta API response."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Publication status of the event as managed by the organizer. Typical values: 'published' (publicly visible), 'cancelled' (event has been cancelled by the organizer). Sourced from the 'status' field in the Fienta API response."
+                  },
+                  "sale_status": {
+                    "type": "string",
+                    "description": "Current ticket sale status of the event. Values: 'onSale' (tickets are available for purchase), 'soldOut' (all tickets have been sold), 'notOnSale' (ticket sales have not yet opened), 'saleEnded' (ticket sales have closed). Sourced from the 'sale_status' field in the Fienta API response."
+                  },
+                  "is_online": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "True if the event is held online (e.g., a webinar or live stream) rather than at a physical venue. Sourced from the 'is_online' field in the Fienta API response."
+                  },
+                  "is_free": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ],
+                    "description": "True if the event has no ticket price (free admission or free registration). Sourced from the 'is_free' field in the Fienta API response."
+                  },
+                  "location": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Venue name and/or address string for the event location (e.g., 'Kultuurikatel, Tallinn'). Null for online events or when not specified. Sourced from the 'location' field in the Fienta API response."
+                  },
+                  "country": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 3166-1 alpha-2 country code indicating the country where the event takes place (e.g., 'EE' for Estonia, 'LV' for Latvia, 'LT' for Lithuania). Sourced from the 'country' field in the Fienta API response."
+                  },
+                  "region": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Sub-national region or city where the event takes place (e.g., 'Tallinn', 'Riga'). Null when not specified. Sourced from the 'region' field in the Fienta API response."
+                  },
+                  "image_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "URL of the main promotional image for the event. Null when no image has been uploaded. Sourced from the 'image_url' field in the Fienta API response."
+                  },
+                  "organizer_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Display name of the event organizer (e.g., 'Kultuurikatel'). Extracted from the nested 'organizer.name' field in the Fienta API response."
+                  },
+                  "organizer_url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "URL of the organizer's profile page on Fienta. Extracted from the nested 'organizer.url' field in the Fienta API response."
+                  },
+                  "categories": {
+                    "type": [
+                      "array",
+                      "null"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of category labels assigned to the event (e.g., ['music', 'jazz', 'concert']). Empty list or null when no categories are assigned. Sourced from the 'categories' field in the Fienta API response."
+                  },
+                  "created_at": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 8601 datetime when the event was first created in the Fienta platform. Sourced from the 'created_at' field in the Fienta API response."
+                  },
+                  "updated_at": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 8601 datetime when the event record was last modified, including any changes to metadata, ticket availability, or sale status. Sourced from the 'updated_at' field in the Fienta API response."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Com.Fienta.EventSaleStatus": {
+          "name": "EventSaleStatus",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://fienta.com/schemas/Com/Fienta/EventSaleStatus",
+                "type": "object",
+                "name": "EventSaleStatus",
+                "description": "Telemetry event emitted whenever the sale_status of a Fienta public event changes. The bridge detects changes by comparing the current sale_status against the previously observed value stored in a state file. Emitted on every poll if no prior state is available.",
+                "required": [
+                  "event_id",
+                  "name",
+                  "sale_status",
+                  "updated_at"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string",
+                    "description": "Unique stable identifier for the event as assigned by Fienta. Used as the CloudEvents subject and Kafka key. Sourced from the 'id' field in the Fienta API response."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Display name of the event at the time the status was recorded (e.g., 'Jazz Night at Kultuurikatel'). Included for convenience so consumers do not need to join with Event reference data. Sourced from the 'name' field in the Fienta API response."
+                  },
+                  "sale_status": {
+                    "type": "string",
+                    "description": "Current ticket sale status of the event. Values: 'onSale' (tickets are available for purchase), 'soldOut' (all tickets have been sold), 'notOnSale' (ticket sales have not yet opened), 'saleEnded' (ticket sales have closed). Sourced from the 'sale_status' field in the Fienta API response."
+                  },
+                  "status": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Publication status of the event (e.g., 'published', 'cancelled'). Included alongside sale_status so consumers can identify cancelled events. Sourced from the 'status' field in the Fienta API response."
+                  },
+                  "start": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ISO 8601 start datetime of the event. Included for context so consumers can determine if the event is upcoming or past. Sourced from the 'start' field in the Fienta API response."
+                  },
+                  "url": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Public URL of the event page on Fienta. Sourced from the 'url' field in the Fienta API response."
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "description": "ISO 8601 datetime when the event record was last modified by the platform, triggering the status change detection. Sourced from the 'updated_at' field in the Fienta API response."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

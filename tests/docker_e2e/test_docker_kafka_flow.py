@@ -290,6 +290,10 @@ def entur_norway_image():
 def xceed_image():
     return build_image('xceed')
 
+@pytest.fixture(scope='module')
+def fienta_image():
+    return build_image('fienta')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1826,4 +1830,19 @@ class TestXceedDockerFlow:
             kafka, xceed_image, self.TOPIC,
             reference_types=['xceed.Event'],
             telemetry_types=None,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Fienta Public Events (Europe – ticketed events with sale-status)
+# ---------------------------------------------------------------------------
+
+class TestFientaDockerFlow:
+    TOPIC = 'test-fienta'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, fienta_image):
+        _run_kafka_flow_test(
+            kafka, fienta_image, self.TOPIC,
+            reference_types=['Event'],
+            telemetry_types=['EventSaleStatus'],
         )

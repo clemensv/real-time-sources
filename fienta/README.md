@@ -1,0 +1,96 @@
+# Fienta Public Events Bridge
+
+## Overview
+
+**Fienta Public Events Bridge** polls the [Fienta](https://fienta.com) public events API for ticketed events across Europe and sends them to a Kafka topic as CloudEvents. The tool tracks previously observed `sale_status` values to detect changes and emit targeted telemetry events.
+
+## Data Source
+
+Fienta is a European event ticketing platform operating primarily in Estonia, Latvia, Lithuania, and other European countries. The platform exposes a public REST API with no authentication required:
+
+- **API Endpoint**: `https://fienta.com/api/v1/public/events`
+- **Update Frequency**: Events update as organizers change event details; sale-status changes occur as tickets sell out or go on sale
+- **Rate Limit**: 80 requests per minute per IP
+- **License**: Public API, data redistribution should comply with [Fienta Terms of Service](https://fienta.com/terms)
+
+## Event Families
+
+The bridge emits two event types to the same Kafka topic:
+
+| Event Type | Role | Description |
+|---|---|---|
+| `Com.Fienta.Event` | Reference | Full event metadata — name, location, organizer, schedule, sale_status |
+| `Com.Fienta.EventSaleStatus` | Telemetry | Sale-status change events — emitted when `sale_status` transitions |
+
+### Sale Status Values
+
+| Value | Description |
+|---|---|
+| `onSale` | Tickets are available for purchase |
+| `soldOut` | All tickets have been sold |
+| `notOnSale` | Ticket sales have not yet opened |
+| `saleEnded` | Ticket sales have closed |
+
+## Key Features
+
+- **Polling-based**: Fetches all public events from the Fienta API every 5 minutes.
+- **Reference data emission**: Emits full `Event` records at startup and refreshes hourly so consumers have current event metadata.
+- **Sale-status change detection**: Tracks each event's `sale_status` in a local state file and emits `EventSaleStatus` events only when the status changes.
+- **Stable identity model**: Uses the Fienta `id` field as both CloudEvents subject and Kafka key.
+- **Kafka integration**: Sends events to a Kafka topic with SASL PLAIN or plain TLS authentication.
+- **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+
+## Source Files
+
+| File | Description |
+|---|---|
+| [xreg/fienta.xreg.json](xreg/fienta.xreg.json) | xRegistry manifest |
+| [fienta/fienta.py](fienta/fienta.py) | Runtime bridge |
+| [fienta_producer/](fienta_producer/) | Generated producer (xrcg 0.10.1) |
+| [tests/](tests/) | Unit tests |
+| [Dockerfile](Dockerfile) | Container image |
+| [CONTAINER.md](CONTAINER.md) | Deployment contract |
+| [EVENTS.md](EVENTS.md) | Event catalog |
+
+## Installation
+
+The tool requires Python 3.10 or later.
+
+```bash
+git clone https://github.com/clemensv/real-time-sources.git
+cd real-time-sources/fienta
+pip install ./fienta_producer/fienta_producer_data
+pip install ./fienta_producer/fienta_producer_kafka_producer
+pip install .
+```
+
+## How to Use
+
+After installation, run with `python -m fienta feed`.
+
+### Command-Line Arguments
+
+- `--connection-string`: Event Hubs / Fabric / plain Kafka connection string (overrides other Kafka parameters)
+- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers
+- `--kafka-topic`: The Kafka topic to send messages to
+- `--sasl-username`: Username for SASL PLAIN authentication
+- `--sasl-password`: Password for SASL PLAIN authentication
+- `--state-file`: Path to the state file for sale-status deduplication (default: `~/.fienta_state.json`)
+
+### Example Usage
+
+```bash
+python -m fienta feed --connection-string "BootstrapServer=mybroker:9092;EntityPath=fienta"
+```
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Kafka/Event Hubs/Fabric connection string |
+| `KAFKA_ENABLE_TLS` | Set to `false` to disable TLS (default: `true`) |
+| `FIENTA_STATE_FILE` | Path to the state file (default: `~/.fienta_state.json`) |
+
+## Deploying into Azure Container Instances
+
+See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
