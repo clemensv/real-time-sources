@@ -28,6 +28,7 @@ are 86 containers in total.
 | Source | Coverage | README | Container | Build |
 |---|---|---|---|---|
 | BAFU Hydro | Switzerland (~300 stations, FOEN) | [📖](bafu-hydro/README.md) | [🐳](bafu-hydro/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-bafu-hydro) |
+| Canada ECCC Water Office | Canada (~2,100 hydrometric stations, WSC) | [📖](canada-eccc-wateroffice/README.md) | [🐳](canada-eccc-wateroffice/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-canada-eccc-wateroffice) |
 | CDEC Reservoirs | California (~2,600 stations, DWR) | [📖](cdec-reservoirs/README.md) | [🐳](cdec-reservoirs/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-cdec-reservoirs) |
 | CHMI Hydro | Czech Republic (CHMU) | [📖](chmi-hydro/README.md) | [🐳](chmi-hydro/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-chmi-hydro) |
 | German Waters | Germany (12 state portals, ~2,724 stations) | [📖](german-waters/README.md) | [🐳](german-waters/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-german-waters) |
@@ -191,6 +192,11 @@ above.
 **[BAFU Hydro](bafu-hydro/README.md)** -- Swiss Federal Office for the
 Environment (BAFU/FOEN) hydrological monitoring network. Forwards water level,
 discharge, and temperature observations from approximately 300 stations.
+
+**[Canada ECCC Water Office](canada-eccc-wateroffice/README.md)** -- Environment
+and Climate Change Canada (ECCC) Water Survey of Canada. Real-time water level
+and discharge from approximately 2,100 hydrometric stations across all Canadian
+provinces and territories, updated every 5 minutes via OGC API Features.
 
 **[CDEC Reservoirs](cdec-reservoirs/README.md)** -- California Data Exchange
 Center (CDEC). Real-time reservoir storage, elevation, inflow, and outflow from
