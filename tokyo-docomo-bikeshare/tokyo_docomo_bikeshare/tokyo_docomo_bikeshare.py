@@ -284,18 +284,19 @@ class DocomoBikesharePoller:
             print(f"Warning: could not fetch station_status: {exc}", flush=True)
             return None, DEFAULT_POLL_INTERVAL_SECONDS
 
-    def _emit_station_statuses(self, statuses: List[Dict]) -> int:
+    def _emit_station_statuses(self, statuses: List[Dict]):
         """
         Emit BikeshareStationStatus CloudEvents for stations with new data.
 
         Only emits records where last_reported has changed since the last
-        successful flush.  Returns the count of new events staged for sending.
+        successful flush.
 
         Args:
             statuses: List of station status dicts from station_status.json.
 
         Returns:
-            Count of new status events staged.
+            Tuple of (count of new status events staged, dict mapping station_id
+            to last_reported for the staged events).
         """
         pending_state: Dict[str, Optional[int]] = {}
         count = 0

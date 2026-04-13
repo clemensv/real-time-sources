@@ -1673,7 +1673,7 @@ class TestSeattleStreetClosuresDockerFlow:
 # Tokyo Docomo Bikeshare (reference + telemetry)
 # ---------------------------------------------------------------------------
 
-class TestTokyoDocombikeshareDockerFlow:
+class TestTokyoDocomoBikeshareDockerFlow:
     TOPIC = 'test-tokyo-docomo-bikeshare'
 
     def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, tokyo_docomo_bikeshare_image):

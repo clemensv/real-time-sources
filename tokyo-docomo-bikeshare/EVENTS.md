@@ -6,7 +6,7 @@ This document describes the events emitted by the Tokyo Docomo Bikeshare bridge.
   - [JP.ODPT.DocomoBikeshare.BikeshareSystem](#message-jpopdtdocombikesharebikesharesystem)
 - [JP.ODPT.DocomoBikeshare.Stations](#message-group-jpopdtdocombikesharestations)
   - [JP.ODPT.DocomoBikeshare.BikeshareStation](#message-jpopdtdocombikesharebikesharestation)
-  - [JP.ODPT.DocomoBikeshare.BikeshareStationStatus](#message-jpopdtdocombikesharebikeshareStationstatus)
+  - [JP.ODPT.DocomoBikeshare.BikeshareStationStatus](#message-jpopdtdocombikesharebikesharestationstatus)
 
 ---
 
