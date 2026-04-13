@@ -1,0 +1,2 @@
+pip install .\ticketmaster_producer_data
+pip install .\ticketmaster_producer_kafka_producer

@@ -270,6 +270,10 @@ def seattle_911_image():
 def seattle_street_closures_image():
     return build_image('seattle-street-closures')
 
+@pytest.fixture(scope='module')
+def ticketmaster_image():
+    return build_image('ticketmaster')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1663,3 +1667,29 @@ class TestSeattleStreetClosuresDockerFlow:
             min_messages=1,
         )
 
+
+
+# ---------------------------------------------------------------------------
+# Ticketmaster (public events – reference + telemetry)
+# ---------------------------------------------------------------------------
+
+class TestTicketmasterDockerFlow:
+    TOPIC = 'test-ticketmaster'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, ticketmaster_image):
+        api_key = os.environ.get('TICKETMASTER_API_KEY', '')
+        if not api_key:
+            pytest.skip('TICKETMASTER_API_KEY not set')
+        _run_kafka_flow_test(
+            kafka, ticketmaster_image, self.TOPIC,
+            reference_types=['Ticketmaster.Reference'],
+            telemetry_types=['Ticketmaster.Events'],
+            extra_env={
+                'TICKETMASTER_API_KEY': api_key,
+                'COUNTRY_CODES': 'US',
+                'POLL_INTERVAL': '60',
+                'REFERENCE_REFRESH': '3600',
+            },
+            min_messages=5,
+            timeout=300,
+        )
