@@ -137,6 +137,7 @@ are 86 containers in total.
 | Nextbus | North America (public transit arrivals) | [📖](nextbus/README.md) | — | — |
 | Paris Bicycle Counters | Paris (~141 counting stations, hourly counts) | [📖](paris-bicycle-counters/README.md) | [🐳](paris-bicycle-counters/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-paris-bicycle-counters) |
 | Seattle Street Closures | Seattle, Washington (permit-driven street closure windows) | [📖](seattle-street-closures/README.md) | [🐳](seattle-street-closures/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-seattle-street-closures) |
+| Tokyo Docomo Bikeshare | Tokyo, Japan (1,794 stations, GBFS 2.3 via ODPT) | [📖](tokyo-docomo-bikeshare/README.md) | [🐳](tokyo-docomo-bikeshare/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-tokyo-docomo-bikeshare) |
 | US CBP Border Wait | US-Canada & US-Mexico borders (~81 ports of entry) | [📖](cbp-border-wait/README.md) | [🐳](cbp-border-wait/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-cbp-border-wait) |
 | WSDOT | Washington State (~1,000 traffic flow sensors, LOS readings) | [📖](wsdot/README.md) | [🐳](wsdot/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wsdot) |
 
@@ -497,6 +498,12 @@ counting stations across Paris with counter location reference data.
 **[Seattle Street Closures](seattle-street-closures/README.md)** -- Seattle
 Open Data street closure schedule feed. Permit-keyed closure windows with
 street segments, dates, and serialized geometry snapshots.
+
+**[Tokyo Docomo Bikeshare](tokyo-docomo-bikeshare/README.md)** -- Tokyo Docomo
+Bikeshare real-time availability. GBFS 2.3 feed from the Open Data Platform for
+Transportation (ODPT) covering 1,794 dock-based stations across central Tokyo
+wards. System metadata, station locations (bilingual names), and real-time bike
+and dock availability updated on a 60-second TTL.
 
 **[US CBP Border Wait](cbp-border-wait/README.md)** -- US Customs and Border
 Protection border wait times. Real-time delay data for approximately 81 land
