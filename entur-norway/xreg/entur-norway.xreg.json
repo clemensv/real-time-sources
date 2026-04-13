@@ -175,7 +175,7 @@
                           "operating_day": {
                             "type": "string",
                             "description": "ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
-                            "format": "date",
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                             "altnames": {
                               "xml": "DataFrameRef"
                             }
@@ -347,44 +347,40 @@
                           },
                           "aimed_arrival_time": {
                             "type": [
-                              "string",
+                              "datetime",
                               "null"
                             ],
                             "description": "Timetabled (aimed) arrival time at this stop in ISO 8601 format, from AimedArrivalTime.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "AimedArrivalTime"
                             }
                           },
                           "expected_arrival_time": {
                             "type": [
-                              "string",
+                              "datetime",
                               "null"
                             ],
                             "description": "Real-time expected arrival time at this stop in ISO 8601 format, from ExpectedArrivalTime.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "ExpectedArrivalTime"
                             }
                           },
                           "aimed_departure_time": {
                             "type": [
-                              "string",
+                              "datetime",
                               "null"
                             ],
                             "description": "Timetabled (aimed) departure time at this stop in ISO 8601 format, from AimedDepartureTime.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "AimedDepartureTime"
                             }
                           },
                           "expected_departure_time": {
                             "type": [
-                              "string",
+                              "datetime",
                               "null"
                             ],
                             "description": "Real-time expected departure time at this stop in ISO 8601 format, from ExpectedDepartureTime.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "ExpectedDepartureTime"
                             }
@@ -506,7 +502,7 @@
                           "operating_day": {
                             "type": "string",
                             "description": "ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
-                            "format": "date",
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                             "altnames": {
                               "xml": "DataFrameRef"
                             }
@@ -646,11 +642,10 @@
                           },
                           "recorded_at_time": {
                             "type": [
-                              "string",
+                              "datetime",
                               "null"
                             ],
                             "description": "ISO 8601 UTC timestamp when this update was recorded by the source system (SIRI RecordedAtTime).",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "RecordedAtTime"
                             }
@@ -711,15 +706,14 @@
                           "operating_day": {
                             "type": "string",
                             "description": "ISO 8601 calendar date string for the operating day of this journey, from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
-                            "format": "date",
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                             "altnames": {
                               "xml": "DataFrameRef"
                             }
                           },
                           "recorded_at_time": {
-                            "type": "string",
+                            "type": "datetime",
                             "description": "ISO 8601 UTC timestamp from the parent VehicleActivity/RecordedAtTime element indicating when this position was recorded.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "RecordedAtTime"
                             }
@@ -938,20 +932,18 @@
                         "description": "A time window during which a PtSituationElement is active and applicable. A situation may have multiple validity periods covering separate intervals. Sourced from the SIRI ValidityPeriod element.",
                         "properties": {
                           "start_time": {
-                            "type": "string",
+                            "type": "datetime",
                             "description": "ISO 8601 UTC start time of this validity window, from ValidityPeriod/StartTime.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "StartTime"
                             }
                           },
                           "end_time": {
                             "type": [
-                              "string",
+                              "datetime",
                               "null"
                             ],
                             "description": "ISO 8601 UTC end time of this validity window, from ValidityPeriod/EndTime. Null if the validity period is open-ended.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "EndTime"
                             }
@@ -984,9 +976,8 @@
                             }
                           },
                           "creation_time": {
-                            "type": "string",
+                            "type": "datetime",
                             "description": "ISO 8601 UTC timestamp when this situation was first created, from the SIRI CreationTime element.",
-                            "format": "date-time",
                             "altnames": {
                               "xml": "CreationTime"
                             }
