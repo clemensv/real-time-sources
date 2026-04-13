@@ -1,0 +1,28 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "ndw-road-traffic"
+version = "0.1.0"
+description = "NDW Netherlands road traffic bridge — speed, travel time, situations, DRIP, MSI from Dutch national traffic data"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "ndw_road_traffic" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+avro = ">=1.12.1"
+cloudevents = ">=1.11.0,<2.0.0"
+confluent-kafka = ">=2.5.3"
+dataclasses-json = ">=0.6.7"
+requests = ">=2.32.3"
+urllib3 = ">=1.26.0"
+ndw_road_traffic_producer_data = { path = "ndw_road_traffic_producer/ndw_road_traffic_producer_data" }
+ndw_road_traffic_producer_kafka_producer = { path = "ndw_road_traffic_producer/ndw_road_traffic_producer_kafka_producer" }
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+testcontainers = ">=4.8.1"
+
+[tool.poetry.scripts]
+ndw-road-traffic = "ndw_road_traffic:main"
