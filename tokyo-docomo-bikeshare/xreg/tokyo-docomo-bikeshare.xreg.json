@@ -119,7 +119,7 @@
                             "format": "JsonStructure/draft-02",
                             "schema": {
                                 "$schema": "https://json-structure.org/meta/extended/v0/#",
-                                "$id": "JP.ODPT.DocomoBikeshare.BikeshareSystem",
+                                "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareSystem",
                                 "type": "object",
                                 "name": "BikeshareSystem",
                                 "description": "Metadata describing the Tokyo Docomo Bikeshare system, sourced from the GBFS 2.3 system_information.json feed published by the Open Data Platform for Transportation (ODPT).",
@@ -196,7 +196,7 @@
                             "format": "JsonStructure/draft-02",
                             "schema": {
                                 "$schema": "https://json-structure.org/meta/extended/v0/#",
-                                "$id": "JP.ODPT.DocomoBikeshare.BikeshareStation",
+                                "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareStation",
                                 "type": "object",
                                 "name": "BikeshareStation",
                                 "description": "Physical location and static attributes of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_information.json feed published by the Open Data Platform for Transportation (ODPT).",
@@ -257,7 +257,7 @@
                                         "description": "Total number of docking points installed at the station, including those that are temporarily disabled. Reflects the physical capacity of the station."
                                     },
                                     "is_virtual_station": {
-                                        "type": ["bool", "null"],
+                                        "type": ["boolean", "null"],
                                         "description": "If true, the station is a virtual station (i.e., a parking zone without physical docks) rather than a docked station. If absent or false, the station has physical docking points."
                                     }
                                 }
@@ -274,7 +274,7 @@
                             "format": "JsonStructure/draft-02",
                             "schema": {
                                 "$schema": "https://json-structure.org/meta/extended/v0/#",
-                                "$id": "JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
+                                "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareStationStatus",
                                 "type": "object",
                                 "name": "BikeshareStationStatus",
                                 "description": "Real-time availability and operational status of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_status.json feed published by the Open Data Platform for Transportation (ODPT). Updates on a 60-second TTL.",
@@ -312,19 +312,19 @@
                                         "description": "Number of broken or disabled docking points at the station that cannot accept vehicle returns. Absent if the operator does not publish this value."
                                     },
                                     "is_installed": {
-                                        "type": "bool",
+                                        "type": "boolean",
                                         "description": "Indicates whether the station infrastructure is installed on-street and operational. A value of false means the station is temporarily or permanently removed from service."
                                     },
                                     "is_renting": {
-                                        "type": "bool",
+                                        "type": "boolean",
                                         "description": "Indicates whether the station is currently allowing vehicle rentals. May be false even when bikes are present, for example during a system outage."
                                     },
                                     "is_returning": {
-                                        "type": "bool",
+                                        "type": "boolean",
                                         "description": "Indicates whether the station is currently accepting vehicle returns. May be false even when docks are empty, for example during a system outage."
                                     },
                                     "last_reported": {
-                                        "type": ["int64", "null"],
+                                        "type": ["int32", "null"],
                                         "description": "Unix timestamp in seconds (UTC) indicating the last time this station's status was updated by the operator's system. Absent if the operator does not publish this value."
                                     }
                                 }
