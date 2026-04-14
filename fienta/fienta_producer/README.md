@@ -1,6 +1,6 @@
 
 
-# Fienta-producer Kafka Producer# Fienta-producer Event Dispatcher for Apache Kafka
+# Fienta_producer Kafka Producer# Fienta_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from fienta-producer import ComFientaProducer```python
+from fienta_producer import ComFientaProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 

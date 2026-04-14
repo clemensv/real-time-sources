@@ -28,13 +28,15 @@ class Test_EventSaleStatus(unittest.TestCase):
         Create instance of EventSaleStatus for testing
         """
         instance = EventSaleStatus(
-            event_id='gbytttejyyutavtcawpr',
-            name='lwuwsevmceyxbnjdtedn',
-            sale_status='wfmeyeyerffgkzhifdvb',
-            status='nploxdwjypqtbhcqdadu',
-            start='tllqbpwuyvtpudarjdll',
-            url='mucqnfdbqtvenausvdky',
-            updated_at='dkhudzskfbmbeqjpivbb'
+            event_id='nqxjtokyeyvqmqctbzwo',
+            name='cnqlarabvamjhmfupvtd',
+            sale_status='wccxxxjszwfkpgsbdgnc',
+            event_status='hedluajfqzcrmhgxtcuk',
+            start='odnsevmusflqevfnyjna',
+            end='romhdhlgdkeogfsgfreo',
+            url='whfvzbbvugaqjvudrcod',
+            buy_tickets_url='puzeuptzybmwkgdubysr',
+            observed_at='jowwyqeajylclcokmkvo'
         )
         return instance
 
@@ -43,7 +45,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'gbytttejyyutavtcawpr'
+        test_value = 'nqxjtokyeyvqmqctbzwo'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -51,7 +53,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'lwuwsevmceyxbnjdtedn'
+        test_value = 'cnqlarabvamjhmfupvtd'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -59,41 +61,57 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test sale_status property
         """
-        test_value = 'wfmeyeyerffgkzhifdvb'
+        test_value = 'wccxxxjszwfkpgsbdgnc'
         self.instance.sale_status = test_value
         self.assertEqual(self.instance.sale_status, test_value)
     
-    def test_status_property(self):
+    def test_event_status_property(self):
         """
-        Test status property
+        Test event_status property
         """
-        test_value = 'nploxdwjypqtbhcqdadu'
-        self.instance.status = test_value
-        self.assertEqual(self.instance.status, test_value)
+        test_value = 'hedluajfqzcrmhgxtcuk'
+        self.instance.event_status = test_value
+        self.assertEqual(self.instance.event_status, test_value)
     
     def test_start_property(self):
         """
         Test start property
         """
-        test_value = 'tllqbpwuyvtpudarjdll'
+        test_value = 'odnsevmusflqevfnyjna'
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
+    def test_end_property(self):
+        """
+        Test end property
+        """
+        test_value = 'romhdhlgdkeogfsgfreo'
+        self.instance.end = test_value
+        self.assertEqual(self.instance.end, test_value)
+
     def test_url_property(self):
         """
         Test url property
         """
-        test_value = 'mucqnfdbqtvenausvdky'
+        test_value = 'whfvzbbvugaqjvudrcod'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
-    def test_updated_at_property(self):
+    def test_buy_tickets_url_property(self):
         """
-        Test updated_at property
+        Test buy_tickets_url property
         """
-        test_value = 'dkhudzskfbmbeqjpivbb'
-        self.instance.updated_at = test_value
-        self.assertEqual(self.instance.updated_at, test_value)
+        test_value = 'puzeuptzybmwkgdubysr'
+        self.instance.buy_tickets_url = test_value
+        self.assertEqual(self.instance.buy_tickets_url, test_value)
+
+    def test_observed_at_property(self):
+        """
+        Test observed_at property
+        """
+        test_value = 'jowwyqeajylclcokmkvo'
+        self.instance.observed_at = test_value
+        self.assertEqual(self.instance.observed_at, test_value)
     
     def test_to_byte_array_json(self):
         """

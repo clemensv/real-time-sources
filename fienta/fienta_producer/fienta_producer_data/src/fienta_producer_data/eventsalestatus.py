@@ -17,26 +17,30 @@ import json
 @dataclass
 class EventSaleStatus:
     """
-    Telemetry event emitted whenever the sale_status of a Fienta public event changes. The bridge detects changes by comparing the current sale_status against the previously observed value stored in a state file. Emitted on every poll if no prior state is available.
+    Telemetry event emitted whenever the bridge observes a change in the sale_status value of a Fienta public event between two polls of the public events endpoint.
     
     Attributes:
         event_id (str)
         name (str)
         sale_status (str)
-        status (typing.Optional[str])
+        event_status (typing.Optional[str])
         start (typing.Optional[str])
+        end (typing.Optional[str])
         url (typing.Optional[str])
-        updated_at (str)
+        buy_tickets_url (typing.Optional[str])
+        observed_at (str)
     """
     
     
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     sale_status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sale_status"))
-    status: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
+    event_status: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_status"))
     start: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start"))
+    end: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end"))
     url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
-    updated_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated_at"))
+    buy_tickets_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="buy_tickets_url"))
+    observed_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observed_at"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'EventSaleStatus':
@@ -163,11 +167,13 @@ class EventSaleStatus:
             An instance of the dataclass.
         """
         return cls(
-            event_id='gbytttejyyutavtcawpr',
-            name='lwuwsevmceyxbnjdtedn',
-            sale_status='wfmeyeyerffgkzhifdvb',
-            status='nploxdwjypqtbhcqdadu',
-            start='tllqbpwuyvtpudarjdll',
-            url='mucqnfdbqtvenausvdky',
-            updated_at='dkhudzskfbmbeqjpivbb'
+            event_id='nqxjtokyeyvqmqctbzwo',
+            name='cnqlarabvamjhmfupvtd',
+            sale_status='wccxxxjszwfkpgsbdgnc',
+            event_status='hedluajfqzcrmhgxtcuk',
+            start='odnsevmusflqevfnyjna',
+            end='romhdhlgdkeogfsgfreo',
+            url='whfvzbbvugaqjvudrcod',
+            buy_tickets_url='puzeuptzybmwkgdubysr',
+            observed_at='jowwyqeajylclcokmkvo'
         )

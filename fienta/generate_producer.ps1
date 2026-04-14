@@ -16,7 +16,7 @@ if (Test-Path $outputDir) {
 }
 
 Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname fienta-producer --definitions $xregFile --output $outputDir
+xrcg generate --style kafkaproducer --language py --projectname fienta_producer --definitions $xregFile --output $outputDir
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Producer generation completed successfully" -ForegroundColor Green

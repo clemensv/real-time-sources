@@ -11,65 +11,66 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from typing import Any
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Event:
     """
-    Reference data for a Fienta public event. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with full event metadata. Sourced from the Fienta public events API at https://fienta.com/api/v1/public/events.
+    Reference data for a Fienta public event as exposed by the public events endpoint. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with the latest published event metadata from https://fienta.com/api/v1/public/events.
     
     Attributes:
         event_id (str)
         name (str)
-        slug (typing.Optional[str])
-        description (typing.Optional[str])
         start (str)
         end (typing.Optional[str])
-        timezone (typing.Optional[str])
-        url (str)
-        language (typing.Optional[str])
-        currency (typing.Optional[str])
-        status (str)
+        duration_text (typing.Optional[str])
+        time_notes (typing.Optional[str])
+        event_status (str)
         sale_status (str)
-        is_online (typing.Optional[bool])
-        is_free (typing.Optional[bool])
-        location (typing.Optional[str])
-        country (typing.Optional[str])
-        region (typing.Optional[str])
+        attendance_mode (typing.Optional[str])
+        venue_name (typing.Optional[str])
+        venue_id (typing.Optional[str])
+        address (typing.Optional[str])
+        postal_code (typing.Optional[str])
+        description (typing.Optional[str])
+        url (str)
+        buy_tickets_url (typing.Optional[str])
         image_url (typing.Optional[str])
+        image_small_url (typing.Optional[str])
+        series_id (typing.Optional[str])
         organizer_name (typing.Optional[str])
-        organizer_url (typing.Optional[str])
-        categories (typing.Optional[Any])
-        created_at (typing.Optional[str])
-        updated_at (typing.Optional[str])
+        organizer_phone (typing.Optional[str])
+        organizer_email (typing.Optional[str])
+        organizer_id (typing.Optional[int])
+        categories (typing.Optional[typing.List[str]])
     """
     
     
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    slug: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="slug"))
-    description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
     start: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start"))
     end: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end"))
-    timezone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timezone"))
-    url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
-    language: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="language"))
-    currency: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="currency"))
-    status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
+    duration_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration_text"))
+    time_notes: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_notes"))
+    event_status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_status"))
     sale_status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sale_status"))
-    is_online: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_online"))
-    is_free: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_free"))
-    location: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location"))
-    country: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
-    region: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
+    attendance_mode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attendance_mode"))
+    venue_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="venue_name"))
+    venue_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="venue_id"))
+    address: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="address"))
+    postal_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="postal_code"))
+    description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
+    url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="url"))
+    buy_tickets_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="buy_tickets_url"))
     image_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="image_url"))
+    image_small_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="image_small_url"))
+    series_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="series_id"))
     organizer_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizer_name"))
-    organizer_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizer_url"))
-    categories: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="categories"))
-    created_at: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created_at"))
-    updated_at: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated_at"))
+    organizer_phone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizer_phone"))
+    organizer_email: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizer_email"))
+    organizer_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizer_id"))
+    categories: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="categories"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Event':
@@ -196,27 +197,28 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id='mlhdzvahadphdybrsoff',
-            name='siixjbsnvqcfzuctpbgy',
-            slug='stkofjmtzpewjdghpsvl',
-            description='oxzxfnrvaasjjxuxgwlf',
-            start='ydqcarenhxycfdeiijva',
-            end='srtgycjnmzlianwvqqgt',
-            timezone='udfwimufqyzrkqyrgnkt',
-            url='xixsvwlycladavzvuhxz',
-            language='mlsgzwglorpmnnucqhku',
-            currency='vnuynweoloysvpqalvif',
-            status='hnbnyamznrljrnvhdptk',
-            sale_status='tflmczcjwejjdercjcmy',
-            is_online=False,
-            is_free=False,
-            location='jfiaxkilwmtpbqrfxbvu',
-            country='quxcgsktyrytrkctxakf',
-            region='jpinmhfrcqdmbekadxjg',
-            image_url='rxtzgemsaltmlelopweg',
-            organizer_name='ftkgihbrqzfaqxvhwkpt',
-            organizer_url='nkbpcuoktmvyqxenavaq',
-            categories=None,
-            created_at='slllnnlfghlrglnyrqag',
-            updated_at='aeqcxvyzkvctgnhfxjkl'
+            event_id='djtzdgmvrzfdaarqwuty',
+            name='xeiikcujtuykssjnktwy',
+            start='ocyyjreshixminugpgnu',
+            end='tkeujtjmfvmelsyicpwp',
+            duration_text='lupwdecaoveupkopxtvz',
+            time_notes='rwscjbrhpvyvjkpkqtmq',
+            event_status='flnodrcloslkrcmbuvcz',
+            sale_status='zeqkfwwrddshwopllhyb',
+            attendance_mode='mqumguhqnkymugrsvocn',
+            venue_name='qfqouzrktkqdtteusffe',
+            venue_id='hbpxmejndrjqkpodhioo',
+            address='ikkdryklkxczehmocugh',
+            postal_code='qvfbnxatzwllfprfxbpi',
+            description='htpimvsvhmknjgkwnmas',
+            url='zravhrfceljvqzaaidrl',
+            buy_tickets_url='dthexgqyljrmlkqqawbb',
+            image_url='btpudhqhndqgbhcfwyka',
+            image_small_url='leiskeyjttzibshozgmr',
+            series_id='egclyjqxbmokuigaldbs',
+            organizer_name='bxyzplbtindbzwurjaby',
+            organizer_phone='ipziyovqbtxewxzlnshn',
+            organizer_email='wwurmymyvddbqmnptgjr',
+            organizer_id=int(94),
+            categories=['kiuewsrpqkvwbrfkejin', 'pghtppfesottjgizyjkx']
         )

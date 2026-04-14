@@ -1,6 +1,6 @@
 # Fienta Public Events Bridge Events
 
-This document describes the events emitted by the Fienta Public Events Bridge.
+This document describes the CloudEvents emitted by the Fienta Public Events bridge.
 
 - [Com.Fienta](#message-group-comfienta)
   - [Com.Fienta.Event](#message-comfientaevent)
@@ -10,82 +10,92 @@ This document describes the events emitted by the Fienta Public Events Bridge.
 
 ## Message Group: Com.Fienta
 
+Both event families use the same stable identity model:
+
+- CloudEvents `subject`: `{event_id}`
+- Kafka key: `{event_id}`
+
+The `event_id` comes from the upstream Fienta `id` field.
+
 ---
 
 ### Message: Com.Fienta.Event
 
-*Reference data — sent once at startup and refreshed hourly before the telemetry polling continues.*
+Reference data emitted at startup and refreshed periodically from the public Fienta events listing.
 
-#### CloudEvents Attributes:
+#### CloudEvents Attributes
 
-| **Name** | **Description** | **Type** | **Required** | **Value** |
-|---|---|---|---|---|
-| `type` | CloudEvent type | `string` | `True` | `Com.Fienta.Event` |
-| `source` | CloudEvent source | `string` | `True` | `https://fienta.com/api/v1/public/events` |
-| `subject` | Event identifier | `uritemplate` | `True` | `{event_id}` |
-
-#### Schema: Event
-
-| **Field Name** | **Type** | **Description** |
+| Name | Type | Value |
 |---|---|---|
-| `event_id` | *string* | Unique stable identifier for the event assigned by Fienta |
-| `name` | *string* | Display name of the event |
-| `slug` | *string (nullable)* | URL-friendly slug for the event |
-| `description` | *string (nullable)* | Full event description as set by the organizer |
-| `start` | *string* | ISO 8601 start datetime including timezone offset |
-| `end` | *string (nullable)* | ISO 8601 end datetime; null if not specified |
-| `timezone` | *string (nullable)* | IANA timezone identifier (e.g., `Europe/Tallinn`) |
-| `url` | *string* | Public web URL of the event page on Fienta |
-| `language` | *string (nullable)* | ISO 639-1 language code of the event content |
-| `currency` | *string (nullable)* | ISO 4217 currency code for ticket pricing |
-| `status` | *string* | Publication status (e.g., `published`, `cancelled`) |
-| `sale_status` | *string* | Ticket sale status (`onSale`, `soldOut`, `notOnSale`, `saleEnded`) |
-| `is_online` | *boolean (nullable)* | True if the event is online |
-| `is_free` | *boolean (nullable)* | True if the event has no ticket price |
-| `location` | *string (nullable)* | Venue name and/or address |
-| `country` | *string (nullable)* | ISO 3166-1 alpha-2 country code |
-| `region` | *string (nullable)* | Sub-national region or city |
-| `image_url` | *string (nullable)* | URL of the main promotional image |
-| `organizer_name` | *string (nullable)* | Display name of the organizer |
-| `organizer_url` | *string (nullable)* | URL of the organizer's Fienta profile |
-| `categories` | *array of string (nullable)* | List of category labels |
-| `created_at` | *string (nullable)* | ISO 8601 creation datetime |
-| `updated_at` | *string (nullable)* | ISO 8601 last modification datetime |
+| `type` | `string` | `Com.Fienta.Event` |
+| `source` | `string` | `https://fienta.com/api/v1/public/events` |
+| `subject` | `uritemplate` | `{event_id}` |
 
-#### Example CloudEvent:
+#### Data Schema
+
+| Field | Type | Description |
+|---|---|---|
+| `event_id` | `string` | Stable Fienta event identifier. |
+| `name` | `string` | Public event title from `title`. |
+| `start` | `string` | Local start datetime string from `starts_at`. |
+| `end` | `string \| null` | Local end datetime string from `ends_at`. |
+| `duration_text` | `string \| null` | Human-readable schedule summary from `duration_string`. |
+| `time_notes` | `string \| null` | Organizer-provided timing note from `notes_about_time`. |
+| `event_status` | `string` | Event lifecycle status from `event_status`. |
+| `sale_status` | `string` | Ticket sale status from `sale_status`. |
+| `attendance_mode` | `string \| null` | Attendance mode from `attendance_mode`. |
+| `venue_name` | `string \| null` | Venue or place name from `venue`. |
+| `venue_id` | `string \| null` | Venue identifier from `venue_id`. |
+| `address` | `string \| null` | Venue address from `address`. |
+| `postal_code` | `string \| null` | Postal code from `address_postal_code`. |
+| `description` | `string \| null` | Organizer-provided event description. |
+| `url` | `string` | Public event page URL. |
+| `buy_tickets_url` | `string \| null` | Purchase URL from `buy_tickets_url`. |
+| `image_url` | `string \| null` | Primary event image URL. |
+| `image_small_url` | `string \| null` | Smaller event image rendition URL. |
+| `series_id` | `string \| null` | Upstream series identifier. |
+| `organizer_name` | `string \| null` | Organizer display name. |
+| `organizer_phone` | `string \| null` | Organizer phone number. |
+| `organizer_email` | `string \| null` | Organizer email address. |
+| `organizer_id` | `integer \| null` | Organizer identifier. |
+| `categories` | `array[string] \| null` | Upstream category labels. |
+
+#### Example
 
 ```json
 {
   "specversion": "1.0",
   "type": "Com.Fienta.Event",
   "source": "https://fienta.com/api/v1/public/events",
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "subject": "evt-001",
+  "subject": "158921",
   "datacontenttype": "application/json",
   "data": {
-    "event_id": "evt-001",
-    "name": "Jazz Night at Kultuurikatel",
-    "slug": "jazz-night-at-kultuurikatel",
-    "description": "An evening of live jazz music at the historic Kultuurikatel in Tallinn.",
-    "start": "2024-07-15T19:00:00+03:00",
-    "end": "2024-07-15T22:00:00+03:00",
-    "timezone": "Europe/Tallinn",
-    "url": "https://fienta.com/jazz-night-at-kultuurikatel",
-    "language": "et",
-    "currency": "EUR",
-    "status": "published",
+    "event_id": "158921",
+    "name": "Fienta Gift Card",
+    "start": "2000-01-01 00:00:00",
+    "end": "2036-01-31 23:59:59",
+    "duration_text": null,
+    "time_notes": null,
+    "event_status": "scheduled",
     "sale_status": "onSale",
-    "is_online": false,
-    "is_free": false,
-    "location": "Kultuurikatel, Tallinn",
-    "country": "EE",
-    "region": "Tallinn",
-    "image_url": "https://fienta.com/images/evt-001.jpg",
-    "organizer_name": "Kultuurikatel",
-    "organizer_url": "https://fienta.com/organizer/kultuurikatel",
-    "categories": ["music", "jazz", "concert"],
-    "created_at": "2024-06-01T12:00:00+03:00",
-    "updated_at": "2024-07-01T10:00:00+03:00"
+    "attendance_mode": "offline",
+    "venue_name": "Worldwide",
+    "venue_id": null,
+    "address": null,
+    "postal_code": null,
+    "description": null,
+    "url": "https://fienta.com/fienta-gift-card-kes",
+    "buy_tickets_url": "https://fienta.com/fienta-gift-card-kes",
+    "image_url": "https://fienta.com/cf/img/?width=1070&format=jpeg&gcs=true&file=/org/1/NV0tSHR3g0uOX6U.jpg",
+    "image_small_url": "https://fienta.com/cf/img/?width=690&format=jpeg&gcs=true&file=/org/1/NV0tSHR3g0uOX6U.jpg",
+    "series_id": "fienta-gift-card-kes",
+    "organizer_name": "Fienta",
+    "organizer_phone": "+3726700070",
+    "organizer_email": "hello@fienta.com",
+    "organizer_id": 1,
+    "categories": [
+      "other"
+    ]
   }
 }
 ```
@@ -94,55 +104,49 @@ This document describes the events emitted by the Fienta Public Events Bridge.
 
 ### Message: Com.Fienta.EventSaleStatus
 
-*Telemetry data — emitted whenever the `sale_status` of a public event changes.*
+Telemetry emitted when the bridge detects that `sale_status` changed between polls.
 
-#### CloudEvents Attributes:
+#### CloudEvents Attributes
 
-| **Name** | **Description** | **Type** | **Required** | **Value** |
-|---|---|---|---|---|
-| `type` | CloudEvent type | `string` | `True` | `Com.Fienta.EventSaleStatus` |
-| `source` | CloudEvent source | `string` | `True` | `https://fienta.com/api/v1/public/events` |
-| `subject` | Event identifier | `uritemplate` | `True` | `{event_id}` |
-
-#### Schema: EventSaleStatus
-
-| **Field Name** | **Type** | **Description** |
+| Name | Type | Value |
 |---|---|---|
-| `event_id` | *string* | Unique stable identifier for the event |
-| `name` | *string* | Display name of the event at the time of the status change |
-| `sale_status` | *string* | Current sale status (`onSale`, `soldOut`, `notOnSale`, `saleEnded`) |
-| `status` | *string (nullable)* | Publication status (e.g., `published`, `cancelled`) |
-| `start` | *string (nullable)* | ISO 8601 start datetime of the event |
-| `url` | *string (nullable)* | Public URL of the event on Fienta |
-| `updated_at` | *string* | ISO 8601 datetime when the event record was last modified |
+| `type` | `string` | `Com.Fienta.EventSaleStatus` |
+| `source` | `string` | `https://fienta.com/api/v1/public/events` |
+| `subject` | `uritemplate` | `{event_id}` |
 
-#### Sale Status Values
+#### Data Schema
 
-| **Value** | **Description** |
-|---|---|
-| `onSale` | Tickets are available for purchase |
-| `soldOut` | All tickets have been sold |
-| `notOnSale` | Ticket sales have not yet opened |
-| `saleEnded` | Ticket sales have closed |
+| Field | Type | Description |
+|---|---|---|
+| `event_id` | `string` | Stable Fienta event identifier. |
+| `name` | `string` | Public event title from `title`. |
+| `sale_status` | `string` | Ticket sale status observed during the poll. |
+| `event_status` | `string \| null` | Event lifecycle status from `event_status`. |
+| `start` | `string \| null` | Local start datetime string from `starts_at`. |
+| `end` | `string \| null` | Local end datetime string from `ends_at`. |
+| `url` | `string \| null` | Public event page URL. |
+| `buy_tickets_url` | `string \| null` | Purchase URL from `buy_tickets_url`. |
+| `observed_at` | `string` | RFC 3339 UTC timestamp generated by the bridge when it observed the status change. |
 
-#### Example CloudEvent:
+#### Example
 
 ```json
 {
   "specversion": "1.0",
   "type": "Com.Fienta.EventSaleStatus",
   "source": "https://fienta.com/api/v1/public/events",
-  "id": "550e8400-e29b-41d4-a716-446655440001",
-  "subject": "evt-001",
+  "subject": "158921",
   "datacontenttype": "application/json",
   "data": {
-    "event_id": "evt-001",
-    "name": "Jazz Night at Kultuurikatel",
+    "event_id": "158921",
+    "name": "Fienta Gift Card",
     "sale_status": "soldOut",
-    "status": "published",
-    "start": "2024-07-15T19:00:00+03:00",
-    "url": "https://fienta.com/jazz-night-at-kultuurikatel",
-    "updated_at": "2024-07-15T21:58:00+03:00"
+    "event_status": "scheduled",
+    "start": "2000-01-01 00:00:00",
+    "end": "2036-01-31 23:59:59",
+    "url": "https://fienta.com/fienta-gift-card-kes",
+    "buy_tickets_url": "https://fienta.com/fienta-gift-card-kes",
+    "observed_at": "2026-04-14T06:15:00Z"
   }
 }
 ```

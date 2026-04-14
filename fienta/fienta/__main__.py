@@ -1,4 +1,4 @@
-"""Fienta package entry point."""
+"""Module entry point for ``python -m fienta``."""
 
 from .fienta import main
 

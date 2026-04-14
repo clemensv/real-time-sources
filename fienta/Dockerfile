@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/fienta"
 LABEL org.opencontainers.image.title="Fienta Public Events bridge to Kafka endpoints"
-LABEL org.opencontainers.image.description="This container is a bridge between the Fienta public events API and Kafka endpoints. It polls public ticketed events in Europe and forwards sale-status change events to the configured Kafka topic."
+LABEL org.opencontainers.image.description="This container is a bridge between the Fienta public events API and Kafka endpoints. It polls public ticketed events in Europe and forwards both event reference data and sale-status change events to the configured Kafka topic."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/fienta/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 

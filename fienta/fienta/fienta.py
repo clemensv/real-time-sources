@@ -10,6 +10,7 @@ import json
 import sys
 import time
 import logging
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 import argparse
 import requests
@@ -24,23 +25,67 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(mess
 LOGGER = logging.getLogger(__name__)
 
 
-def fetch_events(page: int = 1) -> Optional[List[dict]]:
+def _optional_string(value: object) -> Optional[str]:
+    """Normalize optional string-like values."""
+    if value is None:
+        return None
+    if isinstance(value, str):
+        value = value.strip()
+        return value or None
+    value = str(value).strip()
+    return value or None
+
+
+def _required_string(*values: object) -> str:
+    """Return the first normalized non-empty string, else empty string."""
+    for value in values:
+        normalized = _optional_string(value)
+        if normalized is not None:
+            return normalized
+    return ""
+
+
+def _optional_int(value: object) -> Optional[int]:
+    """Normalize optional integer values."""
+    if value in (None, ""):
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _observed_at_utc() -> str:
+    """Return the current UTC time in RFC 3339 format."""
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def fetch_events(page: int = 1) -> Optional[Tuple[List[dict], bool]]:
     """Fetch a page of public events from the Fienta API.
 
-    Returns a list of event dicts, or None on error.
-    The API returns up to 1000 events per page.
+    Returns a tuple of ``(events, has_next_page)``, or None on error.
     """
     try:
         params: Dict[str, object] = {"page": page}
         response = requests.get(FIENTA_API_URL, params=params, timeout=60)
         response.raise_for_status()
         data = response.json()
-        # Handle both list and dict (paginated) response shapes
+
         if isinstance(data, list):
-            return data
+            return data, False
         if isinstance(data, dict):
-            return data.get("data") or data.get("events") or []
-        return []
+            events = data.get("events")
+            if events is None:
+                events = data.get("data") or []
+            pagination = data.get("pagination") or {}
+            has_next_page = bool(pagination.get("next_page_url"))
+            if not has_next_page:
+                current_page = pagination.get("page")
+                last_page = pagination.get("last_page")
+                if isinstance(current_page, int) and isinstance(last_page, int):
+                    has_next_page = current_page < last_page
+            return events or [], has_next_page
+        return [], False
     except Exception as err:
         LOGGER.error("Error fetching Fienta events (page=%d): %s", page, err)
         return None
@@ -51,14 +96,14 @@ def fetch_all_events() -> Optional[List[dict]]:
     all_events: List[dict] = []
     page = 1
     while True:
-        events = fetch_events(page=page)
-        if events is None:
+        page_result = fetch_events(page=page)
+        if page_result is None:
             return None if not all_events else all_events
+        events, has_next_page = page_result
         if not events:
             break
         all_events.extend(events)
-        if len(events) < 1000:
-            # Last page
+        if not has_next_page:
             break
         page += 1
     return all_events
@@ -69,62 +114,56 @@ def parse_event_reference(raw: dict) -> Optional[Event]:
     event_id = str(raw.get("id", "")).strip()
     if not event_id:
         return None
-    name = raw.get("name") or ""
-    organizer = raw.get("organizer") or {}
     categories_raw = raw.get("categories")
-    categories: Optional[List[str]] = None
+    categories: List[str] = []
     if isinstance(categories_raw, list):
         categories = [str(c) for c in categories_raw if c is not None]
-    location_raw = raw.get("location")
-    location: Optional[str] = None
-    if isinstance(location_raw, str):
-        location = location_raw or None
-    elif isinstance(location_raw, dict):
-        location = location_raw.get("name") or location_raw.get("address") or None
     return Event(
         event_id=event_id,
-        name=name,
-        slug=raw.get("slug") or None,
-        description=raw.get("description") or None,
-        start=raw.get("start") or "",
-        end=raw.get("end") or None,
-        timezone=raw.get("timezone") or None,
-        url=raw.get("url") or "",
-        language=raw.get("language") or None,
-        currency=raw.get("currency") or None,
-        status=raw.get("status") or "published",
-        sale_status=raw.get("sale_status") or "notOnSale",
-        is_online=raw.get("is_online"),
-        is_free=raw.get("is_free"),
-        location=location,
-        country=raw.get("country") or None,
-        region=raw.get("region") or None,
-        image_url=raw.get("image_url") or None,
-        organizer_name=organizer.get("name") if isinstance(organizer, dict) else None,
-        organizer_url=organizer.get("url") if isinstance(organizer, dict) else None,
+        name=_required_string(raw.get("title"), raw.get("name")),
+        start=_required_string(raw.get("starts_at"), raw.get("start")),
+        end=_optional_string(raw.get("ends_at") or raw.get("end")),
+        duration_text=_optional_string(raw.get("duration_string")),
+        time_notes=_optional_string(raw.get("notes_about_time")),
+        event_status=_required_string(raw.get("event_status"), raw.get("status"), "scheduled"),
+        sale_status=_required_string(raw.get("sale_status"), "notOnSale"),
+        attendance_mode=_optional_string(raw.get("attendance_mode")),
+        venue_name=_optional_string(raw.get("venue")),
+        venue_id=_optional_string(raw.get("venue_id")),
+        address=_optional_string(raw.get("address")),
+        postal_code=_optional_string(raw.get("address_postal_code")),
+        description=_optional_string(raw.get("description")),
+        url=_required_string(raw.get("url")),
+        buy_tickets_url=_optional_string(raw.get("buy_tickets_url")),
+        image_url=_optional_string(raw.get("image_url")),
+        image_small_url=_optional_string(raw.get("image_small_url")),
+        series_id=_optional_string(raw.get("series_id")),
+        organizer_name=_optional_string(raw.get("organizer_name")),
+        organizer_phone=_optional_string(raw.get("organizer_phone")),
+        organizer_email=_optional_string(raw.get("organizer_email")),
+        organizer_id=_optional_int(raw.get("organizer_id")),
         categories=categories,
-        created_at=raw.get("created_at") or None,
-        updated_at=raw.get("updated_at") or None,
     )
 
 
-def parse_event_sale_status(raw: dict) -> Optional[EventSaleStatus]:
+def parse_event_sale_status(raw: dict, observed_at: Optional[str] = None) -> Optional[EventSaleStatus]:
     """Parse a raw API event dict into an EventSaleStatus telemetry object."""
     event_id = str(raw.get("id", "")).strip()
     if not event_id:
         return None
-    sale_status = raw.get("sale_status")
+    sale_status = _optional_string(raw.get("sale_status"))
     if not sale_status:
         return None
-    updated_at = raw.get("updated_at") or raw.get("created_at") or ""
     return EventSaleStatus(
         event_id=event_id,
-        name=raw.get("name") or "",
+        name=_required_string(raw.get("title"), raw.get("name")),
         sale_status=sale_status,
-        status=raw.get("status") or None,
-        start=raw.get("start") or None,
-        url=raw.get("url") or None,
-        updated_at=updated_at,
+        event_status=_optional_string(raw.get("event_status") or raw.get("status")),
+        start=_optional_string(raw.get("starts_at") or raw.get("start")),
+        end=_optional_string(raw.get("ends_at") or raw.get("end")),
+        url=_optional_string(raw.get("url")),
+        buy_tickets_url=_optional_string(raw.get("buy_tickets_url")),
+        observed_at=observed_at or _observed_at_utc(),
     )
 
 
@@ -188,7 +227,7 @@ class FientaPoller:
                 continue
             previous_status = state.get(event_id)
             if current_status != previous_status:
-                ess = parse_event_sale_status(raw)
+                ess = parse_event_sale_status(raw, observed_at=_observed_at_utc())
                 if ess is None:
                     continue
                 self.producer.send_com_fienta_event_sale_status(

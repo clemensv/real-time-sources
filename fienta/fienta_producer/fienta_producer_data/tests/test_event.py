@@ -9,7 +9,6 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from fienta_producer_data.event import Event
-from typing import Any
 
 
 class Test_Event(unittest.TestCase):
@@ -29,29 +28,30 @@ class Test_Event(unittest.TestCase):
         Create instance of Event for testing
         """
         instance = Event(
-            event_id='mlhdzvahadphdybrsoff',
-            name='siixjbsnvqcfzuctpbgy',
-            slug='stkofjmtzpewjdghpsvl',
-            description='oxzxfnrvaasjjxuxgwlf',
-            start='ydqcarenhxycfdeiijva',
-            end='srtgycjnmzlianwvqqgt',
-            timezone='udfwimufqyzrkqyrgnkt',
-            url='xixsvwlycladavzvuhxz',
-            language='mlsgzwglorpmnnucqhku',
-            currency='vnuynweoloysvpqalvif',
-            status='hnbnyamznrljrnvhdptk',
-            sale_status='tflmczcjwejjdercjcmy',
-            is_online=False,
-            is_free=False,
-            location='jfiaxkilwmtpbqrfxbvu',
-            country='quxcgsktyrytrkctxakf',
-            region='jpinmhfrcqdmbekadxjg',
-            image_url='rxtzgemsaltmlelopweg',
-            organizer_name='ftkgihbrqzfaqxvhwkpt',
-            organizer_url='nkbpcuoktmvyqxenavaq',
-            categories=None,
-            created_at='slllnnlfghlrglnyrqag',
-            updated_at='aeqcxvyzkvctgnhfxjkl'
+            event_id='djtzdgmvrzfdaarqwuty',
+            name='xeiikcujtuykssjnktwy',
+            start='ocyyjreshixminugpgnu',
+            end='tkeujtjmfvmelsyicpwp',
+            duration_text='lupwdecaoveupkopxtvz',
+            time_notes='rwscjbrhpvyvjkpkqtmq',
+            event_status='flnodrcloslkrcmbuvcz',
+            sale_status='zeqkfwwrddshwopllhyb',
+            attendance_mode='mqumguhqnkymugrsvocn',
+            venue_name='qfqouzrktkqdtteusffe',
+            venue_id='hbpxmejndrjqkpodhioo',
+            address='ikkdryklkxczehmocugh',
+            postal_code='qvfbnxatzwllfprfxbpi',
+            description='htpimvsvhmknjgkwnmas',
+            url='zravhrfceljvqzaaidrl',
+            buy_tickets_url='dthexgqyljrmlkqqawbb',
+            image_url='btpudhqhndqgbhcfwyka',
+            image_small_url='leiskeyjttzibshozgmr',
+            series_id='egclyjqxbmokuigaldbs',
+            organizer_name='bxyzplbtindbzwurjaby',
+            organizer_phone='ipziyovqbtxewxzlnshn',
+            organizer_email='wwurmymyvddbqmnptgjr',
+            organizer_id=int(94),
+            categories=['kiuewsrpqkvwbrfkejin', 'pghtppfesottjgizyjkx']
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'mlhdzvahadphdybrsoff'
+        test_value = 'djtzdgmvrzfdaarqwuty'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -68,31 +68,15 @@ class Test_Event(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'siixjbsnvqcfzuctpbgy'
+        test_value = 'xeiikcujtuykssjnktwy'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-    
-    def test_slug_property(self):
-        """
-        Test slug property
-        """
-        test_value = 'stkofjmtzpewjdghpsvl'
-        self.instance.slug = test_value
-        self.assertEqual(self.instance.slug, test_value)
-    
-    def test_description_property(self):
-        """
-        Test description property
-        """
-        test_value = 'oxzxfnrvaasjjxuxgwlf'
-        self.instance.description = test_value
-        self.assertEqual(self.instance.description, test_value)
     
     def test_start_property(self):
         """
         Test start property
         """
-        test_value = 'ydqcarenhxycfdeiijva'
+        test_value = 'ocyyjreshixminugpgnu'
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -100,145 +84,169 @@ class Test_Event(unittest.TestCase):
         """
         Test end property
         """
-        test_value = 'srtgycjnmzlianwvqqgt'
+        test_value = 'tkeujtjmfvmelsyicpwp'
         self.instance.end = test_value
         self.assertEqual(self.instance.end, test_value)
     
-    def test_timezone_property(self):
+    def test_duration_text_property(self):
         """
-        Test timezone property
+        Test duration_text property
         """
-        test_value = 'udfwimufqyzrkqyrgnkt'
-        self.instance.timezone = test_value
-        self.assertEqual(self.instance.timezone, test_value)
+        test_value = 'lupwdecaoveupkopxtvz'
+        self.instance.duration_text = test_value
+        self.assertEqual(self.instance.duration_text, test_value)
     
-    def test_url_property(self):
+    def test_time_notes_property(self):
         """
-        Test url property
+        Test time_notes property
         """
-        test_value = 'xixsvwlycladavzvuhxz'
-        self.instance.url = test_value
-        self.assertEqual(self.instance.url, test_value)
+        test_value = 'rwscjbrhpvyvjkpkqtmq'
+        self.instance.time_notes = test_value
+        self.assertEqual(self.instance.time_notes, test_value)
     
-    def test_language_property(self):
+    def test_event_status_property(self):
         """
-        Test language property
+        Test event_status property
         """
-        test_value = 'mlsgzwglorpmnnucqhku'
-        self.instance.language = test_value
-        self.assertEqual(self.instance.language, test_value)
-    
-    def test_currency_property(self):
-        """
-        Test currency property
-        """
-        test_value = 'vnuynweoloysvpqalvif'
-        self.instance.currency = test_value
-        self.assertEqual(self.instance.currency, test_value)
-    
-    def test_status_property(self):
-        """
-        Test status property
-        """
-        test_value = 'hnbnyamznrljrnvhdptk'
-        self.instance.status = test_value
-        self.assertEqual(self.instance.status, test_value)
+        test_value = 'flnodrcloslkrcmbuvcz'
+        self.instance.event_status = test_value
+        self.assertEqual(self.instance.event_status, test_value)
     
     def test_sale_status_property(self):
         """
         Test sale_status property
         """
-        test_value = 'tflmczcjwejjdercjcmy'
+        test_value = 'zeqkfwwrddshwopllhyb'
         self.instance.sale_status = test_value
         self.assertEqual(self.instance.sale_status, test_value)
     
-    def test_is_online_property(self):
+    def test_attendance_mode_property(self):
         """
-        Test is_online property
+        Test attendance_mode property
         """
-        test_value = False
-        self.instance.is_online = test_value
-        self.assertEqual(self.instance.is_online, test_value)
+        test_value = 'mqumguhqnkymugrsvocn'
+        self.instance.attendance_mode = test_value
+        self.assertEqual(self.instance.attendance_mode, test_value)
     
-    def test_is_free_property(self):
+    def test_venue_name_property(self):
         """
-        Test is_free property
+        Test venue_name property
         """
-        test_value = False
-        self.instance.is_free = test_value
-        self.assertEqual(self.instance.is_free, test_value)
+        test_value = 'qfqouzrktkqdtteusffe'
+        self.instance.venue_name = test_value
+        self.assertEqual(self.instance.venue_name, test_value)
     
-    def test_location_property(self):
+    def test_venue_id_property(self):
         """
-        Test location property
+        Test venue_id property
         """
-        test_value = 'jfiaxkilwmtpbqrfxbvu'
-        self.instance.location = test_value
-        self.assertEqual(self.instance.location, test_value)
+        test_value = 'hbpxmejndrjqkpodhioo'
+        self.instance.venue_id = test_value
+        self.assertEqual(self.instance.venue_id, test_value)
     
-    def test_country_property(self):
+    def test_address_property(self):
         """
-        Test country property
+        Test address property
         """
-        test_value = 'quxcgsktyrytrkctxakf'
-        self.instance.country = test_value
-        self.assertEqual(self.instance.country, test_value)
+        test_value = 'ikkdryklkxczehmocugh'
+        self.instance.address = test_value
+        self.assertEqual(self.instance.address, test_value)
     
-    def test_region_property(self):
+    def test_postal_code_property(self):
         """
-        Test region property
+        Test postal_code property
         """
-        test_value = 'jpinmhfrcqdmbekadxjg'
-        self.instance.region = test_value
-        self.assertEqual(self.instance.region, test_value)
+        test_value = 'qvfbnxatzwllfprfxbpi'
+        self.instance.postal_code = test_value
+        self.assertEqual(self.instance.postal_code, test_value)
     
+    def test_description_property(self):
+        """
+        Test description property
+        """
+        test_value = 'htpimvsvhmknjgkwnmas'
+        self.instance.description = test_value
+        self.assertEqual(self.instance.description, test_value)
+
+    def test_url_property(self):
+        """
+        Test url property
+        """
+        test_value = 'zravhrfceljvqzaaidrl'
+        self.instance.url = test_value
+        self.assertEqual(self.instance.url, test_value)
+    
+    def test_buy_tickets_url_property(self):
+        """
+        Test buy_tickets_url property
+        """
+        test_value = 'dthexgqyljrmlkqqawbb'
+        self.instance.buy_tickets_url = test_value
+        self.assertEqual(self.instance.buy_tickets_url, test_value)
+
     def test_image_url_property(self):
         """
         Test image_url property
         """
-        test_value = 'rxtzgemsaltmlelopweg'
+        test_value = 'btpudhqhndqgbhcfwyka'
         self.instance.image_url = test_value
         self.assertEqual(self.instance.image_url, test_value)
     
+    def test_image_small_url_property(self):
+        """
+        Test image_small_url property
+        """
+        test_value = 'leiskeyjttzibshozgmr'
+        self.instance.image_small_url = test_value
+        self.assertEqual(self.instance.image_small_url, test_value)
+
+    def test_series_id_property(self):
+        """
+        Test series_id property
+        """
+        test_value = 'egclyjqxbmokuigaldbs'
+        self.instance.series_id = test_value
+        self.assertEqual(self.instance.series_id, test_value)
+
     def test_organizer_name_property(self):
         """
         Test organizer_name property
         """
-        test_value = 'ftkgihbrqzfaqxvhwkpt'
+        test_value = 'bxyzplbtindbzwurjaby'
         self.instance.organizer_name = test_value
         self.assertEqual(self.instance.organizer_name, test_value)
     
-    def test_organizer_url_property(self):
+    def test_organizer_phone_property(self):
         """
-        Test organizer_url property
+        Test organizer_phone property
         """
-        test_value = 'nkbpcuoktmvyqxenavaq'
-        self.instance.organizer_url = test_value
-        self.assertEqual(self.instance.organizer_url, test_value)
+        test_value = 'ipziyovqbtxewxzlnshn'
+        self.instance.organizer_phone = test_value
+        self.assertEqual(self.instance.organizer_phone, test_value)
+    
+    def test_organizer_email_property(self):
+        """
+        Test organizer_email property
+        """
+        test_value = 'wwurmymyvddbqmnptgjr'
+        self.instance.organizer_email = test_value
+        self.assertEqual(self.instance.organizer_email, test_value)
+    
+    def test_organizer_id_property(self):
+        """
+        Test organizer_id property
+        """
+        test_value = int(94)
+        self.instance.organizer_id = test_value
+        self.assertEqual(self.instance.organizer_id, test_value)
     
     def test_categories_property(self):
         """
         Test categories property
         """
-        test_value = None
+        test_value = ['kiuewsrpqkvwbrfkejin', 'pghtppfesottjgizyjkx']
         self.instance.categories = test_value
         self.assertEqual(self.instance.categories, test_value)
-    
-    def test_created_at_property(self):
-        """
-        Test created_at property
-        """
-        test_value = 'slllnnlfghlrglnyrqag'
-        self.instance.created_at = test_value
-        self.assertEqual(self.instance.created_at, test_value)
-    
-    def test_updated_at_property(self):
-        """
-        Test updated_at property
-        """
-        test_value = 'aeqcxvyzkvctgnhfxjkl'
-        self.instance.updated_at = test_value
-        self.assertEqual(self.instance.updated_at, test_value)
     
     def test_to_byte_array_json(self):
         """
