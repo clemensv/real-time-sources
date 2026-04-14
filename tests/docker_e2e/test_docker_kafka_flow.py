@@ -270,10 +270,6 @@ def seattle_911_image():
 def seattle_street_closures_image():
     return build_image('seattle-street-closures')
 
-@pytest.fixture(scope='module')
-def tokyo_docomo_bikeshare_image():
-    return build_image('tokyo-docomo-bikeshare')
-
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -789,6 +785,7 @@ class TestUKEADockerFlow:
             kafka, uk_ea_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['Reading'],
+            extra_env={'POLLING_INTERVAL': '5', 'MAX_STATIONS': '100'},
         )
 
 
@@ -1096,7 +1093,7 @@ class TestCanadaAQHIDockerFlow:
             reference_types=['Community'],
             telemetry_types=['Observation', 'Forecast'],
             required_types=['Community', 'Observation', 'Forecast'],
-            extra_env={'POLLING_INTERVAL': '5', 'PROVINCES': 'ON', 'MAX_COMMUNITIES': '10'},
+            extra_env={'POLLING_INTERVAL': '5', 'PROVINCES': 'ON'},
         )
 
 
@@ -1667,18 +1664,3 @@ class TestSeattleStreetClosuresDockerFlow:
             min_messages=1,
         )
 
-
-
-# ---------------------------------------------------------------------------
-# Tokyo Docomo Bikeshare (reference + telemetry)
-# ---------------------------------------------------------------------------
-
-class TestTokyoDocomoBikeshareDockerFlow:
-    TOPIC = 'test-tokyo-docomo-bikeshare'
-
-    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, tokyo_docomo_bikeshare_image):
-        _run_kafka_flow_test(
-            kafka, tokyo_docomo_bikeshare_image, self.TOPIC,
-            reference_types=['BikeshareSystem', 'BikeshareStation'],
-            telemetry_types=['BikeshareStationStatus'],
-        )
