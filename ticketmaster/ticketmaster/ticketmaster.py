@@ -41,6 +41,35 @@ logger = logging.getLogger(__name__)
 
 DISCOVERY_API_BASE = "https://app.ticketmaster.com/discovery/v2"
 
+
+def _load_state(state_file: str) -> Dict[str, str]:
+    """Load persisted dedupe state from a JSON file. Returns empty dict on any error."""
+    if not state_file:
+        return {}
+    try:
+        if os.path.exists(state_file):
+            with open(state_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.warning("Could not load state from %s: %s", state_file, exc)
+    return {}
+
+
+def _save_state(state_file: str, data: Dict[str, str]) -> None:
+    """Persist dedupe state to a JSON file. Silently ignores errors."""
+    if not state_file:
+        return
+    try:
+        state_dir = os.path.dirname(state_file)
+        if state_dir:
+            os.makedirs(state_dir, exist_ok=True)
+        with open(state_file, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.warning("Could not save state to %s: %s", state_file, exc)
+
 # Default polling and refresh cadences
 DEFAULT_POLL_INTERVAL = 300       # 5 minutes between event polls
 DEFAULT_REFERENCE_REFRESH = 3600  # 1 hour between reference-data refreshes
@@ -279,6 +308,7 @@ class TicketmasterBridge:
         reference_refresh_interval: int = DEFAULT_REFERENCE_REFRESH,
         country_codes: str = DEFAULT_COUNTRY_CODES,
         page_size: int = DEFAULT_PAGE_SIZE,
+        state_file: str = "",
     ) -> None:
         self.api_key = api_key
         self.events_producer = events_producer
@@ -287,10 +317,16 @@ class TicketmasterBridge:
         self.reference_refresh_interval = reference_refresh_interval
         self.country_codes = country_codes
         self.page_size = page_size
+        self.state_file = state_file
         self._session = _make_session()
 
-        # Dedupe state: event_id → last updated string (ISO or status)
-        self._seen_events: Dict[str, str] = {}
+        # Dedupe state: event_id → dedup key (event_id:status); persisted to state_file
+        self._seen_events: Dict[str, str] = _load_state(state_file)
+        logger.info(
+            "Loaded %d seen-event entries from state file: %s",
+            len(self._seen_events),
+            state_file or "(none — in-memory only)",
+        )
         # Reference caches (entity_id → data object); kept across failed refreshes
         self._venue_cache: Dict[str, Venue] = {}
         self._attraction_cache: Dict[str, Attraction] = {}
@@ -584,6 +620,8 @@ class TicketmasterBridge:
             for k in keys_to_remove:
                 del self._seen_events[k]
 
+        _save_state(self.state_file, self._seen_events)
+
         if count_new > 0 or count_updated > 0:
             logger.info(
                 "Emitted %d new and %d updated event telemetry records",
@@ -656,6 +694,10 @@ def main() -> None:
                              help=f"Seconds between reference-data refreshes (default: {DEFAULT_REFERENCE_REFRESH})")
     feed_parser.add_argument("--log-level", type=str, default="INFO",
                              help="Logging level (default: INFO)")
+    feed_parser.add_argument("--state-file", type=str,
+                             default=os.getenv("STATE_FILE", os.path.expanduser("~/.ticketmaster_state.json")),
+                             help="Path to JSON file for persisting dedupe state across restarts "
+                                  "(default: ~/.ticketmaster_state.json; set STATE_FILE env var to override)")
 
     args = parser.parse_args()
 
@@ -666,6 +708,7 @@ def main() -> None:
         country_codes = args.country_codes or os.getenv("COUNTRY_CODES", DEFAULT_COUNTRY_CODES)
         poll_interval = int(os.getenv("POLL_INTERVAL", str(args.poll_interval)))
         reference_refresh = int(os.getenv("REFERENCE_REFRESH", str(args.reference_refresh)))
+        state_file = args.state_file or os.getenv("STATE_FILE", os.path.expanduser("~/.ticketmaster_state.json"))
 
         log_level = os.getenv("LOG_LEVEL", args.log_level)
         logging.getLogger().setLevel(log_level)
@@ -716,6 +759,7 @@ def main() -> None:
             poll_interval=poll_interval,
             reference_refresh_interval=reference_refresh,
             country_codes=country_codes,
+            state_file=state_file,
         )
         bridge.run()
     else:

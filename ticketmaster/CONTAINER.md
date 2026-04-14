@@ -27,6 +27,7 @@ The free tier allows 5 000 API calls per day and 5 requests per second.
 | `COUNTRY_CODES` | No | Comma-separated ISO 3166-1 alpha-2 country codes | `AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US` |
 | `POLL_INTERVAL` | No | Seconds between event polls | `300` |
 | `REFERENCE_REFRESH` | No | Seconds between reference-data refreshes | `3600` |
+| `STATE_FILE` | No | Path to JSON file for persisting dedupe state across restarts | `~/.ticketmaster_state.json` |
 | `KAFKA_ENABLE_TLS` | No | Set to `false` for plain-text Kafka (non-Event Hubs) | `true` |
 | `LOG_LEVEL` | No | Python logging level | `INFO` |
 

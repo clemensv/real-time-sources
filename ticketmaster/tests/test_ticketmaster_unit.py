@@ -3,12 +3,16 @@ Unit tests for the Ticketmaster Discovery API bridge.
 """
 
 import json
+import os
+import tempfile
 import pytest
 from unittest.mock import MagicMock, patch, call
 from datetime import datetime, timezone
 
 from ticketmaster.ticketmaster import (
     TicketmasterBridge,
+    _load_state,
+    _save_state,
     _parse_event,
     _parse_venue,
     _parse_attraction,
@@ -584,3 +588,119 @@ class TestBridgeReferenceRefreshFailure:
         assert call_count["n"] == 2
         # GB venue should be in cache
         assert "VenueGB" in bridge._venue_cache
+
+
+# ---------------------------------------------------------------------------
+# State persistence: _load_state / _save_state / file-backed bridge
+# ---------------------------------------------------------------------------
+
+class TestStatePersistence:
+
+    @pytest.mark.unit
+    def test_load_state_missing_file_returns_empty(self):
+        """_load_state returns an empty dict when the file does not exist."""
+        assert _load_state("/tmp/__nonexistent_ticketmaster_state__.json") == {}
+
+    @pytest.mark.unit
+    def test_load_state_empty_string_returns_empty(self):
+        """_load_state returns an empty dict when no path is provided."""
+        assert _load_state("") == {}
+
+    @pytest.mark.unit
+    def test_save_and_reload_round_trip(self):
+        """State written by _save_state is readable by _load_state."""
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
+            path = f.name
+        try:
+            data = {"evt1": "evt1:onsale", "evt2": "evt2:cancelled"}
+            _save_state(path, data)
+            loaded = _load_state(path)
+            assert loaded == data
+        finally:
+            os.unlink(path)
+
+    @pytest.mark.unit
+    def test_save_state_creates_parent_dir(self):
+        """_save_state creates missing parent directories."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "subdir", "ticketmaster_state.json")
+            _save_state(path, {"k": "v"})
+            assert os.path.exists(path)
+
+    @pytest.mark.unit
+    def test_bridge_loads_state_at_init(self):
+        """Bridge constructor loads persisted dedupe state from the state file."""
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
+            json.dump({"existing_id": "existing_id:onsale"}, f)
+            path = f.name
+        try:
+            bridge = TicketmasterBridge(
+                api_key="test-key",
+                events_producer=None,
+                reference_producer=None,
+                state_file=path,
+            )
+            assert bridge._seen_events == {"existing_id": "existing_id:onsale"}
+        finally:
+            os.unlink(path)
+
+    @pytest.mark.unit
+    def test_bridge_persists_state_after_successful_flush(self):
+        """Bridge writes updated dedupe state to the state file after a successful flush."""
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
+            path = f.name
+
+        try:
+            events_prod = MagicMock()
+            events_prod.producer = MagicMock()
+            events_prod.producer.flush.return_value = 0  # flush succeeds
+
+            bridge = TicketmasterBridge(
+                api_key="test-key",
+                events_producer=events_prod,
+                reference_producer=None,
+                country_codes="US",
+                state_file=path,
+            )
+
+            raw_events = [_make_raw_event()]
+            with patch.object(bridge, "fetch_events_for_country", return_value=raw_events):
+                bridge.poll_events()
+
+            # State file must be written
+            on_disk = _load_state(path)
+            assert "G5v0Z9iQkPl_2" in on_disk
+        finally:
+            if os.path.exists(path):
+                os.unlink(path)
+
+    @pytest.mark.unit
+    def test_bridge_does_not_persist_state_after_flush_failure(self):
+        """Bridge must NOT write state to file when Kafka flush leaves messages undelivered."""
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w") as f:
+            json.dump({}, f)
+            path = f.name
+
+        try:
+            events_prod = MagicMock()
+            events_prod.producer = MagicMock()
+            events_prod.producer.flush.return_value = 1  # flush fails
+
+            bridge = TicketmasterBridge(
+                api_key="test-key",
+                events_producer=events_prod,
+                reference_producer=None,
+                country_codes="US",
+                state_file=path,
+            )
+
+            raw_events = [_make_raw_event()]
+            with patch.object(bridge, "fetch_events_for_country", return_value=raw_events):
+                bridge.poll_events()
+
+            # File must still be empty — flush failed, state not advanced
+            on_disk = _load_state(path)
+            assert on_disk == {}
+        finally:
+            if os.path.exists(path):
+                os.unlink(path)
