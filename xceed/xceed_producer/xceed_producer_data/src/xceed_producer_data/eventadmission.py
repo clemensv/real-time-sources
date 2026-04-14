@@ -1,4 +1,4 @@
-""" Event dataclass. """
+""" EventAdmission dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -10,48 +10,40 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-from marshmallow import fields
 import json
-import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Event:
+class EventAdmission:
     """
-    Scheduled nightlife or live-entertainment event record as published by the Xceed Open Event API v1 /events endpoint. Xceed is a European nightlife and ticketing platform covering clubs, bars, parties, and festivals. Each event has a stable UUID assigned by Xceed, a human-readable slug, schedule timestamps, a cover image, an optional external ticket sales link, and an embedded venue object describing the physical location.
+    Normalized offer snapshot for a single admission record of an Xceed event, retrieved from the public GET https://offer.xceed.me/v1/events/:eventId/admissions endpoint. The upstream payload groups offers into bottleService, guestList, and ticket arrays. The bridge flattens those arrays into one event stream and preserves the original offer kind in admission_type while carrying key sales-state signals, normalized price, and remaining quantity.
     
     Attributes:
         event_id (str)
-        legacy_id (typing.Optional[int])
-        name (str)
-        slug (typing.Optional[str])
-        starting_time (datetime.datetime)
-        ending_time (typing.Optional[datetime.datetime])
-        cover_url (typing.Optional[str])
-        external_sales_url (typing.Optional[str])
-        venue_id (typing.Optional[str])
-        venue_name (typing.Optional[str])
-        venue_city (typing.Optional[str])
-        venue_country_code (typing.Optional[str])
+        admission_id (str)
+        admission_type (str)
+        name (typing.Optional[str])
+        is_sold_out (typing.Optional[bool])
+        is_sales_closed (typing.Optional[bool])
+        price (typing.Optional[float])
+        currency (typing.Optional[str])
+        remaining (typing.Optional[int])
     """
     
     
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
-    legacy_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="legacy_id"))
-    name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    slug: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="slug"))
-    starting_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="starting_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    ending_time: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ending_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    cover_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cover_url"))
-    external_sales_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="external_sales_url"))
-    venue_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="venue_id"))
-    venue_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="venue_name"))
-    venue_city: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="venue_city"))
-    venue_country_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="venue_country_code"))
+    admission_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="admission_id"))
+    admission_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="admission_type"))
+    name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
+    is_sold_out: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_sold_out"))
+    is_sales_closed: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_sales_closed"))
+    price: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="price"))
+    currency: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="currency"))
+    remaining: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="remaining"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Event':
+    def from_serializer_dict(cls, data: dict) -> 'EventAdmission':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -124,7 +116,7 @@ class Event:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Event']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['EventAdmission']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -161,13 +153,13 @@ class Event:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Event.from_serializer_dict(_record)
+                return EventAdmission.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Event':
+    def create_instance(cls) -> 'EventAdmission':
         """
         Creates an instance of the dataclass with test values.
         
@@ -175,16 +167,13 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id='shzibmlmxtvpowjcabpi',
-            legacy_id=int(36),
-            name='fuannzgudjufybpeznas',
-            slug='ejsytrdmcozgwbprrgfu',
-            starting_time=datetime.datetime.now(datetime.timezone.utc),
-            ending_time=datetime.datetime.now(datetime.timezone.utc),
-            cover_url='zyealybulzliercttdxn',
-            external_sales_url='eorthwrbomfhwyuagogt',
-            venue_id='eqfazucvvjgaosgjejmk',
-            venue_name='gcpfglyenxvgalehtvov',
-            venue_city='bcfduiakcwpusrujgonc',
-            venue_country_code='bewhlsrfotkoeluqhjhj'
+            event_id='vmnwkiskeiqcskzawknh',
+            admission_id='sttzyvbvkwnyhdorkmrz',
+            admission_type='pgkocdscomixzbpxuooh',
+            name='rifnoogznvvkveryihum',
+            is_sold_out=False,
+            is_sales_closed=False,
+            price=float(37.462110071240836),
+            currency='jxqfdhycjxurfbvqkrye',
+            remaining=int(46)
         )

@@ -2,14 +2,17 @@
 
 ## Overview
 
-This container polls the [Xceed Open Event API](https://docs.xceed.me/) and forwards
+This container polls the [Xceed public APIs](https://docs.xceed.me/) and forwards
 European nightlife and live-entertainment event data as CloudEvents to Apache Kafka or
 Azure Event Hubs.
 
-The container emits one event type:
+Two event types are emitted:
 
 - **`xceed.Event`** — Event reference data including schedule, venue, and metadata. Emitted
   at startup and refreshed periodically (default: every hour).
+- **`xceed.EventAdmission`** — Public-offer telemetry per admission record, including
+  `admission_type`, `is_sold_out`, `is_sales_closed`, `price`, and `remaining`. Polled on
+  every cycle.
 
 All events conform to the CloudEvents 1.0 specification in structured JSON mode and are
 described in [EVENTS.md](EVENTS.md).
@@ -21,8 +24,9 @@ described in [EVENTS.md](EVENTS.md).
 | `CONNECTION_STRING` | **Yes** | — | Kafka or Event Hubs connection string. See formats below. |
 | `KAFKA_TOPIC` | No | EntityPath from connection string | Kafka topic name override. |
 | `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` for plaintext local Kafka. |
-| `POLLING_INTERVAL` | No | `300` | Loop wake-up interval in seconds while waiting for the next refresh. |
+| `POLLING_INTERVAL` | No | `300` | Admission polling interval in seconds. |
 | `EVENT_REFRESH_INTERVAL` | No | `3600` | Event list refresh interval in seconds. |
+| `EVENT_WINDOW_SIZE` | No | `250` | Number of newest public events to scan for offers on each refresh. |
 
 ## Connection String Formats
 
@@ -81,6 +85,10 @@ docker run --rm \
 | Topic | Key template | Event types |
 |-------|-------------|-------------|
 | `xceed` | `{event_id}` | `xceed.Event` |
+| `xceed` | `{event_id}/{admission_id}` | `xceed.EventAdmission` |
+
+Both event types are forwarded to the same Kafka topic (default: `xceed`). Consumers
+can filter by CloudEvents `type` attribute to separate reference data from telemetry.
 
 ## Azure Container Instances
 
@@ -98,8 +106,8 @@ az container create \
 
 ## Upstream API
 
-- Public base URL: `https://events.xceed.me/v1`
+- Event catalog base URL: `https://events.xceed.me/v1`
+- Offer catalog base URL: `https://offer.xceed.me/v1`
 - No authentication required for the Open Event API
-- Admission-tier availability belongs to the authenticated partner ticketing API and is not emitted by this bridge
 - Rate limits: use responsibly; no published limit
 - Staging / sandbox: `https://events.staging.xceed.me/v1`

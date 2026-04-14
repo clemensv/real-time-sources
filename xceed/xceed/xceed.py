@@ -5,7 +5,7 @@ import sys
 import time
 import logging
 import argparse
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
@@ -13,7 +13,8 @@ from confluent_kafka import Producer
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from xceed_producer_data.event import Event
-from xceed_producer_kafka_producer.producer import XceedEventProducer
+from xceed_producer_data.eventadmission import EventAdmission
+from xceed_producer_kafka_producer.producer import XceedEventProducer, XceedAdmissionsEventProducer
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -23,10 +24,13 @@ else:
 logger = logging.getLogger(__name__)
 
 API_BASE = "https://events.xceed.me/v1"
-FEED_URL = "https://events.xceed.me/v1"
+EVENTS_FEED_URL = "https://events.xceed.me/v1"
+OFFERS_API_BASE = "https://offer.xceed.me/v1"
 DEFAULT_HTTP_RETRY_TOTAL = 3
 DEFAULT_POLL_INTERVAL = 300
 DEFAULT_EVENT_REFRESH_INTERVAL = 3600
+DEFAULT_EVENT_WINDOW_SIZE = 250
+DEFAULT_EVENT_PAGE_SIZE = 100
 
 
 def create_retrying_session(user_agent: str) -> requests.Session:
@@ -55,30 +59,123 @@ def create_retrying_session(user_agent: str) -> requests.Session:
 class XceedAPI:
     """Client for the Xceed Open Event API."""
 
-    def __init__(self, user_agent: str = "real-time-sources/1.0 (github.com/clemensv/real-time-sources)"):
+    def __init__(
+        self,
+        user_agent: str = "real-time-sources/1.0 (github.com/clemensv/real-time-sources)",
+        event_window_size: int = DEFAULT_EVENT_WINDOW_SIZE,
+        event_page_size: int = DEFAULT_EVENT_PAGE_SIZE,
+    ):
         self.session = create_retrying_session(user_agent)
+        self.event_window_size = max(1, event_window_size)
+        self.event_page_size = max(1, event_page_size)
 
-    def fetch_events(self) -> List[Dict[str, Any]]:
-        """Fetch all events from the Xceed Open Event API."""
-        resp = self.session.get(f"{API_BASE}/events", timeout=30)
+    def _fetch_events_page(self, offset: int, limit: int) -> List[Dict[str, Any]]:
+        """Fetch a single page of events from the Xceed Open Event API."""
+        resp = self.session.get(
+            f"{API_BASE}/events",
+            params={"offset": offset, "limit": limit},
+            timeout=30,
+        )
         resp.raise_for_status()
         data = resp.json()
         return data.get("data", []) if isinstance(data, dict) else data
+
+    def _discover_event_count(self) -> int:
+        """Discover the event catalog size so the bridge can read the newest slice."""
+        if not self._fetch_events_page(0, 1):
+            return 0
+
+        lower_bound = 0
+        upper_bound = 1
+        while self._fetch_events_page(upper_bound, 1):
+            lower_bound = upper_bound
+            upper_bound *= 2
+
+        while lower_bound + 1 < upper_bound:
+            midpoint = (lower_bound + upper_bound) // 2
+            if self._fetch_events_page(midpoint, 1):
+                lower_bound = midpoint
+            else:
+                upper_bound = midpoint
+
+        return upper_bound
+
+    def fetch_events(self) -> List[Dict[str, Any]]:
+        """Fetch the newest slice of the Xceed event catalog."""
+        event_count = self._discover_event_count()
+        if event_count == 0:
+            return []
+
+        start_offset = max(0, event_count - self.event_window_size)
+        events: List[Dict[str, Any]] = []
+        offset = start_offset
+
+        while offset < event_count:
+            page = self._fetch_events_page(
+                offset=offset,
+                limit=min(self.event_page_size, event_count - offset),
+            )
+            if not page:
+                break
+            events.extend(page)
+            offset += len(page)
+
+        return events
+
+    def fetch_admissions(self, event_id: str) -> List[Dict[str, Any]]:
+        """Fetch admission tiers for a specific event from the public offer service."""
+        resp = self.session.get(f"{OFFERS_API_BASE}/events/{event_id}/admissions", timeout=30)
+        if resp.status_code == 404:
+            return []
+        resp.raise_for_status()
+        data = resp.json()
+        payload = data.get("data", []) if isinstance(data, dict) else data
+        if isinstance(payload, list):
+            return payload
+        if not isinstance(payload, dict):
+            return []
+
+        admissions: List[Dict[str, Any]] = []
+        for category, offers in payload.items():
+            if not isinstance(offers, list):
+                continue
+            for offer in offers:
+                if not isinstance(offer, dict):
+                    continue
+                flattened_offer = dict(offer)
+                flattened_offer.setdefault("_category", category)
+                admissions.append(flattened_offer)
+        return admissions
+
 
 def _extract_venue(event_raw: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
     """Extract venue fields from the raw event object."""
     venue = event_raw.get("venue") or {}
     venue_id = venue.get("id") or None
     venue_name = venue.get("name") or None
-    # City may be nested in a location sub-object or at top level
-    venue_city = venue.get("city") or (venue.get("location") or {}).get("city") or None
-    venue_country_code = (
-        venue.get("countryCode")
-        or venue.get("country_code")
-        or (venue.get("location") or {}).get("countryCode")
-        or (venue.get("location") or {}).get("country_code")
-        or None
-    )
+    city_raw = venue.get("city")
+    location = venue.get("location") or {}
+    if isinstance(city_raw, dict):
+        venue_city = city_raw.get("name") or city_raw.get("slug") or None
+        country_raw = city_raw.get("country") or {}
+        venue_country_code = (
+            country_raw.get("isoCode")
+            or country_raw.get("code")
+            or venue.get("countryCode")
+            or venue.get("country_code")
+            or location.get("countryCode")
+            or location.get("country_code")
+            or None
+        )
+    else:
+        venue_city = city_raw or location.get("city") or None
+        venue_country_code = (
+            venue.get("countryCode")
+            or venue.get("country_code")
+            or location.get("countryCode")
+            or location.get("country_code")
+            or None
+        )
     return venue_id, venue_name, venue_city, venue_country_code
 
 
@@ -119,6 +216,51 @@ def parse_event(raw: Dict[str, Any]) -> Event:
         venue_country_code=venue_country_code,
     )
 
+
+def parse_admission(raw: Dict[str, Any], event_id: str) -> EventAdmission:
+    """Parse a raw API admission record into an EventAdmission data class."""
+    admission_id = raw.get("id") or ""
+    price_source = raw.get("price")
+    if isinstance(price_source, dict):
+        price_raw = price_source.get("amount")
+        currency = price_source.get("currency") or raw.get("currency") or None
+    else:
+        price_raw = price_source
+        currency = raw.get("currency") or None
+    price = float(price_raw) if price_raw is not None else None
+
+    remaining_raw = raw.get("quantity")
+    if remaining_raw is None:
+        remaining_raw = raw.get("remaining")
+    remaining = int(remaining_raw) if remaining_raw is not None else None
+
+    sales_status = raw.get("salesStatus") or {}
+
+    is_sold_out = raw.get("isSoldOut")
+    if is_sold_out is None:
+        is_sold_out = sales_status.get("isSoldOut")
+    if is_sold_out is not None:
+        is_sold_out = bool(is_sold_out)
+
+    is_sales_closed = raw.get("isSalesClosed")
+    if is_sales_closed is None:
+        is_sales_closed = sales_status.get("isSalesClosed")
+    if is_sales_closed is not None:
+        is_sales_closed = bool(is_sales_closed)
+
+    return EventAdmission(
+        event_id=event_id,
+        admission_id=admission_id,
+        admission_type=raw.get("admissionType") or raw.get("_category") or "unknown",
+        name=raw.get("name") or None,
+        is_sold_out=is_sold_out,
+        is_sales_closed=is_sales_closed,
+        price=price,
+        currency=currency,
+        remaining=remaining,
+    )
+
+
 def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str]:
     """Parse an Event Hubs, Fabric, or plain BootstrapServer connection string."""
     config_dict: Dict[str, str] = {
@@ -146,12 +288,12 @@ def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str
         raise ValueError("Invalid connection string format") from exc
     if "sasl.username" in config_dict and config_dict.get("bootstrap.servers", "").endswith(":9093"):
         config_dict["security.protocol"] = "SASL_SSL"
-        config_dict["sasl.mechanisms"] = "PLAIN"
+        config_dict["sasl.mechanism"] = "PLAIN"
     return config_dict, kafka_topic
 
 
 def feed(args: argparse.Namespace) -> None:
-    """Main feed loop: emit event reference data at startup and refresh it periodically."""
+    """Main feed loop: emit events then poll admissions on each cycle."""
     connection_string = getattr(args, "connection_string", None) or os.environ.get("CONNECTION_STRING", "")
     if not connection_string:
         logger.error("CONNECTION_STRING is required")
@@ -182,10 +324,15 @@ def feed(args: argparse.Namespace) -> None:
         getattr(args, "event_refresh_interval", None)
         or os.environ.get("EVENT_REFRESH_INTERVAL", str(DEFAULT_EVENT_REFRESH_INTERVAL))
     )
+    event_window_size = int(
+        getattr(args, "event_window_size", None)
+        or os.environ.get("EVENT_WINDOW_SIZE", str(DEFAULT_EVENT_WINDOW_SIZE))
+    )
 
     producer = Producer(kafka_config)
     event_producer = XceedEventProducer(producer, topic)
-    api = XceedAPI()
+    admissions_producer = XceedAdmissionsEventProducer(producer, topic)
+    api = XceedAPI(event_window_size=event_window_size)
 
     logger.info(
         "Starting Xceed feed to Kafka topic %s at %s (poll interval=%ds, event refresh=%ds)",
@@ -217,7 +364,7 @@ def feed(args: argparse.Namespace) -> None:
                 if not event_obj.event_id:
                     continue
                 event_producer.send_xceed_event(
-                    _feedurl=FEED_URL,
+                    _feedurl=EVENTS_FEED_URL,
                     _event_id=event_obj.event_id,
                     data=event_obj,
                     flush_producer=False,
@@ -259,6 +406,50 @@ def feed(args: argparse.Namespace) -> None:
                 else:
                     logger.warning("Event refresh failed; using cached %d events", len(cached_events))
 
+            # Poll admissions for each cached event
+            admission_count = 0
+            for raw_event in cached_events:
+                event_id = raw_event.get("id", "")
+                if not event_id:
+                    continue
+                try:
+                    admissions_raw = api.fetch_admissions(event_id)
+                    for adm_raw in admissions_raw:
+                        try:
+                            adm = parse_admission(adm_raw, event_id)
+                            if not adm.admission_id:
+                                continue
+                            admissions_producer.send_xceed_event_admission(
+                                _feedurl=OFFERS_API_BASE,
+                                _event_id=event_id,
+                                _admission_id=adm.admission_id,
+                                data=adm,
+                                flush_producer=False,
+                            )
+                            admission_count += 1
+                        except Exception as exc:  # pylint: disable=broad-except
+                            logger.error(
+                                "Error emitting admission %s for event %s: %s",
+                                adm_raw.get("id", "?"),
+                                event_id,
+                                exc,
+                            )
+                except Exception as exc:  # pylint: disable=broad-except
+                    logger.error("Error fetching admissions for event %s: %s", event_id, exc)
+
+            remainder = producer.flush(timeout=30)
+            if remainder > 0:
+                logger.error(
+                    "Flush incomplete: %d messages still queued; skipping state update",
+                    remainder,
+                )
+            else:
+                logger.info(
+                    "Cycle complete: polled admissions for %d events (%d admission records emitted)",
+                    len(cached_events),
+                    admission_count,
+                )
+
             elapsed = (datetime.now(tz=timezone.utc) - cycle_start).total_seconds()
             wait = max(0.0, polling_interval - elapsed)
             if wait > 0:
@@ -277,7 +468,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Xceed nightlife events bridge to Kafka")
     subparsers = parser.add_subparsers(dest="command")
 
-    feed_parser = subparsers.add_parser("feed", help="Start the event refresh loop")
+    feed_parser = subparsers.add_parser("feed", help="Start the event and admission polling loop")
     feed_parser.add_argument(
         "--connection-string",
         help="Kafka / Event Hubs connection string (overrides CONNECTION_STRING env var)",
@@ -290,13 +481,19 @@ def main() -> None:
         "--polling-interval",
         type=int,
         default=None,
-        help=f"Loop wake-up interval in seconds (default: {DEFAULT_POLL_INTERVAL})",
+        help=f"Admission polling interval in seconds (default: {DEFAULT_POLL_INTERVAL})",
     )
     feed_parser.add_argument(
         "--event-refresh-interval",
         type=int,
         default=None,
         help=f"Event list refresh interval in seconds (default: {DEFAULT_EVENT_REFRESH_INTERVAL})",
+    )
+    feed_parser.add_argument(
+        "--event-window-size",
+        type=int,
+        default=None,
+        help=f"Number of newest events to scan for offers (default: {DEFAULT_EVENT_WINDOW_SIZE})",
     )
 
     args = parser.parse_args()
