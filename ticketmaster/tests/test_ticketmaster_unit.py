@@ -144,6 +144,8 @@ class TestParseConnectionString:
         assert result["kafka_topic"] == "ticketmaster"
         assert result["sasl.username"] == "$ConnectionString"
         assert result["sasl.password"] == conn
+        assert result["sasl.mechanisms"] == "PLAIN"
+        assert result["security.protocol"] == "SASL_SSL"
 
     @pytest.mark.unit
     def test_plain_bootstrap_format(self):

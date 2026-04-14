@@ -93,7 +93,7 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
         raise ValueError("Invalid connection string format") from exc
     if "sasl.username" in config_dict:
         config_dict["security.protocol"] = "SASL_SSL"
-        config_dict["sasl.mechanism"] = "PLAIN"
+        config_dict["sasl.mechanisms"] = "PLAIN"
     return config_dict
 
 
