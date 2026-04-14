@@ -413,10 +413,18 @@ class TestBillettoPollerState:
         poller.save_state({"12345": "abc", "67890": "def"})
         loaded = poller.load_state()
         assert loaded == {"12345": "abc", "67890": "def"}
+        assert not (tmp_path / "state.json.tmp").exists()
 
     def test_save_state_no_file_is_noop(self):
         poller = BillettoPoller(api_keypair="k:s", state_file="")
         poller.save_state({"12345": "abc"})  # Should not raise
+
+    def test_save_state_creates_parent_directory(self, tmp_path):
+        state_file = tmp_path / "state" / "state.json"
+        poller = BillettoPoller(api_keypair="k:s", state_file=str(state_file))
+        poller.save_state({"12345": "abc"})
+        assert state_file.exists()
+        assert poller.load_state() == {"12345": "abc"}
 
     def test_load_state_invalid_json(self, tmp_path):
         state_file = tmp_path / "state.json"

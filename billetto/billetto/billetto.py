@@ -11,6 +11,7 @@ import hashlib
 import logging
 import argparse
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from urllib.parse import urljoin
 
@@ -268,8 +269,12 @@ class BillettoPoller:
         if not self.state_file:
             return
         try:
-            with open(self.state_file, "w", encoding="utf-8") as fh:
+            state_path = Path(self.state_file)
+            state_path.parent.mkdir(parents=True, exist_ok=True)
+            temp_path = state_path.with_suffix(state_path.suffix + ".tmp")
+            with temp_path.open("w", encoding="utf-8") as fh:
                 json.dump(state, fh)
+            temp_path.replace(state_path)
         except OSError as exc:
             logger.warning("Could not save state file %s: %s", self.state_file, exc)
 
