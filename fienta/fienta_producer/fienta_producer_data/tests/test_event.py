@@ -9,6 +9,7 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from fienta_producer_data.event import Event
+from typing import Any
 
 
 class Test_Event(unittest.TestCase):
@@ -28,29 +29,29 @@ class Test_Event(unittest.TestCase):
         Create instance of Event for testing
         """
         instance = Event(
-            event_id='fqdcajvabhgbfbvdoced',
-            name='daagywylgwgmlgogixod',
-            slug='rnpdmzfmrqmtlugutrwn',
-            description='btiaccubbjoaugrlajgw',
-            start='slitotirndozzlaynjcr',
-            end='chezpltnpuuyhzpogcbd',
-            timezone='ewsmwejvzgrryieoqlnq',
-            url='nypzglwovhefgqdbqeht',
-            language='cnwkolkybhfxsipzynli',
-            currency='aftyamrewhtvzhqtkiln',
-            status='yyzohusiyntyrwmpztby',
-            sale_status='vglfwyrokskwitxovlpw',
-            is_online=True,
+            event_id='mlhdzvahadphdybrsoff',
+            name='siixjbsnvqcfzuctpbgy',
+            slug='stkofjmtzpewjdghpsvl',
+            description='oxzxfnrvaasjjxuxgwlf',
+            start='ydqcarenhxycfdeiijva',
+            end='srtgycjnmzlianwvqqgt',
+            timezone='udfwimufqyzrkqyrgnkt',
+            url='xixsvwlycladavzvuhxz',
+            language='mlsgzwglorpmnnucqhku',
+            currency='vnuynweoloysvpqalvif',
+            status='hnbnyamznrljrnvhdptk',
+            sale_status='tflmczcjwejjdercjcmy',
+            is_online=False,
             is_free=False,
-            location='jkgnfofjtngbeapvnphx',
-            country='qgmvousqbmuvgyaofjih',
-            region='reirmbppmmaetzseupek',
-            image_url='vqdtwqsjsoqcdvfaxfwg',
-            organizer_name='jyakpxkkfbsiltdbrogm',
-            organizer_url='ttxfatunrgnbjutbgbms',
-            categories={"test": "test"},
-            created_at='khmojnhebopzcmqzwqhm',
-            updated_at='yayembxhzirmvzwvrqno'
+            location='jfiaxkilwmtpbqrfxbvu',
+            country='quxcgsktyrytrkctxakf',
+            region='jpinmhfrcqdmbekadxjg',
+            image_url='rxtzgemsaltmlelopweg',
+            organizer_name='ftkgihbrqzfaqxvhwkpt',
+            organizer_url='nkbpcuoktmvyqxenavaq',
+            categories=None,
+            created_at='slllnnlfghlrglnyrqag',
+            updated_at='aeqcxvyzkvctgnhfxjkl'
         )
         return instance
 
@@ -59,7 +60,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'fqdcajvabhgbfbvdoced'
+        test_value = 'mlhdzvahadphdybrsoff'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -67,7 +68,7 @@ class Test_Event(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'daagywylgwgmlgogixod'
+        test_value = 'siixjbsnvqcfzuctpbgy'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -75,7 +76,7 @@ class Test_Event(unittest.TestCase):
         """
         Test slug property
         """
-        test_value = 'rnpdmzfmrqmtlugutrwn'
+        test_value = 'stkofjmtzpewjdghpsvl'
         self.instance.slug = test_value
         self.assertEqual(self.instance.slug, test_value)
     
@@ -83,7 +84,7 @@ class Test_Event(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'btiaccubbjoaugrlajgw'
+        test_value = 'oxzxfnrvaasjjxuxgwlf'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -91,7 +92,7 @@ class Test_Event(unittest.TestCase):
         """
         Test start property
         """
-        test_value = 'slitotirndozzlaynjcr'
+        test_value = 'ydqcarenhxycfdeiijva'
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -99,7 +100,7 @@ class Test_Event(unittest.TestCase):
         """
         Test end property
         """
-        test_value = 'chezpltnpuuyhzpogcbd'
+        test_value = 'srtgycjnmzlianwvqqgt'
         self.instance.end = test_value
         self.assertEqual(self.instance.end, test_value)
     
@@ -107,7 +108,7 @@ class Test_Event(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'ewsmwejvzgrryieoqlnq'
+        test_value = 'udfwimufqyzrkqyrgnkt'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -115,7 +116,7 @@ class Test_Event(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'nypzglwovhefgqdbqeht'
+        test_value = 'xixsvwlycladavzvuhxz'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -123,7 +124,7 @@ class Test_Event(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'cnwkolkybhfxsipzynli'
+        test_value = 'mlsgzwglorpmnnucqhku'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -131,7 +132,7 @@ class Test_Event(unittest.TestCase):
         """
         Test currency property
         """
-        test_value = 'aftyamrewhtvzhqtkiln'
+        test_value = 'vnuynweoloysvpqalvif'
         self.instance.currency = test_value
         self.assertEqual(self.instance.currency, test_value)
     
@@ -139,7 +140,7 @@ class Test_Event(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'yyzohusiyntyrwmpztby'
+        test_value = 'hnbnyamznrljrnvhdptk'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -147,7 +148,7 @@ class Test_Event(unittest.TestCase):
         """
         Test sale_status property
         """
-        test_value = 'vglfwyrokskwitxovlpw'
+        test_value = 'tflmczcjwejjdercjcmy'
         self.instance.sale_status = test_value
         self.assertEqual(self.instance.sale_status, test_value)
     
@@ -155,7 +156,7 @@ class Test_Event(unittest.TestCase):
         """
         Test is_online property
         """
-        test_value = True
+        test_value = False
         self.instance.is_online = test_value
         self.assertEqual(self.instance.is_online, test_value)
     
@@ -171,7 +172,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location property
         """
-        test_value = 'jkgnfofjtngbeapvnphx'
+        test_value = 'jfiaxkilwmtpbqrfxbvu'
         self.instance.location = test_value
         self.assertEqual(self.instance.location, test_value)
     
@@ -179,7 +180,7 @@ class Test_Event(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'qgmvousqbmuvgyaofjih'
+        test_value = 'quxcgsktyrytrkctxakf'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -187,7 +188,7 @@ class Test_Event(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'reirmbppmmaetzseupek'
+        test_value = 'jpinmhfrcqdmbekadxjg'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -195,7 +196,7 @@ class Test_Event(unittest.TestCase):
         """
         Test image_url property
         """
-        test_value = 'vqdtwqsjsoqcdvfaxfwg'
+        test_value = 'rxtzgemsaltmlelopweg'
         self.instance.image_url = test_value
         self.assertEqual(self.instance.image_url, test_value)
     
@@ -203,7 +204,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organizer_name property
         """
-        test_value = 'jyakpxkkfbsiltdbrogm'
+        test_value = 'ftkgihbrqzfaqxvhwkpt'
         self.instance.organizer_name = test_value
         self.assertEqual(self.instance.organizer_name, test_value)
     
@@ -211,7 +212,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organizer_url property
         """
-        test_value = 'ttxfatunrgnbjutbgbms'
+        test_value = 'nkbpcuoktmvyqxenavaq'
         self.instance.organizer_url = test_value
         self.assertEqual(self.instance.organizer_url, test_value)
     
@@ -219,7 +220,7 @@ class Test_Event(unittest.TestCase):
         """
         Test categories property
         """
-        test_value = {"test": "test"}
+        test_value = None
         self.instance.categories = test_value
         self.assertEqual(self.instance.categories, test_value)
     
@@ -227,7 +228,7 @@ class Test_Event(unittest.TestCase):
         """
         Test created_at property
         """
-        test_value = 'khmojnhebopzcmqzwqhm'
+        test_value = 'slllnnlfghlrglnyrqag'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -235,7 +236,7 @@ class Test_Event(unittest.TestCase):
         """
         Test updated_at property
         """
-        test_value = 'yayembxhzirmvzwvrqno'
+        test_value = 'aeqcxvyzkvctgnhfxjkl'
         self.instance.updated_at = test_value
         self.assertEqual(self.instance.updated_at, test_value)
     

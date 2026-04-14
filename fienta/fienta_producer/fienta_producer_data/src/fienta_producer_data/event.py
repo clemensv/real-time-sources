@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from typing import Any
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -40,7 +41,7 @@ class Event:
         image_url (typing.Optional[str])
         organizer_name (typing.Optional[str])
         organizer_url (typing.Optional[str])
-        categories (typing.Optional[typing.Any])
+        categories (typing.Optional[Any])
         created_at (typing.Optional[str])
         updated_at (typing.Optional[str])
     """
@@ -66,7 +67,7 @@ class Event:
     image_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="image_url"))
     organizer_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizer_name"))
     organizer_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="organizer_url"))
-    categories: typing.Optional[typing.Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="categories"))
+    categories: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="categories"))
     created_at: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created_at"))
     updated_at: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated_at"))
 
@@ -195,27 +196,27 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id='fqdcajvabhgbfbvdoced',
-            name='daagywylgwgmlgogixod',
-            slug='rnpdmzfmrqmtlugutrwn',
-            description='btiaccubbjoaugrlajgw',
-            start='slitotirndozzlaynjcr',
-            end='chezpltnpuuyhzpogcbd',
-            timezone='ewsmwejvzgrryieoqlnq',
-            url='nypzglwovhefgqdbqeht',
-            language='cnwkolkybhfxsipzynli',
-            currency='aftyamrewhtvzhqtkiln',
-            status='yyzohusiyntyrwmpztby',
-            sale_status='vglfwyrokskwitxovlpw',
-            is_online=True,
+            event_id='mlhdzvahadphdybrsoff',
+            name='siixjbsnvqcfzuctpbgy',
+            slug='stkofjmtzpewjdghpsvl',
+            description='oxzxfnrvaasjjxuxgwlf',
+            start='ydqcarenhxycfdeiijva',
+            end='srtgycjnmzlianwvqqgt',
+            timezone='udfwimufqyzrkqyrgnkt',
+            url='xixsvwlycladavzvuhxz',
+            language='mlsgzwglorpmnnucqhku',
+            currency='vnuynweoloysvpqalvif',
+            status='hnbnyamznrljrnvhdptk',
+            sale_status='tflmczcjwejjdercjcmy',
+            is_online=False,
             is_free=False,
-            location='jkgnfofjtngbeapvnphx',
-            country='qgmvousqbmuvgyaofjih',
-            region='reirmbppmmaetzseupek',
-            image_url='vqdtwqsjsoqcdvfaxfwg',
-            organizer_name='jyakpxkkfbsiltdbrogm',
-            organizer_url='ttxfatunrgnbjutbgbms',
-            categories={"test": "test"},
-            created_at='khmojnhebopzcmqzwqhm',
-            updated_at='yayembxhzirmvzwvrqno'
+            location='jfiaxkilwmtpbqrfxbvu',
+            country='quxcgsktyrytrkctxakf',
+            region='jpinmhfrcqdmbekadxjg',
+            image_url='rxtzgemsaltmlelopweg',
+            organizer_name='ftkgihbrqzfaqxvhwkpt',
+            organizer_url='nkbpcuoktmvyqxenavaq',
+            categories=None,
+            created_at='slllnnlfghlrglnyrqag',
+            updated_at='aeqcxvyzkvctgnhfxjkl'
         )

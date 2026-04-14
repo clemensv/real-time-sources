@@ -77,6 +77,16 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "$id": "https://fienta.com/schemas/Com/Fienta/Event",
+                "definitions": {
+                  "CategoryList": {
+                    "name": "CategoryList",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Reusable array of Fienta category labels assigned to an event."
+                  }
+                },
                 "type": "object",
                 "name": "Event",
                 "description": "Reference data for a Fienta public event. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with full event metadata. Sourced from the Fienta public events API at https://fienta.com/api/v1/public/events.",
@@ -213,12 +223,11 @@
                   },
                   "categories": {
                     "type": [
-                      "array",
+                      {
+                        "$ref": "#/definitions/CategoryList"
+                      },
                       "null"
                     ],
-                    "items": {
-                      "type": "string"
-                    },
                     "description": "List of category labels assigned to the event (e.g., ['music', 'jazz', 'concert']). Empty list or null when no categories are assigned. Sourced from the 'categories' field in the Fienta API response."
                   },
                   "created_at": {
