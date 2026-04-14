@@ -569,6 +569,14 @@ feed URLs or OPML files. Only forwards new items.
 public recentchange stream for edits, page creations, and log actions across
 Wikipedia, Wikidata, Commons, and sister projects.
 
+### Public Events
+
+**[Billetto](billetto/README.md)** -- Billetto pan-European event-discovery
+platform. Polls the public events API for new and updated ticketed events
+across Denmark, the United Kingdom, Germany, Sweden, Norway, Finland, Belgium,
+Austria, and Ireland. Emits event schedule, venue, organizer, pricing, and
+ticket availability as CloudEvents keyed by stable Billetto event ID.
+
 ### Scientific Research
 
 **[GraceDB](gracedb/README.md)** -- LIGO/Virgo/KAGRA GraceDB gravitational wave
