@@ -175,16 +175,16 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id='wgzgrybkygotzjsusede',
-            legacy_id=int(86),
-            name='mwchgztbjmuwkaitvwvh',
-            slug='fojucagdwcvscfyibltd',
+            event_id='dgtlqgecmcanpsjprpuy',
+            legacy_id=int(91),
+            name='zbxgzydndgzohunkaxkf',
+            slug='nwmbhbweoaxvpphzjmly',
             starting_time=datetime.datetime.now(datetime.timezone.utc),
             ending_time=datetime.datetime.now(datetime.timezone.utc),
-            cover_url='exmvqzutmrapvasguogc',
-            external_sales_url='vqbngznaaobxdjpaewlf',
-            venue_id='iwuebkgbmuendihjllog',
-            venue_name='jjprmzhcnipxjooqkhpe',
-            venue_city='zknvungijfdevvjczggi',
-            venue_country_code='cazralggxfxxhempcueb'
+            cover_url='mdmjzwqtxpidqvjofbzw',
+            external_sales_url='mszpfujrafmohdyzldis',
+            venue_id='slomnllazjdhshsfxujp',
+            venue_name='kheuoewvwhsbqdmssafj',
+            venue_city='itamwzagjhogokohjqoy',
+            venue_country_code='fnvxhbnhtkbyzcvsslvi'
         )

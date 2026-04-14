@@ -20,27 +20,6 @@
       "messagegroups": [
         "#/messagegroups/xceed"
       ]
-    },
-    "xceed.admissions.Kafka": {
-      "usage": [
-        "producer"
-      ],
-      "protocol": "KAFKA",
-      "envelope": "CloudEvents/1.0",
-      "envelopeoptions": {
-        "mode": "structured",
-        "format": "application/cloudevents+json"
-      },
-      "protocoloptions": {
-        "deployed": false,
-        "options": {
-          "topic": "xceed",
-          "key": "{event_id}/{admission_id}"
-        }
-      },
-      "messagegroups": [
-        "#/messagegroups/xceed.admissions"
-      ]
     }
   },
   "messagegroups": {
@@ -83,50 +62,6 @@
               "required": true,
               "value": "{event_id}",
               "description": "Unique UUID identifier of the Xceed event, matching the Kafka key"
-            }
-          }
-        }
-      }
-    },
-    "xceed.admissions": {
-      "messagegroupid": "xceed.admissions",
-      "description": "Xceed admission and ticket-availability telemetry. Contains real-time sales state signals such as isSoldOut and isSalesClosed for each admission tier of an event. Emitted each polling cycle.",
-      "messages": {
-        "xceed.EventAdmission": {
-          "messageid": "xceed.EventAdmission",
-          "name": "EventAdmission",
-          "envelope": "CloudEvents/1.0",
-          "description": "Ticket-availability snapshot for a single admission tier of an Xceed event, retrieved from the /events/:eventId/admissions endpoint of the Xceed Open Event API. Captures sales state signals including isSoldOut, isSalesClosed, current price, and remaining ticket count.",
-          "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/xceed.jstruct/schemas/xceed.EventAdmission",
-          "envelopemetadata": {
-            "specversion": {
-              "name": "specversion",
-              "type": "string",
-              "required": true,
-              "value": "1.0",
-              "description": "CloudEvents specification version"
-            },
-            "type": {
-              "name": "type",
-              "type": "string",
-              "required": true,
-              "value": "xceed.EventAdmission",
-              "description": "CloudEvents type identifier for an Xceed admission record"
-            },
-            "source": {
-              "name": "source",
-              "type": "uritemplate",
-              "required": true,
-              "value": "{feedurl}",
-              "description": "Base URL of the Xceed Open Event API feed"
-            },
-            "subject": {
-              "name": "subject",
-              "type": "uritemplate",
-              "required": true,
-              "value": "{event_id}/{admission_id}",
-              "description": "Composite identifier consisting of the parent event UUID and the admission tier UUID, separated by a slash, matching the Kafka key"
             }
           }
         }
@@ -214,7 +149,7 @@
                       "string",
                       "null"
                     ],
-                    "description": "HTTPS URL pointing to an external ticket vendor or the event organiser's own sales page, when tickets are not sold directly through the Xceed platform. Returned as 'externalSalesUrl' in the /events response. Null when tickets are sold via Xceed admissions.",
+                    "description": "HTTPS URL pointing to an external ticket vendor or the event organiser's own sales page, when Xceed exposes such a link in the public event payload. Returned as 'externalSalesUrl' in the /events response. Null when no external sales link is published for the event.",
                     "altnames": {
                       "json": "externalSalesUrl"
                     }
@@ -246,89 +181,6 @@
                       "null"
                     ],
                     "description": "ISO 3166-1 alpha-2 country code indicating the country where the venue is located. Extracted from 'venue.countryCode' or the venue location object in the /events response. Examples: 'DE', 'GB', 'ES', 'FR'. Null if country information is unavailable."
-                  }
-                }
-              }
-            }
-          }
-        },
-        "xceed.EventAdmission": {
-          "format": "JsonStructure/draft-02",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "JsonStructure/draft-02",
-              "schema": {
-                "$schema": "https://json-structure.org/meta/extended/v0/#",
-                "$id": "https://xceed.me/schemas/xceed/EventAdmission",
-                "type": "object",
-                "name": "EventAdmission",
-                "description": "Ticket-availability snapshot for a single admission tier of an Xceed event, retrieved from the GET /events/:eventId/admissions endpoint of the Xceed Open Event API v1. An event may offer multiple admission tiers (e.g. early-bird, standard, VIP). Each tier has a stable UUID and carries sales-state signals including whether tickets are sold out or whether sales have been closed, as well as price and remaining quantity.",
-                "required": [
-                  "event_id",
-                  "admission_id"
-                ],
-                "properties": {
-                  "event_id": {
-                    "type": "string",
-                    "description": "UUID of the parent Xceed event that this admission tier belongs to. Matches the 'event_id' field in the corresponding xceed.Event record and the first segment of the Kafka key."
-                  },
-                  "admission_id": {
-                    "type": "string",
-                    "description": "Stable UUID assigned by Xceed to uniquely identify this admission tier within its parent event. Returned as the 'id' field in the /events/:eventId/admissions response. Forms the second segment of the composite Kafka key '{event_id}/{admission_id}'.",
-                    "altnames": {
-                      "json": "id"
-                    }
-                  },
-                  "name": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Human-readable label for this admission tier as set by the event organiser. Examples: 'Early Bird', 'General Admission', 'VIP Access', 'Guest List'. Returned as 'name' in the /events/:eventId/admissions response. May be null if the tier has no label."
-                  },
-                  "is_sold_out": {
-                    "type": [
-                      "boolean",
-                      "null"
-                    ],
-                    "description": "Boolean flag indicating whether all available tickets for this admission tier have been sold. Returned as 'isSoldOut' in the /events/:eventId/admissions response. True means no tickets are available for purchase; false means tickets are still available. Null if the field is not present in the response.",
-                    "altnames": {
-                      "json": "isSoldOut"
-                    }
-                  },
-                  "is_sales_closed": {
-                    "type": [
-                      "boolean",
-                      "null"
-                    ],
-                    "description": "Boolean flag indicating whether ticket sales for this admission tier have been closed, either because the event has started, the sales window has expired, or the organiser has manually closed sales. Returned as 'isSalesClosed' in the /events/:eventId/admissions response. Null if the field is not present in the response.",
-                    "altnames": {
-                      "json": "isSalesClosed"
-                    }
-                  },
-                  "price": {
-                    "type": [
-                      "double",
-                      "null"
-                    ],
-                    "description": "Ticket price for this admission tier in the currency specified by the 'currency' field. Returned as 'price' in the /events/:eventId/admissions response. May be null for free events, guest-list admissions, or when pricing information is not exposed through the public API.",
-                    "unit": "currency_unit",
-                    "symbol": ""
-                  },
-                  "currency": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "ISO 4217 three-letter currency code indicating the currency in which the 'price' field is denominated. Examples: 'EUR', 'GBP'. Null when price is null or when currency information is not provided by the API."
-                  },
-                  "remaining": {
-                    "type": [
-                      "int32",
-                      "null"
-                    ],
-                    "description": "Number of tickets remaining for this admission tier at the time the API was polled. Returned as 'remaining' in the /events/:eventId/admissions response. Null when remaining quantity is not tracked or not exposed through the public API. A value of 0 typically accompanies isSoldOut=true."
                   }
                 }
               }

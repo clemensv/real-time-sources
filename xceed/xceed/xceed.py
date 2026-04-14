@@ -13,8 +13,7 @@ from confluent_kafka import Producer
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from xceed_producer_data.event import Event
-from xceed_producer_data.eventadmission import EventAdmission
-from xceed_producer_kafka_producer.producer import XceedEventProducer, XceedAdmissionsEventProducer
+from xceed_producer_kafka_producer.producer import XceedEventProducer
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -65,16 +64,6 @@ class XceedAPI:
         resp.raise_for_status()
         data = resp.json()
         return data.get("data", []) if isinstance(data, dict) else data
-
-    def fetch_admissions(self, event_id: str) -> List[Dict[str, Any]]:
-        """Fetch admission tiers for a specific event."""
-        resp = self.session.get(f"{API_BASE}/events/{event_id}/admissions", timeout=30)
-        if resp.status_code == 404:
-            return []
-        resp.raise_for_status()
-        data = resp.json()
-        return data.get("data", []) if isinstance(data, dict) else data
-
 
 def _extract_venue(event_raw: Dict[str, Any]) -> Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]:
     """Extract venue fields from the raw event object."""
@@ -130,36 +119,6 @@ def parse_event(raw: Dict[str, Any]) -> Event:
         venue_country_code=venue_country_code,
     )
 
-
-def parse_admission(raw: Dict[str, Any], event_id: str) -> EventAdmission:
-    """Parse a raw API admission record into an EventAdmission data class."""
-    admission_id = raw.get("id") or ""
-    price_raw = raw.get("price")
-    price = float(price_raw) if price_raw is not None else None
-
-    remaining_raw = raw.get("remaining")
-    remaining = int(remaining_raw) if remaining_raw is not None else None
-
-    is_sold_out = raw.get("isSoldOut")
-    if is_sold_out is not None:
-        is_sold_out = bool(is_sold_out)
-
-    is_sales_closed = raw.get("isSalesClosed")
-    if is_sales_closed is not None:
-        is_sales_closed = bool(is_sales_closed)
-
-    return EventAdmission(
-        event_id=event_id,
-        admission_id=admission_id,
-        name=raw.get("name") or None,
-        is_sold_out=is_sold_out,
-        is_sales_closed=is_sales_closed,
-        price=price,
-        currency=raw.get("currency") or None,
-        remaining=remaining,
-    )
-
-
 def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str]:
     """Parse an Event Hubs, Fabric, or plain BootstrapServer connection string."""
     config_dict: Dict[str, str] = {
@@ -187,12 +146,12 @@ def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str
         raise ValueError("Invalid connection string format") from exc
     if "sasl.username" in config_dict and config_dict.get("bootstrap.servers", "").endswith(":9093"):
         config_dict["security.protocol"] = "SASL_SSL"
-        config_dict["sasl.mechanism"] = "PLAIN"
+        config_dict["sasl.mechanisms"] = "PLAIN"
     return config_dict, kafka_topic
 
 
 def feed(args: argparse.Namespace) -> None:
-    """Main feed loop: emit events then poll admissions on each cycle."""
+    """Main feed loop: emit event reference data at startup and refresh it periodically."""
     connection_string = getattr(args, "connection_string", None) or os.environ.get("CONNECTION_STRING", "")
     if not connection_string:
         logger.error("CONNECTION_STRING is required")
@@ -226,7 +185,6 @@ def feed(args: argparse.Namespace) -> None:
 
     producer = Producer(kafka_config)
     event_producer = XceedEventProducer(producer, topic)
-    admissions_producer = XceedAdmissionsEventProducer(producer, topic)
     api = XceedAPI()
 
     logger.info(
@@ -301,50 +259,6 @@ def feed(args: argparse.Namespace) -> None:
                 else:
                     logger.warning("Event refresh failed; using cached %d events", len(cached_events))
 
-            # Poll admissions for each cached event
-            admission_count = 0
-            for raw_event in cached_events:
-                event_id = raw_event.get("id", "")
-                if not event_id:
-                    continue
-                try:
-                    admissions_raw = api.fetch_admissions(event_id)
-                    for adm_raw in admissions_raw:
-                        try:
-                            adm = parse_admission(adm_raw, event_id)
-                            if not adm.admission_id:
-                                continue
-                            admissions_producer.send_xceed_event_admission(
-                                _feedurl=FEED_URL,
-                                _event_id=event_id,
-                                _admission_id=adm.admission_id,
-                                data=adm,
-                                flush_producer=False,
-                            )
-                            admission_count += 1
-                        except Exception as exc:  # pylint: disable=broad-except
-                            logger.error(
-                                "Error emitting admission %s for event %s: %s",
-                                adm_raw.get("id", "?"),
-                                event_id,
-                                exc,
-                            )
-                except Exception as exc:  # pylint: disable=broad-except
-                    logger.error("Error fetching admissions for event %s: %s", event_id, exc)
-
-            remainder = producer.flush(timeout=30)
-            if remainder > 0:
-                logger.error(
-                    "Flush incomplete: %d messages still queued; skipping state update",
-                    remainder,
-                )
-            else:
-                logger.info(
-                    "Cycle complete: polled admissions for %d events (%d admission records emitted)",
-                    len(cached_events),
-                    admission_count,
-                )
-
             elapsed = (datetime.now(tz=timezone.utc) - cycle_start).total_seconds()
             wait = max(0.0, polling_interval - elapsed)
             if wait > 0:
@@ -363,7 +277,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Xceed nightlife events bridge to Kafka")
     subparsers = parser.add_subparsers(dest="command")
 
-    feed_parser = subparsers.add_parser("feed", help="Start the event and admission polling loop")
+    feed_parser = subparsers.add_parser("feed", help="Start the event refresh loop")
     feed_parser.add_argument(
         "--connection-string",
         help="Kafka / Event Hubs connection string (overrides CONNECTION_STRING env var)",
@@ -376,7 +290,7 @@ def main() -> None:
         "--polling-interval",
         type=int,
         default=None,
-        help=f"Admission polling interval in seconds (default: {DEFAULT_POLL_INTERVAL})",
+        help=f"Loop wake-up interval in seconds (default: {DEFAULT_POLL_INTERVAL})",
     )
     feed_parser.add_argument(
         "--event-refresh-interval",

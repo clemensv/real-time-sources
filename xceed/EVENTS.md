@@ -24,7 +24,7 @@ Scheduled nightlife or live-entertainment event from the Xceed Open Event API. C
 | `starting_time` | datetime | Scheduled start time of the event in UTC. Derived from the `startingTime` UNIX epoch seconds value. |
 | `ending_time` | datetime \| null | Scheduled end time of the event in UTC. Null if not specified by the organiser. |
 | `cover_url` | string \| null | HTTPS URL to the event's main banner or cover image on the Xceed CDN. Null if no image has been uploaded. |
-| `external_sales_url` | string \| null | HTTPS URL to an external ticket vendor, when tickets are sold outside the Xceed platform. Null when tickets are sold via Xceed admissions. |
+| `external_sales_url` | string \| null | HTTPS URL to an external ticket vendor, when Xceed exposes such a link in the public event payload. Null when no external sales link is published for the event. |
 | `venue_id` | string \| null | UUID identifying the venue where the event takes place. Null if venue information is not attached. |
 | `venue_name` | string \| null | Display name of the venue (e.g. `Berghain`, `Fabric`, `Pacha Barcelona`). Null if not available. |
 | `venue_city` | string \| null | City where the venue is located. Null if not available. |
@@ -32,28 +32,3 @@ Scheduled nightlife or live-entertainment event from the Xceed Open Event API. C
 
 ---
 
-## Message Group: `xceed.admissions`
-
-### `xceed.EventAdmission`
-
-Ticket-availability snapshot for a single admission tier of an Xceed event, retrieved from the `/events/:eventId/admissions` endpoint. An event may have multiple admission tiers (e.g. Early Bird, General Admission, VIP). Each tier carries real-time sales-state signals including `is_sold_out` and `is_sales_closed`. Emitted on every polling cycle.
-
-**CloudEvents Attributes:**
-- `type`: `xceed.EventAdmission`
-- `source`: `{feedurl}` (Xceed Open Event API base URL)
-- `subject`: `{event_id}/{admission_id}` (parent event UUID / admission tier UUID)
-
-**Kafka Key:** `{event_id}/{admission_id}`
-
-**Schema Fields:**
-
-| Field | Type | Description |
-|---|---|---|
-| `event_id` | string | UUID of the parent Xceed event. Matches the `event_id` field in the corresponding `xceed.Event` record. |
-| `admission_id` | string | Stable UUID identifying this admission tier within its parent event. Returned as `id` in the /events/:eventId/admissions response. |
-| `name` | string \| null | Human-readable label for this admission tier (e.g. `Early Bird`, `General Admission`, `VIP Access`). Null if no label is set. |
-| `is_sold_out` | boolean \| null | True if all available tickets for this tier have been sold. False means tickets are still available. Null if not present in the API response. |
-| `is_sales_closed` | boolean \| null | True if ticket sales for this tier have been closed (due to event start, expired sales window, or manual close). Null if not present. |
-| `price` | double \| null | Ticket price in the currency specified by `currency`. Null for free events, guest-list admissions, or when pricing is not exposed publicly. |
-| `currency` | string \| null | ISO 4217 three-letter currency code for `price` (e.g. `EUR`, `GBP`). Null when price is null or not provided. |
-| `remaining` | int32 \| null | Number of tickets remaining at poll time. Null when not tracked or not exposed by the API. Value of 0 typically accompanies `is_sold_out=true`. |

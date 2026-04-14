@@ -6,18 +6,18 @@ European nightlife and live-entertainment event data as CloudEvents to Apache Ka
 ## Overview
 
 [Xceed](https://xceed.me) is a European nightlife and ticketing platform covering clubs,
-bars, parties, and festivals. Their Open Event API is publicly accessible and returns event
-schedules with embedded venue information, as well as per-event admission tiers with
-ticket-availability signals such as `isSoldOut` and `isSalesClosed`.
+bars, parties, and festivals. Their public Open Event API returns scheduled event listings
+with embedded venue information and optional external sales links. The partner ticketing
+surface that exposes admission-tier availability is not part of the unauthenticated public API,
+so this source is scoped to public event reference data only.
 
 ## Event Types
 
-Two event types are emitted:
+One event type is emitted:
 
 | Type | Description |
 |------|-------------|
 | `xceed.Event` | Event reference data: schedule, venue, and metadata. Emitted at startup and refreshed periodically. |
-| `xceed.EventAdmission` | Ticket-availability telemetry: sales state, price, and remaining count per admission tier. Polled every cycle. |
 
 See [EVENTS.md](EVENTS.md) for the full event catalog.
 
@@ -26,23 +26,19 @@ See [EVENTS.md](EVENTS.md) for the full event catalog.
 - **Events** are the scheduled nightlife or entertainment occurrences, each with a stable
   UUID (`event_id`), schedule timestamps, venue details, cover image, and an optional
   external sales link.
-- **Event Admissions** represent individual ticket tiers (e.g. Early Bird, General
-  Admission, VIP) and carry real-time sales-state fields: `is_sold_out`, `is_sales_closed`,
-  `price`, `currency`, and `remaining`.
 
 ## Kafka Keys
 
 | Message group | Kafka key template | Example |
 |---------------|--------------------|---------|
 | `xceed` | `{event_id}` | `297ad280-4fd4-4b9a-870e-b4de6b2588a0` |
-| `xceed.admissions` | `{event_id}/{admission_id}` | `297ad280-.../adm-001` |
 
 ## Running
 
 ```bash
 pip install .
 
-# Emit events and admission updates
+# Emit event reference updates
 python -m xceed feed --connection-string "BootstrapServer=localhost:9092;EntityPath=xceed"
 ```
 
