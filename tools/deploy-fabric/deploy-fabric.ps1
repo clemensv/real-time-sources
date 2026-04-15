@@ -140,24 +140,30 @@ function Invoke-KqlScript {
         csl = ".execute database script <|`n$ScriptContent"
         db  = $Database
     }
-    $bodyFile = Join-Path $TempDir "kql_body_$(Get-Random).json"
-    [System.IO.File]::WriteAllText(
-        $bodyFile,
-        ($body | ConvertTo-Json -Compress),
-        [System.Text.UTF8Encoding]::new($false)
-    )
-    $result = az rest `
-        --method POST `
-        --url "$QueryUri/v1/rest/mgmt" `
+
+    # Get token for the Kusto resource — Cloud Shell MSI doesn't support
+    # cluster-specific audiences, so use the standard Kusto audience
+    $kustoToken = az account get-access-token `
         --resource "https://kusto.kusto.windows.net" `
-        --body "@$bodyFile" `
-        --headers "Content-Type=application/json" 2>&1
+        --query accessToken -o tsv 2>&1
     if ($LASTEXITCODE -ne 0) {
-        throw "KQL script failed for $Label`n$result"
+        throw "Failed to get Kusto access token: $kustoToken"
     }
-    $parsed = $result | ConvertFrom-Json
+
+    $headers = @{
+        "Authorization" = "Bearer $kustoToken"
+        "Content-Type"  = "application/json"
+    }
+    $jsonBody = $body | ConvertTo-Json -Compress
+    $result = Invoke-RestMethod `
+        -Uri "$QueryUri/v1/rest/mgmt" `
+        -Method Post `
+        -Headers $headers `
+        -Body $jsonBody `
+        -TimeoutSec 120
+
     $rows = @()
-    if ($parsed.Tables.Count -gt 0) { $rows = $parsed.Tables[0].Rows }
+    if ($result.Tables.Count -gt 0) { $rows = $result.Tables[0].Rows }
     $failed = @($rows | Where-Object { $_[3] -ne "Completed" })
     if ($failed.Count -gt 0) {
         Write-Warning "Some KQL commands reported non-Completed status for $Label"
