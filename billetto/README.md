@@ -110,6 +110,250 @@ $env:BILLETTO_CATEGORY = "music"
 python -m billetto feed --connection-string "BootstrapServer=localhost:9092;EntityPath=billetto-events"
 ```
 
+### Observed Filter Values
+
+Billetto does not publish separate discovery endpoints for these vocabularies in
+the public docs. The lists below were therefore inferred from a broad
+`billetto.dk` feed crawl on **2026-04-15** covering **1,126** public events.
+They are **observed values**, not a contractual enum, and they can change as
+Billetto listings change or when you target a different Billetto domain.
+
+**Observed macroregions**
+
+```text
+Danmark
+RUP FR — Régions Ultrapériphériques Françaises
+Södra Sverige
+Ortadoğu Anadolu
+Ile-de-France
+London
+Ísland
+Makroregion województwo mazowieckie
+Continente
+Kuzeydoğu Anadolu
+Κύπρος
+Ireland
+```
+
+**Observed regions**
+
+```text
+Hovedstaden
+Syddanmark
+Midtjylland
+Sjælland
+Nordjylland
+Guadeloupe
+Västsverige
+Van, Muş, Bitlis, Hakkari
+Ile-de-France
+Inner London — West
+Ísland
+Guyane
+Warszawski stołeczny
+Área Metropolitana de Lisboa
+Ağrı, Kars, Iğdır, Ardahan
+Κύπρος
+Eastern and Midland
+```
+
+**Observed subregions**
+
+```text
+Byen København
+Østjylland
+Vest- og Sydsjælland
+Fyn
+Nordsjælland
+Sydjylland
+Østsjælland
+Københavns omegn
+Vestjylland
+Nordjylland
+Guadeloupe
+Bornholm
+Hakkari
+Paris
+Hallands län
+Westminster
+Landsbyggð
+Guyane
+Miasto Warszawa
+Västra Götalands län
+Área Metropolitana de Lisboa
+Iğdır
+Κύπρος
+Dublin
+```
+
+**Observed categories**
+
+```text
+music
+performing_arts
+community
+food_drink
+health_wellness
+lifestyle
+other
+travel
+sports
+religion
+family
+hobbies
+auto_boat
+business
+fashion
+science
+film_media
+seasonal
+government
+charity
+school
+```
+
+**Observed event types**
+
+```text
+concert
+class_training
+party
+seminar
+tour
+other
+dinner
+festival
+appearance
+attraction
+conference
+camp_trip
+game
+meeting
+screening
+tradeshow
+race
+rally
+tournament
+```
+
+**Observed subcategories**
+
+```text
+other
+comedy
+pop
+classical
+dating
+wine
+historic
+show
+blues_jazz
+theatre
+rock
+mental_health
+food
+auto
+diy
+city_town
+alternative
+baby
+beer
+new_age
+circus
+live
+personal_health
+hiking
+dance
+science
+folk
+mindfulness
+fashion_beauty
+yoga
+latin
+meditation
+metal
+zoo
+education
+beauty
+kayaking
+sales_marketing
+basketball
+spirits
+drawing_painting
+career
+medieval
+fine_art
+photography
+film
+disco
+indie
+hiphop_rap
+home_garden
+parenting
+edm_electronic
+literary_arts
+mysticism_occult
+medical
+alumni
+football
+cultural
+heritage
+exercise
+chanukkah
+cycling
+trance
+running
+travel
+national_government
+fall_events
+walking
+religious_spiritual
+adult
+children_youth
+blues
+electro
+christmas
+americanfootball
+opera
+diet
+poverty
+anime
+boat
+painting
+animal_welfare
+randb
+musical
+design
+wrestling
+startups
+easter
+fighting_martial
+reggae
+house
+nonprofit
+hunting_fishing
+christianity
+skiing
+international_aid
+leadership
+international_affairs
+books
+spa
+biotech
+after_school_care
+gaming
+dinner
+golf
+hockey
+pets_animals
+futsal
+language
+```
+
+`postal_code` and `organizer_id` are intentionally not listed here because they
+are high-cardinality, data-driven filters. The same crawl observed **241**
+distinct postal codes, and organizer IDs vary with the active publisher set.
+
 ## Upstream Links
 
 - [Billetto Developer Hub](https://go.billetto.com/en-gb/resources/developers)
