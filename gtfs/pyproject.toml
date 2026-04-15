@@ -19,7 +19,7 @@ dataclasses = ">=0.6"
 dataclasses-json = ">=0.6.7"
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 pytest-cov = ">=6.0.0"
 requests-mock = ">=1.12.1"
 flake8 = ">=7.1.1"

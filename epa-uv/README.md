@@ -43,6 +43,27 @@ If no locations are provided, the bridge defaults to `Seattle,WA` so the contain
 | `EPA_UV_LOCATIONS` | Semicolon-separated `CITY,STATE` pairs |
 | `EPA_UV_STATE_FILE` | State file path for dedupe |
 
+## Deploying into Azure Container Instances
+
+You can deploy this bridge directly to Azure Container Instances. Two deployment
+options are available:
+
+### Option 1: Bring your own Event Hub
+
+Deploy the container and provide your own Azure Event Hubs or Fabric Event
+Streams connection string. The template creates a storage account and file share
+for persistent state.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template.json)
+
+### Option 2: Deploy with a new Event Hub
+
+Deploy the container together with a new Event Hub namespace (Standard SKU, 1
+throughput unit) and event hub. The connection string is automatically
+configured.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template-with-eventhub.json)
+
 ## Upstream Links
 
 - Docs: https://www.epa.gov/enviro/web-services

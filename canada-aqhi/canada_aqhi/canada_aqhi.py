@@ -67,6 +67,7 @@ FORECAST_LABELS = {
     4: "Tomorrow Night",
 }
 DEFAULT_REFERENCE_REFRESH_INTERVAL = 24 * 60 * 60
+DEFAULT_MAX_COMMUNITIES = 0
 MAX_OBSERVATION_IDS = 50000
 MAX_FORECAST_IDS = 20000
 DEFAULT_HTTP_RETRY_TOTAL = 3
@@ -401,7 +402,10 @@ class CanadaAQHIBridge:
 
         for forecast_node in root.findall("forecastGroup/forecast"):
             period_id = int(forecast_node.attrib["periodID"])
-            label = FORECAST_LABELS.get(period_id, "")
+            label = FORECAST_LABELS.get(period_id)
+            if label is None:
+                LOGGER.warning("Skipping unsupported AQHI forecast periodID=%s", period_id)
+                continue
             aqhi_text = forecast_node.findtext("airQualityHealthIndex", default="").strip()
             aqhi_value = int(aqhi_text) if aqhi_text else None
             periods.append(
@@ -542,11 +546,27 @@ class CanadaAQHIBridge:
         producer.producer.flush()
         return sent
 
+    @staticmethod
+    def limit_communities(
+        communities: dict[str, dict[str, Any]],
+        max_communities: int = DEFAULT_MAX_COMMUNITIES,
+    ) -> dict[str, dict[str, Any]]:
+        """Return a stable subset of communities when an opt-in cap is configured."""
+        if max_communities <= 0 or len(communities) <= max_communities:
+            return communities
+
+        ordered_keys = sorted(
+            communities,
+            key=lambda key: (communities[key]["province"], communities[key]["community_name"]),
+        )
+        return {key: communities[key] for key in ordered_keys[:max_communities]}
+
     def poll_once(
         self,
         producer: CaGcWeatherAqhiEventProducer,
         selected_provinces: set[str],
         reference_refresh_interval: int = DEFAULT_REFERENCE_REFRESH_INTERVAL,
+        max_communities: int = DEFAULT_MAX_COMMUNITIES,
     ) -> dict[str, int]:
         """Run one reference/observation/forecast cycle."""
         now = datetime.now(timezone.utc)
@@ -561,12 +581,16 @@ class CanadaAQHIBridge:
         if needs_reference_refresh:
             try:
                 communities = self.load_reference_catalogs(selected_provinces)
+                communities = self.limit_communities(communities, max_communities=max_communities)
+                self.communities = communities
                 reference_count = self.emit_reference_data(producer, communities)
             except requests.RequestException as exc:
                 if communities:
                     LOGGER.warning("Community refresh failed; continuing with cached metadata: %s", exc)
                 else:
                     raise
+        else:
+            communities = self.limit_communities(communities, max_communities=max_communities)
 
         ordered_communities = [communities[key] for key in sorted(communities)]
         observation_count = self.emit_observations(producer, ordered_communities)
@@ -661,6 +685,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
         help="Reference refresh interval in seconds",
     )
     feed_parser.add_argument(
+        "--max-communities",
+        type=int,
+        default=int(os.getenv("MAX_COMMUNITIES", str(DEFAULT_MAX_COMMUNITIES))),
+        help="Optional cap on emitted communities; 0 disables the limit",
+    )
+    feed_parser.add_argument(
         "--state-file",
         type=str,
         default=os.getenv("STATE_FILE", os.path.expanduser("~/.canada_aqhi_state.json")),
@@ -723,6 +753,7 @@ def main() -> None:
                 aqhi_producer,
                 selected_provinces,
                 reference_refresh_interval=args.reference_refresh_interval,
+                max_communities=args.max_communities,
             )
             LOGGER.info(
                 "Sent %d community, %d observation, and %d forecast events",

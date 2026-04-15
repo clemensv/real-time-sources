@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Sources — Pipeline Configurator</title>
+<style>
+  :root {
+    --fabric-purple: #742774;
+    --fabric-purple-light: #f3e5f5;
+    --fabric-purple-dark: #5e1f5e;
+    --canvas-bg: #ffffff;
+    --chrome-bg: #f8f7fb;
+    --sidebar-bg: #f4f1f8;
+    --border: #e3dce7;
+    --text: #2d2232;
+    --text-secondary: #6e6174;
+    --success: #2e7d32;
+    --water: #2196f3;
+    --maritime: #00acc1;
+    --weather: #ff9800;
+    --transport: #8bc34a;
+    --energy: #ffd54f;
+    --seismology: #ef5350;
+    --social: #ab47bc;
+    --radius: 10px;
+    --shadow: 0 4px 20px rgba(116,39,116,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(180deg, #faf8fc 0%, #f4f1f8 100%); color: var(--text); line-height: 1.5; min-height: 100vh; }
+  a { color: var(--fabric-purple); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Top Bar */
+  .topbar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 24px; background: linear-gradient(90deg, var(--fabric-purple), #9b319b);
+    color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
+  .topbar-logo svg { width: 28px; height: 28px; }
+  .topbar-spacer { flex: 1; }
+  .topbar-subtitle { font-size: 13px; opacity: 0.85; }
+  .topbar-btn {
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.25);
+    transition: background 0.15s;
+  }
+  .topbar-btn:hover { background: rgba(255,255,255,0.22); text-decoration: none; }
+
+  /* Layout */
+  .workspace { display: grid; grid-template-columns: 280px 1fr 420px; min-height: calc(100vh - 60px); }
+
+  /* Left Sidebar */
+  .sidebar {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    padding: 24px 18px;
+    overflow-y: auto;
+  }
+  .nav-title { font-size: 13px; font-weight: 700; color: var(--fabric-purple); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px;
+    cursor: pointer; transition: background 0.15s; margin-bottom: 4px; user-select: none;
+  }
+  .nav-item:hover { background: rgba(116,39,116,0.08); }
+  .nav-item.active { background: rgba(116,39,116,0.14); color: var(--fabric-purple); font-weight: 600; }
+  .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+  .nav-label { flex: 1; font-size: 14px; }
+  .nav-count { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(116,39,116,0.14); color: var(--fabric-purple); }
+
+  /* Main Canvas */
+  .canvas {
+    padding: 24px;
+    overflow-y: auto;
+    background: linear-gradient(180deg, var(--canvas-bg) 0%, #fcfbfd 100%);
+  }
+  .canvas-header { margin-bottom: 24px; }
+  .canvas-header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+  .canvas-header p { color: var(--text-secondary); max-width: 760px; }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .toolbar-pill { padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; background: var(--fabric-purple-light); color: var(--fabric-purple); }
+
+  .mosaic { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .source-card {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; box-shadow: var(--shadow); transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+  }
+  .source-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(116,39,116,0.12); }
+  .source-card.selected { border-color: var(--fabric-purple); box-shadow: 0 8px 28px rgba(116,39,116,0.18); }
+  .card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .card-logo { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; color: #fff; }
+  .card-logo.water { background: linear-gradient(135deg, var(--water), #64b5f6); }
+  .card-logo.maritime { background: linear-gradient(135deg, var(--maritime), #26c6da); }
+  .card-logo.weather { background: linear-gradient(135deg, var(--weather), #ffb74d); }
+  .card-logo.transport { background: linear-gradient(135deg, var(--transport), #aed581); }
+  .card-logo.energy { background: linear-gradient(135deg, #ffb300, #ffe082); color: #6d4c41; }
+  .card-logo.seismology { background: linear-gradient(135deg, var(--seismology), #ef9a9a); }
+  .card-logo.social { background: linear-gradient(135deg, var(--social), #ce93d8); }
+  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .card-desc { font-size: 13px; color: var(--text-secondary); min-height: 38px; }
+  .card-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .meta-pill { padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; background: #f3f1f5; color: var(--text-secondary); }
+  .select-row { display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 1px solid #f3edf5; }
+  .select-row input { width: 18px; height: 18px; accent-color: var(--fabric-purple); cursor: pointer; }
+  .select-row label { font-size: 13px; font-weight: 600; cursor: pointer; }
+
+  /* Right Configurator */
+  .configurator {
+    background: #fbf9fd;
+    border-left: 1px solid var(--border);
+    padding: 24px 20px;
+    overflow-y: auto;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+  .configurator h2 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+  .configurator p { color: var(--text-secondary); font-size: 13px; margin-bottom: 16px; }
+  .selection-summary { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+  .summary-chip { padding: 5px 12px; border-radius: 14px; font-size: 12px; font-weight: 600; background: var(--fabric-purple-light); color: var(--fabric-purple); }
+
+  .config-section { margin-bottom: 20px; }
+  .config-section h3 { font-size: 14px; font-weight: 700; color: var(--fabric-purple); margin-bottom: 8px; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+  .tab-btn {
+    padding: 6px 12px; border: none; border-radius: 8px 8px 0 0; background: #eee7f2;
+    color: var(--text-secondary); font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .tab-btn.active { background: var(--fabric-purple); color: #fff; }
+  .code-panel {
+    display: none; background: #1e1722; color: #ecdff2; border-radius: 0 8px 8px 8px;
+    padding: 14px; font-family: 'Cascadia Code', Consolas, monospace; font-size: 12px;
+    white-space: pre-wrap; word-break: break-all; position: relative;
+  }
+  .code-panel.active { display: block; }
+  .copy-all {
+    position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.08);
+    border: none; color: #b9a8c3; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px;
+  }
+  .copy-all:hover { background: rgba(255,255,255,0.15); }
+  .deploy-links { display: flex; flex-direction: column; gap: 8px; }
+  .deploy-link {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px; border-radius: 8px; background: #fff; border: 1px solid var(--border);
+    font-size: 13px; font-weight: 600;
+  }
+  .deploy-link:hover { border-color: var(--fabric-purple); text-decoration: none; }
+
+  /* Bottom How-To */
+  .bottom-band {
+    grid-column: 1 / -1;
+    padding: 40px 24px 48px;
+    background: linear-gradient(135deg, rgba(116,39,116,0.08), rgba(33,150,243,0.08));
+    border-top: 1px solid var(--border);
+  }
+  .bottom-inner { max-width: 1400px; margin: 0 auto; }
+  .bottom-inner h2 { font-size: 28px; font-weight: 700; margin-bottom: 22px; text-align: center; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .step {
+    background: rgba(255,255,255,0.75); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow);
+  }
+  .step-num { width: 34px; height: 34px; border-radius: 50%; background: var(--fabric-purple); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; margin-bottom: 10px; }
+  .step h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .step p { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+  .shot { background: #1e1722; color: #ecdff2; padding: 12px; border-radius: 8px; font-family: 'Cascadia Code', Consolas, monospace; font-size: 12px; min-height: 88px; }
+
+  @media (max-width: 1200px) {
+    .workspace { grid-template-columns: 260px 1fr; }
+    .configurator { grid-column: 1 / -1; position: static; height: auto; border-left: none; border-top: 1px solid var(--border); }
+  }
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 1fr; }
+    .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+    .steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="rgba(255,255,255,0.2)"/><path d="M8 9h6v6H8zM18 9h6v6h-6zM8 18h6v6H8zM18 18h6v6h-6z" fill="#fff"/></svg>
+    <span>Real-Time Sources</span>
+  </div>
+  <div class="topbar-subtitle">Fabric-native deployment configurator for 24 streaming bridges</div>
+  <div class="topbar-spacer"></div>
+  <a class="topbar-btn" href="https://github.com/clemensv/real-time-sources" target="_blank">View on GitHub</a>
+</header>
+
+<div class="workspace">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="nav-title">Source Categories</div>
+    <div class="nav-item active" data-group="all" onclick="setGroup('all', this)"><span class="nav-icon">📚</span><span class="nav-label">All Sources</span><span class="nav-count">24</span></div>
+    <div class="nav-item" data-group="water" onclick="setGroup('water', this)"><span class="nav-icon">💧</span><span class="nav-label">Water &amp; Hydrology</span><span class="nav-count">12</span></div>
+    <div class="nav-item" data-group="maritime" onclick="setGroup('maritime', this)"><span class="nav-icon">🚢</span><span class="nav-label">Maritime &amp; Vessel Tracking</span><span class="nav-count">3</span></div>
+    <div class="nav-item" data-group="weather" onclick="setGroup('weather', this)"><span class="nav-icon">⛈️</span><span class="nav-label">Weather &amp; Space</span><span class="nav-count">3</span></div>
+    <div class="nav-item" data-group="transport" onclick="setGroup('transport', this)"><span class="nav-icon">✈️</span><span class="nav-label">Transportation</span><span class="nav-count">2</span></div>
+    <div class="nav-item" data-group="energy" onclick="setGroup('energy', this)"><span class="nav-icon">⚡</span><span class="nav-label">Energy</span><span class="nav-count">1</span></div>
+    <div class="nav-item" data-group="seismology" onclick="setGroup('seismology', this)"><span class="nav-icon">🌍</span><span class="nav-label">Seismology</span><span class="nav-count">1</span></div>
+    <div class="nav-item" data-group="social" onclick="setGroup('social', this)"><span class="nav-icon">📡</span><span class="nav-label">Social &amp; Media</span><span class="nav-count">2</span></div>
+  </aside>
+
+  <!-- Main Canvas -->
+  <main class="canvas">
+    <div class="canvas-header">
+      <h1>Pipeline Configurator</h1>
+      <p>Select one or more bridges, then generate a combined deployment package: docker-compose services, individual docker commands, Azure Container Instance links, and a bundled KQL bootstrap script. The interaction model mirrors a Fabric workspace with source selection on the left and deployment output on the right.</p>
+      <div class="toolbar">
+        <span class="toolbar-pill">Select multiple bridges</span>
+        <span class="toolbar-pill">Generate docker-compose.yml</span>
+        <span class="toolbar-pill">Bundle KQL table creation</span>
+      </div>
+    </div>
+
+    <div class="mosaic" id="mosaic">
+      <!-- Water -->
+      <div class="source-card" data-group="water" data-id="noaa">
+        <div class="card-top"><div class="card-logo water">🌊</div><div><div class="card-title">NOAA Tides &amp; Currents</div><div class="card-desc">Water level and current data from 3,000+ US stations.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 6 min</span><span class="meta-pill">🇺🇸</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-noaa" onchange="toggleSource('noaa', this)"><label for="sel-noaa">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="noaa-ndbc">
+        <div class="card-top"><div class="card-logo water">🔵</div><div><div class="card-title">NOAA NDBC</div><div class="card-desc">Buoy observations across US waters.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 5 min</span><span class="meta-pill">🇺🇸</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-noaa-ndbc" onchange="toggleSource('noaa-ndbc', this)"><label for="sel-noaa-ndbc">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="pegelonline">
+        <div class="card-top"><div class="card-logo water">🇩🇪</div><div><div class="card-title">Pegelonline</div><div class="card-desc">German federal waterways water level and current data.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 15 min</span><span class="meta-pill">🇩🇪</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-pegelonline" onchange="toggleSource('pegelonline', this)"><label for="sel-pegelonline">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="usgs-iv">
+        <div class="card-top"><div class="card-logo water">📊</div><div><div class="card-title">USGS Instantaneous Values</div><div class="card-desc">Water quality and quantity from 1.5M+ US stations.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 15 min</span><span class="meta-pill">🇺🇸</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-usgs-iv" onchange="toggleSource('usgs-iv', this)"><label for="sel-usgs-iv">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="chmi-hydro">
+        <div class="card-top"><div class="card-logo water">🇨🇿</div><div><div class="card-title">CHMI Hydro</div><div class="card-desc">Czech hydrological observations from ČHMÚ.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 10 min</span><span class="meta-pill">🇨🇿</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-chmi-hydro" onchange="toggleSource('chmi-hydro', this)"><label for="sel-chmi-hydro">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="imgw-hydro">
+        <div class="card-top"><div class="card-logo water">🇵🇱</div><div><div class="card-title">IMGW Hydro</div><div class="card-desc">Polish hydrological observations from IMGW-PIB.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 10 min</span><span class="meta-pill">🇵🇱</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-imgw-hydro" onchange="toggleSource('imgw-hydro', this)"><label for="sel-imgw-hydro">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="smhi-hydro">
+        <div class="card-top"><div class="card-logo water">🇸🇪</div><div><div class="card-title">SMHI Hydro</div><div class="card-desc">Swedish discharge data from SMHI.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 15 min</span><span class="meta-pill">🇸🇪</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-smhi-hydro" onchange="toggleSource('smhi-hydro', this)"><label for="sel-smhi-hydro">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="hubeau-hydrometrie">
+        <div class="card-top"><div class="card-logo water">🇫🇷</div><div><div class="card-title">Hub'Eau Hydrometrie</div><div class="card-desc">French water level and flow from 6,300 stations.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 10 min</span><span class="meta-pill">🇫🇷</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-hubeau-hydrometrie" onchange="toggleSource('hubeau-hydrometrie', this)"><label for="sel-hubeau-hydrometrie">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="rws-waterwebservices">
+        <div class="card-top"><div class="card-logo water">🇳🇱</div><div><div class="card-title">RWS Waterwebservices</div><div class="card-desc">Dutch water monitoring from Rijkswaterstaat.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 10 min</span><span class="meta-pill">🇳🇱</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-rws-waterwebservices" onchange="toggleSource('rws-waterwebservices', this)"><label for="sel-rws-waterwebservices">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="uk-ea-flood-monitoring">
+        <div class="card-top"><div class="card-logo water">🇬🇧</div><div><div class="card-title">UK EA Flood Monitoring</div><div class="card-desc">English flood and river data from 4,000 stations.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 15 min</span><span class="meta-pill">🇬🇧</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-uk-ea-flood-monitoring" onchange="toggleSource('uk-ea-flood-monitoring', this)"><label for="sel-uk-ea-flood-monitoring">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="waterinfo-vmm">
+        <div class="card-top"><div class="card-logo water">🇧🇪</div><div><div class="card-title">Waterinfo VMM</div><div class="card-desc">Flemish water levels from 1,785 stations.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 15 min</span><span class="meta-pill">🇧🇪</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-waterinfo-vmm" onchange="toggleSource('waterinfo-vmm', this)"><label for="sel-waterinfo-vmm">Select</label></div>
+      </div>
+      <div class="source-card" data-group="water" data-id="german-waters">
+        <div class="card-top"><div class="card-logo water">🇩🇪</div><div><div class="card-title">German Waters</div><div class="card-desc">Water levels from 12 German state portals.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 15 min</span><span class="meta-pill">🇩🇪</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-german-waters" onchange="toggleSource('german-waters', this)"><label for="sel-german-waters">Select</label></div>
+      </div>
+
+      <!-- Maritime -->
+      <div class="source-card" data-group="maritime" data-id="aisstream">
+        <div class="card-top"><div class="card-logo maritime">📡</div><div><div class="card-title">AISStream</div><div class="card-desc">Global AIS vessel tracking via WebSocket.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">real-time</span><span class="meta-pill">🌍</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-aisstream" onchange="toggleSource('aisstream', this)"><label for="sel-aisstream">Select</label></div>
+      </div>
+      <div class="source-card" data-group="maritime" data-id="kystverket-ais">
+        <div class="card-top"><div class="card-logo maritime">🇳🇴</div><div><div class="card-title">Kystverket AIS</div><div class="card-desc">Norwegian coastal AIS from 50+ stations.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">real-time</span><span class="meta-pill">🇳🇴</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-kystverket-ais" onchange="toggleSource('kystverket-ais', this)"><label for="sel-kystverket-ais">Select</label></div>
+      </div>
+      <div class="source-card" data-group="maritime" data-id="digitraffic-maritime">
+        <div class="card-top"><div class="card-logo maritime">🇫🇮</div><div><div class="card-title">Digitraffic Maritime</div><div class="card-desc">Finnish Baltic AIS via MQTT.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">real-time</span><span class="meta-pill">🇫🇮</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-digitraffic-maritime" onchange="toggleSource('digitraffic-maritime', this)"><label for="sel-digitraffic-maritime">Select</label></div>
+      </div>
+
+      <!-- Weather -->
+      <div class="source-card" data-group="weather" data-id="dwd">
+        <div class="card-top"><div class="card-logo weather">🌤️</div><div><div class="card-title">DWD</div><div class="card-desc">German weather observations and CAP alerts.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 10 min</span><span class="meta-pill">🇩🇪</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-dwd" onchange="toggleSource('dwd', this)"><label for="sel-dwd">Select</label></div>
+      </div>
+      <div class="source-card" data-group="weather" data-id="noaa-nws">
+        <div class="card-top"><div class="card-logo weather">⚠️</div><div><div class="card-title">NOAA NWS</div><div class="card-desc">US weather alerts from NWS.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 60 sec</span><span class="meta-pill">🇺🇸</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-noaa-nws" onchange="toggleSource('noaa-nws', this)"><label for="sel-noaa-nws">Select</label></div>
+      </div>
+      <div class="source-card" data-group="weather" data-id="noaa-goes">
+        <div class="card-top"><div class="card-logo weather">☀️</div><div><div class="card-title">NOAA GOES / SWPC</div><div class="card-desc">Space weather alerts and solar wind data.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 60 sec</span><span class="meta-pill">🌍</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-noaa-goes" onchange="toggleSource('noaa-goes', this)"><label for="sel-noaa-goes">Select</label></div>
+      </div>
+
+      <!-- Transportation -->
+      <div class="source-card" data-group="transport" data-id="gtfs">
+        <div class="card-top"><div class="card-logo transport">🚌</div><div><div class="card-title">GTFS Realtime</div><div class="card-desc">Transit positions, trip updates, and alerts.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">varies</span><span class="meta-pill">🌍</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-gtfs" onchange="toggleSource('gtfs', this)"><label for="sel-gtfs">Select</label></div>
+      </div>
+      <div class="source-card" data-group="transport" data-id="mode-s">
+        <div class="card-top"><div class="card-logo transport">✈️</div><div><div class="card-title">Mode-S</div><div class="card-desc">ADS-B aircraft telemetry from dump1090 receivers.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 60 sec</span><span class="meta-pill">📍</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-mode-s" onchange="toggleSource('mode-s', this)"><label for="sel-mode-s">Select</label></div>
+      </div>
+
+      <!-- Energy -->
+      <div class="source-card" data-group="energy" data-id="entsoe">
+        <div class="card-top"><div class="card-logo energy">⚡</div><div><div class="card-title">ENTSO-E</div><div class="card-desc">European electricity market data.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">varies</span><span class="meta-pill">🇪🇺</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-entsoe" onchange="toggleSource('entsoe', this)"><label for="sel-entsoe">Select</label></div>
+      </div>
+
+      <!-- Seismology -->
+      <div class="source-card" data-group="seismology" data-id="usgs-earthquakes">
+        <div class="card-top"><div class="card-logo seismology">🌋</div><div><div class="card-title">USGS Earthquakes</div><div class="card-desc">Global seismic event feeds with deduplication.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">every 60 sec</span><span class="meta-pill">🌍</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-usgs-earthquakes" onchange="toggleSource('usgs-earthquakes', this)"><label for="sel-usgs-earthquakes">Select</label></div>
+      </div>
+
+      <!-- Social -->
+      <div class="source-card" data-group="social" data-id="bluesky">
+        <div class="card-top"><div class="card-logo social">🦋</div><div><div class="card-title">Bluesky Firehose</div><div class="card-desc">Real-time AT Protocol social events.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">real-time</span><span class="meta-pill">🌍</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-bluesky" onchange="toggleSource('bluesky', this)"><label for="sel-bluesky">Select</label></div>
+      </div>
+      <div class="source-card" data-group="social" data-id="rss">
+        <div class="card-top"><div class="card-logo social">📰</div><div><div class="card-title">RSS Feeds</div><div class="card-desc">News and blog posts from RSS or OPML feeds.</div></div></div>
+        <div class="card-meta"><span class="meta-pill">configurable</span><span class="meta-pill">🌍</span></div>
+        <div class="select-row"><input type="checkbox" id="sel-rss" onchange="toggleSource('rss', this)"><label for="sel-rss">Select</label></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right Configurator -->
+  <aside class="configurator">
+    <h2>Deployment Configurator</h2>
+    <p>Selections generate a combined deployment package. This mockup emphasizes the unique multi-bridge workflow: one click set, one bundle out.</p>
+    <div class="selection-summary" id="selectionSummary">
+      <span class="summary-chip">0 selected</span>
+    </div>
+
+    <div class="config-section">
+      <h3>Combined docker-compose.yml</h3>
+      <div class="code-panel active" id="composePanel"><button class="copy-all" onclick="copyPanel('composePanel')">Copy</button># Select one or more bridges to generate docker-compose services</div>
+    </div>
+
+    <div class="config-section">
+      <h3>Individual docker run Commands</h3>
+      <div class="tabs" id="commandTabs"></div>
+      <div id="commandPanels"></div>
+    </div>
+
+    <div class="config-section">
+      <h3>ACI Deployment Links</h3>
+      <div class="deploy-links" id="deployLinks">
+        <div class="deploy-link">No sources selected <span>→</span></div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <h3>Combined KQL Bootstrap</h3>
+      <div class="code-panel active" id="kqlPanel"><button class="copy-all" onclick="copyPanel('kqlPanel')">Copy</button>// Select sources to generate table creation scripts</div>
+    </div>
+  </aside>
+
+  <!-- Bottom Band -->
+  <section class="bottom-band">
+    <div class="bottom-inner">
+      <h2>How to Connect to Fabric</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Create an Event Stream endpoint</h3>
+          <p>Provision a custom endpoint in Fabric Event Streams or an Azure Event Hub namespace with Kafka enabled.</p>
+          <div class="shot">Event Stream
+├── Custom endpoint
+└── Kafka bootstrap + SASL/PLAIN</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Select the bridges you need</h3>
+          <p>Choose one feed or several. The configurator builds a multi-container package and bundles KQL for all selected sources.</p>
+          <div class="shot">Selected:
+- NOAA NDBC
+- DWD
+- Bluesky
+- USGS Earthquakes</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Deploy and query in Eventhouse</h3>
+          <p>Run locally, deploy to ACI, or translate the compose file into your existing orchestrator. Then route into Eventhouse tables and query with KQL.</p>
+          <div class="shot">StormAlerts
+| where timestamp > ago(1h)
+| summarize count() by source</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const sourceCatalog = {
+  'noaa': { name: 'NOAA Tides', group: 'water', image: 'noaa', topic: 'noaa', table: 'NOAATides', dockerEnv: 'KAFKA_TOPIC=noaa', kql: '.create table NOAATides (timestamp: datetime, station_id: string, value: real)' },
+  'noaa-ndbc': { name: 'NOAA NDBC', group: 'water', image: 'noaa-ndbc', topic: 'noaa-ndbc', table: 'NOAANDBC', dockerEnv: 'KAFKA_TOPIC=noaa-ndbc', kql: '.create table NOAANDBC (timestamp: datetime, buoy_id: string, value: real)' },
+  'pegelonline': { name: 'Pegelonline', group: 'water', image: 'pegelonline', topic: 'pegelonline', table: 'Pegelonline', dockerEnv: 'KAFKA_TOPIC=pegelonline', kql: '.create table Pegelonline (timestamp: datetime, station_id: string, value: real)' },
+  'usgs-iv': { name: 'USGS IV', group: 'water', image: 'usgs-iv', topic: 'usgs-iv', table: 'USGSIV', dockerEnv: 'KAFKA_TOPIC=usgs-iv', kql: '.create table USGSIV (timestamp: datetime, site_no: string, value: real)' },
+  'chmi-hydro': { name: 'CHMI Hydro', group: 'water', image: 'chmi-hydro', topic: 'chmi-hydro', table: 'CHMIHydro', dockerEnv: 'KAFKA_TOPIC=chmi-hydro', kql: '.create table CHMIHydro (timestamp: datetime, station_id: string, discharge: real)' },
+  'imgw-hydro': { name: 'IMGW Hydro', group: 'water', image: 'imgw-hydro', topic: 'imgw-hydro', table: 'IMGWHydro', dockerEnv: 'KAFKA_TOPIC=imgw-hydro', kql: '.create table IMGWHydro (timestamp: datetime, station_id: string, value: real)' },
+  'smhi-hydro': { name: 'SMHI Hydro', group: 'water', image: 'smhi-hydro', topic: 'smhi-hydro', table: 'SMHIHydro', dockerEnv: 'KAFKA_TOPIC=smhi-hydro', kql: '.create table SMHIHydro (timestamp: datetime, station_id: string, discharge: real)' },
+  'hubeau-hydrometrie': { name: "Hub'Eau", group: 'water', image: 'hubeau-hydrometrie', topic: 'hubeau-hydrometrie', table: 'HubEauHydro', dockerEnv: 'KAFKA_TOPIC=hubeau-hydrometrie', kql: '.create table HubEauHydro (timestamp: datetime, station_id: string, value: real)' },
+  'rws-waterwebservices': { name: 'RWS Water', group: 'water', image: 'rws-waterwebservices', topic: 'rws-waterwebservices', table: 'RWSWater', dockerEnv: 'KAFKA_TOPIC=rws-waterwebservices', kql: '.create table RWSWater (timestamp: datetime, station_id: string, value: real)' },
+  'uk-ea-flood-monitoring': { name: 'UK EA Flood', group: 'water', image: 'uk-ea-flood-monitoring', topic: 'uk-ea-flood-monitoring', table: 'UKEAFlood', dockerEnv: 'KAFKA_TOPIC=uk-ea-flood-monitoring', kql: '.create table UKEAFlood (timestamp: datetime, station_id: string, value: real)' },
+  'waterinfo-vmm': { name: 'Waterinfo VMM', group: 'water', image: 'waterinfo-vmm', topic: 'waterinfo-vmm', table: 'WaterinfoVMM', dockerEnv: 'KAFKA_TOPIC=waterinfo-vmm', kql: '.create table WaterinfoVMM (timestamp: datetime, station_id: string, value: real)' },
+  'german-waters': { name: 'German Waters', group: 'water', image: 'german-waters', topic: 'german-waters', table: 'GermanWaters', dockerEnv: 'KAFKA_TOPIC=german-waters', kql: '.create table GermanWaters (timestamp: datetime, station_id: string, value: real)' },
+  'aisstream': { name: 'AISStream', group: 'maritime', image: 'aisstream', topic: 'aisstream', table: 'AISStream', dockerEnv: 'KAFKA_TOPIC=aisstream\n      AISSTREAM_API_KEY=<api-key>', kql: '.create table AISStream (timestamp: datetime, mmsi: string, lat: real, lon: real)' },
+  'kystverket-ais': { name: 'Kystverket AIS', group: 'maritime', image: 'kystverket-ais', topic: 'kystverket-ais', table: 'KystverketAIS', dockerEnv: 'KAFKA_TOPIC=kystverket-ais', kql: '.create table KystverketAIS (timestamp: datetime, mmsi: string, lat: real, lon: real)' },
+  'digitraffic-maritime': { name: 'Digitraffic Maritime', group: 'maritime', image: 'digitraffic-maritime', topic: 'digitraffic-maritime', table: 'DigitrafficMaritime', dockerEnv: 'KAFKA_TOPIC=digitraffic-maritime', kql: '.create table DigitrafficMaritime (timestamp: datetime, mmsi: string, lat: real, lon: real)' },
+  'dwd': { name: 'DWD', group: 'weather', image: 'dwd', topic: 'dwd', table: 'DWDWeather', dockerEnv: 'KAFKA_TOPIC=dwd', kql: '.create table DWDWeather (timestamp: datetime, station_id: string, parameter: string, value: real)' },
+  'noaa-nws': { name: 'NOAA NWS', group: 'weather', image: 'noaa-nws', topic: 'noaa-nws', table: 'NOAANWSAlerts', dockerEnv: 'KAFKA_TOPIC=noaa-nws', kql: '.create table NOAANWSAlerts (timestamp: datetime, alert_id: string, alert_type: string)' },
+  'noaa-goes': { name: 'NOAA GOES / SWPC', group: 'weather', image: 'noaa-goes', topic: 'noaa-goes', table: 'NOAAGOES', dockerEnv: 'KAFKA_TOPIC=noaa-goes', kql: '.create table NOAAGOES (timestamp: datetime, metric: string, value: real)' },
+  'gtfs': { name: 'GTFS Realtime', group: 'transport', image: 'gtfs', topic: 'gtfs', table: 'GTFSRealtime', dockerEnv: 'KAFKA_TOPIC=gtfs\n      GTFS_URL=<feed-url>', kql: '.create table GTFSRealtime (timestamp: datetime, vehicle_id: string, route_id: string, lat: real, lon: real)' },
+  'mode-s': { name: 'Mode-S', group: 'transport', image: 'mode-s', topic: 'mode-s', table: 'ModeS', dockerEnv: 'KAFKA_TOPIC=mode-s', kql: '.create table ModeS (timestamp: datetime, hex: string, lat: real, lon: real, altitude: int)' },
+  'entsoe': { name: 'ENTSO-E', group: 'energy', image: 'entsoe', topic: 'entsoe', table: 'ENTSOE', dockerEnv: 'KAFKA_TOPIC=entsoe\n      ENTSOE_API_KEY=<api-key>', kql: '.create table ENTSOE (timestamp: datetime, area: string, metric: string, value: real)' },
+  'usgs-earthquakes': { name: 'USGS Earthquakes', group: 'seismology', image: 'usgs-earthquakes', topic: 'usgs-earthquakes', table: 'USGSEarthquakes', dockerEnv: 'KAFKA_TOPIC=usgs-earthquakes', kql: '.create table USGSEarthquakes (timestamp: datetime, quake_id: string, magnitude: real, lat: real, lon: real)' },
+  'bluesky': { name: 'Bluesky', group: 'social', image: 'bluesky', topic: 'bluesky', table: 'BlueskyEvents', dockerEnv: 'KAFKA_TOPIC=bluesky', kql: '.create table BlueskyEvents (timestamp: datetime, did: string, event_type: string, uri: string)' },
+  'rss': { name: 'RSS Feeds', group: 'social', image: 'rss', topic: 'rss', table: 'RSSItems', dockerEnv: 'KAFKA_TOPIC=rss\n      RSS_URLS=<feed1,feed2>', kql: '.create table RSSItems (timestamp: datetime, feed: string, title: string, link: string)' }
+};
+
+let selectedSources = [];
+let activeCommandTab = null;
+
+function setGroup(group, el) {
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.source-card').forEach(card => {
+    card.style.display = group === 'all' || card.dataset.group === group ? '' : 'none';
+  });
+}
+
+function toggleSource(id, checkbox) {
+  const card = checkbox.closest('.source-card');
+  if (checkbox.checked) {
+    if (!selectedSources.includes(id)) selectedSources.push(id);
+    card.classList.add('selected');
+  } else {
+    selectedSources = selectedSources.filter(sourceId => sourceId !== id);
+    card.classList.remove('selected');
+  }
+  renderConfigurator();
+}
+
+function renderConfigurator() {
+  const summary = document.getElementById('selectionSummary');
+  const composePanel = document.getElementById('composePanel');
+  const kqlPanel = document.getElementById('kqlPanel');
+  const deployLinks = document.getElementById('deployLinks');
+  const tabs = document.getElementById('commandTabs');
+  const panels = document.getElementById('commandPanels');
+
+  if (selectedSources.length === 0) {
+    summary.innerHTML = '<span class="summary-chip">0 selected</span>';
+    composePanel.innerHTML = '<button class="copy-all" onclick="copyPanel(\'composePanel\')">Copy</button># Select one or more bridges to generate docker-compose services';
+    kqlPanel.innerHTML = '<button class="copy-all" onclick="copyPanel(\'kqlPanel\')">Copy</button>// Select sources to generate table creation scripts';
+    deployLinks.innerHTML = '<div class="deploy-link">No sources selected <span>→</span></div>';
+    tabs.innerHTML = '';
+    panels.innerHTML = '';
+    activeCommandTab = null;
+    return;
+  }
+
+  summary.innerHTML = `<span class="summary-chip">${selectedSources.length} selected</span>` +
+    selectedSources.map(id => `<span class="summary-chip">${sourceCatalog[id].name}</span>`).join('');
+
+  composePanel.innerHTML = `<button class="copy-all" onclick="copyPanel('composePanel')">Copy</button>${generateCompose()}`;
+  kqlPanel.innerHTML = `<button class="copy-all" onclick="copyPanel('kqlPanel')">Copy</button>${generateKql()}`;
+
+  deployLinks.innerHTML = selectedSources.map(id => {
+    const src = sourceCatalog[id];
+    return `<a class="deploy-link" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank">${src.name}<span>Deploy →</span></a>`;
+  }).join('');
+
+  tabs.innerHTML = selectedSources.map((id, index) => {
+    const src = sourceCatalog[id];
+    const active = index === 0 ? 'active' : '';
+    return `<button class="tab-btn ${active}" onclick="showCommandTab('${id}', this)">${src.name}</button>`;
+  }).join('');
+
+  panels.innerHTML = selectedSources.map((id, index) => {
+    const src = sourceCatalog[id];
+    const active = index === 0 ? 'active' : '';
+    return `<div class="code-panel ${active}" id="cmd-${id}"><button class="copy-all" onclick="copyPanel('cmd-${id}')">Copy</button>docker run \\
+  -e KAFKA_BOOTSTRAP_SERVERS=<your-eventhub>.servicebus.windows.net:9093 \\
+  -e SASL_USERNAME='$ConnectionString' \\
+  -e SASL_PASSWORD='<connection-string>' \\
+  -e ${src.dockerEnv} \\
+  ghcr.io/clemensv/real-time-sources/${src.image}</div>`;
+  }).join('');
+
+  activeCommandTab = selectedSources[0];
+}
+
+function showCommandTab(id, btn) {
+  activeCommandTab = id;
+  document.querySelectorAll('#commandTabs .tab-btn').forEach(tab => tab.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#commandPanels .code-panel').forEach(panel => panel.classList.remove('active'));
+  document.getElementById(`cmd-${id}`).classList.add('active');
+}
+
+function generateCompose() {
+  const services = selectedSources.map(id => {
+    const src = sourceCatalog[id];
+    const env = src.dockerEnv.split('\n').map(line => `      - ${line.trim()}`).join('\n');
+    return `${id}:
+    image: ghcr.io/clemensv/real-time-sources/${src.image}
+    restart: unless-stopped
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=<your-eventhub>.servicebus.windows.net:9093
+      - SASL_USERNAME=$ConnectionString
+      - SASL_PASSWORD=<connection-string>
+${env}`;
+  }).join('\n\n  ');
+
+  return `version: '3.9'
+services:
+  ${services}`;
+}
+
+function generateKql() {
+  return selectedSources.map(id => sourceCatalog[id].kql).join('\n\n');
+}
+
+function copyPanel(id) {
+  const panel = document.getElementById(id);
+  const text = panel.textContent.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text);
+  const btn = panel.querySelector('.copy-all');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+</script>
+</body>
+</html>

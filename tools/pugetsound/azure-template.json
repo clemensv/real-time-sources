@@ -42,6 +42,10 @@
       "defaultValue": "ghcr.io/clemensv/real-time-sources-epa-uv:latest",
       "type": "string"
     },
+    "nwsForecastsImage": {
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-nws-forecasts:latest",
+      "type": "string"
+    },
     "wsdotImage": {
       "defaultValue": "ghcr.io/clemensv/real-time-sources-wsdot:latest",
       "type": "string"
@@ -210,6 +214,38 @@
                 {
                   "name": "EPA_UV_STATE_FILE",
                   "value": "/mnt/fileshare/epa_uv_state.json"
+                }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "azurefilevolume",
+                  "mountPath": "/mnt/fileshare"
+                }
+              ]
+            }
+          },
+          {
+            "name": "nws-forecasts",
+            "properties": {
+              "image": "[parameters('nwsForecastsImage')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.1,
+                  "memoryInGB": 0.3
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionStringSecret')]"
+                },
+                {
+                  "name": "NWS_FORECAST_ZONES",
+                  "value": "WAZ312,WAZ315,WAZ316,WAZ317,PZZ130,PZZ131,PZZ132,PZZ133,PZZ134,PZZ135"
+                },
+                {
+                  "name": "NWS_FORECAST_STATE_FILE",
+                  "value": "/mnt/fileshare/nws_forecasts_state.json"
                 }
               ],
               "volumeMounts": [

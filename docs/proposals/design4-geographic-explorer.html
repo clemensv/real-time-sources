@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real-Time Sources — Geographic Explorer</title>
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-light: #10203a;
+    --water-blue: #2196f3;
+    --amber: #ff9800;
+    --fabric-purple: #742774;
+    --text: #f2f5f8;
+    --text-dim: #9fb0c4;
+    --panel-bg: rgba(16, 32, 58, 0.96);
+    --border: rgba(255,255,255,0.12);
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--navy); color: var(--text); line-height: 1.5; overflow-x: hidden; }
+  a { color: var(--water-blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Hero Map */
+  .map-hero {
+    position: relative;
+    min-height: 100vh;
+    padding: 32px;
+    overflow: hidden;
+    background: radial-gradient(circle at 20% 30%, rgba(33,150,243,0.12), transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(116,39,116,0.12), transparent 35%),
+                linear-gradient(180deg, #0a1628 0%, #10203a 100%);
+  }
+  .hero-header { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto 32px; }
+  .hero-header h1 { font-size: 40px; font-weight: 700; margin-bottom: 12px; }
+  .hero-header p { font-size: 18px; color: var(--text-dim); max-width: 700px; }
+  .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .hero-badge { padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.08); border: 1px solid var(--border); }
+
+  /* SVG Map */
+  .map-wrap { position: relative; max-width: 1400px; margin: 0 auto; height: 680px; }
+  .world-map { width: 100%; height: 100%; }
+  .world-map path.continent { fill: none; stroke: rgba(255,255,255,0.15); stroke-width: 1.5; }
+  .world-map path.graticule { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 1; }
+
+  .pin {
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .pin:hover { transform: scale(1.15); }
+  .pin circle.outer { fill: rgba(255,255,255,0.1); stroke: rgba(255,255,255,0.15); }
+  .pin circle.inner { filter: drop-shadow(0 0 6px rgba(255,255,255,0.4)); }
+  .pin.water circle.inner { fill: var(--water-blue); }
+  .pin.maritime circle.inner { fill: #4fc3f7; }
+  .pin.weather circle.inner { fill: var(--amber); }
+  .pin.transport circle.inner { fill: #8bc34a; }
+  .pin.energy circle.inner { fill: #ffeb3b; }
+  .pin.seismology circle.inner { fill: #ff5252; }
+  .pin.social circle.inner { fill: var(--fabric-purple); }
+  .pin-label { font-size: 11px; fill: rgba(255,255,255,0.75); font-weight: 600; pointer-events: none; }
+
+  .tooltip {
+    position: absolute;
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -100%);
+    transition: opacity 0.12s;
+    z-index: 20;
+    max-width: 220px;
+  }
+  .tooltip.show { opacity: 1; }
+  .tooltip strong { display: block; margin-bottom: 4px; }
+  .tooltip span { color: var(--text-dim); }
+
+  /* Flyout Panel */
+  .flyout {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 420px;
+    height: 100vh;
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border-left: 1px solid var(--border);
+    padding: 28px 24px;
+    z-index: 100;
+    overflow-y: auto;
+    transition: right 0.25s ease;
+  }
+  .flyout.open { right: 0; }
+  .flyout-close {
+    position: absolute; top: 20px; right: 20px;
+    background: none; border: none; color: var(--text-dim); font-size: 24px; cursor: pointer;
+  }
+  .flyout-logo { width: 56px; height: 56px; border-radius: 12px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 16px; }
+  .flyout h2 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .flyout p { color: var(--text-dim); margin-bottom: 16px; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .meta-card { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .meta-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .meta-value { font-size: 14px; font-weight: 600; }
+  .code-block {
+    background: #0c1018; border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px; font-family: 'Cascadia Code', Consolas, monospace; font-size: 12px;
+    color: #d9e2f0; white-space: pre-wrap; word-break: break-all; position: relative; margin-bottom: 16px;
+  }
+  .copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.08); border: none; color: #9fb0c4; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+  .copy-btn:hover { background: rgba(255,255,255,0.15); }
+  .panel-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--border); color: var(--text);
+    background: rgba(255,255,255,0.05); transition: all 0.15s;
+  }
+  .btn:hover { background: rgba(255,255,255,0.1); text-decoration: none; }
+  .btn.primary { background: linear-gradient(135deg, var(--water-blue), var(--fabric-purple)); border: none; }
+
+  /* Accordion Strips */
+  .groups { max-width: 1200px; margin: 0 auto; padding: 48px 32px 32px; }
+  .groups h2 { font-size: 30px; font-weight: 700; margin-bottom: 24px; text-align: center; }
+  .accordion { margin-bottom: 12px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: rgba(255,255,255,0.04); }
+  .accordion-header { display: flex; align-items: center; gap: 12px; padding: 18px 24px; cursor: pointer; user-select: none; }
+  .accordion-icon { font-size: 24px; }
+  .accordion-title { flex: 1; }
+  .accordion-title strong { display: block; font-size: 18px; }
+  .accordion-title span { font-size: 13px; color: var(--text-dim); }
+  .accordion-flags { font-size: 18px; }
+  .accordion-chevron { color: var(--text-dim); transition: transform 0.2s; }
+  .accordion.open .accordion-chevron { transform: rotate(180deg); }
+  .accordion-body { display: none; padding: 0 24px 24px; }
+  .accordion.open .accordion-body { display: block; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card { padding: 18px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
+  .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+  .card-meta { font-size: 12px; color: var(--water-blue); font-weight: 600; }
+
+  /* Connect Band */
+  .connect-band {
+    margin-top: 40px;
+    padding: 56px 32px;
+    background: linear-gradient(135deg, rgba(33,150,243,0.18), rgba(116,39,116,0.18));
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .connect-inner { max-width: 1200px; margin: 0 auto; }
+  .connect-inner h2 { font-size: 30px; font-weight: 700; margin-bottom: 28px; text-align: center; }
+  .connect-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .connect-step { background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .connect-step .num { width: 32px; height: 32px; border-radius: 50%; background: var(--water-blue); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; margin-bottom: 12px; }
+  .connect-step h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .connect-step p { font-size: 13px; color: var(--text-dim); margin-bottom: 12px; }
+  .connect-shot { background: #0c1018; border-radius: 8px; padding: 12px; font-size: 12px; font-family: 'Cascadia Code', Consolas, monospace; color: #d9e2f0; min-height: 90px; }
+
+  /* Footer */
+  footer { padding: 28px 32px; text-align: center; color: var(--text-dim); font-size: 13px; }
+
+  @media (max-width: 1024px) {
+    .map-wrap { height: 520px; }
+    .flyout { width: 100%; right: -100%; }
+    .connect-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .hero-header h1 { font-size: 28px; }
+    .hero-header p { font-size: 16px; }
+    .map-wrap { height: 420px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero Map -->
+<section class="map-hero">
+  <div class="hero-header">
+    <h1>Geographic Explorer</h1>
+    <p>Map 24 real-time data bridges by geography, then open deployment details in a Fabric-style resource blade. Regional density becomes immediately obvious: water sources cluster across Europe and the US, maritime bridges trace coastlines, and space weather spans the globe.</p>
+    <div class="hero-badges">
+      <span class="hero-badge">💧 Water &amp; Hydrology</span>
+      <span class="hero-badge">🚢 Maritime</span>
+      <span class="hero-badge">⛈️ Weather &amp; Space</span>
+      <span class="hero-badge">✈️ Transportation</span>
+      <span class="hero-badge">⚡ Energy</span>
+      <span class="hero-badge">🌍 Seismology</span>
+      <span class="hero-badge">📡 Social</span>
+    </div>
+  </div>
+
+  <div class="map-wrap">
+    <svg class="world-map" viewBox="0 0 1200 680" aria-label="Simplified world map">
+      <!-- Graticules -->
+      <path class="graticule" d="M0 170 H1200 M0 340 H1200 M0 510 H1200" />
+      <path class="graticule" d="M200 0 V680 M400 0 V680 M600 0 V680 M800 0 V680 M1000 0 V680" />
+
+      <!-- Continents (simplified) -->
+      <path class="continent" d="M120 150 C180 110, 260 110, 310 150 C340 175, 360 225, 355 270 C350 320, 320 355, 280 380 C250 398, 230 430, 240 465 C250 495, 240 520, 215 540 C190 555, 160 550, 140 525 C120 500, 105 460, 95 420 C82 365, 70 315, 75 260 C80 215, 95 175, 120 150 Z" />
+      <path class="continent" d="M370 140 C420 130, 500 120, 565 145 C620 165, 665 205, 705 215 C760 228, 840 225, 900 245 C955 262, 1005 298, 1035 340 C1060 376, 1068 420, 1040 450 C1005 486, 945 480, 910 450 C875 420, 845 402, 800 410 C745 420, 690 450, 645 445 C600 440, 565 405, 515 390 C470 375, 430 392, 385 375 C350 362, 332 325, 338 285 C343 250, 350 205, 370 140 Z" />
+      <path class="continent" d="M835 470 C860 452, 905 455, 935 475 C970 500, 985 540, 970 575 C952 607, 915 620, 875 615 C842 610, 815 592, 798 562 C780 532, 792 495, 835 470 Z" />
+
+      <!-- Pins -->
+      <g class="pin water" data-id="noaa" transform="translate(230 245)">
+        <circle class="outer" r="14"></circle><circle class="inner" r="7"></circle>
+        <text class="pin-label" x="18" y="4">NOAA / USGS</text>
+      </g>
+      <g class="pin seismology" data-id="usgs-earthquakes" transform="translate(260 280)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin social" data-id="bluesky" transform="translate(215 200)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="uk-ea-flood-monitoring" transform="translate(555 205)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="pegelonline" transform="translate(590 215)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="chmi-hydro" transform="translate(620 225)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="imgw-hydro" transform="translate(640 215)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="smhi-hydro" transform="translate(635 175)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="rws-waterwebservices" transform="translate(575 205)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="waterinfo-vmm" transform="translate(570 212)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin weather" data-id="dwd" transform="translate(600 205)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin energy" data-id="entsoe" transform="translate(610 250)">
+        <circle class="outer" r="13"></circle><circle class="inner" r="7"></circle>
+        <text class="pin-label" x="18" y="4">ENTSO-E</text>
+      </g>
+      <g class="pin maritime" data-id="kystverket-ais" transform="translate(610 145)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin maritime" data-id="digitraffic-maritime" transform="translate(665 165)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin water" data-id="hubeau-hydrometrie" transform="translate(555 235)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin transport" data-id="gtfs" transform="translate(215 235)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+        <text class="pin-label" x="18" y="4">Transit feeds</text>
+      </g>
+      <g class="pin transport" data-id="mode-s" transform="translate(470 255)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+      </g>
+      <g class="pin weather" data-id="noaa-goes" transform="translate(345 150)">
+        <circle class="outer" r="14"></circle><circle class="inner" r="7"></circle>
+        <text class="pin-label" x="18" y="4">Space Weather</text>
+      </g>
+      <g class="pin maritime" data-id="aisstream" transform="translate(500 300)">
+        <circle class="outer" r="15"></circle><circle class="inner" r="8"></circle>
+        <text class="pin-label" x="20" y="4">Global vessel tracking</text>
+      </g>
+      <g class="pin social" data-id="rss" transform="translate(820 250)">
+        <circle class="outer" r="12"></circle><circle class="inner" r="6"></circle>
+        <text class="pin-label" x="18" y="4">RSS feeds</text>
+      </g>
+    </svg>
+    <div id="tooltip" class="tooltip"></div>
+  </div>
+</section>
+
+<!-- Flyout Panel -->
+<aside class="flyout" id="flyout">
+  <button class="flyout-close" onclick="closeFlyout()">×</button>
+  <div class="flyout-logo" id="flyoutLogo">🌊</div>
+  <h2 id="flyoutTitle">Source Name</h2>
+  <p id="flyoutDesc">Description</p>
+  <div class="meta-grid">
+    <div class="meta-card"><div class="meta-label">Coverage</div><div class="meta-value" id="flyoutCoverage">Global</div></div>
+    <div class="meta-card"><div class="meta-label">Cadence</div><div class="meta-value" id="flyoutCadence">Real-time</div></div>
+    <div class="meta-card"><div class="meta-label">Volume</div><div class="meta-value" id="flyoutVolume">Low</div></div>
+    <div class="meta-card"><div class="meta-label">Image</div><div class="meta-value" id="flyoutImage">ghcr.io/...</div></div>
+  </div>
+  <div class="panel-actions">
+    <a class="btn primary" id="deployBtn" href="#" target="_blank">Deploy to Azure</a>
+    <a class="btn" id="containerDocBtn" href="#" target="_blank">CONTAINER.md</a>
+    <a class="btn" id="eventsDocBtn" href="#" target="_blank">EVENTS.md</a>
+  </div>
+  <div class="code-block" id="dockerBlock"><button class="copy-btn" onclick="copyBlock('dockerBlock')">Copy</button>docker run ...</div>
+  <div class="code-block" id="azBlock"><button class="copy-btn" onclick="copyBlock('azBlock')">Copy</button>az container create ...</div>
+</aside>
+
+<!-- Topic Group Accordions -->
+<section class="groups">
+  <h2>Topic Groups</h2>
+
+  <div class="accordion open">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-icon">💧</span>
+      <div class="accordion-title"><strong>Water &amp; Hydrology</strong><span>12 bridges across the US and Europe</span></div>
+      <span class="accordion-flags">🇺🇸 🇩🇪 🇨🇿 🇵🇱 🇸🇪 🇫🇷 🇳🇱 🇬🇧 🇧🇪</span>
+      <span class="accordion-chevron">▾</span>
+    </div>
+    <div class="accordion-body">
+      <div class="card-grid">
+        <div class="card"><h3>NOAA Tides &amp; Currents</h3><p>Water level and current data from 3,000+ US stations.</p><div class="card-meta">Every 6 min · 🇺🇸</div></div>
+        <div class="card"><h3>NOAA NDBC</h3><p>Buoy observations across US waters.</p><div class="card-meta">Every 5 min · 🇺🇸</div></div>
+        <div class="card"><h3>Pegelonline</h3><p>German federal waterways water levels and currents.</p><div class="card-meta">Every 15 min · 🇩🇪</div></div>
+        <div class="card"><h3>USGS Instantaneous Values</h3><p>Water quality and quantity from 1.5M+ US stations.</p><div class="card-meta">Every 15 min · 🇺🇸</div></div>
+        <div class="card"><h3>CHMI Hydro</h3><p>Czech hydrological observations from ČHMÚ.</p><div class="card-meta">Every 10 min · 🇨🇿</div></div>
+        <div class="card"><h3>IMGW Hydro</h3><p>Polish hydrological observations from IMGW-PIB.</p><div class="card-meta">Every 10 min · 🇵🇱</div></div>
+        <div class="card"><h3>SMHI Hydro</h3><p>Swedish discharge data from SMHI.</p><div class="card-meta">Every 15 min · 🇸🇪</div></div>
+        <div class="card"><h3>Hub'Eau Hydrometrie</h3><p>French water level and flow from 6,300 stations.</p><div class="card-meta">Every 10 min · 🇫🇷</div></div>
+        <div class="card"><h3>RWS Waterwebservices</h3><p>Dutch water monitoring from Rijkswaterstaat.</p><div class="card-meta">Every 10 min · 🇳🇱</div></div>
+        <div class="card"><h3>UK EA Flood Monitoring</h3><p>English flood and river data from 4,000 stations.</p><div class="card-meta">Every 15 min · 🇬🇧</div></div>
+        <div class="card"><h3>Waterinfo VMM</h3><p>Flemish water levels from 1,785 stations.</p><div class="card-meta">Every 15 min · 🇧🇪</div></div>
+        <div class="card"><h3>German Waters</h3><p>Water levels from 12 German state open data portals.</p><div class="card-meta">Every 15 min · 🇩🇪</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-icon">🚢</span>
+      <div class="accordion-title"><strong>Maritime &amp; Vessel Tracking</strong><span>3 AIS bridges spanning global and Nordic waters</span></div>
+      <span class="accordion-flags">🌍 🇳🇴 🇫🇮</span>
+      <span class="accordion-chevron">▾</span>
+    </div>
+    <div class="accordion-body">
+      <div class="card-grid">
+        <div class="card"><h3>AISStream</h3><p>Global AIS tracking via WebSocket with coverage ~200 km from shore.</p><div class="card-meta">Real-time · 🌍</div></div>
+        <div class="card"><h3>Kystverket AIS</h3><p>Norwegian coastal AIS from 50+ terrestrial and offshore stations.</p><div class="card-meta">Real-time · 🇳🇴</div></div>
+        <div class="card"><h3>Digitraffic Maritime</h3><p>Finnish Baltic AIS from the Digitraffic Marine MQTT stream.</p><div class="card-meta">Real-time · 🇫🇮</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-icon">⛈️</span>
+      <div class="accordion-title"><strong>Weather &amp; Space</strong><span>Weather observations, alerts, and space weather</span></div>
+      <span class="accordion-flags">🇩🇪 🇺🇸 🌍</span>
+      <span class="accordion-chevron">▾</span>
+    </div>
+    <div class="accordion-body">
+      <div class="card-grid">
+        <div class="card"><h3>DWD</h3><p>German weather observations from 1,450 stations plus CAP alerts.</p><div class="card-meta">Every 10 min · 🇩🇪</div></div>
+        <div class="card"><h3>NOAA NWS</h3><p>US active weather alerts from the National Weather Service.</p><div class="card-meta">Every 60 sec · 🇺🇸</div></div>
+        <div class="card"><h3>NOAA GOES / SWPC</h3><p>Space weather alerts, planetary K-index, and solar wind.</p><div class="card-meta">Every 60 sec · 🌍</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-icon">✈️</span>
+      <div class="accordion-title"><strong>Transportation</strong><span>Transit feeds and aircraft telemetry</span></div>
+      <span class="accordion-flags">🌍 📍</span>
+      <span class="accordion-chevron">▾</span>
+    </div>
+    <div class="accordion-body">
+      <div class="card-grid">
+        <div class="card"><h3>GTFS Realtime</h3><p>Transit positions, trip updates, and alerts from 1,000+ agencies.</p><div class="card-meta">Variable cadence · 🌍</div></div>
+        <div class="card"><h3>Mode-S</h3><p>ADS-B aircraft telemetry from dump1090 receivers.</p><div class="card-meta">Every 60 sec · Local</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-icon">⚡</span>
+      <div class="accordion-title"><strong>Energy</strong><span>European electricity market data</span></div>
+      <span class="accordion-flags">🇪🇺</span>
+      <span class="accordion-chevron">▾</span>
+    </div>
+    <div class="accordion-body"><div class="card-grid"><div class="card"><h3>ENTSO-E</h3><p>Generation, day-ahead prices, load, forecasts, and cross-border flows.</p><div class="card-meta">Variable cadence · 🇪🇺</div></div></div></div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-icon">🌍</span>
+      <div class="accordion-title"><strong>Seismology</strong><span>Global seismic event feeds</span></div>
+      <span class="accordion-flags">🌍</span>
+      <span class="accordion-chevron">▾</span>
+    </div>
+    <div class="accordion-body"><div class="card-grid"><div class="card"><h3>USGS Earthquakes</h3><p>Global earthquake events with deduplication.</p><div class="card-meta">Every 60 sec · 🌍</div></div></div></div>
+  </div>
+
+  <div class="accordion">
+    <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+      <span class="accordion-icon">📡</span>
+      <div class="accordion-title"><strong>Social &amp; Media</strong><span>Streaming social and syndication feeds</span></div>
+      <span class="accordion-flags">🌍</span>
+      <span class="accordion-chevron">▾</span>
+    </div>
+    <div class="accordion-body"><div class="card-grid"><div class="card"><h3>Bluesky Firehose</h3><p>AT Protocol social events: posts, likes, follows, reposts.</p><div class="card-meta">Real-time · 🌍</div></div><div class="card"><h3>RSS Feeds</h3><p>News and blog posts from RSS feeds or OPML imports.</p><div class="card-meta">Configurable cadence · 🌍</div></div></div></div>
+  </div>
+</section>
+
+<!-- Connect Band -->
+<section class="connect-band">
+  <div class="connect-inner">
+    <h2>Connect to Fabric</h2>
+    <div class="connect-grid">
+      <div class="connect-step">
+        <div class="num">1</div>
+        <h3>Run Locally with Docker</h3>
+        <p>Start a bridge on your workstation or jump box and point it directly at Event Hubs or Fabric Event Streams.</p>
+        <div class="connect-shot">docker run \
+  -e KAFKA_BOOTSTRAP_SERVERS=&lt;host&gt;:9093 \
+  -e SASL_PASSWORD='&lt;conn-string&gt;' \
+  ghcr.io/...</div>
+      </div>
+      <div class="connect-step">
+        <div class="num">2</div>
+        <h3>Deploy on Azure Container Instances</h3>
+        <p>Use the pre-built ARM templates or Azure CLI for lightweight managed deployment near your streaming stack.</p>
+        <div class="connect-shot">az container create \
+  --resource-group myRG \
+  --image ghcr.io/...
+  --environment-variables ...</div>
+      </div>
+      <div class="connect-step">
+        <div class="num">3</div>
+        <h3>Ingest into Fabric Event Streams</h3>
+        <p>Create a custom endpoint in Event Streams, paste the Kafka settings, then route into Eventhouse tables for KQL.</p>
+        <div class="connect-shot">StormAlerts
+| where timestamp > ago(1h)
+| summarize count() by alert_type</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="https://github.com/clemensv/real-time-sources">GitHub</a> · <a href="https://github.com/clemensv/real-time-sources/blob/main/DATABASE.md">DATABASE.md</a> · <a href="https://learn.microsoft.com/en-us/fabric/real-time-intelligence/">Fabric Real-Time Intelligence</a>
+</footer>
+
+<script>
+const sourceData = {
+  'noaa': {
+    logo: '🌊', title: 'NOAA Tides & Currents',
+    desc: 'Water level and current data from more than 3,000 US stations and territories.',
+    coverage: 'United States', cadence: 'Every 6 min', volume: 'Low to moderate',
+    image: 'ghcr.io/clemensv/real-time-sources/noaa',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=noaa \\\n  -e SASL_USERNAME='$ConnectionString' \\\n  -e SASL_PASSWORD='<conn-string>' \\\n  ghcr.io/clemensv/real-time-sources/noaa",
+    az: "az container create -g myRG -n noaa \\\n  --image ghcr.io/clemensv/real-time-sources/noaa \\\n  --environment-variables KAFKA_BOOTSTRAP_SERVERS=<host>:9093 KAFKA_TOPIC=noaa",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa/EVENTS.md'
+  },
+  'usgs-earthquakes': {
+    logo: '🌋', title: 'USGS Earthquakes',
+    desc: 'Global earthquake event feeds with deduplication and CloudEvents output.',
+    coverage: 'Global', cadence: 'Every 60 sec', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/usgs-earthquakes',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=usgs-earthquakes \\\n  ghcr.io/clemensv/real-time-sources/usgs-earthquakes",
+    az: "az container create -g myRG -n usgs-earthquakes \\\n  --image ghcr.io/clemensv/real-time-sources/usgs-earthquakes",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/usgs-earthquakes/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/usgs-earthquakes/README.md'
+  },
+  'bluesky': {
+    logo: '🦋', title: 'Bluesky Firehose',
+    desc: 'Real-time AT Protocol events for posts, likes, reposts, follows, blocks, and profile updates.',
+    coverage: 'Global', cadence: 'Real-time', volume: 'High',
+    image: 'ghcr.io/clemensv/real-time-sources/bluesky',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=bluesky \\\n  ghcr.io/clemensv/real-time-sources/bluesky",
+    az: "az container create -g myRG -n bluesky \\\n  --image ghcr.io/clemensv/real-time-sources/bluesky",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/bluesky/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/bluesky/EVENTS.md'
+  },
+  'uk-ea-flood-monitoring': {
+    logo: '🇬🇧', title: 'UK EA Flood Monitoring',
+    desc: 'English flood and river observations from approximately 4,000 stations.',
+    coverage: 'England', cadence: 'Every 15 min', volume: 'Moderate',
+    image: 'ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=uk-ea-flood-monitoring \\\n  ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring",
+    az: "az container create -g myRG -n uk-ea \\\n  --image ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/uk-ea-flood-monitoring/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/uk-ea-flood-monitoring/EVENTS.md'
+  },
+  'pegelonline': {
+    logo: '🇩🇪', title: 'Pegelonline',
+    desc: 'German federal waterways water level and current data from more than 3,000 stations.',
+    coverage: 'Germany', cadence: 'Every 15 min', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/pegelonline',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=pegelonline \\\n  ghcr.io/clemensv/real-time-sources/pegelonline",
+    az: "az container create -g myRG -n pegelonline \\\n  --image ghcr.io/clemensv/real-time-sources/pegelonline",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/pegelonline/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/pegelonline/README.md'
+  },
+  'chmi-hydro': {
+    logo: '🇨🇿', title: 'CHMI Hydro',
+    desc: 'Czech hydrological observations for water level, discharge, and temperature.',
+    coverage: 'Czechia', cadence: 'Every 10 min', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/chmi-hydro',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=chmi-hydro \\\n  ghcr.io/clemensv/real-time-sources/chmi-hydro",
+    az: "az container create -g myRG -n chmi-hydro \\\n  --image ghcr.io/clemensv/real-time-sources/chmi-hydro",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/chmi-hydro/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/chmi-hydro/EVENTS.md'
+  },
+  'imgw-hydro': {
+    logo: '🇵🇱', title: 'IMGW Hydro',
+    desc: 'Polish hydrological data from the Institute of Meteorology and Water Management.',
+    coverage: 'Poland', cadence: 'Every 10 min', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/imgw-hydro',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=imgw-hydro \\\n  ghcr.io/clemensv/real-time-sources/imgw-hydro",
+    az: "az container create -g myRG -n imgw-hydro \\\n  --image ghcr.io/clemensv/real-time-sources/imgw-hydro",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/imgw-hydro/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/imgw-hydro/README.md'
+  },
+  'smhi-hydro': {
+    logo: '🇸🇪', title: 'SMHI Hydro',
+    desc: 'Swedish hydrological discharge data published as CloudEvents.',
+    coverage: 'Sweden', cadence: 'Every 15 min', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/smhi-hydro',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=smhi-hydro \\\n  ghcr.io/clemensv/real-time-sources/smhi-hydro",
+    az: "az container create -g myRG -n smhi-hydro \\\n  --image ghcr.io/clemensv/real-time-sources/smhi-hydro",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/smhi-hydro/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/smhi-hydro/README.md'
+  },
+  'rws-waterwebservices': {
+    logo: '🇳🇱', title: 'RWS Waterwebservices',
+    desc: 'Dutch Rijkswaterstaat water observations covering roughly 785 stations.',
+    coverage: 'Netherlands', cadence: 'Every 10 min', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/rws-waterwebservices',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=rws-waterwebservices \\\n  ghcr.io/clemensv/real-time-sources/rws-waterwebservices",
+    az: "az container create -g myRG -n rws-water \\\n  --image ghcr.io/clemensv/real-time-sources/rws-waterwebservices",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rws-waterwebservices/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rws-waterwebservices/README.md'
+  },
+  'waterinfo-vmm': {
+    logo: '🇧🇪', title: 'Waterinfo VMM',
+    desc: 'Flemish water observations from Waterinfo.be KIWIS API.',
+    coverage: 'Flanders', cadence: 'Every 15 min', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/waterinfo-vmm',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=waterinfo-vmm \\\n  ghcr.io/clemensv/real-time-sources/waterinfo-vmm",
+    az: "az container create -g myRG -n waterinfo-vmm \\\n  --image ghcr.io/clemensv/real-time-sources/waterinfo-vmm",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/waterinfo-vmm/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/waterinfo-vmm/README.md'
+  },
+  'dwd': {
+    logo: '🌤️', title: 'DWD',
+    desc: 'German weather observations and CAP alerts from the Deutscher Wetterdienst.',
+    coverage: 'Germany', cadence: 'Every 10 min', volume: 'Moderate',
+    image: 'ghcr.io/clemensv/real-time-sources/dwd',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=dwd \\\n  ghcr.io/clemensv/real-time-sources/dwd",
+    az: "az container create -g myRG -n dwd \\\n  --image ghcr.io/clemensv/real-time-sources/dwd",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/dwd/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/dwd/EVENTS.md'
+  },
+  'entsoe': {
+    logo: '⚡', title: 'ENTSO-E',
+    desc: 'European electricity market data including generation, prices, load, and cross-border flows.',
+    coverage: 'Europe', cadence: 'Variable', volume: 'Moderate',
+    image: 'ghcr.io/clemensv/real-time-sources/entsoe',
+    docker: "docker run \\\n  -e ENTSOE_API_KEY=<api-key> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/entsoe",
+    az: "az container create -g myRG -n entsoe \\\n  --image ghcr.io/clemensv/real-time-sources/entsoe",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/entsoe/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/entsoe/EVENTS.md'
+  },
+  'kystverket-ais': {
+    logo: '🇳🇴', title: 'Kystverket AIS',
+    desc: 'Raw TCP AIS stream for Norwegian coastal waters, Svalbard, and Jan Mayen.',
+    coverage: 'Norway', cadence: 'Real-time', volume: 'High',
+    image: 'ghcr.io/clemensv/real-time-sources/kystverket-ais',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=kystverket-ais \\\n  ghcr.io/clemensv/real-time-sources/kystverket-ais",
+    az: "az container create -g myRG -n kystverket-ais \\\n  --image ghcr.io/clemensv/real-time-sources/kystverket-ais",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/kystverket-ais/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/kystverket-ais/README.md'
+  },
+  'digitraffic-maritime': {
+    logo: '🇫🇮', title: 'Digitraffic Maritime',
+    desc: 'Finnish Baltic AIS vessel positions and metadata from Digitraffic Marine MQTT.',
+    coverage: 'Finland / Baltic Sea', cadence: 'Real-time', volume: 'High',
+    image: 'ghcr.io/clemensv/real-time-sources/digitraffic-maritime',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=digitraffic-maritime \\\n  ghcr.io/clemensv/real-time-sources/digitraffic-maritime",
+    az: "az container create -g myRG -n digitraffic-maritime \\\n  --image ghcr.io/clemensv/real-time-sources/digitraffic-maritime",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/digitraffic-maritime/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/digitraffic-maritime/EVENTS.md'
+  },
+  'hubeau-hydrometrie': {
+    logo: '🇫🇷', title: "Hub'Eau Hydrometrie",
+    desc: 'French hydrometric observations spanning roughly 6,300 stations.',
+    coverage: 'France', cadence: 'Every 10 min', volume: 'Moderate',
+    image: 'ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=hubeau-hydrometrie \\\n  ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie",
+    az: "az container create -g myRG -n hubeau-hydrometrie \\\n  --image ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/hubeau-hydrometrie/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/hubeau-hydrometrie/README.md'
+  },
+  'gtfs': {
+    logo: '🚌', title: 'GTFS Realtime',
+    desc: 'Transit positions, trip updates, and alerts from more than 1,000 public transport agencies worldwide.',
+    coverage: 'Global', cadence: 'Variable', volume: 'High',
+    image: 'ghcr.io/clemensv/real-time-sources/gtfs',
+    docker: "docker run \\\n  -e GTFS_URL=<feed-url> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/gtfs",
+    az: "az container create -g myRG -n gtfs \\\n  --image ghcr.io/clemensv/real-time-sources/gtfs",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/gtfs/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/gtfs/README.md'
+  },
+  'mode-s': {
+    logo: '✈️', title: 'Mode-S',
+    desc: 'ADS-B and Mode-S aircraft telemetry polled from dump1090 receivers.',
+    coverage: 'Local receiver', cadence: 'Every 60 sec', volume: 'Variable',
+    image: 'ghcr.io/clemensv/real-time-sources/mode-s',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=mode-s \\\n  ghcr.io/clemensv/real-time-sources/mode-s",
+    az: "az container create -g myRG -n mode-s \\\n  --image ghcr.io/clemensv/real-time-sources/mode-s",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/mode-s/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/mode-s/README.md'
+  },
+  'noaa-goes': {
+    logo: '☀️', title: 'NOAA GOES / SWPC',
+    desc: 'Space weather alerts, planetary K-index, and solar wind data.',
+    coverage: 'Global', cadence: 'Every 60 sec', volume: 'Low',
+    image: 'ghcr.io/clemensv/real-time-sources/noaa-goes',
+    docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=noaa-goes \\\n  ghcr.io/clemensv/real-time-sources/noaa-goes",
+    az: "az container create -g myRG -n noaa-goes \\\n  --image ghcr.io/clemensv/real-time-sources/noaa-goes",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa-goes/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa-goes/README.md'
+  },
+  'aisstream': {
+    logo: '📡', title: 'AISStream',
+    desc: 'Global AIS vessel tracking over WebSocket, roughly 200 km from shore.',
+    coverage: 'Global coastal', cadence: 'Real-time', volume: 'High',
+    image: 'ghcr.io/clemensv/real-time-sources/aisstream',
+    docker: "docker run \\\n  -e AISSTREAM_API_KEY=<api-key> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/aisstream",
+    az: "az container create -g myRG -n aisstream \\\n  --image ghcr.io/clemensv/real-time-sources/aisstream",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/aisstream/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/aisstream/EVENTS.md'
+  },
+  'rss': {
+    logo: '📰', title: 'RSS Feeds',
+    desc: 'Configurable polling of RSS feeds and OPML imports for news and blog posts.',
+    coverage: 'Global', cadence: 'Configurable', volume: 'Variable',
+    image: 'ghcr.io/clemensv/real-time-sources/rss',
+    docker: "docker run \\\n  -e RSS_URLS=<feed1,feed2> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/rss",
+    az: "az container create -g myRG -n rss \\\n  --image ghcr.io/clemensv/real-time-sources/rss",
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rss/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rss/README.md'
+  }
+};
+
+const tooltip = document.getElementById('tooltip');
+const flyout = document.getElementById('flyout');
+
+for (const pin of document.querySelectorAll('.pin')) {
+  const id = pin.dataset.id;
+  const data = sourceData[id];
+  if (!data) continue;
+
+  pin.addEventListener('mouseenter', (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const wrapRect = document.querySelector('.map-wrap').getBoundingClientRect();
+    tooltip.innerHTML = `<strong>${data.title}</strong><span>${data.desc}</span>`;
+    tooltip.style.left = `${rect.left - wrapRect.left + rect.width / 2}px`;
+    tooltip.style.top = `${rect.top - wrapRect.top - 10}px`;
+    tooltip.classList.add('show');
+  });
+  pin.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+  pin.addEventListener('click', () => openFlyout(id));
+}
+
+function openFlyout(id) {
+  const data = sourceData[id];
+  if (!data) return;
+  document.getElementById('flyoutLogo').textContent = data.logo;
+  document.getElementById('flyoutTitle').textContent = data.title;
+  document.getElementById('flyoutDesc').textContent = data.desc;
+  document.getElementById('flyoutCoverage').textContent = data.coverage;
+  document.getElementById('flyoutCadence').textContent = data.cadence;
+  document.getElementById('flyoutVolume').textContent = data.volume;
+  document.getElementById('flyoutImage').textContent = data.image;
+  document.getElementById('dockerBlock').childNodes[1].nodeValue = data.docker;
+  document.getElementById('azBlock').childNodes[1].nodeValue = data.az;
+  document.getElementById('deployBtn').href = 'https://portal.azure.com/#create/Microsoft.Template/uri/';
+  document.getElementById('containerDocBtn').href = data.containerDoc;
+  document.getElementById('eventsDocBtn').href = data.eventsDoc;
+  flyout.classList.add('open');
+}
+
+function closeFlyout() {
+  flyout.classList.remove('open');
+}
+
+function copyBlock(id) {
+  const el = document.getElementById(id);
+  const text = el.textContent.replace('Copy', '').trim();
+  navigator.clipboard.writeText(text);
+  const btn = el.querySelector('.copy-btn');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+</script>
+</body>
+</html>

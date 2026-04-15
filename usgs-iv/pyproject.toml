@@ -19,7 +19,7 @@ usgs_iv_producer_data = {path = "usgs_iv_producer/usgs_iv_producer_data"}
 usgs_iv_producer_kafka_producer = {path = "usgs_iv_producer/usgs_iv_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.11.2"
