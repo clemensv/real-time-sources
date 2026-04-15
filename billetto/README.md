@@ -63,14 +63,31 @@ Each event record carries:
 
 ## API Access
 
-A free Billetto developer account is required to obtain an API keypair.
-Register at <https://go.billetto.com/en-gb/resources/developers>.
+A Billetto account is required to obtain an API keypair. Per Billetto's
+[Obtaining an API key](https://api.billetto.com/docs/obtaining-an-api-key)
+guide, the flow is:
+
+1. Create or sign in to your Billetto account.
+2. Switch the account into the organiser experience using **Switch to Organiser**.
+3. Open **Menu** -> **Integrate**.
+4. Open the **Developers** section.
+5. Generate an API keypair and copy both the key ID and the secret.
+
+Billetto only shows the secret on first read. If you do not store it when the
+keypair is created, you must generate a new one.
 
 The API accepts requests to `https://billetto.dk/api/v3/public/events` with
 an `Api-Keypair: <key_id>:<secret>` header.
 
+For this bridge, set:
+
+```powershell
+$env:BILLETTO_API_KEYPAIR = "<key_id>:<secret>"
+```
+
 ## Upstream Links
 
 - [Billetto Developer Hub](https://go.billetto.com/en-gb/resources/developers)
+- [Obtaining an API key](https://api.billetto.com/docs/obtaining-an-api-key)
 - [Billetto API documentation](https://api.billetto.com/docs)
 - [Billetto main site](https://billetto.dk)
