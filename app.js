@@ -342,10 +342,10 @@ function launchCloudShell(source, mode) {
 
     navigator.clipboard.writeText(cmd).then(() => {
       showDeployNotice("PowerShell command copied to clipboard. Paste it into the Cloud Shell tab.");
-      window.open("https://shell.azure.com/powershell", "_blank", "noopener");
+      window.open("https://shell.azure.com/?shellType=ps", "_blank", "noopener");
     }).catch(() => {
       showDeployCommand(cmd, "PowerShell");
-      window.open("https://shell.azure.com/powershell", "_blank", "noopener");
+      window.open("https://shell.azure.com/?shellType=ps", "_blank", "noopener");
     });
   } else {
     // ARM template deploy — use the Azure Portal custom deployment blade
