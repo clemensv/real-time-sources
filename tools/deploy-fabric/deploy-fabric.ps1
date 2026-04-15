@@ -350,11 +350,22 @@ if ($existingDb) {
     if ($dbResult -and $dbResult.id) {
         $databaseId = $dbResult.id
     } else {
-        Start-Sleep -Seconds 5
-        $databases = Invoke-FabricApi -Method GET `
-            -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
-        $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
-        $databaseId = $existingDb.id
+        # Creation is async — poll until the database appears
+        $databaseId = $null
+        for ($i = 0; $i -lt 12; $i++) {
+            Start-Sleep -Seconds 5
+            $databases = Invoke-FabricApi -Method GET `
+                -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+            $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+            if ($existingDb -and $existingDb.id) {
+                $databaseId = $existingDb.id
+                break
+            }
+            Write-Host "  Waiting for database provisioning... ($([int](($i+1)*5))s)" -ForegroundColor Gray
+        }
+        if (-not $databaseId) {
+            throw "Database '$DatabaseName' was not found after 60 seconds. Check the Fabric portal."
+        }
     }
     Write-OK "Database created (ID: $databaseId)"
 }
