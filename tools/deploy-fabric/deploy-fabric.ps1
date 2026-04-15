@@ -160,15 +160,21 @@ function Get-KustoToken {
         $methods += "az-cli($aud): exit=$LASTEXITCODE"
     }
 
-    # Method 3: Connect-AzAccount -Identity then retry
+    # Method 3: Connect-AzAccount WITHOUT -Identity to use interactive user credential
+    # Cloud Shell MSI doesn't support Kusto audiences, but the interactive
+    # user credential does. Connect-AzAccount (no -Identity) in Cloud Shell
+    # reconnects as the logged-in user.
     try {
-        Write-Host "  Trying Connect-AzAccount -Identity..." -ForegroundColor Gray
-        Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
+        Write-Host "  Re-authenticating as interactive user..." -ForegroundColor Gray
+        Connect-AzAccount -ErrorAction Stop | Out-Null
+        if ($SubscriptionId) {
+            Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction SilentlyContinue | Out-Null
+        }
         foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
             try {
                 $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
                 if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) {
-                    Write-Host "  Auth: Get-AzAccessToken after Connect-AzAccount -Identity ($aud)" -ForegroundColor Gray
+                    Write-Host "  Auth: Get-AzAccessToken after Connect-AzAccount ($aud)" -ForegroundColor Gray
                     return $tokenObj.Token
                 }
             } catch {
@@ -176,7 +182,7 @@ function Get-KustoToken {
             }
         }
     } catch {
-        $methods += "Connect-AzAccount -Identity: $($_.Exception.Message)"
+        $methods += "Connect-AzAccount: $($_.Exception.Message)"
     }
 
     Write-Host "  All authentication methods failed:" -ForegroundColor Red
