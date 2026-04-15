@@ -135,6 +135,7 @@ are 87 containers in total.
 | GTFS Realtime | Global (1,000+ transit agencies, vehicles, trips, alerts) | [📖](gtfs/README.md) | [🐳](gtfs/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-gtfs) [![Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-gtfs.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-gtfs.yml) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template-with-eventhub.json) |
 | Madrid Traffic | Madrid, Spain (~4,000 sensors, Informo) | [📖](madrid-traffic/README.md) | [🐳](madrid-traffic/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-madrid-traffic) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmadrid-traffic%2Fazure-template-with-eventhub.json) |
 | NDW Netherlands Traffic | Netherlands (national road traffic, DATEX II) | [📖](ndl-netherlands/README.md) | [🐳](ndl-netherlands/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ndl-netherlands) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-with-eventhub.json) |
+| TfL Road Traffic | London, UK (road corridor status and disruptions, TfL Unified API) | [📖](tfl-road-traffic/README.md) | [🐳](tfl-road-traffic/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-tfl-road-traffic) | |
 | Nextbus | North America (public transit arrivals) | [📖](nextbus/README.md) | — | — |
 | Paris Bicycle Counters | Paris (~141 counting stations, hourly counts) | [📖](paris-bicycle-counters/README.md) | [🐳](paris-bicycle-counters/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-paris-bicycle-counters) |
 | Seattle Street Closures | Seattle, Washington (permit-driven street closure windows) | [📖](seattle-street-closures/README.md) | [🐳](seattle-street-closures/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-seattle-street-closures) |
@@ -487,6 +488,13 @@ network including the M-30 ring motorway. Updated every 5 minutes.
 **[NDW Netherlands Traffic](ndl-netherlands/README.md)** -- Dutch NDW (Nationaal
 Dataportaal Wegverkeer) DATEX II traffic data. Speed, travel time, and traffic
 situations from the national road network.
+
+**[TfL Road Traffic](tfl-road-traffic/README.md)** -- Transport for London (TfL)
+Unified API road corridor status and disruption data. Road corridor reference
+data, real-time aggregate traffic status per corridor, and active road
+disruptions including incidents, planned works, and road closures across
+London's TfL-managed road network (A-roads and motorways such as A2, A12, M25).
+Disruption events are deduped by ID and last-modified time.
 
 **[Nextbus](nextbus/README.md)** -- Public transit arrivals from the Nextbus
 service.

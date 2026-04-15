@@ -167,6 +167,52 @@ class TestMeasureMap:
         result = api.build_measure_map(stations)
         assert result == {}
 
+    def test_resolve_station_reference_falls_back_to_measure_uri(self):
+        """Test resolving station reference directly from measure URI."""
+        api = EAFloodMonitoringAPI()
+        measure_uri = (
+            "http://environment.data.gov.uk/flood-monitoring/id/"
+            "measures/1029TH-level-stage-i-15_min-mASD"
+        )
+
+        result = api.resolve_station_reference(measure_uri, {})
+
+        assert result == "1029TH"
+
+    def test_select_station_references_prefers_stations_with_live_readings(self):
+        """Test bounded station selection based on live readings."""
+        api = EAFloodMonitoringAPI()
+        stations = [
+            {"stationReference": "STATION1", "measures": [{"@id": "measure-1"}]},
+            {"stationReference": "STATION2", "measures": [{"@id": "measure-2"}]},
+            {"stationReference": "STATION3", "measures": [{"@id": "measure-3"}]},
+        ]
+        measure_map = api.build_measure_map(stations)
+        readings = [
+            {"measure": "measure-2", "value": 1.0, "dateTime": "2024-01-01T00:00:00Z"},
+            {"measure": "measure-3", "value": 2.0, "dateTime": "2024-01-01T00:15:00Z"},
+        ]
+
+        result = api.select_station_references(stations, measure_map, readings, max_stations=1)
+
+        assert result == {"STATION2"}
+
+    def test_filter_readings_limits_to_selected_stations(self):
+        """Test filtering readings to the chosen bounded station subset."""
+        api = EAFloodMonitoringAPI()
+        measure_map = {
+            "measure-1": "STATION1",
+            "measure-2": "STATION2",
+        }
+        readings = [
+            {"measure": "measure-1", "value": 1.0, "dateTime": "2024-01-01T00:00:00Z"},
+            {"measure": "measure-2", "value": 2.0, "dateTime": "2024-01-01T00:15:00Z"},
+        ]
+
+        result = api.filter_readings(readings, measure_map, {"STATION2"})
+
+        assert result == [readings[1]]
+
 
 @pytest.mark.unit
 class TestAPIConstants:
