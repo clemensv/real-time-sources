@@ -87,8 +87,8 @@
         <button class="deploy-btn" id="btn-container-eh" title="Deploy container with a new Event Hub namespace">
           Container + Event Hubs
         </button>
-        <button class="deploy-btn disabled" id="btn-container-eh-adx" disabled title="Coming soon">
-          Container + Event Hubs + Data Explorer
+        <button class="deploy-btn" id="btn-container-eh-adx" title="Deploy container with Event Hubs and Fabric Event Stream + KQL database">
+          Container + Event Hubs + Fabric
         </button>
       </div>
       <div id="content-area" class="content-area">
@@ -100,8 +100,14 @@
       </div>
     </section>
 
-    <!-- Pane 3: Deploy (reserved for future use — Azure Portal blocks iframes) -->
-    <section id="deploy-pane" class="pane deploy-pane" style="display:none;"></section>
+    <!-- Pane 3: Deploy form -->
+    <section id="deploy-pane" class="pane deploy-pane" style="display:none;">
+      <div class="deploy-pane-header">
+        <span id="deploy-pane-title">Deploy to Azure</span>
+        <button id="deploy-pane-close" title="Close">✕</button>
+      </div>
+      <div id="deploy-form-area" class="deploy-form-area"></div>
+    </section>
   </main>
 
   <script src="app.js"></script>
