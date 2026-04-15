@@ -129,25 +129,27 @@ function Invoke-FabricApi {
 }
 
 function Get-KustoToken {
-    # Try MSI first; if Cloud Shell rejects the audience, do interactive login
-    $token = az account get-access-token `
-        --resource "https://kusto.fabric.microsoft.com" `
-        --query accessToken -o tsv 2>$null
-    if ($LASTEXITCODE -eq 0 -and $token) {
-        return $token
+    # Cloud Shell MSI does not support the Kusto Fabric audience.
+    # Try MSI first; on failure, prompt the user to authenticate interactively.
+    $ErrorActionPreference = "SilentlyContinue"
+    $token = $null
+    $output = az account get-access-token --resource "https://kusto.fabric.microsoft.com" --query accessToken -o tsv 2>&1
+    $ErrorActionPreference = "Stop"
+    if ($LASTEXITCODE -eq 0 -and $output -and $output -notmatch "ERROR|WARNING.*credential") {
+        return $output.Trim()
     }
-    Write-Host "  Cloud Shell requires interactive login for Kusto..." -ForegroundColor Yellow
-    az login --scope "https://kusto.fabric.microsoft.com/.default" --output none 2>&1 | Out-Null
+    # MSI failed — need interactive login for this scope
+    Write-Host "  Kusto requires interactive authentication..." -ForegroundColor Yellow
+    Write-Host "  Running: az login --scope https://kusto.fabric.microsoft.com/.default" -ForegroundColor Gray
+    az login --scope "https://kusto.fabric.microsoft.com/.default" 2>&1 | Out-Null
     if ($SubscriptionId) {
         az account set --subscription $SubscriptionId 2>&1 | Out-Null
     }
-    $token = az account get-access-token `
-        --resource "https://kusto.fabric.microsoft.com" `
-        --query accessToken -o tsv 2>&1
+    $token = az account get-access-token --resource "https://kusto.fabric.microsoft.com" --query accessToken -o tsv 2>&1
     if ($LASTEXITCODE -ne 0 -or -not $token) {
-        throw "Failed to get Kusto access token after interactive login: $token"
+        throw "Failed to get Kusto access token. Try running manually:`n  az login --scope 'https://kusto.fabric.microsoft.com/.default'"
     }
-    return $token
+    return $token.Trim()
 }
 
 function Invoke-KqlScript {
