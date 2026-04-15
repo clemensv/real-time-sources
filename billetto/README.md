@@ -58,6 +58,7 @@ Each event record carries:
 | [billetto_producer/](billetto_producer/) | Generated producer (xrcg 0.10.1) |
 | [tests/](tests/) | Unit tests |
 | [Dockerfile](Dockerfile) | Container image |
+| [azure-template.json](azure-template.json) | Azure Container Instance deployment template |
 | [CONTAINER.md](CONTAINER.md) | Deployment contract |
 | [EVENTS.md](EVENTS.md) | Event catalog |
 

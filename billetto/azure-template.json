@@ -1,0 +1,190 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "billetto-bridge",
+      "metadata": {
+        "description": "Name of the Azure Container Instance group that will run the Billetto bridge."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for the container group."
+      }
+    },
+    "image": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-billetto:latest",
+      "metadata": {
+        "description": "Container image to run. Override this if you want a pinned tag instead of latest."
+      }
+    },
+    "cpuCores": {
+      "type": "number",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "CPU cores reserved for the Billetto bridge container."
+      }
+    },
+    "memoryInGb": {
+      "type": "number",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Memory reserved for the Billetto bridge container, in GiB."
+      }
+    },
+    "connectionString": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Kafka, Event Hubs, or Fabric connection string. EntityPath determines the topic unless you override KAFKA_TOPIC."
+      }
+    },
+    "billettoApiKeypair": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Billetto API keypair in key_id:secret form."
+      }
+    },
+    "kafkaTopic": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Kafka topic override. Leave blank to use EntityPath from the connection string."
+      }
+    },
+    "kafkaEnableTls": {
+      "type": "string",
+      "defaultValue": "true",
+      "allowedValues": ["true", "false"],
+      "metadata": {
+        "description": "Set to false only for plain-text Kafka brokers. Keep true for Event Hubs, Fabric, and TLS-enabled Kafka."
+      }
+    },
+    "pollingInterval": {
+      "type": "string",
+      "defaultValue": "300",
+      "metadata": {
+        "description": "Seconds between Billetto poll cycles."
+      }
+    },
+    "logLevel": {
+      "type": "string",
+      "defaultValue": "INFO",
+      "allowedValues": ["DEBUG", "INFO", "WARNING", "ERROR"],
+      "metadata": {
+        "description": "Python log level for the bridge container."
+      }
+    },
+    "billettoBaseUrl": {
+      "type": "string",
+      "defaultValue": "https://billetto.dk",
+      "metadata": {
+        "description": "Billetto API base URL. Override this when you want a different Billetto domain, such as https://billetto.co.uk."
+      }
+    },
+    "postalCode": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto postal_code filter. Leave blank to disable."
+      }
+    },
+    "macroregion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto macroregion filter, for example Danmark. Leave blank to disable."
+      }
+    },
+    "region": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto region filter, for example Hovedstaden or Midtjylland. Leave blank to disable."
+      }
+    },
+    "subregion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto subregion filter, for example Byen København. Leave blank to disable."
+      }
+    },
+    "organizerId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto organizer_id filter. Leave blank to disable."
+      }
+    },
+    "eventType": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto type filter such as concert, seminar, or festival. Leave blank to disable."
+      }
+    },
+    "category": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto category filter such as music or sports. Leave blank to disable."
+      }
+    },
+    "subcategory": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Billetto subcategory filter such as pop, theatre, or cycling. Leave blank to disable."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "containers": [
+          {
+            "name": "billetto",
+            "properties": {
+              "image": "[parameters('image')]",
+              "command": ["python", "-m", "billetto", "feed"],
+              "resources": {
+                "requests": {
+                  "cpu": "[parameters('cpuCores')]",
+                  "memoryInGB": "[parameters('memoryInGb')]"
+                }
+              },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionString')]" },
+                { "name": "BILLETTO_API_KEYPAIR", "secureValue": "[parameters('billettoApiKeypair')]" },
+                { "name": "KAFKA_TOPIC", "value": "[parameters('kafkaTopic')]" },
+                { "name": "KAFKA_ENABLE_TLS", "value": "[parameters('kafkaEnableTls')]" },
+                { "name": "POLLING_INTERVAL", "value": "[parameters('pollingInterval')]" },
+                { "name": "LOG_LEVEL", "value": "[parameters('logLevel')]" },
+                { "name": "BILLETTO_BASE_URL", "value": "[parameters('billettoBaseUrl')]" },
+                { "name": "BILLETTO_POSTAL_CODE", "value": "[parameters('postalCode')]" },
+                { "name": "BILLETTO_MACROREGION", "value": "[parameters('macroregion')]" },
+                { "name": "BILLETTO_REGION", "value": "[parameters('region')]" },
+                { "name": "BILLETTO_SUBREGION", "value": "[parameters('subregion')]" },
+                { "name": "BILLETTO_ORGANIZER_ID", "value": "[parameters('organizerId')]" },
+                { "name": "BILLETTO_EVENT_TYPE", "value": "[parameters('eventType')]" },
+                { "name": "BILLETTO_CATEGORY", "value": "[parameters('category')]" },
+                { "name": "BILLETTO_SUBCATEGORY", "value": "[parameters('subcategory')]" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -72,6 +72,24 @@ docker run --rm \
     ghcr.io/clemensv/real-time-sources-billetto:latest
 ```
 
+### With Azure Container Instances
+
+An ARM template is included as [azure-template.json](azure-template.json). It
+exposes the Billetto filter parameters as optional template parameters with
+descriptions that explain when to leave them blank and when to use observed
+values such as `region`, `category`, or `eventType`.
+
+```shell
+az deployment group create \
+    --resource-group <resource-group> \
+    --template-file azure-template.json \
+    --parameters \
+        connectionString='<event-hubs-or-kafka-connection-string>' \
+        billettoApiKeypair='<key_id>:<secret>' \
+        region='Midtjylland' \
+        category='music'
+```
+
 ### List Events (Diagnostic)
 
 ```shell

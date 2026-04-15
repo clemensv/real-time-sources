@@ -129,50 +129,50 @@ def _add_filter_arguments(parser: argparse.ArgumentParser) -> None:
         "--postal-code",
         type=str,
         default=None,
-        help="Filter events by postal code",
+        help="Limit events to a specific postal code returned by Billetto's public feed.",
     )
     parser.add_argument(
         "--macroregion",
         type=str,
         default=None,
-        help="Filter events by macroregion",
+        help="Limit events to a Billetto macroregion such as Danmark or Södra Sverige.",
     )
     parser.add_argument(
         "--region",
         type=str,
         default=None,
-        help="Filter events by region",
+        help="Limit events to a Billetto region such as Hovedstaden or Midtjylland.",
     )
     parser.add_argument(
         "--subregion",
         type=str,
         default=None,
-        help="Filter events by subregion",
+        help="Limit events to a Billetto subregion such as Byen København or Østjylland.",
     )
     parser.add_argument(
         "--organizer-id",
         type=str,
         default=None,
-        help="Filter events by organizer ID",
+        help="Limit events to one Billetto organizer ID.",
     )
     parser.add_argument(
         "--event-type",
         dest="event_type",
         type=str,
         default=None,
-        help="Filter events by Billetto event type",
+        help="Limit events by Billetto event type such as concert, seminar, or festival.",
     )
     parser.add_argument(
         "--category",
         type=str,
         default=None,
-        help="Filter events by Billetto category",
+        help="Limit events by Billetto category such as music, sports, or performing_arts.",
     )
     parser.add_argument(
         "--subcategory",
         type=str,
         default=None,
-        help="Filter events by Billetto subcategory",
+        help="Limit events by Billetto subcategory such as pop, theatre, or cycling.",
     )
 
 
@@ -554,72 +554,81 @@ class BillettoPoller:
 def main() -> None:
     """Main entry point for the Billetto bridge."""
     parser = argparse.ArgumentParser(
-        description="Billetto public events bridge to Apache Kafka"
+        description="Poll Billetto public events and publish them as CloudEvents to Kafka.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     subparsers = parser.add_subparsers(dest="command")
 
-    feed_parser = subparsers.add_parser("feed", help="Poll Billetto and emit events to Kafka")
+    feed_parser = subparsers.add_parser(
+        "feed",
+        help="Continuously poll Billetto and emit event telemetry to Kafka.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     feed_parser.add_argument(
         "--connection-string",
         type=str,
-        help="Kafka connection string (plain BootstrapServer= or Azure Event Hubs format)",
+        help="Kafka, Event Hubs, or Fabric connection string. EntityPath becomes the topic unless --topic overrides it.",
     )
     feed_parser.add_argument(
         "--topic",
         type=str,
         default=None,
-        help=f"Kafka topic name (default: {DEFAULT_TOPIC} or from connection string EntityPath)",
+        help="Kafka topic override. Use this only when you do not want the EntityPath from the connection string.",
     )
     feed_parser.add_argument(
         "--polling-interval",
         type=int,
         default=None,
-        help=f"Seconds between polls (default: {DEFAULT_POLLING_INTERVAL})",
+        help="Seconds between Billetto poll cycles.",
     )
     feed_parser.add_argument(
         "--state-file",
         type=str,
         default="",
-        help="Path to JSON file for persisting event deduplication state",
+        help="Path to the JSON file that stores event dedupe state across restarts.",
     )
     feed_parser.add_argument(
         "--api-keypair",
         type=str,
         default=None,
-        help="Billetto API keypair in key_id:secret format",
+        help="Billetto API keypair in key_id:secret form. Falls back to BILLETTO_API_KEYPAIR.",
     )
     feed_parser.add_argument(
         "--base-url",
         type=str,
         default=None,
-        help=f"Billetto API base URL (default: {DEFAULT_BASE_URL})",
+        help="Billetto API base URL. Change this when you want a different Billetto domain such as billetto.co.uk.",
     )
     feed_parser.add_argument(
         "--log-level",
         type=str,
         default="INFO",
-        help="Logging level (default: INFO)",
+        help="Python logging level such as DEBUG, INFO, WARNING, or ERROR.",
     )
     _add_filter_arguments(feed_parser)
 
-    list_parser = subparsers.add_parser("list", help="List upcoming events from Billetto")
+    list_parser = subparsers.add_parser(
+        "list",
+        help="Fetch one page of Billetto events and print a readable summary.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     list_parser.add_argument(
         "--api-keypair",
         type=str,
         default=None,
-        help="Billetto API keypair in key_id:secret format",
+        help="Billetto API keypair in key_id:secret form. Falls back to BILLETTO_API_KEYPAIR.",
     )
     list_parser.add_argument(
         "--base-url",
         type=str,
         default=None,
-        help=f"Billetto API base URL (default: {DEFAULT_BASE_URL})",
+        help="Billetto API base URL. Change this when you want a different Billetto domain such as billetto.co.uk.",
     )
     list_parser.add_argument(
         "--limit",
         type=int,
         default=10,
-        help="Maximum number of events to list (default: 10)",
+        help="Maximum number of events to request and print from the first page.",
     )
     _add_filter_arguments(list_parser)
 
