@@ -87,8 +87,22 @@
         <button class="deploy-btn" id="btn-container-eh" title="Deploy container with a new Event Hub namespace">
           Container + Event Hubs
         </button>
-        <button class="deploy-btn" id="btn-container-eh-adx" title="Deploy container with Event Hubs and Fabric Event Stream + KQL database">
-          Container + Event Hubs + Fabric
+      </div>
+      <div class="deploy-bar deploy-bar-fabric" id="deploy-bar-fabric" style="display:none;">
+        <span class="deploy-label">
+          <svg class="fabric-logo" viewBox="0 0 48 48" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="fab-g1" x1="10" y1="4" x2="38" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e77b2b"/><stop offset="1" stop-color="#d14a17"/></linearGradient>
+              <linearGradient id="fab-g2" x1="24" y1="4" x2="24" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fbbd42"/><stop offset="1" stop-color="#e77b2b"/></linearGradient>
+            </defs>
+            <path d="M20 4h17.5a2.5 2.5 0 012.5 2.5V22L20 4z" fill="url(#fab-g2)"/>
+            <path d="M8 26l12-22 20 18v15.5a2.5 2.5 0 01-2.5 2.5H10.5A2.5 2.5 0 018 39.5V26z" fill="url(#fab-g1)"/>
+            <path d="M20 4L8 26h14l18-4L20 4z" fill="#fff" fill-opacity=".25"/>
+          </svg>
+          Deploy to Fabric:
+        </span>
+        <button class="deploy-btn deploy-btn-fabric" id="btn-container-eh-adx" title="Deploy container with Event Hubs, Fabric Event Stream, and KQL database">
+          Container + Event Hubs + Event Stream + KQL Database
         </button>
       </div>
       <div id="content-area" class="content-area">

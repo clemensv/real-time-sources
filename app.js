@@ -129,6 +129,7 @@ const $list      = document.getElementById("source-list");
 const $search    = document.getElementById("search-box");
 const $content   = document.getElementById("content-area");
 const $deployBar = document.getElementById("deploy-bar");
+const $deployBarFabric = document.getElementById("deploy-bar-fabric");
 const $btnContainer = document.getElementById("btn-container");
 const $btnContainerEH = document.getElementById("btn-container-eh");
 const $btnFabric = document.getElementById("btn-container-eh-adx");
@@ -206,6 +207,7 @@ async function selectSource(s) {
   activeSource = s.id;
   renderList();
   $deployBar.style.display = "flex";
+  $deployBarFabric.style.display = "flex";
 
   // wire deploy buttons
   $btnContainer.onclick   = () => openDeployForm(s, "container");
@@ -323,8 +325,6 @@ function renderDeployForm(source, mode, templateParams) {
       "", "Fabric workspace GUID", true));
     fabSection.appendChild(makeField("eventhouseId", "Eventhouse ID", "text",
       "", "Fabric Eventhouse GUID", true));
-    fabSection.appendChild(makeField("capacityId", "Capacity ID", "text",
-      "", "Fabric capacity GUID", true));
     fabSection.appendChild(makeField("databaseName", "KQL Database Name", "text",
       source.id.replace(/-/g, "_"), "Name for the KQL database", false));
     $deployForm.appendChild(fabSection);
@@ -407,16 +407,15 @@ function launchCloudShell(source, mode) {
   if (mode === "fabric") {
     const wsId = getValue("workspaceId");
     const ehId = getValue("eventhouseId");
-    const capId = getValue("capacityId");
-    if (!wsId || !ehId || !capId) {
-      alert("Workspace ID, Eventhouse ID, and Capacity ID are required for Fabric deployment.");
+    if (!wsId || !ehId) {
+      alert("Workspace ID and Eventhouse ID are required for Fabric deployment.");
       return;
     }
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
 
     // Collect any extra ARM params for the template
     const extraParams = collectExtraParams(["resourceGroup", "location",
-      "workspaceId", "eventhouseId", "capacityId", "databaseName"]);
+      "workspaceId", "eventhouseId", "databaseName"]);
 
     cmd = [
       `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1`,
@@ -426,7 +425,6 @@ function launchCloudShell(source, mode) {
       `  -Location '${loc}'`,
       `  -WorkspaceId '${wsId}'`,
       `  -EventhouseId '${ehId}'`,
-      `  -CapacityId '${capId}'`,
       `  -DatabaseName '${dbName}'`,
     ].join(" `\n");
   } else {

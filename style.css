@@ -346,6 +346,19 @@ a:hover { text-decoration: underline; }
   cursor: not-allowed;
 }
 
+.deploy-btn-fabric {
+  color: #e77b2b;
+  background: rgba(231, 123, 43, .12);
+  border-color: #e77b2b;
+}
+[data-theme="light"] .deploy-btn-fabric {
+  color: #b85a10;
+  background: rgba(231, 123, 43, .08);
+  border-color: #d14a17;
+}
+
+.deploy-bar-fabric { border-top: none; }
+
 .content-area {
   flex: 1;
   overflow-y: auto;
