@@ -128,66 +128,52 @@ function Invoke-FabricApi {
     return $null
 }
 
-function Get-KustoToken {
-    # Cloud Shell's az CLI uses MSI which doesn't support Kusto audiences.
-    # Cloud Shell's Az PowerShell module may have a context but with a
-    # credential type that also can't get Kusto tokens.
-    # Strategy: try every available method, log what happens.
+function Install-KustoCli {
+    # Install Kusto CLI from NuGet package if not already available
+    if (Get-Command kusto.cli -ErrorAction SilentlyContinue) { return }
+    if (Get-Command Kusto.Cli -ErrorAction SilentlyContinue) { return }
 
-    $methods = @()
+    Write-Host "  Installing Kusto CLI..." -ForegroundColor Yellow
+    $kustoDir = Join-Path $TempDir "KustoCLI"
+    if (-not (Test-Path $kustoDir)) { New-Item -ItemType Directory -Path $kustoDir -Force | Out-Null }
 
-    # Method 1: Get-AzAccessToken (if Az module is connected)
-    foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
-        try {
-            $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
-            if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) {
-                Write-Host "  Auth: Get-AzAccessToken ($aud)" -ForegroundColor Gray
-                return $tokenObj.Token
-            }
-            $methods += "Get-AzAccessToken($aud): empty token"
-        } catch {
-            $methods += "Get-AzAccessToken($aud): $($_.Exception.Message)"
-        }
+    # Download NuGet package
+    $pkgUrl = "https://www.nuget.org/api/v2/package/Microsoft.Azure.Kusto.Tools"
+    $pkgPath = Join-Path $TempDir "kusto-tools.nupkg"
+    if (-not (Test-Path $pkgPath)) {
+        Invoke-WebRequest -Uri $pkgUrl -OutFile $pkgPath -UseBasicParsing
     }
 
-    # Method 2: az CLI with each audience
-    foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
-        $output = az account get-access-token --resource $aud --query accessToken -o tsv 2>&1
-        if ($LASTEXITCODE -eq 0 -and $output -and $output.Length -gt 100 -and $output -notmatch "ERROR|WARNING") {
-            Write-Host "  Auth: az CLI ($aud)" -ForegroundColor Gray
-            return ($output | Out-String).Trim()
-        }
-        $methods += "az-cli($aud): exit=$LASTEXITCODE"
+    # Extract
+    $extractDir = Join-Path $TempDir "kusto-tools-extracted"
+    if (-not (Test-Path $extractDir)) {
+        Expand-Archive -Path $pkgPath -DestinationPath $extractDir -Force
     }
 
-    # Method 3: Connect-AzAccount WITHOUT -Identity to use interactive user credential
-    # Cloud Shell MSI doesn't support Kusto audiences, but the interactive
-    # user credential does. Connect-AzAccount (no -Identity) in Cloud Shell
-    # reconnects as the logged-in user.
-    try {
-        Write-Host "  Re-authenticating as interactive user..." -ForegroundColor Gray
-        Connect-AzAccount -ErrorAction Stop | Out-Null
-        if ($SubscriptionId) {
-            Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction SilentlyContinue | Out-Null
-        }
-        foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
-            try {
-                $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
-                if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) {
-                    Write-Host "  Auth: Get-AzAccessToken after Connect-AzAccount ($aud)" -ForegroundColor Gray
-                    return $tokenObj.Token
-                }
-            } catch {
-                $methods += "Post-Connect($aud): $($_.Exception.Message)"
-            }
-        }
-    } catch {
-        $methods += "Connect-AzAccount: $($_.Exception.Message)"
+    # Find the right tools directory
+    $isLinux = $PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/"
+    $toolsSubDir = if ($isLinux) { "net6.0" } else { "net472" }
+    $toolsPath = Join-Path $extractDir "tools" $toolsSubDir
+    if (-not (Test-Path $toolsPath)) {
+        # Try alternate layout
+        $toolsPath = Get-ChildItem -Path $extractDir -Recurse -Directory -Filter $toolsSubDir | Select-Object -First 1
+        if ($toolsPath) { $toolsPath = $toolsPath.FullName }
+    }
+    if (-not $toolsPath -or -not (Test-Path $toolsPath)) {
+        throw "Could not find Kusto CLI tools in extracted package"
     }
 
-    Write-Host "  All authentication methods failed:" -ForegroundColor Red
-    $methods | ForEach-Object { Write-Host "    $_" -ForegroundColor Red }
-    throw "Cannot get Kusto token. Run 'Connect-AzAccount' manually, then retry."
+    # Make executable on Linux
+    if ($isLinux) {
+        $kustoBin = Join-Path $toolsPath "Kusto.Cli"
+        if (Test-Path $kustoBin) { chmod +x $kustoBin 2>$null }
+    }
+
+    # Add to PATH for this session
+    if (-not $env:PATH.Contains($toolsPath)) {
+        $env:PATH = "$toolsPath$([IO.Path]::PathSeparator)$env:PATH"
+    }
+    Write-Host "  Kusto CLI installed" -ForegroundColor Green
 }
 
 function Invoke-KqlScript {
@@ -199,30 +185,53 @@ function Invoke-KqlScript {
     )
     Write-Host "  Applying $Label..." -ForegroundColor Yellow
 
-    $kustoToken = Get-KustoToken
-
-    $body = @{
-        csl = ".execute database script <|`n$ScriptContent"
-        db  = $Database
+    # First try direct REST with a token (works outside Cloud Shell)
+    $kustoToken = $null
+    foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
+        try {
+            $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
+            if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) { $kustoToken = $tokenObj.Token; break }
+        } catch { }
+        $ErrorActionPreference = "SilentlyContinue"
+        $t = az account get-access-token --resource $aud --query accessToken -o tsv 2>$null
+        $ErrorActionPreference = "Stop"
+        if ($LASTEXITCODE -eq 0 -and $t -and $t.Length -gt 100) { $kustoToken = $t.Trim(); break }
     }
-    $headers = @{
-        "Authorization" = "Bearer $kustoToken"
-        "Content-Type"  = "application/json"
-    }
-    $jsonBody = $body | ConvertTo-Json -Compress
-    $result = Invoke-RestMethod `
-        -Uri "$QueryUri/v1/rest/mgmt" `
-        -Method Post `
-        -Headers $headers `
-        -Body $jsonBody `
-        -TimeoutSec 120
 
-    $rows = @()
-    if ($result.Tables.Count -gt 0) { $rows = $result.Tables[0].Rows }
-    $failed = @($rows | Where-Object { $_[3] -ne "Completed" })
-    if ($failed.Count -gt 0) {
-        Write-Warning "Some KQL commands reported non-Completed status for $Label"
-        $failed | ForEach-Object { Write-Warning "  $_" }
+    if ($kustoToken) {
+        # Direct REST call with token
+        $body = @{
+            csl = ".execute database script <|`n$ScriptContent"
+            db  = $Database
+        }
+        $headers = @{
+            "Authorization" = "Bearer $kustoToken"
+            "Content-Type"  = "application/json"
+        }
+        $result = Invoke-RestMethod `
+            -Uri "$QueryUri/v1/rest/mgmt" `
+            -Method Post -Headers $headers `
+            -Body ($body | ConvertTo-Json -Compress) `
+            -TimeoutSec 120
+
+        $rows = @()
+        if ($result.Tables.Count -gt 0) { $rows = $result.Tables[0].Rows }
+        $failed = @($rows | Where-Object { $_[3] -ne "Completed" })
+        if ($failed.Count -gt 0) {
+            Write-Warning "Some KQL commands reported non-Completed status for $Label"
+        }
+    } else {
+        # Fall back to Kusto CLI with federated auth
+        Install-KustoCli
+        $scriptFile = Join-Path $TempDir "kql_script_$(Get-Random).kql"
+        [System.IO.File]::WriteAllText($scriptFile, $ScriptContent, [System.Text.UTF8Encoding]::new($false))
+
+        $cliName = if ($PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/") { "Kusto.Cli" } else { "kusto.cli" }
+        $connStr = "$QueryUri/$Database;fed=true"
+        $output = & $cliName $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Kusto CLI failed for $Label`n$($output | Out-String)"
+        }
     }
     Write-OK "Applied $Label"
 }
