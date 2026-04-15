@@ -140,8 +140,9 @@ function Get-KustoToken {
     }
     # MSI failed — need interactive login for this scope
     Write-Host "  Kusto requires interactive authentication..." -ForegroundColor Yellow
-    Write-Host "  Running: az login --scope https://kusto.fabric.microsoft.com/.default" -ForegroundColor Gray
-    az login --scope "https://kusto.fabric.microsoft.com/.default" 2>&1 | Out-Null
+    Write-Host "  A browser window will open or a device code will be shown below." -ForegroundColor Gray
+    Write-Host ""
+    az login --scope "https://kusto.fabric.microsoft.com/.default"
     if ($SubscriptionId) {
         az account set --subscription $SubscriptionId 2>&1 | Out-Null
     }
