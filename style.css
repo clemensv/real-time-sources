@@ -347,14 +347,14 @@ a:hover { text-decoration: underline; }
 }
 
 .deploy-btn-fabric {
-  color: #e77b2b;
-  background: rgba(231, 123, 43, .12);
-  border-color: #e77b2b;
+  color: #2AAC94;
+  background: rgba(42, 172, 148, .12);
+  border-color: #2AAC94;
 }
 [data-theme="light"] .deploy-btn-fabric {
-  color: #b85a10;
-  background: rgba(231, 123, 43, .08);
-  border-color: #d14a17;
+  color: #117865;
+  background: rgba(42, 172, 148, .08);
+  border-color: #117865;
 }
 
 .deploy-bar-fabric { border-top: none; }
