@@ -15,17 +15,22 @@ integration. Runs in Azure Cloud Shell.
 └──────────────────────────┬─────────────────────────────────────┘
                            │
 ┌──────────────────────────▼─────────────────────────────────────┐
-│  Step 2: Fabric REST API                                       │
+│  Steps 2–3: Fabric REST API + KQL                              │
 │   → KQL database in existing Eventhouse                        │
 │   → _cloudevents_dispatch table + typed tables + update         │
 │     policies + materialized views (from source kql/ script)    │
 └──────────────────────────┬─────────────────────────────────────┘
                            │
 ┌──────────────────────────▼─────────────────────────────────────┐
-│  Step 3: Fabric Event Stream                                   │
+│  Steps 4–5: Fabric Event Stream                                │
 │   → Custom Endpoint source                                     │
-│   → Default stream                                             │
-│   → Eventhouse destination → _cloudevents_dispatch              │
+│   → Default stream → Eventhouse → _cloudevents_dispatch         │
+└──────────────────────────┬─────────────────────────────────────┘
+                           │
+┌──────────────────────────▼─────────────────────────────────────┐
+│  Steps 6–7: Wire it up                                         │
+│   → Retrieve Custom Endpoint connection string                  │
+│   → Update ACI container to send directly to Fabric             │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -34,6 +39,7 @@ integration. Runs in Azure Cloud Shell.
 - Azure Cloud Shell (PowerShell) — already authenticated via `az`
 - An existing Microsoft Fabric **Workspace** (you need the workspace ID)
 - An existing **Eventhouse** in that workspace (you need the eventhouse ID)
+- The **Capacity ID** for the workspace (from Fabric admin portal or workspace settings)
 - Contributor access to an Azure subscription / resource group
 
 ## Usage
@@ -48,18 +54,9 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
     -Source pegelonline `
     -ResourceGroup rg-streams `
     -WorkspaceId "c98acd97-4363-4296-8323-b6ab21e53903" `
-    -EventhouseId "dbfd2819-2879-4ae7-bff2-95619ad7b8e7"
+    -EventhouseId "dbfd2819-2879-4ae7-bff2-95619ad7b8e7" `
+    -CapacityId "a1b2c3d4-5678-9abc-def0-123456789abc"
 ```
-
-### One-click launch
-
-Open Cloud Shell with the script pre-loaded:
-
-```
-https://shell.azure.com/powershell
-```
-
-Then paste the commands above.
 
 ### Parameters
 
@@ -70,25 +67,25 @@ Then paste the commands above.
 | `-Location` | No | RG location | Azure region |
 | `-WorkspaceId` | Yes | — | Fabric workspace ID (GUID) |
 | `-EventhouseId` | Yes | — | Fabric Eventhouse ID (GUID) |
+| `-CapacityId` | Yes | — | Fabric capacity ID (GUID) |
 | `-DatabaseName` | No | Source name | KQL database name |
 | `-SkipArm` | No | `$false` | Skip ARM deployment (if ACI + EH already exist) |
 
-## After deployment
+## What happens end-to-end
 
-The script creates the ACI container with an Event Hub connection string.
-To wire data through Fabric:
+The script deploys the ACI container initially connected to Event Hubs (via
+the ARM template), then sets up the Fabric side. Once the Event Stream is
+configured, the script retrieves the Custom Endpoint connection string and
+updates the ACI container to send data directly to Fabric. If the connection
+string retrieval fails, the script provides manual instructions as a fallback.
 
-1. Open the Event Stream in the Fabric portal
-2. Either:
-   - **Add an Event Hub source** pointing at the deployed Event Hub
-     (the bridge is already sending data there), or
-   - Copy the **Custom Endpoint connection string** and update the ACI
-     container to send directly to Fabric
+Data flows into the `_cloudevents_dispatch` landing table, and KQL update
+policies automatically fan events out into per-type tables with materialized
+views for latest-state queries.
 
 ## Sources requiring API keys
 
-These sources require an additional secret parameter during ARM deployment.
-The script will prompt for it:
+These sources require an additional secret during ARM deployment:
 
 | Source | Environment Variable | How to obtain |
 |--------|---------------------|---------------|
