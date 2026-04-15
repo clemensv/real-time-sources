@@ -129,28 +129,27 @@ function Invoke-FabricApi {
 }
 
 function Get-KustoToken {
-    # Cloud Shell MSI does not support the Kusto Fabric audience.
-    # Try MSI first; on failure, prompt the user to authenticate interactively.
-    $ErrorActionPreference = "SilentlyContinue"
-    $token = $null
-    $output = az account get-access-token --resource "https://kusto.fabric.microsoft.com" --query accessToken -o tsv 2>&1
-    $ErrorActionPreference = "Stop"
-    if ($LASTEXITCODE -eq 0 -and $output -and $output -notmatch "ERROR|WARNING.*credential") {
-        return $output.Trim()
+    # In Cloud Shell, the user is already logged in interactively.
+    # Use Get-AzAccessToken which respects the user session, unlike
+    # az account get-access-token which may route through MSI.
+    try {
+        $tokenObj = Get-AzAccessToken -ResourceUrl "https://kusto.fabric.microsoft.com"
+        if ($tokenObj -and $tokenObj.Token) {
+            return $tokenObj.Token
+        }
+    } catch {
+        # Get-AzAccessToken not available or failed — try az CLI
     }
-    # MSI failed — need interactive login for this scope
-    Write-Host "  Kusto requires interactive authentication..." -ForegroundColor Yellow
-    Write-Host "  A browser window will open or a device code will be shown below." -ForegroundColor Gray
-    Write-Host ""
-    az login --scope "https://kusto.fabric.microsoft.com/.default"
-    if ($SubscriptionId) {
-        az account set --subscription $SubscriptionId 2>&1 | Out-Null
+    # Fallback: az CLI with explicit tenant
+    $tenantId = az account show --query tenantId -o tsv 2>$null
+    $token = az account get-access-token `
+        --resource "https://kusto.fabric.microsoft.com" `
+        --tenant $tenantId `
+        --query accessToken -o tsv 2>&1
+    if ($LASTEXITCODE -eq 0 -and $token -and $token -notmatch "ERROR") {
+        return $token.Trim()
     }
-    $token = az account get-access-token --resource "https://kusto.fabric.microsoft.com" --query accessToken -o tsv 2>&1
-    if ($LASTEXITCODE -ne 0 -or -not $token) {
-        throw "Failed to get Kusto access token. Try running manually:`n  az login --scope 'https://kusto.fabric.microsoft.com/.default'"
-    }
-    return $token.Trim()
+    throw "Failed to get Kusto access token. Try: Connect-AzAccount; Get-AzAccessToken -ResourceUrl 'https://kusto.fabric.microsoft.com'"
 }
 
 function Invoke-KqlScript {
