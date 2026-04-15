@@ -1,0 +1,26 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "canada-eccc-wateroffice"
+version = "0.1.0"
+description = "Canada ECCC Water Survey of Canada hydrometric bridge to Apache Kafka"
+authors = ["Clemens Vasters"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+canada_eccc_wateroffice_producer_data = {path = "canada_eccc_wateroffice_producer/canada_eccc_wateroffice_producer_data"}
+canada_eccc_wateroffice_producer_kafka_producer = {path = "canada_eccc_wateroffice_producer/canada_eccc_wateroffice_producer_kafka_producer"}
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.2"
+pytest-cov = ">=5.0.0"
+
+[tool.poetry.scripts]
+canada-eccc-wateroffice = "canada_eccc_wateroffice.canada_eccc_wateroffice:main"

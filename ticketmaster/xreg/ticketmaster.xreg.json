@@ -1,0 +1,655 @@
+{
+  "endpoints": {
+    "Ticketmaster.Events.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ticketmaster",
+          "key": "{event_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Ticketmaster.Events"
+      ]
+    },
+    "Ticketmaster.Reference.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ticketmaster",
+          "key": "{entity_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Ticketmaster.Reference"
+      ]
+    }
+  },
+  "messagegroups": {
+    "Ticketmaster.Events": {
+      "messages": {
+        "Ticketmaster.Events.Event": {
+          "name": "Event",
+          "envelope": "CloudEvents/1.0",
+          "description": "A Ticketmaster event representing a concert, sports match, theater performance, or other live public event. Emitted when a new event is discovered or when an existing event's status or schedule changes.",
+          "envelopemetadata": {
+            "type": {
+              "value": "Ticketmaster.Events.Event"
+            },
+            "source": {
+              "value": "https://app.ticketmaster.com/discovery/v2/events",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{event_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{start_datetime_utc}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Events.Event"
+        }
+      }
+    },
+    "Ticketmaster.Reference": {
+      "messages": {
+        "Ticketmaster.Reference.Venue": {
+          "name": "Venue",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for a Ticketmaster venue. Emitted at bridge startup and refreshed periodically. Carries the stable venue identifier, location, address, timezone, and capacity information.",
+          "envelopemetadata": {
+            "type": {
+              "value": "Ticketmaster.Reference.Venue"
+            },
+            "source": {
+              "value": "https://app.ticketmaster.com/discovery/v2/venues",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{entity_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Venue"
+        },
+        "Ticketmaster.Reference.Attraction": {
+          "name": "Attraction",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for a Ticketmaster attraction (performer, artist, sports team, or production). Emitted at bridge startup and refreshed periodically. Carries stable attraction identifier, name, and classification.",
+          "envelopemetadata": {
+            "type": {
+              "value": "Ticketmaster.Reference.Attraction"
+            },
+            "source": {
+              "value": "https://app.ticketmaster.com/discovery/v2/attractions",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{entity_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction"
+        },
+        "Ticketmaster.Reference.Classification": {
+          "name": "Classification",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for a Ticketmaster classification segment (e.g. Music, Sports, Arts & Theatre). Emitted at bridge startup and refreshed daily. Carries the stable segment identifier, name, and the primary genre and subgenre under that segment.",
+          "envelopemetadata": {
+            "type": {
+              "value": "Ticketmaster.Reference.Classification"
+            },
+            "source": {
+              "value": "https://app.ticketmaster.com/discovery/v2/classifications",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{entity_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Classification"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "Ticketmaster.avro": {
+      "schemas": {
+        "Ticketmaster.Events.Event": {
+          "name": "Event",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Event",
+                "namespace": "Ticketmaster.Events",
+                "doc": "A Ticketmaster event representing a concert, sports match, theater performance, or other live public event.",
+                "fields": [
+                  {"name": "event_id", "type": "string", "doc": "Stable Ticketmaster event identifier."},
+                  {"name": "name", "type": "string", "doc": "Human-readable event name."},
+                  {"name": "type", "type": ["null", "string"], "default": null, "doc": "Ticketmaster resource type discriminator."},
+                  {"name": "url", "type": ["null", "string"], "default": null, "doc": "URL to the event page on Ticketmaster.com."},
+                  {"name": "locale", "type": ["null", "string"], "default": null, "doc": "BCP-47 locale string for the event page."},
+                  {"name": "start_date", "type": ["null", "string"], "default": null, "doc": "Local calendar date the event starts, YYYY-MM-DD."},
+                  {"name": "start_time", "type": ["null", "string"], "default": null, "doc": "Local clock time the event starts, HH:MM:SS."},
+                  {"name": "start_datetime_local", "type": ["null", "string"], "default": null, "doc": "Combined local start date and time as ISO 8601."},
+                  {"name": "start_datetime_utc", "type": ["null", "string"], "default": null, "doc": "Start date and time in UTC as ISO 8601."},
+                  {"name": "status", "type": ["null", "string"], "default": null, "doc": "On-sale status: onsale, offsale, cancelled, postponed, rescheduled."},
+                  {"name": "segment_id", "type": ["null", "string"], "default": null, "doc": "Stable classification segment identifier."},
+                  {"name": "segment_name", "type": ["null", "string"], "default": null, "doc": "Classification segment name."},
+                  {"name": "genre_id", "type": ["null", "string"], "default": null, "doc": "Stable genre identifier within the segment."},
+                  {"name": "genre_name", "type": ["null", "string"], "default": null, "doc": "Genre name."},
+                  {"name": "subgenre_id", "type": ["null", "string"], "default": null, "doc": "Stable subgenre identifier."},
+                  {"name": "subgenre_name", "type": ["null", "string"], "default": null, "doc": "Subgenre name."},
+                  {"name": "venue_id", "type": ["null", "string"], "default": null, "doc": "Stable venue identifier."},
+                  {"name": "venue_name", "type": ["null", "string"], "default": null, "doc": "Venue name."},
+                  {"name": "venue_city", "type": ["null", "string"], "default": null, "doc": "City where the venue is located."},
+                  {"name": "venue_state_code", "type": ["null", "string"], "default": null, "doc": "ISO 3166-2 state or province code."},
+                  {"name": "venue_country_code", "type": ["null", "string"], "default": null, "doc": "ISO 3166-1 alpha-2 country code."},
+                  {"name": "venue_latitude", "type": ["null", "double"], "default": null, "doc": "WGS-84 latitude of the venue."},
+                  {"name": "venue_longitude", "type": ["null", "double"], "default": null, "doc": "WGS-84 longitude of the venue."},
+                  {"name": "price_min", "type": ["null", "double"], "default": null, "doc": "Minimum face-value ticket price."},
+                  {"name": "price_max", "type": ["null", "double"], "default": null, "doc": "Maximum face-value ticket price."},
+                  {"name": "currency", "type": ["null", "string"], "default": null, "doc": "ISO 4217 currency code for price fields."},
+                  {"name": "attraction_ids", "type": ["null", "string"], "default": null, "doc": "JSON-encoded array of attraction identifiers."},
+                  {"name": "attraction_names", "type": ["null", "string"], "default": null, "doc": "JSON-encoded array of attraction names."},
+                  {"name": "onsale_start_datetime", "type": ["null", "string"], "default": null, "doc": "UTC datetime when public ticket sales open."},
+                  {"name": "onsale_end_datetime", "type": ["null", "string"], "default": null, "doc": "UTC datetime when public ticket sales close."},
+                  {"name": "info", "type": ["null", "string"], "default": null, "doc": "General informational text about the event."},
+                  {"name": "please_note", "type": ["null", "string"], "default": null, "doc": "Important notes for ticket purchasers."}
+                ]
+              }
+            }
+          }
+        },
+        "Ticketmaster.Reference.Venue": {
+          "name": "Venue",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Venue",
+                "namespace": "Ticketmaster.Reference",
+                "doc": "Reference data for a Ticketmaster venue.",
+                "fields": [
+                  {"name": "entity_id", "type": "string", "doc": "Stable Ticketmaster venue identifier."},
+                  {"name": "name", "type": "string", "doc": "Human-readable name of the venue."},
+                  {"name": "url", "type": ["null", "string"], "default": null, "doc": "URL to the venue page on Ticketmaster.com."},
+                  {"name": "locale", "type": ["null", "string"], "default": null, "doc": "BCP-47 locale string."},
+                  {"name": "timezone", "type": ["null", "string"], "default": null, "doc": "IANA timezone database name."},
+                  {"name": "city", "type": ["null", "string"], "default": null, "doc": "City name."},
+                  {"name": "state_code", "type": ["null", "string"], "default": null, "doc": "ISO 3166-2 state or province code."},
+                  {"name": "country_code", "type": ["null", "string"], "default": null, "doc": "ISO 3166-1 alpha-2 country code."},
+                  {"name": "address", "type": ["null", "string"], "default": null, "doc": "Street address line 1."},
+                  {"name": "postal_code", "type": ["null", "string"], "default": null, "doc": "Postal or ZIP code."},
+                  {"name": "latitude", "type": ["null", "double"], "default": null, "doc": "WGS-84 latitude in decimal degrees."},
+                  {"name": "longitude", "type": ["null", "double"], "default": null, "doc": "WGS-84 longitude in decimal degrees."}
+                ]
+              }
+            }
+          }
+        },
+        "Ticketmaster.Reference.Attraction": {
+          "name": "Attraction",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Attraction",
+                "namespace": "Ticketmaster.Reference",
+                "doc": "Reference data for a Ticketmaster attraction (performer, artist, sports team, or production).",
+                "fields": [
+                  {"name": "entity_id", "type": "string", "doc": "Stable Ticketmaster attraction identifier."},
+                  {"name": "name", "type": "string", "doc": "Human-readable name of the attraction."},
+                  {"name": "url", "type": ["null", "string"], "default": null, "doc": "URL to the attraction page on Ticketmaster.com."},
+                  {"name": "locale", "type": ["null", "string"], "default": null, "doc": "BCP-47 locale string."},
+                  {"name": "segment_id", "type": ["null", "string"], "default": null, "doc": "Stable classification segment identifier."},
+                  {"name": "segment_name", "type": ["null", "string"], "default": null, "doc": "Classification segment name."},
+                  {"name": "genre_id", "type": ["null", "string"], "default": null, "doc": "Stable genre identifier."},
+                  {"name": "genre_name", "type": ["null", "string"], "default": null, "doc": "Genre name."},
+                  {"name": "subgenre_id", "type": ["null", "string"], "default": null, "doc": "Stable subgenre identifier."},
+                  {"name": "subgenre_name", "type": ["null", "string"], "default": null, "doc": "Subgenre name."}
+                ]
+              }
+            }
+          }
+        },
+        "Ticketmaster.Reference.Classification": {
+          "name": "Classification",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Classification",
+                "namespace": "Ticketmaster.Reference",
+                "doc": "Reference data for a Ticketmaster classification segment.",
+                "fields": [
+                  {"name": "entity_id", "type": "string", "doc": "Stable Ticketmaster segment identifier."},
+                  {"name": "name", "type": "string", "doc": "Human-readable segment name."},
+                  {"name": "type", "type": ["null", "string"], "default": null, "doc": "Resource type discriminator."},
+                  {"name": "primary_genre_id", "type": ["null", "string"], "default": null, "doc": "Stable identifier for the primary genre within this segment."},
+                  {"name": "primary_genre_name", "type": ["null", "string"], "default": null, "doc": "Human-readable primary genre name."},
+                  {"name": "primary_subgenre_id", "type": ["null", "string"], "default": null, "doc": "Stable identifier for the primary subgenre."},
+                  {"name": "primary_subgenre_name", "type": ["null", "string"], "default": null, "doc": "Human-readable primary subgenre name."}
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "Ticketmaster.jstruct": {
+      "schemas": {
+        "Ticketmaster.Events.Event": {
+          "name": "Event",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Events.Event",
+                "name": "Event",
+                "$root": "#/definitions/Ticketmaster/Events/Event",
+                "definitions": {
+                  "Ticketmaster": {
+                    "Events": {
+                      "Event": {
+                        "name": "Event",
+                        "type": "object",
+                        "description": "A Ticketmaster event representing a concert, sports match, theater performance, or other live public event. Sourced from the Discovery API v2 /events endpoint.",
+                        "properties": {
+                          "event_id": {
+                            "type": "string",
+                            "description": "Stable Ticketmaster event identifier. Globally unique across all event types (e.g. 'G5v0Z9iQkPl_2'). Used as the Kafka message key."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Human-readable event name as provided by Ticketmaster (e.g. 'Taylor Swift | The Eras Tour')."
+                          },
+                          "type": {
+                            "type": ["string", "null"],
+                            "description": "Ticketmaster resource type discriminator. Usually 'event'."
+                          },
+                          "url": {
+                            "type": ["string", "null"],
+                            "description": "URL to the event page on Ticketmaster.com where tickets can be purchased."
+                          },
+                          "locale": {
+                            "type": ["string", "null"],
+                            "description": "BCP-47 locale string for the event page (e.g. 'en-us', 'en-gb', 'de-de')."
+                          },
+                          "start_date": {
+                            "type": ["string", "null"],
+                            "description": "Local calendar date on which the event starts, in ISO 8601 YYYY-MM-DD format. May be absent for events without a confirmed date (time-to-be-announced)."
+                          },
+                          "start_time": {
+                            "type": ["string", "null"],
+                            "description": "Local clock time at which the event starts, in HH:MM:SS format. May be absent when the time is to be announced."
+                          },
+                          "start_datetime_local": {
+                            "type": ["string", "null"],
+                            "description": "Combined local start date and time as an ISO 8601 datetime string (e.g. '2024-07-20T19:30:00'). Not adjusted to UTC."
+                          },
+                          "start_datetime_utc": {
+                            "type": ["string", "null"],
+                            "description": "Start date and time expressed in UTC as an ISO 8601 datetime string (e.g. '2024-07-20T23:30:00Z'). Used as the CloudEvents time attribute."
+                          },
+                          "status": {
+                            "type": ["string", "null"],
+                            "description": "Current on-sale status of the event. Known values: 'onsale' (tickets available), 'offsale' (tickets not available), 'cancelled' (event cancelled), 'postponed' (date changed, new date not yet set), 'rescheduled' (new date confirmed)."
+                          },
+                          "segment_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable Ticketmaster classification segment identifier for this event (e.g. 'KZFzniwnSyZfZ7v7nJ' for Music). Corresponds to the top-level category."
+                          },
+                          "segment_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts & Theatre', 'Film', 'Miscellaneous')."
+                          },
+                          "genre_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable Ticketmaster genre identifier within the segment. Second level of the classification hierarchy."
+                          },
+                          "genre_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable genre name (e.g. 'Rock', 'Pop', 'Hip-Hop/Rap', 'Basketball', 'Theatre')."
+                          },
+                          "subgenre_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable Ticketmaster subgenre identifier. Third level of the classification hierarchy, below genre."
+                          },
+                          "subgenre_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable subgenre name (e.g. 'Alternative Rock', 'Dance Pop', 'NBA')."
+                          },
+                          "venue_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable Ticketmaster venue identifier for the primary venue where this event takes place. Matches entity_id in a Ticketmaster.Reference.Venue event."
+                          },
+                          "venue_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable name of the primary venue (e.g. 'Madison Square Garden')."
+                          },
+                          "venue_city": {
+                            "type": ["string", "null"],
+                            "description": "City where the venue is located."
+                          },
+                          "venue_state_code": {
+                            "type": ["string", "null"],
+                            "description": "ISO 3166-2 state or province code for the venue location (e.g. 'NY', 'CA'). May be absent for non-US/CA venues."
+                          },
+                          "venue_country_code": {
+                            "type": ["string", "null"],
+                            "description": "ISO 3166-1 alpha-2 country code for the venue location (e.g. 'US', 'GB', 'DE')."
+                          },
+                          "venue_latitude": {
+                            "type": ["double", "null"],
+                            "description": "WGS-84 latitude of the venue in decimal degrees. North is positive."
+                          },
+                          "venue_longitude": {
+                            "type": ["double", "null"],
+                            "description": "WGS-84 longitude of the venue in decimal degrees. East is positive."
+                          },
+                          "price_min": {
+                            "type": ["double", "null"],
+                            "description": "Minimum face-value ticket price in the currency indicated by the currency field. Provided by the price_ranges element in the Discovery API response when available."
+                          },
+                          "price_max": {
+                            "type": ["double", "null"],
+                            "description": "Maximum face-value ticket price in the currency indicated by the currency field. Provided by the price_ranges element in the Discovery API response when available."
+                          },
+                          "currency": {
+                            "type": ["string", "null"],
+                            "description": "ISO 4217 currency code for price_min and price_max (e.g. 'USD', 'GBP', 'EUR')."
+                          },
+                          "attraction_ids": {
+                            "type": ["string", "null"],
+                            "description": "JSON-encoded array of Ticketmaster attraction identifiers associated with this event (e.g. '[\"K8vZ91718H7\",\"K8vZ9179Ki7\"]'). Each ID corresponds to an entity_id in a Ticketmaster.Reference.Attraction reference event."
+                          },
+                          "attraction_names": {
+                            "type": ["string", "null"],
+                            "description": "JSON-encoded array of attraction names corresponding to the attraction_ids array (e.g. '[\"Taylor Swift\",\"Sabrina Carpenter\"]')."
+                          },
+                          "onsale_start_datetime": {
+                            "type": ["string", "null"],
+                            "description": "ISO 8601 UTC datetime when public ticket sales open for this event."
+                          },
+                          "onsale_end_datetime": {
+                            "type": ["string", "null"],
+                            "description": "ISO 8601 UTC datetime when public ticket sales close for this event."
+                          },
+                          "info": {
+                            "type": ["string", "null"],
+                            "description": "General informational text about the event as provided by the promoter or Ticketmaster. May include age restrictions, bag policies, or other event notes."
+                          },
+                          "please_note": {
+                            "type": ["string", "null"],
+                            "description": "Important notes for ticket purchasers, such as bag-check policies, camera restrictions, or health and safety requirements. Displayed prominently on the event page."
+                          }
+                        },
+                        "required": [
+                          "event_id",
+                          "name"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Ticketmaster.Reference.Venue": {
+          "name": "Venue",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Reference.Venue",
+                "name": "Venue",
+                "$root": "#/definitions/Ticketmaster/Reference/Venue",
+                "definitions": {
+                  "Ticketmaster": {
+                    "Reference": {
+                      "Venue": {
+                        "name": "Venue",
+                        "type": "object",
+                        "description": "Reference data for a Ticketmaster venue. Carries the venue's stable identifier, location details, timezone, and geographic coordinates as returned by the Discovery API v2 /venues endpoint.",
+                        "properties": {
+                          "entity_id": {
+                            "type": "string",
+                            "description": "Stable Ticketmaster venue identifier (e.g. 'KovZpaFVAeA'). Used as both the Kafka message key and the CloudEvents subject. Matches the venue_id field in Event records."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Human-readable name of the venue as listed on Ticketmaster (e.g. 'Madison Square Garden', 'The O2 Arena')."
+                          },
+                          "url": {
+                            "type": ["string", "null"],
+                            "description": "URL to the venue page on Ticketmaster.com."
+                          },
+                          "locale": {
+                            "type": ["string", "null"],
+                            "description": "BCP-47 locale string for the venue page (e.g. 'en-us')."
+                          },
+                          "timezone": {
+                            "type": ["string", "null"],
+                            "description": "IANA timezone database name for the venue's local time (e.g. 'America/New_York', 'Europe/London'). Used to interpret local start times in Event records."
+                          },
+                          "city": {
+                            "type": ["string", "null"],
+                            "description": "City name where the venue is located."
+                          },
+                          "state_code": {
+                            "type": ["string", "null"],
+                            "description": "ISO 3166-2 state or province code (e.g. 'NY', 'CA'). Populated for US and Canadian venues; absent for most international venues."
+                          },
+                          "country_code": {
+                            "type": ["string", "null"],
+                            "description": "ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB', 'DE', 'AU')."
+                          },
+                          "address": {
+                            "type": ["string", "null"],
+                            "description": "Street address line 1 for the venue (e.g. '4 Pennsylvania Plaza')."
+                          },
+                          "postal_code": {
+                            "type": ["string", "null"],
+                            "description": "Postal or ZIP code for the venue address."
+                          },
+                          "latitude": {
+                            "type": ["double", "null"],
+                            "description": "WGS-84 latitude of the venue in decimal degrees. North is positive."
+                          },
+                          "longitude": {
+                            "type": ["double", "null"],
+                            "description": "WGS-84 longitude of the venue in decimal degrees. East is positive."
+                          }
+                        },
+                        "required": [
+                          "entity_id",
+                          "name"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Ticketmaster.Reference.Attraction": {
+          "name": "Attraction",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Reference.Attraction",
+                "name": "Attraction",
+                "$root": "#/definitions/Ticketmaster/Reference/Attraction",
+                "definitions": {
+                  "Ticketmaster": {
+                    "Reference": {
+                      "Attraction": {
+                        "name": "Attraction",
+                        "type": "object",
+                        "description": "Reference data for a Ticketmaster attraction, which represents a performer, musical artist, sports team, theatrical production, or other headline act. Sourced from the Discovery API v2 /attractions endpoint.",
+                        "properties": {
+                          "entity_id": {
+                            "type": "string",
+                            "description": "Stable Ticketmaster attraction identifier (e.g. 'K8vZ91718H7'). Used as both the Kafka message key and the CloudEvents subject. Matches values in the attraction_ids array of Event records."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Human-readable name of the attraction as listed on Ticketmaster (e.g. 'Taylor Swift', 'Los Angeles Lakers')."
+                          },
+                          "url": {
+                            "type": ["string", "null"],
+                            "description": "URL to the attraction page on Ticketmaster.com."
+                          },
+                          "locale": {
+                            "type": ["string", "null"],
+                            "description": "BCP-47 locale string for the attraction page (e.g. 'en-us')."
+                          },
+                          "segment_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable Ticketmaster classification segment identifier for this attraction (e.g. 'KZFzniwnSyZfZ7v7nJ' for Music). Matches entity_id in Classification reference events."
+                          },
+                          "segment_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts & Theatre')."
+                          },
+                          "genre_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable Ticketmaster genre identifier for this attraction within its segment."
+                          },
+                          "genre_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable genre name (e.g. 'Rock', 'Pop', 'Basketball')."
+                          },
+                          "subgenre_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable Ticketmaster subgenre identifier for this attraction."
+                          },
+                          "subgenre_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable subgenre name (e.g. 'Alternative Rock', 'Dance Pop')."
+                          }
+                        },
+                        "required": [
+                          "entity_id",
+                          "name"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Ticketmaster.Reference.Classification": {
+          "name": "Classification",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Reference.Classification",
+                "name": "Classification",
+                "$root": "#/definitions/Ticketmaster/Reference/Classification",
+                "definitions": {
+                  "Ticketmaster": {
+                    "Reference": {
+                      "Classification": {
+                        "name": "Classification",
+                        "type": "object",
+                        "description": "Reference data for a Ticketmaster classification segment, which represents the top level of the event classification hierarchy (Music, Sports, Arts & Theatre, Film, Miscellaneous, etc.). Emitted at bridge startup from the Discovery API v2 /classifications endpoint.",
+                        "properties": {
+                          "entity_id": {
+                            "type": "string",
+                            "description": "Stable Ticketmaster segment identifier (e.g. 'KZFzniwnSyZfZ7v7nJ'). Used as both the Kafka message key and the CloudEvents subject. Matches segment_id in Event and Attraction records."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts & Theatre', 'Film', 'Miscellaneous')."
+                          },
+                          "type": {
+                            "type": ["string", "null"],
+                            "description": "Ticketmaster resource type discriminator for this classification entry. Usually 'segment'."
+                          },
+                          "primary_genre_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable identifier for the primary or most prominent genre within this segment. Provided when the API returns a primary_genre sub-object."
+                          },
+                          "primary_genre_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable name of the primary genre (e.g. 'Rock', 'Pop', 'Basketball')."
+                          },
+                          "primary_subgenre_id": {
+                            "type": ["string", "null"],
+                            "description": "Stable identifier for the primary subgenre under the primary genre."
+                          },
+                          "primary_subgenre_name": {
+                            "type": ["string", "null"],
+                            "description": "Human-readable name of the primary subgenre."
+                          }
+                        },
+                        "required": [
+                          "entity_id",
+                          "name"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -77,6 +77,10 @@ def noaa_nws_image():
     return build_image('noaa-nws')
 
 @pytest.fixture(scope='module')
+def nws_forecasts_image():
+    return build_image('nws-forecasts')
+
+@pytest.fixture(scope='module')
 def usgs_iv_image():
     return build_image('usgs-iv')
 
@@ -269,6 +273,18 @@ def seattle_911_image():
 @pytest.fixture(scope='module')
 def seattle_street_closures_image():
     return build_image('seattle-street-closures')
+
+@pytest.fixture(scope='module')
+def canada_eccc_wateroffice_image():
+    return build_image('canada-eccc-wateroffice')
+
+@pytest.fixture(scope='module')
+def ticketmaster_image():
+    return build_image('ticketmaster')
+
+@pytest.fixture(scope='module')
+def entur_norway_image():
+    return build_image('entur-norway')
 
 
 # ---------------------------------------------------------------------------
@@ -636,6 +652,30 @@ class TestNOAANwsDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# NWS Forecast Zones
+# ---------------------------------------------------------------------------
+
+class TestNWSForecastsDockerFlow:
+    TOPIC = 'test-nws-forecasts'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nws_forecasts_image):
+        _run_kafka_flow_test(
+            kafka, nws_forecasts_image, self.TOPIC,
+            reference_types=['ForecastZone'],
+            telemetry_types=['LandZoneForecast', 'MarineZoneForecast'],
+            required_types=['ForecastZone', 'LandZoneForecast', 'MarineZoneForecast'],
+            extra_env={
+                'KAFKA_TOPIC': self.TOPIC,
+                'NWS_FORECAST_ZONES': 'WAZ315,PZZ135',
+                'NWS_FORECAST_POLL_INTERVAL_SECONDS': '300',
+                'NWS_FORECAST_REFERENCE_REFRESH_SECONDS': '21600',
+            },
+            min_messages=3,
+            timeout=240,
+        )
+
+
+# ---------------------------------------------------------------------------
 # USGS Instantaneous Values
 # ---------------------------------------------------------------------------
 
@@ -785,6 +825,7 @@ class TestUKEADockerFlow:
             kafka, uk_ea_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['Reading'],
+            extra_env={'POLLING_INTERVAL': '5', 'MAX_STATIONS': '100'},
         )
 
 
@@ -1684,3 +1725,59 @@ class TestSeattleStreetClosuresDockerFlow:
             min_messages=1,
         )
 
+
+
+# ---------------------------------------------------------------------------
+# Canada ECCC Water Office (hydrometric stations + real-time observations)
+# ---------------------------------------------------------------------------
+
+class TestCanadaECCCWaterOfficeDockerFlow:
+    TOPIC = 'test-canada-eccc-wateroffice'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, canada_eccc_wateroffice_image):
+        _run_kafka_flow_test(
+            kafka, canada_eccc_wateroffice_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['Observation'],
+            required_types=['Station', 'Observation'],
+        )
+
+# ---------------------------------------------------------------------------
+# Ticketmaster (public events – reference + telemetry)
+# ---------------------------------------------------------------------------
+
+class TestTicketmasterDockerFlow:
+    TOPIC = 'test-ticketmaster'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, ticketmaster_image):
+        api_key = os.environ.get('TICKETMASTER_API_KEY', '')
+        if not api_key:
+            pytest.skip('TICKETMASTER_API_KEY not set')
+        _run_kafka_flow_test(
+            kafka, ticketmaster_image, self.TOPIC,
+            reference_types=['Ticketmaster.Reference'],
+            telemetry_types=['Ticketmaster.Events'],
+            extra_env={
+                'TICKETMASTER_API_KEY': api_key,
+                'COUNTRY_CODES': 'US',
+                'POLL_INTERVAL': '60',
+                'REFERENCE_REFRESH': '3600',
+            },
+            min_messages=5,
+            timeout=300,
+        )
+
+# ---------------------------------------------------------------------------
+# Entur Norway (SIRI real-time transit)
+# ---------------------------------------------------------------------------
+
+class TestEnturNorwayDockerFlow:
+    TOPIC = 'test-entur-norway'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, entur_norway_image):
+        _run_kafka_flow_test(
+            kafka, entur_norway_image, self.TOPIC,
+            reference_types=['DatedServiceJourney'],
+            telemetry_types=['EstimatedVehicleJourney', 'MonitoredVehicleJourney', 'PtSituationElement'],
+            extra_env={'POLLING_INTERVAL': '5'},
+        )
