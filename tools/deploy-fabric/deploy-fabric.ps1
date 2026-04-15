@@ -149,7 +149,7 @@ function Invoke-KqlScript {
     $result = az rest `
         --method POST `
         --url "$QueryUri/v1/rest/mgmt" `
-        --resource $QueryUri `
+        --resource "https://kusto.kusto.windows.net" `
         --body "@$bodyFile" `
         --headers "Content-Type=application/json" 2>&1
     if ($LASTEXITCODE -ne 0) {
