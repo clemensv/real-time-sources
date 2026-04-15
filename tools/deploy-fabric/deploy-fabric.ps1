@@ -128,6 +128,28 @@ function Invoke-FabricApi {
     return $null
 }
 
+function Get-KustoToken {
+    # Try MSI first; if Cloud Shell rejects the audience, do interactive login
+    $token = az account get-access-token `
+        --resource "https://kusto.fabric.microsoft.com" `
+        --query accessToken -o tsv 2>$null
+    if ($LASTEXITCODE -eq 0 -and $token) {
+        return $token
+    }
+    Write-Host "  Cloud Shell requires interactive login for Kusto..." -ForegroundColor Yellow
+    az login --scope "https://kusto.fabric.microsoft.com/.default" --output none 2>&1 | Out-Null
+    if ($SubscriptionId) {
+        az account set --subscription $SubscriptionId 2>&1 | Out-Null
+    }
+    $token = az account get-access-token `
+        --resource "https://kusto.fabric.microsoft.com" `
+        --query accessToken -o tsv 2>&1
+    if ($LASTEXITCODE -ne 0 -or -not $token) {
+        throw "Failed to get Kusto access token after interactive login: $token"
+    }
+    return $token
+}
+
 function Invoke-KqlScript {
     param(
         [string]$QueryUri,
@@ -141,14 +163,7 @@ function Invoke-KqlScript {
         db  = $Database
     }
 
-    # Get token for the Kusto resource — Cloud Shell MSI doesn't support
-    # cluster-specific audiences, so use the standard Kusto audience
-    $kustoToken = az account get-access-token `
-        --resource "https://kusto.fabric.microsoft.com" `
-        --query accessToken -o tsv 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        throw "Failed to get Kusto access token: $kustoToken"
-    }
+    $kustoToken = Get-KustoToken
 
     $headers = @{
         "Authorization" = "Bearer $kustoToken"
