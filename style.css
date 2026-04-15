@@ -307,7 +307,21 @@ a:hover { text-decoration: underline; }
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
+  align-items: center;
 }
+
+.deploy-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-default);
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.azure-logo { flex-shrink: 0; }
 
 .deploy-btn {
   display: inline-flex;

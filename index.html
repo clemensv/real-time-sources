@@ -69,16 +69,25 @@
     <!-- Pane 2: Content / CONTAINER.md -->
     <section id="content-pane" class="pane content-pane">
       <div class="deploy-bar" id="deploy-bar" style="display:none;">
+        <span class="deploy-label">
+          <svg class="azure-logo" viewBox="0 0 256 256" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="az-g1" x1="-960.606" y1="283.397" x2="-1032.511" y2="70.972" gradientTransform="matrix(1 0 0 -1 1075 318)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#114a8b"/><stop offset="1" stop-color="#0669bc"/></linearGradient>
+              <linearGradient id="az-g2" x1="-947.292" y1="289.594" x2="-868.363" y2="79.308" gradientTransform="matrix(1 0 0 -1 1075 318)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3ccbf4"/><stop offset="1" stop-color="#2892df"/></linearGradient>
+            </defs>
+            <path d="M89.158 18.266h69.238L86.523 231.224a11.041 11.041 0 01-10.461 7.51H22.179a11.023 11.023 0 01-10.445-14.548l66.963-198.41a11.04 11.04 0 0110.461-7.51z" fill="url(#az-g1)"/>
+            <path d="M189.77 161.104H79.976a5.083 5.083 0 00-3.468 8.8l70.552 65.847a11.091 11.091 0 007.567 2.983h62.167z" fill="#0078d4"/>
+            <path d="M177.592 25.764a11.023 11.023 0 00-10.444-7.498H89.984a11.024 11.024 0 0110.445 7.498l66.967 198.421a11.024 11.024 0 01-10.445 14.549h77.164a11.024 11.024 0 0010.444-14.549z" fill="url(#az-g2)"/>
+          </svg>
+          Deploy to Azure:
+        </span>
         <button class="deploy-btn" id="btn-container" title="Deploy container only (bring your own Event Hub)">
-          <svg class="azure-logo" viewBox="0 0 59.242 47.271" width="16" height="13"><path fill="#0089D6" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0zM21.69 3.479L15.46 26.572 33.874 44.97H12.09l-5.472 2.301h37.984L21.69 3.479z"/><path fill="#fff" fill-opacity=".2" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0z"/></svg>
           Container
         </button>
         <button class="deploy-btn" id="btn-container-eh" title="Deploy container with a new Event Hub namespace">
-          <svg class="azure-logo" viewBox="0 0 59.242 47.271" width="16" height="13"><path fill="#0089D6" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0zM21.69 3.479L15.46 26.572 33.874 44.97H12.09l-5.472 2.301h37.984L21.69 3.479z"/><path fill="#fff" fill-opacity=".2" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0z"/></svg>
           Container + Event Hubs
         </button>
         <button class="deploy-btn disabled" id="btn-container-eh-adx" disabled title="Coming soon">
-          <svg class="azure-logo" viewBox="0 0 59.242 47.271" width="16" height="13"><path fill="#0089D6" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0zM21.69 3.479L15.46 26.572 33.874 44.97H12.09l-5.472 2.301h37.984L21.69 3.479z"/><path fill="#fff" fill-opacity=".2" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0z"/></svg>
           Container + Event Hubs + Data Explorer
         </button>
       </div>
