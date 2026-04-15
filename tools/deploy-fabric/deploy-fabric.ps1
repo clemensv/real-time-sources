@@ -144,7 +144,7 @@ function Invoke-KqlScript {
     # Get token for the Kusto resource — Cloud Shell MSI doesn't support
     # cluster-specific audiences, so use the standard Kusto audience
     $kustoToken = az account get-access-token `
-        --resource "https://kusto.kusto.windows.net" `
+        --resource "https://kusto.fabric.microsoft.com" `
         --query accessToken -o tsv 2>&1
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to get Kusto access token: $kustoToken"
