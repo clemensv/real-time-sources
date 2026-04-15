@@ -151,8 +151,8 @@ function Install-KustoCli {
     }
 
     # Find the right tools directory
-    $isLinux = $PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/"
-    $toolsSubDir = if ($isLinux) { "net6.0" } else { "net472" }
+    $onLinux = $PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/"
+    $toolsSubDir = if ($onLinux) { "net6.0" } else { "net472" }
     $toolsPath = Join-Path $extractDir "tools" $toolsSubDir
     if (-not (Test-Path $toolsPath)) {
         # Try alternate layout
@@ -164,7 +164,7 @@ function Install-KustoCli {
     }
 
     # Make executable on Linux
-    if ($isLinux) {
+    if ($onLinux) {
         $kustoBin = Join-Path $toolsPath "Kusto.Cli"
         if (Test-Path $kustoBin) { chmod +x $kustoBin 2>$null }
     }
