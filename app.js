@@ -338,7 +338,7 @@ function renderDeployForm(source, mode, templateParams) {
 
   // Note
   const note = el("div", { class: "deploy-note" });
-  note.textContent = "Opens Azure Cloud Shell in a new tab with the deployment command pre-configured. You must be signed into Azure.";
+  note.textContent = "Opens Azure Cloud Shell with the deployment command ready to run. You must be signed into Azure.";
   $deployForm.appendChild(note);
 }
 
@@ -402,7 +402,7 @@ function launchCloudShell(source, mode) {
   if (!rg) { alert("Resource Group is required."); return; }
   if (!loc) { alert("Location is required."); return; }
 
-  let cmd;
+  let cmd, shell;
 
   if (mode === "fabric") {
     const wsId = getValue("workspaceId");
@@ -413,25 +413,20 @@ function launchCloudShell(source, mode) {
     }
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
 
-    // Collect any extra ARM params for the template
-    const extraParams = collectExtraParams(["resourceGroup", "location",
-      "workspaceId", "eventhouseId", "databaseName"]);
-
-    cmd = [
-      `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1`,
-      `./deploy-fabric.ps1`,
-      `  -Source '${source.id}'`,
-      `  -ResourceGroup '${rg}'`,
-      `  -Location '${loc}'`,
-      `  -WorkspaceId '${wsId}'`,
-      `  -EventhouseId '${ehId}'`,
-      `  -DatabaseName '${dbName}'`,
-    ].join(" `\n");
+    // Single-line command that downloads and runs the script
+    cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
+      + `./deploy-fabric.ps1`
+      + ` -Source '${source.id}'`
+      + ` -ResourceGroup '${rg}'`
+      + ` -Location '${loc}'`
+      + ` -WorkspaceId '${wsId}'`
+      + ` -EventhouseId '${ehId}'`
+      + ` -DatabaseName '${dbName}'`;
+    shell = "powershell";
   } else {
     const templateFile = mode === "container" ? "azure-template.json" : "azure-template-with-eventhub.json";
     const templateUrl = `${RAW}/${source.id}/${templateFile}`;
 
-    // Collect all form values as ARM parameters
     const armParams = [];
     const skipFields = new Set(["resourceGroup", "location"]);
     $deployForm.querySelectorAll("input, select").forEach(input => {
@@ -443,58 +438,17 @@ function launchCloudShell(source, mode) {
 
     const paramStr = armParams.length > 0 ? ` --parameters ${armParams.join(" ")}` : "";
 
-    cmd = [
-      `az group create --name '${rg}' --location '${loc}' --output none`,
-      `az deployment group create \\`,
-      `  --resource-group '${rg}' \\`,
-      `  --template-uri '${templateUrl}'${paramStr} \\`,
-      `  --output table`,
-    ].join("\n");
+    cmd = `az group create --name '${rg}' --location '${loc}' --output none && `
+      + `az deployment group create`
+      + ` --resource-group '${rg}'`
+      + ` --template-uri '${templateUrl}'${paramStr}`
+      + ` --output table`;
+    shell = "bash";
   }
 
-  // Encode for Cloud Shell URL
-  const shellUrl = mode === "fabric"
-    ? "https://shell.azure.com/powershell"
-    : "https://shell.azure.com/bash";
-
-  // Open Cloud Shell — user pastes the command
-  const w = window.open(shellUrl, "_blank", "noopener");
-
-  // Copy command to clipboard
-  navigator.clipboard.writeText(cmd).then(() => {
-    showCopyNotice(mode === "fabric" ? "PowerShell" : "Bash");
-  }).catch(() => {
-    // Fallback: show the command in the form
-    showCommandFallback(cmd);
-  });
-}
-
-function collectExtraParams(skipNames) {
-  const params = {};
-  const skip = new Set(skipNames);
-  $deployForm.querySelectorAll("input, select").forEach(input => {
-    if (!input.name || skip.has(input.name)) return;
-    const val = input.value.trim();
-    if (val) params[input.name] = val;
-  });
-  return params;
-}
-
-function showCopyNotice(shell) {
-  const notice = el("div", { class: "deploy-note" });
-  notice.innerHTML = `<strong>✓ Command copied to clipboard.</strong> Paste it into the ${shell} Cloud Shell tab that just opened.`;
-  // Replace existing note
-  const existing = $deployForm.querySelector(".deploy-note");
-  if (existing) existing.replaceWith(notice);
-  else $deployForm.appendChild(notice);
-}
-
-function showCommandFallback(cmd) {
-  const notice = el("div", { class: "deploy-note" });
-  notice.innerHTML = `<strong>Copy this command</strong> into the Cloud Shell tab:<br><pre style="margin-top:8px;white-space:pre-wrap;font-size:11px;font-family:var(--font-mono)">${esc(cmd)}</pre>`;
-  const existing = $deployForm.querySelector(".deploy-note");
-  if (existing) existing.replaceWith(notice);
-  else $deployForm.appendChild(notice);
+  // Open Cloud Shell with the command pre-filled
+  const shellUrl = `https://shell.azure.com/${shell}?shell_command=${encodeURIComponent(cmd)}`;
+  window.open(shellUrl, "_blank", "noopener");
 }
 
 function closeDeployPane() {
