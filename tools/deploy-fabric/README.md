@@ -39,7 +39,6 @@ integration. Runs in Azure Cloud Shell.
 - Azure Cloud Shell (PowerShell) — already authenticated via `az`
 - An existing Microsoft Fabric **Workspace** (you need the workspace ID)
 - An existing **Eventhouse** in that workspace (you need the eventhouse ID)
-- The **Capacity ID** for the workspace (from Fabric admin portal or workspace settings)
 - Contributor access to an Azure subscription / resource group
 
 ## Usage
@@ -54,8 +53,7 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
     -Source pegelonline `
     -ResourceGroup rg-streams `
     -WorkspaceId "c98acd97-4363-4296-8323-b6ab21e53903" `
-    -EventhouseId "dbfd2819-2879-4ae7-bff2-95619ad7b8e7" `
-    -CapacityId "a1b2c3d4-5678-9abc-def0-123456789abc"
+    -EventhouseId "dbfd2819-2879-4ae7-bff2-95619ad7b8e7"
 ```
 
 ### Parameters
@@ -67,7 +65,6 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
 | `-Location` | No | RG location | Azure region |
 | `-WorkspaceId` | Yes | — | Fabric workspace ID (GUID) |
 | `-EventhouseId` | Yes | — | Fabric Eventhouse ID (GUID) |
-| `-CapacityId` | Yes | — | Fabric capacity ID (GUID) |
 | `-DatabaseName` | No | Source name | KQL database name |
 | `-SkipArm` | No | `$false` | Skip ARM deployment (if ACI + EH already exist) |
 

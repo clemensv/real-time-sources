@@ -36,10 +36,6 @@
 .PARAMETER EventhouseId
     Microsoft Fabric Eventhouse ID (GUID).
 
-.PARAMETER CapacityId
-    Microsoft Fabric capacity ID (GUID). Found in the Fabric admin portal
-    or workspace settings.
-
 .PARAMETER DatabaseName
     KQL database name. Defaults to the source name.
 
@@ -48,8 +44,7 @@
 
 .EXAMPLE
     ./deploy-fabric.ps1 -Source pegelonline -ResourceGroup rg-streams `
-        -WorkspaceId "c98acd97-..." -EventhouseId "dbfd2819-..." `
-        -CapacityId "a1b2c3d4-..."
+        -WorkspaceId "c98acd97-..." -EventhouseId "dbfd2819-..."
 #>
 
 param(
@@ -66,9 +61,6 @@ param(
 
     [Parameter(Mandatory = $true)]
     [string]$EventhouseId,
-
-    [Parameter(Mandatory = $true)]
-    [string]$CapacityId,
 
     [string]$DatabaseName,
 
@@ -268,6 +260,14 @@ try {
         throw "KQL script not found for '$Source'. Check that $Source/kql/ exists."
     }
 }
+
+# Look up the capacity ID from the workspace
+$wsInfo = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
+$CapacityId = $wsInfo.capacityId
+if (-not $CapacityId) {
+    throw "Could not determine capacity ID for workspace $WorkspaceId"
+}
+Write-OK "Capacity: $CapacityId"
 
 # ── Step 1: Deploy ARM template ─────────────────────────────────────────
 
