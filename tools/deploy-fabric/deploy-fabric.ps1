@@ -237,6 +237,7 @@ function Invoke-KqlScript {
         if ($PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/") {
             $cliDll = Get-ChildItem -Path $env:PATH.Split([IO.Path]::PathSeparator) -Filter "Kusto.Cli.dll" -ErrorAction SilentlyContinue | Select-Object -First 1
             if (-not $cliDll) { throw "Kusto.Cli.dll not found on PATH" }
+            $env:DOTNET_ROLL_FORWARD = "LatestMajor"
             $output = dotnet $cliDll.FullName $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
         } else {
             $output = & kusto.cli $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
