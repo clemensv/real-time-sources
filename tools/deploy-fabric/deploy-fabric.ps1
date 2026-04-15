@@ -129,10 +129,17 @@ function Invoke-FabricApi {
 }
 
 function Get-KustoToken {
-    # Cloud Shell's Az PowerShell module is pre-authenticated as the
-    # interactive user and can acquire tokens for any audience.
-    # The az CLI in Cloud Shell may route through MSI which rejects
-    # custom audiences. Try Az PowerShell first.
+    # In Cloud Shell, the Az PowerShell module may not be connected by default.
+    # Connect it first, then acquire a token for the Kusto audience.
+    $connected = Get-AzContext -ErrorAction SilentlyContinue
+    if (-not $connected) {
+        Write-Host "  Connecting Az PowerShell module..." -ForegroundColor Gray
+        Connect-AzAccount -Identity -ErrorAction SilentlyContinue | Out-Null
+        if (-not (Get-AzContext -ErrorAction SilentlyContinue)) {
+            # Identity connect failed, try without -Identity (interactive)
+            Connect-AzAccount -ErrorAction SilentlyContinue | Out-Null
+        }
+    }
     $audiences = @(
         "https://kusto.kusto.windows.net",
         "https://kusto.fabric.microsoft.com"
@@ -141,18 +148,22 @@ function Get-KustoToken {
         try {
             $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
             if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) {
+                Write-Host "  Authenticated via Az PowerShell ($aud)" -ForegroundColor Gray
                 return $tokenObj.Token
             }
-        } catch { }
+        } catch {
+            Write-Verbose "  Get-AzAccessToken failed for ${aud}: $_"
+        }
         # Fallback to az CLI
         $ErrorActionPreference = "SilentlyContinue"
         $token = az account get-access-token --resource $aud --query accessToken -o tsv 2>$null
         $ErrorActionPreference = "Stop"
         if ($LASTEXITCODE -eq 0 -and $token -and $token.Length -gt 100) {
+            Write-Host "  Authenticated via az CLI ($aud)" -ForegroundColor Gray
             return $token.Trim()
         }
     }
-    throw "Failed to get Kusto access token. Tried audiences: $($audiences -join ', ').`nIf in Cloud Shell, try: Connect-AzAccount"
+    throw "Failed to get Kusto access token. Tried audiences: $($audiences -join ', ').`nTry running: Connect-AzAccount`nthen retry the script."
 }
 
 function Invoke-KqlScript {
