@@ -275,7 +275,7 @@ async function openDeployForm(source, mode) {
 
   // Submit button
   const submitBtn = el("button", { class: "deploy-submit", type: "button" });
-  submitBtn.innerHTML = `${AZURE_LOGO_SVG} Open in Cloud Shell`;
+  submitBtn.innerHTML = `${AZURE_LOGO_SVG} Copy deployment command to the clipboard and open Azure Cloud Shell`;
   submitBtn.addEventListener("click", () => launchCloudShell(source, mode));
   $deployForm.appendChild(submitBtn);
 
