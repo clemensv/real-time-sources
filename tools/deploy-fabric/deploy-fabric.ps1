@@ -129,27 +129,21 @@ function Invoke-FabricApi {
 }
 
 function Get-KustoToken {
-    # In Cloud Shell, the user is already logged in interactively.
-    # Use Get-AzAccessToken which respects the user session, unlike
-    # az account get-access-token which may route through MSI.
-    try {
-        $tokenObj = Get-AzAccessToken -ResourceUrl "https://kusto.fabric.microsoft.com"
-        if ($tokenObj -and $tokenObj.Token) {
-            return $tokenObj.Token
+    # Try multiple Kusto audiences — Cloud Shell MSI and different tenants
+    # accept different audience URIs
+    $audiences = @(
+        "https://kusto.kusto.windows.net",
+        "https://kusto.fabric.microsoft.com"
+    )
+    foreach ($aud in $audiences) {
+        $ErrorActionPreference = "SilentlyContinue"
+        $token = az account get-access-token --resource $aud --query accessToken -o tsv 2>$null
+        $ErrorActionPreference = "Stop"
+        if ($LASTEXITCODE -eq 0 -and $token -and $token.Length -gt 100) {
+            return $token.Trim()
         }
-    } catch {
-        # Get-AzAccessToken not available or failed — try az CLI
     }
-    # Fallback: az CLI with explicit tenant
-    $tenantId = az account show --query tenantId -o tsv 2>$null
-    $token = az account get-access-token `
-        --resource "https://kusto.fabric.microsoft.com" `
-        --tenant $tenantId `
-        --query accessToken -o tsv 2>&1
-    if ($LASTEXITCODE -eq 0 -and $token -and $token -notmatch "ERROR") {
-        return $token.Trim()
-    }
-    throw "Failed to get Kusto access token. Try: Connect-AzAccount; Get-AzAccessToken -ResourceUrl 'https://kusto.fabric.microsoft.com'"
+    throw "Failed to get Kusto access token. Tried audiences: $($audiences -join ', ')"
 }
 
 function Invoke-KqlScript {
