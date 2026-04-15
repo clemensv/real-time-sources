@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Sources — Apache Kafka, Azure Event Hubs, Fabric Event Streams</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <!-- ───── Header ───── -->
+  <header class="site-header">
+    <div class="header-left">
+      <svg class="logo" viewBox="0 0 16 16" width="28" height="28" fill="currentColor">
+        <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38
+          0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95
+          0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27
+          -.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12
+          -.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07
+          -.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.58.93.67
+          1.18.18.48.77 1.42 1.52 1.12 0 .78.01 1.09.01 1.24 0 .21-.15.46-.55.38A7.995
+          7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/>
+      </svg>
+      <h1><a href="#">Real-Time Sources</a></h1>
+      <span class="subtitle">for Apache Kafka, Azure Event Hubs &amp; Fabric Event Streams</span>
+    </div>
+    <div class="header-right">
+      <a href="https://github.com/clemensv/real-time-sources" class="gh-link" target="_blank" rel="noopener">
+        View on GitHub
+      </a>
+      <button id="theme-toggle" aria-label="Toggle dark/light mode" title="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 16 16" width="18" height="18" fill="currentColor">
+          <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 1a5 5 0 1 1 0-10 5 5 0 0 1 0 10ZM8
+            0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0Zm0 13a.5.5 0 0 1
+            .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13Zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0
+            0 1 0-1h2a.5.5 0 0 1 .5.5ZM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5
+            0 0 1 3 8Zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5
+            0 0 1 .707 0Zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5
+            0 0 1 .707 0Zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1
+            .707-.707l1.414 1.414a.5.5 0 0 1 0 .707ZM4.464 4.465a.5.5 0 0 1-.707
+            0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708Z"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 16 16" width="18" height="18" fill="currentColor">
+          <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021
+            3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733
+            0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266
+            2.114 1.312 5.124.06A.752.752 0 0 1 6 .278Z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ───── Main layout ───── -->
+  <main class="layout">
+    <!-- Pane 1: Source list -->
+    <section id="list-pane" class="pane list-pane">
+      <div class="list-toolbar">
+        <input type="search" id="search-box" placeholder="Filter sources…" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="category-pills" id="category-pills"></div>
+      <div class="source-list-header">
+        <span class="col-name">Source</span>
+        <span class="col-key">Key</span>
+        <span class="col-desc">Description</span>
+      </div>
+      <ul id="source-list" class="source-list"></ul>
+    </section>
+
+    <!-- Pane 2: Content / CONTAINER.md -->
+    <section id="content-pane" class="pane content-pane">
+      <div class="deploy-bar" id="deploy-bar" style="display:none;">
+        <button class="deploy-btn" id="btn-container" title="Deploy container only (bring your own Event Hub)">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M13.5 3H2.5A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3zm.5 8.5a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v7z"/></svg>
+          Container
+        </button>
+        <button class="deploy-btn" id="btn-container-eh" title="Deploy container with a new Event Hub namespace">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M13.5 3H2.5A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3zm.5 8.5a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v7z"/></svg>
+          Container + Event Hubs
+        </button>
+        <button class="deploy-btn disabled" id="btn-container-eh-adx" disabled title="Coming soon">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M13.5 3H2.5A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3zm.5 8.5a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v7z"/></svg>
+          Container + Event Hubs + Data Explorer
+        </button>
+      </div>
+      <div id="content-area" class="content-area">
+        <div class="welcome">
+          <h2>Real-Time Sources Catalog</h2>
+          <p>Select a source from the list to view its deployment documentation.</p>
+          <p class="muted">87 containerized bridges streaming open data into Apache Kafka.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pane 3: Deploy iframe (hidden by default) -->
+    <section id="deploy-pane" class="pane deploy-pane" style="display:none;">
+      <div class="deploy-pane-header">
+        <span id="deploy-pane-title">Deploy to Azure</span>
+        <a id="deploy-pane-external" href="#" target="_blank" rel="noopener" title="Open in new tab">↗</a>
+        <button id="deploy-pane-close" title="Close deploy pane">✕</button>
+      </div>
+      <iframe id="deploy-iframe" sandbox="allow-scripts allow-forms allow-same-origin allow-popups" src="about:blank"></iframe>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
