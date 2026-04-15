@@ -1490,6 +1490,27 @@ class TestNDLNetherlandsDockerFlow:
         )
 
 
+# NDW Netherlands Road Traffic (reference + telemetry: speed, travel time, DRIP, MSI, situations)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def ndw_road_traffic_image():
+    return build_image('ndw-road-traffic')
+
+class TestNDWRoadTrafficDockerFlow:
+    TOPIC = 'test-ndw-road-traffic'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, ndw_road_traffic_image):
+        _run_kafka_flow_test(
+            kafka, ndw_road_traffic_image, self.TOPIC,
+            reference_types=['PointMeasurementSite', 'RouteMeasurementSite', 'DripSign', 'MsiSign'],
+            telemetry_types=['TrafficObservation', 'TravelTimeObservation', 'DripDisplayState', 'MsiDisplayState'],
+            extra_env={'MAX_RECORDS_PER_FAMILY': '20'},
+            min_messages=5,
+            timeout=420,
+        )
+
+
 # Madrid Traffic (Informo real-time traffic sensors)
 # ---------------------------------------------------------------------------
 

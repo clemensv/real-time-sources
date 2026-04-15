@@ -1,0 +1,1044 @@
+{
+  "endpoints": {
+    "NL.NDW.AVG.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ndw-road-traffic",
+          "key": "measurement-sites/{measurement_site_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.AVG"
+      ]
+    },
+    "NL.NDW.DRIP.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ndw-road-traffic",
+          "key": "drips/{vms_controller_id}/{vms_index}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.DRIP"
+      ]
+    },
+    "NL.NDW.MSI.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ndw-road-traffic",
+          "key": "msi-signs/{sign_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.MSI"
+      ]
+    },
+    "NL.NDW.Situations.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "ndw-road-traffic",
+          "key": "situations/{situation_record_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.Situations"
+      ]
+    }
+  },
+  "messagegroups": {
+    "NL.NDW.AVG": {
+      "messages": {
+        "NL.NDW.AVG.PointMeasurementSite": {
+          "name": "PointMeasurementSite",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record for a point measurement site from the Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a fixed inductive-loop or microwave sensor.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.AVG.PointMeasurementSite"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/measurement_current.xml.gz"
+            },
+            "subject": {
+              "value": "measurement-sites/{measurement_site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.AVG.PointMeasurementSite"
+        },
+        "NL.NDW.AVG.RouteMeasurementSite": {
+          "name": "RouteMeasurementSite",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record for a route (section) measurement site from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel time computation.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.AVG.RouteMeasurementSite"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/measurement_current.xml.gz"
+            },
+            "subject": {
+              "value": "measurement-sites/{measurement_site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.AVG.RouteMeasurementSite"
+        },
+        "NL.NDW.AVG.TrafficObservation": {
+          "name": "TrafficObservation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Aggregated traffic speed and flow observation from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.AVG.TrafficObservation"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/trafficspeed.xml.gz"
+            },
+            "subject": {
+              "value": "measurement-sites/{measurement_site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.AVG.TrafficObservation"
+        },
+        "NL.NDW.AVG.TravelTimeObservation": {
+          "name": "TravelTimeObservation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Travel time observation for a road segment from the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.AVG.TravelTimeObservation"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/traveltime.xml.gz"
+            },
+            "subject": {
+              "value": "measurement-sites/{measurement_site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.AVG.TravelTimeObservation"
+        }
+      }
+    },
+    "NL.NDW.DRIP": {
+      "messages": {
+        "NL.NDW.DRIP.DripSign": {
+          "name": "DripSign",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record for a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type of an individual VMS sign unit.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.DRIP.DripSign"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/dynamische_route_informatie_paneel.xml.gz"
+            },
+            "subject": {
+              "value": "drips/{vms_controller_id}/{vms_index}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.DRIP.DripSign"
+        },
+        "NL.NDW.DRIP.DripDisplayState": {
+          "name": "DripDisplayState",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current display state of a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state of the sign.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.DRIP.DripDisplayState"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/dynamische_route_informatie_paneel.xml.gz"
+            },
+            "subject": {
+              "value": "drips/{vms_controller_id}/{vms_index}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.DRIP.DripDisplayState"
+        }
+      }
+    },
+    "NL.NDW.MSI": {
+      "messages": {
+        "NL.NDW.MSI.MsiSign": {
+          "name": "MsiSign",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record for a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal sign above a motorway lane.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.MSI.MsiSign"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/Matrixsignaalinformatie.xml.gz"
+            },
+            "subject": {
+              "value": "msi-signs/{sign_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.MSI.MsiSign"
+        },
+        "NL.NDW.MSI.MsiDisplayState": {
+          "name": "MsiDisplayState",
+          "envelope": "CloudEvents/1.0",
+          "description": "Current display state of a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any speed limit shown.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.MSI.MsiDisplayState"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/Matrixsignaalinformatie.xml.gz"
+            },
+            "subject": {
+              "value": "msi-signs/{sign_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.MSI.MsiDisplayState"
+        }
+      }
+    },
+    "NL.NDW.Situations": {
+      "messages": {
+        "NL.NDW.Situations.Roadwork": {
+          "name": "Roadwork",
+          "envelope": "CloudEvents/1.0",
+          "description": "Road construction or maintenance work event from the Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Situations.Roadwork"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz"
+            },
+            "subject": {
+              "value": "situations/{situation_record_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.Roadwork"
+        },
+        "NL.NDW.Situations.BridgeOpening": {
+          "name": "BridgeOpening",
+          "envelope": "CloudEvents/1.0",
+          "description": "Bridge opening event from the Dutch NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Situations.BridgeOpening"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/planningsfeed_brugopeningen.xml.gz"
+            },
+            "subject": {
+              "value": "situations/{situation_record_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.BridgeOpening"
+        },
+        "NL.NDW.Situations.TemporaryClosure": {
+          "name": "TemporaryClosure",
+          "envelope": "CloudEvents/1.0",
+          "description": "Temporary road closure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch national road network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Situations.TemporaryClosure"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/tijdelijke_verkeersmaatregelen_afsluitingen.xml.gz"
+            },
+            "subject": {
+              "value": "situations/{situation_record_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.TemporaryClosure"
+        },
+        "NL.NDW.Situations.TemporarySpeedLimit": {
+          "name": "TemporarySpeedLimit",
+          "envelope": "CloudEvents/1.0",
+          "description": "Temporary speed limit measure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a section of the national road network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Situations.TemporarySpeedLimit"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/tijdelijke_verkeersmaatregelen_maximum_snelheden.xml.gz"
+            },
+            "subject": {
+              "value": "situations/{situation_record_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.TemporarySpeedLimit"
+        },
+        "NL.NDW.Situations.SafetyRelatedMessage": {
+          "name": "SafetyRelatedMessage",
+          "envelope": "CloudEvents/1.0",
+          "description": "Safety-related traffic information message from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NL.NDW.Situations.SafetyRelatedMessage"
+            },
+            "source": {
+              "value": "https://opendata.ndw.nu/veiligheidsgerelateerde_berichten_srti.xml.gz"
+            },
+            "subject": {
+              "value": "situations/{situation_record_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.SafetyRelatedMessage"
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "NL.NDW.jstruct": {
+      "schemas": {
+        "NL.NDW.AVG.PointMeasurementSite": {
+          "name": "PointMeasurementSite",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/AVG/PointMeasurementSite",
+                "type": "object",
+                "name": "PointMeasurementSite",
+                "description": "Reference data for a point measurement site from the NDW DATEX II measurement_current feed. A point site uses a fixed sensor (inductive loop or microwave) to measure speed and flow at a single cross-section of road.",
+                "properties": {
+                  "measurement_site_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the NDW measurement site, from the DATEX II measurementSiteRecord id attribute. Example: RWS01_MST_0001-01."
+                  },
+                  "name": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable name of the measurement site from the DATEX II measurementSiteName element."
+                  },
+                  "measurement_site_type": {
+                    "type": ["string", "null"],
+                    "description": "Sensor technology type used at this measurement site, from the DATEX II measurementEquipmentTypeUsed element. Example values: inductionLoop, microwave."
+                  },
+                  "period": {
+                    "type": ["int32", "null"],
+                    "description": "Measurement aggregation period in seconds, from the DATEX II measurementSpecificCharacteristics period element.",
+                    "unit": "s"
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 latitude of the measurement point in decimal degrees, from the DATEX II pointByCoordinates/pointCoordinates/latitude element.",
+                    "unit": "deg"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 longitude of the measurement point in decimal degrees, from the DATEX II pointByCoordinates/pointCoordinates/longitude element.",
+                    "unit": "deg"
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier on which the sensor is located, from the DATEX II roadInformation/roadName element. Example values: A1, N205."
+                  },
+                  "lane_count": {
+                    "type": ["int32", "null"],
+                    "description": "Number of lanes monitored at this measurement site, derived from the number of measurementSpecificCharacteristics elements."
+                  },
+                  "carriageway_type": {
+                    "type": ["string", "null"],
+                    "description": "Carriageway type from the DATEX II carriagewayType element. Example values: mainCarriageway, slipRoad, connectingCarriageway."
+                  }
+                },
+                "required": ["measurement_site_id"]
+              }
+            }
+          }
+        },
+        "NL.NDW.AVG.RouteMeasurementSite": {
+          "name": "RouteMeasurementSite",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/AVG/RouteMeasurementSite",
+                "type": "object",
+                "name": "RouteMeasurementSite",
+                "description": "Reference data for a route (section) measurement site from the NDW DATEX II measurement_current feed. A route site covers a road segment between two geographic endpoints used for travel time computation.",
+                "properties": {
+                  "measurement_site_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the NDW route measurement site, from the DATEX II measurementSiteRecord id attribute."
+                  },
+                  "name": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable name of the route measurement site from the DATEX II measurementSiteName element."
+                  },
+                  "measurement_site_type": {
+                    "type": ["string", "null"],
+                    "description": "Measurement method type, from the DATEX II measurementEquipmentTypeUsed element. Example values: detectLoop, floatingCar."
+                  },
+                  "period": {
+                    "type": ["int32", "null"],
+                    "description": "Measurement aggregation period in seconds, from the DATEX II measurementSpecificCharacteristics period element.",
+                    "unit": "s"
+                  },
+                  "start_latitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 latitude of the route start point in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "start_longitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 longitude of the route start point in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "end_latitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 latitude of the route end point in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "end_longitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 longitude of the route end point in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier for the route section. Example values: A1, A10, N44."
+                  },
+                  "length_metres": {
+                    "type": ["double", "null"],
+                    "description": "Length of the route section in metres, from the DATEX II length element.",
+                    "unit": "m"
+                  }
+                },
+                "required": ["measurement_site_id"]
+              }
+            }
+          }
+        },
+        "NL.NDW.AVG.TrafficObservation": {
+          "name": "TrafficObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/AVG/TrafficObservation",
+                "type": "object",
+                "name": "TrafficObservation",
+                "description": "Aggregated traffic speed and flow observation per road segment from the NDW DATEX II trafficspeed feed. Speed is averaged and flow summed across all reporting lanes at the measurement site.",
+                "properties": {
+                  "measurement_site_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the NDW measurement site, from the DATEX II measurementSiteReference id attribute."
+                  },
+                  "measurement_time": {
+                    "type": "string",
+                    "description": "Timestamp of the measurement in ISO 8601 UTC format, from the DATEX II measurementTimeDefault element."
+                  },
+                  "average_speed": {
+                    "type": ["double", "null"],
+                    "description": "Average vehicle speed in km/h across all lanes with valid data at this site. Null when no lane reported a valid speed.",
+                    "unit": "km/h"
+                  },
+                  "vehicle_flow_rate": {
+                    "type": ["int32", "null"],
+                    "description": "Total vehicle flow rate in vehicles per hour, summed across all lanes at this measurement site. Null when no valid flow data was reported.",
+                    "unit": "vehicles/h"
+                  },
+                  "number_of_lanes_with_data": {
+                    "type": "int32",
+                    "description": "Number of lanes that reported valid measurement data at this measurement site."
+                  }
+                },
+                "required": ["measurement_site_id", "measurement_time", "number_of_lanes_with_data"]
+              }
+            }
+          }
+        },
+        "NL.NDW.AVG.TravelTimeObservation": {
+          "name": "TravelTimeObservation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/AVG/TravelTimeObservation",
+                "type": "object",
+                "name": "TravelTimeObservation",
+                "description": "Travel time observation for a road segment from the NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.",
+                "properties": {
+                  "measurement_site_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the NDW route measurement site, from the DATEX II measurementSiteReference id attribute."
+                  },
+                  "measurement_time": {
+                    "type": "string",
+                    "description": "Timestamp of the measurement in ISO 8601 UTC format, from the DATEX II measurementTimeDefault element."
+                  },
+                  "duration": {
+                    "type": ["double", "null"],
+                    "description": "Measured travel time in seconds for the route section, from the DATEX II travelTime/duration element. Null if the upstream value was negative (invalid).",
+                    "unit": "s"
+                  },
+                  "reference_duration": {
+                    "type": ["double", "null"],
+                    "description": "Free-flow reference travel time in seconds for the route section, from the DATEX II basicDataReferenceValue/travelTimeData/travelTime/duration extension element. Null if not provided.",
+                    "unit": "s"
+                  },
+                  "accuracy": {
+                    "type": ["double", "null"],
+                    "description": "Accuracy percentage of the travel time measurement as a value between 0 and 100, from the DATEX II travelTime accuracy attribute.",
+                    "unit": "%"
+                  },
+                  "data_quality": {
+                    "type": ["double", "null"],
+                    "description": "Supplier-calculated data quality score as a value between 0 and 100, from the DATEX II supplierCalculatedDataQuality attribute.",
+                    "unit": "%"
+                  },
+                  "number_of_input_values": {
+                    "type": ["int32", "null"],
+                    "description": "Number of input observations used to compute the travel time, from the DATEX II numberOfInputValuesUsed attribute."
+                  }
+                },
+                "required": ["measurement_site_id", "measurement_time"]
+              }
+            }
+          }
+        },
+        "NL.NDW.DRIP.DripSign": {
+          "name": "DripSign",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/DRIP/DripSign",
+                "type": "object",
+                "name": "DripSign",
+                "description": "Reference data for a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type of an individual VMS sign within a VMS controller.",
+                "properties": {
+                  "vms_controller_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the VMS controller unit, from the DATEX II vmsUnitRecord id attribute."
+                  },
+                  "vms_index": {
+                    "type": "string",
+                    "description": "Index of the individual VMS sign within the controller unit, from the DATEX II vmsRecord index attribute, converted to string."
+                  },
+                  "vms_type": {
+                    "type": ["string", "null"],
+                    "description": "DRIP sign type, from the DATEX II vmsType element. Example values: presignalling, matrixBoardTwoByTwo, matrixBoardOneByTwo."
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 latitude of the DRIP sign location in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 longitude of the DRIP sign location in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier where the DRIP sign is located. Example values: A1, A10."
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the DRIP sign from the DATEX II description element."
+                  }
+                },
+                "required": ["vms_controller_id", "vms_index"]
+              }
+            }
+          }
+        },
+        "NL.NDW.DRIP.DripDisplayState": {
+          "name": "DripDisplayState",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/DRIP/DripDisplayState",
+                "type": "object",
+                "name": "DripDisplayState",
+                "description": "Current display state of a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state.",
+                "properties": {
+                  "vms_controller_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the VMS controller unit, from the DATEX II vmsUnitRecord id attribute."
+                  },
+                  "vms_index": {
+                    "type": "string",
+                    "description": "Index of the individual VMS sign within the controller unit, converted to string."
+                  },
+                  "publication_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this display state was published, from the DATEX II publicationTime element."
+                  },
+                  "active": {
+                    "type": ["boolean", "null"],
+                    "description": "Whether the DRIP sign is currently displaying content. Derived from the DATEX II vmsWorking or displayActive element."
+                  },
+                  "vms_text": {
+                    "type": ["string", "null"],
+                    "description": "Concatenated text from all display panels of the sign, from the DATEX II displayedText/vmsText/vmsTextLine elements."
+                  },
+                  "pictogram_code": {
+                    "type": ["string", "null"],
+                    "description": "Pictogram code displayed on the sign, from the DATEX II pictogramDisplayAreaSettings/vmsPicktogramDisplayCharacteristics/vmsPicktogramDescription element."
+                  },
+                  "state": {
+                    "type": ["string", "null"],
+                    "description": "Operational state of the DRIP sign, from the DATEX II vmsUnitFault or operationalState element. Example values: working, fault, maintenance."
+                  }
+                },
+                "required": ["vms_controller_id", "vms_index", "publication_time"]
+              }
+            }
+          }
+        },
+        "NL.NDW.MSI.MsiSign": {
+          "name": "MsiSign",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/MSI/MsiSign",
+                "type": "object",
+                "name": "MsiSign",
+                "description": "Reference data for a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal sign above a motorway lane.",
+                "properties": {
+                  "sign_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the MSI sign, from the DATEX II vmsUnitRecord id attribute."
+                  },
+                  "sign_type": {
+                    "type": ["string", "null"],
+                    "description": "MSI sign type, from the DATEX II vmsType element. Example values: matrixBoardOneByOne, matrixBoardTwoByOne."
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 latitude of the MSI sign location in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "description": "WGS84 longitude of the MSI sign location in decimal degrees.",
+                    "unit": "deg"
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier where the MSI sign is located. Example values: A1, A2."
+                  },
+                  "lane": {
+                    "type": ["string", "null"],
+                    "description": "Lane designation above which the MSI sign is installed, from the DATEX II laneNumber element."
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the MSI sign installation from the DATEX II description element."
+                  }
+                },
+                "required": ["sign_id"]
+              }
+            }
+          }
+        },
+        "NL.NDW.MSI.MsiDisplayState": {
+          "name": "MsiDisplayState",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/MSI/MsiDisplayState",
+                "type": "object",
+                "name": "MsiDisplayState",
+                "description": "Current display state of a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any speed limit shown.",
+                "properties": {
+                  "sign_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the MSI sign, from the DATEX II vmsUnitRecord id attribute."
+                  },
+                  "publication_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this display state was published, from the DATEX II publicationTime element."
+                  },
+                  "image_code": {
+                    "type": ["string", "null"],
+                    "description": "Code of the image currently displayed on the MSI sign, from the DATEX II imageCode or displayedText element. Example values: blank, closed, 70, 80, 100, arrow_left."
+                  },
+                  "state": {
+                    "type": ["string", "null"],
+                    "description": "Operational state derived from the displayed image. Example values: open, closed, speed_limit."
+                  },
+                  "speed_limit": {
+                    "type": ["int32", "null"],
+                    "description": "Speed limit in km/h displayed on the sign when showing a speed limit image. Null when the sign is blank or shows a non-numeric image.",
+                    "unit": "km/h"
+                  }
+                },
+                "required": ["sign_id", "publication_time"]
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.Roadwork": {
+          "name": "Roadwork",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/Situations/Roadwork",
+                "type": "object",
+                "name": "Roadwork",
+                "description": "Road construction or maintenance work event from the NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.",
+                "properties": {
+                  "situation_record_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the situation record, from the DATEX II situationRecord id attribute."
+                  },
+                  "version_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element."
+                  },
+                  "validity_status": {
+                    "type": ["string", "null"],
+                    "description": "Validity status of the situation record, from the DATEX II validityStatus element. Example values: active, suspended, definedByValidityTimeSpec."
+                  },
+                  "start_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the roadwork validity period starts, from the DATEX II overallStartTime element."
+                  },
+                  "end_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the roadwork validity period ends, from the DATEX II overallEndTime element. Null for open-ended situations."
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road name or identifier where the roadwork is located."
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the roadwork situation from the DATEX II comment or description element."
+                  },
+                  "location_description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the roadwork location from the DATEX II locationDescriptor element."
+                  },
+                  "probability": {
+                    "type": ["string", "null"],
+                    "description": "Probability of occurrence for the roadwork, from the DATEX II probabilityOfOccurrence element. Example values: certain, probable, risk."
+                  },
+                  "severity": {
+                    "type": ["string", "null"],
+                    "description": "Overall severity of the roadwork impact, from the DATEX II severity element. Example values: highest, high, medium, low, lowest."
+                  },
+                  "management_type": {
+                    "type": ["string", "null"],
+                    "description": "Type of road management applied, from the DATEX II roadMaintenanceType or managementType element. Example values: laneClosures, carriagewayClosure."
+                  }
+                },
+                "required": ["situation_record_id", "version_time"]
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.BridgeOpening": {
+          "name": "BridgeOpening",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/Situations/BridgeOpening",
+                "type": "object",
+                "name": "BridgeOpening",
+                "description": "Bridge opening event from the NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes a temporary road closure on the Dutch road network.",
+                "properties": {
+                  "situation_record_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the situation record, from the DATEX II situationRecord id attribute."
+                  },
+                  "version_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element."
+                  },
+                  "validity_status": {
+                    "type": ["string", "null"],
+                    "description": "Validity status of the bridge opening record from the DATEX II validityStatus element."
+                  },
+                  "start_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the bridge opening starts."
+                  },
+                  "end_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the bridge opening ends and the road reopens."
+                  },
+                  "bridge_name": {
+                    "type": ["string", "null"],
+                    "description": "Name of the bridge being opened, from the DATEX II bridgeName or locationName element."
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier that is affected by the bridge opening."
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the bridge opening event from the DATEX II comment or description element."
+                  }
+                },
+                "required": ["situation_record_id", "version_time"]
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.TemporaryClosure": {
+          "name": "TemporaryClosure",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/Situations/TemporaryClosure",
+                "type": "object",
+                "name": "TemporaryClosure",
+                "description": "Temporary road closure from the NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or individual lanes on the Dutch national road network.",
+                "properties": {
+                  "situation_record_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the situation record, from the DATEX II situationRecord id attribute."
+                  },
+                  "version_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element."
+                  },
+                  "validity_status": {
+                    "type": ["string", "null"],
+                    "description": "Validity status of the temporary closure record from the DATEX II validityStatus element."
+                  },
+                  "start_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the temporary closure starts."
+                  },
+                  "end_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the temporary closure ends."
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier where the temporary closure applies."
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the temporary closure from the DATEX II comment or description element."
+                  },
+                  "location_description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the closure location from the DATEX II locationDescriptor element."
+                  },
+                  "severity": {
+                    "type": ["string", "null"],
+                    "description": "Overall severity of the closure impact, from the DATEX II severity element."
+                  }
+                },
+                "required": ["situation_record_id", "version_time"]
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.TemporarySpeedLimit": {
+          "name": "TemporarySpeedLimit",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/Situations/TemporarySpeedLimit",
+                "type": "object",
+                "name": "TemporarySpeedLimit",
+                "description": "Temporary speed limit measure from the NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in the maximum allowed speed on a section of the national road network.",
+                "properties": {
+                  "situation_record_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the situation record, from the DATEX II situationRecord id attribute."
+                  },
+                  "version_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element."
+                  },
+                  "validity_status": {
+                    "type": ["string", "null"],
+                    "description": "Validity status of the temporary speed limit record from the DATEX II validityStatus element."
+                  },
+                  "start_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the temporary speed limit starts."
+                  },
+                  "end_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the temporary speed limit ends."
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier where the temporary speed limit applies."
+                  },
+                  "speed_limit_kmh": {
+                    "type": ["int32", "null"],
+                    "description": "Temporary maximum speed limit in km/h, from the DATEX II speedLimit/maximumSpeedLimit element.",
+                    "unit": "km/h"
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the temporary speed limit from the DATEX II comment or description element."
+                  },
+                  "location_description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the speed limit section location from the DATEX II locationDescriptor element."
+                  }
+                },
+                "required": ["situation_record_id", "version_time"]
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.SafetyRelatedMessage": {
+          "name": "SafetyRelatedMessage",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://opendata.ndw.nu/schemas/NL/NDW/Situations/SafetyRelatedMessage",
+                "type": "object",
+                "name": "SafetyRelatedMessage",
+                "description": "Safety-related traffic information message from the NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.",
+                "properties": {
+                  "situation_record_id": {
+                    "type": "string",
+                    "description": "Unique identifier of the situation record, from the DATEX II situationRecord id attribute."
+                  },
+                  "version_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element."
+                  },
+                  "validity_status": {
+                    "type": ["string", "null"],
+                    "description": "Validity status of the safety message record from the DATEX II validityStatus element."
+                  },
+                  "start_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the safety-related situation starts."
+                  },
+                  "end_time": {
+                    "type": ["string", "null"],
+                    "description": "ISO 8601 UTC timestamp when the safety-related situation ends."
+                  },
+                  "road_name": {
+                    "type": ["string", "null"],
+                    "description": "Road identifier where the safety-related event is located."
+                  },
+                  "message_type": {
+                    "type": ["string", "null"],
+                    "description": "Type of safety-related message, from the DATEX II xsi:type attribute on the situationRecord. Example values: RoadOrCarriagewayOrLaneManagement, VehicleObstruction, PoorRoadInfrastructure."
+                  },
+                  "description": {
+                    "type": ["string", "null"],
+                    "description": "Human-readable description of the safety-related message from the DATEX II comment or description element."
+                  },
+                  "urgency": {
+                    "type": ["string", "null"],
+                    "description": "Urgency level of the safety message, from the DATEX II urgency element. Example values: extremelyUrgent, urgent, normalUrgency."
+                  }
+                },
+                "required": ["situation_record_id", "version_time"]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
