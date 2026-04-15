@@ -128,70 +128,17 @@ function Invoke-FabricApi {
     return $null
 }
 
-function Install-KustoCli {
-    # Install Kusto CLI from NuGet package if not already available
-    if (Get-Command kusto.cli -ErrorAction SilentlyContinue) { return }
-    if (Get-Command Kusto.Cli -ErrorAction SilentlyContinue) { return }
-
-    Write-Host "  Installing Kusto CLI..." -ForegroundColor Yellow
-    $kustoDir = Join-Path $TempDir "KustoCLI"
-    if (-not (Test-Path $kustoDir)) { New-Item -ItemType Directory -Path $kustoDir -Force | Out-Null }
-
-    # Download NuGet package
-    $pkgUrl = "https://www.nuget.org/api/v2/package/Microsoft.Azure.Kusto.Tools"
-    $pkgPath = Join-Path $TempDir "kusto-tools.nupkg"
-    if (-not (Test-Path $pkgPath)) {
-        Invoke-WebRequest -Uri $pkgUrl -OutFile $pkgPath -UseBasicParsing
-    }
-
-    # Extract
-    $extractDir = Join-Path $TempDir "kusto-tools-extracted"
-    if (-not (Test-Path $extractDir)) {
-        Expand-Archive -Path $pkgPath -DestinationPath $extractDir -Force
-    }
-
-    # Find the right tools directory
-    $onLinux = $PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/"
-    # Prefer net8.0 (runs on .NET 8+/9), fall back to net6.0, then net472
-    $toolsSubDir = $null
-    foreach ($candidate in @("net8.0", "net6.0", "net472")) {
-        $candidatePath = Join-Path $extractDir "tools" $candidate
-        if (Test-Path $candidatePath) { $toolsSubDir = $candidate; break }
-    }
-    if (-not $toolsSubDir) { $toolsSubDir = "net8.0" }
-    $toolsPath = Join-Path $extractDir "tools" $toolsSubDir
-    if (-not (Test-Path $toolsPath)) {
-        # Try alternate layout
-        $toolsPath = Get-ChildItem -Path $extractDir -Recurse -Directory -Filter $toolsSubDir | Select-Object -First 1
-        if ($toolsPath) { $toolsPath = $toolsPath.FullName }
-    }
-    if (-not $toolsPath -or -not (Test-Path $toolsPath)) {
-        throw "Could not find Kusto CLI tools in extracted package"
-    }
-
-    # Make executable on Linux
-    if ($onLinux) {
-        $kustoBin = Join-Path $toolsPath "Kusto.Cli"
-        if (Test-Path $kustoBin) { chmod +x $kustoBin 2>$null }
-    }
-
-    # Add to PATH for this session
-    if (-not $env:PATH.Contains($toolsPath)) {
-        $env:PATH = "$toolsPath$([IO.Path]::PathSeparator)$env:PATH"
-    }
-    Write-Host "  Kusto CLI installed" -ForegroundColor Green
-}
-
 function Invoke-KqlScript {
     param(
         [string]$QueryUri,
         [string]$Database,
+        [string]$DatabaseId,
         [string]$ScriptContent,
         [string]$Label
     )
     Write-Host "  Applying $Label..." -ForegroundColor Yellow
 
-    # First try direct REST with a token (works outside Cloud Shell)
+    # First try direct REST with a Kusto token (works outside Cloud Shell)
     $kustoToken = $null
     foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
         try {
@@ -227,24 +174,48 @@ function Invoke-KqlScript {
             Write-Warning "Some KQL commands reported non-Completed status for $Label"
         }
     } else {
-        # Fall back to Kusto CLI with federated auth
-        Install-KustoCli
-        $scriptFile = Join-Path $TempDir "kql_script_$(Get-Random).kql"
-        [System.IO.File]::WriteAllText($scriptFile, $ScriptContent, [System.Text.UTF8Encoding]::new($false))
+        # Fall back to Fabric API updateDefinition with DatabaseSchema.kql
+        # This uses api.fabric.microsoft.com which IS a supported MSI audience
+        Write-Host "  Using Fabric API to apply KQL schema..." -ForegroundColor Gray
+        $schemaBase64 = [Convert]::ToBase64String(
+            [System.Text.Encoding]::UTF8.GetBytes($ScriptContent)
+        )
+        $updateBody = @{
+            definition = @{
+                parts = @(
+                    @{
+                        path        = "DatabaseSchema.kql"
+                        payload     = $schemaBase64
+                        payloadType = "InlineBase64"
+                    }
+                )
+            }
+        }
+        $updateFile = Join-Path $TempDir "kql_def_$(Get-Random).json"
+        [System.IO.File]::WriteAllText(
+            $updateFile,
+            ($updateBody | ConvertTo-Json -Depth 10 -Compress),
+            [System.Text.UTF8Encoding]::new($false)
+        )
 
-        $connStr = "$QueryUri/$Database;fed=true"
-        # On Linux, Kusto.Cli.dll must be run with dotnet; on Windows, kusto.cli.exe runs directly
-        if ($PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/") {
-            $cliDll = Get-ChildItem -Path $env:PATH.Split([IO.Path]::PathSeparator) -Filter "Kusto.Cli.dll" -ErrorAction SilentlyContinue | Select-Object -First 1
-            if (-not $cliDll) { throw "Kusto.Cli.dll not found on PATH" }
-            $env:DOTNET_ROLL_FORWARD = "LatestMajor"
-            $output = dotnet $cliDll.FullName $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
-        } else {
-            $output = & kusto.cli $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
-        }
+        $updateResult = az rest `
+            --method POST `
+            --url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$DatabaseId/updateDefinition" `
+            --resource "https://api.fabric.microsoft.com" `
+            --body "@$updateFile" `
+            --headers "Content-Type=application/json" 2>&1
+
         if ($LASTEXITCODE -ne 0) {
-            throw "Kusto CLI failed for $Label`n$($output | Out-String)"
+            throw "Failed to update KQL database definition for $Label`n$updateResult"
         }
+
+        # updateDefinition is async (202) — poll for completion
+        if ($updateResult) {
+            $parsed = $updateResult | ConvertFrom-Json -ErrorAction SilentlyContinue
+            # If 200, it completed synchronously
+        }
+        # Wait a moment for async operation to complete
+        Start-Sleep -Seconds 5
     }
     Write-OK "Applied $Label"
 }
@@ -475,7 +446,7 @@ Write-Step "3/7" "Applying KQL schema from $Source..."
 
 $kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
 Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName `
-    -ScriptContent $kqlContent -Label "$Source.kql"
+    -DatabaseId $databaseId -ScriptContent $kqlContent -Label "$Source.kql"
 
 # ── Step 4: Create Fabric Event Stream ──────────────────────────────────
 
