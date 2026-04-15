@@ -30,6 +30,10 @@
 .PARAMETER Location
     Azure region for deployment. Defaults to the resource group's location.
 
+.PARAMETER SubscriptionId
+    Azure subscription ID. If provided, the script sets this as the active
+    subscription before deploying.
+
 .PARAMETER WorkspaceId
     Microsoft Fabric workspace ID (GUID).
 
@@ -56,6 +60,8 @@ param(
 
     [string]$Location,
 
+    [string]$SubscriptionId,
+
     [Parameter(Mandatory = $true)]
     [string]$WorkspaceId,
 
@@ -72,6 +78,15 @@ $Repo = "clemensv/real-time-sources"
 $Branch = "main"
 $RawBase = "https://raw.githubusercontent.com/$Repo/$Branch"
 $FabricApi = "https://api.fabric.microsoft.com/v1"
+
+# Set Azure subscription if provided
+if ($SubscriptionId) {
+    az account set --subscription $SubscriptionId 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to set subscription '$SubscriptionId'"
+    }
+    Write-Host "  Subscription: $SubscriptionId" -ForegroundColor White
+}
 
 if (-not $DatabaseName) { $DatabaseName = $Source -replace '-', '_' }
 $EventStreamName = "$Source-ingest"

@@ -256,6 +256,8 @@ async function openDeployForm(source, mode) {
   // Azure section
   const azSection = el("div", { class: "form-section" });
   azSection.innerHTML = '<div class="form-section-title">Azure Resources</div>';
+  azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
+    "", "Azure subscription GUID (leave blank for default)", false));
   azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
     "", "Azure resource group name", true));
   azSection.appendChild(makeField("location", "Location", "text",
@@ -318,6 +320,7 @@ function launchCloudShell(source, mode) {
 
   const rg = getValue("resourceGroup");
   const loc = getValue("location");
+  const subId = getValue("subscriptionId");
 
   if (!rg) { alert("Resource Group is required."); return; }
   if (!loc) { alert("Location is required."); return; }
@@ -331,12 +334,13 @@ function launchCloudShell(source, mode) {
     }
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
 
-    const cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
+    let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
       + `./deploy-fabric.ps1`
       + ` -Source '${source.id}'`
       + ` -ResourceGroup '${rg}'`
-      + ` -Location '${loc}'`
-      + ` -WorkspaceId '${wsId}'`
+      + ` -Location '${loc}'`;
+    if (subId) cmd += ` -SubscriptionId '${subId}'`;
+    cmd += ` -WorkspaceId '${wsId}'`
       + ` -EventhouseId '${ehId}'`
       + ` -DatabaseName '${dbName}'`;
 
