@@ -77,6 +77,10 @@ def noaa_nws_image():
     return build_image('noaa-nws')
 
 @pytest.fixture(scope='module')
+def nws_forecasts_image():
+    return build_image('nws-forecasts')
+
+@pytest.fixture(scope='module')
 def usgs_iv_image():
     return build_image('usgs-iv')
 
@@ -636,6 +640,30 @@ class TestNOAANwsDockerFlow:
 
 
 # ---------------------------------------------------------------------------
+# NWS Forecast Zones
+# ---------------------------------------------------------------------------
+
+class TestNWSForecastsDockerFlow:
+    TOPIC = 'test-nws-forecasts'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nws_forecasts_image):
+        _run_kafka_flow_test(
+            kafka, nws_forecasts_image, self.TOPIC,
+            reference_types=['ForecastZone'],
+            telemetry_types=['LandZoneForecast', 'MarineZoneForecast'],
+            required_types=['ForecastZone', 'LandZoneForecast', 'MarineZoneForecast'],
+            extra_env={
+                'KAFKA_TOPIC': self.TOPIC,
+                'NWS_FORECAST_ZONES': 'WAZ315,PZZ135',
+                'NWS_FORECAST_POLL_INTERVAL_SECONDS': '300',
+                'NWS_FORECAST_REFERENCE_REFRESH_SECONDS': '21600',
+            },
+            min_messages=3,
+            timeout=240,
+        )
+
+
+# ---------------------------------------------------------------------------
 # USGS Instantaneous Values
 # ---------------------------------------------------------------------------
 
@@ -785,6 +813,7 @@ class TestUKEADockerFlow:
             kafka, uk_ea_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['Reading'],
+            extra_env={'POLLING_INTERVAL': '5', 'MAX_STATIONS': '100'},
         )
 
 

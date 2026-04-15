@@ -1,0 +1,2 @@
+pip install .\nws_forecasts_producer_data
+pip install .\nws_forecasts_producer_kafka_producer
