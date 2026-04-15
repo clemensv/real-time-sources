@@ -4,6 +4,7 @@ Unit tests for the Ticketmaster Discovery API bridge.
 
 import json
 import os
+import sys
 import tempfile
 import pytest
 from unittest.mock import MagicMock, patch, call
@@ -18,6 +19,8 @@ from ticketmaster.ticketmaster import (
     _parse_attraction,
     _parse_classification,
     _first_classification,
+    _resolve_event_filter_config,
+    main,
     parse_connection_string,
 )
 from ticketmaster_producer_data import Event, Venue, Attraction, Classification
@@ -157,6 +160,120 @@ class TestParseConnectionString:
         result = parse_connection_string(conn)
         assert result["bootstrap.servers"] == "localhost:9092"
         assert result["kafka_topic"] == "ticketmaster"
+
+
+class TestFilterConfiguration:
+
+    @pytest.mark.unit
+    def test_resolve_event_filter_config_prefers_cli_and_env(self, monkeypatch):
+        monkeypatch.setenv("COUNTRY_CODES", "DE,GB")
+        monkeypatch.setenv("TICKETMASTER_CITY", "Berlin")
+        monkeypatch.setenv("TICKETMASTER_SEGMENT_ID", "seg-from-env")
+        monkeypatch.setenv("TICKETMASTER_LOCALE", "en-de")
+        monkeypatch.setenv("TICKETMASTER_SORT", "name,asc")
+        monkeypatch.setenv("TICKETMASTER_PAGE_SIZE", "50")
+        monkeypatch.setenv("TICKETMASTER_LOOKAHEAD_DAYS", "14")
+
+        args = MagicMock(
+            country_codes="US,CA",
+            city=None,
+            venue_id="Venue123",
+            attraction_id=None,
+            segment_id=None,
+            genre_id="Genre456",
+            sub_genre_id=None,
+            market_id=None,
+            postal_code=None,
+            locale=None,
+            sort=None,
+            page_size=None,
+            start_datetime=None,
+            end_datetime=None,
+            lookahead_days=None,
+        )
+
+        config = _resolve_event_filter_config(args)
+
+        assert config["country_codes"] == "US,CA"
+        assert config["page_size"] == 50
+        assert config["lookahead_days"] == 14
+        assert config["event_filters"] == {
+            "city": "Berlin",
+            "venueId": "Venue123",
+            "segmentId": "seg-from-env",
+            "genreId": "Genre456",
+            "locale": "en-de",
+            "sort": "name,asc",
+        }
+
+    @pytest.mark.unit
+    def test_resolve_event_filter_config_requires_both_datetimes(self):
+        args = MagicMock(
+            country_codes=None,
+            city=None,
+            venue_id=None,
+            attraction_id=None,
+            segment_id=None,
+            genre_id=None,
+            sub_genre_id=None,
+            market_id=None,
+            postal_code=None,
+            locale=None,
+            sort=None,
+            page_size=None,
+            start_datetime="2026-04-15T00:00:00Z",
+            end_datetime=None,
+            lookahead_days=None,
+        )
+
+        with pytest.raises(ValueError, match="Both start and end datetime must be set together"):
+            _resolve_event_filter_config(args)
+
+    @pytest.mark.unit
+    def test_main_passes_filter_config_to_bridge(self, monkeypatch):
+        monkeypatch.setenv("TICKETMASTER_API_KEY", "key")
+        monkeypatch.setenv("CONNECTION_STRING", "BootstrapServer=localhost:9092;EntityPath=ticketmaster")
+        monkeypatch.setenv("TICKETMASTER_CITY", "Berlin")
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            [
+                "ticketmaster",
+                "feed",
+                "--country-codes",
+                "DE",
+                "--segment-id",
+                "KZFzniwnSyZfZ7v7nJ",
+                "--start-datetime",
+                "2026-04-15T00:00:00Z",
+                "--end-datetime",
+                "2026-04-30T23:59:59Z",
+                "--page-size",
+                "75",
+            ],
+        )
+
+        with (
+            patch("ticketmaster.ticketmaster.TicketmasterBridge") as bridge_cls,
+            patch("ticketmaster.ticketmaster.Producer"),
+            patch("ticketmaster.ticketmaster.TicketmasterEventsEventProducer"),
+            patch("ticketmaster.ticketmaster.TicketmasterReferenceEventProducer"),
+        ):
+            bridge = bridge_cls.return_value
+            bridge.run.return_value = None
+            main()
+
+        assert bridge_cls.call_args is not None
+        assert bridge_cls.call_args.kwargs["country_codes"] == "DE"
+        assert bridge_cls.call_args.kwargs["page_size"] == 75
+        assert bridge_cls.call_args.kwargs["start_datetime"] == "2026-04-15T00:00:00Z"
+        assert bridge_cls.call_args.kwargs["end_datetime"] == "2026-04-30T23:59:59Z"
+        assert bridge_cls.call_args.kwargs["event_filters"] == {
+            "city": "Berlin",
+            "segmentId": "KZFzniwnSyZfZ7v7nJ",
+            "locale": "*",
+            "sort": "date,asc",
+        }
 
 
 # ---------------------------------------------------------------------------
@@ -394,6 +511,42 @@ class TestBridgeReferenceEmit:
         count = bridge.emit_attractions({"K8vZ91718H7": attr})
         assert count == 1
         ref_prod.send_ticketmaster_reference_attraction.assert_called_once()
+
+
+class TestBridgeEventFilters:
+
+    @pytest.mark.unit
+    def test_fetch_events_for_country_applies_configured_filters(self):
+        bridge = TicketmasterBridge(
+            api_key="test-key",
+            events_producer=None,
+            reference_producer=None,
+            country_codes="DE",
+            page_size=75,
+            event_filters={
+                "city": "Berlin",
+                "segmentId": "KZFzniwnSyZfZ7v7nJ",
+                "locale": "de-de",
+                "sort": "name,asc",
+            },
+        )
+
+        with patch.object(bridge, "_paginate", return_value=[]) as paginate_mock:
+            bridge.fetch_events_for_country("DE", "2026-04-15T00:00:00Z", "2026-04-30T23:59:59Z")
+
+        paginate_mock.assert_called_once_with(
+            "events.json",
+            {
+                "countryCode": "DE",
+                "startDateTime": "2026-04-15T00:00:00Z",
+                "endDateTime": "2026-04-30T23:59:59Z",
+                "city": "Berlin",
+                "segmentId": "KZFzniwnSyZfZ7v7nJ",
+                "locale": "de-de",
+                "sort": "name,asc",
+            },
+            "events",
+        )
 
 
 # ---------------------------------------------------------------------------

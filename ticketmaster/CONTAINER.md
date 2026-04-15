@@ -32,6 +32,20 @@ data is presented, attributed, or redistributed.
 | `TICKETMASTER_API_KEY` | **Yes** | Ticketmaster Discovery API key | — |
 | `CONNECTION_STRING` | **Yes** | Kafka / Event Hubs / Fabric connection string | — |
 | `COUNTRY_CODES` | No | Comma-separated ISO 3166-1 alpha-2 country codes | `AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US` |
+| `TICKETMASTER_CITY` | No | Optional Ticketmaster `city` filter | — |
+| `TICKETMASTER_VENUE_ID` | No | Optional Ticketmaster `venueId` filter | — |
+| `TICKETMASTER_ATTRACTION_ID` | No | Optional Ticketmaster `attractionId` filter | — |
+| `TICKETMASTER_SEGMENT_ID` | No | Optional Ticketmaster `segmentId` filter | — |
+| `TICKETMASTER_GENRE_ID` | No | Optional Ticketmaster `genreId` filter | — |
+| `TICKETMASTER_SUB_GENRE_ID` | No | Optional Ticketmaster `subGenreId` filter | — |
+| `TICKETMASTER_MARKET_ID` | No | Optional Ticketmaster `marketId` filter | — |
+| `TICKETMASTER_POSTAL_CODE` | No | Optional Ticketmaster `postalCode` filter | — |
+| `TICKETMASTER_LOCALE` | No | Discovery API locale for event and reference requests | `*` |
+| `TICKETMASTER_SORT` | No | Discovery API event sort order | `date,asc` |
+| `TICKETMASTER_PAGE_SIZE` | No | Discovery API page size per request, up to 200 | `200` |
+| `TICKETMASTER_START_DATETIME` | No | Optional absolute UTC startDateTime filter | — |
+| `TICKETMASTER_END_DATETIME` | No | Optional absolute UTC endDateTime filter | — |
+| `TICKETMASTER_LOOKAHEAD_DAYS` | No | Relative search window when explicit datetimes are not set | `90` |
 | `POLL_INTERVAL` | No | Seconds between event polls | `300` |
 | `REFERENCE_REFRESH` | No | Seconds between reference-data refreshes | `3600` |
 | `STATE_FILE` | No | Path to JSON file for persisting dedupe state across restarts | `~/.ticketmaster_state.json` |
@@ -72,13 +86,16 @@ docker run --rm \
 
 ## Reducing scope to specific markets
 
-To focus on a single market such as the United Kingdom:
+To focus on one city and segment instead of the full multi-country default:
 
 ```bash
 docker run --rm \
   -e TICKETMASTER_API_KEY=<your-api-key> \
   -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ticketmaster" \
-  -e COUNTRY_CODES=GB \
+  -e COUNTRY_CODES=DE \
+  -e TICKETMASTER_CITY=Berlin \
+  -e TICKETMASTER_SEGMENT_ID=KZFzniwnSyZfZ7v7nJ \
+  -e TICKETMASTER_LOOKAHEAD_DAYS=30 \
   -e KAFKA_ENABLE_TLS=false \
   ghcr.io/clemensv/real-time-sources-ticketmaster:latest
 ```
@@ -94,5 +111,21 @@ reduce API call volume.
 
 ## Azure Container Instance (ACI) deployment
 
-An Azure Container Instance template is not included in this release.  Use the
-`docker run` examples above and adapt them to your deployment toolchain.
+An ARM template is included as [azure-template.json](azure-template.json). It
+exposes the runtime filters as optional template parameters, with descriptions
+that tell the operator what each filter does and when to leave it blank.
+
+Example deployment:
+
+```bash
+az deployment group create \
+  --resource-group <resource-group> \
+  --template-file azure-template.json \
+  --parameters \
+      connectionString="<event-hubs-or-kafka-connection-string>" \
+      ticketmasterApiKey="<ticketmaster-api-key>" \
+      countryCodes="DE" \
+      city="Berlin" \
+      segmentId="KZFzniwnSyZfZ7v7nJ" \
+      lookaheadDays="30"
+```

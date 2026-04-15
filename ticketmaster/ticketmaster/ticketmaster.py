@@ -18,7 +18,7 @@ import os
 import sys
 import time
 from datetime import datetime, timezone, timedelta
-from typing import Any, Dict, Optional, Set, List
+from typing import Any, Dict, Optional, List
 from urllib.parse import urlencode
 
 import requests
@@ -75,6 +75,26 @@ DEFAULT_POLL_INTERVAL = 300       # 5 minutes between event polls
 DEFAULT_REFERENCE_REFRESH = 3600  # 1 hour between reference-data refreshes
 DEFAULT_PAGE_SIZE = 200           # Maximum allowed by the API
 DEFAULT_COUNTRY_CODES = "AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US"
+DEFAULT_EVENT_LOOKAHEAD_DAYS = 90
+DEFAULT_LOCALE = "*"
+DEFAULT_EVENT_SORT = "date,asc"
+EVENT_FILTER_ENV_VARS = {
+    "country_codes": "COUNTRY_CODES",
+    "city": "TICKETMASTER_CITY",
+    "venue_id": "TICKETMASTER_VENUE_ID",
+    "attraction_id": "TICKETMASTER_ATTRACTION_ID",
+    "segment_id": "TICKETMASTER_SEGMENT_ID",
+    "genre_id": "TICKETMASTER_GENRE_ID",
+    "sub_genre_id": "TICKETMASTER_SUB_GENRE_ID",
+    "market_id": "TICKETMASTER_MARKET_ID",
+    "postal_code": "TICKETMASTER_POSTAL_CODE",
+    "locale": "TICKETMASTER_LOCALE",
+    "sort": "TICKETMASTER_SORT",
+    "page_size": "TICKETMASTER_PAGE_SIZE",
+    "start_datetime": "TICKETMASTER_START_DATETIME",
+    "end_datetime": "TICKETMASTER_END_DATETIME",
+    "lookahead_days": "TICKETMASTER_LOOKAHEAD_DAYS",
+}
 
 
 def _make_session() -> requests.Session:
@@ -124,6 +144,204 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
         config_dict["security.protocol"] = "SASL_SSL"
         config_dict["sasl.mechanisms"] = "PLAIN"
     return config_dict
+
+
+def _parse_positive_int(value: Optional[str], *, name: str) -> Optional[int]:
+    """Parse a positive integer from string input."""
+    if value is None or value == "":
+        return None
+    parsed = int(value)
+    if parsed <= 0:
+        raise ValueError(f"{name} must be a positive integer")
+    return parsed
+
+
+def _clean_optional_str(value: Optional[str]) -> Optional[str]:
+    """Normalize optional string input by trimming blanks to None."""
+    if value is None:
+        return None
+    value = value.strip()
+    return value or None
+
+
+def _collect_event_filters(
+    *,
+    city: Optional[str] = None,
+    venue_id: Optional[str] = None,
+    attraction_id: Optional[str] = None,
+    segment_id: Optional[str] = None,
+    genre_id: Optional[str] = None,
+    sub_genre_id: Optional[str] = None,
+    market_id: Optional[str] = None,
+    postal_code: Optional[str] = None,
+    locale: Optional[str] = None,
+    sort: Optional[str] = None,
+) -> Dict[str, str]:
+    """Collect supported Discovery API event filters, dropping empty values."""
+    filter_values = {
+        "city": city,
+        "venueId": venue_id,
+        "attractionId": attraction_id,
+        "segmentId": segment_id,
+        "genreId": genre_id,
+        "subGenreId": sub_genre_id,
+        "marketId": market_id,
+        "postalCode": postal_code,
+        "locale": locale,
+        "sort": sort,
+    }
+    return {
+        key: cleaned
+        for key, cleaned in ((key, _clean_optional_str(value)) for key, value in filter_values.items())
+        if cleaned is not None
+    }
+
+
+def _add_event_filter_arguments(parser: argparse.ArgumentParser) -> None:
+    """Add user-facing Discovery API event filter arguments to the parser."""
+    parser.add_argument(
+        "--country-codes",
+        type=str,
+        default=None,
+        help=(
+            "Comma-separated ISO 3166-1 alpha-2 country codes for both event polling "
+            "and reference-data refreshes. Example: DE,GB,FR. Falls back to COUNTRY_CODES."
+        ),
+    )
+    parser.add_argument(
+        "--city",
+        type=str,
+        default=None,
+        help="Limit events to a single city name. Useful when you want one metro area instead of an entire country set.",
+    )
+    parser.add_argument(
+        "--venue-id",
+        type=str,
+        default=None,
+        help="Limit events to one Ticketmaster venue ID.",
+    )
+    parser.add_argument(
+        "--attraction-id",
+        type=str,
+        default=None,
+        help="Limit events to one Ticketmaster attraction ID, such as an artist, team, or production.",
+    )
+    parser.add_argument(
+        "--segment-id",
+        type=str,
+        default=None,
+        help="Limit events to one Ticketmaster segment ID, such as Music or Sports.",
+    )
+    parser.add_argument(
+        "--genre-id",
+        type=str,
+        default=None,
+        help="Limit events to one Ticketmaster genre ID within the selected segment.",
+    )
+    parser.add_argument(
+        "--sub-genre-id",
+        dest="sub_genre_id",
+        type=str,
+        default=None,
+        help="Limit events to one Ticketmaster sub-genre ID.",
+    )
+    parser.add_argument(
+        "--market-id",
+        type=str,
+        default=None,
+        help="Limit events to one Ticketmaster market ID.",
+    )
+    parser.add_argument(
+        "--postal-code",
+        type=str,
+        default=None,
+        help="Limit events to a postal or ZIP code supported by Ticketmaster search.",
+    )
+    parser.add_argument(
+        "--locale",
+        type=str,
+        default=None,
+        help="Discovery API locale for event queries. Use '*' for all locales. Falls back to TICKETMASTER_LOCALE.",
+    )
+    parser.add_argument(
+        "--sort",
+        type=str,
+        default=None,
+        help="Discovery API sort order such as 'date,asc' or 'name,desc'. Falls back to TICKETMASTER_SORT.",
+    )
+    parser.add_argument(
+        "--page-size",
+        type=int,
+        default=None,
+        help="Discovery API page size per request, up to 200. Larger values reduce page count but use more quota per poll.",
+    )
+    parser.add_argument(
+        "--start-datetime",
+        type=str,
+        default=None,
+        help="Absolute UTC lower bound for event search in ISO 8601 form, e.g. 2026-04-15T00:00:00Z.",
+    )
+    parser.add_argument(
+        "--end-datetime",
+        type=str,
+        default=None,
+        help="Absolute UTC upper bound for event search in ISO 8601 form, e.g. 2026-07-15T23:59:59Z.",
+    )
+    parser.add_argument(
+        "--lookahead-days",
+        type=int,
+        default=None,
+        help=(
+            "Relative event search window in days when no explicit --start-datetime/--end-datetime is supplied. "
+            f"Default is {DEFAULT_EVENT_LOOKAHEAD_DAYS} days."
+        ),
+    )
+
+
+def _resolve_event_filter_config(args: argparse.Namespace) -> Dict[str, Any]:
+    """Resolve Discovery API filter configuration from CLI arguments and env vars."""
+    page_size = args.page_size
+    if page_size is None:
+        page_size = _parse_positive_int(os.getenv(EVENT_FILTER_ENV_VARS["page_size"]), name="TICKETMASTER_PAGE_SIZE")
+    if page_size is None:
+        page_size = DEFAULT_PAGE_SIZE
+
+    lookahead_days = args.lookahead_days
+    if lookahead_days is None:
+        lookahead_days = _parse_positive_int(
+            os.getenv(EVENT_FILTER_ENV_VARS["lookahead_days"]),
+            name="TICKETMASTER_LOOKAHEAD_DAYS",
+        )
+    if lookahead_days is None:
+        lookahead_days = DEFAULT_EVENT_LOOKAHEAD_DAYS
+
+    start_datetime = _clean_optional_str(args.start_datetime or os.getenv(EVENT_FILTER_ENV_VARS["start_datetime"]))
+    end_datetime = _clean_optional_str(args.end_datetime or os.getenv(EVENT_FILTER_ENV_VARS["end_datetime"]))
+    if (start_datetime and not end_datetime) or (end_datetime and not start_datetime):
+        raise ValueError("Both start and end datetime must be set together.")
+
+    event_filters = _collect_event_filters(
+        city=args.city or os.getenv(EVENT_FILTER_ENV_VARS["city"]),
+        venue_id=args.venue_id or os.getenv(EVENT_FILTER_ENV_VARS["venue_id"]),
+        attraction_id=args.attraction_id or os.getenv(EVENT_FILTER_ENV_VARS["attraction_id"]),
+        segment_id=args.segment_id or os.getenv(EVENT_FILTER_ENV_VARS["segment_id"]),
+        genre_id=args.genre_id or os.getenv(EVENT_FILTER_ENV_VARS["genre_id"]),
+        sub_genre_id=args.sub_genre_id or os.getenv(EVENT_FILTER_ENV_VARS["sub_genre_id"]),
+        market_id=args.market_id or os.getenv(EVENT_FILTER_ENV_VARS["market_id"]),
+        postal_code=args.postal_code or os.getenv(EVENT_FILTER_ENV_VARS["postal_code"]),
+        locale=args.locale or os.getenv(EVENT_FILTER_ENV_VARS["locale"]) or DEFAULT_LOCALE,
+        sort=args.sort or os.getenv(EVENT_FILTER_ENV_VARS["sort"]) or DEFAULT_EVENT_SORT,
+    )
+
+    country_codes = args.country_codes or os.getenv(EVENT_FILTER_ENV_VARS["country_codes"], DEFAULT_COUNTRY_CODES)
+    return {
+        "country_codes": country_codes,
+        "page_size": page_size,
+        "lookahead_days": lookahead_days,
+        "start_datetime": start_datetime,
+        "end_datetime": end_datetime,
+        "event_filters": event_filters,
+    }
 
 
 def _first_classification(classifications: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -308,6 +526,10 @@ class TicketmasterBridge:
         reference_refresh_interval: int = DEFAULT_REFERENCE_REFRESH,
         country_codes: str = DEFAULT_COUNTRY_CODES,
         page_size: int = DEFAULT_PAGE_SIZE,
+        event_filters: Optional[Dict[str, str]] = None,
+        start_datetime: Optional[str] = None,
+        end_datetime: Optional[str] = None,
+        lookahead_days: int = DEFAULT_EVENT_LOOKAHEAD_DAYS,
         state_file: str = "",
     ) -> None:
         self.api_key = api_key
@@ -317,6 +539,10 @@ class TicketmasterBridge:
         self.reference_refresh_interval = reference_refresh_interval
         self.country_codes = country_codes
         self.page_size = page_size
+        self.event_filters = dict(event_filters or {})
+        self.start_datetime = start_datetime
+        self.end_datetime = end_datetime
+        self.lookahead_days = lookahead_days
         self.state_file = state_file
         self._session = _make_session()
 
@@ -394,8 +620,9 @@ class TicketmasterBridge:
 
     def fetch_venues_for_country(self, country_code: str) -> Dict[str, Venue]:
         """Fetch venues for a single country code."""
+        locale = self.event_filters.get("locale", DEFAULT_LOCALE)
         raw_list = self._paginate(
-            "venues.json", {"countryCode": country_code, "locale": "*"}, "venues"
+            "venues.json", {"countryCode": country_code, "locale": locale}, "venues"
         )
         result: Dict[str, Venue] = {}
         for raw in raw_list:
@@ -406,8 +633,9 @@ class TicketmasterBridge:
 
     def fetch_attractions_for_country(self, country_code: str) -> Dict[str, Attraction]:
         """Fetch attractions for a single country code."""
+        locale = self.event_filters.get("locale", DEFAULT_LOCALE)
         raw_list = self._paginate(
-            "attractions.json", {"countryCode": country_code, "locale": "*"}, "attractions"
+            "attractions.json", {"countryCode": country_code, "locale": locale}, "attractions"
         )
         result: Dict[str, Attraction] = {}
         for raw in raw_list:
@@ -533,15 +761,17 @@ class TicketmasterBridge:
         self, country_code: str, start_datetime: str, end_datetime: str
     ) -> List[Dict[str, Any]]:
         """Fetch all upcoming events for one country in the given time window."""
+        params = {
+            "countryCode": country_code,
+            "startDateTime": start_datetime,
+            "endDateTime": end_datetime,
+            **self.event_filters,
+        }
+        params.setdefault("locale", DEFAULT_LOCALE)
+        params.setdefault("sort", DEFAULT_EVENT_SORT)
         return self._paginate(
             "events.json",
-            {
-                "countryCode": country_code,
-                "startDateTime": start_datetime,
-                "endDateTime": end_datetime,
-                "locale": "*",
-                "sort": "date,asc",
-            },
+            params,
             "events",
         )
 
@@ -557,9 +787,10 @@ class TicketmasterBridge:
             return
 
         now_utc = datetime.now(timezone.utc)
-        # Look ahead 90 days
-        start_dt = now_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
-        end_dt = (now_utc + timedelta(days=90)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        start_dt = self.start_datetime or now_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+        end_dt = self.end_datetime or (
+            now_utc + timedelta(days=self.lookahead_days)
+        ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
         pending_state: Dict[str, str] = {}
         count_new = 0
@@ -641,10 +872,11 @@ class TicketmasterBridge:
         continuously, refreshing reference data every `reference_refresh_interval`.
         """
         logger.info(
-            "Starting Ticketmaster bridge; countries=%s poll_interval=%ds ref_refresh=%ds",
+            "Starting Ticketmaster bridge; countries=%s poll_interval=%ds ref_refresh=%ds event_filters=%s",
             self.country_codes,
             self.poll_interval,
             self.reference_refresh_interval,
+            self.event_filters,
         )
 
         # Emit reference data first
@@ -672,32 +904,37 @@ class TicketmasterBridge:
 
 def main() -> None:
     """Parse arguments and start the Ticketmaster bridge."""
-    parser = argparse.ArgumentParser(description="Ticketmaster Discovery API to Kafka bridge")
+    parser = argparse.ArgumentParser(
+        description="Poll Ticketmaster Discovery API v2 and publish event plus reference data to Kafka.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     subparsers = parser.add_subparsers(title="subcommands", dest="subcommand")
 
-    feed_parser = subparsers.add_parser("feed", help="Poll Ticketmaster and stream to Kafka")
+    feed_parser = subparsers.add_parser(
+        "feed",
+        help="Continuously poll Ticketmaster and stream CloudEvents to Kafka.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     feed_parser.add_argument("--connection-string", type=str,
-                             help="Kafka/Event Hubs/Fabric connection string")
+                             help="Kafka, Event Hubs, or Fabric connection string. If set, it supplies bootstrap servers and topic via EntityPath.")
     feed_parser.add_argument("--kafka-bootstrap-servers", type=str,
-                             help="Kafka bootstrap server(s)")
+                             help="Kafka bootstrap server list when you are not using CONNECTION_STRING.")
     feed_parser.add_argument("--kafka-topic", type=str,
-                             help="Kafka topic name")
+                             help="Kafka topic name when you are not using EntityPath in a connection string.")
     feed_parser.add_argument("--sasl-username", type=str, help="SASL username")
     feed_parser.add_argument("--sasl-password", type=str, help="SASL password")
     feed_parser.add_argument("--api-key", type=str,
-                             help="Ticketmaster Discovery API key")
-    feed_parser.add_argument("--country-codes", type=str, default=DEFAULT_COUNTRY_CODES,
-                             help="Comma-separated ISO 3166-1 alpha-2 country codes to poll")
+                             help="Ticketmaster Discovery API consumer key / API key.")
     feed_parser.add_argument("--poll-interval", type=int, default=DEFAULT_POLL_INTERVAL,
-                             help=f"Seconds between event polls (default: {DEFAULT_POLL_INTERVAL})")
+                             help="Seconds between end-to-end polling cycles, including reference refresh checks.")
     feed_parser.add_argument("--reference-refresh", type=int, default=DEFAULT_REFERENCE_REFRESH,
-                             help=f"Seconds between reference-data refreshes (default: {DEFAULT_REFERENCE_REFRESH})")
+                             help="Seconds between full reference-data refreshes for classifications, venues, and attractions.")
     feed_parser.add_argument("--log-level", type=str, default="INFO",
-                             help="Logging level (default: INFO)")
+                             help="Python logging level such as DEBUG, INFO, WARNING, or ERROR.")
     feed_parser.add_argument("--state-file", type=str,
                              default=os.getenv("STATE_FILE", os.path.expanduser("~/.ticketmaster_state.json")),
-                             help="Path to JSON file for persisting dedupe state across restarts "
-                                  "(default: ~/.ticketmaster_state.json; set STATE_FILE env var to override)")
+                             help="Path to the JSON file that keeps event dedupe state across restarts.")
+    _add_event_filter_arguments(feed_parser)
 
     args = parser.parse_args()
 
@@ -705,7 +942,12 @@ def main() -> None:
         # Resolve configuration from args and environment
         connection_string = args.connection_string or os.getenv("CONNECTION_STRING")
         api_key = args.api_key or os.getenv("TICKETMASTER_API_KEY")
-        country_codes = args.country_codes or os.getenv("COUNTRY_CODES", DEFAULT_COUNTRY_CODES)
+        try:
+            filter_config = _resolve_event_filter_config(args)
+        except ValueError as exc:
+            print(f"Error: {exc}")
+            sys.exit(1)
+        country_codes = filter_config["country_codes"]
         poll_interval = int(os.getenv("POLL_INTERVAL", str(args.poll_interval)))
         reference_refresh = int(os.getenv("REFERENCE_REFRESH", str(args.reference_refresh)))
         state_file = args.state_file or os.getenv("STATE_FILE", os.path.expanduser("~/.ticketmaster_state.json"))
@@ -759,6 +1001,11 @@ def main() -> None:
             poll_interval=poll_interval,
             reference_refresh_interval=reference_refresh,
             country_codes=country_codes,
+            page_size=filter_config["page_size"],
+            event_filters=filter_config["event_filters"],
+            start_datetime=filter_config["start_datetime"],
+            end_datetime=filter_config["end_datetime"],
+            lookahead_days=filter_config["lookahead_days"],
             state_file=state_file,
         )
         bridge.run()
