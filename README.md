@@ -167,6 +167,12 @@ are 87 containers in total.
 | RSS Feeds | Any (configurable RSS/Atom feed URLs or OPML files) | [📖](rss/README.md) | [🐳](rss/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-rss) [![Tests](https://github.com/clemensv/real-time-sources/actions/workflows/test-rss.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/test-rss.yml) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template-with-eventhub.json) |
 | Wikimedia EventStreams | Global (Wikipedia, Wikidata, Commons recent changes) | [📖](wikimedia-eventstreams/README.md) | [🐳](wikimedia-eventstreams/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wikimedia-eventstreams) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwikimedia-eventstreams%2Fazure-template-with-eventhub.json) |
 
+### Public Events
+
+| Source | Coverage | README | Container | Build |
+|---|---|---|---|---|
+| Ticketmaster | Global (concerts, sports, theater, arts, and other live public events) | [📖](ticketmaster/README.md) | [🐳](ticketmaster/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ticketmaster) |
+
 ### Scientific Research
 
 | Source | Coverage | README | Container | Build | Deploy |

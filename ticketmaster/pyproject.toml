@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "ticketmaster"
+description = "Ticketmaster Discovery API bridge to Apache Kafka"
+authors = ["Clemens Vasters"]
+readme = "README.md"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+requests = ">=2.32.3"
+urllib3 = ">=2.2.0"
+avro = ">=1.11.3"
+dataclasses-json = ">=0.6.7"
+ticketmaster_producer_data = {path = "ticketmaster_producer/ticketmaster_producer_data"}
+ticketmaster_producer_kafka_producer = {path = "ticketmaster_producer/ticketmaster_producer_kafka_producer"}
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.3.3"
+flake8 = ">=7.1.1"
+pylint = ">=3.2.7"
+mypy = ">=1.11.2"
+pytest-cov = "^7.0.0"
+
+[tool.poetry.scripts]
+ticketmaster = "ticketmaster.ticketmaster:main"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
