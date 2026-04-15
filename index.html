@@ -70,15 +70,15 @@
     <section id="content-pane" class="pane content-pane">
       <div class="deploy-bar" id="deploy-bar" style="display:none;">
         <button class="deploy-btn" id="btn-container" title="Deploy container only (bring your own Event Hub)">
-          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M13.5 3H2.5A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3zm.5 8.5a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v7z"/></svg>
+          <svg class="azure-logo" viewBox="0 0 59.242 47.271" width="16" height="13"><path fill="#0089D6" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0zM21.69 3.479L15.46 26.572 33.874 44.97H12.09l-5.472 2.301h37.984L21.69 3.479z"/><path fill="#fff" fill-opacity=".2" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0z"/></svg>
           Container
         </button>
         <button class="deploy-btn" id="btn-container-eh" title="Deploy container with a new Event Hub namespace">
-          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M13.5 3H2.5A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3zm.5 8.5a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v7z"/></svg>
+          <svg class="azure-logo" viewBox="0 0 59.242 47.271" width="16" height="13"><path fill="#0089D6" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0zM21.69 3.479L15.46 26.572 33.874 44.97H12.09l-5.472 2.301h37.984L21.69 3.479z"/><path fill="#fff" fill-opacity=".2" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0z"/></svg>
           Container + Event Hubs
         </button>
         <button class="deploy-btn disabled" id="btn-container-eh-adx" disabled title="Coming soon">
-          <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M13.5 3H2.5A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3zm.5 8.5a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-7a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v7z"/></svg>
+          <svg class="azure-logo" viewBox="0 0 59.242 47.271" width="16" height="13"><path fill="#0089D6" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0zM21.69 3.479L15.46 26.572 33.874 44.97H12.09l-5.472 2.301h37.984L21.69 3.479z"/><path fill="#fff" fill-opacity=".2" d="M19.826 0L2.593 17.392l-2.593 9.18h11.614L19.826 0z"/></svg>
           Container + Event Hubs + Data Explorer
         </button>
       </div>
@@ -91,15 +91,8 @@
       </div>
     </section>
 
-    <!-- Pane 3: Deploy iframe (hidden by default) -->
-    <section id="deploy-pane" class="pane deploy-pane" style="display:none;">
-      <div class="deploy-pane-header">
-        <span id="deploy-pane-title">Deploy to Azure</span>
-        <a id="deploy-pane-external" href="#" target="_blank" rel="noopener" title="Open in new tab">↗</a>
-        <button id="deploy-pane-close" title="Close deploy pane">✕</button>
-      </div>
-      <iframe id="deploy-iframe" sandbox="allow-scripts allow-forms allow-same-origin allow-popups" src="about:blank"></iframe>
-    </section>
+    <!-- Pane 3: Deploy (reserved for future use — Azure Portal blocks iframes) -->
+    <section id="deploy-pane" class="pane deploy-pane" style="display:none;"></section>
   </main>
 
   <script src="app.js"></script>

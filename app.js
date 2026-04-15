@@ -129,11 +129,6 @@ const $list      = document.getElementById("source-list");
 const $search    = document.getElementById("search-box");
 const $content   = document.getElementById("content-area");
 const $deployBar = document.getElementById("deploy-bar");
-const $deployPane   = document.getElementById("deploy-pane");
-const $deployIframe = document.getElementById("deploy-iframe");
-const $deployTitle  = document.getElementById("deploy-pane-title");
-const $deployExt    = document.getElementById("deploy-pane-external");
-const $deployClose  = document.getElementById("deploy-pane-close");
 const $btnContainer = document.getElementById("btn-container");
 const $btnContainerEH = document.getElementById("btn-container-eh");
 
@@ -206,11 +201,10 @@ async function selectSource(s) {
   activeSource = s.id;
   renderList();
   $deployBar.style.display = "flex";
-  closeDeployPane();
 
-  // wire deploy buttons
-  $btnContainer.onclick = () => openDeploy(s.id, "azure-template.json", `Deploy ${s.name} — Container`);
-  $btnContainerEH.onclick = () => openDeploy(s.id, "azure-template-with-eventhub.json", `Deploy ${s.name} — Container + Event Hubs`);
+  // wire deploy buttons — open Azure Portal in new tab
+  $btnContainer.onclick = () => openDeploy(s.id, "azure-template.json");
+  $btnContainerEH.onclick = () => openDeploy(s.id, "azure-template-with-eventhub.json");
 
   // fetch and render CONTAINER.md
   $content.innerHTML = '<div class="loading-indicator">Loading documentation…</div>';
@@ -229,23 +223,12 @@ async function selectSource(s) {
   }
 }
 
-/* ── Deploy pane ───────────────────────────────────────────────────────── */
-function openDeploy(sourceId, templateFile, title) {
+/* ── Deploy ─────────────────────────────────────────────────────────────── */
+function openDeploy(sourceId, templateFile) {
   const templateUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${sourceId}/${templateFile}`;
   const portalUrl = `https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(templateUrl)}`;
-
-  $deployTitle.textContent = title;
-  $deployExt.href = portalUrl;
-  $deployIframe.src = portalUrl;
-  $deployPane.style.display = "flex";
+  window.open(portalUrl, "_blank", "noopener");
 }
-
-function closeDeployPane() {
-  $deployPane.style.display = "none";
-  $deployIframe.src = "about:blank";
-}
-
-$deployClose.addEventListener("click", closeDeployPane);
 
 /* ── Helpers ───────────────────────────────────────────────────────────── */
 function el(tag, attrs, text) {
