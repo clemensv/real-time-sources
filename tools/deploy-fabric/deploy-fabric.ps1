@@ -129,13 +129,22 @@ function Invoke-FabricApi {
 }
 
 function Get-KustoToken {
-    # Try multiple Kusto audiences — Cloud Shell MSI and different tenants
-    # accept different audience URIs
+    # Cloud Shell's Az PowerShell module is pre-authenticated as the
+    # interactive user and can acquire tokens for any audience.
+    # The az CLI in Cloud Shell may route through MSI which rejects
+    # custom audiences. Try Az PowerShell first.
     $audiences = @(
         "https://kusto.kusto.windows.net",
         "https://kusto.fabric.microsoft.com"
     )
     foreach ($aud in $audiences) {
+        try {
+            $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
+            if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) {
+                return $tokenObj.Token
+            }
+        } catch { }
+        # Fallback to az CLI
         $ErrorActionPreference = "SilentlyContinue"
         $token = az account get-access-token --resource $aud --query accessToken -o tsv 2>$null
         $ErrorActionPreference = "Stop"
@@ -143,7 +152,7 @@ function Get-KustoToken {
             return $token.Trim()
         }
     }
-    throw "Failed to get Kusto access token. Tried audiences: $($audiences -join ', ')"
+    throw "Failed to get Kusto access token. Tried audiences: $($audiences -join ', ').`nIf in Cloud Shell, try: Connect-AzAccount"
 }
 
 function Invoke-KqlScript {
