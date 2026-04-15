@@ -12,7 +12,7 @@ import logging
 import argparse
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Mapping, Optional, Tuple
 from urllib.parse import urljoin
 
 import requests
@@ -36,6 +36,7 @@ DEFAULT_EVENTS_PATH = "/api/v3/public/events"
 DEFAULT_PAGE_SIZE = 100
 DEFAULT_POLLING_INTERVAL = 300  # seconds
 DEFAULT_TOPIC = "billetto-events"
+MIN_RATE_LIMIT_COOLDOWN_SECONDS = 60.0
 
 
 def _make_session(api_keypair: str) -> requests.Session:
@@ -56,6 +57,18 @@ def _make_session(api_keypair: str) -> requests.Session:
     session.mount("https://", adapter)
     session.mount("http://", adapter)
     return session
+
+
+def _safe_header_int(headers: Mapping[str, str], name: str) -> Optional[int]:
+    """Parse an integer rate-limit header, returning None when absent or invalid."""
+    raw_value = headers.get(name)
+    if raw_value in (None, ""):
+        return None
+    try:
+        return int(raw_value)
+    except (TypeError, ValueError):
+        logger.warning("Ignoring invalid Billetto header %s=%r", name, raw_value)
+        return None
 
 
 def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str]:
@@ -195,6 +208,8 @@ class BillettoPoller:
         kafka_config: Optional[Dict[str, str]] = None,
         kafka_topic: Optional[str] = None,
         state_file: str = "",
+        sleep_func: Callable[[float], None] = time.sleep,
+        monotonic_func: Callable[[], float] = time.monotonic,
     ):
         self.api_keypair = api_keypair
         self.base_url = base_url.rstrip("/")
@@ -202,6 +217,9 @@ class BillettoPoller:
         self.kafka_topic = kafka_topic
         self.state_file = state_file
         self._session: Optional[requests.Session] = None
+        self._sleep = sleep_func
+        self._monotonic = monotonic_func
+        self._rate_limit_cooldown_until = 0.0
 
         if kafka_config is not None:
             producer = Producer(kafka_config)
@@ -214,6 +232,46 @@ class BillettoPoller:
             self._session = _make_session(self.api_keypair)
         return self._session
 
+    def _schedule_rate_limit_cooldown(self, headers: Mapping[str, str], reason: str) -> None:
+        """Start or extend the global Billetto API cool-off window."""
+        retry_after_ms = _safe_header_int(headers, "X-Ratelimit-Retry-After") or 0
+        cooldown_seconds = max(MIN_RATE_LIMIT_COOLDOWN_SECONDS, retry_after_ms / 1000.0)
+        cooldown_until = self._monotonic() + cooldown_seconds
+        self._rate_limit_cooldown_until = max(self._rate_limit_cooldown_until, cooldown_until)
+        logger.warning(
+            "Billetto rate limit triggered (%s). Cooling down for %.3f seconds",
+            reason,
+            cooldown_seconds,
+        )
+
+    def _wait_for_rate_limit_cooldown(self) -> None:
+        """Sleep until Billetto's documented cool-off window has elapsed."""
+        remaining_seconds = self._rate_limit_cooldown_until - self._monotonic()
+        if remaining_seconds <= 0:
+            return
+        logger.warning(
+            "Waiting %.3f seconds before the next Billetto API call due to rate limiting",
+            remaining_seconds,
+        )
+        self._sleep(remaining_seconds)
+        self._rate_limit_cooldown_until = 0.0
+
+    def _apply_rate_limit_headers(self, response: requests.Response) -> None:
+        """Update local rate-limit state from Billetto's response headers."""
+        headers = response.headers or {}
+        remaining = _safe_header_int(headers, "X-Ratelimit-Remaining")
+        retry_after_ms = _safe_header_int(headers, "X-Ratelimit-Retry-After")
+
+        if response.status_code == 429:
+            self._schedule_rate_limit_cooldown(headers, "429 Too Many Requests")
+            return
+
+        if remaining is not None and remaining <= 0:
+            reason = f"remaining={remaining}"
+            if retry_after_ms is not None:
+                reason += f", retry_after_ms={retry_after_ms}"
+            self._schedule_rate_limit_cooldown(headers, reason)
+
     def fetch_events_page(self, url: Optional[str] = None) -> Tuple[List[dict], Optional[str], bool]:
         """Fetch one page of events from the Billetto API.
 
@@ -223,8 +281,14 @@ class BillettoPoller:
         if url is None:
             url = f"{self.base_url}{DEFAULT_EVENTS_PATH}?limit={self.page_size}"
 
+        self._wait_for_rate_limit_cooldown()
+
         try:
             response = self._get_session().get(url, timeout=30)
+            self._apply_rate_limit_headers(response)
+            if response.status_code == 429:
+                logger.warning("Billetto API returned 429 for %s", url)
+                return [], None, False
             response.raise_for_status()
             body = response.json()
         except requests.exceptions.RequestException as exc:
@@ -352,7 +416,7 @@ class BillettoPoller:
                 logger.info("Poll cycle complete: %d new/updated events sent", sent)
             except Exception as exc:  # pylint: disable=broad-except
                 logger.error("Unhandled error in polling loop: %s", exc, exc_info=True)
-            time.sleep(polling_interval)
+            self._sleep(polling_interval)
 
 
 def main() -> None:
@@ -442,7 +506,7 @@ def main() -> None:
             sys.exit(1)
 
         kafka_config, topic_from_cs = parse_connection_string(connection_string)
-        topic = args.topic or os.environ.get("KAFKA_TOPIC") or topic_from_cs or DEFAULT_TOPIC
+        topic = args.topic or topic_from_cs or os.environ.get("KAFKA_TOPIC") or DEFAULT_TOPIC
 
         polling_interval = args.polling_interval
         if polling_interval is None:

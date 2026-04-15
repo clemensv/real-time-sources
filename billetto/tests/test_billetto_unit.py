@@ -1,9 +1,11 @@
 """Unit tests for the Billetto bridge."""
 
 import json
+import sys
 import pytest
 from unittest.mock import MagicMock, patch, call
 from datetime import datetime, timezone
+import requests
 
 from billetto.billetto import (
     BillettoPoller,
@@ -12,6 +14,7 @@ from billetto.billetto import (
     _derive_availability,
     _safe_float,
     _safe_int,
+    main,
     parse_connection_string,
 )
 from billetto_producer_data import Event
@@ -250,6 +253,24 @@ class TestParseConnectionString:
         assert config["sasl.username"] == "$ConnectionString"
 
 
+@pytest.mark.unit
+class TestMainConfiguration:
+    def test_connection_string_topic_overrides_env_default(self, monkeypatch):
+        monkeypatch.setenv("BILLETTO_API_KEYPAIR", "key:secret")
+        monkeypatch.setenv("CONNECTION_STRING", "BootstrapServer=localhost:9092;EntityPath=topic-from-cs")
+        monkeypatch.setenv("KAFKA_TOPIC", "topic-from-env")
+        monkeypatch.setattr(sys, "argv", ["billetto", "feed"])
+
+        with patch("billetto.billetto.BillettoPoller") as poller_cls:
+            poller = poller_cls.return_value
+            poller.feed.return_value = None
+
+            main()
+
+        assert poller_cls.call_args is not None
+        assert poller_cls.call_args.kwargs["kafka_topic"] == "topic-from-cs"
+
+
 # ---------------------------------------------------------------------------
 # TestBillettoPollerFetch
 # ---------------------------------------------------------------------------
@@ -287,13 +308,96 @@ class TestBillettoPollerFetch:
         assert not has_more
 
     def test_fetch_page_network_error_returns_empty(self):
-        import requests as req
         poller = BillettoPoller(api_keypair="key:secret")
-        with patch.object(poller._get_session(), "get", side_effect=req.exceptions.ConnectionError("refused")):
+        with patch.object(poller._get_session(), "get", side_effect=requests.exceptions.ConnectionError("refused")):
             events, next_url, has_more = poller.fetch_events_page()
 
         assert events == []
         assert not has_more
+
+
+class _FakeClock:
+    def __init__(self):
+        self.now = 0.0
+        self.slept = []
+
+    def monotonic(self):
+        return self.now
+
+    def sleep(self, seconds: float):
+        self.slept.append(seconds)
+        self.now += seconds
+
+
+@pytest.mark.unit
+class TestBillettoPollerRateLimit:
+    def test_429_enforces_minimum_global_cooldown(self):
+        clock = _FakeClock()
+        poller = BillettoPoller(
+            api_keypair="key:secret",
+            sleep_func=clock.sleep,
+            monotonic_func=clock.monotonic,
+        )
+        throttled = MagicMock()
+        throttled.status_code = 429
+        throttled.headers = {"X-Ratelimit-Retry-After": "45000"}
+
+        with patch.object(poller._get_session(), "get", return_value=throttled):
+            events, next_url, has_more = poller.fetch_events_page()
+
+        assert events == []
+        assert next_url is None
+        assert has_more is False
+        assert poller._rate_limit_cooldown_until == pytest.approx(60.0)
+
+        with patch.object(
+            poller._get_session(),
+            "get",
+            side_effect=requests.exceptions.ConnectionError("stop after cooldown"),
+        ):
+            events, next_url, has_more = poller.fetch_events_page()
+
+        assert clock.slept == [60.0]
+        assert events == []
+        assert next_url is None
+        assert has_more is False
+
+    def test_zero_remaining_waits_for_retry_after_before_next_page(self, sample_raw_event):
+        clock = _FakeClock()
+        poller = BillettoPoller(
+            api_keypair="key:secret",
+            sleep_func=clock.sleep,
+            monotonic_func=clock.monotonic,
+        )
+        first_page = MagicMock()
+        first_page.status_code = 200
+        first_page.headers = {
+            "X-Ratelimit-Remaining": "0",
+            "X-Ratelimit-Retry-After": "61000",
+        }
+        first_page.raise_for_status.return_value = None
+        first_page.json.return_value = {
+            "data": [sample_raw_event],
+            "has_more": True,
+            "next_url": "https://billetto.dk/api/v3/public/events?page=2",
+        }
+
+        second_page = MagicMock()
+        second_page.status_code = 200
+        second_page.headers = {"X-Ratelimit-Remaining": "10"}
+        second_page.raise_for_status.return_value = None
+        second_page.json.return_value = {
+            "data": [],
+            "has_more": False,
+            "next_url": None,
+        }
+
+        with patch.object(poller._get_session(), "get", side_effect=[first_page, second_page]):
+            events = poller.fetch_all_events()
+
+        assert len(events) == 1
+        assert events[0]["id"] == 12345
+        assert clock.slept == [61.0]
 
 
 # ---------------------------------------------------------------------------
