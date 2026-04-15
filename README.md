@@ -145,6 +145,7 @@ are 87 containers in total.
 
 | Source | Coverage | README | Container | Build | Deploy |
 |---|---|---|---|---|---|
+| Entur Norway | Norway (national real-time transit, SIRI ET/VM/SX) | [📖](entur-norway/README.md) | [🐳](entur-norway/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-entur-norway) | |
 | iRail | Belgium (~600 NMBS/SNCB stations, departures, delays) | [📖](irail/README.md) | [🐳](irail/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-irail) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Firail%2Fazure-template-with-eventhub.json) |
 
 ### Energy and Infrastructure

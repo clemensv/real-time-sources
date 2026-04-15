@@ -1,0 +1,2 @@
+pip install .\entur_norway_producer_data
+pip install .\entur_norway_producer_kafka_producer
