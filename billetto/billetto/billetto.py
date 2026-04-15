@@ -13,7 +13,6 @@ import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Dict, List, Mapping, Optional, Tuple
-from urllib.parse import urljoin
 
 import requests
 from requests.adapters import HTTPAdapter
@@ -37,6 +36,16 @@ DEFAULT_PAGE_SIZE = 100
 DEFAULT_POLLING_INTERVAL = 300  # seconds
 DEFAULT_TOPIC = "billetto-events"
 MIN_RATE_LIMIT_COOLDOWN_SECONDS = 60.0
+FILTER_ENV_VARS = {
+    "postal_code": "BILLETTO_POSTAL_CODE",
+    "macroregion": "BILLETTO_MACROREGION",
+    "region": "BILLETTO_REGION",
+    "subregion": "BILLETTO_SUBREGION",
+    "organizer_id": "BILLETTO_ORGANIZER_ID",
+    "type": "BILLETTO_EVENT_TYPE",
+    "category": "BILLETTO_CATEGORY",
+    "subcategory": "BILLETTO_SUBCATEGORY",
+}
 
 
 def _make_session(api_keypair: str) -> requests.Session:
@@ -69,6 +78,102 @@ def _safe_header_int(headers: Mapping[str, str], name: str) -> Optional[int]:
     except (TypeError, ValueError):
         logger.warning("Ignoring invalid Billetto header %s=%r", name, raw_value)
         return None
+
+
+def _collect_api_filters(
+    *,
+    postal_code: Optional[str] = None,
+    macroregion: Optional[str] = None,
+    region: Optional[str] = None,
+    subregion: Optional[str] = None,
+    organizer_id: Optional[str] = None,
+    event_type: Optional[str] = None,
+    category: Optional[str] = None,
+    subcategory: Optional[str] = None,
+) -> Dict[str, str]:
+    """Collect supported Billetto API filters, dropping empty values."""
+    filter_values = {
+        "postal_code": postal_code,
+        "macroregion": macroregion,
+        "region": region,
+        "subregion": subregion,
+        "organizer_id": organizer_id,
+        "type": event_type,
+        "category": category,
+        "subcategory": subcategory,
+    }
+    return {
+        key: value.strip()
+        for key, value in filter_values.items()
+        if isinstance(value, str) and value.strip()
+    }
+
+
+def _resolve_api_filters(args: argparse.Namespace) -> Dict[str, str]:
+    """Resolve supported Billetto API filters from CLI arguments or environment."""
+    return _collect_api_filters(
+        postal_code=getattr(args, "postal_code", None) or os.environ.get(FILTER_ENV_VARS["postal_code"]),
+        macroregion=getattr(args, "macroregion", None) or os.environ.get(FILTER_ENV_VARS["macroregion"]),
+        region=getattr(args, "region", None) or os.environ.get(FILTER_ENV_VARS["region"]),
+        subregion=getattr(args, "subregion", None) or os.environ.get(FILTER_ENV_VARS["subregion"]),
+        organizer_id=getattr(args, "organizer_id", None) or os.environ.get(FILTER_ENV_VARS["organizer_id"]),
+        event_type=getattr(args, "event_type", None) or os.environ.get(FILTER_ENV_VARS["type"]),
+        category=getattr(args, "category", None) or os.environ.get(FILTER_ENV_VARS["category"]),
+        subcategory=getattr(args, "subcategory", None) or os.environ.get(FILTER_ENV_VARS["subcategory"]),
+    )
+
+
+def _add_filter_arguments(parser: argparse.ArgumentParser) -> None:
+    """Add supported Billetto API filter arguments to a sub-command parser."""
+    parser.add_argument(
+        "--postal-code",
+        type=str,
+        default=None,
+        help="Filter events by postal code",
+    )
+    parser.add_argument(
+        "--macroregion",
+        type=str,
+        default=None,
+        help="Filter events by macroregion",
+    )
+    parser.add_argument(
+        "--region",
+        type=str,
+        default=None,
+        help="Filter events by region",
+    )
+    parser.add_argument(
+        "--subregion",
+        type=str,
+        default=None,
+        help="Filter events by subregion",
+    )
+    parser.add_argument(
+        "--organizer-id",
+        type=str,
+        default=None,
+        help="Filter events by organizer ID",
+    )
+    parser.add_argument(
+        "--event-type",
+        dest="event_type",
+        type=str,
+        default=None,
+        help="Filter events by Billetto event type",
+    )
+    parser.add_argument(
+        "--category",
+        type=str,
+        default=None,
+        help="Filter events by Billetto category",
+    )
+    parser.add_argument(
+        "--subcategory",
+        type=str,
+        default=None,
+        help="Filter events by Billetto subcategory",
+    )
 
 
 def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], str]:
@@ -205,6 +310,7 @@ class BillettoPoller:
         api_keypair: str,
         base_url: str = DEFAULT_BASE_URL,
         page_size: int = DEFAULT_PAGE_SIZE,
+        api_filters: Optional[Dict[str, str]] = None,
         kafka_config: Optional[Dict[str, str]] = None,
         kafka_topic: Optional[str] = None,
         state_file: str = "",
@@ -214,6 +320,7 @@ class BillettoPoller:
         self.api_keypair = api_keypair
         self.base_url = base_url.rstrip("/")
         self.page_size = page_size
+        self.api_filters = dict(api_filters or {})
         self.kafka_topic = kafka_topic
         self.state_file = state_file
         self._session: Optional[requests.Session] = None
@@ -272,30 +379,55 @@ class BillettoPoller:
                 reason += f", retry_after_ms={retry_after_ms}"
             self._schedule_rate_limit_cooldown(headers, reason)
 
-    def fetch_events_page(self, url: Optional[str] = None) -> Tuple[List[dict], Optional[str], bool]:
+    def _initial_request_params(self, limit: Optional[int] = None) -> Dict[str, str | int]:
+        """Build the upstream query parameters for the first page request."""
+        params: Dict[str, str | int] = {"limit": limit or self.page_size}
+        params.update(self.api_filters)
+        return params
+
+    def fetch_events_page(
+        self,
+        url: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> Tuple[List[dict], Optional[str], bool]:
         """Fetch one page of events from the Billetto API.
 
         Returns:
             (events, next_url, has_more)
         """
-        if url is None:
-            url = f"{self.base_url}{DEFAULT_EVENTS_PATH}?limit={self.page_size}"
-
         self._wait_for_rate_limit_cooldown()
 
         try:
-            response = self._get_session().get(url, timeout=30)
+            if url is None:
+                response = self._get_session().get(
+                    f"{self.base_url}{DEFAULT_EVENTS_PATH}",
+                    params=self._initial_request_params(limit=limit),
+                    timeout=30,
+                )
+            else:
+                response = self._get_session().get(url, timeout=30)
             self._apply_rate_limit_headers(response)
             if response.status_code == 429:
-                logger.warning("Billetto API returned 429 for %s", url)
+                logger.warning(
+                    "Billetto API returned 429 for %s",
+                    url or f"{self.base_url}{DEFAULT_EVENTS_PATH}",
+                )
                 return [], None, False
             response.raise_for_status()
             body = response.json()
         except requests.exceptions.RequestException as exc:
-            logger.error("Error fetching events from %s: %s", url, exc)
+            logger.error(
+                "Error fetching events from %s: %s",
+                url or f"{self.base_url}{DEFAULT_EVENTS_PATH}",
+                exc,
+            )
             return [], None, False
         except (ValueError, KeyError) as exc:
-            logger.error("Error parsing API response from %s: %s", url, exc)
+            logger.error(
+                "Error parsing API response from %s: %s",
+                url or f"{self.base_url}{DEFAULT_EVENTS_PATH}",
+                exc,
+            )
             return [], None, False
 
         events = body.get("data", [])
@@ -468,6 +600,7 @@ def main() -> None:
         default="INFO",
         help="Logging level (default: INFO)",
     )
+    _add_filter_arguments(feed_parser)
 
     list_parser = subparsers.add_parser("list", help="List upcoming events from Billetto")
     list_parser.add_argument(
@@ -488,6 +621,7 @@ def main() -> None:
         default=10,
         help="Maximum number of events to list (default: 10)",
     )
+    _add_filter_arguments(list_parser)
 
     args = parser.parse_args()
 
@@ -514,11 +648,13 @@ def main() -> None:
 
         base_url = args.base_url or os.environ.get("BILLETTO_BASE_URL", DEFAULT_BASE_URL)
         state_file = args.state_file or os.environ.get("STATE_FILE", "")
+        api_filters = _resolve_api_filters(args)
 
         logger.info("Connecting to Kafka topic '%s'", topic)
         poller = BillettoPoller(
             api_keypair=api_keypair,
             base_url=base_url,
+            api_filters=api_filters,
             kafka_config=kafka_config,
             kafka_topic=topic,
             state_file=state_file,
@@ -531,9 +667,9 @@ def main() -> None:
             logger.error("BILLETTO_API_KEYPAIR environment variable or --api-keypair argument is required")
             sys.exit(1)
         base_url = args.base_url or os.environ.get("BILLETTO_BASE_URL", DEFAULT_BASE_URL)
-        poller = BillettoPoller(api_keypair=api_keypair, base_url=base_url)
-        url = f"{poller.base_url}{DEFAULT_EVENTS_PATH}?limit={args.limit}"
-        events, _, _ = poller.fetch_events_page(url)
+        api_filters = _resolve_api_filters(args)
+        poller = BillettoPoller(api_keypair=api_keypair, base_url=base_url, api_filters=api_filters)
+        events, _, _ = poller.fetch_events_page(limit=args.limit)
         print(f"{'ID':<10} {'Title':<50} {'Start':<25} {'City':<20}")
         print("-" * 110)
         for ev in events[:args.limit]:

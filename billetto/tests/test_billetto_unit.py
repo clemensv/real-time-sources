@@ -270,6 +270,31 @@ class TestMainConfiguration:
         assert poller_cls.call_args is not None
         assert poller_cls.call_args.kwargs["kafka_topic"] == "topic-from-cs"
 
+    def test_feed_filters_use_cli_then_env(self, monkeypatch):
+        monkeypatch.setenv("BILLETTO_API_KEYPAIR", "key:secret")
+        monkeypatch.setenv("CONNECTION_STRING", "BootstrapServer=localhost:9092;EntityPath=topic-from-cs")
+        monkeypatch.setenv("BILLETTO_REGION", "env-region")
+        monkeypatch.setenv("BILLETTO_CATEGORY", "music")
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            ["billetto", "feed", "--region", "cli-region", "--postal-code", "2100", "--event-type", "concert"],
+        )
+
+        with patch("billetto.billetto.BillettoPoller") as poller_cls:
+            poller = poller_cls.return_value
+            poller.feed.return_value = None
+
+            main()
+
+        assert poller_cls.call_args is not None
+        assert poller_cls.call_args.kwargs["api_filters"] == {
+            "postal_code": "2100",
+            "region": "cli-region",
+            "type": "concert",
+            "category": "music",
+        }
+
 
 # ---------------------------------------------------------------------------
 # TestBillettoPollerFetch
@@ -294,6 +319,44 @@ class TestBillettoPollerFetch:
         assert events[0]["id"] == 12345
         assert not has_more
         assert next_url is None
+
+    def test_fetch_page_uses_configured_filters(self, sample_raw_event):
+        poller = BillettoPoller(
+            api_keypair="key:secret",
+            page_size=25,
+            api_filters={
+                "region": "Midtjylland",
+                "category": "music",
+                "organizer_id": "3750659",
+            },
+        )
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.headers = {}
+        mock_response.json.return_value = {
+            "data": [sample_raw_event],
+            "has_more": False,
+            "next_url": None,
+        }
+        mock_response.raise_for_status.return_value = None
+
+        with patch.object(poller._get_session(), "get", return_value=mock_response) as get_mock:
+            events, next_url, has_more = poller.fetch_events_page()
+
+        assert len(events) == 1
+        assert events[0]["id"] == 12345
+        assert next_url is None
+        assert has_more is False
+        get_mock.assert_called_once_with(
+            "https://billetto.dk/api/v3/public/events",
+            params={
+                "limit": 25,
+                "region": "Midtjylland",
+                "category": "music",
+                "organizer_id": "3750659",
+            },
+            timeout=30,
+        )
 
     def test_fetch_page_http_error_returns_empty(self):
         import requests as req

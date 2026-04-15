@@ -85,9 +85,35 @@ For this bridge, set:
 $env:BILLETTO_API_KEYPAIR = "<key_id>:<secret>"
 ```
 
+## Supported API Filters
+
+The bridge now exposes the Billetto public-events filters supported by
+`GET /api/v3/public/events`. You can provide them as CLI arguments or
+environment variables.
+
+| API query param | CLI argument | Environment variable |
+|---|---|---|
+| `postal_code` | `--postal-code` | `BILLETTO_POSTAL_CODE` |
+| `macroregion` | `--macroregion` | `BILLETTO_MACROREGION` |
+| `region` | `--region` | `BILLETTO_REGION` |
+| `subregion` | `--subregion` | `BILLETTO_SUBREGION` |
+| `organizer_id` | `--organizer-id` | `BILLETTO_ORGANIZER_ID` |
+| `type` | `--event-type` | `BILLETTO_EVENT_TYPE` |
+| `category` | `--category` | `BILLETTO_CATEGORY` |
+| `subcategory` | `--subcategory` | `BILLETTO_SUBCATEGORY` |
+
+Example:
+
+```powershell
+$env:BILLETTO_REGION = "Midtjylland"
+$env:BILLETTO_CATEGORY = "music"
+python -m billetto feed --connection-string "BootstrapServer=localhost:9092;EntityPath=billetto-events"
+```
+
 ## Upstream Links
 
 - [Billetto Developer Hub](https://go.billetto.com/en-gb/resources/developers)
 - [Obtaining an API key](https://api.billetto.com/docs/obtaining-an-api-key)
+- [List all public events](https://api.billetto.com/reference/list-public-events)
 - [Billetto API documentation](https://api.billetto.com/docs)
 - [Billetto main site](https://billetto.dk)

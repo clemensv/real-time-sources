@@ -36,10 +36,18 @@ docker pull ghcr.io/clemensv/real-time-sources-billetto:latest
 | `CONNECTION_STRING` | Yes | — | Kafka connection string. Plain format: `BootstrapServer=host:port;EntityPath=topic`. Azure Event Hubs / Fabric format: full AMQP connection string with `EntityPath`. |
 | `BILLETTO_API_KEYPAIR` | Yes | — | Billetto API keypair in `key_id:secret` format. Obtain from the Billetto developer hub. |
 | `BILLETTO_BASE_URL` | No | `https://billetto.dk` | Billetto API base URL. Override to target country-specific endpoints (e.g. `https://billetto.co.uk`). |
-| `KAFKA_TOPIC` | No | `billetto-events` | Kafka topic name. Overrides `EntityPath` from `CONNECTION_STRING` when set. |
+| `KAFKA_TOPIC` | No | `billetto-events` | Kafka topic name used when no explicit `--topic` is provided and `CONNECTION_STRING` does not already include `EntityPath`. |
 | `POLLING_INTERVAL` | No | `300` | Seconds between polls. |
 | `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` to disable TLS for plain Kafka brokers. |
 | `LOG_LEVEL` | No | `INFO` | Python logging level (`DEBUG`, `INFO`, `WARNING`, `ERROR`). |
+| `BILLETTO_POSTAL_CODE` | No | — | Optional upstream `postal_code` filter. |
+| `BILLETTO_MACROREGION` | No | — | Optional upstream `macroregion` filter. |
+| `BILLETTO_REGION` | No | — | Optional upstream `region` filter. |
+| `BILLETTO_SUBREGION` | No | — | Optional upstream `subregion` filter. |
+| `BILLETTO_ORGANIZER_ID` | No | — | Optional upstream `organizer_id` filter. |
+| `BILLETTO_EVENT_TYPE` | No | — | Optional upstream `type` filter. |
+| `BILLETTO_CATEGORY` | No | — | Optional upstream `category` filter. |
+| `BILLETTO_SUBCATEGORY` | No | — | Optional upstream `subcategory` filter. |
 
 ## Using the Container Image
 
@@ -49,6 +57,8 @@ docker pull ghcr.io/clemensv/real-time-sources-billetto:latest
 docker run --rm \
     -e CONNECTION_STRING='BootstrapServer=<broker>:9092;EntityPath=billetto-events' \
     -e BILLETTO_API_KEYPAIR='<key_id>:<secret>' \
+    -e BILLETTO_REGION='Midtjylland' \
+    -e BILLETTO_CATEGORY='music' \
     -e KAFKA_ENABLE_TLS='false' \
     ghcr.io/clemensv/real-time-sources-billetto:latest
 ```
@@ -68,7 +78,7 @@ docker run --rm \
 docker run --rm \
     -e BILLETTO_API_KEYPAIR='<key_id>:<secret>' \
     ghcr.io/clemensv/real-time-sources-billetto:latest \
-    python -m billetto list --limit 20
+    python -m billetto list --limit 20 --region Midtjylland --category music
 ```
 
 ## Kafka Message Format
