@@ -226,9 +226,15 @@ function Invoke-KqlScript {
         $scriptFile = Join-Path $TempDir "kql_script_$(Get-Random).kql"
         [System.IO.File]::WriteAllText($scriptFile, $ScriptContent, [System.Text.UTF8Encoding]::new($false))
 
-        $cliName = if ($PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/") { "Kusto.Cli" } else { "kusto.cli" }
         $connStr = "$QueryUri/$Database;fed=true"
-        $output = & $cliName $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
+        # On Linux, Kusto.Cli.dll must be run with dotnet; on Windows, kusto.cli.exe runs directly
+        if ($PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/") {
+            $cliDll = Get-ChildItem -Path $env:PATH.Split([IO.Path]::PathSeparator) -Filter "Kusto.Cli.dll" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if (-not $cliDll) { throw "Kusto.Cli.dll not found on PATH" }
+            $output = dotnet $cliDll.FullName $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
+        } else {
+            $output = & kusto.cli $connStr -script:$scriptFile -linemode:false -keeprunning:false 2>&1
+        }
         if ($LASTEXITCODE -ne 0) {
             throw "Kusto CLI failed for $Label`n$($output | Out-String)"
         }
