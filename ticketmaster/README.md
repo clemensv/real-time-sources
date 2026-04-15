@@ -25,6 +25,14 @@ views of the entities that event telemetry references.
 - **Auth:** Free API key required — register at [developer.ticketmaster.com](https://developer.ticketmaster.com)
 - **Rate limits:** 5 000 API calls per day, 5 requests per second on the free tier
 
+## Compliance Responsibility
+
+The bridge does not transfer Ticketmaster compliance obligations away from the
+operator. The user of this bridge is responsible for complying with
+Ticketmaster's Terms of Service, branding requirements, rate limits, and any
+rules governing how Ticketmaster data is represented or redistributed in their
+application and downstream systems.
+
 ## Kafka Topic
 
 All event types (telemetry and reference) are written to a single configurable Kafka topic.

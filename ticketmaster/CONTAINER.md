@@ -18,6 +18,13 @@ are emitted as structured CloudEvents documented in [EVENTS.md](EVENTS.md).
 Register for a free API key at [developer.ticketmaster.com](https://developer.ticketmaster.com).
 The free tier allows 5 000 API calls per day and 5 requests per second.
 
+## Compliance responsibility
+
+Using this container does not make Ticketmaster compliance automatic. The user
+of the bridge is responsible for complying with Ticketmaster's Terms of
+Service, branding guide, rate limits, and any requirements on how Ticketmaster
+data is presented, attributed, or redistributed.
+
 ## Environment variables
 
 | Variable | Required | Description | Default |
