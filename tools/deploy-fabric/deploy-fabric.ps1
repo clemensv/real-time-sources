@@ -129,41 +129,59 @@ function Invoke-FabricApi {
 }
 
 function Get-KustoToken {
-    # In Cloud Shell, the Az PowerShell module may not be connected by default.
-    # Connect it first, then acquire a token for the Kusto audience.
-    $connected = Get-AzContext -ErrorAction SilentlyContinue
-    if (-not $connected) {
-        Write-Host "  Connecting Az PowerShell module..." -ForegroundColor Gray
-        Connect-AzAccount -Identity -ErrorAction SilentlyContinue | Out-Null
-        if (-not (Get-AzContext -ErrorAction SilentlyContinue)) {
-            # Identity connect failed, try without -Identity (interactive)
-            Connect-AzAccount -ErrorAction SilentlyContinue | Out-Null
-        }
-    }
-    $audiences = @(
-        "https://kusto.kusto.windows.net",
-        "https://kusto.fabric.microsoft.com"
-    )
-    foreach ($aud in $audiences) {
+    # Cloud Shell's az CLI uses MSI which doesn't support Kusto audiences.
+    # Cloud Shell's Az PowerShell module may have a context but with a
+    # credential type that also can't get Kusto tokens.
+    # Strategy: try every available method, log what happens.
+
+    $methods = @()
+
+    # Method 1: Get-AzAccessToken (if Az module is connected)
+    foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
         try {
             $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
             if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) {
-                Write-Host "  Authenticated via Az PowerShell ($aud)" -ForegroundColor Gray
+                Write-Host "  Auth: Get-AzAccessToken ($aud)" -ForegroundColor Gray
                 return $tokenObj.Token
             }
+            $methods += "Get-AzAccessToken($aud): empty token"
         } catch {
-            Write-Verbose "  Get-AzAccessToken failed for ${aud}: $_"
-        }
-        # Fallback to az CLI
-        $ErrorActionPreference = "SilentlyContinue"
-        $token = az account get-access-token --resource $aud --query accessToken -o tsv 2>$null
-        $ErrorActionPreference = "Stop"
-        if ($LASTEXITCODE -eq 0 -and $token -and $token.Length -gt 100) {
-            Write-Host "  Authenticated via az CLI ($aud)" -ForegroundColor Gray
-            return $token.Trim()
+            $methods += "Get-AzAccessToken($aud): $($_.Exception.Message)"
         }
     }
-    throw "Failed to get Kusto access token. Tried audiences: $($audiences -join ', ').`nTry running: Connect-AzAccount`nthen retry the script."
+
+    # Method 2: az CLI with each audience
+    foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
+        $output = az account get-access-token --resource $aud --query accessToken -o tsv 2>&1
+        if ($LASTEXITCODE -eq 0 -and $output -and $output.Length -gt 100 -and $output -notmatch "ERROR|WARNING") {
+            Write-Host "  Auth: az CLI ($aud)" -ForegroundColor Gray
+            return ($output | Out-String).Trim()
+        }
+        $methods += "az-cli($aud): exit=$LASTEXITCODE"
+    }
+
+    # Method 3: Connect-AzAccount -Identity then retry
+    try {
+        Write-Host "  Trying Connect-AzAccount -Identity..." -ForegroundColor Gray
+        Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
+        foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
+            try {
+                $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
+                if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) {
+                    Write-Host "  Auth: Get-AzAccessToken after Connect-AzAccount -Identity ($aud)" -ForegroundColor Gray
+                    return $tokenObj.Token
+                }
+            } catch {
+                $methods += "Post-Connect($aud): $($_.Exception.Message)"
+            }
+        }
+    } catch {
+        $methods += "Connect-AzAccount -Identity: $($_.Exception.Message)"
+    }
+
+    Write-Host "  All authentication methods failed:" -ForegroundColor Red
+    $methods | ForEach-Object { Write-Host "    $_" -ForegroundColor Red }
+    throw "Cannot get Kusto token. Run 'Connect-AzAccount' manually, then retry."
 }
 
 function Invoke-KqlScript {
@@ -174,13 +192,13 @@ function Invoke-KqlScript {
         [string]$Label
     )
     Write-Host "  Applying $Label..." -ForegroundColor Yellow
+
+    $kustoToken = Get-KustoToken
+
     $body = @{
         csl = ".execute database script <|`n$ScriptContent"
         db  = $Database
     }
-
-    $kustoToken = Get-KustoToken
-
     $headers = @{
         "Authorization" = "Bearer $kustoToken"
         "Content-Type"  = "application/json"
