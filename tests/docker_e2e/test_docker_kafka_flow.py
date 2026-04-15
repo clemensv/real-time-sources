@@ -275,6 +275,10 @@ def seattle_street_closures_image():
     return build_image('seattle-street-closures')
 
 @pytest.fixture(scope='module')
+def canada_eccc_wateroffice_image():
+    return build_image('canada-eccc-wateroffice')
+
+@pytest.fixture(scope='module')
 def ticketmaster_image():
     return build_image('ticketmaster')
 
@@ -1701,6 +1705,21 @@ class TestSeattleStreetClosuresDockerFlow:
         )
 
 
+
+# ---------------------------------------------------------------------------
+# Canada ECCC Water Office (hydrometric stations + real-time observations)
+# ---------------------------------------------------------------------------
+
+class TestCanadaECCCWaterOfficeDockerFlow:
+    TOPIC = 'test-canada-eccc-wateroffice'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, canada_eccc_wateroffice_image):
+        _run_kafka_flow_test(
+            kafka, canada_eccc_wateroffice_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['Observation'],
+            required_types=['Station', 'Observation'],
+        )
 
 # ---------------------------------------------------------------------------
 # Ticketmaster (public events – reference + telemetry)
