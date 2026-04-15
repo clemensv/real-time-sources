@@ -210,8 +210,14 @@ async function selectSource(s) {
   $deployBarFabric.style.display = "flex";
 
   // wire deploy buttons
-  $btnContainer.onclick   = () => openDeployForm(s, "container");
-  $btnContainerEH.onclick = () => openDeployForm(s, "container-eh");
+  $btnContainer.onclick   = () => {
+    const url = `${RAW}/${s.id}/azure-template.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  };
+  $btnContainerEH.onclick = () => {
+    const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  };
   $btnFabric.onclick      = () => openDeployForm(s, "fabric");
 
   // fetch and render CONTAINER.md
@@ -242,93 +248,30 @@ const AZURE_LOGO_SVG = `<svg viewBox="0 0 256 256" width="18" height="18" xmlns=
   <path d="M177.592 25.764a11.023 11.023 0 00-10.444-7.498H89.984a11.024 11.024 0 0110.445 7.498l66.967 198.421a11.024 11.024 0 01-10.445 14.549h77.164a11.024 11.024 0 0010.444-14.549z" fill="url(#az-btn-g2)"/>
 </svg>`;
 
-const MODE_LABELS = {
-  "container":    "Container Only",
-  "container-eh": "Container + Event Hubs",
-  "fabric":       "Container + Event Hubs + Fabric",
-};
-
-let templateCache = {};
-
 async function openDeployForm(source, mode) {
-  $deployTitle.textContent = `Deploy ${source.name}`;
+  $deployTitle.textContent = `Deploy ${source.name} to Fabric`;
   $deployPane.style.display = "flex";
-  $deployForm.innerHTML = '<div class="loading-indicator">Loading template…</div>';
-
-  const templateFile = mode === "container" ? "azure-template.json" : "azure-template-with-eventhub.json";
-  const cacheKey = `${source.id}/${templateFile}`;
-
-  try {
-    let params;
-    if (templateCache[cacheKey]) {
-      params = templateCache[cacheKey];
-    } else {
-      const resp = await fetch(`${RAW}/${source.id}/${templateFile}`);
-      if (!resp.ok) throw new Error(`Template not found (HTTP ${resp.status})`);
-      const tmpl = await resp.json();
-      params = tmpl.parameters || {};
-      templateCache[cacheKey] = params;
-    }
-    renderDeployForm(source, mode, params);
-  } catch (e) {
-    $deployForm.innerHTML = `<div class="error-msg">Could not load ARM template.<br><code>${esc(e.message)}</code></div>`;
-  }
-}
-
-function renderDeployForm(source, mode, templateParams) {
   $deployForm.innerHTML = "";
-
-  const modeLabel = MODE_LABELS[mode];
-  const header = el("div", { class: "form-section" });
-  header.innerHTML = `<div class="form-section-title">${esc(modeLabel)}</div>`;
-  $deployForm.appendChild(header);
 
   // Azure section
   const azSection = el("div", { class: "form-section" });
   azSection.innerHTML = '<div class="form-section-title">Azure Resources</div>';
-
-  const fields = [];
-
-  // Resource group (always needed for Cloud Shell)
-  fields.push(makeField("resourceGroup", "Resource Group", "text",
+  azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
     "", "Azure resource group name", true));
-
-  // Location
-  fields.push(makeField("location", "Location", "text",
+  azSection.appendChild(makeField("location", "Location", "text",
     "westcentralus", "Azure region for deployment", true));
-
-  // Template parameters (skip internal ones)
-  const skipParams = new Set(["location"]);
-  for (const [name, def] of Object.entries(templateParams)) {
-    if (skipParams.has(name)) continue;
-    const isSecure = def.type === "securestring";
-    const label = camelToTitle(name);
-    const hint = def.metadata?.description || "";
-    const defaultVal = def.defaultValue != null ? String(def.defaultValue) : "";
-
-    if (def.allowedValues) {
-      fields.push(makeSelect(name, label, def.allowedValues, defaultVal, hint, !defaultVal));
-    } else {
-      fields.push(makeField(name, label, isSecure ? "password" : "text",
-        defaultVal, hint, !defaultVal && !isSecure ? false : !defaultVal, isSecure));
-    }
-  }
-
-  fields.forEach(f => azSection.appendChild(f));
   $deployForm.appendChild(azSection);
 
-  // Fabric section (only for fabric mode)
-  if (mode === "fabric") {
-    const fabSection = el("div", { class: "form-section" });
-    fabSection.innerHTML = '<div class="form-section-title">Microsoft Fabric</div>';
-    fabSection.appendChild(makeField("workspaceId", "Workspace ID", "text",
-      "", "Fabric workspace GUID", true));
-    fabSection.appendChild(makeField("eventhouseId", "Eventhouse ID", "text",
-      "", "Fabric Eventhouse GUID", true));
-    fabSection.appendChild(makeField("databaseName", "KQL Database Name", "text",
-      source.id.replace(/-/g, "_"), "Name for the KQL database", false));
-    $deployForm.appendChild(fabSection);
-  }
+  // Fabric section
+  const fabSection = el("div", { class: "form-section" });
+  fabSection.innerHTML = '<div class="form-section-title">Microsoft Fabric</div>';
+  fabSection.appendChild(makeField("workspaceId", "Workspace ID", "text",
+    "", "Fabric workspace GUID", true));
+  fabSection.appendChild(makeField("eventhouseId", "Eventhouse ID", "text",
+    "", "Fabric Eventhouse GUID", true));
+  fabSection.appendChild(makeField("databaseName", "KQL Database Name", "text",
+    source.id.replace(/-/g, "_"), "Name for the KQL database", false));
+  $deployForm.appendChild(fabSection);
 
   // Submit button
   const submitBtn = el("button", { class: "deploy-submit", type: "button" });
@@ -338,7 +281,7 @@ function renderDeployForm(source, mode, templateParams) {
 
   // Note
   const note = el("div", { class: "deploy-note" });
-  note.textContent = "Opens Azure Cloud Shell with the deployment command ready to run. You must be signed into Azure.";
+  note.textContent = "Opens Azure Cloud Shell and copies the deployment command to your clipboard. Paste it to run.";
   $deployForm.appendChild(note);
 }
 
@@ -367,29 +310,6 @@ function makeField(name, label, type, defaultVal, hint, required, secure) {
   return group;
 }
 
-function makeSelect(name, label, options, defaultVal, hint, required) {
-  const group = el("div", { class: "form-group" });
-  const lbl = el("label");
-  lbl.setAttribute("for", `deploy-${name}`);
-  lbl.innerHTML = esc(label) + (required ? '<span class="required">*</span>' : '');
-  group.appendChild(lbl);
-
-  const select = el("select", { id: `deploy-${name}`, name: name });
-  for (const opt of options) {
-    const o = el("option", { value: opt }, opt);
-    if (opt === defaultVal) o.selected = true;
-    select.appendChild(o);
-  }
-  group.appendChild(select);
-
-  if (hint) {
-    const h = el("div", { class: "form-hint" });
-    h.textContent = hint;
-    group.appendChild(h);
-  }
-  return group;
-}
-
 function launchCloudShell(source, mode) {
   const getValue = (name) => {
     const el = document.getElementById(`deploy-${name}`);
@@ -402,8 +322,6 @@ function launchCloudShell(source, mode) {
   if (!rg) { alert("Resource Group is required."); return; }
   if (!loc) { alert("Location is required."); return; }
 
-  let cmd, shell;
-
   if (mode === "fabric") {
     const wsId = getValue("workspaceId");
     const ehId = getValue("eventhouseId");
@@ -413,8 +331,7 @@ function launchCloudShell(source, mode) {
     }
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
 
-    // Single-line command that downloads and runs the script
-    cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
+    const cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
       + `./deploy-fabric.ps1`
       + ` -Source '${source.id}'`
       + ` -ResourceGroup '${rg}'`
@@ -422,33 +339,34 @@ function launchCloudShell(source, mode) {
       + ` -WorkspaceId '${wsId}'`
       + ` -EventhouseId '${ehId}'`
       + ` -DatabaseName '${dbName}'`;
-    shell = "powershell";
-  } else {
-    const templateFile = mode === "container" ? "azure-template.json" : "azure-template-with-eventhub.json";
-    const templateUrl = `${RAW}/${source.id}/${templateFile}`;
 
-    const armParams = [];
-    const skipFields = new Set(["resourceGroup", "location"]);
-    $deployForm.querySelectorAll("input, select").forEach(input => {
-      const name = input.name;
-      if (!name || skipFields.has(name)) return;
-      const val = input.value.trim();
-      if (val) armParams.push(`${name}='${val}'`);
+    navigator.clipboard.writeText(cmd).then(() => {
+      showDeployNotice("PowerShell command copied to clipboard. Paste it into the Cloud Shell tab.");
+      window.open("https://shell.azure.com/powershell", "_blank", "noopener");
+    }).catch(() => {
+      showDeployCommand(cmd, "PowerShell");
+      window.open("https://shell.azure.com/powershell", "_blank", "noopener");
     });
-
-    const paramStr = armParams.length > 0 ? ` --parameters ${armParams.join(" ")}` : "";
-
-    cmd = `az group create --name '${rg}' --location '${loc}' --output none && `
-      + `az deployment group create`
-      + ` --resource-group '${rg}'`
-      + ` --template-uri '${templateUrl}'${paramStr}`
-      + ` --output table`;
-    shell = "bash";
+  } else {
+    // ARM template deploy — use the Azure Portal custom deployment blade
+    const templateFile = mode === "container" ? "azure-template.json" : "azure-template-with-eventhub.json";
+    const templateUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${source.id}/${templateFile}`;
+    const portalUrl = `https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(templateUrl)}`;
+    window.open(portalUrl, "_blank", "noopener");
   }
+}
 
-  // Open Cloud Shell with the command pre-filled
-  const shellUrl = `https://shell.azure.com/${shell}?shell_command=${encodeURIComponent(cmd)}`;
-  window.open(shellUrl, "_blank", "noopener");
+function showDeployNotice(msg) {
+  const note = $deployForm.querySelector(".deploy-note");
+  if (note) note.innerHTML = `<strong>✓</strong> ${esc(msg)}`;
+}
+
+function showDeployCommand(cmd, shell) {
+  const note = $deployForm.querySelector(".deploy-note");
+  if (note) {
+    note.innerHTML = `<strong>Copy this command</strong> into the ${esc(shell)} Cloud Shell tab:`
+      + `<pre style="margin-top:8px;white-space:pre-wrap;word-break:break-all;font-size:11px;font-family:var(--font-mono)">${esc(cmd)}</pre>`;
+  }
 }
 
 function closeDeployPane() {
