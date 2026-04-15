@@ -12,6 +12,7 @@ CloudEvents landing.
 │  seattle-street-closures                                            │
 │  king-county-marine                                                 │
 │  epa-uv                                                             │
+│  nws-forecasts                                                      │
 │  wsdot                                                              │
 │  noaa --station 9444090 / 9444900 / 9445958 / 9446484 /             │
 │       9447130 / 9449424 / 9449880                                   │
@@ -30,7 +31,7 @@ CloudEvents landing.
 │  _cloudevents_dispatch                                               │
 │  WSDOT typed tables + latest views      (from ../../wsdot/kql)      │
 │  NOAA typed tables + latest views       (from ../../noaa/kql)       │
-│  Seattle typed tables + latest views    (from ./pugetsound.kql)     │
+│  Seattle + NWS typed tables + latest views (from ./pugetsound.kql)  │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -43,7 +44,7 @@ them back out into typed tables.
 | File | Description |
 |---|---|
 | `setup.ps1` | Creates or updates the KQL database and Event Stream |
-| `pugetsound.kql` | Supplemental KQL for Seattle 911, Seattle street closures, King County marine, and EPA UV |
+| `pugetsound.kql` | Supplemental KQL for Seattle 911, Seattle street closures, King County marine, EPA UV, and NWS forecasts |
 | `..\..\wsdot\kql\wsdot.kql` | Reused WSDOT KQL and update policies |
 | `..\..\noaa\kql\noaa.kql` | Reused NOAA KQL and update policies |
 
@@ -85,6 +86,13 @@ KingCountyMarineWaterQualityReadingLatest
 
 EPAUVDailyForecastLatest
 | project location_id, forecast_date, uv_index, uv_alert
+
+NWSLandZoneForecastLatest
+| mv-expand periods
+| project zone_id, updated, periods
+
+NWSMarineZoneForecastLatest
+| project zone_id, zone_name, issued_at_text, synopsis
 
 VesselLocationLatest
 | top 20 by ___time desc

@@ -1,0 +1,238 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "ticketmaster-bridge",
+      "metadata": {
+        "description": "Name of the Azure Container Instance group that will run the Ticketmaster bridge."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for the container group."
+      }
+    },
+    "image": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-ticketmaster:latest",
+      "metadata": {
+        "description": "Container image to run. Override this if you want a pinned image tag instead of latest."
+      }
+    },
+    "cpuCores": {
+      "type": "number",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "CPU cores reserved for the Ticketmaster bridge container."
+      }
+    },
+    "memoryInGb": {
+      "type": "number",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Memory reserved for the Ticketmaster bridge container, in GiB."
+      }
+    },
+    "connectionString": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Kafka, Event Hubs, or Fabric connection string. EntityPath determines the topic unless you override KAFKA_TOPIC elsewhere."
+      }
+    },
+    "ticketmasterApiKey": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Ticketmaster Discovery API consumer key / API key."
+      }
+    },
+    "countryCodes": {
+      "type": "string",
+      "defaultValue": "AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US",
+      "metadata": {
+        "description": "Comma-separated ISO country codes used for both event polling and reference-data refreshes."
+      }
+    },
+    "pollInterval": {
+      "type": "string",
+      "defaultValue": "300",
+      "metadata": {
+        "description": "Seconds between full polling cycles."
+      }
+    },
+    "referenceRefresh": {
+      "type": "string",
+      "defaultValue": "3600",
+      "metadata": {
+        "description": "Seconds between full reference-data refreshes for classifications, venues, and attractions."
+      }
+    },
+    "logLevel": {
+      "type": "string",
+      "defaultValue": "INFO",
+      "allowedValues": ["DEBUG", "INFO", "WARNING", "ERROR"],
+      "metadata": {
+        "description": "Python log level for the bridge container."
+      }
+    },
+    "kafkaEnableTls": {
+      "type": "string",
+      "defaultValue": "true",
+      "allowedValues": ["true", "false"],
+      "metadata": {
+        "description": "Set to false only for plain-text Kafka brokers. Keep true for Event Hubs, Fabric, and TLS-enabled Kafka."
+      }
+    },
+    "city": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster city filter. Leave blank to disable."
+      }
+    },
+    "venueId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster venueId filter. Leave blank to disable."
+      }
+    },
+    "attractionId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster attractionId filter for a performer, team, or production. Leave blank to disable."
+      }
+    },
+    "segmentId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster segmentId filter, for example Music or Sports. Leave blank to disable."
+      }
+    },
+    "genreId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster genreId filter. Leave blank to disable."
+      }
+    },
+    "subGenreId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster subGenreId filter. Leave blank to disable."
+      }
+    },
+    "marketId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster marketId filter. Leave blank to disable."
+      }
+    },
+    "postalCode": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Ticketmaster postalCode filter. Leave blank to disable."
+      }
+    },
+    "locale": {
+      "type": "string",
+      "defaultValue": "*",
+      "metadata": {
+        "description": "Discovery API locale for event, venue, and attraction requests. Use * for all locales."
+      }
+    },
+    "sort": {
+      "type": "string",
+      "defaultValue": "date,asc",
+      "metadata": {
+        "description": "Discovery API event sort order such as date,asc or name,desc."
+      }
+    },
+    "pageSize": {
+      "type": "string",
+      "defaultValue": "200",
+      "metadata": {
+        "description": "Discovery API page size per request, up to 200. Larger values reduce paging but still count against quota."
+      }
+    },
+    "startDatetime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional absolute UTC startDateTime filter in ISO 8601 form, for example 2026-04-15T00:00:00Z. Leave blank to use a relative lookahead window."
+      }
+    },
+    "endDatetime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional absolute UTC endDateTime filter in ISO 8601 form. Leave blank together with startDatetime to use a relative lookahead window."
+      }
+    },
+    "lookaheadDays": {
+      "type": "string",
+      "defaultValue": "90",
+      "metadata": {
+        "description": "Relative search window in days when startDatetime and endDatetime are left blank."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "containers": [
+          {
+            "name": "ticketmaster",
+            "properties": {
+              "image": "[parameters('image')]",
+              "command": ["python", "-m", "ticketmaster", "feed"],
+              "resources": {
+                "requests": {
+                  "cpu": "[parameters('cpuCores')]",
+                  "memoryInGB": "[parameters('memoryInGb')]"
+                }
+              },
+              "environmentVariables": [
+                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionString')]" },
+                { "name": "TICKETMASTER_API_KEY", "secureValue": "[parameters('ticketmasterApiKey')]" },
+                { "name": "COUNTRY_CODES", "value": "[parameters('countryCodes')]" },
+                { "name": "POLL_INTERVAL", "value": "[parameters('pollInterval')]" },
+                { "name": "REFERENCE_REFRESH", "value": "[parameters('referenceRefresh')]" },
+                { "name": "LOG_LEVEL", "value": "[parameters('logLevel')]" },
+                { "name": "KAFKA_ENABLE_TLS", "value": "[parameters('kafkaEnableTls')]" },
+                { "name": "TICKETMASTER_CITY", "value": "[parameters('city')]" },
+                { "name": "TICKETMASTER_VENUE_ID", "value": "[parameters('venueId')]" },
+                { "name": "TICKETMASTER_ATTRACTION_ID", "value": "[parameters('attractionId')]" },
+                { "name": "TICKETMASTER_SEGMENT_ID", "value": "[parameters('segmentId')]" },
+                { "name": "TICKETMASTER_GENRE_ID", "value": "[parameters('genreId')]" },
+                { "name": "TICKETMASTER_SUB_GENRE_ID", "value": "[parameters('subGenreId')]" },
+                { "name": "TICKETMASTER_MARKET_ID", "value": "[parameters('marketId')]" },
+                { "name": "TICKETMASTER_POSTAL_CODE", "value": "[parameters('postalCode')]" },
+                { "name": "TICKETMASTER_LOCALE", "value": "[parameters('locale')]" },
+                { "name": "TICKETMASTER_SORT", "value": "[parameters('sort')]" },
+                { "name": "TICKETMASTER_PAGE_SIZE", "value": "[parameters('pageSize')]" },
+                { "name": "TICKETMASTER_START_DATETIME", "value": "[parameters('startDatetime')]" },
+                { "name": "TICKETMASTER_END_DATETIME", "value": "[parameters('endDatetime')]" },
+                { "name": "TICKETMASTER_LOOKAHEAD_DAYS", "value": "[parameters('lookaheadDays')]" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

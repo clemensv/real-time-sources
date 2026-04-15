@@ -41,6 +41,27 @@ python -m seattle_911 --connection-string "BootstrapServer=localhost:9092;Entity
 | `CONNECTION_STRING` | Kafka/Event Hubs/Fabric connection string |
 | `SEATTLE_911_LAST_POLLED_FILE` | State file path for dedupe and resume state |
 
+## Deploying into Azure Container Instances
+
+You can deploy this bridge directly to Azure Container Instances. Two deployment
+options are available:
+
+### Option 1: Bring your own Event Hub
+
+Deploy the container and provide your own Azure Event Hubs or Fabric Event
+Streams connection string. The template creates a storage account and file share
+for persistent state.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-911%2Fazure-template.json)
+
+### Option 2: Deploy with a new Event Hub
+
+Deploy the container together with a new Event Hub namespace (Standard SKU, 1
+throughput unit) and event hub. The connection string is automatically
+configured.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-911%2Fazure-template-with-eventhub.json)
+
 ## Upstream Links
 
 - Dataset page: https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj
