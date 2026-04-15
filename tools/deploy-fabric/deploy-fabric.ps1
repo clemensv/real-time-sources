@@ -152,7 +152,13 @@ function Install-KustoCli {
 
     # Find the right tools directory
     $onLinux = $PSVersionTable.OS -match "Linux" -or $env:HOME -match "^/"
-    $toolsSubDir = if ($onLinux) { "net6.0" } else { "net472" }
+    # Prefer net8.0 (runs on .NET 8+/9), fall back to net6.0, then net472
+    $toolsSubDir = $null
+    foreach ($candidate in @("net8.0", "net6.0", "net472")) {
+        $candidatePath = Join-Path $extractDir "tools" $candidate
+        if (Test-Path $candidatePath) { $toolsSubDir = $candidate; break }
+    }
+    if (-not $toolsSubDir) { $toolsSubDir = "net8.0" }
     $toolsPath = Join-Path $extractDir "tools" $toolsSubDir
     if (-not (Test-Path $toolsPath)) {
         # Try alternate layout
