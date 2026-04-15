@@ -281,7 +281,7 @@ async function openDeployForm(source, mode) {
 
   // Note
   const note = el("div", { class: "deploy-note" });
-  note.textContent = "Opens Azure Cloud Shell and copies the deployment command to your clipboard. Paste it to run.";
+  note.innerHTML = '<strong style="font-size:13px">Once Azure Cloud Shell has opened, paste the command to run!</strong>';
   $deployForm.appendChild(note);
 }
 
