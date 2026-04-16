@@ -33,11 +33,12 @@
     Azure subscription ID. If provided, the script sets this as the active
     subscription before deploying.
 
-.PARAMETER WorkspaceId
-    Microsoft Fabric workspace ID (GUID).
+.PARAMETER Workspace
+    Microsoft Fabric workspace name or ID (GUID).
 
-.PARAMETER EventhouseId
-    Microsoft Fabric Eventhouse ID (GUID).
+.PARAMETER Eventhouse
+    Microsoft Fabric Eventhouse name or ID (GUID). If omitted, a new
+    Eventhouse named after the source is created in the workspace.
 
 .PARAMETER DatabaseName
     KQL database name. Defaults to the source name.
@@ -47,7 +48,7 @@
 
 .EXAMPLE
     ./deploy-fabric.ps1 -Source pegelonline -ResourceGroup rg-streams `
-        -WorkspaceId "c98acd97-..." -EventhouseId "dbfd2819-..."
+        -Workspace "Real-Time Open Data" -Eventhouse "OpenData"
 #>
 
 param(
@@ -62,10 +63,9 @@ param(
     [string]$SubscriptionId,
 
     [Parameter(Mandatory = $true)]
-    [string]$WorkspaceId,
+    [string]$Workspace,
 
-    [Parameter(Mandatory = $true)]
-    [string]$EventhouseId,
+    [string]$Eventhouse,
 
     [string]$DatabaseName,
 
@@ -88,6 +88,7 @@ if ($SubscriptionId) {
 }
 
 if (-not $DatabaseName) { $DatabaseName = $Source -replace '-', '_' }
+if (-not $Eventhouse) { $Eventhouse = $Source -replace '-', '_' }
 $EventStreamName = "$Source-ingest"
 $StreamName = "$EventStreamName-stream"
 $ContainerGroupName = $Source
@@ -304,22 +305,66 @@ try {
     }
 }
 
-# Look up the capacity ID from the workspace
+# Resolve workspace: accept name or GUID
+$isGuid = $Workspace -match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+if ($isGuid) {
+    $WorkspaceId = $Workspace
+} else {
+    $allWs = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces"
+    $ws = $allWs.value | Where-Object { $_.displayName -eq $Workspace } | Select-Object -First 1
+    if (-not $ws) { throw "Workspace '$Workspace' not found." }
+    $WorkspaceId = $ws.id
+}
 $wsInfo = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
 $CapacityId = $wsInfo.capacityId
 if (-not $CapacityId) {
-    throw "Could not determine capacity ID for workspace $WorkspaceId"
+    throw "Could not determine capacity ID for workspace '$($wsInfo.displayName)'"
 }
-Write-OK "Capacity: $CapacityId"
+Write-OK "Workspace: $($wsInfo.displayName) ($WorkspaceId)"
+
+# Resolve eventhouse: accept name, GUID, or blank (auto-create)
+$isEhGuid = $Eventhouse -match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+$eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
+if ($isEhGuid) {
+    $EventhouseId = $Eventhouse
+    $eventhouse = $eventhouses.value | Where-Object { $_.id -eq $EventhouseId } | Select-Object -First 1
+    if (-not $eventhouse) { throw "Eventhouse '$Eventhouse' not found in workspace." }
+} else {
+    $eventhouse = $eventhouses.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
+    if ($eventhouse) {
+        $EventhouseId = $eventhouse.id
+        # Re-fetch to get full properties (list doesn't include queryServiceUri)
+        $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+    } else {
+        # Create a new Eventhouse
+        Write-Host "  Creating Eventhouse '$Eventhouse'..." -ForegroundColor Yellow
+        $ehResult = Invoke-FabricApi -Method POST `
+            -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses" `
+            -Body @{ displayName = $Eventhouse }
+        if ($ehResult -and $ehResult.id) {
+            $EventhouseId = $ehResult.id
+        } else {
+            # Async — poll
+            for ($i = 0; $i -lt 12; $i++) {
+                Start-Sleep -Seconds 5
+                $eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
+                $eventhouse = $eventhouses.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
+                if ($eventhouse) { $EventhouseId = $eventhouse.id; break }
+                Write-Host "  Waiting for Eventhouse... ($([int](($i+1)*5))s)" -ForegroundColor Gray
+            }
+        }
+        if (-not $EventhouseId) { throw "Failed to create Eventhouse '$Eventhouse'." }
+        # Re-fetch to get properties
+        $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+        Write-OK "Eventhouse created: $($eventhouse.displayName) ($EventhouseId)"
+    }
+}
+Write-OK "Eventhouse: $($eventhouse.displayName) ($EventhouseId)"
+$queryUri = $eventhouse.properties.queryServiceUri
 
 # ── Step 1: Create KQL database with schema ─────────────────────────────
 
 Write-Step "1/6" "Setting up KQL database '$DatabaseName' with schema..."
-
-$eventhouse = Invoke-FabricApi -Method GET `
-    -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
-Write-OK "Eventhouse: $($eventhouse.displayName)"
-$queryUri = $eventhouse.properties.queryServiceUri
 
 $databases = Invoke-FabricApi -Method GET `
     -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
