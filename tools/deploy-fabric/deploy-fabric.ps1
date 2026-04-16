@@ -173,45 +173,51 @@ function Invoke-KqlScript {
             Write-Warning "Some KQL commands reported non-Completed status for $Label"
         }
     } else {
-        # Cloud Shell MSI cannot get Kusto tokens. Re-authenticate as the
-        # interactive user via device code — this is a one-time prompt.
-        Write-Host "  Kusto token not available via default credential." -ForegroundColor Yellow
-        Write-Host "  Device code authentication required (one-time)." -ForegroundColor Yellow
-        Write-Host ""
-        Connect-AzAccount -UseDeviceAuthentication -ErrorAction Stop | Out-Null
-        if ($SubscriptionId) {
-            Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction SilentlyContinue | Out-Null
+        # Cloud Shell MSI cannot get Kusto tokens. Use the Fabric control
+        # plane API (updateDefinition) which accepts the DatabaseSchema.kql
+        # as a definition part. This uses api.fabric.microsoft.com which IS
+        # a supported MSI audience.
+        Write-Host "  Using Fabric API to apply KQL schema..." -ForegroundColor Gray
+        $schemaBase64 = [Convert]::ToBase64String(
+            [System.Text.Encoding]::UTF8.GetBytes($ScriptContent)
+        )
+        $dbProps = @{
+            databaseType = "ReadWrite"
+            parentEventhouseItemId = $EventhouseId
         }
-        $kustoToken = $null
-        foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
-            try {
-                $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
-                if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) { $kustoToken = $tokenObj.Token; break }
-            } catch { }
+        $dbPropsBase64 = [Convert]::ToBase64String(
+            [System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress))
+        )
+        $updateBody = @{
+            definition = @{
+                parts = @(
+                    @{
+                        path        = "DatabaseProperties.json"
+                        payload     = $dbPropsBase64
+                        payloadType = "InlineBase64"
+                    },
+                    @{
+                        path        = "DatabaseSchema.kql"
+                        payload     = $schemaBase64
+                        payloadType = "InlineBase64"
+                    }
+                )
+            }
         }
-        if (-not $kustoToken) {
-            throw "Failed to get Kusto token even after device code login."
-        }
-        $body = @{
-            csl = ".execute database script <|`n$ScriptContent"
-            db  = $Database
-        }
-        $headers = @{
-            "Authorization" = "Bearer $kustoToken"
-            "Content-Type"  = "application/json"
-        }
-        $result = Invoke-RestMethod `
-            -Uri "$QueryUri/v1/rest/mgmt" `
-            -Method Post -Headers $headers `
-            -Body ($body | ConvertTo-Json -Compress) `
-            -TimeoutSec 120
+        $updateFile = Join-Path $TempDir "kql_def_$(Get-Random).json"
+        [System.IO.File]::WriteAllText(
+            $updateFile,
+            ($updateBody | ConvertTo-Json -Depth 10 -Compress),
+            [System.Text.UTF8Encoding]::new($false)
+        )
 
-        $rows = @()
-        if ($result.Tables.Count -gt 0) { $rows = $result.Tables[0].Rows }
-        $failed = @($rows | Where-Object { $_[3] -ne "Completed" })
-        if ($failed.Count -gt 0) {
-            Write-Warning "Some KQL commands reported non-Completed status for $Label"
-        }
+        Invoke-FabricApi -Method POST `
+            -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" `
+            -Body ([System.IO.File]::ReadAllText($updateFile))
+
+        # updateDefinition is async — wait for schema to propagate
+        Write-Host "  Waiting for schema to apply..." -ForegroundColor Gray
+        Start-Sleep -Seconds 15
     }
     Write-OK "Applied $Label"
 }
