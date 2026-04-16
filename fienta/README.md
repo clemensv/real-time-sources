@@ -36,6 +36,7 @@ The bridge emits two event types to the same Kafka topic:
 - **Polling-based**: Fetches all public events from the Fienta API every 5 minutes.
 - **Reference data emission**: Emits full `Event` records at startup and refreshes hourly so consumers have current public listing metadata.
 - **Sale-status change detection**: Tracks each event's `sale_status` in a local state file and emits `EventSaleStatus` events only when the status changes.
+- **Upstream filter support**: Exposes the public `country` and `locale` query parameters through CLI arguments and environment variables.
 - **Live API alignment**: Maps the real Fienta payload fields (`title`, `starts_at`, `event_status`, `venue`, `buy_tickets_url`, organizer contact fields, and pagination metadata) instead of relying on hypothetical fields that the public API does not publish.
 - **Stable identity model**: Uses the Fienta `id` field as both CloudEvents subject and Kafka key.
 - **Kafka integration**: Sends events to a Kafka topic with SASL PLAIN or plain TLS authentication.
@@ -83,12 +84,37 @@ After installation, run with `python -m fienta feed`.
 - `--sasl-username`: Username for SASL PLAIN authentication
 - `--sasl-password`: Password for SASL PLAIN authentication
 - `--state-file`: Path to the state file for sale-status deduplication (default: `~/.fienta_state.json`)
+- `--country`: Optional Fienta country filter. Live probes show this expects ISO 3166-1 alpha-2 country codes such as `EE`, `LV`, `LT`, `FI`, `GB`, `DE`, `DK`, `SE`, `NO`, `BE`, `AT`, or `IE`
+- `--locale`: Optional Fienta locale filter such as `en` or `et`
 
 ### Example Usage
 
 ```bash
 python -m fienta feed --connection-string "BootstrapServer=mybroker:9092;EntityPath=fienta"
 ```
+
+To limit the feed to one country and one localized URL variant:
+
+```bash
+python -m fienta feed \
+  --connection-string "BootstrapServer=mybroker:9092;EntityPath=fienta" \
+  --country EE \
+  --locale en
+```
+
+## Supported API Filters
+
+The bridge now exposes the Fienta public-events filters supported by the public
+endpoint:
+
+| API query param | CLI argument | Environment variable |
+|---|---|---|
+| `country` | `--country` | `FIENTA_COUNTRY` |
+| `locale` | `--locale` | `FIENTA_LOCALE` |
+
+`country` is live-probed as an ISO 3166-1 alpha-2 code filter. For example,
+`country=EE` returns Estonian events, while values like `Estonia` are ignored by
+the upstream.
 
 ## Environment Variables
 
@@ -97,6 +123,8 @@ python -m fienta feed --connection-string "BootstrapServer=mybroker:9092;EntityP
 | `CONNECTION_STRING` | Kafka/Event Hubs/Fabric connection string |
 | `KAFKA_ENABLE_TLS` | Set to `false` to disable TLS (default: `true`) |
 | `FIENTA_STATE_FILE` | Path to the state file (default: `~/.fienta_state.json`) |
+| `FIENTA_COUNTRY` | Optional Fienta `country` filter using ISO 3166-1 alpha-2 country codes |
+| `FIENTA_LOCALE` | Optional Fienta `locale` filter such as `en` or `et` |
 
 ## Deploying into Azure Container Instances
 

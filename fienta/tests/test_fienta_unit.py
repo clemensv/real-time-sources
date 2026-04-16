@@ -5,6 +5,7 @@ Unit tests for the Fienta Public Events bridge.
 import json
 import os
 import tempfile
+import argparse
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -14,6 +15,7 @@ from fienta.fienta import (
     FIENTA_API_URL,
     POLL_INTERVAL_SECONDS,
     FientaPoller,
+    _resolve_api_filters,
     fetch_all_events,
     parse_connection_string,
     parse_event_reference,
@@ -238,6 +240,31 @@ class TestParseConnectionString:
 
 
 @pytest.mark.unit
+class TestFilterConfiguration:
+
+    def test_resolve_api_filters_prefers_cli_then_env(self, monkeypatch):
+        monkeypatch.setenv("FIENTA_COUNTRY", "DE")
+        monkeypatch.setenv("FIENTA_LOCALE", "en")
+        args = argparse.Namespace(country="EE", locale=None)
+
+        filters = _resolve_api_filters(args)
+
+        assert filters == {
+            "country": "EE",
+            "locale": "en",
+        }
+
+    def test_resolve_api_filters_omits_empty_values(self, monkeypatch):
+        monkeypatch.delenv("FIENTA_COUNTRY", raising=False)
+        monkeypatch.delenv("FIENTA_LOCALE", raising=False)
+        args = argparse.Namespace(country=None, locale=" ")
+
+        filters = _resolve_api_filters(args)
+
+        assert filters == {}
+
+
+@pytest.mark.unit
 class TestFetchAllEvents:
 
     def test_fetches_list_response(self):
@@ -326,6 +353,20 @@ class TestFetchAllEvents:
             mock_get.return_value = mock_resp
             result = fetch_all_events()
         assert result == []
+
+    def test_passes_api_filters_to_requests(self):
+        with patch("fienta.fienta.requests.get") as mock_get:
+            mock_resp = Mock()
+            mock_resp.json.return_value = {"events": [], "pagination": {"page": 1, "last_page": 1, "next_page_url": None}}
+            mock_resp.raise_for_status = Mock()
+            mock_get.return_value = mock_resp
+            fetch_all_events(api_filters={"country": "EE", "locale": "en"})
+
+        mock_get.assert_called_once_with(
+            FIENTA_API_URL,
+            params={"page": 1, "country": "EE", "locale": "en"},
+            timeout=60,
+        )
 
 
 @pytest.mark.unit

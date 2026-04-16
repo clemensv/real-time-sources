@@ -20,6 +20,10 @@ from fienta_producer_kafka_producer.producer import ComFientaEventProducer
 FIENTA_API_URL = "https://fienta.com/api/v1/public/events"
 POLL_INTERVAL_SECONDS = 300  # 5 minutes
 REFERENCE_REFRESH_SECONDS = 3600  # 1 hour
+FILTER_ENV_VARS = {
+    "country": "FIENTA_COUNTRY",
+    "locale": "FIENTA_LOCALE",
+}
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 LOGGER = logging.getLogger(__name__)
@@ -34,6 +38,15 @@ def _optional_string(value: object) -> Optional[str]:
         return value or None
     value = str(value).strip()
     return value or None
+
+
+def _collect_api_filters(country: Optional[str] = None, locale: Optional[str] = None) -> Dict[str, str]:
+    """Collect supported Fienta API filters, dropping empty values."""
+    filter_values = {
+        "country": _optional_string(country),
+        "locale": _optional_string(locale),
+    }
+    return {key: value for key, value in filter_values.items() if value is not None}
 
 
 def _required_string(*values: object) -> str:
@@ -60,13 +73,41 @@ def _observed_at_utc() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
-def fetch_events(page: int = 1) -> Optional[Tuple[List[dict], bool]]:
+def _resolve_api_filters(args: argparse.Namespace) -> Dict[str, str]:
+    """Resolve Fienta public-event filters from CLI arguments and environment variables."""
+    return _collect_api_filters(
+        country=getattr(args, "country", None) or os.getenv(FILTER_ENV_VARS["country"]),
+        locale=getattr(args, "locale", None) or os.getenv(FILTER_ENV_VARS["locale"]),
+    )
+
+
+def _add_filter_arguments(parser: argparse.ArgumentParser) -> None:
+    """Add user-facing Fienta API filter arguments to the parser."""
+    parser.add_argument(
+        "--country",
+        type=str,
+        help=(
+            "Optional Fienta country filter. Live probing shows this expects ISO 3166-1 alpha-2 "
+            "codes such as EE, LV, LT, FI, GB, DE, DK, SE, NO, BE, AT, or IE."
+        ),
+    )
+    parser.add_argument(
+        "--locale",
+        type=str,
+        help=(
+            "Optional Fienta locale filter such as en or et. This affects localized URLs and "
+            "localized text where Fienta publishes it."
+        ),
+    )
+
+
+def fetch_events(page: int = 1, api_filters: Optional[Dict[str, str]] = None) -> Optional[Tuple[List[dict], bool]]:
     """Fetch a page of public events from the Fienta API.
 
     Returns a tuple of ``(events, has_next_page)``, or None on error.
     """
     try:
-        params: Dict[str, object] = {"page": page}
+        params: Dict[str, object] = {"page": page, **(api_filters or {})}
         response = requests.get(FIENTA_API_URL, params=params, timeout=60)
         response.raise_for_status()
         data = response.json()
@@ -91,12 +132,12 @@ def fetch_events(page: int = 1) -> Optional[Tuple[List[dict], bool]]:
         return None
 
 
-def fetch_all_events() -> Optional[List[dict]]:
+def fetch_all_events(api_filters: Optional[Dict[str, str]] = None) -> Optional[List[dict]]:
     """Fetch all public events across all pages."""
     all_events: List[dict] = []
     page = 1
     while True:
-        page_result = fetch_events(page=page)
+        page_result = fetch_events(page=page, api_filters=api_filters)
         if page_result is None:
             return None if not all_events else all_events
         events, has_next_page = page_result
@@ -170,9 +211,16 @@ def parse_event_sale_status(raw: dict, observed_at: Optional[str] = None) -> Opt
 class FientaPoller:
     """Polls the Fienta public events API and sends CloudEvents to Kafka."""
 
-    def __init__(self, kafka_config: Dict[str, str], kafka_topic: str, state_file: str):
+    def __init__(
+        self,
+        kafka_config: Dict[str, str],
+        kafka_topic: str,
+        state_file: str,
+        api_filters: Optional[Dict[str, str]] = None,
+    ):
         self.kafka_topic = kafka_topic
         self.state_file = state_file
+        self.api_filters = dict(api_filters or {})
         from confluent_kafka import Producer as KafkaProducer
         kafka_producer = KafkaProducer(kafka_config)
         self.producer = ComFientaEventProducer(kafka_producer, kafka_topic)
@@ -254,10 +302,11 @@ class FientaPoller:
         LOGGER.info("Starting Fienta poller, polling every %ds", POLL_INTERVAL_SECONDS)
         LOGGER.info("  API URL: %s", FIENTA_API_URL)
         LOGGER.info("  Kafka topic: %s", self.kafka_topic)
+        LOGGER.info("  API filters: %s", self.api_filters or "(none)")
 
         # Emit reference data at startup
         LOGGER.info("Fetching initial Fienta events for reference data...")
-        events = fetch_all_events()
+        events = fetch_all_events(api_filters=self.api_filters)
         if events is not None:
             ref_sent = self.emit_reference_data(events)
             LOGGER.info("Sent %d event reference records", ref_sent)
@@ -283,7 +332,7 @@ class FientaPoller:
                 time.sleep(POLL_INTERVAL_SECONDS)
                 now = time.monotonic()
 
-                events = fetch_all_events()
+                events = fetch_all_events(api_filters=self.api_filters)
                 if events is None:
                     LOGGER.warning("Failed to fetch events; will retry next poll")
                     continue
@@ -336,7 +385,8 @@ def parse_connection_string(connection_string: str) -> Dict[str, str]:
 def main() -> None:
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Fienta Public Events Bridge – polls the Fienta API and sends CloudEvents to Kafka"
+        description="Fienta Public Events Bridge – polls the Fienta API and sends CloudEvents to Kafka",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
         'command', nargs='?', default='feed',
@@ -355,6 +405,7 @@ def main() -> None:
                         help="Password for SASL PLAIN authentication")
     parser.add_argument('--connection-string', type=str,
                         help='Event Hubs / Fabric / plain Kafka connection string')
+    _add_filter_arguments(parser)
 
     args = parser.parse_args()
 
@@ -395,10 +446,12 @@ def main() -> None:
     elif tls_enabled:
         kafka_config['security.protocol'] = 'SSL'
 
+    api_filters = _resolve_api_filters(args)
     poller = FientaPoller(
         kafka_config=kafka_config,
         kafka_topic=kafka_topic,
         state_file=args.state_file,
+        api_filters=api_filters,
     )
     poller.poll_and_send()
 

@@ -42,6 +42,17 @@ $ docker run --rm \
     ghcr.io/clemensv/real-time-sources-fienta:latest
 ```
 
+### With upstream feed filters
+
+```shell
+$ docker run --rm \
+    -e CONNECTION_STRING="BootstrapServer=mybroker:9092;EntityPath=fienta" \
+    -e KAFKA_ENABLE_TLS=false \
+    -e FIENTA_COUNTRY="EE" \
+    -e FIENTA_LOCALE="en" \
+    ghcr.io/clemensv/real-time-sources-fienta:latest
+```
+
 ### With Azure Event Hubs
 
 ```shell
@@ -65,6 +76,8 @@ $ docker run --rm \
 | `CONNECTION_STRING` | Yes | Kafka/Event Hubs/Fabric connection string |
 | `KAFKA_ENABLE_TLS` | No | Set to `false` to disable TLS (default: `true`) |
 | `FIENTA_STATE_FILE` | No | Path to state file for sale-status deduplication (default: `/mnt/fileshare/fienta_state.json`) |
+| `FIENTA_COUNTRY` | No | Optional Fienta `country` filter using ISO 3166-1 alpha-2 country codes such as `EE`, `LV`, `LT`, `FI`, `GB`, `DE`, `DK`, `SE`, `NO`, `BE`, `AT`, and `IE`. |
+| `FIENTA_LOCALE` | No | Optional Fienta `locale` filter such as `en` or `et`. |
 
 ## Azure Container Instance Deployment
 
@@ -75,5 +88,17 @@ $ az container create \
     --image ghcr.io/clemensv/real-time-sources-fienta:latest \
     --environment-variables \
         CONNECTION_STRING="<connection-string>" \
+        FIENTA_COUNTRY="EE" \
+        FIENTA_LOCALE="en" \
     --restart-policy Always
 ```
+
+## Supported Upstream Filters
+
+The public Fienta endpoint exposes two useful feed filters that this bridge now
+passes through directly:
+
+| API query param | Environment variable | Notes |
+|---|---|---|
+| `country` | `FIENTA_COUNTRY` | ISO 3166-1 alpha-2 country code. Live probes returned country-specific result sets for `EE`, `LV`, `LT`, `FI`, `GB`, `DE`, `DK`, `SE`, `NO`, `BE`, `AT`, and `IE`. |
+| `locale` | `FIENTA_LOCALE` | Localized URL/text variant such as `en` or `et`. |
