@@ -173,6 +173,7 @@ are 87 containers in total.
 
 | Source | Coverage | README | Container | Build |
 |---|---|---|---|---|
+| Billetto | Europe (DK, GB, DE, SE, NO, FI, BE, AT, IE – ticketed events) | [📖](billetto/README.md) | [🐳](billetto/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-billetto) |
 | Ticketmaster | Global (concerts, sports, theater, arts, and other live public events) | [📖](ticketmaster/README.md) | [🐳](ticketmaster/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-ticketmaster) |
 
 ### Scientific Research
@@ -567,6 +568,14 @@ feed URLs or OPML files. Only forwards new items.
 **[Wikimedia EventStreams](wikimedia-eventstreams/README.md)** -- Wikimedia’s
 public recentchange stream for edits, page creations, and log actions across
 Wikipedia, Wikidata, Commons, and sister projects.
+
+### Public Events
+
+**[Billetto](billetto/README.md)** -- Billetto pan-European event-discovery
+platform. Polls the public events API for new and updated ticketed events
+across Denmark, the United Kingdom, Germany, Sweden, Norway, Finland, Belgium,
+Austria, and Ireland. Emits event schedule, venue, organizer, pricing, and
+ticket availability as CloudEvents keyed by stable Billetto event ID.
 
 ### Scientific Research
 
