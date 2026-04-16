@@ -78,13 +78,33 @@ $Branch = "main"
 $RawBase = "https://raw.githubusercontent.com/$Repo/$Branch"
 $FabricApi = "https://api.fabric.microsoft.com/v1"
 
-# Set Azure subscription if provided
+# Set Azure subscription
 if ($SubscriptionId) {
     az account set --subscription $SubscriptionId 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to set subscription '$SubscriptionId'"
     }
     Write-Host "  Subscription: $SubscriptionId" -ForegroundColor White
+} else {
+    # Check if multiple subscriptions are available — prompt if ambiguous
+    $subs = az account list --query "[?state=='Enabled'].{name:name, id:id, isDefault:isDefault}" -o json 2>&1 | ConvertFrom-Json
+    if ($subs.Count -gt 1) {
+        Write-Host "`n  Multiple Azure subscriptions found:" -ForegroundColor Yellow
+        for ($i = 0; $i -lt $subs.Count; $i++) {
+            $marker = if ($subs[$i].isDefault) { " (current)" } else { "" }
+            Write-Host "    [$($i+1)] $($subs[$i].name)$marker" -ForegroundColor White
+            Write-Host "        $($subs[$i].id)" -ForegroundColor Gray
+        }
+        $choice = Read-Host "`n  Select subscription [1-$($subs.Count)]"
+        $idx = [int]$choice - 1
+        if ($idx -lt 0 -or $idx -ge $subs.Count) { throw "Invalid selection." }
+        $SubscriptionId = $subs[$idx].id
+        az account set --subscription $SubscriptionId 2>&1 | Out-Null
+        Write-Host "  Subscription: $($subs[$idx].name)" -ForegroundColor White
+    } else {
+        $currentSub = az account show --query "{name:name, id:id}" -o json 2>&1 | ConvertFrom-Json
+        Write-Host "  Subscription: $($currentSub.name)" -ForegroundColor White
+    }
 }
 
 if (-not $DatabaseName) { $DatabaseName = $Source -replace '-', '_' }

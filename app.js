@@ -259,7 +259,7 @@ async function openDeployForm(source, mode) {
   azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
     "", "Azure subscription GUID (leave blank for default)", false));
   azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
-    "", "Azure resource group name", true));
+    `rg-${source.id}-feeder`, "Azure resource group name", true));
   azSection.appendChild(makeField("location", "Location", "text",
     "westcentralus", "Azure region for deployment", true));
   $deployForm.appendChild(azSection);
