@@ -15,7 +15,7 @@ const SOURCES = [
   { id: "german-waters",         name: "German Waters",           cat: "Hydrology",    key: false, desc: "Germany — 12 state portals, ~2,724 stations", kql: true },
   { id: "hubeau-hydrometrie",    name: "Hub'Eau Hydrometrie",     cat: "Hydrology",    key: false, desc: "France — ~6,300 stations", kql: true },
   { id: "imgw-hydro",            name: "IMGW Hydro",              cat: "Hydrology",    key: false, desc: "Poland — IMGW-PIB", kql: true },
-  { id: "ireland-opw-waterlevel",name: "Ireland OPW Water Level", cat: "Hydrology",    key: false, desc: "Ireland — ~500 OPW hydrometric stations", kql: true },
+  { id: "ireland-opw-waterlevel",name: "Ireland OPW Water Level", cat: "Hydrology",    key: false, desc: "Ireland — ~500 OPW hydrometric stations", kql: false },
   { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology",   cat: "Hydrology",    key: false, desc: "Nepal — Himalayan river basins, BIPAD", kql: false },
   { id: "noaa",                  name: "NOAA Tides & Currents",   cat: "Hydrology",    key: false, desc: "United States — ~3,000 stations", kql: true },
   { id: "noaa-ndbc",             name: "NOAA NDBC",               cat: "Hydrology",    key: false, desc: "United States — buoy observations", kql: true },

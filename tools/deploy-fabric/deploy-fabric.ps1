@@ -266,13 +266,13 @@ try {
     $null = Invoke-WebRequest -Uri $kqlUrl -Method Head -UseBasicParsing
     Write-OK "KQL script found"
 } catch {
-    # try alternate naming (some sources use hyphens in kql filename)
     $kqlUrl = "$RawBase/$Source/kql/$Source.kql"
     try {
         $null = Invoke-WebRequest -Uri $kqlUrl -Method Head -UseBasicParsing
         Write-OK "KQL script found (alternate name)"
     } catch {
-        throw "KQL script not found for '$Source'. Check that $Source/kql/ exists."
+        $kqlUrl = $null
+        Write-Info "No KQL script — database schema step will be skipped"
     }
 }
 
@@ -323,43 +323,61 @@ $queryUri = $eventhouse.properties.queryServiceUri
 
 #  Step 1: Create KQL database with schema 
 
-Write-Step "1/6" "Setting up KQL database '$DatabaseName' with schema..."
+Write-Step "1/6" "Setting up KQL database '$DatabaseName'..."
 
 $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
 $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
 
-$kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
-$filteredKql = Convert-KqlForFabricDefinition $kqlContent
+$kqlContent = $null
+$filteredKql = $null
+if ($kqlUrl) {
+    $kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
+    $filteredKql = Convert-KqlForFabricDefinition $kqlContent
+}
 
 if ($existingDb) {
     $databaseId = $existingDb.id
     Write-Info "Database already exists (ID: $databaseId)"
-    Write-Step "2/6" "Updating KQL schema..."
-    try {
-        Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent -Label "$Source.kql"
-    } catch {
-        Write-Host "  Falling back to Fabric definition API..." -ForegroundColor Yellow
+    if ($kqlContent) {
+        Write-Step "2/6" "Updating KQL schema..."
+        try {
+            Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent -Label "$Source.kql"
+        } catch {
+            Write-Host "  Falling back to Fabric definition API..." -ForegroundColor Yellow
+            $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
+            $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
+            $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
+            Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" -Body @{ definition = @{ parts = @(
+                @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
+                @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
+            )}}
+            Start-Sleep -Seconds 30
+            Write-OK "Schema update submitted"
+        }
+    } else {
+        Write-Step "2/6" "No KQL schema available — skipping"
+    }
+} else {
+    # Create new database — with schema if available, without if not
+    $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
+    $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
+
+    if ($filteredKql) {
         $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
-        $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
-        $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
-        Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" -Body @{ definition = @{ parts = @(
+        $createBody = @{ displayName = $DatabaseName; definition = @{ parts = @(
             @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
             @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
         )}}
-        Start-Sleep -Seconds 30
-        Write-OK "Schema update submitted"
+        Write-Host "  Creating database with schema definition..." -ForegroundColor Gray
+    } else {
+        $createBody = @{ displayName = $DatabaseName; definition = @{ parts = @(
+            @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" }
+        )}}
+        Write-Host "  Creating database..." -ForegroundColor Gray
     }
-} else {
-    $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
-    $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
-    $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
-    $createBody = @{ displayName = $DatabaseName; definition = @{ parts = @(
-        @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
-        @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
-    )}}
+
     $createFile = Join-Path $TempDir "kql_create_$(Get-Random).json"
     [System.IO.File]::WriteAllText($createFile, ($createBody | ConvertTo-Json -Depth 10 -Compress), [System.Text.UTF8Encoding]::new($false))
-    Write-Host "  Creating database with schema definition..." -ForegroundColor Gray
     az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" --resource "https://api.fabric.microsoft.com" --body "@$createFile" --headers "Content-Type=application/json" 2>&1 | Out-Null
     $databaseId = $null
     for ($i = 0; $i -lt 18; $i++) {
@@ -370,8 +388,9 @@ if ($existingDb) {
         Write-Host "  Provisioning... ($([int](($i+1)*10))s)" -ForegroundColor Gray
     }
     if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 180 seconds." }
-    Write-OK "Database created with schema (ID: $databaseId)"
-    Write-Step "2/6" "Schema applied via definition API"
+    Write-OK "Database created (ID: $databaseId)"
+    if ($filteredKql) { Write-Step "2/6" "Schema applied via definition API" }
+    else { Write-Step "2/6" "No KQL schema available — skipping" }
 }
 
 #  Step 3: Create Fabric Event Stream 
