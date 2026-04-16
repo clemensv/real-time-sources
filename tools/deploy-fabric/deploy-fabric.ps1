@@ -132,7 +132,6 @@ function Invoke-KqlScript {
     param(
         [string]$QueryUri,
         [string]$Database,
-        [string]$DatabaseId,
         [string]$ScriptContent,
         [string]$Label
     )
@@ -174,48 +173,45 @@ function Invoke-KqlScript {
             Write-Warning "Some KQL commands reported non-Completed status for $Label"
         }
     } else {
-        # Fall back to Fabric API updateDefinition with DatabaseSchema.kql
-        # This uses api.fabric.microsoft.com which IS a supported MSI audience
-        Write-Host "  Using Fabric API to apply KQL schema..." -ForegroundColor Gray
-        $schemaBase64 = [Convert]::ToBase64String(
-            [System.Text.Encoding]::UTF8.GetBytes($ScriptContent)
-        )
-        $updateBody = @{
-            definition = @{
-                parts = @(
-                    @{
-                        path        = "DatabaseSchema.kql"
-                        payload     = $schemaBase64
-                        payloadType = "InlineBase64"
-                    }
-                )
-            }
+        # Cloud Shell MSI cannot get Kusto tokens. Re-authenticate as the
+        # interactive user via device code — this is a one-time prompt.
+        Write-Host "  Kusto token not available via default credential." -ForegroundColor Yellow
+        Write-Host "  Device code authentication required (one-time)." -ForegroundColor Yellow
+        Write-Host ""
+        Connect-AzAccount -UseDeviceAuthentication -ErrorAction Stop | Out-Null
+        if ($SubscriptionId) {
+            Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction SilentlyContinue | Out-Null
         }
-        $updateFile = Join-Path $TempDir "kql_def_$(Get-Random).json"
-        [System.IO.File]::WriteAllText(
-            $updateFile,
-            ($updateBody | ConvertTo-Json -Depth 10 -Compress),
-            [System.Text.UTF8Encoding]::new($false)
-        )
-
-        $updateResult = az rest `
-            --method POST `
-            --url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$DatabaseId/updateDefinition" `
-            --resource "https://api.fabric.microsoft.com" `
-            --body "@$updateFile" `
-            --headers "Content-Type=application/json" 2>&1
-
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to update KQL database definition for $Label`n$updateResult"
+        $kustoToken = $null
+        foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
+            try {
+                $tokenObj = Get-AzAccessToken -ResourceUrl $aud -ErrorAction Stop
+                if ($tokenObj.Token -and $tokenObj.Token.Length -gt 100) { $kustoToken = $tokenObj.Token; break }
+            } catch { }
         }
-
-        # updateDefinition is async (202) — poll for completion
-        if ($updateResult) {
-            $parsed = $updateResult | ConvertFrom-Json -ErrorAction SilentlyContinue
-            # If 200, it completed synchronously
+        if (-not $kustoToken) {
+            throw "Failed to get Kusto token even after device code login."
         }
-        # Wait a moment for async operation to complete
-        Start-Sleep -Seconds 5
+        $body = @{
+            csl = ".execute database script <|`n$ScriptContent"
+            db  = $Database
+        }
+        $headers = @{
+            "Authorization" = "Bearer $kustoToken"
+            "Content-Type"  = "application/json"
+        }
+        $result = Invoke-RestMethod `
+            -Uri "$QueryUri/v1/rest/mgmt" `
+            -Method Post -Headers $headers `
+            -Body ($body | ConvertTo-Json -Compress) `
+            -TimeoutSec 120
+
+        $rows = @()
+        if ($result.Tables.Count -gt 0) { $rows = $result.Tables[0].Rows }
+        $failed = @($rows | Where-Object { $_[3] -ne "Completed" })
+        if ($failed.Count -gt 0) {
+            Write-Warning "Some KQL commands reported non-Completed status for $Label"
+        }
     }
     Write-OK "Applied $Label"
 }
@@ -446,7 +442,7 @@ Write-Step "3/7" "Applying KQL schema from $Source..."
 
 $kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
 Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName `
-    -DatabaseId $databaseId -ScriptContent $kqlContent -Label "$Source.kql"
+    -ScriptContent $kqlContent -Label "$Source.kql"
 
 # ── Step 4: Create Fabric Event Stream ──────────────────────────────────
 
