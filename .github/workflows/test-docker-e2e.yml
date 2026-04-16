@@ -35,6 +35,7 @@ jobs:
           - { dir: chmi-hydro, module: chmi_hydro }
           - { dir: defra-aurn, module: defra_aurn }
           - { dir: epa-uv, module: epa_uv }
+          - { dir: fienta, module: fienta }
           - { dir: fmi-finland, module: fmi_finland }
           - { dir: hongkong-epd, module: hongkong_epd }
           - { dir: irail, module: irail }
@@ -91,6 +92,7 @@ jobs:
           - { dir: defra-aurn, test_class: TestDefraAURNDockerFlow }
           - { dir: epa-uv, test_class: TestEPAUVDockerFlow }
           - { dir: fmi-finland, test_class: TestFMIFinlandDockerFlow }
+          - { dir: fienta, test_class: TestFientaDockerFlow }
           - { dir: hongkong-epd, test_class: TestHongKongEPDDockerFlow }
           - { dir: hubeau-hydrometrie, test_class: TestHubeauDockerFlow }
           - { dir: imgw-hydro, test_class: TestIMGWHydroDockerFlow }

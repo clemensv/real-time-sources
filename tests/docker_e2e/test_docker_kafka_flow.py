@@ -290,6 +290,10 @@ def entur_norway_image():
 def xceed_image():
     return build_image('xceed')
 
+@pytest.fixture(scope='module')
+def fienta_image():
+    return build_image('fienta')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -303,6 +307,7 @@ def _run_kafka_flow_test(
     reference_types: Optional[List[str]] = None,
     telemetry_types: Optional[List[str]] = None,
     required_types: Optional[List[str]] = None,
+    required_exact_types: Optional[List[str]] = None,
     required_any_types: Optional[List[str]] = None,
     extra_env: Optional[Dict[str, str]] = None,
     command: Optional[str | List[str]] = None,
@@ -324,6 +329,8 @@ def _run_kafka_flow_test(
             Pass *None* for projects that emit no reference data.
         telemetry_types: Substrings expected in ``type`` for telemetry events.
         required_types: Substrings that must all appear in observed event types.
+        required_exact_types: Exact CloudEvent types that must all appear in
+            observed event types.
         required_any_types: Substrings where at least one must appear.
         extra_env: Additional environment variables for the container.
         command: Optional container command override.
@@ -362,10 +369,13 @@ def _run_kafka_flow_test(
             required_ok = required_types is None or all(
                 any(pat in t for t in observed_types) for pat in required_types
             )
+            required_exact_ok = required_exact_types is None or all(
+                exact_type in observed_types for exact_type in required_exact_types
+            )
             required_any_ok = required_any_types is None or any(
                 any(pat in t for t in observed_types) for pat in required_any_types
             )
-            return ref_ok and tel_ok and required_ok and required_any_ok
+            return ref_ok and tel_ok and required_ok and required_exact_ok and required_any_ok
 
         try:
             while time.time() < deadline:
@@ -426,6 +436,17 @@ def _run_kafka_flow_test(
             ]
             assert not missing, (
                 f'Missing required event families {missing}. Observed types: '
+                f'{sorted(observed_types)}\n'
+                f'Container logs:\n{container.logs().decode()}'
+            )
+
+        if required_exact_types is not None:
+            missing_exact = [
+                exact_type for exact_type in required_exact_types
+                if exact_type not in observed_types
+            ]
+            assert not missing_exact, (
+                f'Missing exact event families {missing_exact}. Observed types: '
                 f'{sorted(observed_types)}\n'
                 f'Container logs:\n{container.logs().decode()}'
             )
@@ -1826,4 +1847,18 @@ class TestXceedDockerFlow:
             kafka, xceed_image, self.TOPIC,
             reference_types=['xceed.Event'],
             telemetry_types=None,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Fienta Public Events (Europe – ticketed events with sale-status)
+# ---------------------------------------------------------------------------
+
+class TestFientaDockerFlow:
+    TOPIC = 'test-fienta'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, fienta_image):
+        _run_kafka_flow_test(
+            kafka, fienta_image, self.TOPIC,
+            required_exact_types=['Com.Fienta.Event', 'Com.Fienta.EventSaleStatus'],
         )

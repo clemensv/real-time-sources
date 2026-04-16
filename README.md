@@ -188,6 +188,12 @@ are 87 containers in total.
 |---|---|---|---|---|---|
 | GraceDB | Global (LIGO/Virgo/KAGRA gravitational wave candidates) | [📖](gracedb/README.md) | [🐳](gracedb/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-gracedb) | [![Deploy](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-with-eventhub.json) |
 
+### Public Events
+
+| Source | Coverage | README | Container | Build | Deploy |
+|---|---|---|---|---|---|
+| Fienta | Europe (ticketed public events with sale-status signals) | [📖](fienta/README.md) | [🐳](fienta/CONTAINER.md) | [![Build](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-fienta) | |
+
 ## Code Generation
 
 Projects with checked-in `xreg` manifests regenerate their producer clients with
@@ -596,6 +602,15 @@ ticket availability as CloudEvents keyed by stable Billetto event ID.
 **[GraceDB](gracedb/README.md)** -- LIGO/Virgo/KAGRA GraceDB gravitational wave
 candidate event database. Superevent alerts including chirp mass, false alarm
 rate, classification probabilities, and sky localization data.
+
+### Public Events
+
+**[Fienta](fienta/README.md)** -- European public event ticketing platform
+(Estonia, Latvia, Lithuania, and other European markets). Emits full event
+reference data including name, location, organizer, and schedule, plus
+sale-status change telemetry (`onSale`, `soldOut`, `notOnSale`, `saleEnded`)
+whenever a public event's ticket status changes. Polling the Fienta public REST
+API requires no authentication.
 
 ### External
 

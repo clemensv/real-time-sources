@@ -1,0 +1,152 @@
+# Fienta Public Events Bridge Events
+
+This document describes the CloudEvents emitted by the Fienta Public Events bridge.
+
+- [Com.Fienta](#message-group-comfienta)
+  - [Com.Fienta.Event](#message-comfientaevent)
+  - [Com.Fienta.EventSaleStatus](#message-comfientaeventsalestatus)
+
+---
+
+## Message Group: Com.Fienta
+
+Both event families use the same stable identity model:
+
+- CloudEvents `subject`: `{event_id}`
+- Kafka key: `{event_id}`
+
+The `event_id` comes from the upstream Fienta `id` field.
+
+---
+
+### Message: Com.Fienta.Event
+
+Reference data emitted at startup and refreshed periodically from the public Fienta events listing.
+
+#### CloudEvents Attributes
+
+| Name | Type | Value |
+|---|---|---|
+| `type` | `string` | `Com.Fienta.Event` |
+| `source` | `string` | `https://fienta.com/api/v1/public/events` |
+| `subject` | `uritemplate` | `{event_id}` |
+
+#### Data Schema
+
+| Field | Type | Description |
+|---|---|---|
+| `event_id` | `string` | Stable Fienta event identifier. |
+| `name` | `string` | Public event title from `title`. |
+| `start` | `string` | Local start datetime string from `starts_at`. |
+| `end` | `string \| null` | Local end datetime string from `ends_at`. |
+| `duration_text` | `string \| null` | Human-readable schedule summary from `duration_string`. |
+| `time_notes` | `string \| null` | Organizer-provided timing note from `notes_about_time`. |
+| `event_status` | `string` | Event lifecycle status from `event_status`. |
+| `sale_status` | `string` | Ticket sale status from `sale_status`. |
+| `attendance_mode` | `string \| null` | Attendance mode from `attendance_mode`. |
+| `venue_name` | `string \| null` | Venue or place name from `venue`. |
+| `venue_id` | `string \| null` | Venue identifier from `venue_id`. |
+| `address` | `string \| null` | Venue address from `address`. |
+| `postal_code` | `string \| null` | Postal code from `address_postal_code`. |
+| `description` | `string \| null` | Organizer-provided event description. |
+| `url` | `string` | Public event page URL. |
+| `buy_tickets_url` | `string \| null` | Purchase URL from `buy_tickets_url`. |
+| `image_url` | `string \| null` | Primary event image URL. |
+| `image_small_url` | `string \| null` | Smaller event image rendition URL. |
+| `series_id` | `string \| null` | Upstream series identifier. |
+| `organizer_name` | `string \| null` | Organizer display name. |
+| `organizer_phone` | `string \| null` | Organizer phone number. |
+| `organizer_email` | `string \| null` | Organizer email address. |
+| `organizer_id` | `integer \| null` | Organizer identifier. |
+| `categories` | `array[string] \| null` | Upstream category labels. |
+
+#### Example
+
+```json
+{
+  "specversion": "1.0",
+  "type": "Com.Fienta.Event",
+  "source": "https://fienta.com/api/v1/public/events",
+  "subject": "158921",
+  "datacontenttype": "application/json",
+  "data": {
+    "event_id": "158921",
+    "name": "Fienta Gift Card",
+    "start": "2000-01-01 00:00:00",
+    "end": "2036-01-31 23:59:59",
+    "duration_text": null,
+    "time_notes": null,
+    "event_status": "scheduled",
+    "sale_status": "onSale",
+    "attendance_mode": "offline",
+    "venue_name": "Worldwide",
+    "venue_id": null,
+    "address": null,
+    "postal_code": null,
+    "description": null,
+    "url": "https://fienta.com/fienta-gift-card-kes",
+    "buy_tickets_url": "https://fienta.com/fienta-gift-card-kes",
+    "image_url": "https://fienta.com/cf/img/?width=1070&format=jpeg&gcs=true&file=/org/1/NV0tSHR3g0uOX6U.jpg",
+    "image_small_url": "https://fienta.com/cf/img/?width=690&format=jpeg&gcs=true&file=/org/1/NV0tSHR3g0uOX6U.jpg",
+    "series_id": "fienta-gift-card-kes",
+    "organizer_name": "Fienta",
+    "organizer_phone": "+3726700070",
+    "organizer_email": "hello@fienta.com",
+    "organizer_id": 1,
+    "categories": [
+      "other"
+    ]
+  }
+}
+```
+
+---
+
+### Message: Com.Fienta.EventSaleStatus
+
+Telemetry emitted when the bridge detects that `sale_status` changed between polls.
+
+#### CloudEvents Attributes
+
+| Name | Type | Value |
+|---|---|---|
+| `type` | `string` | `Com.Fienta.EventSaleStatus` |
+| `source` | `string` | `https://fienta.com/api/v1/public/events` |
+| `subject` | `uritemplate` | `{event_id}` |
+
+#### Data Schema
+
+| Field | Type | Description |
+|---|---|---|
+| `event_id` | `string` | Stable Fienta event identifier. |
+| `name` | `string` | Public event title from `title`. |
+| `sale_status` | `string` | Ticket sale status observed during the poll. |
+| `event_status` | `string \| null` | Event lifecycle status from `event_status`. |
+| `start` | `string \| null` | Local start datetime string from `starts_at`. |
+| `end` | `string \| null` | Local end datetime string from `ends_at`. |
+| `url` | `string \| null` | Public event page URL. |
+| `buy_tickets_url` | `string \| null` | Purchase URL from `buy_tickets_url`. |
+| `observed_at` | `string` | RFC 3339 UTC timestamp generated by the bridge when it observed the status change. |
+
+#### Example
+
+```json
+{
+  "specversion": "1.0",
+  "type": "Com.Fienta.EventSaleStatus",
+  "source": "https://fienta.com/api/v1/public/events",
+  "subject": "158921",
+  "datacontenttype": "application/json",
+  "data": {
+    "event_id": "158921",
+    "name": "Fienta Gift Card",
+    "sale_status": "soldOut",
+    "event_status": "scheduled",
+    "start": "2000-01-01 00:00:00",
+    "end": "2036-01-31 23:59:59",
+    "url": "https://fienta.com/fienta-gift-card-kes",
+    "buy_tickets_url": "https://fienta.com/fienta-gift-card-kes",
+    "observed_at": "2026-04-14T06:15:00Z"
+  }
+}
+```
