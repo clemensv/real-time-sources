@@ -7,14 +7,13 @@
     This script is designed to run in Azure Cloud Shell (PowerShell).
     It performs the following steps:
 
-    1. Deploys the ACI + Event Hubs ARM template for a chosen source
-    2. Creates (or reuses) a KQL database in an existing Fabric Eventhouse
-    3. Applies the source's KQL schema script (_cloudevents_dispatch, typed
-       tables, update policies, materialized views)
-    4. Creates a Fabric Event Stream with a Custom Endpoint source that
+    1. Creates (or reuses) a KQL database in an existing Fabric Eventhouse,
+       with the full schema applied via the definition API
+    2. Creates a Fabric Event Stream with a Custom Endpoint source that
        routes into the KQL database's _cloudevents_dispatch table
-    5. Retrieves the Custom Endpoint connection string from the Event Stream
-    6. Updates the ACI container to send data directly to the Event Stream
+    3. Retrieves the Custom Endpoint connection string from the Event Stream
+    4. Deploys the ACI container via ARM template, configured to send
+       data directly to the Fabric Event Stream
 
     Prerequisites:
     - Azure Cloud Shell (PowerShell) with az CLI authenticated
@@ -284,7 +283,7 @@ Write-Host "  Source: $Source" -ForegroundColor White
 $templateUrl = "$RawBase/$Source/azure-template-with-eventhub.json"
 $kqlUrl = "$RawBase/$Source/kql/$($Source -replace '-', '_').kql"
 
-Write-Step "0/7" "Validating source assets in repository..."
+Write-Step "0/6" "Validating source assets in repository..."
 try {
     $null = Invoke-WebRequest -Uri $templateUrl -Method Head -UseBasicParsing
     Write-OK "ARM template found"
@@ -313,61 +312,9 @@ if (-not $CapacityId) {
 }
 Write-OK "Capacity: $CapacityId"
 
-# ── Step 1: Deploy ARM template ─────────────────────────────────────────
+# ── Step 1: Create KQL database with schema ─────────────────────────────
 
-if (-not $SkipArm) {
-    Write-Step "1/7" "Deploying ACI + Event Hubs via ARM template..."
-
-    # Ensure resource group exists
-    $rgExists = az group exists --name $ResourceGroup 2>&1
-    if ($rgExists -eq "false") {
-        if (-not $Location) {
-            throw "Resource group '$ResourceGroup' does not exist. Provide -Location to create it."
-        }
-        az group create --name $ResourceGroup --location $Location | Out-Null
-        Write-OK "Created resource group '$ResourceGroup' in $Location"
-    } else {
-        if (-not $Location) {
-            $Location = (az group show --name $ResourceGroup --query location -o tsv 2>&1).Trim()
-        }
-        Write-OK "Using resource group '$ResourceGroup' in $Location"
-    }
-
-    $deployResult = az deployment group create `
-        --resource-group $ResourceGroup `
-        --template-uri $templateUrl `
-        --parameters containerGroupName=$ContainerGroupName `
-        --query "properties.outputs" `
-        -o json 2>&1
-
-    if ($LASTEXITCODE -ne 0) {
-        throw "ARM deployment failed:`n$deployResult"
-    }
-
-    $outputs = $deployResult | ConvertFrom-Json
-    $ehNamespace = $outputs.eventHubNamespaceName.value
-    $ehName = $outputs.eventHubName.value
-    Write-OK "Deployed: ACI '$ContainerGroupName', Event Hub '$ehNamespace/$ehName'"
-
-    # Retrieve connection string for later use
-    $ehConnStr = az eventhubs eventhub authorization-rule keys list `
-        --resource-group $ResourceGroup `
-        --namespace-name $ehNamespace `
-        --eventhub-name $ehName `
-        --name "bridge-send-listen" `
-        --query "primaryConnectionString" -o tsv 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        throw "Could not retrieve Event Hub connection string:`n$ehConnStr"
-    }
-    Write-OK "Retrieved Event Hub connection string"
-} else {
-    Write-Step "1/7" "Skipping ARM deployment (--SkipArm)"
-    $ehConnStr = $null
-}
-
-# ── Step 2: Create KQL database with schema ─────────────────────────────
-
-Write-Step "2/7" "Setting up KQL database '$DatabaseName' with schema..."
+Write-Step "1/6" "Setting up KQL database '$DatabaseName' with schema..."
 
 $eventhouse = Invoke-FabricApi -Method GET `
     -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
@@ -386,7 +333,7 @@ if ($existingDb) {
     $databaseId = $existingDb.id
     Write-Info "Database already exists (ID: $databaseId)"
     # Apply schema via Kusto REST if possible, or updateDefinition
-    Write-Step "3/7" "Updating KQL schema..."
+    Write-Step "2/6" "Updating KQL schema..."
     try {
         Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName `
             -ScriptContent $kqlContent -Label "$Source.kql"
@@ -472,12 +419,12 @@ if ($existingDb) {
     }
     Write-OK "Database created with schema (ID: $databaseId)"
 
-    Write-Step "3/7" "Schema applied via definition API"
+    Write-Step "2/6" "Schema applied via definition API"
 }
 
 # ── Step 4: Create Fabric Event Stream ──────────────────────────────────
 
-Write-Step "4/7" "Creating Event Stream '$EventStreamName'..."
+Write-Step "3/6" "Creating Event Stream '$EventStreamName'..."
 
 $eventstreams = Invoke-FabricApi -Method GET `
     -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
@@ -504,7 +451,7 @@ if ($existingEs) {
 
 # ── Step 5: Configure Event Stream topology ─────────────────────────────
 
-Write-Step "5/7" "Configuring Event Stream topology..."
+Write-Step "4/6" "Configuring Event Stream topology..."
 
 # Build the Event Stream definition:
 # - Source: Event Hub (from the ARM deployment)
@@ -589,7 +536,7 @@ Write-OK "Event Stream topology configured"
 
 # ── Step 6: Retrieve Custom Endpoint connection string ──────────────────
 
-Write-Step "6/7" "Retrieving Event Stream connection string..."
+Write-Step "5/6" "Retrieving Event Stream connection string..."
 
 # Wait for the Event Stream topology to settle
 Start-Sleep -Seconds 5
@@ -643,44 +590,52 @@ if ($esConnectionString) {
 
 # ── Step 7: Update ACI container with Event Stream connection string ────
 
-if ($esConnectionString -and -not $SkipArm) {
-    Write-Step "7/7" "Updating ACI container to send to Fabric Event Stream..."
+# ── Step 6: Deploy ACI container ─────────────────────────────────────────
 
-    # Delete and recreate the container group with the new connection string.
-    # ACI does not support in-place environment variable updates.
-    $containerInfo = az container show `
-        --resource-group $ResourceGroup `
-        --name $ContainerGroupName `
-        --query "{image:containers[0].image, cpu:containers[0].resources.requests.cpu, memory:containers[0].resources.requests.memoryInGb}" `
-        -o json 2>&1 | ConvertFrom-Json
+if (-not $SkipArm) {
+    Write-Step "6/6" "Deploying ACI container..."
 
-    az container delete `
-        --resource-group $ResourceGroup `
-        --name $ContainerGroupName `
-        --yes 2>&1 | Out-Null
+    # Ensure resource group exists
+    $rgExists = az group exists --name $ResourceGroup 2>&1
+    if ($rgExists -eq "false") {
+        if (-not $Location) {
+            throw "Resource group '$ResourceGroup' does not exist. Provide -Location to create it."
+        }
+        az group create --name $ResourceGroup --location $Location | Out-Null
+        Write-OK "Created resource group '$ResourceGroup' in $Location"
+    } else {
+        if (-not $Location) {
+            $Location = (az group show --name $ResourceGroup --query location -o tsv 2>&1).Trim()
+        }
+        Write-OK "Using resource group '$ResourceGroup' in $Location"
+    }
 
-    az container create `
-        --resource-group $ResourceGroup `
-        --name $ContainerGroupName `
-        --image $containerInfo.image `
-        --cpu $containerInfo.cpu `
-        --memory $containerInfo.memory `
-        --restart-policy Always `
-        --environment-variables LOG_LEVEL=INFO PYTHONUNBUFFERED=1 `
-        --secure-environment-variables CONNECTION_STRING="$esConnectionString" `
-        --os-type Linux `
-        -o none 2>&1
+    if ($esConnectionString) {
+        # Deploy using the container-only ARM template with the Event Stream
+        # connection string — no Event Hub needed
+        $containerTemplateUrl = "$RawBase/$Source/azure-template.json"
+        $deployResult = az deployment group create `
+            --resource-group $ResourceGroup `
+            --template-uri $containerTemplateUrl `
+            --parameters connectionString="$esConnectionString" containerGroupName=$ContainerGroupName `
+            --query "properties.outputs" `
+            -o json 2>&1
+    } else {
+        # No Event Stream connection string — deploy with Event Hub
+        $deployResult = az deployment group create `
+            --resource-group $ResourceGroup `
+            --template-uri $templateUrl `
+            --parameters containerGroupName=$ContainerGroupName `
+            --query "properties.outputs" `
+            -o json 2>&1
+    }
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Warning "ACI update failed. You can manually update the container:"
-        Write-Host "  CONNECTION_STRING='$esConnectionString'" -ForegroundColor DarkGray
-    } else {
-        Write-OK "ACI container updated — now sending to Fabric Event Stream"
+        throw "ARM deployment failed:`n$deployResult"
     }
-} elseif (-not $esConnectionString) {
-    Write-Step "7/7" "Skipping ACI update (connection string not available)"
+    Write-OK "Container deployed: $ContainerGroupName"
 } else {
-    Write-Step "7/7" "Skipping ACI update (--SkipArm)"
+    Write-Step "6/6" "Skipping ARM deployment (--SkipArm)"
 }
 
 # ── Summary ──────────────────────────────────────────────────────────────
@@ -690,7 +645,6 @@ Write-Host ""
 Write-Host "  Azure Resources:" -ForegroundColor White
 if (-not $SkipArm) {
     Write-Host "    Container Group:  $ContainerGroupName" -ForegroundColor Gray
-    Write-Host "    Event Hub:        $ehNamespace/$ehName" -ForegroundColor Gray
 }
 Write-Host ""
 Write-Host "  Fabric Resources:" -ForegroundColor White
@@ -699,11 +653,11 @@ Write-Host "    KQL Database:     $DatabaseName ($databaseId)" -ForegroundColor 
 Write-Host "    Event Stream:     $EventStreamName ($eventstreamId)" -ForegroundColor Gray
 Write-Host ""
 if ($esConnectionString) {
-    Write-Host "  Status: Bridge is running and sending data to Fabric." -ForegroundColor Green
+    Write-Host "  Status: Bridge is sending data to Fabric Event Stream." -ForegroundColor Green
     Write-Host "  Data will appear in the '$DatabaseName' KQL database shortly." -ForegroundColor White
 } else {
-    Write-Host "  Status: Bridge is running and sending data to Event Hubs." -ForegroundColor Yellow
-    Write-Host "  To complete the Fabric integration, retrieve the Event Stream" -ForegroundColor White
-    Write-Host "  connection string from the portal and update the ACI container." -ForegroundColor White
+    Write-Host "  Status: Fabric resources created." -ForegroundColor Yellow
+    Write-Host "  Retrieve the Event Stream connection string from the portal" -ForegroundColor White
+    Write-Host "  and re-run without --SkipArm to deploy the container." -ForegroundColor White
 }
 Write-Host ""
