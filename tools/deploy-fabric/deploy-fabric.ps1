@@ -128,6 +128,24 @@ function Invoke-FabricApi {
     return $null
 }
 
+function Convert-KqlForFabricDefinition {
+    # The Fabric definition API only supports a subset of KQL commands.
+    # Filter out unsupported ones and transform others.
+    param([string]$KqlContent)
+    $lines = $KqlContent -split "`n"
+    $result = @()
+    foreach ($line in $lines) {
+        $trimmed = $line.Trim()
+        if ($trimmed -match '^\.(alter\s+table\s+\[?\w+\]?\s+(docstring|column-docstrings)\s)') { continue }
+        if ($trimmed -match '^\.(drop\s+materialized-view\s)') { continue }
+        if ($trimmed -match '^\.(create\s+materialized-view\s)') {
+            $line = $line -replace '\.create\s+materialized-view\s', '.create-or-alter materialized-view '
+        }
+        $result += $line
+    }
+    return $result -join "`n"
+}
+
 function Invoke-KqlScript {
     param(
         [string]$QueryUri,
@@ -135,9 +153,8 @@ function Invoke-KqlScript {
         [string]$ScriptContent,
         [string]$Label
     )
-    Write-Host "  Applying $Label..." -ForegroundColor Yellow
+    Write-Host "  Applying $Label via Kusto REST..." -ForegroundColor Yellow
 
-    # First try direct REST with a Kusto token (works outside Cloud Shell)
     $kustoToken = $null
     foreach ($aud in @("https://kusto.kusto.windows.net", "https://kusto.fabric.microsoft.com")) {
         try {
@@ -150,74 +167,29 @@ function Invoke-KqlScript {
         if ($LASTEXITCODE -eq 0 -and $t -and $t.Length -gt 100) { $kustoToken = $t.Trim(); break }
     }
 
-    if ($kustoToken) {
-        # Direct REST call with token
-        $body = @{
-            csl = ".execute database script <|`n$ScriptContent"
-            db  = $Database
-        }
-        $headers = @{
-            "Authorization" = "Bearer $kustoToken"
-            "Content-Type"  = "application/json"
-        }
-        $result = Invoke-RestMethod `
-            -Uri "$QueryUri/v1/rest/mgmt" `
-            -Method Post -Headers $headers `
-            -Body ($body | ConvertTo-Json -Compress) `
-            -TimeoutSec 120
+    if (-not $kustoToken) {
+        throw "Cannot get Kusto token to apply additional schema commands."
+    }
 
-        $rows = @()
-        if ($result.Tables.Count -gt 0) { $rows = $result.Tables[0].Rows }
-        $failed = @($rows | Where-Object { $_[3] -ne "Completed" })
-        if ($failed.Count -gt 0) {
-            Write-Warning "Some KQL commands reported non-Completed status for $Label"
-        }
-    } else {
-        # Cloud Shell MSI cannot get Kusto tokens. Use the Fabric control
-        # plane API (updateDefinition) which accepts the DatabaseSchema.kql
-        # as a definition part. This uses api.fabric.microsoft.com which IS
-        # a supported MSI audience.
-        Write-Host "  Using Fabric API to apply KQL schema..." -ForegroundColor Gray
-        $schemaBase64 = [Convert]::ToBase64String(
-            [System.Text.Encoding]::UTF8.GetBytes($ScriptContent)
-        )
-        $dbProps = @{
-            databaseType = "ReadWrite"
-            parentEventhouseItemId = $EventhouseId
-        }
-        $dbPropsBase64 = [Convert]::ToBase64String(
-            [System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress))
-        )
-        $updateBody = @{
-            definition = @{
-                parts = @(
-                    @{
-                        path        = "DatabaseProperties.json"
-                        payload     = $dbPropsBase64
-                        payloadType = "InlineBase64"
-                    },
-                    @{
-                        path        = "DatabaseSchema.kql"
-                        payload     = $schemaBase64
-                        payloadType = "InlineBase64"
-                    }
-                )
-            }
-        }
-        $updateFile = Join-Path $TempDir "kql_def_$(Get-Random).json"
-        [System.IO.File]::WriteAllText(
-            $updateFile,
-            ($updateBody | ConvertTo-Json -Depth 10 -Compress),
-            [System.Text.UTF8Encoding]::new($false)
-        )
+    $body = @{
+        csl = ".execute database script <|`n$ScriptContent"
+        db  = $Database
+    }
+    $headers = @{
+        "Authorization" = "Bearer $kustoToken"
+        "Content-Type"  = "application/json"
+    }
+    $result = Invoke-RestMethod `
+        -Uri "$QueryUri/v1/rest/mgmt" `
+        -Method Post -Headers $headers `
+        -Body ($body | ConvertTo-Json -Compress) `
+        -TimeoutSec 120
 
-        Invoke-FabricApi -Method POST `
-            -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" `
-            -Body ([System.IO.File]::ReadAllText($updateFile))
-
-        # updateDefinition is async — wait for schema to propagate
-        Write-Host "  Waiting for schema to apply..." -ForegroundColor Gray
-        Start-Sleep -Seconds 15
+    $rows = @()
+    if ($result.Tables.Count -gt 0) { $rows = $result.Tables[0].Rows }
+    $failed = @($rows | Where-Object { $_[3] -ne "Completed" })
+    if ($failed.Count -gt 0) {
+        Write-Warning "Some KQL commands reported non-Completed status for $Label"
     }
     Write-OK "Applied $Label"
 }
@@ -393,9 +365,9 @@ if (-not $SkipArm) {
     $ehConnStr = $null
 }
 
-# ── Step 2: Verify Fabric Eventhouse & create KQL database ──────────────
+# ── Step 2: Create KQL database with schema ─────────────────────────────
 
-Write-Step "2/7" "Setting up KQL database '$DatabaseName' in Fabric..."
+Write-Step "2/7" "Setting up KQL database '$DatabaseName' with schema..."
 
 $eventhouse = Invoke-FabricApi -Method GET `
     -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
@@ -406,49 +378,102 @@ $databases = Invoke-FabricApi -Method GET `
     -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
 $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
 
+# Fetch and filter the KQL script for Fabric definition API compatibility
+$kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
+$filteredKql = Convert-KqlForFabricDefinition $kqlContent
+
 if ($existingDb) {
     $databaseId = $existingDb.id
     Write-Info "Database already exists (ID: $databaseId)"
+    # Apply schema via Kusto REST if possible, or updateDefinition
+    Write-Step "3/7" "Updating KQL schema..."
+    try {
+        Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName `
+            -ScriptContent $kqlContent -Label "$Source.kql"
+    } catch {
+        # Kusto REST failed (e.g. Cloud Shell) — use updateDefinition API
+        Write-Host "  Falling back to Fabric definition API..." -ForegroundColor Yellow
+        $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
+        $dbProps = @{
+            databaseType = "ReadWrite"
+            parentEventhouseItemId = $EventhouseId
+            oneLakeCachingPeriod = "P36500D"
+            oneLakeStandardStoragePeriod = "P36500D"
+        }
+        $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
+        $updateBody = @{
+            definition = @{
+                parts = @(
+                    @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
+                    @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
+                )
+            }
+        }
+        Invoke-FabricApi -Method POST `
+            -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" `
+            -Body $updateBody
+        Write-Host "  Waiting for schema to apply..." -ForegroundColor Gray
+        Start-Sleep -Seconds 30
+        Write-OK "Schema update submitted"
+    }
 } else {
-    $dbResult = Invoke-FabricApi -Method POST `
-        -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" `
-        -Body @{
-            displayName    = $DatabaseName
-            creationPayload = @{
-                databaseType           = "ReadWrite"
-                parentEventhouseItemId = $EventhouseId
-            }
-        }
-    if ($dbResult -and $dbResult.id) {
-        $databaseId = $dbResult.id
-    } else {
-        # Creation is async — poll until the database appears
-        $databaseId = $null
-        for ($i = 0; $i -lt 12; $i++) {
-            Start-Sleep -Seconds 5
-            $databases = Invoke-FabricApi -Method GET `
-                -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
-            $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
-            if ($existingDb -and $existingDb.id) {
-                $databaseId = $existingDb.id
-                break
-            }
-            Write-Host "  Waiting for database provisioning... ($([int](($i+1)*5))s)" -ForegroundColor Gray
-        }
-        if (-not $databaseId) {
-            throw "Database '$DatabaseName' was not found after 60 seconds. Check the Fabric portal."
+    # Create database with schema in a single call via the definition API
+    $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
+    $dbProps = @{
+        databaseType = "ReadWrite"
+        parentEventhouseItemId = $EventhouseId
+        oneLakeCachingPeriod = "P36500D"
+        oneLakeStandardStoragePeriod = "P36500D"
+    }
+    $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
+
+    $createBody = @{
+        displayName = $DatabaseName
+        definition = @{
+            parts = @(
+                @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
+                @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
+            )
         }
     }
-    Write-OK "Database created (ID: $databaseId)"
+    $createFile = Join-Path $TempDir "kql_create_$(Get-Random).json"
+    [System.IO.File]::WriteAllText(
+        $createFile,
+        ($createBody | ConvertTo-Json -Depth 10 -Compress),
+        [System.Text.UTF8Encoding]::new($false)
+    )
+
+    Write-Host "  Creating database with schema definition..." -ForegroundColor Gray
+    $createResult = az rest --method POST `
+        --url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" `
+        --resource "https://api.fabric.microsoft.com" `
+        --body "@$createFile" `
+        --headers "Content-Type=application/json" 2>&1
+
+    if ($LASTEXITCODE -ne 0 -and ($createResult | Out-String) -notmatch "202") {
+        throw "Failed to create database:`n$createResult"
+    }
+
+    # Poll for completion
+    $databaseId = $null
+    for ($i = 0; $i -lt 18; $i++) {
+        Start-Sleep -Seconds 10
+        $databases = Invoke-FabricApi -Method GET `
+            -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+        $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+        if ($existingDb -and $existingDb.id) {
+            $databaseId = $existingDb.id
+            break
+        }
+        Write-Host "  Provisioning... ($([int](($i+1)*10))s)" -ForegroundColor Gray
+    }
+    if (-not $databaseId) {
+        throw "Database '$DatabaseName' was not found after 180 seconds."
+    }
+    Write-OK "Database created with schema (ID: $databaseId)"
+
+    Write-Step "3/7" "Schema applied via definition API"
 }
-
-# ── Step 3: Apply KQL schema ────────────────────────────────────────────
-
-Write-Step "3/7" "Applying KQL schema from $Source..."
-
-$kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
-Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName `
-    -ScriptContent $kqlContent -Label "$Source.kql"
 
 # ── Step 4: Create Fabric Event Stream ──────────────────────────────────
 
