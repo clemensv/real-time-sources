@@ -63,10 +63,9 @@ param(
     [string]$SubscriptionId,
 
     [Parameter(Mandatory = $true)]
-    [string]$WorkspaceId,
+    [string]$Workspace,
 
-    [Parameter(Mandatory = $true)]
-    [string]$EventhouseId,
+    [string]$Eventhouse,
 
     [string]$DatabaseName,
 
@@ -89,6 +88,7 @@ if ($SubscriptionId) {
 }
 
 if (-not $DatabaseName) { $DatabaseName = $Source -replace '-', '_' }
+if ([string]::IsNullOrWhiteSpace($Eventhouse)) { $Eventhouse = $Source -replace '-', '_' }
 $EventStreamName = "$Source-ingest"
 $StreamName = "$EventStreamName-stream"
 $ContainerGroupName = $Source
@@ -276,352 +276,203 @@ try {
     }
 }
 
-# Look up the capacity ID from the workspace
+
+# Resolve workspace: accept name or GUID
+$guidRx = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+if ($Workspace -match $guidRx) {
+    $WorkspaceId = $Workspace
+} else {
+    $allWs = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces"
+    $ws = $allWs.value | Where-Object { $_.displayName -eq $Workspace } | Select-Object -First 1
+    if (-not $ws) { throw "Workspace '$Workspace' not found." }
+    $WorkspaceId = $ws.id
+}
 $wsInfo = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
 $CapacityId = $wsInfo.capacityId
-if (-not $CapacityId) {
-    throw "Could not determine capacity ID for workspace $WorkspaceId"
-}
-Write-OK "Capacity: $CapacityId"
+if (-not $CapacityId) { throw "Could not determine capacity ID for workspace '$($wsInfo.displayName)'" }
+Write-OK "Workspace: $($wsInfo.displayName) ($WorkspaceId)"
 
-# ── Step 1: Deploy ARM template ─────────────────────────────────────────
-
-if (-not $SkipArm) {
-    Write-Step "1/7" "Deploying ACI + Event Hubs via ARM template..."
-
-    # Ensure resource group exists
-    $rgExists = az group exists --name $ResourceGroup 2>&1
-    if ($rgExists -eq "false") {
-        if (-not $Location) {
-            throw "Resource group '$ResourceGroup' does not exist. Provide -Location to create it."
-        }
-        az group create --name $ResourceGroup --location $Location | Out-Null
-        Write-OK "Created resource group '$ResourceGroup' in $Location"
-    } else {
-        if (-not $Location) {
-            $Location = (az group show --name $ResourceGroup --query location -o tsv 2>&1).Trim()
-        }
-        Write-OK "Using resource group '$ResourceGroup' in $Location"
-    }
-
-    $deployResult = az deployment group create `
-        --resource-group $ResourceGroup `
-        --template-uri $templateUrl `
-        --parameters containerGroupName=$ContainerGroupName `
-        --query "properties.outputs" `
-        -o json 2>&1
-
-    if ($LASTEXITCODE -ne 0) {
-        throw "ARM deployment failed:`n$deployResult"
-    }
-
-    $outputs = $deployResult | ConvertFrom-Json
-    $ehNamespace = $outputs.eventHubNamespaceName.value
-    $ehName = $outputs.eventHubName.value
-    Write-OK "Deployed: ACI '$ContainerGroupName', Event Hub '$ehNamespace/$ehName'"
-
-    # Retrieve connection string for later use
-    $ehConnStr = az eventhubs eventhub authorization-rule keys list `
-        --resource-group $ResourceGroup `
-        --namespace-name $ehNamespace `
-        --eventhub-name $ehName `
-        --name "bridge-send-listen" `
-        --query "primaryConnectionString" -o tsv 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        throw "Could not retrieve Event Hub connection string:`n$ehConnStr"
-    }
-    Write-OK "Retrieved Event Hub connection string"
+# Resolve eventhouse: accept name, GUID, or blank (auto-create)
+$eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
+if ($Eventhouse -match $guidRx) {
+    $EventhouseId = $Eventhouse
+    $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
 } else {
-    Write-Step "1/7" "Skipping ARM deployment (--SkipArm)"
-    $ehConnStr = $null
+    $eventhouse = $eventhouses.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
+    if ($eventhouse) {
+        $EventhouseId = $eventhouse.id
+        $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+    } else {
+        Write-Host "  Creating Eventhouse '$Eventhouse'..." -ForegroundColor Yellow
+        Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses" -Body @{ displayName = $Eventhouse } | Out-Null
+        $EventhouseId = $null
+        for ($i = 0; $i -lt 12; $i++) {
+            Start-Sleep -Seconds 5
+            $eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
+            $eh = $eventhouses.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
+            if ($eh) { $EventhouseId = $eh.id; break }
+            Write-Host "  Waiting for Eventhouse... ($([int](($i+1)*5))s)" -ForegroundColor Gray
+        }
+        if (-not $EventhouseId) { throw "Failed to create Eventhouse '$Eventhouse'." }
+        $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+        Write-OK "Eventhouse created: $($eventhouse.displayName)"
+    }
 }
-
-# ── Step 2: Verify Fabric Eventhouse & create KQL database ──────────────
-
-Write-Step "2/7" "Setting up KQL database '$DatabaseName' in Fabric..."
-
-$eventhouse = Invoke-FabricApi -Method GET `
-    -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
-Write-OK "Eventhouse: $($eventhouse.displayName)"
+Write-OK "Eventhouse: $($eventhouse.displayName) ($EventhouseId)"
 $queryUri = $eventhouse.properties.queryServiceUri
 
-$databases = Invoke-FabricApi -Method GET `
-    -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+#  Step 1: Create KQL database with schema 
+
+Write-Step "1/6" "Setting up KQL database '$DatabaseName' with schema..."
+
+$databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
 $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+
+$kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
+$filteredKql = Convert-KqlForFabricDefinition $kqlContent
 
 if ($existingDb) {
     $databaseId = $existingDb.id
     Write-Info "Database already exists (ID: $databaseId)"
-} else {
-    $dbResult = Invoke-FabricApi -Method POST `
-        -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" `
-        -Body @{
-            displayName    = $DatabaseName
-            creationPayload = @{
-                databaseType           = "ReadWrite"
-                parentEventhouseItemId = $EventhouseId
-            }
-        }
-    if ($dbResult -and $dbResult.id) {
-        $databaseId = $dbResult.id
-    } else {
-        # Creation is async — poll until the database appears
-        $databaseId = $null
-        for ($i = 0; $i -lt 12; $i++) {
-            Start-Sleep -Seconds 5
-            $databases = Invoke-FabricApi -Method GET `
-                -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
-            $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
-            if ($existingDb -and $existingDb.id) {
-                $databaseId = $existingDb.id
-                break
-            }
-            Write-Host "  Waiting for database provisioning... ($([int](($i+1)*5))s)" -ForegroundColor Gray
-        }
-        if (-not $databaseId) {
-            throw "Database '$DatabaseName' was not found after 60 seconds. Check the Fabric portal."
-        }
+    Write-Step "2/6" "Updating KQL schema..."
+    try {
+        Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent -Label "$Source.kql"
+    } catch {
+        Write-Host "  Falling back to Fabric definition API..." -ForegroundColor Yellow
+        $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
+        $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
+        $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
+        Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" -Body @{ definition = @{ parts = @(
+            @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
+            @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
+        )}}
+        Start-Sleep -Seconds 30
+        Write-OK "Schema update submitted"
     }
-    Write-OK "Database created (ID: $databaseId)"
+} else {
+    $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
+    $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
+    $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
+    $createBody = @{ displayName = $DatabaseName; definition = @{ parts = @(
+        @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
+        @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
+    )}}
+    $createFile = Join-Path $TempDir "kql_create_$(Get-Random).json"
+    [System.IO.File]::WriteAllText($createFile, ($createBody | ConvertTo-Json -Depth 10 -Compress), [System.Text.UTF8Encoding]::new($false))
+    Write-Host "  Creating database with schema definition..." -ForegroundColor Gray
+    az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" --resource "https://api.fabric.microsoft.com" --body "@$createFile" --headers "Content-Type=application/json" 2>&1 | Out-Null
+    $databaseId = $null
+    for ($i = 0; $i -lt 18; $i++) {
+        Start-Sleep -Seconds 10
+        $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+        $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+        if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
+        Write-Host "  Provisioning... ($([int](($i+1)*10))s)" -ForegroundColor Gray
+    }
+    if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 180 seconds." }
+    Write-OK "Database created with schema (ID: $databaseId)"
+    Write-Step "2/6" "Schema applied via definition API"
 }
 
-# ── Step 3: Apply KQL schema ────────────────────────────────────────────
+#  Step 3: Create Fabric Event Stream 
 
-Write-Step "3/7" "Applying KQL schema from $Source..."
-
-$kqlContent = (Invoke-WebRequest -Uri $kqlUrl -UseBasicParsing).Content
-Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName `
-    -ScriptContent $kqlContent -Label "$Source.kql"
-
-# ── Step 4: Create Fabric Event Stream ──────────────────────────────────
-
-Write-Step "4/7" "Creating Event Stream '$EventStreamName'..."
-
-$eventstreams = Invoke-FabricApi -Method GET `
-    -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+Write-Step "3/6" "Creating Event Stream '$EventStreamName'..."
+$eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
 $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
-
 if ($existingEs) {
     $eventstreamId = $existingEs.id
     Write-Info "Event Stream already exists (ID: $eventstreamId)"
 } else {
-    $esResult = Invoke-FabricApi -Method POST `
-        -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams" `
-        -Body @{ displayName = $EventStreamName }
-    if ($esResult -and $esResult.id) {
-        $eventstreamId = $esResult.id
-    } else {
+    $esResult = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Body @{ displayName = $EventStreamName }
+    if ($esResult -and $esResult.id) { $eventstreamId = $esResult.id }
+    else {
         Start-Sleep -Seconds 5
-        $eventstreams = Invoke-FabricApi -Method GET `
-            -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+        $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
         $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
         $eventstreamId = $existingEs.id
     }
     Write-OK "Event Stream created (ID: $eventstreamId)"
 }
 
-# ── Step 5: Configure Event Stream topology ─────────────────────────────
+#  Step 4: Configure Event Stream topology ─
 
-Write-Step "5/7" "Configuring Event Stream topology..."
-
-# Build the Event Stream definition:
-# - Source: Event Hub (from the ARM deployment)
-# - Stream: default pass-through
-# - Destination: Eventhouse _cloudevents_dispatch table
+Write-Step "4/6" "Configuring Event Stream topology..."
 $sourceNodeName = "$Source-input"
-
-$eventstreamDef = @{
-    compatibilityLevel = "1.1"
-    sources = @(
-        @{
-            name       = $sourceNodeName
-            type       = "CustomEndpoint"
-            properties = @{}
-        }
-    )
-    streams = @(
-        @{
-            name       = $StreamName
-            type       = "DefaultStream"
-            properties = @{}
-            inputNodes = @(
-                @{ name = $sourceNodeName }
-            )
-        }
-    )
-    destinations = @(
-        @{
-            name       = "dispatch-kql"
-            type       = "Eventhouse"
-            properties = @{
-                dataIngestionMode  = "ProcessedIngestion"
-                workspaceId        = $WorkspaceId
-                itemId             = $databaseId
-                databaseName       = $DatabaseName
-                tableName          = "_cloudevents_dispatch"
-                inputSerialization = @{
-                    type       = "Json"
-                    properties = @{ encoding = "UTF8" }
-                }
-            }
-            inputNodes = @(
-                @{ name = $StreamName }
-            )
-        }
-    )
+$esDef = @{ compatibilityLevel = "1.1"
+    sources = @(@{ name = $sourceNodeName; type = "CustomEndpoint"; properties = @{} })
+    streams = @(@{ name = $StreamName; type = "DefaultStream"; properties = @{}; inputNodes = @(@{ name = $sourceNodeName }) })
+    destinations = @(@{ name = "dispatch-kql"; type = "Eventhouse"; properties = @{
+        dataIngestionMode = "ProcessedIngestion"; workspaceId = $WorkspaceId; itemId = $databaseId
+        databaseName = $DatabaseName; tableName = "_cloudevents_dispatch"
+        inputSerialization = @{ type = "Json"; properties = @{ encoding = "UTF8" } }
+    }; inputNodes = @(@{ name = $StreamName }) })
 }
-
-$eventstreamJson = $eventstreamDef | ConvertTo-Json -Depth 20
-$eventstreamBase64 = [Convert]::ToBase64String(
-    [System.Text.Encoding]::UTF8.GetBytes($eventstreamJson)
-)
-$updateRequest = @{
-    definition = @{
-        parts = @(
-            @{
-                path        = "eventstream.json"
-                payload     = $eventstreamBase64
-                payloadType = "InlineBase64"
-            }
-        )
-    }
-}
-$updateFile = Join-Path $env:TEMP "es_update_$(Get-Random).json"
-[System.IO.File]::WriteAllText(
-    $updateFile,
-    ($updateRequest | ConvertTo-Json -Depth 20 -Compress),
-    [System.Text.UTF8Encoding]::new($false)
-)
-
-$updateResult = az rest `
-    --method POST `
-    --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" `
-    --resource "https://api.fabric.microsoft.com" `
-    --body "@$updateFile" `
-    --headers "Content-Type=application/json" 2>&1
-
-if ($LASTEXITCODE -ne 0) {
-    throw "Failed to update Event Stream definition`n$updateResult"
-}
+$esBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($esDef | ConvertTo-Json -Depth 20)))
+$updateReq = @{ definition = @{ parts = @(@{ path = "eventstream.json"; payload = $esBase64; payloadType = "InlineBase64" }) } }
+$updateFile = Join-Path $TempDir "es_update_$(Get-Random).json"
+[System.IO.File]::WriteAllText($updateFile, ($updateReq | ConvertTo-Json -Depth 20 -Compress), [System.Text.UTF8Encoding]::new($false))
+az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) { throw "Failed to update Event Stream definition" }
 Write-OK "Event Stream topology configured"
 
-# ── Step 6: Retrieve Custom Endpoint connection string ──────────────────
+#  Step 5: Retrieve Custom Endpoint connection string 
 
-Write-Step "6/7" "Retrieving Event Stream connection string..."
-
-# Wait for the Event Stream topology to settle
+Write-Step "5/6" "Retrieving Event Stream connection string..."
 Start-Sleep -Seconds 5
-
 $esConnectionString = $null
 try {
-    # Discover Fabric cluster and obtain workload token
     $cluster = Get-FabricClusterUrl
-    $mwc = Get-FabricMwcToken `
-        -ClusterUrl $cluster.ClusterUrl `
-        -AadToken $cluster.AadToken `
-        -WsId $WorkspaceId `
-        -CapId $CapacityId `
-        -EventStreamId $eventstreamId
-
-    # Get the Event Stream topology to find the Custom Endpoint datasource ID
-    $topology = $null
-    $topologyRaw = az rest --method GET `
-        --uri "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/topology" `
-        --resource "https://api.fabric.microsoft.com" 2>$null
+    $mwc = Get-FabricMwcToken -ClusterUrl $cluster.ClusterUrl -AadToken $cluster.AadToken -WsId $WorkspaceId -CapId $CapacityId -EventStreamId $eventstreamId
+    $topologyRaw = az rest --method GET --uri "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/topology" --resource "https://api.fabric.microsoft.com" 2>$null
     if ($topologyRaw) {
         $topology = $topologyRaw | ConvertFrom-Json
-    }
-
-    if ($topology) {
         $inputSource = $topology.sources | Where-Object { $_.type -eq "CustomEndpoint" } | Select-Object -First 1
         if ($inputSource) {
             Write-Host "  Datasource ID: $($inputSource.id)" -ForegroundColor Gray
-            $esConnectionString = Get-EventStreamConnectionString `
-                -WsId $WorkspaceId `
-                -CapId $CapacityId `
-                -EventStreamId $eventstreamId `
-                -DatasourceId $inputSource.id `
-                -MwcToken $mwc.Token `
-                -TargetUriHost $mwc.TargetUriHost
+            $esConnectionString = Get-EventStreamConnectionString -WsId $WorkspaceId -CapId $CapacityId -EventStreamId $eventstreamId -DatasourceId $inputSource.id -MwcToken $mwc.Token -TargetUriHost $mwc.TargetUriHost
         }
     }
-} catch {
-    Write-Warning "Could not retrieve connection string automatically: $_"
-}
-
-if ($esConnectionString) {
-    Write-OK "Event Stream connection string retrieved"
-} else {
+} catch { Write-Warning "Could not retrieve connection string: $_" }
+if ($esConnectionString) { Write-OK "Event Stream connection string retrieved" }
+else {
     Write-Warning "Could not retrieve the connection string automatically."
-    Write-Host "  You can retrieve it manually from the Fabric portal:" -ForegroundColor White
-    Write-Host "    1. Open Event Stream '$EventStreamName'" -ForegroundColor White
-    Write-Host "    2. Click the Custom Endpoint source node" -ForegroundColor White
-    Write-Host "    3. Copy the connection string" -ForegroundColor White
+    Write-Host "  Retrieve it from the Fabric portal: Event Stream '$EventStreamName' > Custom Endpoint" -ForegroundColor White
 }
 
-# ── Step 7: Update ACI container with Event Stream connection string ────
+#  Step 6: Deploy ACI container ─
 
-if ($esConnectionString -and -not $SkipArm) {
-    Write-Step "7/7" "Updating ACI container to send to Fabric Event Stream..."
-
-    # Delete and recreate the container group with the new connection string.
-    # ACI does not support in-place environment variable updates.
-    $containerInfo = az container show `
-        --resource-group $ResourceGroup `
-        --name $ContainerGroupName `
-        --query "{image:containers[0].image, cpu:containers[0].resources.requests.cpu, memory:containers[0].resources.requests.memoryInGb}" `
-        -o json 2>&1 | ConvertFrom-Json
-
-    az container delete `
-        --resource-group $ResourceGroup `
-        --name $ContainerGroupName `
-        --yes 2>&1 | Out-Null
-
-    az container create `
-        --resource-group $ResourceGroup `
-        --name $ContainerGroupName `
-        --image $containerInfo.image `
-        --cpu $containerInfo.cpu `
-        --memory $containerInfo.memory `
-        --restart-policy Always `
-        --environment-variables LOG_LEVEL=INFO PYTHONUNBUFFERED=1 `
-        --secure-environment-variables CONNECTION_STRING="$esConnectionString" `
-        --os-type Linux `
-        -o none 2>&1
-
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning "ACI update failed. You can manually update the container:"
-        Write-Host "  CONNECTION_STRING='$esConnectionString'" -ForegroundColor DarkGray
+if (-not $SkipArm) {
+    Write-Step "6/6" "Deploying ACI container..."
+    $rgExists = az group exists --name $ResourceGroup 2>&1
+    if ($rgExists -eq "false") {
+        if (-not $Location) { throw "Resource group '$ResourceGroup' does not exist. Provide -Location to create it." }
+        az group create --name $ResourceGroup --location $Location | Out-Null
+        Write-OK "Created resource group '$ResourceGroup' in $Location"
     } else {
-        Write-OK "ACI container updated — now sending to Fabric Event Stream"
+        if (-not $Location) { $Location = (az group show --name $ResourceGroup --query location -o tsv 2>&1).Trim() }
+        Write-OK "Using resource group '$ResourceGroup' in $Location"
     }
-} elseif (-not $esConnectionString) {
-    Write-Step "7/7" "Skipping ACI update (connection string not available)"
+    if ($esConnectionString) {
+        $containerTemplateUrl = "$RawBase/$Source/azure-template.json"
+        az deployment group create --resource-group $ResourceGroup --template-uri $containerTemplateUrl --parameters connectionString="$esConnectionString" containerGroupName=$ContainerGroupName -o none 2>&1 | Out-Null
+    } else {
+        az deployment group create --resource-group $ResourceGroup --template-uri $templateUrl --parameters containerGroupName=$ContainerGroupName -o none 2>&1 | Out-Null
+    }
+    if ($LASTEXITCODE -ne 0) { throw "ARM deployment failed" }
+    Write-OK "Container deployed: $ContainerGroupName"
 } else {
-    Write-Step "7/7" "Skipping ACI update (--SkipArm)"
+    Write-Step "6/6" "Skipping ARM deployment (--SkipArm)"
 }
 
-# ── Summary ──────────────────────────────────────────────────────────────
+#  Summary ─
 
 Write-Host "`n=== Deployment Complete ===" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "  Azure Resources:" -ForegroundColor White
-if (-not $SkipArm) {
-    Write-Host "    Container Group:  $ContainerGroupName" -ForegroundColor Gray
-    Write-Host "    Event Hub:        $ehNamespace/$ehName" -ForegroundColor Gray
-}
+if (-not $SkipArm) { Write-Host "  Container: $ContainerGroupName (in $ResourceGroup)" -ForegroundColor Gray }
+Write-Host "  Eventhouse: $($eventhouse.displayName)" -ForegroundColor Gray
+Write-Host "  KQL Database: $DatabaseName ($databaseId)" -ForegroundColor Gray
+Write-Host "  Event Stream: $EventStreamName ($eventstreamId)" -ForegroundColor Gray
 Write-Host ""
-Write-Host "  Fabric Resources:" -ForegroundColor White
-Write-Host "    Eventhouse:       $($eventhouse.displayName)" -ForegroundColor Gray
-Write-Host "    KQL Database:     $DatabaseName ($databaseId)" -ForegroundColor Gray
-Write-Host "    Event Stream:     $EventStreamName ($eventstreamId)" -ForegroundColor Gray
-Write-Host ""
-if ($esConnectionString) {
-    Write-Host "  Status: Bridge is running and sending data to Fabric." -ForegroundColor Green
-    Write-Host "  Data will appear in the '$DatabaseName' KQL database shortly." -ForegroundColor White
-} else {
-    Write-Host "  Status: Bridge is running and sending data to Event Hubs." -ForegroundColor Yellow
-    Write-Host "  To complete the Fabric integration, retrieve the Event Stream" -ForegroundColor White
-    Write-Host "  connection string from the portal and update the ACI container." -ForegroundColor White
-}
+if ($esConnectionString) { Write-Host "  Status: Bridge is sending data to Fabric Event Stream." -ForegroundColor Green }
+else { Write-Host "  Status: Fabric resources created. Retrieve connection string from portal." -ForegroundColor Yellow }
 Write-Host ""
