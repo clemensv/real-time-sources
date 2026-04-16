@@ -267,10 +267,10 @@ async function openDeployForm(source, mode) {
   // Fabric section
   const fabSection = el("div", { class: "form-section" });
   fabSection.innerHTML = '<div class="form-section-title">Microsoft Fabric</div>';
-  fabSection.appendChild(makeField("workspaceId", "Workspace ID", "text",
-    "", "Fabric workspace GUID", true));
-  fabSection.appendChild(makeField("eventhouseId", "Eventhouse ID", "text",
-    "", "Fabric Eventhouse GUID", true));
+  fabSection.appendChild(makeField("workspace", "Workspace", "text",
+    "", "Fabric workspace name or GUID", true));
+  fabSection.appendChild(makeField("eventhouse", "Eventhouse", "text",
+    "", "Fabric Eventhouse name or GUID (leave blank to create new)", false));
   fabSection.appendChild(makeField("databaseName", "KQL Database Name", "text",
     source.id.replace(/-/g, "_"), "Name for the KQL database", false));
   $deployForm.appendChild(fabSection);
@@ -326,10 +326,10 @@ function launchCloudShell(source, mode) {
   if (!loc) { alert("Location is required."); return; }
 
   if (mode === "fabric") {
-    const wsId = getValue("workspaceId");
-    const ehId = getValue("eventhouseId");
-    if (!wsId || !ehId) {
-      alert("Workspace ID and Eventhouse ID are required for Fabric deployment.");
+    const ws = getValue("workspace");
+    const eh = getValue("eventhouse");
+    if (!ws) {
+      alert("Workspace is required for Fabric deployment.");
       return;
     }
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
@@ -340,9 +340,9 @@ function launchCloudShell(source, mode) {
       + ` -ResourceGroup '${rg}'`
       + ` -Location '${loc}'`;
     if (subId) cmd += ` -SubscriptionId '${subId}'`;
-    cmd += ` -WorkspaceId '${wsId}'`
-      + ` -EventhouseId '${ehId}'`
-      + ` -DatabaseName '${dbName}'`;
+    cmd += ` -Workspace '${ws}'`;
+    if (eh) cmd += ` -Eventhouse '${eh}'`;
+    cmd += ` -DatabaseName '${dbName}'`;
 
     navigator.clipboard.writeText(cmd).then(() => {
       showDeployNotice("PowerShell command copied to clipboard. Paste it into the Cloud Shell tab.");
