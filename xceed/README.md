@@ -52,6 +52,21 @@ upcoming event offers instead of getting stuck in the historical archive.
 
 See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
 
+## Public Filter Surface
+
+Unlike Ticketmaster and Billetto, the public Xceed `/events` endpoint does not
+present a meaningful set of semantic event filters in live probing. The
+documented and observed upstream query controls are pagination-oriented:
+
+| Upstream query param | Bridge surface | Meaning |
+|---|---|---|
+| `limit` | `--event-page-size` / `EVENT_PAGE_SIZE` | Number of events requested per `/events` page |
+| `offset` | internal | Pagination cursor the bridge advances automatically |
+
+Live probes against `city`, `country`, and `slug` query params returned the same
+unfiltered result set, so the bridge does **not** expose those as operator
+filters.
+
 ## Source Files
 
 | File | Description |

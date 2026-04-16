@@ -380,6 +380,8 @@ class TestFeedOneCycle:
                 topic="xceed",
                 polling_interval=1,
                 event_refresh_interval=9999,
+                event_window_size=25,
+                event_page_size=5,
             )
 
             # Stop after first polling cycle completes
@@ -395,6 +397,7 @@ class TestFeedOneCycle:
 
         # Verify events were emitted via event_producer
         assert fake_event_prod.send_xceed_event.call_count == 2
+        MockAPI.assert_called_once_with(event_window_size=25, event_page_size=5)
 
         # Verify admissions were emitted via admissions_producer
         assert fake_adm_prod.send_xceed_event_admission.call_count == 2
@@ -427,6 +430,8 @@ class TestFeedOneCycle:
                 topic="xceed",
                 polling_interval=1,
                 event_refresh_interval=9999,
+                event_window_size=None,
+                event_page_size=None,
             )
 
             def stop_after_first(*a, **kw):

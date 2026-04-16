@@ -27,6 +27,7 @@ described in [EVENTS.md](EVENTS.md).
 | `POLLING_INTERVAL` | No | `300` | Admission polling interval in seconds. |
 | `EVENT_REFRESH_INTERVAL` | No | `3600` | Event list refresh interval in seconds. |
 | `EVENT_WINDOW_SIZE` | No | `250` | Number of newest public events to scan for offers on each refresh. |
+| `EVENT_PAGE_SIZE` | No | `100` | Upstream `/events` page size passed through to the Xceed `limit` query parameter. |
 
 ## Connection String Formats
 
@@ -79,6 +80,21 @@ docker run --rm \
   -e EVENT_REFRESH_INTERVAL=1800 \
   ghcr.io/clemensv/real-time-sources-xceed:latest
 ```
+
+## Public Filter Surface
+
+The public Xceed `/events` endpoint does not appear to expose meaningful
+semantic event filters. Live probes against `city`, `country`, and `slug`
+returned the same unfiltered catalog page. The useful upstream controls are the
+pagination parameters below:
+
+| Upstream query param | Bridge surface | Notes |
+|---|---|---|
+| `limit` | `EVENT_PAGE_SIZE` / `--event-page-size` | Number of events requested per `/events` page |
+| `offset` | internal only | Advanced automatically as the bridge walks the newest catalog slice |
+
+The bridge therefore exposes pagination and newest-window controls, not city-,
+country-, or genre-style filters.
 
 ## Kafka Topics
 

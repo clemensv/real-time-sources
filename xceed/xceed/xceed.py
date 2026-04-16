@@ -328,18 +328,27 @@ def feed(args: argparse.Namespace) -> None:
         getattr(args, "event_window_size", None)
         or os.environ.get("EVENT_WINDOW_SIZE", str(DEFAULT_EVENT_WINDOW_SIZE))
     )
+    event_page_size = int(
+        getattr(args, "event_page_size", None)
+        or os.environ.get("EVENT_PAGE_SIZE", str(DEFAULT_EVENT_PAGE_SIZE))
+    )
 
     producer = Producer(kafka_config)
     event_producer = XceedEventProducer(producer, topic)
     admissions_producer = XceedAdmissionsEventProducer(producer, topic)
-    api = XceedAPI(event_window_size=event_window_size)
+    api = XceedAPI(
+        event_window_size=event_window_size,
+        event_page_size=event_page_size,
+    )
 
     logger.info(
-        "Starting Xceed feed to Kafka topic %s at %s (poll interval=%ds, event refresh=%ds)",
+        "Starting Xceed feed to Kafka topic %s at %s (poll interval=%ds, event refresh=%ds, event window=%d, page size=%d)",
         topic,
         kafka_config.get("bootstrap.servers", "?"),
         polling_interval,
         event_refresh_interval,
+        event_window_size,
+        event_page_size,
     )
 
     cached_events: List[Dict[str, Any]] = []
@@ -465,7 +474,10 @@ def feed(args: argparse.Namespace) -> None:
 
 def main() -> None:
     """Entry point for the Xceed bridge."""
-    parser = argparse.ArgumentParser(description="Xceed nightlife events bridge to Kafka")
+    parser = argparse.ArgumentParser(
+        description="Xceed nightlife events bridge to Kafka",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     subparsers = parser.add_subparsers(dest="command")
 
     feed_parser = subparsers.add_parser("feed", help="Start the event and admission polling loop")
@@ -494,6 +506,15 @@ def main() -> None:
         type=int,
         default=None,
         help=f"Number of newest events to scan for offers (default: {DEFAULT_EVENT_WINDOW_SIZE})",
+    )
+    feed_parser.add_argument(
+        "--event-page-size",
+        type=int,
+        default=None,
+        help=(
+            "Xceed /events page size to request via the upstream limit parameter. "
+            f"Default: {DEFAULT_EVENT_PAGE_SIZE}."
+        ),
     )
 
     args = parser.parse_args()
