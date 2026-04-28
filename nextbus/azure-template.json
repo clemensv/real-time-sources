@@ -1,0 +1,159 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the Nextbus bridge as an Azure Container Instance with Log Analytics diagnostics."
+  },
+  "parameters": {
+    "feedConnectionString": {
+      "type": "securestring",
+      "minLength": 1,
+      "metadata": {
+        "description": "Azure Event Hubs connection string for vehicle position events (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+      }
+    },
+    "feedEventHubName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the Event Hub receiving vehicle position events."
+      }
+    },
+    "referenceConnectionString": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Azure Event Hubs connection string for reference data events. Leave empty to disable reference data. May be the same as feedConnectionString."
+      }
+    },
+    "referenceEventHubName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Event Hub receiving reference data events. Required when referenceConnectionString is set."
+      }
+    },
+    "agency": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Nextbus agency tag (e.g. 'ttc' for Toronto Transit Commission)."
+      }
+    },
+    "route": {
+      "type": "string",
+      "defaultValue": "*",
+      "metadata": {
+        "description": "Route tag to poll. Use '*' for all routes."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "nextbus",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    }
+  },
+  "variables": {
+    "imageName": "ghcr.io/clemensv/real-time-sources-nextbus:latest",
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[variables('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "FEED_CONNECTION_STRING",
+                  "secureValue": "[parameters('feedConnectionString')]"
+                },
+                {
+                  "name": "FEED_EVENT_HUB_NAME",
+                  "value": "[parameters('feedEventHubName')]"
+                },
+                {
+                  "name": "REFERENCE_CONNECTION_STRING",
+                  "secureValue": "[parameters('referenceConnectionString')]"
+                },
+                {
+                  "name": "REFERENCE_EVENT_HUB_NAME",
+                  "value": "[parameters('referenceEventHubName')]"
+                },
+                {
+                  "name": "AGENCY",
+                  "value": "[parameters('agency')]"
+                },
+                {
+                  "name": "ROUTE",
+                  "value": "[parameters('route')]"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+    }
+  }
+}

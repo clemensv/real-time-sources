@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import os
 import time
 import requests
 import xml.etree.ElementTree as ET
@@ -374,15 +375,20 @@ def main():
     route_parser.set_defaults(func=lambda args: print_routes(args.agency))
 
     # Define the "feed" command
+    _feed_cs = os.environ.get("FEED_CONNECTION_STRING")
+    _feed_hub = os.environ.get("FEED_EVENT_HUB_NAME")
+    _ref_cs = os.environ.get("REFERENCE_CONNECTION_STRING")
+    _ref_hub = os.environ.get("REFERENCE_EVENT_HUB_NAME")
+    _agency = os.environ.get("AGENCY")
     feed_parser = subparsers.add_parser("feed", help="poll vehicle locations and submit to an Event Hub")
-    feed_parser.add_argument("--feed-connection-string", help="the connection string for the Event Hub namespace", required=True)
-    feed_parser.add_argument("--feed-event-hub-name", help="the name of the Event Hub to submit to", required=True)
-    feed_parser.add_argument("--reference-connection-string", help="the connection string for the Event Hub namespace for reference data", required=False)
-    feed_parser.add_argument("--reference-event-hub-name", help="the name of the Event Hub to submit reference data to", required=False)
-    feed_parser.add_argument("--agency", help="the tag of the agency to poll vehicle locations for", required=False)
-    feed_parser.add_argument("--route", help="the route to poll vehicle locations for, omit or '*' to poll all routes", required=False, default="*")
-    feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=10)
-    feed_parser.add_argument("--backoff-interval", help="the number of seconds to wait before retrying after an error", required=False, type=float, default=0)
+    feed_parser.add_argument("--feed-connection-string", help="the connection string for the Event Hub namespace", default=_feed_cs, required=_feed_cs is None)
+    feed_parser.add_argument("--feed-event-hub-name", help="the name of the Event Hub to submit to", default=_feed_hub, required=_feed_hub is None)
+    feed_parser.add_argument("--reference-connection-string", help="the connection string for the Event Hub namespace for reference data", default=_ref_cs, required=False)
+    feed_parser.add_argument("--reference-event-hub-name", help="the name of the Event Hub to submit reference data to", default=_ref_hub, required=False)
+    feed_parser.add_argument("--agency", help="the tag of the agency to poll vehicle locations for", default=_agency, required=_agency is None)
+    feed_parser.add_argument("--route", help="the route to poll vehicle locations for, omit or '*' to poll all routes", required=False, default=os.environ.get("ROUTE", "*"))
+    feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=float(os.environ.get("POLL_INTERVAL", "10")))
+    feed_parser.add_argument("--backoff-interval", help="the number of seconds to wait before retrying after an error", required=False, type=float, default=float(os.environ.get("BACKOFF_INTERVAL", "0")))
     feed_parser.set_defaults(func=lambda args: launch_feed(args))
 
     # Define the "vehicle-locations" command
