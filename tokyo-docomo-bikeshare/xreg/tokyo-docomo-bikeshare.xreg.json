@@ -1,0 +1,338 @@
+{
+    "endpoints": {
+        "JP.ODPT.DocomoBikeshare.System.Kafka": {
+            "usage": [
+                "producer"
+            ],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "tokyo-docomo-bikeshare",
+                    "key": "{system_id}"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/JP.ODPT.DocomoBikeshare.System"
+            ]
+        },
+        "JP.ODPT.DocomoBikeshare.Stations.Kafka": {
+            "usage": [
+                "producer"
+            ],
+            "protocol": "KAFKA",
+            "envelope": "CloudEvents/1.0",
+            "envelopeoptions": {
+                "mode": "structured",
+                "format": "application/cloudevents+json"
+            },
+            "protocoloptions": {
+                "deployed": false,
+                "options": {
+                    "topic": "tokyo-docomo-bikeshare",
+                    "key": "{system_id}/{station_id}"
+                }
+            },
+            "messagegroups": [
+                "#/messagegroups/JP.ODPT.DocomoBikeshare.Stations"
+            ]
+        }
+    },
+    "messagegroups": {
+        "JP.ODPT.DocomoBikeshare.System": {
+            "messages": {
+                "JP.ODPT.DocomoBikeshare.BikeshareSystem": {
+                    "name": "BikeshareSystem",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "JP.ODPT.DocomoBikeshare.BikeshareSystem"
+                        },
+                        "source": {
+                            "value": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo"
+                        },
+                        "subject": {
+                            "value": "{system_id}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "dataschemaformat": "JsonStructure/draft-02",
+                    "dataschemauri": "#/schemagroups/JP.ODPT.DocomoBikeshare.jstruct/schemas/JP.ODPT.DocomoBikeshare.BikeshareSystem"
+                }
+            }
+        },
+        "JP.ODPT.DocomoBikeshare.Stations": {
+            "messages": {
+                "JP.ODPT.DocomoBikeshare.BikeshareStation": {
+                    "name": "BikeshareStation",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "JP.ODPT.DocomoBikeshare.BikeshareStation"
+                        },
+                        "source": {
+                            "value": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo"
+                        },
+                        "subject": {
+                            "value": "{system_id}/{station_id}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "dataschemaformat": "JsonStructure/draft-02",
+                    "dataschemauri": "#/schemagroups/JP.ODPT.DocomoBikeshare.jstruct/schemas/JP.ODPT.DocomoBikeshare.BikeshareStation"
+                },
+                "JP.ODPT.DocomoBikeshare.BikeshareStationStatus": {
+                    "name": "BikeshareStationStatus",
+                    "envelope": "CloudEvents/1.0",
+                    "envelopemetadata": {
+                        "type": {
+                            "value": "JP.ODPT.DocomoBikeshare.BikeshareStationStatus"
+                        },
+                        "source": {
+                            "value": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo"
+                        },
+                        "subject": {
+                            "value": "{system_id}/{station_id}",
+                            "type": "uritemplate"
+                        }
+                    },
+                    "dataschemaformat": "JsonStructure/draft-02",
+                    "dataschemauri": "#/schemagroups/JP.ODPT.DocomoBikeshare.jstruct/schemas/JP.ODPT.DocomoBikeshare.BikeshareStationStatus"
+                }
+            }
+        }
+    },
+    "schemagroups": {
+        "JP.ODPT.DocomoBikeshare.jstruct": {
+            "schemas": {
+                "JP.ODPT.DocomoBikeshare.BikeshareSystem": {
+                    "name": "BikeshareSystem",
+                    "format": "JsonStructure/draft-02",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "JsonStructure/draft-02",
+                            "schema": {
+                                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                                "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareSystem",
+                                "type": "object",
+                                "name": "BikeshareSystem",
+                                "description": "Metadata describing the Tokyo Docomo Bikeshare system, sourced from the GBFS 2.3 system_information.json feed published by the Open Data Platform for Transportation (ODPT).",
+                                "required": [
+                                    "system_id",
+                                    "language",
+                                    "name",
+                                    "timezone"
+                                ],
+                                "properties": {
+                                    "system_id": {
+                                        "type": "string",
+                                        "description": "Unique identifier for this bikeshare system. A short, URL-friendly identifier that does not contain spaces, for example 'docomo-cycle-tokyo'. This value is stable and matches the GBFS feed directory name on the ODPT platform."
+                                    },
+                                    "language": {
+                                        "type": "string",
+                                        "description": "A single IETF BCP 47 language identifier representing the primary language used in this feed, for example 'ja' for Japanese or 'en' for English."
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Full name of the bikeshare system as displayed to customers, for example 'ドコモ・バイクシェア' or 'Docomo Bikeshare'."
+                                    },
+                                    "short_name": {
+                                        "type": ["string", "null"],
+                                        "description": "Optional abbreviation or short form of the system name, for example 'DocomoBike'."
+                                    },
+                                    "operator": {
+                                        "type": ["string", "null"],
+                                        "description": "Name of the company or organization that operates the bikeshare system, for example 'NTT Docomo, Inc.'."
+                                    },
+                                    "url": {
+                                        "type": ["string", "null"],
+                                        "description": "URL of the bikeshare system or operator website for end users, for example 'https://docomo-cycle.jp/'."
+                                    },
+                                    "purchase_url": {
+                                        "type": ["string", "null"],
+                                        "description": "URL where a customer can purchase a membership or learn about purchasing memberships for this bikeshare system."
+                                    },
+                                    "start_date": {
+                                        "type": ["string", "null"],
+                                        "description": "Date that the bikeshare system began operations, formatted as YYYY-MM-DD in accordance with ISO 8601."
+                                    },
+                                    "phone_number": {
+                                        "type": ["string", "null"],
+                                        "description": "A single voice telephone number for the customer service department of this bikeshare system, including country and area code."
+                                    },
+                                    "email": {
+                                        "type": ["string", "null"],
+                                        "description": "A single contact email address actively monitored by the operator's customer service department."
+                                    },
+                                    "feed_contact_email": {
+                                        "type": ["string", "null"],
+                                        "description": "A single contact email address for the purpose of reporting issues with the GBFS feed for this system."
+                                    },
+                                    "timezone": {
+                                        "type": "string",
+                                        "description": "The IANA time zone database name for the time zone where the system is located, for example 'Asia/Tokyo'."
+                                    },
+                                    "license_url": {
+                                        "type": ["string", "null"],
+                                        "description": "A fully qualified URL of a page that defines the license terms for the GBFS data published by this system."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "JP.ODPT.DocomoBikeshare.BikeshareStation": {
+                    "name": "BikeshareStation",
+                    "format": "JsonStructure/draft-02",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "JsonStructure/draft-02",
+                            "schema": {
+                                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                                "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareStation",
+                                "type": "object",
+                                "name": "BikeshareStation",
+                                "description": "Physical location and static attributes of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_information.json feed published by the Open Data Platform for Transportation (ODPT).",
+                                "required": [
+                                    "system_id",
+                                    "station_id",
+                                    "name",
+                                    "lat",
+                                    "lon"
+                                ],
+                                "properties": {
+                                    "system_id": {
+                                        "type": "string",
+                                        "description": "Identifier of the bikeshare system this station belongs to, for example 'docomo-cycle-tokyo'. Included in the payload so that the composite Kafka key {system_id}/{station_id} can be resolved from the event data."
+                                    },
+                                    "station_id": {
+                                        "type": "string",
+                                        "description": "Unique identifier of the station within the GBFS feed, for example '00010137'. Stable across feed updates; used as the second component of the Kafka key."
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Public name of the station as displayed to customers. Tokyo Docomo Bikeshare publishes bilingual names in the format 'Japanese / English', for example 'A4-01.東京駅八重洲口 / Tokyo Station Yaesu'."
+                                    },
+                                    "short_name": {
+                                        "type": ["string", "null"],
+                                        "description": "Short name or other operator-assigned identifier for the station, if provided."
+                                    },
+                                    "lat": {
+                                        "type": "double",
+                                        "description": "WGS 84 latitude of the station in decimal degrees. Positive values indicate north of the equator.",
+                                        "unit": "deg",
+                                        "symbol": "°"
+                                    },
+                                    "lon": {
+                                        "type": "double",
+                                        "description": "WGS 84 longitude of the station in decimal degrees. Positive values indicate east of the prime meridian.",
+                                        "unit": "deg",
+                                        "symbol": "°"
+                                    },
+                                    "address": {
+                                        "type": ["string", "null"],
+                                        "description": "Street address of the station, if provided by the operator."
+                                    },
+                                    "cross_street": {
+                                        "type": ["string", "null"],
+                                        "description": "Cross street or nearby landmark of the station location, if provided."
+                                    },
+                                    "region_id": {
+                                        "type": ["string", "null"],
+                                        "description": "Identifier of the district or region where the station is located, as defined in the GBFS system_regions.json feed."
+                                    },
+                                    "post_code": {
+                                        "type": ["string", "null"],
+                                        "description": "Postal code of the station location, if provided."
+                                    },
+                                    "capacity": {
+                                        "type": ["int32", "null"],
+                                        "description": "Total number of docking points installed at the station, including those that are temporarily disabled. Reflects the physical capacity of the station."
+                                    },
+                                    "is_virtual_station": {
+                                        "type": ["boolean", "null"],
+                                        "description": "If true, the station is a virtual station (i.e., a parking zone without physical docks) rather than a docked station. If absent or false, the station has physical docking points."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "JP.ODPT.DocomoBikeshare.BikeshareStationStatus": {
+                    "name": "BikeshareStationStatus",
+                    "format": "JsonStructure/draft-02",
+                    "defaultversionid": "1",
+                    "versions": {
+                        "1": {
+                            "format": "JsonStructure/draft-02",
+                            "schema": {
+                                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                                "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareStationStatus",
+                                "type": "object",
+                                "name": "BikeshareStationStatus",
+                                "description": "Real-time availability and operational status of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_status.json feed published by the Open Data Platform for Transportation (ODPT). Updates on a 60-second TTL.",
+                                "required": [
+                                    "system_id",
+                                    "station_id",
+                                    "num_bikes_available",
+                                    "is_installed",
+                                    "is_renting",
+                                    "is_returning"
+                                ],
+                                "properties": {
+                                    "system_id": {
+                                        "type": "string",
+                                        "description": "Identifier of the bikeshare system this station belongs to, for example 'docomo-cycle-tokyo'. Included in the payload so that the composite Kafka key {system_id}/{station_id} can be resolved from the event data."
+                                    },
+                                    "station_id": {
+                                        "type": "string",
+                                        "description": "Unique identifier of the station within the GBFS feed, for example '00010137'. Matches the station_id in the corresponding BikeshareStation event."
+                                    },
+                                    "num_bikes_available": {
+                                        "type": "int32",
+                                        "description": "Number of functional vehicles (bicycles) physically available for rental at this station at the time of the last update."
+                                    },
+                                    "num_bikes_disabled": {
+                                        "type": ["int32", "null"],
+                                        "description": "Number of disabled or broken vehicles at the station that are not available for rental. Absent if the operator does not publish this value."
+                                    },
+                                    "num_docks_available": {
+                                        "type": ["int32", "null"],
+                                        "description": "Number of empty and functional docking points at the station where a customer can return a vehicle. Absent if the operator does not publish this value."
+                                    },
+                                    "num_docks_disabled": {
+                                        "type": ["int32", "null"],
+                                        "description": "Number of broken or disabled docking points at the station that cannot accept vehicle returns. Absent if the operator does not publish this value."
+                                    },
+                                    "is_installed": {
+                                        "type": "boolean",
+                                        "description": "Indicates whether the station infrastructure is installed on-street and operational. A value of false means the station is temporarily or permanently removed from service."
+                                    },
+                                    "is_renting": {
+                                        "type": "boolean",
+                                        "description": "Indicates whether the station is currently allowing vehicle rentals. May be false even when bikes are present, for example during a system outage."
+                                    },
+                                    "is_returning": {
+                                        "type": "boolean",
+                                        "description": "Indicates whether the station is currently accepting vehicle returns. May be false even when docks are empty, for example during a system outage."
+                                    },
+                                    "last_reported": {
+                                        "type": ["int32", "null"],
+                                        "description": "Unix timestamp in seconds (UTC) indicating the last time this station's status was updated by the operator's system. Absent if the operator does not publish this value."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
