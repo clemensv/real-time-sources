@@ -1,6 +1,6 @@
 [project]
 name = "botfinder"
-version = "0.1.4"
+version = "0.1.5"
 description = "Bluesky bot-network detection and dossier generation around an anchor account"
 readme = "README.md"
 requires-python = ">=3.10"

@@ -130,12 +130,58 @@ CELLS = [
     ),
     md("## Cards\n"
        "Each card is a standalone Plotly visualization in 1200x675 format "
-       "(card 5 is 1200x1200)."),
+       "(card 5 is 1200x1200). One cell per card so individual figures can be "
+       "re-rendered without re-running the whole pipeline."),
     code(
-        "for card_id, fig in result.cards.items():\n"
-        "    print(card_id)\n"
-        "    fig.show()\n"
+        "CARD_TITLES = {\n"
+        "    'card_01_overview':     '1. Overview',\n"
+        "    'card_02_anchors':      '2. Anchor accounts',\n"
+        "    'card_03_behavior':     '3. Bot behavior signals',\n"
+        "    'card_04_timeline':     '4. Follow burst timeline',\n"
+        "    'card_05_cluster':      '5. Bot cluster network',\n"
+        "    'card_06_deleted':      '6. Account deletions',\n"
+        "    'card_07_lifecycle':    '7. Lifecycle waves',\n"
+        "    'card_08_cumulative':   '8. Cumulative growth',\n"
+        "    'card_09_age_at_follow':'9. Time from creation to follow',\n"
+        "    'card_10_score_dist':   '10. Bot score distribution',\n"
+        "    'card_11_scatter':      '11. Creation vs. time to follow',\n"
+        "    'card_12_amplifiers':   '12. Amplifier accounts',\n"
+        "    'card_13_cross_speed':  '13. Cross-following speed',\n"
+        "    'card_14_blocks_likes': '14. Blocks & likes',\n"
+        "    'card_15_block_hitlist':'15. Block hit list',\n"
+        "}\n"
     ),
+]
+
+# One markdown header + one render cell per card
+_CARD_IDS = [
+    ("card_01_overview",     "Overview"),
+    ("card_02_anchors",      "Anchor accounts"),
+    ("card_03_behavior",     "Bot behavior signals"),
+    ("card_04_timeline",     "Follow burst timeline"),
+    ("card_05_cluster",      "Bot cluster network"),
+    ("card_06_deleted",      "Account deletions"),
+    ("card_07_lifecycle",    "Lifecycle waves"),
+    ("card_08_cumulative",   "Cumulative growth"),
+    ("card_09_age_at_follow","Time from creation to follow"),
+    ("card_10_score_dist",   "Bot score distribution"),
+    ("card_11_scatter",      "Creation vs. time to follow"),
+    ("card_12_amplifiers",   "Amplifier accounts"),
+    ("card_13_cross_speed",  "Cross-following speed"),
+    ("card_14_blocks_likes", "Blocks & likes"),
+    ("card_15_block_hitlist","Block hit list"),
+]
+for _idx, (_cid, _title) in enumerate(_CARD_IDS, start=1):
+    CELLS.append(md(f"### Card {_idx} - {_title}"))
+    CELLS.append(code(
+        f"_fig = result.cards.get({_cid!r})\n"
+        f"if _fig is None:\n"
+        f"    print('Card {_cid!r} not produced (input data unavailable).')\n"
+        f"else:\n"
+        f"    _fig.show()\n"
+    ))
+
+CELLS += [
     md("## Write HTML dossier to the lakehouse (optional)"),
     code(
         "from pathlib import Path\n"
