@@ -203,7 +203,7 @@ def card_4_timeline(detail_df: pd.DataFrame) -> go.Figure:
         marker_color=ACCENT, opacity=0.85,
     ))
     fig.update_xaxes(title_text="Date / time (UTC)", tickfont=dict(size=11, family=FONT),
-                     showgrid=False, tickangle=-45, tickformat="%d.%m. %H:%M")
+                     showgrid=False, tickangle=-45, tickformat="%d.%m. %H:%M", dtick=3600000*6)
     fig.update_yaxes(title_text="Follows per hour", tickfont=dict(size=13, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR)
     return card_layout(fig,
@@ -311,8 +311,12 @@ def card_5_cluster(nodes_df: pd.DataFrame, edges_df: pd.DataFrame, anchor_handle
         else:
             colors.append(ACCENT3)
 
+    node_degrees = [G.degree(n) for n in G.nodes()]
+    node_texts = [str(d) if sz >= 14 else "" for d, sz in zip(node_degrees, sizes)]
     node_trace = go.Scatter(
-        x=node_x, y=node_y, mode="markers",
+        x=node_x, y=node_y, mode="markers+text",
+        text=node_texts, textposition="middle center",
+        textfont=dict(size=9, color="white", family=FONT_BOLD),
         marker=dict(size=sizes, color=colors, line=dict(width=0.6, color="#333333")),
         hovertext=[f"@{n}: {weights.get(n,0)} suspects, {G.degree(n)} edges" for n in G.nodes()],
         hoverinfo="text", showlegend=False,
@@ -328,28 +332,129 @@ def card_5_cluster(nodes_df: pd.DataFrame, edges_df: pd.DataFrame, anchor_handle
         hoverinfo="none", showlegend=False,
     )
 
-    fig = go.Figure(data=[edge_peri, edge_core, node_trace, core_label])
-    fig.update_xaxes(visible=False, range=[-1.6, 1.6])
-    fig.update_yaxes(visible=False, range=[-1.4, 1.4], scaleanchor="x", scaleratio=1)
+    # Periphery labels: place each on its closest canvas edge
+    margin_p = 1.05
+    label_offset = 0.08
+    left_peri: list[str] = []; right_peri: list[str] = []
+    top_peri: list[str] = []; bottom_peri: list[str] = []
+    for n in periphery_nodes:
+        nx_pos, ny_pos = pos[n]
+        d_left = abs(nx_pos - (-margin_p)); d_right = abs(nx_pos - margin_p)
+        d_top = abs(ny_pos - margin_p); d_bottom = abs(ny_pos - (-margin_p))
+        m = min(d_left, d_right, d_top, d_bottom)
+        if m == d_top: top_peri.append(n)
+        elif m == d_bottom: bottom_peri.append(n)
+        elif m == d_left: left_peri.append(n)
+        else: right_peri.append(n)
+    left_peri.sort(key=lambda n: -pos[n][1])
+    right_peri.sort(key=lambda n: -pos[n][1])
+    top_peri.sort(key=lambda n: pos[n][0])
+    bottom_peri.sort(key=lambda n: pos[n][0])
+
+    peri_lx: list[float] = []; peri_ly: list[float] = []
+    peri_labels: list[str] = []; peri_positions: list[str] = []
+    for n in left_peri:
+        peri_lx.append(-(margin_p + label_offset)); peri_ly.append(pos[n][1])
+        peri_labels.append("@" + n.split(".")[0]); peri_positions.append("middle left")
+    for n in right_peri:
+        peri_lx.append(margin_p + label_offset); peri_ly.append(pos[n][1])
+        peri_labels.append("@" + n.split(".")[0]); peri_positions.append("middle right")
+    peri_label_trace = go.Scatter(
+        x=peri_lx, y=peri_ly, mode="text",
+        text=peri_labels, textposition=peri_positions,
+        textfont=dict(size=16, color="#222222", family=FONT_BOLD),
+        hoverinfo="none", showlegend=False,
+    )
+    leader_trace = go.Scatter(
+        x=[None], y=[None], mode="lines",
+        line=dict(width=0.5, color="rgba(100,100,100,0.35)"),
+        hoverinfo="none", showlegend=False,
+    )
+
+    fig = go.Figure(data=[edge_peri, leader_trace, edge_core,
+                          node_trace, core_label, peri_label_trace])
+    x_range = margin_p + label_offset + 0.55
+    y_range = margin_p + label_offset + 0.35
+    fig.update_xaxes(visible=False, range=[-x_range, x_range])
+    fig.update_yaxes(visible=False, range=[-y_range, y_range], scaleanchor="x", scaleratio=1)
+
+    # Legend entries (invisible scatter)
+    legend_items = [
+        (ACCENT, f"Target account (@{anchor_handle.split('.')[0]})", "marker"),
+        (ACCENT2, "Top amplifier (core)", "marker"),
+        (ACCENT3, "Cluster member (core)", "marker"),
+        ("#aaaaaa", "Troll target (ring)", "marker"),
+        ("rgba(200,0,0,0.5)", "Edge: mutually followed", "line"),
+        ("rgba(0,160,0,0.6)", "Edge: target only", "line"),
+    ]
+    for color, name, kind in legend_items:
+        if kind == "marker":
+            fig.add_trace(go.Scatter(
+                x=[None], y=[None], mode="markers",
+                marker=dict(size=10, color=color), name=name, showlegend=True,
+            ))
+        else:
+            fig.add_trace(go.Scatter(
+                x=[None], y=[None], mode="lines",
+                line=dict(width=2, color=color), name=name, showlegend=True,
+            ))
+
+    n_suspects = int((nodes_df["suspect_followers"] >= min_suspect).sum())
+    method_text = (
+        f"Method: follow lists of all {n_suspects} bot suspects (score >= 0.45) collected -> "
+        f"shared target accounts (>= {min_suspect} suspects) become nodes -> "
+        "co-follow count is edge weight.<br>"
+        "Core = follows > 5 cluster members back. "
+        "Periphery (troll target) = follows <= 5 members back."
+    )
+
     fig.update_layout(
         width=SIZE, height=SIZE,
         paper_bgcolor=BG_COLOR, plot_bgcolor=BG_COLOR,
         margin=dict(l=10, r=10, t=70, b=70),
         font=dict(color=TEXT_COLOR, family=FONT, size=14),
+        legend=dict(
+            x=0.0, y=0.0, xanchor="left", yanchor="bottom",
+            bgcolor="rgba(255,255,255,0.85)", bordercolor="#cccccc", borderwidth=1,
+            font=dict(size=10, family=FONT), orientation="v",
+        ),
         annotations=[
             dict(text="<b>Bot cluster network</b>", xref="paper", yref="paper",
                  x=0.5, y=1.06, showarrow=False, xanchor="center", yanchor="top",
                  font=dict(size=28, color=TEXT_COLOR, family=FONT_BOLD)),
-            dict(text=(f"Core: {len(core_nodes)} - Ring: {len(periphery_nodes)} - "
-                       f"nodes = co-followed anchors"),
+            dict(text=(f"Core: {len(core_nodes)} connected accounts - "
+                       f"Ring: {len(periphery_nodes)} single targets - "
+                       "number in node = degree"),
                  xref="paper", yref="paper",
                  x=0.5, y=1.015, showarrow=False, xanchor="center", yanchor="top",
                  font=dict(size=13, color=MUTED, family=FONT)),
+            dict(text=method_text, xref="paper", yref="paper",
+                 x=0.5, y=-0.02, showarrow=False, xanchor="center", yanchor="top",
+                 font=dict(size=9, color="#777777", family=FONT)),
             dict(text=_footer_text(), xref="paper", yref="paper",
-                 x=0.5, y=-0.05, showarrow=False, xanchor="center", yanchor="top",
+                 x=0.5, y=-0.07, showarrow=False, xanchor="center", yanchor="top",
                  font=dict(size=9, color="#999999", family=FONT)),
         ],
     )
+
+    # Top/bottom periphery labels: rotated annotations in data coords
+    top_label_y = margin_p + label_offset
+    bottom_label_y = -(margin_p + label_offset)
+    for n in top_peri:
+        fig.add_annotation(
+            x=pos[n][0], y=top_label_y, text="@" + n.split(".")[0],
+            showarrow=False, textangle=-90,
+            font=dict(size=16, color="#222222", family=FONT_BOLD),
+            xanchor="center", yanchor="bottom",
+        )
+    for n in bottom_peri:
+        fig.add_annotation(
+            x=pos[n][0], y=bottom_label_y, text="@" + n.split(".")[0],
+            showarrow=False, textangle=-90,
+            font=dict(size=16, color="#222222", family=FONT_BOLD),
+            xanchor="center", yanchor="top",
+        )
+
     return fig
 
 
@@ -400,7 +505,7 @@ def card_7_lifecycle(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Fig
     all_bins = pd.date_range(t_min, t_max, freq=bin_freq)
     created = df.groupby("created_bin").size().reindex(all_bins, fill_value=0)
     followed = df.groupby("follow_bin").size().reindex(all_bins, fill_value=0)
-    x_labels = [t.strftime("%d.%m. %H:%M") for t in all_bins]
+    x_labels = [t.strftime("%H:%M") for t in all_bins]
     fig = go.Figure()
     fig.add_trace(go.Bar(x=x_labels, y=created.values, name="Accounts created",
                          marker_color="rgba(30,136,229,0.6)"))
@@ -408,7 +513,7 @@ def card_7_lifecycle(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Fig
                          marker_color="rgba(204,0,0,0.5)"))
     y_max = max(created.max(), followed.max())
     fig.update_xaxes(title_text="Time (UTC)", tickfont=dict(size=11, family=FONT),
-                     showgrid=False, tickangle=-45)
+                     showgrid=False, tickangle=-45, dtick=2)
     fig.update_yaxes(title_text="Events per hour", tickfont=dict(size=13, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR, range=[0, y_max * 1.15])
     fig.update_layout(barmode="group",
@@ -616,6 +721,11 @@ def card_13_cross_speed(per_account_df: pd.DataFrame) -> go.Figure:
     fig = card_layout(fig,
         title="Cross-following speed",
         subtitle=f"Bot median: {bot_med:.0f} min - {bot_pct60:.0f}% of bots cross-follow in < 1 hour")
+    for ann in fig.layout.annotations:
+        if ann.text in ["Minutes to first cross-follow", "Share < 60 min"]:
+            ann.font = dict(size=13, family=FONT_BOLD, color=TEXT_COLOR)
+            ann.y = 0.95
+            ann.yanchor = "bottom"
     fig.update_layout(margin=dict(t=140, b=65))
     return fig
 
@@ -654,11 +764,27 @@ def card_14_blocks_likes(
                          text=[f"{v:.0f}" for v in like_means], textposition="outside",
                          textfont=dict(size=14, family=FONT_BOLD, color=TEXT_COLOR),
                          showlegend=False, width=0.5), row=1, col=2)
+    zero_pcts = [
+        100 * (merged[is_bot]["like_count"] == 0).sum() / max(int(is_bot.sum()), 1),
+        100 * (merged[is_amp]["like_count"] == 0).sum() / max(int(is_amp.sum()), 1),
+        100 * (merged[is_norm]["like_count"] == 0).sum() / max(int(is_norm.sum()), 1),
+    ]
+    like_max = max(like_means) if like_means and max(like_means) > 0 else 1
+    for cat, pct in zip(cats, zero_pcts):
+        fig.add_annotation(
+            x=cat, y=-like_max * 0.12,
+            text=f"{pct:.0f}% with no likes",
+            font=dict(size=11, color=MUTED, family=FONT),
+            showarrow=False, xref="x2", yref="y2",
+        )
     fig.update_yaxes(showgrid=True, gridcolor=GRID_COLOR,
                      tickfont=dict(size=11, family=FONT))
     fig.update_xaxes(tickfont=dict(size=12, family=FONT))
     fig.update_yaxes(range=[0, max(block_means) * 1.25 if block_means else 1], row=1, col=1)
-    fig.update_yaxes(range=[0, max(like_means) * 1.35 if like_means else 1], row=1, col=2)
+    fig.update_yaxes(range=[-like_max * 0.2, like_max * 1.35], row=1, col=2)
+    for ann in fig.layout.annotations:
+        if ann.text in ["Mean blocks received", "Mean likes given"]:
+            ann.font = dict(size=15, family=FONT_BOLD, color=TEXT_COLOR)
     amp_block_median = int(merged[is_amp]["block_count"].median()) if is_amp.sum() else 0
     return card_layout(fig,
         title="Blocks & likes - all categories affected",
@@ -704,6 +830,13 @@ def card_15_block_hitlist(
         textfont=dict(size=13, family=FONT_BOLD, color=TEXT_COLOR),
         showlegend=False,
     ))
+    for i, (cat, color) in enumerate(cat_colors.items()):
+        fig.add_annotation(
+            x=0.98 - i * 0.18, y=1.02, xref="paper", yref="paper",
+            text=f"<b>\u25cf</b> {cat}",
+            font=dict(size=12, color=color, family=FONT),
+            showarrow=False,
+        )
     fig.update_xaxes(showgrid=True, gridcolor=GRID_COLOR,
                      tickfont=dict(size=11, family=FONT))
     fig.update_yaxes(tickfont=dict(size=12, family=FONT))
