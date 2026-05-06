@@ -54,7 +54,10 @@ CELLS = [
         "der Eventhouse-Datenbank.\n"
     ),
     code(
-        "# Modul aus dem real-time-sources Repo installieren\n"
+        "# Modul aus dem real-time-sources Repo installieren (no-cache: track HEAD)\n"
+        "%pip install -q --upgrade --force-reinstall --no-cache-dir --no-deps "
+        "git+https://github.com/clemensv/real-time-sources@feat/bluesky-botfinder"
+        "#subdirectory=bluesky/botfinder\n"
         "%pip install -q "
         "git+https://github.com/clemensv/real-time-sources@feat/bluesky-botfinder"
         "#subdirectory=bluesky/botfinder\n"
