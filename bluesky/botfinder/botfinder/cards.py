@@ -622,9 +622,21 @@ def card_9_age_at_follow(detail_df: pd.DataFrame) -> go.Figure:
 
 
 def card_10_score_distribution(scores_df: pd.DataFrame) -> go.Figure:
+    import numpy as np
+    scores = scores_df["score"].dropna().values
     fig = go.Figure()
-    fig.add_trace(go.Histogram(x=scores_df["score"], nbinsx=25,
-                               marker_color=ACCENT, opacity=0.85))
+    if len(scores) > 0:
+        s_min = float(np.min(scores))
+        s_max = float(np.max(scores))
+        if s_max <= s_min:
+            s_max = s_min + 1e-3
+        edges = np.linspace(s_min, s_max, 26)
+        counts, _ = np.histogram(scores, bins=edges)
+        centers = (edges[:-1] + edges[1:]) / 2
+        widths = np.diff(edges)
+        fig.add_trace(go.Bar(x=centers, y=counts, width=widths,
+                             orientation="v",
+                             marker_color=ACCENT, opacity=0.85))
     fig.add_vline(x=0.7, line_dash="dash", line_color="#cc0000",
                   annotation_text="High confidence", annotation_position="bottom right",
                   annotation_font=dict(size=13, family=FONT, color=ACCENT))
