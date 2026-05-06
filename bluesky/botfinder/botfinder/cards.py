@@ -213,6 +213,52 @@ def card_4_timeline(detail_df: pd.DataFrame) -> go.Figure:
     )
 
 
+def card_7_lifecycle(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Figure:
+    merged = detail_df.merge(
+        scores_df[["did", "flags"]], left_on="follower_did", right_on="did", how="left"
+    )
+    df = merged.copy()
+    df["follower_created_at"] = pd.to_datetime(df["follower_created_at"], errors="coerce")
+    df["follow_created_at"] = pd.to_datetime(df["follow_created_at"], errors="coerce")
+    df = df.dropna(subset=["follower_created_at", "follow_created_at"])
+    if df.empty:
+        return card_layout(go.Figure(), title="Lifecycle waves")
+    bin_freq = "1h"
+    df["created_bin"] = df["follower_created_at"].dt.floor(bin_freq)
+    df["follow_bin"] = df["follow_created_at"].dt.floor(bin_freq)
+    t_min = df["follower_created_at"].min().floor("h")
+    t_max = df["follow_created_at"].max().ceil("h")
+    all_bins = pd.date_range(t_min, t_max, freq=bin_freq)
+    created_counts = df.groupby("created_bin").size().reindex(all_bins, fill_value=0)
+    follow_counts = df.groupby("follow_bin").size().reindex(all_bins, fill_value=0)
+    x_labels = [t.strftime("%H:%M") for t in all_bins]
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=x_labels, y=created_counts.values,
+        name="Accounts created",
+        marker_color="rgba(30,136,229,0.6)",
+    ))
+    fig.add_trace(go.Bar(
+        x=x_labels, y=follow_counts.values,
+        name="Follow events",
+        marker_color="rgba(204,0,0,0.5)",
+    ))
+    y_max = max(created_counts.max(), follow_counts.max())
+    fig.update_xaxes(title_text="Time (UTC)", tickfont=dict(size=11, family=FONT),
+                     showgrid=False, tickangle=-45, dtick=2)
+    fig.update_yaxes(title_text="Events per hour", tickfont=dict(size=13, family=FONT),
+                     showgrid=True, gridcolor=GRID_COLOR, range=[0, y_max * 1.15])
+    fig.update_layout(
+        barmode="group",
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1.0,
+                    font=dict(size=13, family=FONT)),
+    )
+    return card_layout(fig,
+        title="Lifecycle waves - creation & follow activity",
+        subtitle="Account creation bursts tightly coupled with follow events",
+    )
+
+
 def card_5_cluster(nodes_df: pd.DataFrame, edges_df: pd.DataFrame, anchor_handle: str) -> go.Figure:
     """Square cluster graph — concentric rings + perimeter labels."""
     SIZE = 1200
@@ -485,45 +531,6 @@ def card_6_deleted(scores_df: pd.DataFrame) -> go.Figure:
     return card_layout(fig,
         title="Account deletions - signs of bot cleanup",
         subtitle="Accounts that followed the anchor and have since been deleted or banned",
-    )
-
-
-def card_7_lifecycle(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Figure:
-    merged = detail_df.merge(
-        scores_df[["did", "flags"]], left_on="follower_did", right_on="did", how="left"
-    )
-    df = merged.copy()
-    df["follower_created_at"] = pd.to_datetime(df["follower_created_at"], errors="coerce")
-    df["follow_created_at"] = pd.to_datetime(df["follow_created_at"], errors="coerce")
-    df = df.dropna(subset=["follower_created_at", "follow_created_at"])
-    if df.empty:
-        return card_layout(go.Figure(), title="Lifecycle waves")
-    bin_freq = "1h"
-    df["created_bin"] = df["follower_created_at"].dt.floor(bin_freq)
-    df["follow_bin"] = df["follow_created_at"].dt.floor(bin_freq)
-    t_min = df["follower_created_at"].min().floor("h")
-    t_max = df["follow_created_at"].max().ceil("h")
-    all_bins = pd.date_range(t_min, t_max, freq=bin_freq)
-    created = df.groupby("created_bin").size().reindex(all_bins, fill_value=0)
-    followed = df.groupby("follow_bin").size().reindex(all_bins, fill_value=0)
-    x_labels = [t.strftime("%H:%M") for t in all_bins]
-    fig = go.Figure()
-    fig.add_trace(go.Bar(x=x_labels, y=created.values, name="Accounts created",
-                         orientation="v", marker_color="rgba(30,136,229,0.6)"))
-    fig.add_trace(go.Bar(x=x_labels, y=followed.values, name="Follow events",
-                         orientation="v", marker_color="rgba(204,0,0,0.5)"))
-    y_max = max(created.max(), followed.max())
-    fig.update_xaxes(title_text="Time (UTC)", tickfont=dict(size=11, family=FONT),
-                     showgrid=False, tickangle=-45, dtick=2)
-    fig.update_yaxes(title_text="Events per hour", tickfont=dict(size=13, family=FONT),
-                     showgrid=True, gridcolor=GRID_COLOR, range=[0, y_max * 1.15])
-    fig.update_layout(barmode="group",
-                      legend=dict(orientation="h", yanchor="bottom", y=1.02,
-                                  xanchor="right", x=1.0,
-                                  font=dict(size=13, family=FONT)))
-    return card_layout(fig,
-        title="Lifecycle waves - creation & follow activity",
-        subtitle="Account creation bursts tightly coupled with follow events",
     )
 
 
