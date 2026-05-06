@@ -535,44 +535,62 @@ def card_6_deleted(scores_df: pd.DataFrame) -> go.Figure:
 
 
 def card_8_cumulative(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Figure:
+    """Card 8: Cumulative growth curve."""
     merged = detail_df.merge(
         scores_df[["did", "flags"]], left_on="follower_did", right_on="did", how="left"
     )
     df = merged.copy()
-    df["is_deleted"] = df["flags"].fillna("").str.contains("DELETED")
+    df["is_deleted"] = df["flags"].str.contains("DELETED", na=False)
     df["follow_created_at"] = pd.to_datetime(df["follow_created_at"], errors="coerce")
     df = df.dropna(subset=["follow_created_at"])
+
     if df.empty:
         return card_layout(go.Figure(), title="Cumulative network growth")
+
     bin_freq = "1h"
     df["follow_bin"] = df["follow_created_at"].dt.floor(bin_freq)
     t_min = df["follow_created_at"].min().floor("h")
     t_max = df["follow_created_at"].max().ceil("h")
     all_bins = pd.date_range(t_min, t_max, freq=bin_freq)
-    follow = df.groupby("follow_bin").size().reindex(all_bins, fill_value=0)
-    deleted = df[df["is_deleted"]].groupby("follow_bin").size().reindex(all_bins, fill_value=0)
-    cum_total = follow.cumsum()
-    cum_deleted = deleted.cumsum()
-    cum_surv = cum_total - cum_deleted
-    x = all_bins.to_pydatetime().tolist()
+
+    follow_counts = df.groupby("follow_bin").size().reindex(all_bins, fill_value=0)
+    deleted_counts = df[df["is_deleted"]].groupby("follow_bin").size().reindex(all_bins, fill_value=0)
+
+    cum_total = follow_counts.cumsum()
+    cum_deleted = deleted_counts.cumsum()
+    cum_surviving = cum_total - cum_deleted
+
+    x_vals = all_bins.to_pydatetime().tolist()
+
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=cum_total.values, name="Total followed", mode="lines",
-                             line=dict(width=2.5, color="#555555", dash="dot")))
-    fig.add_trace(go.Scatter(x=x, y=cum_surv.values, name="Surviving", mode="lines",
-                             line=dict(width=3, color="#2e7d32")))
-    fig.add_trace(go.Scatter(x=x, y=cum_deleted.values, name="Deleted", mode="lines",
-                             line=dict(width=3, color=ACCENT),
-                             fill="tozeroy", fillcolor="rgba(204,0,0,0.1)"))
+    fig.add_trace(go.Scatter(
+        x=x_vals, y=cum_total.values,
+        name="Total followed", mode="lines",
+        line=dict(width=2.5, color="#555555", dash="dot"),
+    ))
+    fig.add_trace(go.Scatter(
+        x=x_vals, y=cum_surviving.values,
+        name="Surviving", mode="lines",
+        line=dict(width=3, color="#2e7d32"),
+    ))
+    fig.add_trace(go.Scatter(
+        x=x_vals, y=cum_deleted.values,
+        name="Deleted", mode="lines",
+        line=dict(width=3, color=ACCENT),
+        fill="tozeroy", fillcolor="rgba(204,0,0,0.1)",
+    ))
+
     fig.update_xaxes(title_text="Time (UTC)", tickfont=dict(size=11, family=FONT),
                      showgrid=False, tickangle=-45, tickformat="%d.%m. %H:%M")
     fig.update_yaxes(title_text="Cumulative accounts", tickfont=dict(size=13, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR)
-    fig.update_layout(legend=dict(orientation="h", yanchor="top", y=-0.18,
-                                  xanchor="center", x=0.5,
-                                  font=dict(size=12, family=FONT)))
+    fig.update_layout(
+        legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5,
+                    font=dict(size=12, family=FONT)),
+    )
     return card_layout(fig,
         title="Cumulative network growth & attrition",
-        subtitle="Running totals: growth vs. cleanup",
+        subtitle="Running totals: how fast the bot network grew and how many were removed",
     )
 
 
