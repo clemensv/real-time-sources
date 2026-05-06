@@ -176,7 +176,7 @@ for _idx, (_cid, _title) in enumerate(_CARD_IDS, start=1):
     CELLS.append(code(
         f"_fig = result.cards.get({_cid!r})\n"
         f"if _fig is None:\n"
-        f"    print('Card {_cid!r} not produced (input data unavailable).')\n"
+        f'    print("Card {_cid} not produced (input data unavailable).")\n'
         f"else:\n"
         f"    _fig.show()\n"
     ))
