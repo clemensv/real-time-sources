@@ -33,17 +33,17 @@ GRID_COLOR = "#e0e0e0"
 FONT = "Roboto, sans-serif"
 FONT_BOLD = "Roboto Black, Roboto, sans-serif"
 
-_MONTHS_DE = [
-    "Januar", "Februar", "März", "April", "Mai", "Juni",
-    "Juli", "August", "September", "Oktober", "November", "Dezember",
+_MONTHS_EN = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
 ]
 
 
 def _footer_text() -> str:
     now = datetime.now()
     return (
-        f"Bot-Netzwerk-Analyse • Bluesky Firehose + AT Protocol • "
-        f"{_MONTHS_DE[now.month - 1]} {now.year}"
+        f"Bot network analysis - Bluesky Firehose + AT Protocol - "
+        f"{_MONTHS_EN[now.month - 1]} {now.year}"
     )
 
 
@@ -79,10 +79,7 @@ def card_layout(fig: go.Figure, title: str = "", subtitle: str = "") -> go.Figur
 
 def _date_str() -> str:
     now = datetime.now()
-    return f"{now.day:02d}. {_MONTHS_DE[now.month - 1]} {now.year}, {now.strftime('%H:%M')} Uhr"
-
-
-# ─── Cards ────────────────────────────────────────────────────────────────
+    return f"{_MONTHS_EN[now.month - 1]} {now.day:02d}, {now.year} at {now.strftime('%H:%M')} UTC"
 
 def card_1_overview(scores_df: pd.DataFrame, anchor_handle: str) -> go.Figure:
     total = len(scores_df)
@@ -104,20 +101,20 @@ def card_1_overview(scores_df: pd.DataFrame, anchor_handle: str) -> go.Figure:
     ), row=1, col=1)
 
     fig.add_annotation(
-        text=f"<b>{total}</b> Follower",
+        text=f"<b>{total}</b> followers",
         x=0.5, y=0.78, xref="paper", yref="paper",
         font=dict(size=62, color=TEXT_COLOR, family=FONT_BOLD), showarrow=False,
     )
     fig.add_annotation(
-        text=f"davon <b>{suspicious}</b> Bots, <b>{normal}</b> unauffällig",
+        text=f"of which <b>{suspicious}</b> are bots, <b>{normal}</b> normal",
         x=0.5, y=0.58, xref="paper", yref="paper",
         font=dict(size=34, color=ACCENT, family=FONT_BOLD), showarrow=False,
     )
     stats = [
-        (deleted, "Gelöscht", ACCENT2),
-        (instant, "Sofort-Follow", ACCENT2),
-        (anonymous, "Anonym", ACCENT2),
-        (normal, "Unauffällig", MUTED),
+        (deleted, "Deleted", ACCENT2),
+        (instant, "Instant follow", ACCENT2),
+        (anonymous, "Anonymous", ACCENT2),
+        (normal, "Normal", MUTED),
     ]
     for i, (val, label, color) in enumerate(stats):
         fig.add_trace(go.Indicator(
@@ -127,14 +124,14 @@ def card_1_overview(scores_df: pd.DataFrame, anchor_handle: str) -> go.Figure:
         ), row=2, col=i + 1)
 
     return card_layout(fig,
-        title=f"Bot-Netzwerk um @{anchor_handle}",
-        subtitle=f"Analyse vom {_date_str()}",
+        title=f"Bot network around @{anchor_handle}",
+        subtitle=f"Analysis from {_date_str()}",
     )
 
 
 def card_2_anchors(nodes_df: pd.DataFrame, anchor_handle: str) -> go.Figure:
     if nodes_df.empty:
-        return card_layout(go.Figure(), title="Anker-Konten")
+        return card_layout(go.Figure(), title="Anchor accounts")
     df = nodes_df[nodes_df["handle"] != "bsky.app"].head(10).copy()
     df = df.sort_values("suspect_followers", ascending=True)
     colors = []
@@ -157,8 +154,8 @@ def card_2_anchors(nodes_df: pd.DataFrame, anchor_handle: str) -> go.Figure:
     fig.update_yaxes(tickfont=dict(size=14, color=TEXT_COLOR, family=FONT), domain=[0.0, 0.82])
     fig.update_layout(bargap=0.3, margin=dict(l=50, r=70, t=100, b=45))
     return card_layout(fig,
-        title="Anker-Konten — Wen das Bot-Cluster pusht",
-        subtitle="Konten, die von den meisten verdächtigen Bot-Accounts gemeinsam gefolgt werden",
+        title="Anchor accounts - who the bot cluster amplifies",
+        subtitle="Accounts co-followed by the most suspicious bot accounts",
     )
 
 
@@ -166,9 +163,9 @@ def card_3_behavior(scores_df: pd.DataFrame) -> go.Figure:
     fig = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "bar"}]],
                         column_widths=[0.4, 0.6], horizontal_spacing=0.08)
     bins = [
-        ("Hohes Risiko (≥0,6)", int((scores_df["score"] >= 0.6).sum()), ACCENT),
-        ("Mittel (0,5–0,6)", int(((scores_df["score"] >= 0.5) & (scores_df["score"] < 0.6)).sum()), ACCENT2),
-        ("Niedrig (<0,5)", int((scores_df["score"] < 0.5).sum()), "#999999"),
+        ("High risk (>=0.6)", int((scores_df["score"] >= 0.6).sum()), ACCENT),
+        ("Medium (0.5-0.6)", int(((scores_df["score"] >= 0.5) & (scores_df["score"] < 0.6)).sum()), ACCENT2),
+        ("Low (<0.5)", int((scores_df["score"] < 0.5).sum()), "#999999"),
     ]
     fig.add_trace(go.Pie(
         labels=[b[0] for b in bins], values=[b[1] for b in bins],
@@ -177,7 +174,7 @@ def card_3_behavior(scores_df: pd.DataFrame) -> go.Figure:
     ), row=1, col=1)
     high_risk = scores_df[scores_df["score"] >= 0.5]
     signals = ["temporal_proximity", "anonymity", "activity_pattern", "follow_overlap", "account_age"]
-    labels = ["Timing", "Anonymität", "Aktivität", "Überlapp.", "Alter"]
+    labels = ["Timing", "Anonymity", "Activity", "Overlap", "Age"]
     means = [high_risk[s].mean() if s in high_risk.columns else 0 for s in signals]
     fig.add_trace(go.Bar(
         x=labels, y=means,
@@ -188,8 +185,8 @@ def card_3_behavior(scores_df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(range=[0, 1.08], showgrid=True, gridcolor=GRID_COLOR, row=1, col=2)
     fig.update_xaxes(tickfont=dict(size=13, color=TEXT_COLOR, family=FONT), row=1, col=2)
     return card_layout(fig,
-        title="Bot-Verhaltenssignale — Erkennungsmethode",
-        subtitle="5-Signal-Scoring: Timing, Profil, Aktivität, Überlappung, Kontoalter",
+        title="Bot behavior signals - detection method",
+        subtitle="5-signal scoring: timing, profile, activity, overlap, account age",
     )
 
 
@@ -198,20 +195,20 @@ def card_4_timeline(detail_df: pd.DataFrame) -> go.Figure:
     df["follow_created_at"] = pd.to_datetime(df["follow_created_at"], errors="coerce")
     df = df.dropna(subset=["follow_created_at"])
     if df.empty:
-        return card_layout(go.Figure(), title="Follow-Burst-Zeitverlauf")
+        return card_layout(go.Figure(), title="Follow burst timeline")
     hourly = df.set_index("follow_created_at").resample("1h").size().reset_index(name="count")
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=hourly["follow_created_at"], y=hourly["count"],
         marker_color=ACCENT, opacity=0.85,
     ))
-    fig.update_xaxes(title_text="Datum / Zeit (UTC)", tickfont=dict(size=11, family=FONT),
+    fig.update_xaxes(title_text="Date / time (UTC)", tickfont=dict(size=11, family=FONT),
                      showgrid=False, tickangle=-45, tickformat="%d.%m. %H:%M")
-    fig.update_yaxes(title_text="Follows pro Stunde", tickfont=dict(size=13, family=FONT),
+    fig.update_yaxes(title_text="Follows per hour", tickfont=dict(size=13, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR)
     return card_layout(fig,
-        title="Follow-Burst-Zeitverlauf",
-        subtitle="Stündliche Follow-Ereignisse — Spitzen deuten auf koordinierte Bot-Aktivität hin",
+        title="Follow burst timeline",
+        subtitle="Hourly follow events - spikes indicate coordinated bot activity",
     )
 
 
@@ -221,7 +218,7 @@ def card_5_cluster(nodes_df: pd.DataFrame, edges_df: pd.DataFrame, anchor_handle
     if nodes_df.empty:
         fig = go.Figure()
         fig.update_layout(width=SIZE, height=SIZE)
-        return card_layout(fig, title="Bot-Cluster-Netzwerk")
+        return card_layout(fig, title="Bot cluster network")
 
     G = nx.Graph()
     min_suspect = 10
@@ -235,7 +232,7 @@ def card_5_cluster(nodes_df: pd.DataFrame, edges_df: pd.DataFrame, anchor_handle
     if len(G.nodes()) == 0:
         fig = go.Figure()
         fig.update_layout(width=SIZE, height=SIZE)
-        return card_layout(fig, title="Bot-Cluster-Netzwerk")
+        return card_layout(fig, title="Bot cluster network")
 
     weights = nx.get_node_attributes(G, "weight")
     max_w = max(weights.values()) if weights else 1
@@ -340,11 +337,11 @@ def card_5_cluster(nodes_df: pd.DataFrame, edges_df: pd.DataFrame, anchor_handle
         margin=dict(l=10, r=10, t=70, b=70),
         font=dict(color=TEXT_COLOR, family=FONT, size=14),
         annotations=[
-            dict(text="<b>Bot-Cluster-Netzwerk</b>", xref="paper", yref="paper",
+            dict(text="<b>Bot cluster network</b>", xref="paper", yref="paper",
                  x=0.5, y=1.06, showarrow=False, xanchor="center", yanchor="top",
                  font=dict(size=28, color=TEXT_COLOR, family=FONT_BOLD)),
-            dict(text=(f"Kern: {len(core_nodes)} • Ring: {len(periphery_nodes)} • "
-                       f"Knoten = co-gefolgte Anker"),
+            dict(text=(f"Core: {len(core_nodes)} - Ring: {len(periphery_nodes)} - "
+                       f"nodes = co-followed anchors"),
                  xref="paper", yref="paper",
                  x=0.5, y=1.015, showarrow=False, xanchor="center", yanchor="top",
                  font=dict(size=13, color=MUTED, family=FONT)),
@@ -371,7 +368,7 @@ def card_6_deleted(scores_df: pd.DataFrame) -> go.Figure:
         number=dict(font=dict(size=64, color=ACCENT, family=FONT_BOLD), suffix=f"  ({pct:.0f}%)"),
     ), row=1, col=1)
     fig.add_trace(go.Bar(
-        x=[total_active, total_deleted], y=["Noch aktiv", "Gelöscht/Gesperrt"],
+        x=[total_active, total_deleted], y=["Still active", "Deleted/banned"],
         orientation="h", marker_color=["#cccccc", ACCENT],
         text=[total_active, total_deleted], textposition="inside",
         textfont=dict(size=18, color="white", family=FONT), showlegend=False,
@@ -380,8 +377,8 @@ def card_6_deleted(scores_df: pd.DataFrame) -> go.Figure:
     fig.update_yaxes(tickfont=dict(size=16, color=TEXT_COLOR, family=FONT), row=2, col=1)
     fig.update_layout(margin=dict(l=50, r=50, t=120, b=45))
     return card_layout(fig,
-        title="Kontolöschungen — Hinweis auf Bot-Bereinigung",
-        subtitle="Konten, die der Anker folgten und inzwischen gelöscht oder gesperrt wurden",
+        title="Account deletions - signs of bot cleanup",
+        subtitle="Accounts that followed the anchor and have since been deleted or banned",
     )
 
 
@@ -394,7 +391,7 @@ def card_7_lifecycle(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Fig
     df["follow_created_at"] = pd.to_datetime(df["follow_created_at"], errors="coerce")
     df = df.dropna(subset=["follower_created_at", "follow_created_at"])
     if df.empty:
-        return card_layout(go.Figure(), title="Lebenszyklus-Wellen")
+        return card_layout(go.Figure(), title="Lifecycle waves")
     bin_freq = "1h"
     df["created_bin"] = df["follower_created_at"].dt.floor(bin_freq)
     df["follow_bin"] = df["follow_created_at"].dt.floor(bin_freq)
@@ -405,22 +402,22 @@ def card_7_lifecycle(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Fig
     followed = df.groupby("follow_bin").size().reindex(all_bins, fill_value=0)
     x_labels = [t.strftime("%d.%m. %H:%M") for t in all_bins]
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=x_labels, y=created.values, name="Konten erstellt",
+    fig.add_trace(go.Bar(x=x_labels, y=created.values, name="Accounts created",
                          marker_color="rgba(30,136,229,0.6)"))
-    fig.add_trace(go.Bar(x=x_labels, y=followed.values, name="Follow-Ereignisse",
+    fig.add_trace(go.Bar(x=x_labels, y=followed.values, name="Follow events",
                          marker_color="rgba(204,0,0,0.5)"))
     y_max = max(created.max(), followed.max())
-    fig.update_xaxes(title_text="Zeit (UTC)", tickfont=dict(size=11, family=FONT),
+    fig.update_xaxes(title_text="Time (UTC)", tickfont=dict(size=11, family=FONT),
                      showgrid=False, tickangle=-45)
-    fig.update_yaxes(title_text="Ereignisse pro Stunde", tickfont=dict(size=13, family=FONT),
+    fig.update_yaxes(title_text="Events per hour", tickfont=dict(size=13, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR, range=[0, y_max * 1.15])
     fig.update_layout(barmode="group",
                       legend=dict(orientation="h", yanchor="bottom", y=1.02,
                                   xanchor="right", x=1.0,
                                   font=dict(size=13, family=FONT)))
     return card_layout(fig,
-        title="Lebenszyklus-Wellen — Erstellung & Follow-Aktivität",
-        subtitle="Kontoerstellungs-Bursts eng gekoppelt mit Follow-Ereignissen",
+        title="Lifecycle waves - creation & follow activity",
+        subtitle="Account creation bursts tightly coupled with follow events",
     )
 
 
@@ -433,7 +430,7 @@ def card_8_cumulative(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Fi
     df["follow_created_at"] = pd.to_datetime(df["follow_created_at"], errors="coerce")
     df = df.dropna(subset=["follow_created_at"])
     if df.empty:
-        return card_layout(go.Figure(), title="Kumulatives Netzwerk-Wachstum")
+        return card_layout(go.Figure(), title="Cumulative network growth")
     bin_freq = "1h"
     df["follow_bin"] = df["follow_created_at"].dt.floor(bin_freq)
     t_min = df["follow_created_at"].min().floor("h")
@@ -446,32 +443,32 @@ def card_8_cumulative(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Fi
     cum_surv = cum_total - cum_deleted
     x = all_bins.to_pydatetime().tolist()
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=cum_total.values, name="Gesamt gefolgt", mode="lines",
+    fig.add_trace(go.Scatter(x=x, y=cum_total.values, name="Total followed", mode="lines",
                              line=dict(width=2.5, color="#555555", dash="dot")))
-    fig.add_trace(go.Scatter(x=x, y=cum_surv.values, name="Überlebend", mode="lines",
+    fig.add_trace(go.Scatter(x=x, y=cum_surv.values, name="Surviving", mode="lines",
                              line=dict(width=3, color="#2e7d32")))
-    fig.add_trace(go.Scatter(x=x, y=cum_deleted.values, name="Gelöscht", mode="lines",
+    fig.add_trace(go.Scatter(x=x, y=cum_deleted.values, name="Deleted", mode="lines",
                              line=dict(width=3, color=ACCENT),
                              fill="tozeroy", fillcolor="rgba(204,0,0,0.1)"))
-    fig.update_xaxes(title_text="Zeit (UTC)", tickfont=dict(size=11, family=FONT),
+    fig.update_xaxes(title_text="Time (UTC)", tickfont=dict(size=11, family=FONT),
                      showgrid=False, tickangle=-45, tickformat="%d.%m. %H:%M")
-    fig.update_yaxes(title_text="Kumulierte Konten", tickfont=dict(size=13, family=FONT),
+    fig.update_yaxes(title_text="Cumulative accounts", tickfont=dict(size=13, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR)
     fig.update_layout(legend=dict(orientation="h", yanchor="top", y=-0.18,
                                   xanchor="center", x=0.5,
                                   font=dict(size=12, family=FONT)))
     return card_layout(fig,
-        title="Kumulatives Netzwerk-Wachstum & Schwund",
-        subtitle="Laufende Summe: Wachstum vs. Bereinigung",
+        title="Cumulative network growth & attrition",
+        subtitle="Running totals: growth vs. cleanup",
     )
 
 
 def card_9_age_at_follow(detail_df: pd.DataFrame) -> go.Figure:
     ages = detail_df["age_at_follow_minutes"].dropna()
     if ages.empty:
-        return card_layout(go.Figure(), title="Dauer von Erstellung bis Follow")
+        return card_layout(go.Figure(), title="Time from creation to first follow")
     bins = [0, 1, 2, 5, 10, 30, 60, 120, 360, 1440]
-    labels = ["<1m", "1–2m", "2–5m", "5–10m", "10–30m", "30–60m", "1–2h", "2–6h", "6–24h"]
+    labels = ["<1m", "1-2m", "2-5m", "5-10m", "10-30m", "30-60m", "1-2h", "2-6h", "6-24h"]
     bucketed = pd.cut(ages, bins=bins, labels=labels, right=False)
     counts = bucketed.value_counts().reindex(labels, fill_value=0)
     colors = [ACCENT if i < 3 else ACCENT2 if i < 5 else ACCENT3 for i in range(len(labels))]
@@ -479,16 +476,16 @@ def card_9_age_at_follow(detail_df: pd.DataFrame) -> go.Figure:
     fig.add_trace(go.Bar(x=labels, y=counts.values, marker_color=colors,
                          text=counts.values, textposition="outside",
                          textfont=dict(size=14, family=FONT)))
-    fig.update_xaxes(title_text="Zeit von Kontoerstellung bis Follow",
+    fig.update_xaxes(title_text="Time from account creation to first follow",
                      tickfont=dict(size=14, family=FONT))
-    fig.update_yaxes(title_text="Anzahl Konten",
+    fig.update_yaxes(title_text="Account count",
                      tickfont=dict(size=13, family=FONT), showgrid=True, gridcolor=GRID_COLOR)
     under_5 = int(counts.iloc[:3].sum())
     total = int(counts.sum())
     return card_layout(fig,
-        title="Dauer von Erstellung bis Follow",
-        subtitle=f"{under_5} von {total} neuen Konten ({100*under_5/max(total,1):.0f}%) folgten "
-                 "innerhalb von 5 Min. nach Erstellung",
+        title="Time from creation to first follow",
+        subtitle=f"{under_5} of {total} new accounts ({100*under_5/max(total,1):.0f}%) followed "
+                 "within 5 minutes of creation",
     )
 
 
@@ -497,25 +494,25 @@ def card_10_score_distribution(scores_df: pd.DataFrame) -> go.Figure:
     fig.add_trace(go.Histogram(x=scores_df["score"], nbinsx=25,
                                marker_color=ACCENT, opacity=0.85))
     fig.add_vline(x=0.7, line_dash="dash", line_color="#cc0000",
-                  annotation_text="Hohe Konfidenz", annotation_position="bottom right",
+                  annotation_text="High confidence", annotation_position="bottom right",
                   annotation_font=dict(size=13, family=FONT, color=ACCENT))
     fig.add_vline(x=0.4, line_dash="dash", line_color=ACCENT2,
-                  annotation_text="Mittel", annotation_position="bottom left",
+                  annotation_text="Medium", annotation_position="bottom left",
                   annotation_font=dict(size=13, family=FONT, color=ACCENT2))
-    fig.update_xaxes(title_text="Bot-Score (0 = Mensch, 1 = Bot)",
+    fig.update_xaxes(title_text="Bot score (0 = human, 1 = bot)",
                      tickfont=dict(size=13, family=FONT))
-    fig.update_yaxes(title_text="Anzahl Konten",
+    fig.update_yaxes(title_text="Account count",
                      tickfont=dict(size=13, family=FONT), showgrid=True, gridcolor=GRID_COLOR)
     return card_layout(fig,
-        title="Bot-Score-Verteilung",
-        subtitle=f"Mittelwert: {scores_df['score'].mean():.2f} — höher = bot-ähnlicheres Verhalten",
+        title="Bot score distribution",
+        subtitle=f"Mean: {scores_df['score'].mean():.2f} - higher = more bot-like behavior",
     )
 
 
 def card_11_creation_vs_follow(detail_df: pd.DataFrame) -> go.Figure:
     df = detail_df.dropna(subset=["age_at_follow_minutes"]).copy()
     if df.empty:
-        return card_layout(go.Figure(), title="Kontoerstellung vs. Zeit bis Follow")
+        return card_layout(go.Figure(), title="Account creation vs. time to first follow")
     df["age_capped"] = df["age_at_follow_minutes"].clip(upper=120)
     df["follower_created_at"] = pd.to_datetime(df["follower_created_at"], errors="coerce")
     fig = go.Figure()
@@ -527,15 +524,15 @@ def card_11_creation_vs_follow(detail_df: pd.DataFrame) -> go.Figure:
                                   tickfont=dict(size=11, family=FONT))),
     ))
     fig.add_hline(y=5, line_dash="dash", line_color=ACCENT, line_width=1.5,
-                  annotation_text="5-Min-Schwelle", annotation_position="top right",
+                  annotation_text="5-min threshold", annotation_position="top right",
                   annotation_font=dict(size=12, family=FONT, color=ACCENT))
-    fig.update_xaxes(title_text="Konto erstellt am (UTC)",
+    fig.update_xaxes(title_text="Account created at (UTC)",
                      tickfont=dict(size=12, family=FONT))
-    fig.update_yaxes(title_text="Minuten bis Follow", tickfont=dict(size=12, family=FONT),
+    fig.update_yaxes(title_text="Minutes until first follow", tickfont=dict(size=12, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR)
     return card_layout(fig,
-        title="Kontoerstellung vs. Zeit bis Follow",
-        subtitle="Rote Punkte = Follow fast sofort nach Kontoerstellung",
+        title="Account creation vs. time to first follow",
+        subtitle="Red dots = follow almost immediately after account creation",
     )
 
 
@@ -557,43 +554,43 @@ def card_12_amplifiers(scores_df: pd.DataFrame, cross_df: pd.DataFrame) -> go.Fi
                         horizontal_spacing=0.12,
                         specs=[[{"type": "pie"}, {"type": "bar"}]])
     fig.add_trace(go.Pie(
-        labels=[f"Bots ({len(bots)})", f"Verstärker ({n_amp})", f"Unauffällig ({len(non_amp)})"],
+        labels=[f"Bots ({len(bots)})", f"Amplifiers ({n_amp})", f"Normal ({len(non_amp)})"],
         values=[len(bots), n_amp, len(non_amp)],
         marker=dict(colors=[ACCENT, ACCENT3, "#bbbbbb"]),
         textinfo="percent+label", textfont=dict(size=12, family=FONT),
         hole=0.35, showlegend=False,
     ), row=1, col=1)
     fig.add_trace(go.Bar(
-        x=["Bots", "Verstärker/\nNon-Bots"], y=[bot_pct, non_pct],
+        x=["Bots", "Amplifiers/\nnon-bots"], y=[bot_pct, non_pct],
         marker_color=[ACCENT, ACCENT3],
         text=[f"{v:.0f}%" for v in [bot_pct, non_pct]],
         textposition="outside",
         textfont=dict(size=16, family=FONT_BOLD, color=TEXT_COLOR),
         showlegend=False, width=0.5,
     ), row=1, col=2)
-    fig.update_yaxes(title_text="Ø Quervernetzung (%)",
+    fig.update_yaxes(title_text="Mean cross-follow ratio (%)",
                      tickfont=dict(size=12, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR,
                      range=[0, max(bot_pct, non_pct, 1) * 1.3], row=1, col=2)
     fig.update_xaxes(tickfont=dict(size=13, family=FONT), row=1, col=2)
     return card_layout(fig,
-        title="Verstärker-Konten — Koordinierte Quervernetzung",
-        subtitle=f"{n_amp} Amplifier-Konten • Ø {non_n:.0f} gegenseitige Follows • {n_amp_anon} anonym",
+        title="Amplifier accounts - coordinated cross-following",
+        subtitle=f"{n_amp} amplifier accounts - mean {non_n:.0f} mutual follows - {n_amp_anon} anonymous",
     )
 
 
 def card_13_cross_speed(per_account_df: pd.DataFrame) -> go.Figure:
     if per_account_df.empty:
-        return card_layout(go.Figure(), title="Quervernetzungs-Geschwindigkeit")
+        return card_layout(go.Figure(), title="Cross-following speed")
     df = per_account_df.copy()
     df["first_cross_min"] = df["first_cross"] * 1440
     df["first_cross_capped"] = df["first_cross_min"].clip(upper=120)
-    cat_order = ["Bot", "Verstärker", "Unauffällig"]
-    cat_colors = {"Bot": ACCENT, "Verstärker": ACCENT3, "Unauffällig": MUTED}
+    cat_order = ["Bot", "Amplifier", "Normal"]
+    cat_colors = {"Bot": ACCENT, "Amplifier": ACCENT3, "Normal": MUTED}
     fig = make_subplots(rows=1, cols=2, column_widths=[0.55, 0.45],
                         horizontal_spacing=0.12,
-                        subplot_titles=["Minuten bis erste Quervernetzung",
-                                        "Anteil < 60 Min"])
+                        subplot_titles=["Minutes to first cross-follow",
+                                        "Share < 60 min"])
     for cat in cat_order:
         s = df[df["category"] == cat]
         fig.add_trace(go.Box(y=s["first_cross_capped"], name=cat,
@@ -608,7 +605,7 @@ def card_13_cross_speed(per_account_df: pd.DataFrame) -> go.Figure:
                          text=[f"{v:.0f}%" for v in pcts], textposition="outside",
                          textfont=dict(size=16, family=FONT_BOLD, color=TEXT_COLOR),
                          showlegend=False, width=0.5), row=1, col=2)
-    fig.update_yaxes(title_text="Minuten", showgrid=True, gridcolor=GRID_COLOR,
+    fig.update_yaxes(title_text="Minutes", showgrid=True, gridcolor=GRID_COLOR,
                      tickfont=dict(size=11, family=FONT), range=[0, 125], row=1, col=1)
     fig.update_yaxes(title_text="%", range=[0, 115], showgrid=True,
                      gridcolor=GRID_COLOR, tickfont=dict(size=11, family=FONT), row=1, col=2)
@@ -617,8 +614,8 @@ def card_13_cross_speed(per_account_df: pd.DataFrame) -> go.Figure:
     bot_med = bot["first_cross_min"].median() if len(bot) else 0
     bot_pct60 = 100 * (bot["first_cross_min"] < 60).sum() / len(bot) if len(bot) else 0
     fig = card_layout(fig,
-        title="Quervernetzungs-Geschwindigkeit",
-        subtitle=f"Bot-Median: {bot_med:.0f} Min • {bot_pct60:.0f}% der Bots vernetzen sich in < 1 Stunde")
+        title="Cross-following speed",
+        subtitle=f"Bot median: {bot_med:.0f} min - {bot_pct60:.0f}% of bots cross-follow in < 1 hour")
     fig.update_layout(margin=dict(t=140, b=65))
     return fig
 
@@ -627,7 +624,7 @@ def card_14_blocks_likes(
     scores_df: pd.DataFrame, blocks_df: pd.DataFrame, likes_df: pd.DataFrame
 ) -> go.Figure:
     if blocks_df.empty or likes_df.empty:
-        return card_layout(go.Figure(), title="Blockiert & Liken")
+        return card_layout(go.Figure(), title="Blocks & likes")
     if "subject" in blocks_df.columns:
         blocks_df = blocks_df.rename(columns={"subject": "did"})
     merged = scores_df.merge(blocks_df, on="did", how="left").merge(likes_df, on="did", how="left")
@@ -640,8 +637,8 @@ def card_14_blocks_likes(
 
     fig = make_subplots(rows=1, cols=2, column_widths=[0.5, 0.5],
                         horizontal_spacing=0.12,
-                        subplot_titles=["Ø Blocks erhalten", "Ø Likes abgegeben"])
-    cats = ["Bots", "Verstärker", "Unauffällig"]
+                        subplot_titles=["Mean blocks received", "Mean likes given"])
+    cats = ["Bots", "Amplifiers", "Normal"]
     block_means = [merged[is_bot]["block_count"].mean(),
                    merged[is_amp]["block_count"].mean(),
                    merged[is_norm]["block_count"].mean()]
@@ -664,8 +661,8 @@ def card_14_blocks_likes(
     fig.update_yaxes(range=[0, max(like_means) * 1.35 if like_means else 1], row=1, col=2)
     amp_block_median = int(merged[is_amp]["block_count"].median()) if is_amp.sum() else 0
     return card_layout(fig,
-        title="Blockiert & Liken — Alle Kategorien betroffen",
-        subtitle=f"Verstärker-Median: {amp_block_median} Blocks erhalten",
+        title="Blocks & likes - all categories affected",
+        subtitle=f"Amplifier median: {amp_block_median} blocks received",
     )
 
 
@@ -673,7 +670,7 @@ def card_15_block_hitlist(
     scores_df: pd.DataFrame, blocks_df: pd.DataFrame, nodes_df: pd.DataFrame
 ) -> go.Figure:
     if blocks_df.empty:
-        return card_layout(go.Figure(), title="Block-Hitliste")
+        return card_layout(go.Figure(), title="Block hit list")
     if "subject" in blocks_df.columns:
         blocks_df = blocks_df.rename(columns={"subject": "did"})
     merged = scores_df[["did", "score", "flags"]].merge(blocks_df, on="did", how="left")
@@ -684,19 +681,19 @@ def card_15_block_hitlist(
         )
     else:
         merged["handle"] = pd.NA
-    merged["category"] = "Unauffällig"
+    merged["category"] = "Normal"
     merged.loc[merged["score"] >= 0.5, "category"] = "Bot"
     flags = merged["flags"].fillna("")
-    merged.loc[(merged["score"] < 0.5) & flags.str.contains("AMPLIFICATION"), "category"] = "Verstärker"
+    merged.loc[(merged["score"] < 0.5) & flags.str.contains("AMPLIFICATION"), "category"] = "Amplifier"
     top = merged.nlargest(15, "block_count").copy()
     if top.empty or top["block_count"].max() == 0:
-        return card_layout(go.Figure(), title="Block-Hitliste",
-                           subtitle="Keine Block-Daten verfügbar")
+        return card_layout(go.Figure(), title="Block hit list",
+                           subtitle="No block data available")
     top["label"] = top["handle"].apply(
-        lambda h: f"@{h.replace('.bsky.social', '')}" if pd.notna(h) else "(anonym)"
+        lambda h: f"@{h.replace('.bsky.social', '')}" if pd.notna(h) else "(anonymous)"
     )
     top = top.sort_values("block_count", ascending=True)
-    cat_colors = {"Bot": ACCENT, "Verstärker": ACCENT3, "Unauffällig": MUTED}
+    cat_colors = {"Bot": ACCENT, "Amplifier": ACCENT3, "Normal": MUTED}
     colors = [cat_colors[c] for c in top["category"]]
     fig = go.Figure()
     fig.add_trace(go.Bar(
@@ -713,8 +710,8 @@ def card_15_block_hitlist(
     fig.update_layout(xaxis_range=[0, top["block_count"].max() * 1.18])
     median_all = int(merged["block_count"].median())
     return card_layout(fig,
-        title="Block-Hitliste — Meistgeblockte im Cluster",
-        subtitle=f"Median über alle {len(merged)} Konten: {median_all} Blocks",
+        title="Block hit list - most blocked accounts in the cluster",
+        subtitle=f"Median across all {len(merged)} accounts: {median_all} blocks",
     )
 
 
