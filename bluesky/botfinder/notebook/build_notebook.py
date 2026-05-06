@@ -56,7 +56,8 @@ CELLS = [
     code(
         "# Modul aus dem real-time-sources Repo installieren\n"
         "%pip install -q "
-        "git+https://github.com/clemensv/real-time-sources@main#subdirectory=bluesky/botfinder\n"
+        "git+https://github.com/clemensv/real-time-sources@feat/bluesky-botfinder"
+        "#subdirectory=bluesky/botfinder\n"
     ),
     code(
         "# === PARAMETERS ===\n"
