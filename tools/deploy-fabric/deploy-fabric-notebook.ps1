@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Deploys the bluesky/botfinder Fabric notebook into a Fabric workspace
     and binds it to the source's KQL database.
@@ -168,7 +168,7 @@ $kqlBinding = @(
 )
 $nb.metadata.dependencies | Add-Member -NotePropertyName kqlDatabases -NotePropertyValue $kqlBinding -Force
 
-# Patch the parameters cell — replace KUSTO_URI / KUSTO_DATABASE defaults so
+# Patch the parameters cell - replace KUSTO_URI / KUSTO_DATABASE defaults so
 # the notebook works even if notebookutils.kql.listDatabases() is unavailable.
 $paramsPatched = $false
 foreach ($cell in $nb.cells) {
@@ -187,8 +187,8 @@ foreach ($cell in $nb.cells) {
     $paramsPatched = $true
     break
 }
-if ($paramsPatched) { Write-OK "Patched parameters cell with KUSTO_URI / KUSTO_DATABASE" }
-else                { Write-Info "No 'parameters'-tagged cell found — skipped param patch" }
+if ($paramsPatched) { Write-OK 'Patched parameters cell with KUSTO_URI / KUSTO_DATABASE' }
+else                { Write-Info "No parameters-tagged cell found - skipped param patch" }
 
 $tmpNb = Join-Path $env:TEMP "botfinder_patched_$(Get-Random).ipynb"
 [System.IO.File]::WriteAllText($tmpNb, ($nb | ConvertTo-Json -Depth 50), [System.Text.UTF8Encoding]::new($false))
