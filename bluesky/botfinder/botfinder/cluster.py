@@ -8,6 +8,7 @@ nodes, edges and an interactive Plotly figure ready for inline display.
 from __future__ import annotations
 
 import asyncio
+from ._async import run_async
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -190,7 +191,7 @@ def build_cluster_graph(
         empty = pd.DataFrame()
         return ClusterResult(empty, empty, go.Figure(), analysis.acquired.target_did, config.anchor_handle)
 
-    suspect_follows = asyncio.run(
+    suspect_follows = run_async(
         _fetch_follows_for_suspects(suspect_dids, config.api_concurrency, limit_per_account=200)
     )
     if verbose:
@@ -202,7 +203,7 @@ def build_cluster_graph(
         print(f"  Graph: {len(G.nodes())} nodes / {len(G.edges())} edges")
 
     target_dids = list(G.nodes())
-    handles = asyncio.run(_resolve_handles(target_dids, concurrency=25)) if target_dids else {}
+    handles = run_async(_resolve_handles(target_dids, concurrency=25)) if target_dids else {}
 
     edges_data = [
         {"source": handles.get(u, u), "target": handles.get(v, v), "shared_followers": G[u][v]["weight"]}
@@ -230,7 +231,7 @@ def build_cluster_graph(
         suspect_did_set = set(suspect_dids)
         all_cluster = top10_set | suspect_did_set
 
-        anchor_follows = asyncio.run(
+        anchor_follows = run_async(
             _fetch_follows_for_suspects(top_anchor_dids, config.api_concurrency, limit_per_account=500)
         )
         cluster_member: dict[str, int] = {}
