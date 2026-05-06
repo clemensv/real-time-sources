@@ -200,10 +200,11 @@ def card_4_timeline(detail_df: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=hourly["follow_created_at"], y=hourly["count"],
+        orientation="v",
         marker_color=ACCENT, opacity=0.85,
     ))
     fig.update_xaxes(title_text="Date / time (UTC)", tickfont=dict(size=11, family=FONT),
-                     showgrid=False, tickangle=-45, tickformat="%d.%m. %H:%M", dtick=3600000*6)
+                     showgrid=False, tickangle=-45, tickformat="%d.%m. %H:%M")
     fig.update_yaxes(title_text="Follows per hour", tickfont=dict(size=13, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR)
     return card_layout(fig,
@@ -508,9 +509,9 @@ def card_7_lifecycle(detail_df: pd.DataFrame, scores_df: pd.DataFrame) -> go.Fig
     x_labels = [t.strftime("%H:%M") for t in all_bins]
     fig = go.Figure()
     fig.add_trace(go.Bar(x=x_labels, y=created.values, name="Accounts created",
-                         marker_color="rgba(30,136,229,0.6)"))
+                         orientation="v", marker_color="rgba(30,136,229,0.6)"))
     fig.add_trace(go.Bar(x=x_labels, y=followed.values, name="Follow events",
-                         marker_color="rgba(204,0,0,0.5)"))
+                         orientation="v", marker_color="rgba(204,0,0,0.5)"))
     y_max = max(created.max(), followed.max())
     fig.update_xaxes(title_text="Time (UTC)", tickfont=dict(size=11, family=FONT),
                      showgrid=False, tickangle=-45, dtick=2)
