@@ -126,13 +126,13 @@ def _kql_cross_speed(
     cross = cross[cross["days_to_cross_follow"] >= 0]
 
     cross = cross.merge(scores_df[["did", "score", "flags"]], on="did", how="left")
-    cross["category"] = "Normal"
+    cross["category"] = "Unauffällig"
     cross.loc[cross["score"] >= 0.5, "category"] = "Bot"
     cross.loc[
         (cross["score"] < 0.5)
         & (cross["flags"].fillna("").str.contains("AMPLIFICATION", na=False)),
         "category",
-    ] = "Amplifier"
+    ] = "Verstärker"
 
     if cross.empty:
         per = pd.DataFrame(columns=["did", "first_cross", "median_cross", "n_cross", "category", "score"])
