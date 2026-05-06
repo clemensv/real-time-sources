@@ -56,10 +56,10 @@ CELLS = [
     code(
         "# Modul aus dem real-time-sources Repo installieren (SHA-pinned)\n"
         "%pip install -q --upgrade --force-reinstall --no-cache-dir --no-deps "
-        "git+https://github.com/clemensv/real-time-sources@0ebee8a0e4f51ef17e7c46a71cb89224fae252b7"
+        "git+https://github.com/clemensv/real-time-sources@65de3934a024261d87ebcabc42426b3d82616e83"
         "#subdirectory=bluesky/botfinder\n"
         "%pip install -q "
-        "git+https://github.com/clemensv/real-time-sources@0ebee8a0e4f51ef17e7c46a71cb89224fae252b7"
+        "git+https://github.com/clemensv/real-time-sources@65de3934a024261d87ebcabc42426b3d82616e83"
         "#subdirectory=bluesky/botfinder\n"
     ),
     code(
@@ -206,3 +206,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
