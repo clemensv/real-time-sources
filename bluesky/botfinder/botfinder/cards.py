@@ -605,6 +605,7 @@ def card_9_age_at_follow(detail_df: pd.DataFrame) -> go.Figure:
     colors = [ACCENT if i < 3 else ACCENT2 if i < 5 else ACCENT3 for i in range(len(labels))]
     fig = go.Figure()
     fig.add_trace(go.Bar(x=labels, y=counts.values, marker_color=colors,
+                         orientation="v",
                          text=counts.values, textposition="outside",
                          textfont=dict(size=14, family=FONT)))
     fig.update_xaxes(title_text="Time from account creation to first follow",
