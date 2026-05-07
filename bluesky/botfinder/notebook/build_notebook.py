@@ -180,7 +180,7 @@ for _idx, (_cid, _title) in enumerate(_CARD_IDS, start=1):
         f"if _fig is None:\n"
         f'    print("Card {_cid} not produced (input data unavailable).")\n'
         f"else:\n"
-        f"    _fig.show()\n"
+        f"    displayHTML(_fig.to_html(full_html=True, include_plotlyjs='cdn'))\n"
     ))
 
 CELLS += [
@@ -254,6 +254,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 
 
 
