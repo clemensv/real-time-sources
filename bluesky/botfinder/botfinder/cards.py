@@ -782,7 +782,8 @@ def card_11_creation_vs_follow(detail_df: pd.DataFrame) -> go.Figure:
     fig.add_hline(y=5, line_dash="dash", line_color=ACCENT, line_width=1.5,
                   annotation_text="5-Min-Schwelle", annotation_position="top right",
                   annotation_font=dict(size=12, family=FONT, color=ACCENT))
-    fig.update_xaxes(title_text="Konto erstellt am (UTC)", tickfont=dict(size=12, family=FONT))
+    fig.update_xaxes(title_text="Konto erstellt am (UTC)", tickfont=dict(size=12, family=FONT),
+                     type="category")
     fig.update_yaxes(title_text="Minuten bis Follow", tickfont=dict(size=12, family=FONT),
                      showgrid=True, gridcolor=GRID_COLOR)
     return card_layout(fig,
