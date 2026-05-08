@@ -67,7 +67,8 @@ def _fetch_all_followers_via_api(
         bsky = BlueskyClient(concurrency=concurrency)
         async with httpx.AsyncClient(timeout=30.0) as client:
             return await bsky.get_followers(client, target_handle, limit=max_followers)
-    return asyncio.run(_fetch())
+    from ._async import run_async
+    return run_async(_fetch())
 
 
 def _compute_follow_overlap_from_data(

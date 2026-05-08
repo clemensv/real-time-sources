@@ -1,19 +1,18 @@
-"""KQL queries for bot network analysis."""
+"""KQL queries for bot network analysis.
+
+All queries accept a `target_did` parameter (the resolved DID of the target account).
+DID resolution is handled by the caller via the Bluesky API before query execution.
+"""
 
 TARGET_RESOLUTION = """
 ['Bluesky.Actor.Profile_v2']
-| where display_name contains "{target_handle}"
+| where did == "{target_did}"
 | top 1 by ___time desc
 | project did
 """
 
 NEW_FOLLOWERS_DETAIL = """
-let target_did = toscalar(
-    ['Bluesky.Actor.Profile_v2']
-    | where display_name contains "{target_handle}"
-    | top 1 by ___time desc
-    | project did
-);
+let target_did = "{target_did}";
 let follows = ['Bluesky.Graph.Follow_v1']
 | where subject == target_did
 | join kind=leftouter (
@@ -34,12 +33,7 @@ follows
 """
 
 FOLLOW_TIMECHART = """
-let target_did = toscalar(
-    ['Bluesky.Actor.Profile_v2']
-    | where display_name contains "{target_handle}"
-    | top 1 by ___time desc
-    | project did
-);
+let target_did = "{target_did}";
 let follows = ['Bluesky.Graph.Follow_v1']
 | where subject == target_did
 | join kind=leftouter (
@@ -56,12 +50,7 @@ follows
 """
 
 ACCOUNT_CREATION_TIMECHART = """
-let target_did = toscalar(
-    ['Bluesky.Actor.Profile_v2']
-    | where display_name contains "{target_handle}"
-    | top 1 by ___time desc
-    | project did
-);
+let target_did = "{target_did}";
 let follows = ['Bluesky.Graph.Follow_v1']
 | where subject == target_did
 | join kind=leftouter (
@@ -78,12 +67,7 @@ follows
 """
 
 FOLLOW_OVERLAP = """
-let target_did = toscalar(
-    ['Bluesky.Actor.Profile_v2']
-    | where display_name contains "{target_handle}"
-    | top 1 by ___time desc
-    | project did
-);
+let target_did = "{target_did}";
 let suspect_dids = ['Bluesky.Graph.Follow_v1']
 | where subject == target_did
 | join kind=leftouter (
@@ -107,12 +91,7 @@ let suspect_dids = ['Bluesky.Graph.Follow_v1']
 """
 
 SUMMARY_STATS = """
-let target_did = toscalar(
-    ['Bluesky.Actor.Profile_v2']
-    | where display_name contains "{target_handle}"
-    | top 1 by ___time desc
-    | project did
-);
+let target_did = "{target_did}";
 let follows = ['Bluesky.Graph.Follow_v1']
 | where subject == target_did
 | join kind=leftouter (

@@ -5,6 +5,7 @@ others in the cohort each one follows. Powers cards 12–13.
 from __future__ import annotations
 
 import asyncio
+from ._async import run_async
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -158,7 +159,7 @@ def measure_cross_following(
 
     sample_df = pd.DataFrame()
     if not config.skip_api and not scores_df.empty:
-        sample_df = asyncio.run(
+        sample_df = run_async(
             _measure_via_api(scores_df, sample_size, config.api_concurrency)
         )
 

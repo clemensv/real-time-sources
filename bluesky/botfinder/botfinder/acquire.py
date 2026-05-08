@@ -57,17 +57,18 @@ class AcquiredData:
 
 
 def _resolve_target_did(config: Config) -> str:
+    """Resolve target handle to DID via Bluesky API."""
+    import httpx
     handle = config.anchor_handle
-    query = f"""
-    ['Bluesky.Actor.Profile_v2']
-    | where handle == "{handle}" or display_name contains "{handle.split('.')[0]}"
-    | top 1 by ___time desc
-    | project did
-    """
-    df = execute_query(config, query)
-    if df.empty:
-        raise RuntimeError(f"Could not resolve DID for @{handle}")
-    return df.iloc[0]["did"]
+    try:
+        r = httpx.get(
+            "https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle",
+            params={"handle": handle},
+        )
+        r.raise_for_status()
+        return r.json()["did"]
+    except Exception as exc:
+        raise RuntimeError(f"Could not resolve DID for @{handle}: {exc}") from exc
 
 
 def _extract_follows_to_target(config: Config, target_did: str) -> pd.DataFrame:
