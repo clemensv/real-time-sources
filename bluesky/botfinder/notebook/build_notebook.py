@@ -43,32 +43,38 @@ def md(src: str) -> dict:
 
 CELLS = [
     md(
-        "# Bluesky Bot-Cluster Analyse\n\n"
-        "Diese Notebook erstellt einen vollständigen Bot-Cluster-Report rund um einen "
-        "Bluesky-Anker-Account. Die einzige Konfiguration ist der `ANCHOR_HANDLE` "
-        "in der Parameterzelle weiter unten.\n\n"
-        "**Voraussetzungen**\n"
-        "- Notebook ist mit einer Bluesky-KQL-Datenbank verbunden (KQL-Tab links). "
-        "`deploy-fabric-notebook.ps1` setzt diese Bindung automatisch.\n"
-        "- Identität, mit der das Notebook ausgeführt wird, hat Reader-Rechte auf "
-        "der Eventhouse-Datenbank.\n"
+        "# Bluesky Bot-Cluster Analysis\n\n"
+        "This notebook produces a complete bot-cluster report around a "
+        "Bluesky anchor account. The only mandatory configuration is "
+        "`ANCHOR_HANDLE` in the parameters cell below.\n\n"
+        "**Prerequisites**\n"
+        "- Notebook is bound to a Bluesky KQL database (see KQL tab on the left). "
+        "`deploy-fabric-notebook.ps1` wires this up automatically.\n"
+        "- The identity running the notebook has Reader rights on the "
+        "Eventhouse database.\n"
     ),
     code(
-        "# Modul aus dem real-time-sources Repo installieren\n"
+        "# Upgrade plotly to a recent version (Fabric ships an older default)\n"
+        "%pip install -q --upgrade plotly\n"
+        "# Install module from the real-time-sources repo (SHA-pinned)\n"
+        "%pip install -q --upgrade --force-reinstall --no-cache-dir --no-deps "
+        "git+https://github.com/clemensv/real-time-sources@373e3f9c66ddc15a9d9d06cacfcd79000b424f5d"
+        "#subdirectory=bluesky/botfinder\n"
         "%pip install -q "
-        "git+https://github.com/clemensv/real-time-sources@main#subdirectory=bluesky/botfinder\n"
+        "git+https://github.com/clemensv/real-time-sources@373e3f9c66ddc15a9d9d06cacfcd79000b424f5d"
+        "#subdirectory=bluesky/botfinder\n"
     ),
     code(
         "# === PARAMETERS ===\n"
-        "# Inhaltliche Variable: ANCHOR_HANDLE.\n"
-        "# KUSTO_URI / KUSTO_DATABASE werden vom Deploy-Skript pro Workspace gesetzt.\n"
+        "# Main knob: ANCHOR_HANDLE.\n"
+        "# KUSTO_URI / KUSTO_DATABASE are populated by the deploy script per workspace.\n"
         'ANCHOR_HANDLE  = "niusde.bsky.social"\n'
         "LOOKBACK_DAYS  = 90\n"
         "MAX_FOLLOWERS  = 5000\n"
         "ENRICH_LIMIT   = 400\n"
         "SKIP_API       = False\n"
         "\n"
-        "# Workspace-spezifische Defaults — vom Deploy-Skript überschrieben.\n"
+        "# Workspace-specific defaults - overwritten by the deploy script.\n"
         'KUSTO_URI      = ""\n'
         'KUSTO_DATABASE = ""\n',
         tags=["parameters"],
@@ -94,45 +100,91 @@ CELLS = [
         '    "in the parameters cell."\n'
         ")\n"
     ),
-    md("## Vollständige Pipeline ausführen\n"
-       "Akquise (KQL) → API-Anreicherung → Scoring → Cluster-Graph → "
-       "Cross-Follow → Karten."),
+    md("## Run the full pipeline\n"
+       "Acquire (KQL) -> API enrichment -> scoring -> cluster graph -> "
+       "cross-follow -> cards."),
     code(
         "result = run_full_pipeline(config)\n"
         "scores = result.analysis.scores_df\n"
         'print(f"Cohort: {len(scores)} accounts")\n'
         "print(f\"Bots:   {(scores['score'] >= config.bot_score_threshold).sum()}\")\n"
     ),
-    md("## KPI-Übersicht"),
+    md("## KPI overview"),
     code(
         "import pandas as pd\n"
         "scores = result.analysis.scores_df\n"
         "flags = scores['flags'].fillna('')\n"
         "kpis = pd.DataFrame([\n"
-        "    {'Metrik': 'Cohort total',        'Wert': len(scores)},\n"
-        "    {'Metrik': 'Bots (score≥0.5)',    'Wert': int((scores['score'] >= 0.5).sum())},\n"
-        "    {'Metrik': 'Sofort-Follow',       'Wert': int(flags.str.contains('INSTANT_FOLLOW').sum())},\n"
-        "    {'Metrik': 'Anonyme Profile',     'Wert': int(flags.str.contains('ANONYMOUS_PROFILE').sum())},\n"
-        "    {'Metrik': 'Gelöschte Profile',   'Wert': int(flags.str.contains('DELETED').sum())},\n"
-        "    {'Metrik': 'Cluster-Knoten',      'Wert': len(result.cluster_nodes)},\n"
-        "    {'Metrik': 'Cluster-Kanten',      'Wert': len(result.cluster_edges)},\n"
+        "    {'Metric': 'Cohort total',        'Value': len(scores)},\n"
+        "    {'Metric': 'Bots (score>=0.5)',   'Value': int((scores['score'] >= 0.5).sum())},\n"
+        "    {'Metric': 'Instant follow',      'Value': int(flags.str.contains('INSTANT_FOLLOW').sum())},\n"
+        "    {'Metric': 'Anonymous profiles',  'Value': int(flags.str.contains('ANONYMOUS_PROFILE').sum())},\n"
+        "    {'Metric': 'Deleted profiles',    'Value': int(flags.str.contains('DELETED').sum())},\n"
+        "    {'Metric': 'Cluster nodes',       'Value': len(result.cluster_nodes)},\n"
+        "    {'Metric': 'Cluster edges',       'Value': len(result.cluster_edges)},\n"
         "])\n"
         "display(kpis)\n"
     ),
-    md("## Top-Verdächtige"),
+    md("## Top suspects"),
     code(
         "top = scores.nlargest(20, 'score')[['handle', 'display_name', 'score', 'flags']]\n"
         "display(top)\n"
     ),
-    md("## Karten\n"
-       "Jede Karte ist eine eigenständige Plotly-Visualisierung im 1200×675-Format "
-       "(Karte 5 ist 1200×1200)."),
+    md("## Cards\n"
+       "Each card is a standalone Plotly visualization in 1200x675 format "
+       "(card 5 is 1200x1200). One cell per card so individual figures can be "
+       "re-rendered without re-running the whole pipeline."),
     code(
-        "for card_id, fig in result.cards.items():\n"
-        "    print(card_id)\n"
-        "    fig.show()\n"
+        "CARD_TITLES = {\n"
+        "    'card_01_overview':     '1. Overview',\n"
+        "    'card_02_anchors':      '2. Anchor accounts',\n"
+        "    'card_03_behavior':     '3. Bot behavior signals',\n"
+        "    'card_04_timeline':     '4. Follow burst timeline',\n"
+        "    'card_05_cluster':      '5. Bot cluster network',\n"
+        "    'card_06_deleted':      '6. Account deletions',\n"
+        "    'card_07_lifecycle':    '7. Lifecycle waves',\n"
+        "    'card_08_cumulative':   '8. Cumulative growth',\n"
+        "    'card_09_age_at_follow':'9. Time from creation to follow',\n"
+        "    'card_10_score_dist':   '10. Bot score distribution',\n"
+        "    'card_11_scatter':      '11. Creation vs. time to follow',\n"
+        "    'card_12_amplifiers':   '12. Amplifier accounts',\n"
+        "    'card_13_cross_speed':  '13. Cross-following speed',\n"
+        "    'card_14_blocks_likes': '14. Blocks & likes',\n"
+        "    'card_15_block_hitlist':'15. Block hit list',\n"
+        "}\n"
     ),
-    md("## HTML-Dossier ins Lakehouse schreiben (optional)"),
+]
+
+# One markdown header + one render cell per card
+_CARD_IDS = [
+    ("card_01_overview",     "Overview"),
+    ("card_02_anchors",      "Anchor accounts"),
+    ("card_03_behavior",     "Bot behavior signals"),
+    ("card_04_timeline",     "Follow burst timeline"),
+    ("card_05_cluster",      "Bot cluster network"),
+    ("card_06_deleted",      "Account deletions"),
+    ("card_07_lifecycle",    "Lifecycle waves"),
+    ("card_08_cumulative",   "Cumulative growth"),
+    ("card_09_age_at_follow","Time from creation to follow"),
+    ("card_10_score_dist",   "Bot score distribution"),
+    ("card_11_scatter",      "Creation vs. time to follow"),
+    ("card_12_amplifiers",   "Amplifier accounts"),
+    ("card_13_cross_speed",  "Cross-following speed"),
+    ("card_14_blocks_likes", "Blocks & likes"),
+    ("card_15_block_hitlist","Block hit list"),
+]
+for _idx, (_cid, _title) in enumerate(_CARD_IDS, start=1):
+    CELLS.append(md(f"### Card {_idx} - {_title}"))
+    CELLS.append(code(
+        f"_fig = result.cards.get({_cid!r})\n"
+        f"if _fig is None:\n"
+        f'    print("Card {_cid} not produced (input data unavailable).")\n'
+        f"else:\n"
+        f"    displayHTML(_fig.to_html(full_html=True, include_plotlyjs='cdn'))\n"
+    ))
+
+CELLS += [
+    md("## Write HTML dossier to the lakehouse (optional)"),
     code(
         "from pathlib import Path\n"
         "from botfinder.dossier import render_dossier\n"
@@ -202,3 +254,13 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+

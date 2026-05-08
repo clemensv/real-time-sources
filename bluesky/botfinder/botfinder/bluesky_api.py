@@ -233,4 +233,5 @@ async def enrich_suspects(
 
 
 def enrich_suspects_sync(dids: list[str], concurrency: int = 10) -> dict[str, dict]:
-    return asyncio.run(enrich_suspects(dids, concurrency))
+    from ._async import run_async
+    return run_async(enrich_suspects(dids, concurrency))
