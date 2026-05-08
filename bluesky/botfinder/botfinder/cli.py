@@ -1,12 +1,9 @@
-"""Command-line entry point for the botfinder pipeline.
+"""Command-line entry point for running the full botfinder workflow.
 
-Usage::
-
-    botfinder --anchor niusde.bsky.social --lookback 7 --skip-api \\
-        --output-dir botfinder-output
-
-Reads ``BOTFINDER_KUSTO_URI`` and ``BOTFINDER_KUSTO_DATABASE`` env vars
-unless overridden with ``--kusto-uri`` / ``--kusto-database``.
+The CLI turns user-supplied runtime parameters into a :class:`Config`, runs
+the full acquisition → scoring → graph/card pipeline, and writes the two
+primary deliverables: per-card Plotly HTML files and a consolidated dossier
+for the anchor account under investigation.
 """
 
 from __future__ import annotations
@@ -22,6 +19,12 @@ from .pipeline import run_full_pipeline
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """Create the command-line parser for a botfinder run.
+    
+    Returns:
+        argparse.ArgumentParser: Parser configured with analysis, API, Kusto,
+        and output options for the end-to-end pipeline.
+    """
     p = argparse.ArgumentParser(prog="botfinder",
                                 description="Bluesky bot-cluster analysis")
     p.add_argument("--anchor", required=True,
@@ -45,6 +48,21 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Parse CLI arguments, run the pipeline, and write report artifacts.
+    
+    Args:
+        argv: Optional argument vector for testing. When ``None``, arguments
+            are read from ``sys.argv``.
+    
+    Returns:
+        int: Process exit code. ``0`` means success, while ``2`` indicates a
+        missing Kusto configuration.
+    
+    Notes:
+        The CLI intentionally keeps orchestration thin: acquisition, scoring,
+        clustering, and reporting remain in library modules so notebooks and
+        tests can reuse the same logic.
+    """
     args = _build_parser().parse_args(argv)
 
     overrides: dict = {}

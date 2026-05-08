@@ -1,16 +1,12 @@
-"""Bot behavior scoring and network analysis.
+"""Heuristic bot-scoring logic for Bluesky political-network analysis.
 
-Implements heuristics based on DFRLab's bot detection methodology and
-academic research on coordinated inauthentic behavior (CIB):
-
-Signals scored:
-1. Account age at first follow (temporal proximity)
-2. Profile completeness (anonymity)
-3. Activity volume and patterns
-4. Follow overlap (coordinated following)
-5. Posting behavior (amplification vs. original content)
-6. Handle pattern analysis (random alphanumeric handles)
-7. Temporal burst detection (synchronized account creation)
+This module converts raw acquisition tables and optional API enrichment
+into a composite 0–1 bot score for each cohort account. The signals are
+tuned for the project's domain: accounts that are created shortly before
+following the anchor, expose little identity information, mostly amplify
+content, and share a follow graph with other suspects are more likely to
+belong to a coordinated network rather than to genuine supporters or
+opponents.
 """
 
 import re
@@ -25,6 +21,17 @@ from .bluesky_api import BlueskyProfile, BlueskyPost
 
 @dataclass
 class BotScore:
+    """Structured result of scoring one cohort account.
+    
+    Attributes:
+        did: Permanent DID of the scored account.
+        handle: Current handle, if known.
+        display_name: Current display name, if known.
+        total_score: Composite bot-likelihood score from 0.0 to 1.0.
+        signals: Individual signal scores that explain the composite result.
+        flags: Human-readable labels for notable suspicious behaviors such as
+            instant follows or anonymous profiles.
+    """
     did: str
     handle: str
     display_name: str
@@ -34,15 +41,20 @@ class BotScore:
 
 
 def score_temporal_proximity(age_at_follow_minutes: float) -> float:
-    """Score based on how quickly after creation the account followed the target.
-
-    < 1 min: 1.0 (instant follow = strong bot signal)
-    < 5 min: 0.9
-    < 30 min: 0.7
-    < 60 min: 0.5
-    < 240 min (4h): 0.3
-    > 24h: 0.0
-    NaN: 0.0 (unknown — don't penalize)
+    """Score how quickly an account followed the anchor after creation.
+    
+    Args:
+        age_at_follow_minutes: Minutes between account creation and the follow
+            event into the anchor.
+    
+    Returns:
+        float: Suspicion score between 0.0 and 1.0.
+    
+    Notes:
+        This signal targets throwaway accounts created specifically to attach to
+        the anchor. Following within minutes is one of the clearest indicators
+        of automation or preplanned coordination in the cohort. Unknown timing
+        is treated as neutral rather than suspicious.
     """
     if pd.isna(age_at_follow_minutes):
         return 0.0  # Unknown timing — rely on other signals
@@ -62,13 +74,20 @@ def score_temporal_proximity(age_at_follow_minutes: float) -> float:
 
 
 def score_profile_completeness(profile: BlueskyProfile | None, handle: str = "") -> float:
-    """Score anonymity — incomplete profiles are more suspicious.
-
-    Unresolvable/deleted account: 1.0 (strongest signal)
-    Missing avatar: +0.25
-    Missing display name: +0.25
-    Missing description/bio: +0.25
-    Default/random handle: +0.25
+    """Score how anonymous or disposable an account appears.
+    
+    Args:
+        profile: Resolved Bluesky profile, if one could be fetched.
+        handle: Fallback handle string when the full profile is unavailable.
+    
+    Returns:
+        float: Suspicion score between 0.0 and 1.0.
+    
+    Notes:
+        Accounts with no avatar, no display name, no bio, and random-looking
+        handles are more likely to be throwaway bot identities. Completely
+        unresolvable accounts are scored most strongly because suspension or
+        deletion is common among abusive campaign accounts.
     """
     if not profile:
         if not handle:
@@ -87,7 +106,20 @@ def score_profile_completeness(profile: BlueskyProfile | None, handle: str = "")
 
 
 def _is_random_handle(handle: str) -> bool:
-    """Detect likely auto-generated handles (alphanumeric gibberish)."""
+    """Detect whether a handle looks auto-generated rather than human chosen.
+    
+    Args:
+        handle: Bluesky handle to inspect.
+    
+    Returns:
+        bool: ``True`` when the local part resembles alphanumeric gibberish or
+        a short prefix followed by a long digit suffix.
+    
+    Notes:
+        Random handles are not proof of abuse on their own, but in this domain
+        they are a useful anonymity signal when combined with instant follows
+        and sparse profile metadata.
+    """
     local_part = handle.split(".")[0] if "." in handle else handle
     if not local_part:
         return True
@@ -101,12 +133,20 @@ def _is_random_handle(handle: str) -> bool:
 
 
 def score_activity_pattern(posts: list[BlueskyPost], profile: BlueskyProfile | None) -> float:
-    """Score based on posting behavior analysis.
-
-    High amplification (repost ratio): suspicious
-    No original content: suspicious
-    Zero posts from a new account following someone: strong signal
-    Burst posting: suspicious
+    """Score how much an account behaves like an amplifier instead of a person.
+    
+    Args:
+        posts: Recent author-feed posts fetched from the Bluesky API.
+        profile: Profile snapshot for context such as total post count.
+    
+    Returns:
+        float: Suspicion score between 0.0 and 1.0.
+    
+    Notes:
+        Accounts with no original content, extreme repost ratios,
+        multilingual spray patterns, and near-zero engagement are more
+        consistent with networked amplification than with ordinary political
+        participation.
     """
     if not posts:
         if profile and profile.posts_count == 0:
@@ -151,10 +191,23 @@ def score_activity_pattern(posts: list[BlueskyPost], profile: BlueskyProfile | N
 def score_follow_overlap(
     suspect_follows: list[str], common_targets: set[str], total_suspects: int
 ) -> float:
-    """Score based on how many of the same accounts this suspect follows
-    compared to other suspects in the cluster.
-
-    High overlap = coordinated behavior.
+    """Score how strongly an account's follow graph overlaps suspect targets.
+    
+    Args:
+        suspect_follows: Target DIDs followed by the account being scored.
+        common_targets: Targets already identified as frequent co-follows among
+            suspicious accounts.
+        total_suspects: Total number of scored cohort accounts.
+    
+    Returns:
+        float: Suspicion score between 0.0 and 1.0.
+    
+    Notes:
+        A high score means the account is following the same external political
+        targets as other suspects, which is a coordination signal. The
+        ``total_suspects`` argument is kept for weighting symmetry with other
+        scorers even though the current implementation only uses the shared
+        target set.
     """
     if not suspect_follows or not common_targets:
         return 0.0
@@ -164,7 +217,20 @@ def score_follow_overlap(
 
 
 def score_account_age(created_at: str, lookback_days: int = 7) -> float:
-    """Score based on account age. Accounts created within the analysis window are suspicious."""
+    """Score how newly created the account is relative to the analysis window.
+    
+    Args:
+        created_at: Account creation timestamp from the profile or firehose.
+        lookback_days: Width of the acquisition window for the anchor analysis.
+    
+    Returns:
+        float: Suspicion score between 0.0 and 1.0.
+    
+    Notes:
+        Brand-new accounts are more suspicious in this project because mass
+        follower campaigns often mint large numbers of fresh identities shortly
+        before they begin following political targets.
+    """
     try:
         created = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
         age_hours = (datetime.now(timezone.utc) - created).total_seconds() / 3600
@@ -194,7 +260,30 @@ def compute_bot_score(
     total_suspects: int,
     lookback_days: int = 7,
 ) -> BotScore:
-    """Compute composite bot score from all signals."""
+    """Combine all bot signals into one explainable composite score.
+    
+    Args:
+        did: DID of the account being scored.
+        profile: Optional profile snapshot for anonymity and age signals.
+        posts: Recent posts used for activity-pattern scoring.
+        age_at_follow_minutes: Minutes from account creation to following the
+            anchor, if known.
+        suspect_follows_dids: Targets followed by this account.
+        common_targets: Frequent co-follow targets derived from the suspect
+            cohort.
+        total_suspects: Total number of scored cohort accounts.
+        lookback_days: Analysis lookback window used by the account-age scorer.
+    
+    Returns:
+        BotScore: Composite score plus per-signal explanations and flags.
+    
+    Notes:
+        Timing is weighted most heavily when it is available because instant
+        follows are especially diagnostic. For older API-only followers with no
+        precise follow timestamp, that weight is redistributed to profile,
+        activity, and overlap signals so they are not unfairly penalized for
+        missing data.
+    """
     signals = {}
     flags = []
 
@@ -268,9 +357,21 @@ def compute_bot_score(
 def detect_temporal_bursts(
     df: pd.DataFrame, time_col: str, window: str = "5min", threshold: int = 5
 ) -> pd.DataFrame:
-    """Detect bursts of coordinated activity within tight time windows.
-
-    Returns DataFrame with burst windows and account counts.
+    """Detect tight temporal bursts in account or follow timestamps.
+    
+    Args:
+        df: Input DataFrame containing a timestamp column.
+        time_col: Column name holding the timestamps to bucket.
+        window: Resampling window such as ``"5min"``.
+        threshold: Minimum event count required to label a bucket as a burst.
+    
+    Returns:
+        pd.DataFrame: Burst windows with event counts and a relative intensity
+        score.
+    
+    Notes:
+        Temporal clustering is a common sign of centrally managed campaign
+        behavior, such as account farms being created or deployed in batches.
     """
     df = df.copy()
     df[time_col] = pd.to_datetime(df[time_col])
@@ -281,7 +382,20 @@ def detect_temporal_bursts(
 
 
 def compute_network_statistics(scores: list[BotScore]) -> dict:
-    """Aggregate network-level statistics for the dossier."""
+    """Aggregate cohort-wide statistics from per-account bot scores.
+    
+    Args:
+        scores: Per-account score results for the analyzed cohort.
+    
+    Returns:
+        dict: Summary metrics used by the dossier and CLI, including score
+        distribution and flag prevalence.
+    
+    Notes:
+        This is the bridge from individual suspect scoring to anchor-level
+        narrative claims such as how many followers look highly automated and
+        what fraction of the cohort followed instantly or anonymously.
+    """
     if not scores:
         return {}
 

@@ -1,4 +1,11 @@
-"""HTML dossier report generator using Jinja2 templates."""
+"""Render the final HTML dossier that summarizes one analysis run.
+
+The dossier is the human-readable endpoint of the pipeline. It takes
+aggregate statistics from scoring, Plotly figures from the card stage, and
+curated top suspect rows, then combines them into a single HTML briefing
+suitable for reviewing suspected coordinated inauthentic behavior around
+the anchor account.
+"""
 
 from datetime import datetime, timezone
 from pathlib import Path
@@ -152,7 +159,24 @@ def render_dossier(
     lookback_days: int,
     output_path: Path,
 ) -> Path:
-    """Render the full HTML dossier report."""
+    """Render the final HTML dossier for one anchor account.
+    
+    Args:
+        target_handle: Handle of the analyzed anchor account.
+        stats: Aggregate network metrics computed from the scored cohort.
+        figures: Plotly figures, typically the rendered analysis cards.
+        top_suspects: High-score suspect rows prepared for tabular display.
+        lookback_days: Lookback window used during acquisition.
+        output_path: Destination path for the rendered HTML file.
+    
+    Returns:
+        Path: The path that was written.
+    
+    Notes:
+        Plotly is embedded inline so the dossier remains a self-contained
+        investigative artifact linking narrative explanation, charts, and the
+        most suspicious accounts from the scored cohort.
+    """
     chart_htmls = []
     for fig in figures:
         html = pio.to_html(fig, full_html=False, include_plotlyjs="cdn" if not chart_htmls else False)
