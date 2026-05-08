@@ -1,5 +1,11 @@
-"""Cross-following analysis — sample cohort accounts and measure how many
-others in the cohort each one follows. Powers cards 12–13.
+"""Measure how suspects discover and follow the surrounding network.
+
+This stage looks beyond the anchor account itself. It samples cohort
+members to measure how densely they follow other members of the cohort via
+the public API, and it queries Kusto to estimate how quickly accounts
+cross-follow prominent related targets after account creation. The outputs
+help distinguish organic users from tightly coordinated bot or TARN
+behavior.
 """
 
 from __future__ import annotations
@@ -21,6 +27,17 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @dataclass
 class CrossFollowResult:
+    """Outputs of the cross-follow analysis stage.
+    
+    Attributes:
+        sample: API-sampled per-account cross-follow overlap inside the cohort,
+            useful for comparing high-score suspects with low-score accounts.
+        speed: Event-level KQL table containing ``days_to_cross_follow`` for
+            how quickly cohort accounts followed related targets after
+            creation.
+        per_account: Account-level summary of first and median cross-follow
+            delays, consumed by downstream cards and investigation notebooks.
+    """
     sample: pd.DataFrame  # API-sampled bot vs. non-bot cross-follow rates
     speed: pd.DataFrame  # KQL-derived per-event days_to_cross_follow
     per_account: pd.DataFrame  # min/median days per account
@@ -29,6 +46,24 @@ class CrossFollowResult:
 async def _measure_via_api(
     scores_df: pd.DataFrame, sample_size: int, concurrency: int
 ) -> pd.DataFrame:
+    """Sample bots and non-bots, then measure cohort-overlap in their follows.
+    
+    Args:
+        scores_df: Scored cohort table from ``run_analysis``.
+        sample_size: Total number of accounts to sample across bot and non-bot
+            buckets.
+        concurrency: Maximum parallel Bluesky API calls.
+    
+    Returns:
+        pd.DataFrame: Per-account sample with the share of fetched follows that
+        point back into the analyzed cohort.
+    
+    Notes:
+        Dense cross-following is a coordination signal: managed networks often
+        discover and follow one another quickly, while ordinary followers are
+        less likely to point so much of their follow graph back at the same
+        political cohort.
+    """
     all_dids = set(scores_df["did"].tolist())
     all_handles = set(scores_df["handle"].dropna().tolist())
 
@@ -81,6 +116,24 @@ def _kql_cross_speed(
     anchor_dids: list[str],
     verbose: bool,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Measure time from account creation to cross-following related targets.
+    
+    Args:
+        analysis: Result of ``run_analysis`` containing cohort timing data and
+            bot scores.
+        anchor_dids: Candidate related-target DIDs whose inbound follows should
+            be measured.
+        verbose: Whether to print batch progress.
+    
+    Returns:
+        tuple[pd.DataFrame, pd.DataFrame]: Event-level and account-level tables
+        describing ``days_to_cross_follow``.
+    
+    Notes:
+        This is the stage that helps surface TARN-like behavior: accounts that
+        exhibit rapid coordinated follow timing, but toward adjacent political
+        targets instead of the primary anchor, possibly as camouflage.
+    """
     config = analysis.config
     scores_df = analysis.scores_df
     detail_df = analysis.detail_df
@@ -154,6 +207,23 @@ def measure_cross_following(
     sample_size: int = 80,
     verbose: bool = True,
 ) -> CrossFollowResult:
+    """Run the full cross-follow analysis for a scored cohort.
+    
+    Args:
+        analysis: Output of ``run_analysis`` with scores and raw acquisition
+            tables.
+        sample_size: Number of accounts to inspect in the API sample.
+        verbose: Whether to print progress information.
+    
+    Returns:
+        CrossFollowResult: Sample overlap metrics plus KQL-derived
+        cross-follow speed tables.
+    
+    Notes:
+        The function derives related targets opportunistically from outbound
+        follows already acquired for the cohort. That makes the stage useful
+        even when no explicit external target list is supplied.
+    """
     config = analysis.config
     scores_df = analysis.scores_df
 

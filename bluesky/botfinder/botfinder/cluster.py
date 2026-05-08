@@ -1,8 +1,12 @@
-"""Build the follow co-occurrence cluster graph for the suspect cohort.
+"""Build the co-follow graph for highly scored suspects.
 
-Pure-functional refactor of ``scripts/cluster_graph.py`` and
-``tmp/cluster_graph.py``. Returns a :class:`ClusterResult` dataclass with
-nodes, edges and an interactive Plotly figure ready for inline display.
+After scoring identifies suspect followers of the anchor account, this
+module asks which other accounts those suspects also follow. It converts
+those shared outbound follows into a co-follow network where nodes are
+target accounts and edges indicate that many suspects found both accounts.
+The resulting tables and figure feed downstream cards and help investigators
+spot coordinated political clusters, including camouflage targets
+surrounding the anchor.
 """
 
 from __future__ import annotations
@@ -27,6 +31,17 @@ if TYPE_CHECKING:  # pragma: no cover
 
 @dataclass
 class ClusterResult:
+    """Outputs of the suspect co-follow graph stage.
+    
+    Attributes:
+        nodes_df: One row per significant co-follow target with handle, number
+            of suspect followers, graph degree, and cluster-membership flags.
+        edges_df: One row per pair of targets sharing enough suspect followers
+            to be considered coordinated.
+        figure: Interactive Plotly network figure for card/report rendering.
+        target_did: DID of the analyzed anchor account.
+        target_handle: Human-readable handle of the anchor account.
+    """
     nodes_df: pd.DataFrame
     edges_df: pd.DataFrame
     figure: go.Figure
@@ -39,12 +54,28 @@ async def _fetch_follows_for_suspects(
     concurrency: int,
     limit_per_account: int,
 ) -> dict[str, list[str]]:
+    """Fetch outbound follows for suspect accounts selected by the scorer.
+    
+    Args:
+        suspect_dids: Cohort DIDs whose scores exceed the cluster threshold.
+        concurrency: Maximum parallel Bluesky API calls.
+        limit_per_account: Maximum follow edges to fetch per suspect.
+    
+    Returns:
+        dict[str, list[str]]: Mapping of suspect DID to followed target DIDs.
+    
+    Notes:
+        The graph stage only needs outbound follows, not full profile data. It
+        tolerates per-account API failures by substituting an empty follow list
+        so one bad actor does not abort cluster construction.
+    """
     bsky = BlueskyClient(concurrency=concurrency)
     results: dict[str, list[str]] = {}
     async with httpx.AsyncClient(timeout=30.0) as client:
         sem = asyncio.Semaphore(concurrency)
 
         async def _get_one(did: str):
+            """Fetch one suspect's follow list while honoring shared concurrency limits."""
             async with sem:
                 try:
                     follows = await bsky.get_follows(client, did, limit=limit_per_account)
@@ -57,6 +88,16 @@ async def _fetch_follows_for_suspects(
 
 
 async def _resolve_handles(dids: list[str], concurrency: int = 25) -> dict[str, str]:
+    """Resolve graph node DIDs to readable handles for reports and charts.
+    
+    Args:
+        dids: Target account DIDs appearing as graph nodes.
+        concurrency: Maximum parallel profile lookups.
+    
+    Returns:
+        dict[str, str]: Mapping from DID to resolved handle, falling back to a
+        shortened DID when profile lookup fails.
+    """
     bsky = BlueskyClient(concurrency=concurrency)
     handles: dict[str, str] = {}
     async with httpx.AsyncClient(timeout=30.0) as client:
@@ -76,6 +117,22 @@ def _build_graph(
     suspect_follows: dict[str, list[str]],
     min_followers: int,
 ) -> tuple[nx.Graph, dict[str, int]]:
+    """Convert suspect follow lists into a weighted co-follow network.
+    
+    Args:
+        suspect_follows: Mapping from suspect DID to the targets that account
+            follows.
+        min_followers: Minimum number of suspects that must follow a target, or
+            a target pair, before it is retained in the graph.
+    
+    Returns:
+        tuple[nx.Graph, dict[str, int]]: Weighted undirected graph plus a count
+        of how many suspects followed each retained target.
+    
+    Notes:
+        The filtering step removes one-off follows so the graph emphasizes
+        repeated coordination patterns rather than normal user idiosyncrasies.
+    """
     target_counts: Counter = Counter()
     for did, follows in suspect_follows.items():
         for fdid in follows:
@@ -108,6 +165,22 @@ def _render_figure(
     target_did: str,
     target_handle: str,
 ) -> go.Figure:
+    """Render the co-follow graph as an interactive Plotly network figure.
+    
+    Args:
+        G: Weighted graph produced by :func:`_build_graph`.
+        handles: Mapping from node DID to readable handle.
+        target_did: DID of the analyzed anchor account.
+        target_handle: Handle of the analyzed anchor account.
+    
+    Returns:
+        go.Figure: Plotly figure suitable for the dossier and standalone cards.
+    
+    Notes:
+        The anchor is highlighted separately from highly connected neighbor
+        nodes so investigators can quickly see whether suspect followers are
+        also converging on allied or opponent political accounts.
+    """
     if len(G.nodes()) == 0:
         return go.Figure().update_layout(title="No significant cluster found")
 
@@ -180,6 +253,27 @@ def build_cluster_graph(
     classify_top: int = 200,
     verbose: bool = True,
 ) -> ClusterResult:
+    """Build the suspect co-follow graph from a scored analysis result.
+    
+    Args:
+        analysis: Output of ``run_analysis`` containing scored suspects and raw
+            cohort tables.
+        min_followers: Minimum suspect support required to keep a target node
+            or edge in the graph.
+        classify_top: Number of top nodes to probe further when deciding
+            whether they behave like true cluster members.
+        verbose: Whether to print progress information.
+    
+    Returns:
+        ClusterResult: Node table, edge table, and network figure for
+        downstream card rendering and investigation.
+    
+    Notes:
+        The post-processing step tries to separate central cluster targets from
+        peripheral accounts. It also demotes heavily blocked periphery accounts
+        less aggressively because repeated blocks can indicate real activity
+        rather than a passive bot lure.
+    """
     config = analysis.config
     scores_df = analysis.scores_df
     suspects = scores_df[scores_df["score"] >= config.cluster_score_threshold]

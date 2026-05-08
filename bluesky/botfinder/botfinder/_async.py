@@ -1,5 +1,10 @@
-"""Asyncio helper that works both in plain Python and inside Jupyter/Fabric
-notebooks (where an event loop is already running).
+"""Async runtime bridge used by the pipeline and API helpers.
+
+Several pipeline stages call async Bluesky HTTP helpers from synchronous
+entry points such as the CLI, notebooks, or reporting code. This module
+provides the compatibility shim that runs a coroutine either on the normal
+event-loop-free process or on a dedicated worker-thread loop when Fabric or
+Jupyter already owns the main loop.
 """
 
 from __future__ import annotations
@@ -9,12 +14,20 @@ from typing import Any, Coroutine
 
 
 def run_async(coro: Coroutine[Any, Any, Any]) -> Any:
-    """Run ``coro`` to completion and return its result.
-
-    - If no event loop is running (CLI / scripts), uses :func:`asyncio.run`.
-    - If a loop is already running (Jupyter / Fabric notebooks), executes the
-      coroutine on a fresh loop in a worker thread to avoid the
-      ``asyncio.run() cannot be called from a running event loop`` error.
+    """Execute an async helper from synchronous botfinder code.
+    
+    Args:
+        coro: Coroutine object produced by an async helper such as a Bluesky API
+            fetch or co-follow graph enrichment call.
+    
+    Returns:
+        Any: The coroutine result after it has run to completion.
+    
+    Notes:
+        In CLI and script usage the function delegates to ``asyncio.run``. In
+        Fabric notebooks and Jupyter, where a loop is already active, it spins
+        up a fresh event loop in a worker thread so the rest of the pipeline can
+        keep a synchronous API.
     """
     try:
         asyncio.get_running_loop()
@@ -26,6 +39,7 @@ def run_async(coro: Coroutine[Any, Any, Any]) -> Any:
     result: dict[str, Any] = {}
 
     def _runner() -> None:
+        """Run the coroutine on a dedicated event loop inside the worker thread."""
         loop = asyncio.new_event_loop()
         try:
             asyncio.set_event_loop(loop)

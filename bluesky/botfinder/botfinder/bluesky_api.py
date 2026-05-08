@@ -1,4 +1,11 @@
-"""Bluesky AT Protocol API client for enriching bot detection data."""
+"""Async Bluesky AT Protocol client used to enrich KQL-derived cohorts.
+
+The acquisition stage gets broad firehose coverage from Kusto, but several
+scoring and graph signals need live public API lookups: profiles, recent
+posts, follows, and followers. This module wraps the public ``bsky.app``
+XRPC endpoints into typed dataclasses that downstream scoring, cluster, and
+cross-follow stages can consume without parsing raw JSON repeatedly.
+"""
 
 import httpx
 import asyncio
@@ -11,6 +18,26 @@ XRPC_BASE = "https://public.api.bsky.app/xrpc"
 
 @dataclass
 class BlueskyProfile:
+    """Normalized snapshot of a Bluesky actor profile.
+    
+    The scoring stage uses these fields to judge anonymity and account age, and
+    the dossier uses handles and display names to make suspect rows readable.
+    
+    Attributes:
+        did: Permanent decentralized identifier for the account.
+        handle: Current Bluesky handle, which may change over time.
+        display_name: Human-readable profile name shown in the UI.
+        description: Profile bio text.
+        avatar: Avatar URL; missing avatars are part of the anonymity signal.
+        banner: Banner image URL.
+        created_at: Account creation timestamp from the public API.
+        followers_count: Number of followers the account currently has.
+        follows_count: Number of accounts the actor follows.
+        posts_count: Number of posts on the account.
+        labels: Moderation or classification labels returned by Bluesky.
+        indexed_at: When Bluesky last indexed this profile snapshot.
+    """
+
     did: str
     handle: str
     display_name: str
@@ -27,6 +54,14 @@ class BlueskyProfile:
 
 @dataclass
 class BlueskyPost:
+    """Normalized author-feed item used for activity-pattern scoring.
+    
+    The scoring stage looks at repost ratios, reply-heavy behavior,
+    language diversity, and low-engagement posting to detect amplification
+    accounts that mainly boost political narratives instead of acting like
+    organic users.
+    """
+
     uri: str
     cid: str
     text: str
@@ -41,6 +76,13 @@ class BlueskyPost:
 
 @dataclass
 class FollowRecord:
+    """Compact follow-edge record returned by Bluesky graph endpoints.
+    
+    Instances represent either who an account follows or who follows it,
+    depending on the endpoint. These records feed cohort extension, co-follow
+    overlap measurements, and cross-follow sampling.
+    """
+
     did: str
     handle: str
     display_name: str
@@ -49,13 +91,41 @@ class FollowRecord:
 
 
 class BlueskyClient:
-    """Public Bluesky API client for bot analysis enrichment."""
+    """Rate-limited async client for the public Bluesky XRPC API.
+    
+    The client centralizes retry, concurrency control, and JSON-to-dataclass
+    conversion so the rest of the pipeline can ask domain-level questions such
+    as which profiles look anonymous, what suspects post, and which other
+    political targets they follow.
+    """
 
     def __init__(self, concurrency: int = 10, timeout: float = 30.0):
+        """Configure concurrency and timeout limits for Bluesky API calls.
+        
+        Args:
+            concurrency: Maximum number of concurrent requests allowed from this
+                client instance.
+            timeout: Request timeout in seconds.
+        """
         self._semaphore = asyncio.Semaphore(concurrency)
         self._timeout = timeout
 
     async def _get(self, client: httpx.AsyncClient, endpoint: str, params: dict) -> dict | None:
+        """Issue a single XRPC GET request with lightweight rate-limit handling.
+        
+        Args:
+            client: Shared async HTTP client.
+            endpoint: XRPC method path relative to ``XRPC_BASE``.
+            params: Query-string parameters for the endpoint.
+        
+        Returns:
+            dict | None: Parsed JSON response on success, otherwise ``None``.
+        
+        Notes:
+            The public Bluesky API occasionally returns HTTP 429 while crawling
+            suspect cohorts. The helper honors ``retry-after`` once so scoring and
+            graph stages degrade gracefully instead of failing the run.
+        """
         async with self._semaphore:
             try:
                 resp = await client.get(f"{XRPC_BASE}/{endpoint}", params=params)
@@ -72,6 +142,16 @@ class BlueskyClient:
                 return None
 
     async def get_profile(self, client: httpx.AsyncClient, actor: str) -> BlueskyProfile | None:
+        """Fetch one profile for a DID or handle.
+        
+        Args:
+            client: Shared async HTTP client.
+            actor: DID or handle to resolve.
+        
+        Returns:
+            BlueskyProfile | None: Normalized profile, or ``None`` when the account
+            is unavailable or the request fails.
+        """
         data = await self._get(client, "app.bsky.actor.getProfile", {"actor": actor})
         if not data:
             return None
@@ -93,7 +173,17 @@ class BlueskyClient:
     async def get_profiles_batch(
         self, client: httpx.AsyncClient, actors: list[str]
     ) -> list[BlueskyProfile]:
-        """Fetch up to 25 profiles in a single request."""
+        """Fetch a batch of profile snapshots for enrichment-heavy stages.
+        
+        Args:
+            client: Shared async HTTP client.
+            actors: DIDs or handles to resolve. Bluesky accepts at most 25 per
+                request, so larger input is truncated by this helper.
+        
+        Returns:
+            list[BlueskyProfile]: Parsed profile dataclasses for all rows the API
+            returned successfully.
+        """
         data = await self._get(client, "app.bsky.actor.getProfiles", {"actors": actors[:25]})
         if not data:
             return []
@@ -118,7 +208,22 @@ class BlueskyClient:
     async def get_author_feed(
         self, client: httpx.AsyncClient, actor: str, limit: int = 30
     ) -> list[BlueskyPost]:
-        """Get recent posts from an account to assess activity patterns."""
+        """Fetch recent posts from a suspect for activity-pattern scoring.
+        
+        Args:
+            client: Shared async HTTP client.
+            actor: DID or handle whose author feed should be inspected.
+            limit: Maximum number of feed items to inspect.
+        
+        Returns:
+            list[BlueskyPost]: Recent posts normalized into scoring-friendly
+            dataclasses.
+        
+        Notes:
+            The scoring module uses this feed to spot amplification-heavy
+            accounts that mostly repost, rarely create original content, and
+            receive little engagement.
+        """
         data = await self._get(
             client, "app.bsky.feed.getAuthorFeed",
             {"actor": actor, "limit": min(limit, 100), "filter": "posts_and_author_threads"},
@@ -146,7 +251,22 @@ class BlueskyClient:
     async def get_follows(
         self, client: httpx.AsyncClient, actor: str, limit: int = 100
     ) -> list[FollowRecord]:
-        """Get accounts that an actor follows — to detect follow-overlap in the botnet."""
+        """Fetch accounts followed by an actor.
+        
+        Args:
+            client: Shared async HTTP client.
+            actor: DID or handle whose outbound follows should be fetched.
+            limit: Maximum number of follow edges to collect.
+        
+        Returns:
+            list[FollowRecord]: Follow edges suitable for co-follow overlap and
+            cluster-graph construction.
+        
+        Notes:
+            Shared outbound follows are one of the clearest coordination signals in
+            this project: bot operators often point many throwaway accounts at the
+            same political targets.
+        """
         records: list[FollowRecord] = []
         cursor = None
         while len(records) < limit:
@@ -172,7 +292,17 @@ class BlueskyClient:
     async def get_followers(
         self, client: httpx.AsyncClient, actor: str, limit: int = 100
     ) -> list[FollowRecord]:
-        """Get followers of an account."""
+        """Fetch followers of an anchor account from the public API.
+        
+        Args:
+            client: Shared async HTTP client.
+            actor: DID or handle whose followers should be enumerated.
+            limit: Maximum number of followers to return.
+        
+        Returns:
+            list[FollowRecord]: Follower records used to extend the cohort beyond
+            the KQL lookback window.
+        """
         records: list[FollowRecord] = []
         cursor = None
         while len(records) < limit:
@@ -199,9 +329,21 @@ class BlueskyClient:
 async def enrich_suspects(
     dids: list[str], concurrency: int = 10
 ) -> dict[str, dict]:
-    """Enrich a list of suspect DIDs with full profile + feed data from the Bluesky API.
-
-    Returns a dict keyed by DID with profile, posts, and follows data.
+    """Enrich suspect accounts with the API data needed for scoring.
+    
+    Args:
+        dids: Suspect or priority cohort DIDs selected by ``run_analysis``.
+        concurrency: Maximum parallel request count for the underlying client.
+    
+    Returns:
+        dict[str, dict]: Mapping from DID to a dictionary containing a profile
+        snapshot, recent posts, and outbound follows.
+    
+    Notes:
+        This function bridges acquisition and scoring. KQL provides the broad
+        cohort, while this helper selectively enriches the most suspicious or
+        analytically useful accounts so later heuristics can inspect anonymity,
+        posting behavior, and follow overlap in detail.
     """
     bsky = BlueskyClient(concurrency=concurrency)
     results: dict[str, dict] = {}
@@ -217,6 +359,7 @@ async def enrich_suspects(
 
         # Fetch feeds + follows for top suspects concurrently
         async def _enrich_one(did: str) -> None:
+            """Fetch per-account activity and follow data for one suspect DID."""
             profile = all_profiles.get(did)
             posts = await bsky.get_author_feed(client, did, limit=50)
             follows = await bsky.get_follows(client, did, limit=100)
@@ -233,5 +376,14 @@ async def enrich_suspects(
 
 
 def enrich_suspects_sync(dids: list[str], concurrency: int = 10) -> dict[str, dict]:
+    """Run :func:`enrich_suspects` from synchronous pipeline code.
+    
+    Args:
+        dids: Suspect DIDs to enrich.
+        concurrency: Maximum parallel request count.
+    
+    Returns:
+        dict[str, dict]: Same structure as :func:`enrich_suspects`.
+    """
     from ._async import run_async
     return run_async(enrich_suspects(dids, concurrency))

@@ -1,11 +1,10 @@
-"""High-level pipeline: enrich the cohort via the Bluesky API, score every
-account, and orchestrate cluster/cross-follow/lifecycle/cards.
+"""High-level orchestration for the botfinder analysis workflow.
 
-This module is the public entry point. Two flavours:
-
-- :func:`run_analysis` — scoring only, returns :class:`AnalysisResult`.
-- :func:`run_full_pipeline` — adds cluster, cross-follow, lifecycle and
-  card rendering, returns :class:`FullResult`.
+This module connects the pipeline stages end to end. It starts from raw
+cohort acquisition, optionally extends the cohort through the public
+Bluesky API, computes per-account bot scores, derives overlap statistics,
+and finally feeds cluster, cross-follow, and card-generation stages. It
+exposes a scoring-only entry point and a full reporting entry point.
 """
 
 from __future__ import annotations
@@ -37,6 +36,22 @@ from .scoring import (
 
 @dataclass
 class AnalysisResult:
+    """Outputs of the scoring-focused portion of the pipeline.
+    
+    Attributes:
+        config: Runtime configuration used for the run.
+        acquired: Raw acquisition bundle returned by ``acquire_all``.
+        detail_df: Cohort-level detail table combining KQL-timed followers with
+            older API-only followers.
+        scores_df: Flattened per-account bot score table used by nearly every
+            downstream stage.
+        overlap_df: Table of frequently co-followed targets among instant or
+            highly suspicious followers.
+        network_stats: Aggregate statistics derived from the bot scores.
+        enriched: API enrichment payloads keyed by suspect DID.
+        api_followers: Followers fetched from the public API to extend the
+            cohort beyond the KQL lookback window.
+    """
     config: Config
     acquired: AcquiredData
     detail_df: pd.DataFrame
@@ -49,6 +64,15 @@ class AnalysisResult:
 
 @dataclass
 class FullResult:
+    """Outputs of the full end-to-end pipeline including presentation artifacts.
+    
+    Attributes:
+        analysis: Scoring-stage result from ``run_analysis``.
+        cluster_nodes: Co-follow graph node table.
+        cluster_edges: Co-follow graph edge table.
+        cross_follow_per_account: Account-level cross-follow timing summary.
+        cards: Mapping from card identifier to rendered Plotly figure.
+    """
     analysis: AnalysisResult
     cluster_nodes: pd.DataFrame
     cluster_edges: pd.DataFrame
@@ -57,13 +81,30 @@ class FullResult:
 
     @property
     def scores_df(self) -> pd.DataFrame:
+        """Expose the scored cohort table directly on the full result object.
+        
+        Returns:
+            pd.DataFrame: Alias for ``analysis.scores_df``.
+        """
         return self.analysis.scores_df
 
 
 def _fetch_all_followers_via_api(
     target_handle: str, max_followers: int, concurrency: int
 ) -> list[FollowRecord]:
+    """Fetch the anchor's follower list from the public API.
+    
+    Args:
+        target_handle: Handle of the anchor account.
+        max_followers: Maximum number of follower records to collect.
+        concurrency: Maximum parallel Bluesky API calls.
+    
+    Returns:
+        list[FollowRecord]: Follower records used to extend the cohort beyond
+        KQL-timed follow events.
+    """
     async def _fetch():
+        """Run the async follower crawl used by the synchronous pipeline wrapper."""
         bsky = BlueskyClient(concurrency=concurrency)
         async with httpx.AsyncClient(timeout=30.0) as client:
             return await bsky.get_followers(client, target_handle, limit=max_followers)
@@ -76,6 +117,24 @@ def _compute_follow_overlap_from_data(
     outbound_follows_df: pd.DataFrame,
     target_did: str,
 ) -> pd.DataFrame:
+    """Summarize which external targets are shared across suspect follows.
+    
+    Args:
+        suspect_dids: DIDs selected for overlap analysis, usually very fast
+            followers of the anchor.
+        outbound_follows_df: Cohort outbound follow edges collected during
+            acquisition.
+        target_did: DID of the anchor account so it can be excluded.
+    
+    Returns:
+        pd.DataFrame: Ranked table of frequently co-followed targets and the
+        number of suspect accounts following each one.
+    
+    Notes:
+        This is the first overlap signal feeding the scorer. If many rapid
+        followers also converge on the same political targets, that suggests a
+        centrally managed follow program rather than organic discovery.
+    """
     if outbound_follows_df.empty:
         return pd.DataFrame()
     suspect_follows = outbound_follows_df[outbound_follows_df["did"].isin(suspect_dids)]
@@ -95,7 +154,26 @@ def run_analysis(
     *,
     verbose: bool = True,
 ) -> AnalysisResult:
-    """Acquire (if needed), enrich via the API, and score the cohort."""
+    """Run acquisition, optional enrichment, and bot scoring for one anchor.
+    
+    Args:
+        config: Runtime configuration for the analysis.
+        acquired: Optional precomputed acquisition bundle. When omitted, the
+            function calls ``acquire_all`` first.
+        verbose: Whether to print progress for the acquisition and scoring
+            stages.
+    
+    Returns:
+        AnalysisResult: Detailed cohort tables, bot scores, overlap summaries,
+        and enrichment payloads.
+    
+    Notes:
+        The function merges two cohort views: recent followers with precise KQL
+        timing and older followers discoverable only through the public API. It
+        then prioritizes enrichment budget toward the fastest followers and the
+        most suspicious older accounts before computing the composite bot score
+        for every cohort member.
+    """
     if acquired is None:
         acquired = acquire_all(config, verbose=verbose)
 
@@ -266,7 +344,22 @@ def run_full_pipeline(
     *,
     verbose: bool = True,
 ) -> FullResult:
-    """Full pipeline: analysis + cluster graph + cross-follow + cards."""
+    """Run the full botfinder workflow from acquisition to report figures.
+    
+    Args:
+        config: Runtime configuration for the analysis.
+        acquired: Optional precomputed acquisition bundle.
+        verbose: Whether to print progress across all stages.
+    
+    Returns:
+        FullResult: Scored analysis plus cluster tables, cross-follow
+        summaries, and rendered Plotly cards.
+    
+    Notes:
+        This is the entry point used by the CLI. It preserves the staged data
+        flow so intermediate outputs remain available for notebooks and for the
+        dossier generator.
+    """
     from .cluster import build_cluster_graph
     from .cross_follow import measure_cross_following
     from .cards import render_all_cards
