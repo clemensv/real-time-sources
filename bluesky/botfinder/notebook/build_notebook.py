@@ -56,12 +56,12 @@ CELLS = [
     code(
         "# Upgrade plotly to a recent version (Fabric ships an older default)\n"
         "%pip install -q --upgrade plotly\n"
-        "# Install module from the real-time-sources repo (SHA-pinned)\n"
+        "# Install module from the real-time-sources repo (latest main)\n"
         "%pip install -q --upgrade --force-reinstall --no-cache-dir --no-deps "
-        "git+https://github.com/clemensv/real-time-sources@373e3f9c66ddc15a9d9d06cacfcd79000b424f5d"
+        "git+https://github.com/clemensv/real-time-sources@main"
         "#subdirectory=bluesky/botfinder\n"
         "%pip install -q "
-        "git+https://github.com/clemensv/real-time-sources@373e3f9c66ddc15a9d9d06cacfcd79000b424f5d"
+        "git+https://github.com/clemensv/real-time-sources@main"
         "#subdirectory=bluesky/botfinder\n"
     ),
     code(
