@@ -1,6 +1,6 @@
 
 
-# Kystverket_ais-producer Kafka Producer# Kystverket_ais-producer Event Dispatcher for Apache Kafka
+# Kystverket_ais_producer Kafka Producer# Kystverket_ais_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -86,7 +86,7 @@ Initializes the dispatcher.
 
 ```python
 
-from kystverket_ais-producer import NOKystverketAISProducer```python
+from kystverket_ais_producer import NOKystverketAISProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 

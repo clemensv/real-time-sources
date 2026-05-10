@@ -1,5 +1,5 @@
 """
-Test case for Document
+Test case for BaseStationReport
 """
 
 import os
@@ -8,44 +8,44 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from aisstream_producer_data.aisstream_producer_data.document import Document
+from aisstream_producer_data.basestationreport import BaseStationReport
 
 
-class Test_Document(unittest.TestCase):
+class Test_BaseStationReport(unittest.TestCase):
     """
-    Test case for Document
+    Test case for BaseStationReport
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Document.create_instance()
+        self.instance = Test_BaseStationReport.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Document for testing
+        Create instance of BaseStationReport for testing
         """
-        instance = Document(
-            MessageID=int(99),
-            RepeatIndicator=int(70),
+        instance = BaseStationReport(
+            MessageID=int(62),
+            RepeatIndicator=int(27),
             UserID=int(91),
-            Valid=True,
-            UtcYear=int(39),
-            UtcMonth=int(32),
-            UtcDay=int(25),
-            UtcHour=int(16),
-            UtcMinute=int(79),
-            UtcSecond=int(60),
+            Valid=False,
+            UtcYear=int(33),
+            UtcMonth=int(75),
+            UtcDay=int(66),
+            UtcHour=int(96),
+            UtcMinute=int(70),
+            UtcSecond=int(67),
             PositionAccuracy=True,
-            Longitude=float(32.41184202613074),
-            Latitude=float(38.51428518528203),
-            FixType=int(1),
+            Longitude=float(83.97713754513033),
+            Latitude=float(46.867344704830124),
+            FixType=int(59),
             LongRangeEnable=True,
-            Spare=int(0),
-            Raim=True,
-            CommunicationState=int(40)
+            Spare=int(54),
+            Raim=False,
+            CommunicationState=int(13)
         )
         return instance
 
@@ -54,7 +54,7 @@ class Test_Document(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(99)
+        test_value = int(62)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -62,7 +62,7 @@ class Test_Document(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(70)
+        test_value = int(27)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -78,7 +78,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -86,7 +86,7 @@ class Test_Document(unittest.TestCase):
         """
         Test UtcYear property
         """
-        test_value = int(39)
+        test_value = int(33)
         self.instance.UtcYear = test_value
         self.assertEqual(self.instance.UtcYear, test_value)
     
@@ -94,7 +94,7 @@ class Test_Document(unittest.TestCase):
         """
         Test UtcMonth property
         """
-        test_value = int(32)
+        test_value = int(75)
         self.instance.UtcMonth = test_value
         self.assertEqual(self.instance.UtcMonth, test_value)
     
@@ -102,7 +102,7 @@ class Test_Document(unittest.TestCase):
         """
         Test UtcDay property
         """
-        test_value = int(25)
+        test_value = int(66)
         self.instance.UtcDay = test_value
         self.assertEqual(self.instance.UtcDay, test_value)
     
@@ -110,7 +110,7 @@ class Test_Document(unittest.TestCase):
         """
         Test UtcHour property
         """
-        test_value = int(16)
+        test_value = int(96)
         self.instance.UtcHour = test_value
         self.assertEqual(self.instance.UtcHour, test_value)
     
@@ -118,7 +118,7 @@ class Test_Document(unittest.TestCase):
         """
         Test UtcMinute property
         """
-        test_value = int(79)
+        test_value = int(70)
         self.instance.UtcMinute = test_value
         self.assertEqual(self.instance.UtcMinute, test_value)
     
@@ -126,7 +126,7 @@ class Test_Document(unittest.TestCase):
         """
         Test UtcSecond property
         """
-        test_value = int(60)
+        test_value = int(67)
         self.instance.UtcSecond = test_value
         self.assertEqual(self.instance.UtcSecond, test_value)
     
@@ -142,7 +142,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(32.41184202613074)
+        test_value = float(83.97713754513033)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -150,7 +150,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(38.51428518528203)
+        test_value = float(46.867344704830124)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -158,7 +158,7 @@ class Test_Document(unittest.TestCase):
         """
         Test FixType property
         """
-        test_value = int(1)
+        test_value = int(59)
         self.instance.FixType = test_value
         self.assertEqual(self.instance.FixType, test_value)
     
@@ -174,7 +174,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(0)
+        test_value = int(54)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -182,7 +182,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Raim property
         """
-        test_value = True
+        test_value = False
         self.instance.Raim = test_value
         self.assertEqual(self.instance.Raim, test_value)
     
@@ -190,16 +190,26 @@ class Test_Document(unittest.TestCase):
         """
         Test CommunicationState property
         """
-        test_value = int(40)
+        test_value = int(13)
         self.instance.CommunicationState = test_value
         self.assertEqual(self.instance.CommunicationState, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Document.from_data(bytes_data, media_type)
+        new_instance = BaseStationReport.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = BaseStationReport.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

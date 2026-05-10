@@ -1,4 +1,4 @@
-""" Document dataclass. """
+""" StaticVoyageData dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,33 +15,51 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Document:
+class StaticVoyageData:
     """
-    Document
+    StaticVoyageData
     
     Attributes:
         mmsi (int)
-        aid_type (typing.Optional[int])
-        name (typing.Optional[str])
-        position_accuracy (typing.Optional[int])
-        longitude (float)
-        latitude (float)
+        imo_number (typing.Optional[int])
+        callsign (typing.Optional[str])
+        ship_name (typing.Optional[str])
+        ship_type (typing.Optional[int])
+        dimension_to_bow (typing.Optional[int])
+        dimension_to_stern (typing.Optional[int])
+        dimension_to_port (typing.Optional[int])
+        dimension_to_starboard (typing.Optional[int])
+        draught (typing.Optional[float])
+        destination (typing.Optional[str])
+        eta_month (typing.Optional[int])
+        eta_day (typing.Optional[int])
+        eta_hour (typing.Optional[int])
+        eta_minute (typing.Optional[int])
         timestamp (str)
         station_id (typing.Optional[str])
     """
     
     
     mmsi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
-    aid_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="aid_type"))
-    name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
-    position_accuracy: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="position_accuracy"))
-    longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
+    imo_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imo_number"))
+    callsign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
+    ship_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_name"))
+    ship_type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
+    dimension_to_bow: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_bow"))
+    dimension_to_stern: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_stern"))
+    dimension_to_port: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_port"))
+    dimension_to_starboard: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dimension_to_starboard"))
+    draught: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="draught"))
+    destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination"))
+    eta_month: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_month"))
+    eta_day: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_day"))
+    eta_hour: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_hour"))
+    eta_minute: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_minute"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
     station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Document':
+    def from_serializer_dict(cls, data: dict) -> 'StaticVoyageData':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -114,7 +132,7 @@ class Document:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Document']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['StaticVoyageData']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -151,13 +169,13 @@ class Document:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Document.from_serializer_dict(_record)
+                return StaticVoyageData.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Document':
+    def create_instance(cls) -> 'StaticVoyageData':
         """
         Creates an instance of the dataclass with test values.
         
@@ -165,12 +183,21 @@ class Document:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(71),
-            aid_type=int(3),
-            name='rkmmvjbjbalmhvgaxeev',
-            position_accuracy=int(94),
-            longitude=float(71.07372936763016),
-            latitude=float(74.4421524617907),
-            timestamp='gvcyoddqnxlecpdsjsaq',
-            station_id='yazqurqqbpeoywjwjvhp'
+            mmsi=int(29),
+            imo_number=int(87),
+            callsign='mhwhukdjzmpssmavptuo',
+            ship_name='pvfojemewwmymbkhgvbp',
+            ship_type=int(92),
+            dimension_to_bow=int(100),
+            dimension_to_stern=int(1),
+            dimension_to_port=int(36),
+            dimension_to_starboard=int(92),
+            draught=float(18.983977035719303),
+            destination='htzmuemrrtysqbdqqzxs',
+            eta_month=int(77),
+            eta_day=int(47),
+            eta_hour=int(71),
+            eta_minute=int(97),
+            timestamp='rohsxlbvfrnutyzhwarb',
+            station_id='odeeaghohrulnxxzgmga'
         )

@@ -1,4 +1,4 @@
-""" Document dataclass. """
+""" ShipStaticData dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -11,35 +11,33 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.document import Document
+from aisstream_producer_data.eta import Eta
+from aisstream_producer_data.dimension import Dimension
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class Document:
+class ShipStaticData:
     """
-    Document
+    ShipStaticData
     
     Attributes:
         MessageID (int)
         RepeatIndicator (typing.Optional[int])
         UserID (int)
         Valid (bool)
-        Type (typing.Optional[int])
+        AisVersion (typing.Optional[int])
+        ImoNumber (typing.Optional[int])
+        CallSign (typing.Optional[str])
         Name (typing.Optional[str])
-        PositionAccuracy (typing.Optional[bool])
-        Longitude (float)
-        Latitude (float)
-        Dimension (typing.Optional[Document])
-        Fixtype (typing.Optional[int])
-        Timestamp (typing.Optional[int])
-        OffPosition (typing.Optional[bool])
-        AtoN (typing.Optional[int])
-        Raim (typing.Optional[bool])
-        VirtualAtoN (typing.Optional[bool])
-        AssignedMode (typing.Optional[bool])
+        Type (typing.Optional[int])
+        Dimension (typing.Optional[Dimension])
+        FixType (typing.Optional[int])
+        Eta (typing.Optional[Eta])
+        MaximumStaticDraught (typing.Optional[float])
+        Destination (typing.Optional[str])
+        Dte (typing.Optional[bool])
         Spare (typing.Optional[bool])
-        NameExtension (typing.Optional[str])
     """
     
     
@@ -47,24 +45,21 @@ class Document:
     RepeatIndicator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="RepeatIndicator"))
     UserID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UserID"))
     Valid: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Valid"))
-    Type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Type"))
+    AisVersion: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="AisVersion"))
+    ImoNumber: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ImoNumber"))
+    CallSign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="CallSign"))
     Name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Name"))
-    PositionAccuracy: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="PositionAccuracy"))
-    Longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Longitude"))
-    Latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Latitude"))
-    Dimension: typing.Optional[Document]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Dimension"))
-    Fixtype: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Fixtype"))
-    Timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Timestamp"))
-    OffPosition: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="OffPosition"))
-    AtoN: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="AtoN"))
-    Raim: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Raim"))
-    VirtualAtoN: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="VirtualAtoN"))
-    AssignedMode: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="AssignedMode"))
+    Type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Type"))
+    Dimension: typing.Optional[Dimension]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Dimension"))
+    FixType: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="FixType"))
+    Eta: typing.Optional[Eta]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Eta"))
+    MaximumStaticDraught: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="MaximumStaticDraught"))
+    Destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Destination"))
+    Dte: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Dte"))
     Spare: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare"))
-    NameExtension: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="NameExtension"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'Document':
+    def from_serializer_dict(cls, data: dict) -> 'ShipStaticData':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -137,7 +132,7 @@ class Document:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Document']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['ShipStaticData']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -174,13 +169,13 @@ class Document:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return Document.from_serializer_dict(_record)
+                return ShipStaticData.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'Document':
+    def create_instance(cls) -> 'ShipStaticData':
         """
         Creates an instance of the dataclass with test values.
         
@@ -188,23 +183,20 @@ class Document:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(75),
-            RepeatIndicator=int(11),
-            UserID=int(75),
-            Valid=False,
-            Type=int(28),
-            Name='kyiwyjkgpzdjdamrxubk',
-            PositionAccuracy=True,
-            Longitude=float(98.6807738926553),
-            Latitude=float(52.90852322946497),
+            MessageID=int(85),
+            RepeatIndicator=int(2),
+            UserID=int(69),
+            Valid=True,
+            AisVersion=int(81),
+            ImoNumber=int(36),
+            CallSign='hzvqtuqhfxrojhygrnuk',
+            Name='jwywahblppunbaukojxl',
+            Type=int(1),
             Dimension=None,
-            Fixtype=int(43),
-            Timestamp=int(43),
-            OffPosition=True,
-            AtoN=int(6),
-            Raim=False,
-            VirtualAtoN=False,
-            AssignedMode=False,
-            Spare=True,
-            NameExtension='llwkmxtccrnhgcvksjmo'
+            FixType=int(53),
+            Eta=None,
+            MaximumStaticDraught=float(86.8943602858409),
+            Destination='tdmkupdewofldbgzlzvc',
+            Dte=True,
+            Spare=False
         )

@@ -1,5 +1,5 @@
 """
-Test case for Document
+Test case for PositionReportClassB
 """
 
 import os
@@ -8,38 +8,36 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from kystverket_ais_producer_data.kystverket_ais_producer_data.document import Document
+from kystverket_ais_producer_data.positionreportclassb import PositionReportClassB
 
 
-class Test_Document(unittest.TestCase):
+class Test_PositionReportClassB(unittest.TestCase):
     """
-    Test case for Document
+    Test case for PositionReportClassB
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Document.create_instance()
+        self.instance = Test_PositionReportClassB.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Document for testing
+        Create instance of PositionReportClassB for testing
         """
-        instance = Document(
-            mmsi=int(58),
-            navigation_status=int(3),
-            rate_of_turn=float(47.21346447973123),
-            speed_over_ground=float(44.566784747529475),
-            position_accuracy=int(9),
-            longitude=float(2.150071407184695),
-            latitude=float(20.375763135243762),
-            course_over_ground=float(42.43027928663985),
-            true_heading=int(34),
-            timestamp='knurrnjuxaaowllqgwse',
-            station_id='uqfumioqbqzsogpuhzzi',
-            msg_type=int(44)
+        instance = PositionReportClassB(
+            mmsi=int(24),
+            speed_over_ground=float(44.60388016793907),
+            position_accuracy=int(52),
+            longitude=float(43.73078024489485),
+            latitude=float(22.375695719640355),
+            course_over_ground=float(23.866173619058863),
+            true_heading=int(33),
+            timestamp='lkggeijhxurujhsxhqah',
+            station_id='cdtwsjqlvxcxvqmofifv',
+            msg_type=int(76)
         )
         return instance
 
@@ -48,31 +46,15 @@ class Test_Document(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(58)
+        test_value = int(24)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
-    
-    def test_navigation_status_property(self):
-        """
-        Test navigation_status property
-        """
-        test_value = int(3)
-        self.instance.navigation_status = test_value
-        self.assertEqual(self.instance.navigation_status, test_value)
-    
-    def test_rate_of_turn_property(self):
-        """
-        Test rate_of_turn property
-        """
-        test_value = float(47.21346447973123)
-        self.instance.rate_of_turn = test_value
-        self.assertEqual(self.instance.rate_of_turn, test_value)
     
     def test_speed_over_ground_property(self):
         """
         Test speed_over_ground property
         """
-        test_value = float(44.566784747529475)
+        test_value = float(44.60388016793907)
         self.instance.speed_over_ground = test_value
         self.assertEqual(self.instance.speed_over_ground, test_value)
     
@@ -80,7 +62,7 @@ class Test_Document(unittest.TestCase):
         """
         Test position_accuracy property
         """
-        test_value = int(9)
+        test_value = int(52)
         self.instance.position_accuracy = test_value
         self.assertEqual(self.instance.position_accuracy, test_value)
     
@@ -88,7 +70,7 @@ class Test_Document(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(2.150071407184695)
+        test_value = float(43.73078024489485)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -96,7 +78,7 @@ class Test_Document(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(20.375763135243762)
+        test_value = float(22.375695719640355)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -104,7 +86,7 @@ class Test_Document(unittest.TestCase):
         """
         Test course_over_ground property
         """
-        test_value = float(42.43027928663985)
+        test_value = float(23.866173619058863)
         self.instance.course_over_ground = test_value
         self.assertEqual(self.instance.course_over_ground, test_value)
     
@@ -112,7 +94,7 @@ class Test_Document(unittest.TestCase):
         """
         Test true_heading property
         """
-        test_value = int(34)
+        test_value = int(33)
         self.instance.true_heading = test_value
         self.assertEqual(self.instance.true_heading, test_value)
     
@@ -120,7 +102,7 @@ class Test_Document(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'knurrnjuxaaowllqgwse'
+        test_value = 'lkggeijhxurujhsxhqah'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -128,7 +110,7 @@ class Test_Document(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'uqfumioqbqzsogpuhzzi'
+        test_value = 'cdtwsjqlvxcxvqmofifv'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -136,16 +118,26 @@ class Test_Document(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = int(44)
+        test_value = int(76)
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Document.from_data(bytes_data, media_type)
+        new_instance = PositionReportClassB.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = PositionReportClassB.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

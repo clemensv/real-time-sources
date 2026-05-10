@@ -1,5 +1,5 @@
 """
-Test case for Document
+Test case for AidsToNavigationReport
 """
 
 import os
@@ -8,46 +8,46 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from aisstream_producer_data.document import Document
-from aisstream_producer_data.document import Document
+from aisstream_producer_data.aidstonavigationreport import AidsToNavigationReport
+from aisstream_producer_data.dimension import Dimension
 
 
-class Test_Document(unittest.TestCase):
+class Test_AidsToNavigationReport(unittest.TestCase):
     """
-    Test case for Document
+    Test case for AidsToNavigationReport
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Document.create_instance()
+        self.instance = Test_AidsToNavigationReport.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Document for testing
+        Create instance of AidsToNavigationReport for testing
         """
-        instance = Document(
-            MessageID=int(75),
-            RepeatIndicator=int(11),
-            UserID=int(75),
-            Valid=False,
-            Type=int(28),
-            Name='kyiwyjkgpzdjdamrxubk',
-            PositionAccuracy=True,
-            Longitude=float(98.6807738926553),
-            Latitude=float(52.90852322946497),
+        instance = AidsToNavigationReport(
+            MessageID=int(97),
+            RepeatIndicator=int(49),
+            UserID=int(18),
+            Valid=True,
+            Type=int(11),
+            Name='gctnntwrozmndozujrip',
+            PositionAccuracy=False,
+            Longitude=float(16.965667825285802),
+            Latitude=float(10.501100499568816),
             Dimension=None,
-            Fixtype=int(43),
-            Timestamp=int(43),
+            Fixtype=int(70),
+            Timestamp=int(42),
             OffPosition=True,
-            AtoN=int(6),
-            Raim=False,
-            VirtualAtoN=False,
-            AssignedMode=False,
-            Spare=True,
-            NameExtension='llwkmxtccrnhgcvksjmo'
+            AtoN=int(46),
+            Raim=True,
+            VirtualAtoN=True,
+            AssignedMode=True,
+            Spare=False,
+            NameExtension='jitdifvdhqohfopgtvds'
         )
         return instance
 
@@ -56,7 +56,7 @@ class Test_Document(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(75)
+        test_value = int(97)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -64,7 +64,7 @@ class Test_Document(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(11)
+        test_value = int(49)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -72,7 +72,7 @@ class Test_Document(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(75)
+        test_value = int(18)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -80,7 +80,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -88,7 +88,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Type property
         """
-        test_value = int(28)
+        test_value = int(11)
         self.instance.Type = test_value
         self.assertEqual(self.instance.Type, test_value)
     
@@ -96,7 +96,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Name property
         """
-        test_value = 'kyiwyjkgpzdjdamrxubk'
+        test_value = 'gctnntwrozmndozujrip'
         self.instance.Name = test_value
         self.assertEqual(self.instance.Name, test_value)
     
@@ -104,7 +104,7 @@ class Test_Document(unittest.TestCase):
         """
         Test PositionAccuracy property
         """
-        test_value = True
+        test_value = False
         self.instance.PositionAccuracy = test_value
         self.assertEqual(self.instance.PositionAccuracy, test_value)
     
@@ -112,7 +112,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(98.6807738926553)
+        test_value = float(16.965667825285802)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -120,7 +120,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(52.90852322946497)
+        test_value = float(10.501100499568816)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -136,7 +136,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Fixtype property
         """
-        test_value = int(43)
+        test_value = int(70)
         self.instance.Fixtype = test_value
         self.assertEqual(self.instance.Fixtype, test_value)
     
@@ -144,7 +144,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Timestamp property
         """
-        test_value = int(43)
+        test_value = int(42)
         self.instance.Timestamp = test_value
         self.assertEqual(self.instance.Timestamp, test_value)
     
@@ -160,7 +160,7 @@ class Test_Document(unittest.TestCase):
         """
         Test AtoN property
         """
-        test_value = int(6)
+        test_value = int(46)
         self.instance.AtoN = test_value
         self.assertEqual(self.instance.AtoN, test_value)
     
@@ -168,7 +168,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Raim property
         """
-        test_value = False
+        test_value = True
         self.instance.Raim = test_value
         self.assertEqual(self.instance.Raim, test_value)
     
@@ -176,7 +176,7 @@ class Test_Document(unittest.TestCase):
         """
         Test VirtualAtoN property
         """
-        test_value = False
+        test_value = True
         self.instance.VirtualAtoN = test_value
         self.assertEqual(self.instance.VirtualAtoN, test_value)
     
@@ -184,7 +184,7 @@ class Test_Document(unittest.TestCase):
         """
         Test AssignedMode property
         """
-        test_value = False
+        test_value = True
         self.instance.AssignedMode = test_value
         self.assertEqual(self.instance.AssignedMode, test_value)
     
@@ -192,7 +192,7 @@ class Test_Document(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = True
+        test_value = False
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -200,7 +200,7 @@ class Test_Document(unittest.TestCase):
         """
         Test NameExtension property
         """
-        test_value = 'llwkmxtccrnhgcvksjmo'
+        test_value = 'jitdifvdhqohfopgtvds'
         self.instance.NameExtension = test_value
         self.assertEqual(self.instance.NameExtension, test_value)
     
@@ -210,7 +210,7 @@ class Test_Document(unittest.TestCase):
         """
         media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Document.from_data(bytes_data, media_type)
+        new_instance = AidsToNavigationReport.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
 
@@ -219,7 +219,7 @@ class Test_Document(unittest.TestCase):
         Test to_json method
         """
         json_data = self.instance.to_json()
-        new_instance = Document.from_json(json_data)
+        new_instance = AidsToNavigationReport.from_json(json_data)
         json_data2 = new_instance.to_json()
         self.assertEqual(json_data, json_data2)
 
