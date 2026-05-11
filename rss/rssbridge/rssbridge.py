@@ -502,12 +502,13 @@ async def poll_feeds(feed_urls: List[str], state, producer_instance: MicrosoftOp
         for feed_url in feed_urls:
             process_feed(feed_url, state, producer_instance)
         save_state(state)
-        next_poll = min([
+        poll_times = [
             (datetime.fromisoformat(state.get(feed_url, {}).get("next_check_time", datetime.now(timezone.utc).isoformat())).astimezone(timezone.utc)-datetime.now(timezone.utc)).total_seconds()
             for feed_url in feed_urls if not state.get(feed_url, {}).get("skip", False)
-        ])
+        ]
+        next_poll = min(poll_times) if poll_times else 60
         logging.debug(f"Next poll in {next_poll} seconds")
-        await asyncio.sleep(next_poll)
+        await asyncio.sleep(max(next_poll, 1))
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
