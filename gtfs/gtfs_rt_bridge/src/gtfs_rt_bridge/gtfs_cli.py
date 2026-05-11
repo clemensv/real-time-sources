@@ -13,6 +13,7 @@ import time
 import json
 import argparse
 import logging
+import threading
 from typing import Any, Dict, Generator, Iterable, List, Tuple
 from datetime import datetime, timedelta, timezone
 from tempfile import TemporaryDirectory
@@ -798,11 +799,33 @@ def fetch_and_process_schedule(agency_id: str, reference_producer_client: Genera
         # Calculate the file hashes
         new_hashes = calculate_file_hashes(schedule_file_path)
 
-        # Find new/changed files
+        # Priority order: RT-relevant context first, bulk geometry last
+        STATIC_FILE_PRIORITY = [
+            "agency", "calendar", "calendar_dates",
+            "routes", "stops", "stop_areas",
+            "trips", "stop_times", "frequencies",
+            "transfers", "feed_info", "levels", "pathways",
+            "networks", "route_networks", "areas",
+            "attributions", "booking_rules", "fare_attributes",
+            "fare_leg_rules", "fare_media", "fare_products",
+            "fare_rules", "fare_transfer_rules", "location_groups",
+            "location_group_stores", "timeframes", "translations",
+            "shapes",  # last — largest file, not needed for RT
+        ]
+
+        def _file_priority(file_name: str) -> int:
+            base = os.path.basename(file_name).split(".")[0]
+            try:
+                return STATIC_FILE_PRIORITY.index(base)
+            except ValueError:
+                return len(STATIC_FILE_PRIORITY) - 2  # before shapes
+
+        # Find new/changed files, sorted by priority
         changed_files = []
         for file_name, new_hash in new_hashes.items():
             if force_refresh or (file_name not in old_hashes or old_hashes[file_name] != new_hash):
                 changed_files.append(file_name)
+        changed_files.sort(key=_file_priority)
 
         agency_url = gtfs_url
         agency_rows = read_schedule_file_contents(schedule_file_path, "agency.txt")
@@ -955,8 +978,11 @@ def fetch_and_process_schedule(agency_id: str, reference_producer_client: Genera
                     entity_count += 1
             logger.info("Processed %s %s entities", entity_count, file_base_name)
             reference_producer_client.producer.flush()
-        # Write the new file hashes
-        write_file_hashes(schedule_file_path, new_hashes, cache_dir)
+            # Write hash for this file immediately so a crash only replays
+            # the current file, not the entire set
+            persisted = read_file_hashes(schedule_file_path, cache_dir)
+            persisted[file_name] = new_hashes[file_name]
+            write_file_hashes(schedule_file_path, persisted, cache_dir)
 
 
 def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_topic:str, sasl_username:str|None, sasl_password:str|None,
@@ -997,21 +1023,51 @@ def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_t
         kafka_config['security.protocol'] = 'SSL'
     producer: Producer = Producer(kafka_config, logger=logger)
     gtfs_rt_producer = GeneralTransitFeedRealTimeEventProducer(producer, kafka_topic,cloudevents_mode)
-    gtfs_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)
 
-    last_schedule_run = None
+    # Schedule processing state — accessed from main thread to decide when
+    # to launch, from the background thread to signal completion.
+    schedule_lock = threading.Lock()
+    schedule_thread: threading.Thread | None = None
+    last_schedule_completed: datetime | None = None
+
+    def _run_schedule(force_refresh: bool):
+        """Background worker: fetch + process static schedule files."""
+        nonlocal last_schedule_completed
+        try:
+            # Each thread gets its own EventProducer wrapper (the underlying
+            # confluent-kafka Producer is thread-safe for produce/flush).
+            bg_static_producer = GeneralTransitFeedStaticEventProducer(producer, kafka_topic, cloudevents_mode)
+            logger.info("Background: fetching schedule from %s", gtfs_urls)
+            fetch_and_process_schedule(agency_id, bg_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_refresh, cache_dir=cache_dir)
+            with schedule_lock:
+                last_schedule_completed = datetime.now()
+            logger.info("Background: schedule processing completed")
+        except Exception as e:
+            logger.error("Background: failed to fetch and process schedule: %s", e)
+
     try:
         while True:
             start_time = datetime.now(timezone.utc)
+
+            # Launch schedule processing in background if due
             if gtfs_urls:
-                if force_schedule_refresh or (last_schedule_run is None or datetime.now() - last_schedule_run > timedelta(seconds=schedule_poll_interval)):
-                    try:
-                        last_schedule_run = datetime.now()
-                        logger.info("Fetching schedule from %s", gtfs_urls)
-                        fetch_and_process_schedule(agency_id, gtfs_static_producer, gtfs_urls, gtfs_headers, force_refresh=force_schedule_refresh, cache_dir=cache_dir)
-                        force_schedule_refresh = False
-                    except Exception as e:
-                        logger.error("Failed to fetch and process schedule: %s", e)
+                with schedule_lock:
+                    thread_alive = schedule_thread is not None and schedule_thread.is_alive()
+                    needs_run = force_schedule_refresh or (
+                        last_schedule_completed is None or
+                        datetime.now() - last_schedule_completed > timedelta(seconds=schedule_poll_interval)
+                    )
+                if needs_run and not thread_alive:
+                    schedule_thread = threading.Thread(
+                        target=_run_schedule,
+                        args=(force_schedule_refresh,),
+                        daemon=True,
+                        name="gtfs-schedule"
+                    )
+                    schedule_thread.start()
+                    force_schedule_refresh = False
+
+            # RT polling runs every cycle, regardless of schedule thread
             if gtfs_rt_urls:
                 logger.info("Polling feed updates from %s", gtfs_rt_urls)
                 for gtfs_feed_url in gtfs_rt_urls:
@@ -1019,15 +1075,20 @@ def feed_realtime_messages(agency_id: str, kafka_bootstrap_servers: str, kafka_t
                         poll_and_submit_realtime_feed(agency_id, gtfs_rt_producer, gtfs_feed_url, gtfs_rt_headers, route)
                     except Exception as e:
                         logger.error("Failed to poll and submit feed updates from %s: %s", gtfs_feed_url, e)
-            logger.info("Sleeping for %s seconds. Press Ctrl+C to stop.", poll_interval)
+
             end_time = datetime.now(timezone.utc)
             elapsed_time = end_time - start_time
             if elapsed_time.total_seconds() < poll_interval:
-                logger.info("Sleeping for %s seconds", poll_interval - elapsed_time.total_seconds())
-                time.sleep(poll_interval - elapsed_time.total_seconds())
+                sleep_secs = poll_interval - elapsed_time.total_seconds()
+                logger.info("Sleeping for %s seconds", sleep_secs)
+                time.sleep(sleep_secs)
     except KeyboardInterrupt:
         logger.info("Loop interrupted by user")
 
+    # Wait for any in-flight schedule thread before exit
+    if schedule_thread is not None and schedule_thread.is_alive():
+        logger.info("Waiting for background schedule thread to finish...")
+        schedule_thread.join(timeout=30)
     producer.flush()
 
 

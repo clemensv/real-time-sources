@@ -328,4 +328,218 @@ class TestStreamingScheduleProcessing:
         assert all(call.args[1] != 'stops.txt' for call in mock_read_schedule_file_contents.call_args_list)
         producer_client.send_general_transit_feed_static_stops.assert_called_once()
         producer_client.producer.flush.assert_called()
-        mock_write_file_hashes.assert_called_once_with(schedule_path, {'stops.txt': 'hash-1'}, None)
+        # Per-file hash writes: read_file_hashes called to load persisted state,
+        # then write_file_hashes called with updated hash for just this file
+        assert mock_write_file_hashes.call_count == 1
+        written_hashes = mock_write_file_hashes.call_args[0][1]
+        assert 'stops.txt' in written_hashes
+
+
+@pytest.mark.unit
+class TestStaticFilePriorityOrdering:
+    """Tests for the priority-based ordering of static schedule files."""
+
+    @patch('gtfs_rt_bridge.gtfs_cli.write_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.read_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.calculate_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.iter_schedule_file_contents')
+    @patch('gtfs_rt_bridge.gtfs_cli.read_schedule_file_contents')
+    @patch('gtfs_rt_bridge.gtfs_cli.fetch_schedule_file')
+    def test_shapes_processed_last(
+        self,
+        mock_fetch,
+        mock_read_contents,
+        mock_iter_contents,
+        mock_calc_hashes,
+        mock_read_hashes,
+        mock_write_hashes,
+    ):
+        """Shapes should be processed after all other files."""
+        mock_fetch.return_value = ('etag-1', 'schedule.zip')
+        mock_read_hashes.return_value = {}
+        # All three files are "changed"
+        mock_calc_hashes.return_value = {
+            'shapes.txt': 'h1',
+            'agency.txt': 'h2',
+            'routes.txt': 'h3',
+        }
+        mock_read_contents.side_effect = lambda _p, f: (
+            [{'agency_url': 'https://x'}] if f == 'agency.txt' else []
+        )
+        mock_iter_contents.return_value = iter([])
+
+        producer = Mock()
+        producer.producer = Mock()
+        processing_order = []
+        original_info = gtfs_cli.logger.info
+
+        def capture_info(msg, *args):
+            if msg == "Processing %s entities":
+                processing_order.append(args[0])
+            original_info(msg, *args)
+
+        with patch.dict(gtfs_cli.etags, {}, clear=True), \
+             patch.object(gtfs_cli.logger, 'info', side_effect=capture_info):
+            fetch_and_process_schedule('a1', producer, ['https://x/gtfs.zip'], [], force_refresh=True)
+
+        assert processing_order[-1] == 'shapes', \
+            f"shapes should be last, got order: {processing_order}"
+        assert processing_order[0] == 'agency', \
+            f"agency should be first, got order: {processing_order}"
+
+    def test_priority_list_puts_shapes_last(self):
+        """The STATIC_FILE_PRIORITY constant should end with shapes."""
+        # Import the priority list indirectly by checking the sort behavior
+        files = ['shapes.txt', 'routes.txt', 'agency.txt', 'stops.txt', 'trips.txt']
+        # Reproduce the sort logic from fetch_and_process_schedule
+        STATIC_FILE_PRIORITY = [
+            "agency", "calendar", "calendar_dates",
+            "routes", "stops", "stop_areas",
+            "trips", "stop_times", "frequencies",
+            "transfers", "feed_info", "levels", "pathways",
+            "networks", "route_networks", "areas",
+            "attributions", "booking_rules", "fare_attributes",
+            "fare_leg_rules", "fare_media", "fare_products",
+            "fare_rules", "fare_transfer_rules", "location_groups",
+            "location_group_stores", "timeframes", "translations",
+            "shapes",
+        ]
+
+        def priority(f):
+            base = os.path.basename(f).split(".")[0]
+            try:
+                return STATIC_FILE_PRIORITY.index(base)
+            except ValueError:
+                return len(STATIC_FILE_PRIORITY) - 2
+
+        sorted_files = sorted(files, key=priority)
+        assert sorted_files[-1] == 'shapes.txt'
+        assert sorted_files[0] == 'agency.txt'
+        assert sorted_files.index('routes.txt') < sorted_files.index('trips.txt')
+
+
+@pytest.mark.unit
+class TestPerFileHashWrites:
+    """Tests for per-file hash persistence after each flush."""
+
+    @patch('gtfs_rt_bridge.gtfs_cli.write_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.read_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.calculate_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.iter_schedule_file_contents')
+    @patch('gtfs_rt_bridge.gtfs_cli.read_schedule_file_contents')
+    @patch('gtfs_rt_bridge.gtfs_cli.fetch_schedule_file')
+    def test_hash_written_per_file_not_all_at_end(
+        self,
+        mock_fetch,
+        mock_read_contents,
+        mock_iter_contents,
+        mock_calc_hashes,
+        mock_read_hashes,
+        mock_write_hashes,
+    ):
+        """Each processed file should trigger its own hash write."""
+        mock_fetch.return_value = ('etag-1', 'schedule.zip')
+        mock_read_hashes.return_value = {}
+        mock_calc_hashes.return_value = {
+            'agency.txt': 'ha',
+            'stops.txt': 'hs',
+        }
+        mock_read_contents.side_effect = lambda _p, f: (
+            [{'agency_url': 'https://x'}] if f == 'agency.txt' else []
+        )
+
+        call_count = [0]
+        def iter_side_effect(_path, _fname):
+            call_count[0] += 1
+            if call_count[0] == 1:
+                return iter([{'agency_id': 'a1', 'agency_name': 'Test', 'agency_url': 'https://x', 'agency_timezone': 'UTC'}])
+            return iter([{'stop_id': 's1', 'stop_name': 'S', 'stop_lat': '51', 'stop_lon': '4'}])
+
+        mock_iter_contents.side_effect = iter_side_effect
+
+        producer = Mock()
+        producer.producer = Mock()
+
+        with patch.dict(gtfs_cli.etags, {}, clear=True):
+            fetch_and_process_schedule('a1', producer, ['https://x/gtfs.zip'], [], force_refresh=True)
+
+        # Should be called once per changed file (2 files = 2 writes)
+        assert mock_write_hashes.call_count == 2
+        # First write should contain agency hash
+        first_written = mock_write_hashes.call_args_list[0][0][1]
+        assert 'agency.txt' in first_written
+        # Second write should contain stops hash
+        second_written = mock_write_hashes.call_args_list[1][0][1]
+        assert 'stops.txt' in second_written
+
+
+@pytest.mark.unit
+class TestBackgroundScheduleThread:
+    """Tests for background schedule thread in feed_realtime_messages."""
+
+    @patch('gtfs_rt_bridge.gtfs_cli.poll_and_submit_realtime_feed')
+    @patch('gtfs_rt_bridge.gtfs_cli.fetch_and_process_schedule')
+    @patch('gtfs_rt_bridge.gtfs_cli.Producer')
+    def test_rt_polling_starts_without_waiting_for_schedule(
+        self,
+        mock_producer_cls,
+        mock_fetch_schedule,
+        mock_poll_rt,
+    ):
+        """RT polling should begin on the first loop iteration even while
+        schedule processing runs in the background."""
+        import threading
+
+        mock_producer = Mock()
+        mock_producer_cls.return_value = mock_producer
+
+        # Make schedule processing block until we release it
+        schedule_started = threading.Event()
+        schedule_release = threading.Event()
+
+        def slow_schedule(*args, **kwargs):
+            schedule_started.set()
+            schedule_release.wait(timeout=5)
+
+        mock_fetch_schedule.side_effect = slow_schedule
+
+        # Make RT polling raise KeyboardInterrupt after first call to exit the loop
+        call_count = [0]
+        def rt_poll_then_exit(*args, **kwargs):
+            call_count[0] += 1
+            if call_count[0] >= 1:
+                raise KeyboardInterrupt()
+
+        mock_poll_rt.side_effect = rt_poll_then_exit
+
+        from gtfs_rt_bridge.gtfs_cli import feed_realtime_messages
+
+        try:
+            feed_realtime_messages(
+                agency_id='a1',
+                kafka_bootstrap_servers='localhost:9092',
+                kafka_topic='test',
+                sasl_username=None,
+                sasl_password=None,
+                gtfs_rt_urls=['https://rt.example/feed'],
+                gtfs_rt_headers=[],
+                gtfs_urls=['https://static.example/gtfs.zip'],
+                gtfs_headers=[],
+                mdb_source_id=None,
+                route=None,
+                poll_interval=1,
+                schedule_poll_interval=3600,
+                cloudevents_mode='structured',
+                cache_dir='/tmp/test',
+                force_schedule_refresh=True,
+            )
+        except KeyboardInterrupt:
+            pass
+
+        schedule_release.set()
+
+        # RT polling was called even though schedule hadn't finished
+        assert mock_poll_rt.called, "RT polling should have been called"
+        # Schedule was started in background
+        assert schedule_started.wait(timeout=5), "Schedule thread should have started"
+
