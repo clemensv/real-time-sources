@@ -257,7 +257,11 @@ def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransi
                     logger.debug("Skipping vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
                     continue
             logger.debug("Sending vehicle position: %s, %s", vehicle.vehicle.id, entity.id)
-            producer_client.send_general_transit_feed_real_time_vehicle_vehicle_position(feed_url, agency_id, vehicle, "application/json", flush_producer=False)
+            try:
+                producer_client.send_general_transit_feed_real_time_vehicle_vehicle_position(feed_url, agency_id, vehicle, "application/json", flush_producer=False)
+            except Exception as e:
+                logger.warning("Skipping oversized vehicle position %s: %s", vehicle.vehicle.id, e)
+                continue
             hashes_vehicles[vehicle.vehicle.id] = hash_vph
         elif entity.trip_update and entity.trip_update.trip and entity.trip_update.trip.trip_id:
             trip_update=map_trip_update(entity)
@@ -274,7 +278,11 @@ def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransi
                     logger.debug("Skipping trip update: %s, %s", trip_update.trip.trip_id, entity.id)
                     continue
             logger.debug("Sending trip update: %s, %s", trip_update.trip.trip_id, entity.id)
-            producer_client.send_general_transit_feed_real_time_trip_trip_update(feed_url, agency_id, trip_update, "application/json", flush_producer=False)
+            try:
+                producer_client.send_general_transit_feed_real_time_trip_trip_update(feed_url, agency_id, trip_update, "application/json", flush_producer=False)
+            except Exception as e:
+                logger.warning("Skipping oversized trip update %s: %s", trip_update.trip.trip_id, e)
+                continue
             hashes_trip[trip_update.trip.trip_id] = hash_tuh
         elif entity.alert and len(entity.alert.header_text.translation) > 0:
             alert=map_alert(entity)
@@ -289,7 +297,11 @@ def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransi
                     logger.debug("Skipping alert: %s, %s", alert.header_text, entity.id)
                     continue
             logger.debug("Sending alert: %s, %s", alert.header_text, entity.id)
-            producer_client.send_general_transit_feed_real_time_alert_alert(feed_url, agency_id, alert, "application/json", flush_producer=False)
+            try:
+                producer_client.send_general_transit_feed_real_time_alert_alert(feed_url, agency_id, alert, "application/json", flush_producer=False)
+            except Exception as e:
+                logger.warning("Skipping oversized alert %s: %s", entity.id, e)
+                continue
             hashes_alert[hash_sah] = hash_sah
     producer_client.producer.flush()
 
