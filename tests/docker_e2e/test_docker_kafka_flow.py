@@ -294,6 +294,10 @@ def xceed_image():
 def fienta_image():
     return build_image('fienta')
 
+@pytest.fixture(scope='module')
+def kmi_belgium_image():
+    return build_image('kmi-belgium')
+
 
 # ---------------------------------------------------------------------------
 # Shared helper
@@ -1861,4 +1865,19 @@ class TestFientaDockerFlow:
         _run_kafka_flow_test(
             kafka, fienta_image, self.TOPIC,
             required_exact_types=['Com.Fienta.Event', 'Com.Fienta.EventSaleStatus'],
+        )
+
+
+# ---------------------------------------------------------------------------
+# KMI Belgium (Belgium – automatic weather station observations)
+# ---------------------------------------------------------------------------
+
+class TestKMIBelgiumDockerFlow:
+    TOPIC = 'test-kmi-belgium'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, kmi_belgium_image):
+        _run_kafka_flow_test(
+            kafka, kmi_belgium_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WeatherObservation'],
         )
