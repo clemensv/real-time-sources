@@ -7,13 +7,17 @@ import pytest
 import os
 import hashlib
 import json
+from types import GeneratorType
 from unittest.mock import Mock, patch, mock_open
 from datetime import datetime, timedelta
+import gtfs_rt_bridge.gtfs_cli as gtfs_cli
 from gtfs_rt_bridge.gtfs_cli import (
     parse_connection_string,
     calculate_file_hashes,
     read_file_hashes,
     write_file_hashes,
+    fetch_and_process_schedule,
+    map_stops,
 )
 
 
@@ -243,3 +247,85 @@ class TestHelperFunctions:
         required_keys = ['bootstrap.servers', 'kafka_topic', 'sasl.username', 'sasl.password']
         for key in required_keys:
             assert key in result
+
+
+@pytest.mark.unit
+class TestStreamingScheduleProcessing:
+    """Tests for streaming schedule processing."""
+
+    def test_map_stops_returns_generator(self):
+        """Test that stop mapping accepts iterables and yields lazily."""
+        rows = iter([
+            {
+                'stop_id': 'stop-1',
+                'stop_name': 'Main Stop',
+                'stop_lat': '51.0',
+                'stop_lon': '4.0',
+            }
+        ])
+
+        entities = map_stops(rows)
+
+        assert isinstance(entities, GeneratorType)
+        stops = list(entities)
+        assert len(stops) == 1
+        assert stops[0].stopId == 'stop-1'
+        assert stops[0].stopLat == pytest.approx(51.0)
+        assert stops[0].stopLon == pytest.approx(4.0)
+
+    @patch('gtfs_rt_bridge.gtfs_cli.write_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.calculate_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.read_file_hashes')
+    @patch('gtfs_rt_bridge.gtfs_cli.iter_schedule_file_contents')
+    @patch('gtfs_rt_bridge.gtfs_cli.read_schedule_file_contents')
+    @patch('gtfs_rt_bridge.gtfs_cli.fetch_schedule_file')
+    def test_fetch_and_process_schedule_streams_changed_files(
+        self,
+        mock_fetch_schedule_file,
+        mock_read_schedule_file_contents,
+        mock_iter_schedule_file_contents,
+        mock_read_file_hashes,
+        mock_calculate_file_hashes,
+        mock_write_file_hashes,
+    ):
+        """Test that changed GTFS files are streamed instead of materialized."""
+        schedule_path = 'C:\\cache\\schedule.zip'
+        mock_fetch_schedule_file.return_value = ('etag-1', schedule_path)
+        mock_read_file_hashes.return_value = {}
+        mock_calculate_file_hashes.return_value = {'stops.txt': 'hash-1'}
+
+        def read_side_effect(_schedule_path, file_name):
+            if file_name == 'agency.txt':
+                return [{'agency_url': 'https://agency.example'}]
+            if file_name in ('calendar.txt', 'calendar_dates.txt'):
+                return []
+            raise AssertionError(f'unexpected materialized read for {file_name}')
+
+        mock_read_schedule_file_contents.side_effect = read_side_effect
+        mock_iter_schedule_file_contents.return_value = iter([
+            {
+                'stop_id': 'stop-1',
+                'stop_name': 'Main Stop',
+                'stop_lat': '51.0',
+                'stop_lon': '4.0',
+            }
+        ])
+
+        producer_client = Mock()
+        producer_client.producer = Mock()
+
+        with patch.dict(gtfs_cli.etags, {}, clear=True):
+            fetch_and_process_schedule(
+                agency_id='agency-1',
+                reference_producer_client=producer_client,
+                gtfs_urls=['https://example.com/gtfs.zip'],
+                headers=[],
+                force_refresh=False,
+                cache_dir=None,
+            )
+
+        mock_iter_schedule_file_contents.assert_called_once_with(schedule_path, 'stops.txt')
+        assert all(call.args[1] != 'stops.txt' for call in mock_read_schedule_file_contents.call_args_list)
+        producer_client.send_general_transit_feed_static_stops.assert_called_once()
+        producer_client.producer.flush.assert_called()
+        mock_write_file_hashes.assert_called_once_with(schedule_path, {'stops.txt': 'hash-1'}, None)
