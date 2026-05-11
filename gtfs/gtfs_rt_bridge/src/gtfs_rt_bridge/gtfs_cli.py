@@ -823,190 +823,136 @@ def fetch_and_process_schedule(agency_id: str, reference_producer_client: Genera
                     reference_producer_client.send_general_transit_feed_static_agency(agency_url, (entity.agencyId if entity.agencyId else agency_id), entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "areas":
                 for entity in map_areas(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_areas(agency_url, agency_id+"/"+entity.areaId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "attributions":
                 for entity in map_attributions(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_attributions(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.attributionId+"/"+(entity.routeId if entity.routeId else "any")+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "booking_rules":
                 for entity in map_booking_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_booking_rules(agency_url, agency_id+"/"+entity.bookingRuleId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "fare_attributes":
                 for entity in map_fare_attributes(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_attributes(agency_url, (entity.agencyId if entity.agencyId else agency_id) +"/"+entity.fareId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "fare_leg_rules":
                 for entity in map_fare_leg_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_leg_rules(agency_url, agency_id+"/"+entity.fareLegRuleId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "fare_media":
                 for entity in map_fare_media(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_media(agency_url, agency_id+"/"+entity.fareMediaId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "fare_products":
                 for entity in map_fare_products(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_products(agency_url, agency_id+"/"+entity.fareProductId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "fare_rules":
                 for entity in map_fare_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_rules(agency_url, agency_id+"/"+entity.fareId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "fare_transfer_rules":
                 for entity in map_fare_transfer_rules(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_fare_transfer_rules(agency_url, agency_id+"/"+entity.fareTransferRuleId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "feed_info":
                 for entity in map_feed_info(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_feed_info(agency_url, agency_id+"/"+entity.feedVersion, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "frequencies":
                 for entity in map_frequencies(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_frequencies(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "levels":
                 for entity in map_levels(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_levels(agency_url, agency_id+"/"+entity.levelId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "location_groups":
                 for entity in map_location_groups(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_location_groups(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "location_group_stores":
                 for entity in map_location_group_stores(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_location_group_stores(agency_url, agency_id+"/"+entity.locationGroupId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "networks":
                 for entity in map_networks(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_networks(agency_url, agency_id+"/"+entity.networkId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "pathways":
                 for entity in map_pathways(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_pathways(agency_url, agency_id+"/"+entity.pathwayId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "route_networks":
                 for entity in map_route_networks(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_route_networks(agency_url, agency_id+"/"+entity.routeNetworkId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "routes":
                 for entity in map_routes(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_routes(agency_url, (entity.agencyId if entity.agencyId else agency_id)+"/"+entity.routeId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "shapes":
                 for entity in map_shapes(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_shapes(agency_url, agency_id+"/"+entity.shapeId+"/"+str(entity.shapePtSequence), entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "stop_areas":
                 for entity in map_stop_areas(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_stop_areas(agency_url, agency_id+"/"+entity.stopAreaId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "stops":
                 for entity in map_stops(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_stops(agency_url, agency_id+"/"+entity.stopId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "stop_times":
                 for entity in map_stop_times(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_stop_times(agency_url, agency_id+"/"+entity.stopId+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "timeframes":
                 for entity in map_timeframes(iter_schedule_file_contents(schedule_file_path, file_name), calendar_rows, calendar_dates_rows):
                     reference_producer_client.send_general_transit_feed_static_timeframes(agency_url, agency_id+"/"+entity.timeframeGroupId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "transfers":
                 for entity in map_transfers(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_transfers(agency_url, agency_id+"/"+entity.fromStopId+"/"+entity.toStopId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "translations":
                 for entity in map_translations(iter_schedule_file_contents(schedule_file_path, file_name)):
                     reference_producer_client.send_general_transit_feed_static_translations(agency_url, agency_id+"/"+entity.tableName+"/"+entity.fieldName, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             elif file_base_name == "trips":
                 for entity in map_trips(iter_schedule_file_contents(schedule_file_path, file_name), calendar_rows, calendar_dates_rows):
                     reference_producer_client.send_general_transit_feed_static_trips(agency_url, agency_id+"/"+entity.tripId, entity, flush_producer=False)
                     send_count += 1
                     entity_count += 1
-                    if send_count % 100 == 0:
-                        reference_producer_client.producer.flush()
             logger.info("Processed %s %s entities", entity_count, file_base_name)
             reference_producer_client.producer.flush()
         # Write the new file hashes
