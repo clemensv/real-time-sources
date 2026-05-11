@@ -133,8 +133,14 @@ class TestFileHashCalculation:
         """Test that only .txt files are hashed"""
         mock_zip = Mock()
         mock_zip.namelist.return_value = ['agency.txt', 'routes.txt', 'readme.md', 'image.png']
-        mock_zip.open.return_value.__enter__ = Mock(return_value=Mock(read=Mock(return_value=b'test content')))
-        mock_zip.open.return_value.__exit__ = Mock(return_value=False)
+        def make_file_cm(*_args, **_kwargs):
+            cm = Mock()
+            mock_file = Mock()
+            mock_file.read = Mock(side_effect=[b'test content', b''])
+            cm.__enter__ = Mock(return_value=mock_file)
+            cm.__exit__ = Mock(return_value=False)
+            return cm
+        mock_zip.open = Mock(side_effect=make_file_cm)
         mock_zipfile.return_value.__enter__.return_value = mock_zip
         
         result = calculate_file_hashes('/path/to/schedule.zip')
@@ -152,7 +158,9 @@ class TestFileHashCalculation:
         
         mock_zip = Mock()
         mock_zip.namelist.return_value = ['test.txt']
-        mock_zip.open.return_value.__enter__ = Mock(return_value=Mock(read=Mock(return_value=test_content)))
+        mock_file = Mock()
+        mock_file.read = Mock(side_effect=[test_content, b''])
+        mock_zip.open.return_value.__enter__ = Mock(return_value=mock_file)
         mock_zip.open.return_value.__exit__ = Mock(return_value=False)
         mock_zipfile.return_value.__enter__.return_value = mock_zip
         
