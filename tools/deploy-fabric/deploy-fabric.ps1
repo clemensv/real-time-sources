@@ -545,11 +545,14 @@ if (-not $SkipArm) {
     }
     if ($esConnectionString) {
         $containerTemplateUrl = "$RawBase/$Source/azure-template.json"
-        az deployment group create --resource-group $ResourceGroup --template-uri $containerTemplateUrl --parameters connectionString="$esConnectionString" containerGroupName=$ContainerGroupName -o none 2>&1 | Out-Null
+        $armOut = az deployment group create --resource-group $ResourceGroup --template-uri $containerTemplateUrl --parameters connectionString="$esConnectionString" containerGroupName=$ContainerGroupName -o json 2>&1
     } else {
-        az deployment group create --resource-group $ResourceGroup --template-uri $templateUrl --parameters containerGroupName=$ContainerGroupName -o none 2>&1 | Out-Null
+        $armOut = az deployment group create --resource-group $ResourceGroup --template-uri $templateUrl --parameters containerGroupName=$ContainerGroupName -o json 2>&1
     }
-    if ($LASTEXITCODE -ne 0) { throw "ARM deployment failed" }
+    if ($LASTEXITCODE -ne 0) {
+        $errText = ($armOut | Out-String).Trim()
+        throw "ARM deployment failed: $errText"
+    }
     Write-OK "Container deployed: $ContainerGroupName"
 } else {
     Write-Step "6/6" "Skipping ARM deployment (--SkipArm)"
