@@ -1,0 +1,142 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [AvalancheBulletin] (
+   [region_id]: string,
+   [region_name]: string,
+   [bulletin_id]: string,
+   [publication_time]: datetime,
+   [valid_time_start]: datetime,
+   [valid_time_end]: datetime,
+   [lang]: string,
+   [max_danger_rating]: string,
+   [max_danger_rating_value]: int,
+   [danger_ratings_json]: string,
+   [avalanche_problems_json]: string,
+   [tendency_type]: string,
+   [danger_patterns_json]: string,
+   [avalanche_activity_highlights]: string,
+   [snowpack_structure_comment]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [AvalancheBulletin] column-docstrings (
+   [region_id]: "{\"description\": \"EAWS micro-region identifier from the CAAMLv6 regions array, e.g. AT-07-04-02 for Karwendel Mountains East.\"}",
+   [region_name]: "{\"description\": \"Human-readable name of the EAWS micro-region, e.g. 'Karwendel Mountains East'.\"}",
+   [bulletin_id]: "{\"description\": \"Unique UUID assigned to this bulletin by the ALBINA system, from the CAAMLv6 bulletinID field.\"}",
+   [publication_time]: "{\"description\": \"ISO 8601 timestamp when this bulletin was published by the avalanche warning service.\"}",
+   [valid_time_start]: "{\"description\": \"ISO 8601 start of the validity period for this bulletin.\"}",
+   [valid_time_end]: "{\"description\": \"ISO 8601 end of the validity period for this bulletin.\"}",
+   [lang]: "{\"description\": \"ISO 639-1 language code of the bulletin text, e.g. 'en', 'de', 'it'.\"}",
+   [max_danger_rating]: "{\"description\": \"Highest EAWS danger rating across all elevation bands and time periods in this bulletin. One of: low, moderate, considerable, high, very_high, or null if no ratings are present.\"}",
+   [max_danger_rating_value]: "{\"description\": \"Numeric value (1-5) of the highest EAWS danger rating: 1=low, 2=moderate, 3=considerable, 4=high, 5=very_high. Null if no ratings are present.\"}",
+   [danger_ratings_json]: "{\"description\": \"JSON-encoded array of CAAMLv6 dangerRatings objects, each with mainValue (string), optional elevation (object with upperBound/lowerBound), and validTimePeriod (string: all_day, earlier, later).\"}",
+   [avalanche_problems_json]: "{\"description\": \"JSON-encoded array of CAAMLv6 avalancheProblems objects, each with problemType (e.g. wet_snow, persistent_weak_layers, wind_slab, new_snow, gliding_snow), snowpackStability, frequency, avalancheSize (1-5), aspects array, and optional elevation bounds.\"}",
+   [tendency_type]: "{\"description\": \"Overall tendency of avalanche danger from the first tendency entry: decreasing, steady, or increasing. Null if no tendency data is present.\"}",
+   [danger_patterns_json]: "{\"description\": \"JSON-encoded array of LWD Tyrol danger pattern codes from customData.LWD_Tyrol.dangerPatterns, e.g. [\\\"DP10\\\",\\\"DP4\\\"]. Null if not present (non-Tyrol regions).\"}",
+   [avalanche_activity_highlights]: "{\"description\": \"Summary of current avalanche activity conditions from avalancheActivity.highlights. May contain HTML markup. Null if not provided.\"}",
+   [snowpack_structure_comment]: "{\"description\": \"Description of current snowpack structure and layering from snowpackStructure.comment. May contain HTML markup. Null if not provided.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AvalancheBulletin] ingestion json mapping "AvalancheBulletin_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "region_name", "path": "$.region_name"},
+  {"column": "bulletin_id", "path": "$.bulletin_id"},
+  {"column": "publication_time", "path": "$.publication_time"},
+  {"column": "valid_time_start", "path": "$.valid_time_start"},
+  {"column": "valid_time_end", "path": "$.valid_time_end"},
+  {"column": "lang", "path": "$.lang"},
+  {"column": "max_danger_rating", "path": "$.max_danger_rating"},
+  {"column": "max_danger_rating_value", "path": "$.max_danger_rating_value"},
+  {"column": "danger_ratings_json", "path": "$.danger_ratings_json"},
+  {"column": "avalanche_problems_json", "path": "$.avalanche_problems_json"},
+  {"column": "tendency_type", "path": "$.tendency_type"},
+  {"column": "danger_patterns_json", "path": "$.danger_patterns_json"},
+  {"column": "avalanche_activity_highlights", "path": "$.avalanche_activity_highlights"},
+  {"column": "snowpack_structure_comment", "path": "$.snowpack_structure_comment"},
+]
+```
+
+.create-or-alter table [AvalancheBulletin] ingestion json mapping "AvalancheBulletin_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "region_name", "path": "$.data.region_name"},
+  {"column": "bulletin_id", "path": "$.data.bulletin_id"},
+  {"column": "publication_time", "path": "$.data.publication_time"},
+  {"column": "valid_time_start", "path": "$.data.valid_time_start"},
+  {"column": "valid_time_end", "path": "$.data.valid_time_end"},
+  {"column": "lang", "path": "$.data.lang"},
+  {"column": "max_danger_rating", "path": "$.data.max_danger_rating"},
+  {"column": "max_danger_rating_value", "path": "$.data.max_danger_rating_value"},
+  {"column": "danger_ratings_json", "path": "$.data.danger_ratings_json"},
+  {"column": "avalanche_problems_json", "path": "$.data.avalanche_problems_json"},
+  {"column": "tendency_type", "path": "$.data.tendency_type"},
+  {"column": "danger_patterns_json", "path": "$.data.danger_patterns_json"},
+  {"column": "avalanche_activity_highlights", "path": "$.data.avalanche_activity_highlights"},
+  {"column": "snowpack_structure_comment", "path": "$.data.snowpack_structure_comment"},
+]
+```
+
+.drop materialized-view AvalancheBulletinLatest ifexists;
+
+.create materialized-view with (backfill=true) AvalancheBulletinLatest on table AvalancheBulletin {
+    AvalancheBulletin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AvalancheBulletin] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.EAWS.ALBINA.AvalancheBulletin') | project['region_id'] = tostring(data.['region_id']),['region_name'] = tostring(data.['region_name']),['bulletin_id'] = tostring(data.['bulletin_id']),['publication_time'] = todatetime(data.['publication_time']),['valid_time_start'] = todatetime(data.['valid_time_start']),['valid_time_end'] = todatetime(data.['valid_time_end']),['lang'] = tostring(data.['lang']),['max_danger_rating'] = tostring(data.['max_danger_rating']),['max_danger_rating_value'] = toint(data.['max_danger_rating_value']),['danger_ratings_json'] = tostring(data.['danger_ratings_json']),['avalanche_problems_json'] = tostring(data.['avalanche_problems_json']),['tendency_type'] = tostring(data.['tendency_type']),['danger_patterns_json'] = tostring(data.['danger_patterns_json']),['avalanche_activity_highlights'] = tostring(data.['avalanche_activity_highlights']),['snowpack_structure_comment'] = tostring(data.['snowpack_structure_comment']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

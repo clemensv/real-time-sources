@@ -1,0 +1,112 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [WeatherBulletin] (
+   [bulletin_id]: string,
+   [title]: string,
+   [author]: string,
+   [updated]: datetime,
+   [link]: string,
+   [content]: string,
+   [feed_type]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherBulletin] docstring "{\"description\": \"Weather bulletin entry from the JMA XML Atom feed. Covers forecasts, warnings, advisories, and risk notifications published by the Japan Meteorological Agency and its regional observatories.\"}";
+
+.alter table [WeatherBulletin] column-docstrings (
+   [bulletin_id]: "{\"description\": \"Unique identifier for the bulletin, derived from the Atom entry ID (typically a URL to the full XML document).\"}",
+   [title]: "{\"description\": \"Title of the weather bulletin in Japanese, e.g. '\\u6c17\\u8c61\\u7279\\u5225\\u8b66\\u5831\\u30fb\\u8b66\\u5831\\u30fb\\u6ce8\\u610f\\u5831' (Special weather warnings/advisories).\"}",
+   [author]: "{\"description\": \"Issuing authority name in Japanese, e.g. '\\u6c17\\u8c61\\u5e81' (JMA) or a regional observatory name like '\\u677e\\u6c5f\\u5730\\u65b9\\u6c17\\u8c61\\u53f0'.\"}",
+   [updated]: "{\"description\": \"UTC timestamp when the bulletin was last updated.\"}",
+   [link]: "{\"description\": \"URL to the full XML document for this bulletin on the JMA data server.\"}",
+   [content]: "{\"description\": \"Brief text summary of the bulletin content in Japanese.\"}",
+   [feed_type]: "{\"description\": \"Which JMA Atom feed this bulletin originated from.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherBulletin] ingestion json mapping "WeatherBulletin_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "bulletin_id", "path": "$.bulletin_id"},
+  {"column": "title", "path": "$.title"},
+  {"column": "author", "path": "$.author"},
+  {"column": "updated", "path": "$.updated"},
+  {"column": "link", "path": "$.link"},
+  {"column": "content", "path": "$.content"},
+  {"column": "feed_type", "path": "$.feed_type"},
+]
+```
+
+.create-or-alter table [WeatherBulletin] ingestion json mapping "WeatherBulletin_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "bulletin_id", "path": "$.data.bulletin_id"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "author", "path": "$.data.author"},
+  {"column": "updated", "path": "$.data.updated"},
+  {"column": "link", "path": "$.data.link"},
+  {"column": "content", "path": "$.data.content"},
+  {"column": "feed_type", "path": "$.data.feed_type"},
+]
+```
+
+.drop materialized-view WeatherBulletinLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherBulletinLatest on table WeatherBulletin {
+    WeatherBulletin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherBulletin] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'jp.go.jma.WeatherBulletin') | project['bulletin_id'] = tostring(data.['bulletin_id']),['title'] = tostring(data.['title']),['author'] = tostring(data.['author']),['updated'] = todatetime(data.['updated']),['link'] = tostring(data.['link']),['content'] = tostring(data.['content']),['feed_type'] = tostring(data.['feed_type']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

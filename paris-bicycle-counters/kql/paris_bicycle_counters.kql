@@ -1,0 +1,189 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Counter] (
+   [counter_id]: string,
+   [counter_name]: string,
+   [channel_name]: string,
+   [installation_date]: string,
+   [longitude]: real,
+   [latitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Counter] docstring "{\"description\": \"Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.\"}";
+
+.alter table [Counter] column-docstrings (
+   [counter_id]: "{\"description\": \"Unique identifier for the counting channel, combining the site ID and channel ID (mapped from 'id_compteur').\"}",
+   [counter_name]: "{\"description\": \"Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').\"}",
+   [channel_name]: "{\"description\": \"Directional channel label for the counter, e.g. 'SE-NO' or 'E-O' (mapped from 'channel_name').\"}",
+   [installation_date]: "{\"description\": \"Date when the counter was installed, in ISO 8601 date format (YYYY-MM-DD).\"}",
+   [longitude]: "{\"description\": \"Longitude of the counter location in decimal degrees (WGS 84).\"}",
+   [latitude]: "{\"description\": \"Latitude of the counter location in decimal degrees (WGS 84).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Counter] ingestion json mapping "Counter_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "counter_id", "path": "$.counter_id"},
+  {"column": "counter_name", "path": "$.counter_name"},
+  {"column": "channel_name", "path": "$.channel_name"},
+  {"column": "installation_date", "path": "$.installation_date"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+]
+```
+
+.create-or-alter table [Counter] ingestion json mapping "Counter_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "counter_id", "path": "$.data.counter_id"},
+  {"column": "counter_name", "path": "$.data.counter_name"},
+  {"column": "channel_name", "path": "$.data.channel_name"},
+  {"column": "installation_date", "path": "$.data.installation_date"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+]
+```
+
+.drop materialized-view CounterLatest ifexists;
+
+.create materialized-view with (backfill=true) CounterLatest on table Counter {
+    Counter | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Counter] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'FR.Paris.OpenData.Velo.Counter') | project['counter_id'] = tostring(data.['counter_id']),['counter_name'] = tostring(data.['counter_name']),['channel_name'] = tostring(data.['channel_name']),['installation_date'] = tostring(data.['installation_date']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [BicycleCount] (
+   [counter_id]: string,
+   [counter_name]: string,
+   [count]: int,
+   [date]: datetime,
+   [longitude]: real,
+   [latitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [BicycleCount] docstring "{\"description\": \"Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.\"}";
+
+.alter table [BicycleCount] column-docstrings (
+   [counter_id]: "{\"description\": \"Unique identifier for the counting channel (mapped from 'id_compteur').\"}",
+   [counter_name]: "{\"description\": \"Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').\"}",
+   [count]: "{\"description\": \"Number of bicycles counted during the one-hour window (mapped from 'sum_counts').\"}",
+   [date]: "{\"description\": \"Start of the one-hour counting window in ISO 8601 format with timezone offset.\"}",
+   [longitude]: "{\"description\": \"Longitude of the counter location in decimal degrees (WGS 84).\"}",
+   [latitude]: "{\"description\": \"Latitude of the counter location in decimal degrees (WGS 84).\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [BicycleCount] ingestion json mapping "BicycleCount_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "counter_id", "path": "$.counter_id"},
+  {"column": "counter_name", "path": "$.counter_name"},
+  {"column": "count", "path": "$.count"},
+  {"column": "date", "path": "$.date"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "latitude", "path": "$.latitude"},
+]
+```
+
+.create-or-alter table [BicycleCount] ingestion json mapping "BicycleCount_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "counter_id", "path": "$.data.counter_id"},
+  {"column": "counter_name", "path": "$.data.counter_name"},
+  {"column": "count", "path": "$.data.count"},
+  {"column": "date", "path": "$.data.date"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "latitude", "path": "$.data.latitude"},
+]
+```
+
+.drop materialized-view BicycleCountLatest ifexists;
+
+.create materialized-view with (backfill=true) BicycleCountLatest on table BicycleCount {
+    BicycleCount | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [BicycleCount] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'FR.Paris.OpenData.Velo.BicycleCount') | project['counter_id'] = tostring(data.['counter_id']),['counter_name'] = tostring(data.['counter_name']),['count'] = toint(data.['count']),['date'] = todatetime(data.['date']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -342,9 +342,25 @@ try {
         $kqlPartFile = Join-Path $tempRoot ("{0:D3}-{1}.kql" -f $index, $safeName)
 
         $normalizedSchemaJson | Set-Content -Path $schemaFile -Encoding UTF8
-        & avrotize s2k $schemaFile --out $kqlPartFile --record-type $recordType --emit-cloudevents-columns --emit-cloudevents-dispatch
-        if ($LASTEXITCODE -ne 0) {
-            throw "avrotize s2k failed for schema '$schemaUri'."
+
+        # Detect Avro-shaped schema (uses `fields` instead of JSON Structure
+        # `properties`/`$root`). Such schemas must be processed with `a2k`
+        # instead of `s2k`.
+        $isAvroShape = ($schemaObject.PSObject.Properties['fields'] -ne $null) -and `
+                       ($schemaObject.PSObject.Properties['properties'] -eq $null) -and `
+                       ($schemaObject.PSObject.Properties['$root'] -eq $null)
+
+        if ($isAvroShape) {
+            & avrotize a2k $schemaFile --out $kqlPartFile --record-type $recordType --emit-cloudevents-columns --emit-cloudevents-dispatch
+            if ($LASTEXITCODE -ne 0) {
+                throw "avrotize a2k failed for schema '$schemaUri'."
+            }
+        }
+        else {
+            & avrotize s2k $schemaFile --out $kqlPartFile --record-type $recordType --emit-cloudevents-columns --emit-cloudevents-dispatch
+            if ($LASTEXITCODE -ne 0) {
+                throw "avrotize s2k failed for schema '$schemaUri'."
+            }
         }
 
         $kqlContent = Get-Content $kqlPartFile -Raw

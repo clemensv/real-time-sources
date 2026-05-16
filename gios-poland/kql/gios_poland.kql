@@ -1,0 +1,451 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: int,
+   [station_code]: string,
+   [name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [city_id]: int,
+   [city_name]: string,
+   [commune]: string,
+   [district]: string,
+   [voivodeship]: string,
+   [street]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference record for a GIO\\u015a air quality monitoring station in Poland. Contains the station identifier, code, name, WGS84 coordinates, and administrative location (city, commune, district, voivodeship, street). Fields are mapped from the Polish-language GIO\\u015a REST API /station/findAll endpoint.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_id]: "{\"description\": \"Unique numeric identifier of the monitoring station assigned by GIO\\u015a. Mapped from the Polish field 'Identyfikator stacji'.\"}",
+   [station_code]: "{\"description\": \"Short alphanumeric code uniquely identifying the station, e.g. 'DsLegAlRzecz'. Mapped from 'Kod stacji'.\"}",
+   [name]: "{\"description\": \"Human-readable name of the monitoring station, typically including city and street. Mapped from 'Nazwa stacji'.\"}",
+   [latitude]: "{\"description\": \"Latitude of the station in decimal degrees north (WGS84). Mapped from 'WGS84 \\u03c6 N'.\"}",
+   [longitude]: "{\"description\": \"Longitude of the station in decimal degrees east (WGS84). Mapped from 'WGS84 \\u03bb E'.\"}",
+   [city_id]: "{\"description\": \"Numeric identifier of the city where the station is located. Mapped from 'Identyfikator miasta'.\"}",
+   [city_name]: "{\"description\": \"Name of the city where the station is located. Mapped from 'Nazwa miasta'.\"}",
+   [commune]: "{\"description\": \"Name of the commune (gmina) where the station is located. Mapped from 'Gmina'.\"}",
+   [district]: "{\"description\": \"Name of the district (powiat) where the station is located. Mapped from 'Powiat'.\"}",
+   [voivodeship]: "{\"description\": \"Name of the voivodeship (province) where the station is located, in uppercase Polish. Mapped from 'Wojew\\u00f3dztwo'.\"}",
+   [street]: "{\"description\": \"Street address of the station, if available. Mapped from 'Ulica'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_code", "path": "$.station_code"},
+  {"column": "name", "path": "$.name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "city_id", "path": "$.city_id"},
+  {"column": "city_name", "path": "$.city_name"},
+  {"column": "commune", "path": "$.commune"},
+  {"column": "district", "path": "$.district"},
+  {"column": "voivodeship", "path": "$.voivodeship"},
+  {"column": "street", "path": "$.street"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_code", "path": "$.data.station_code"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "city_id", "path": "$.data.city_id"},
+  {"column": "city_name", "path": "$.data.city_name"},
+  {"column": "commune", "path": "$.data.commune"},
+  {"column": "district", "path": "$.data.district"},
+  {"column": "voivodeship", "path": "$.data.voivodeship"},
+  {"column": "street", "path": "$.data.street"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'pl.gov.gios.airquality.Station') | project['station_id'] = toint(data.['station_id']),['station_code'] = tostring(data.['station_code']),['name'] = tostring(data.['name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['city_id'] = toint(data.['city_id']),['city_name'] = tostring(data.['city_name']),['commune'] = tostring(data.['commune']),['district'] = tostring(data.['district']),['voivodeship'] = tostring(data.['voivodeship']),['street'] = tostring(data.['street']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Sensor] (
+   [sensor_id]: int,
+   [station_id]: int,
+   [parameter_name]: string,
+   [parameter_formula]: string,
+   [parameter_code]: string,
+   [parameter_id]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Sensor] docstring "{\"description\": \"Reference record for a sensor installed at a GIO\\u015a air quality station. Identifies the specific pollutant being measured (e.g. PM10, NO\\u2082, O\\u2083) along with the sensor and station identifiers. Fields are mapped from the Polish-language /station/sensors/{stationId} endpoint.\"}";
+
+.alter table [Sensor] column-docstrings (
+   [sensor_id]: "{\"description\": \"Unique numeric identifier of the sensor (measurement point) assigned by GIO\\u015a. Mapped from 'Identyfikator stanowiska'.\"}",
+   [station_id]: "{\"description\": \"Numeric identifier of the parent monitoring station. Mapped from 'Identyfikator stacji'.\"}",
+   [parameter_name]: "{\"description\": \"Polish-language name of the measured pollutant, e.g. 'py\\u0142 zawieszony PM10', 'dwutlenek azotu'. Mapped from 'Wska\\u017anik'.\"}",
+   [parameter_formula]: "{\"description\": \"Chemical formula of the measured pollutant, e.g. 'PM10', 'NO2', 'SO2', 'O3', 'CO', 'C6H6', 'PM2.5'. Mapped from 'Wska\\u017anik - wz\\u00f3r'.\"}",
+   [parameter_code]: "{\"description\": \"Short code identifying the pollutant parameter, e.g. 'PM10', 'NO2'. Mapped from 'Wska\\u017anik - kod'.\"}",
+   [parameter_id]: "{\"description\": \"Numeric identifier of the pollutant parameter in the GIO\\u015a system. Mapped from 'Id wska\\u017anika'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Sensor] ingestion json mapping "Sensor_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "parameter_name", "path": "$.parameter_name"},
+  {"column": "parameter_formula", "path": "$.parameter_formula"},
+  {"column": "parameter_code", "path": "$.parameter_code"},
+  {"column": "parameter_id", "path": "$.parameter_id"},
+]
+```
+
+.create-or-alter table [Sensor] ingestion json mapping "Sensor_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "parameter_name", "path": "$.data.parameter_name"},
+  {"column": "parameter_formula", "path": "$.data.parameter_formula"},
+  {"column": "parameter_code", "path": "$.data.parameter_code"},
+  {"column": "parameter_id", "path": "$.data.parameter_id"},
+]
+```
+
+.drop materialized-view SensorLatest ifexists;
+
+.create materialized-view with (backfill=true) SensorLatest on table Sensor {
+    Sensor | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Sensor] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'pl.gov.gios.airquality.Sensor') | project['sensor_id'] = toint(data.['sensor_id']),['station_id'] = toint(data.['station_id']),['parameter_name'] = tostring(data.['parameter_name']),['parameter_formula'] = tostring(data.['parameter_formula']),['parameter_code'] = tostring(data.['parameter_code']),['parameter_id'] = toint(data.['parameter_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Measurement] (
+   [station_id]: int,
+   [sensor_id]: int,
+   [sensor_code]: string,
+   [timestamp]: datetime,
+   [value]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Measurement] docstring "{\"description\": \"Hourly air quality measurement from a GIO\\u015a sensor. Reports the pollutant concentration in \\u00b5g/m\\u00b3 at a specific timestamp. The measurement may be null when data is missing or under validation. Fields are mapped from the Polish-language /data/getData/{sensorId} endpoint.\"}";
+
+.alter table [Measurement] column-docstrings (
+   [station_id]: "{\"description\": \"Numeric identifier of the monitoring station that owns this sensor.\"}",
+   [sensor_id]: "{\"description\": \"Numeric identifier of the sensor that produced this measurement.\"}",
+   [sensor_code]: "{\"description\": \"Code identifying the sensor and its aggregation period, e.g. 'DsLegAlRzecz-NO2-1g'. Mapped from 'Kod stanowiska'.\"}",
+   [timestamp]: "{\"description\": \"Measurement timestamp in local Polish time (ISO 8601 format). Mapped from 'Data'.\"}",
+   [value]: "{\"description\": \"Measured pollutant concentration. Unit: micrograms per cubic meter (\\u00b5g/m\\u00b3). Null when the measurement is missing or invalid. Mapped from 'Warto\\u015b\\u0107'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "sensor_code", "path": "$.sensor_code"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+]
+```
+
+.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "sensor_code", "path": "$.data.sensor_code"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+]
+```
+
+.drop materialized-view MeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) MeasurementLatest on table Measurement {
+    Measurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Measurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'pl.gov.gios.airquality.Measurement') | project['station_id'] = toint(data.['station_id']),['sensor_id'] = toint(data.['sensor_id']),['sensor_code'] = tostring(data.['sensor_code']),['timestamp'] = todatetime(data.['timestamp']),['value'] = toreal(data.['value']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [AirQualityIndex] (
+   [station_id]: int,
+   [calculation_timestamp]: datetime,
+   [index_value]: int,
+   [index_category]: string,
+   [source_data_timestamp]: datetime,
+   [so2_calculation_timestamp]: datetime,
+   [so2_index_value]: int,
+   [so2_index_category]: string,
+   [so2_source_data_timestamp]: datetime,
+   [no2_calculation_timestamp]: datetime,
+   [no2_index_value]: int,
+   [no2_index_category]: string,
+   [no2_source_data_timestamp]: datetime,
+   [pm10_calculation_timestamp]: datetime,
+   [pm10_index_value]: int,
+   [pm10_index_category]: string,
+   [pm10_source_data_timestamp]: datetime,
+   [pm25_calculation_timestamp]: datetime,
+   [pm25_index_value]: int,
+   [pm25_index_category]: string,
+   [pm25_source_data_timestamp]: datetime,
+   [o3_calculation_timestamp]: datetime,
+   [o3_index_value]: int,
+   [o3_index_category]: string,
+   [o3_source_data_timestamp]: datetime,
+   [overall_status]: bool,
+   [critical_pollutant_code]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [AirQualityIndex] docstring "{\"description\": \"Current Polish Air Quality Index (Indeks Jako\\u015bci Powietrza) for a GIO\\u015a monitoring station. Includes the overall index value and category plus sub-indices for SO\\u2082, NO\\u2082, PM10, PM2.5, and O\\u2083. Each sub-index uses a 0\\u20135 scale: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Z\\u0142y (Bad), 5=Bardzo z\\u0142y (Very bad). Fields are mapped from the Polish-language /aqindex/getIndex/{stationId} endpoint.\"}";
+
+.alter table [AirQualityIndex] column-docstrings (
+   [station_id]: "{\"description\": \"Numeric identifier of the monitoring station. Mapped from 'Identyfikator stacji pomiarowej'.\"}",
+   [calculation_timestamp]: "{\"description\": \"Timestamp when the overall index was calculated (ISO 8601 in local Polish time). Mapped from 'Data wykonania oblicze\\u0144 indeksu'.\"}",
+   [index_value]: "{\"description\": \"Overall air quality index value: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Z\\u0142y (Bad), 5=Bardzo z\\u0142y (Very bad). Mapped from 'Warto\\u015b\\u0107 indeksu'.\"}",
+   [index_category]: "{\"description\": \"Polish-language category name of the overall index, e.g. 'Bardzo dobry', 'Dobry', 'Umiarkowany'. Mapped from 'Nazwa kategorii indeksu'.\"}",
+   [source_data_timestamp]: "{\"description\": \"Timestamp of the source measurement data used for the overall index calculation. Mapped from 'Data danych \\u017ar\\u00f3d\\u0142owych, z kt\\u00f3rych policzono warto\\u015b\\u0107 indeksu dla wska\\u017anika st'.\"}",
+   [so2_calculation_timestamp]: "{\"description\": \"Timestamp when the SO\\u2082 sub-index was calculated. Mapped from 'Data wykonania oblicze\\u0144 indeksu dla wska\\u017anika SO2'.\"}",
+   [so2_index_value]: "{\"description\": \"SO\\u2082 sub-index value (0\\u20135 scale). Mapped from 'Warto\\u015b\\u0107 indeksu dla wska\\u017anika SO2'.\"}",
+   [so2_index_category]: "{\"description\": \"Polish-language category name for the SO\\u2082 sub-index. Mapped from 'Nazwa kategorii indeksu dla wska\\u017cnika SO2'.\"}",
+   [so2_source_data_timestamp]: "{\"description\": \"Timestamp of the source data used for the SO\\u2082 sub-index. Mapped from 'Data danych \\u017ar\\u00f3d\\u0142owych, z kt\\u00f3rych policzono warto\\u015b\\u0107 indeksu dla wska\\u017anika SO2'.\"}",
+   [no2_calculation_timestamp]: "{\"description\": \"Timestamp when the NO\\u2082 sub-index was calculated. Mapped from 'Data wykonania oblicze\\u0144 indeksu dla wska\\u017anika NO2'.\"}",
+   [no2_index_value]: "{\"description\": \"NO\\u2082 sub-index value (0\\u20135 scale). Mapped from 'Warto\\u015b\\u0107 indeksu dla wska\\u017anika NO2'.\"}",
+   [no2_index_category]: "{\"description\": \"Polish-language category name for the NO\\u2082 sub-index. Mapped from 'Nazwa kategorii indeksu dla wska\\u017cnika NO2'.\"}",
+   [no2_source_data_timestamp]: "{\"description\": \"Timestamp of the source data used for the NO\\u2082 sub-index. Mapped from 'Data danych \\u017ar\\u00f3d\\u0142owych, z kt\\u00f3rych policzono warto\\u015b\\u0107 indeksu dla wska\\u017anika NO2'.\"}",
+   [pm10_calculation_timestamp]: "{\"description\": \"Timestamp when the PM10 sub-index was calculated. Mapped from 'Data wykonania oblicze\\u0144 indeksu dla wska\\u017anika PM10'.\"}",
+   [pm10_index_value]: "{\"description\": \"PM10 sub-index value (0\\u20135 scale). Mapped from 'Warto\\u015b\\u0107 indeksu dla wska\\u017anika PM10'.\"}",
+   [pm10_index_category]: "{\"description\": \"Polish-language category name for the PM10 sub-index. Mapped from 'Nazwa kategorii indeksu dla wska\\u017cnika PM10'.\"}",
+   [pm10_source_data_timestamp]: "{\"description\": \"Timestamp of the source data used for the PM10 sub-index. Mapped from 'Data danych \\u017ar\\u00f3d\\u0142owych, z kt\\u00f3rych policzono warto\\u015b\\u0107 indeksu dla wska\\u017anika PM10'.\"}",
+   [pm25_calculation_timestamp]: "{\"description\": \"Timestamp when the PM2.5 sub-index was calculated. Mapped from 'Data wykonania oblicze\\u0144 indeksu dla wska\\u017anika PM2.5'.\"}",
+   [pm25_index_value]: "{\"description\": \"PM2.5 sub-index value (0\\u20135 scale). Mapped from 'Warto\\u015b\\u0107 indeksu dla wska\\u017anika PM2.5'.\"}",
+   [pm25_index_category]: "{\"description\": \"Polish-language category name for the PM2.5 sub-index. Mapped from 'Nazwa kategorii indeksu dla wska\\u017cnika PM2.5'.\"}",
+   [pm25_source_data_timestamp]: "{\"description\": \"Timestamp of the source data used for the PM2.5 sub-index. Mapped from 'Data danych \\u017ar\\u00f3d\\u0142owych, z kt\\u00f3rych policzono warto\\u015b\\u0107 indeksu dla wska\\u017anika PM2.5'.\"}",
+   [o3_calculation_timestamp]: "{\"description\": \"Timestamp when the O\\u2083 sub-index was calculated. Mapped from 'Data wykonania oblicze\\u0144 indeksu dla wska\\u017anika O3'.\"}",
+   [o3_index_value]: "{\"description\": \"O\\u2083 sub-index value (0\\u20135 scale). Mapped from 'Warto\\u015b\\u0107 indeksu dla wska\\u017anika O3'.\"}",
+   [o3_index_category]: "{\"description\": \"Polish-language category name for the O\\u2083 sub-index. Mapped from 'Nazwa kategorii indeksu dla wska\\u017cnika O3'.\"}",
+   [o3_source_data_timestamp]: "{\"description\": \"Timestamp of the source data used for the O\\u2083 sub-index. Mapped from 'Data danych \\u017ar\\u00f3d\\u0142owych, z kt\\u00f3rych policzono warto\\u015b\\u0107 indeksu dla wska\\u017anika O3'.\"}",
+   [overall_status]: "{\"description\": \"Whether the overall air quality index is currently valid for this station. Mapped from 'Status indeksu og\\u00f3lnego dla stacji pomiarowej'.\"}",
+   [critical_pollutant_code]: "{\"description\": \"Code of the pollutant that determined the overall index value, e.g. 'OZON', 'PM10'. Mapped from 'Kod zanieczyszczenia krytycznego'.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [AirQualityIndex] ingestion json mapping "AirQualityIndex_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "calculation_timestamp", "path": "$.calculation_timestamp"},
+  {"column": "index_value", "path": "$.index_value"},
+  {"column": "index_category", "path": "$.index_category"},
+  {"column": "source_data_timestamp", "path": "$.source_data_timestamp"},
+  {"column": "so2_calculation_timestamp", "path": "$.so2_calculation_timestamp"},
+  {"column": "so2_index_value", "path": "$.so2_index_value"},
+  {"column": "so2_index_category", "path": "$.so2_index_category"},
+  {"column": "so2_source_data_timestamp", "path": "$.so2_source_data_timestamp"},
+  {"column": "no2_calculation_timestamp", "path": "$.no2_calculation_timestamp"},
+  {"column": "no2_index_value", "path": "$.no2_index_value"},
+  {"column": "no2_index_category", "path": "$.no2_index_category"},
+  {"column": "no2_source_data_timestamp", "path": "$.no2_source_data_timestamp"},
+  {"column": "pm10_calculation_timestamp", "path": "$.pm10_calculation_timestamp"},
+  {"column": "pm10_index_value", "path": "$.pm10_index_value"},
+  {"column": "pm10_index_category", "path": "$.pm10_index_category"},
+  {"column": "pm10_source_data_timestamp", "path": "$.pm10_source_data_timestamp"},
+  {"column": "pm25_calculation_timestamp", "path": "$.pm25_calculation_timestamp"},
+  {"column": "pm25_index_value", "path": "$.pm25_index_value"},
+  {"column": "pm25_index_category", "path": "$.pm25_index_category"},
+  {"column": "pm25_source_data_timestamp", "path": "$.pm25_source_data_timestamp"},
+  {"column": "o3_calculation_timestamp", "path": "$.o3_calculation_timestamp"},
+  {"column": "o3_index_value", "path": "$.o3_index_value"},
+  {"column": "o3_index_category", "path": "$.o3_index_category"},
+  {"column": "o3_source_data_timestamp", "path": "$.o3_source_data_timestamp"},
+  {"column": "overall_status", "path": "$.overall_status"},
+  {"column": "critical_pollutant_code", "path": "$.critical_pollutant_code"},
+]
+```
+
+.create-or-alter table [AirQualityIndex] ingestion json mapping "AirQualityIndex_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "calculation_timestamp", "path": "$.data.calculation_timestamp"},
+  {"column": "index_value", "path": "$.data.index_value"},
+  {"column": "index_category", "path": "$.data.index_category"},
+  {"column": "source_data_timestamp", "path": "$.data.source_data_timestamp"},
+  {"column": "so2_calculation_timestamp", "path": "$.data.so2_calculation_timestamp"},
+  {"column": "so2_index_value", "path": "$.data.so2_index_value"},
+  {"column": "so2_index_category", "path": "$.data.so2_index_category"},
+  {"column": "so2_source_data_timestamp", "path": "$.data.so2_source_data_timestamp"},
+  {"column": "no2_calculation_timestamp", "path": "$.data.no2_calculation_timestamp"},
+  {"column": "no2_index_value", "path": "$.data.no2_index_value"},
+  {"column": "no2_index_category", "path": "$.data.no2_index_category"},
+  {"column": "no2_source_data_timestamp", "path": "$.data.no2_source_data_timestamp"},
+  {"column": "pm10_calculation_timestamp", "path": "$.data.pm10_calculation_timestamp"},
+  {"column": "pm10_index_value", "path": "$.data.pm10_index_value"},
+  {"column": "pm10_index_category", "path": "$.data.pm10_index_category"},
+  {"column": "pm10_source_data_timestamp", "path": "$.data.pm10_source_data_timestamp"},
+  {"column": "pm25_calculation_timestamp", "path": "$.data.pm25_calculation_timestamp"},
+  {"column": "pm25_index_value", "path": "$.data.pm25_index_value"},
+  {"column": "pm25_index_category", "path": "$.data.pm25_index_category"},
+  {"column": "pm25_source_data_timestamp", "path": "$.data.pm25_source_data_timestamp"},
+  {"column": "o3_calculation_timestamp", "path": "$.data.o3_calculation_timestamp"},
+  {"column": "o3_index_value", "path": "$.data.o3_index_value"},
+  {"column": "o3_index_category", "path": "$.data.o3_index_category"},
+  {"column": "o3_source_data_timestamp", "path": "$.data.o3_source_data_timestamp"},
+  {"column": "overall_status", "path": "$.data.overall_status"},
+  {"column": "critical_pollutant_code", "path": "$.data.critical_pollutant_code"},
+]
+```
+
+.drop materialized-view AirQualityIndexLatest ifexists;
+
+.create materialized-view with (backfill=true) AirQualityIndexLatest on table AirQualityIndex {
+    AirQualityIndex | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [AirQualityIndex] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'pl.gov.gios.airquality.AirQualityIndex') | project['station_id'] = toint(data.['station_id']),['calculation_timestamp'] = todatetime(data.['calculation_timestamp']),['index_value'] = toint(data.['index_value']),['index_category'] = tostring(data.['index_category']),['source_data_timestamp'] = todatetime(data.['source_data_timestamp']),['so2_calculation_timestamp'] = todatetime(data.['so2_calculation_timestamp']),['so2_index_value'] = toint(data.['so2_index_value']),['so2_index_category'] = tostring(data.['so2_index_category']),['so2_source_data_timestamp'] = todatetime(data.['so2_source_data_timestamp']),['no2_calculation_timestamp'] = todatetime(data.['no2_calculation_timestamp']),['no2_index_value'] = toint(data.['no2_index_value']),['no2_index_category'] = tostring(data.['no2_index_category']),['no2_source_data_timestamp'] = todatetime(data.['no2_source_data_timestamp']),['pm10_calculation_timestamp'] = todatetime(data.['pm10_calculation_timestamp']),['pm10_index_value'] = toint(data.['pm10_index_value']),['pm10_index_category'] = tostring(data.['pm10_index_category']),['pm10_source_data_timestamp'] = todatetime(data.['pm10_source_data_timestamp']),['pm25_calculation_timestamp'] = todatetime(data.['pm25_calculation_timestamp']),['pm25_index_value'] = toint(data.['pm25_index_value']),['pm25_index_category'] = tostring(data.['pm25_index_category']),['pm25_source_data_timestamp'] = todatetime(data.['pm25_source_data_timestamp']),['o3_calculation_timestamp'] = todatetime(data.['o3_calculation_timestamp']),['o3_index_value'] = toint(data.['o3_index_value']),['o3_index_category'] = tostring(data.['o3_index_category']),['o3_source_data_timestamp'] = todatetime(data.['o3_source_data_timestamp']),['overall_status'] = tobool(data.['overall_status']),['critical_pollutant_code'] = tostring(data.['critical_pollutant_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

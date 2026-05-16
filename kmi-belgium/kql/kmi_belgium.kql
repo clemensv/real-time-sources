@@ -1,0 +1,229 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_code]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_code]: "{\"description\": \"KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network.\"}",
+   [latitude]: "{\"description\": \"Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array.\"}",
+   [longitude]: "{\"description\": \"Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.station_code"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.data.station_code"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'BE.Gov.KMI.Weather.Station') | project['station_code'] = tostring(data.['station_code']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WeatherObservation] (
+   [station_code]: string,
+   [observation_time]: datetime,
+   [precip_quantity]: real,
+   [temp_dry_shelter_avg]: real,
+   [temp_grass_pt100_avg]: real,
+   [temp_soil_avg]: real,
+   [temp_soil_avg_5cm]: real,
+   [temp_soil_avg_10cm]: real,
+   [temp_soil_avg_20cm]: real,
+   [temp_soil_avg_50cm]: real,
+   [wind_speed_10m]: real,
+   [wind_speed_avg_30m]: real,
+   [wind_direction]: real,
+   [wind_gusts_speed]: real,
+   [humidity_rel_shelter_avg]: real,
+   [pressure]: real,
+   [sun_duration]: real,
+   [short_wave_from_sky_avg]: real,
+   [sun_int_avg]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WeatherObservation] docstring "{\"description\": \"Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.\"}";
+
+.alter table [WeatherObservation] column-docstrings (
+   [station_code]: "{\"description\": \"KMI/RMI automatic weather station code from the `code` property of the reporting observation feature.\"}",
+   [observation_time]: "{\"description\": \"Observation timestamp in UTC from the feature property `timestamp`.\"}",
+   [precip_quantity]: "{\"description\": \"Precipitation quantity reported for the 10-minute observation period.\"}",
+   [temp_dry_shelter_avg]: "{\"description\": \"Average air temperature measured in the 2 m dry shelter during the observation period.\"}",
+   [temp_grass_pt100_avg]: "{\"description\": \"Average grass-level temperature measured by the Pt100 sensor during the observation period.\"}",
+   [temp_soil_avg]: "{\"description\": \"Average soil surface temperature during the observation period.\"}",
+   [temp_soil_avg_5cm]: "{\"description\": \"Average soil temperature measured at 5 cm depth during the observation period.\"}",
+   [temp_soil_avg_10cm]: "{\"description\": \"Average soil temperature measured at 10 cm depth during the observation period.\"}",
+   [temp_soil_avg_20cm]: "{\"description\": \"Average soil temperature measured at 20 cm depth during the observation period.\"}",
+   [temp_soil_avg_50cm]: "{\"description\": \"Average soil temperature measured at 50 cm depth during the observation period.\"}",
+   [wind_speed_10m]: "{\"description\": \"Wind speed measured at 10 m above ground level.\"}",
+   [wind_speed_avg_30m]: "{\"description\": \"Average wind speed measured at 30 m above ground level.\"}",
+   [wind_direction]: "{\"description\": \"Wind direction in degrees from which the wind is blowing.\"}",
+   [wind_gusts_speed]: "{\"description\": \"Maximum wind gust speed observed during the 10-minute period.\"}",
+   [humidity_rel_shelter_avg]: "{\"description\": \"Average relative humidity measured in the shelter during the observation period.\"}",
+   [pressure]: "{\"description\": \"Station-level atmospheric pressure reported by the automatic weather station.\"}",
+   [sun_duration]: "{\"description\": \"Sunshine duration accumulated during the 10-minute observation period.\"}",
+   [short_wave_from_sky_avg]: "{\"description\": \"Average downward shortwave radiation from the sky during the observation period.\"}",
+   [sun_int_avg]: "{\"description\": \"Average direct sunshine intensity during the observation period.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.station_code"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "precip_quantity", "path": "$.precip_quantity"},
+  {"column": "temp_dry_shelter_avg", "path": "$.temp_dry_shelter_avg"},
+  {"column": "temp_grass_pt100_avg", "path": "$.temp_grass_pt100_avg"},
+  {"column": "temp_soil_avg", "path": "$.temp_soil_avg"},
+  {"column": "temp_soil_avg_5cm", "path": "$.temp_soil_avg_5cm"},
+  {"column": "temp_soil_avg_10cm", "path": "$.temp_soil_avg_10cm"},
+  {"column": "temp_soil_avg_20cm", "path": "$.temp_soil_avg_20cm"},
+  {"column": "temp_soil_avg_50cm", "path": "$.temp_soil_avg_50cm"},
+  {"column": "wind_speed_10m", "path": "$.wind_speed_10m"},
+  {"column": "wind_speed_avg_30m", "path": "$.wind_speed_avg_30m"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_gusts_speed", "path": "$.wind_gusts_speed"},
+  {"column": "humidity_rel_shelter_avg", "path": "$.humidity_rel_shelter_avg"},
+  {"column": "pressure", "path": "$.pressure"},
+  {"column": "sun_duration", "path": "$.sun_duration"},
+  {"column": "short_wave_from_sky_avg", "path": "$.short_wave_from_sky_avg"},
+  {"column": "sun_int_avg", "path": "$.sun_int_avg"},
+]
+```
+
+.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_code", "path": "$.data.station_code"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "precip_quantity", "path": "$.data.precip_quantity"},
+  {"column": "temp_dry_shelter_avg", "path": "$.data.temp_dry_shelter_avg"},
+  {"column": "temp_grass_pt100_avg", "path": "$.data.temp_grass_pt100_avg"},
+  {"column": "temp_soil_avg", "path": "$.data.temp_soil_avg"},
+  {"column": "temp_soil_avg_5cm", "path": "$.data.temp_soil_avg_5cm"},
+  {"column": "temp_soil_avg_10cm", "path": "$.data.temp_soil_avg_10cm"},
+  {"column": "temp_soil_avg_20cm", "path": "$.data.temp_soil_avg_20cm"},
+  {"column": "temp_soil_avg_50cm", "path": "$.data.temp_soil_avg_50cm"},
+  {"column": "wind_speed_10m", "path": "$.data.wind_speed_10m"},
+  {"column": "wind_speed_avg_30m", "path": "$.data.wind_speed_avg_30m"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_gusts_speed", "path": "$.data.wind_gusts_speed"},
+  {"column": "humidity_rel_shelter_avg", "path": "$.data.humidity_rel_shelter_avg"},
+  {"column": "pressure", "path": "$.data.pressure"},
+  {"column": "sun_duration", "path": "$.data.sun_duration"},
+  {"column": "short_wave_from_sky_avg", "path": "$.data.short_wave_from_sky_avg"},
+  {"column": "sun_int_avg", "path": "$.data.sun_int_avg"},
+]
+```
+
+.drop materialized-view WeatherObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
+    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WeatherObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'BE.Gov.KMI.Weather.WeatherObservation') | project['station_code'] = tostring(data.['station_code']),['observation_time'] = todatetime(data.['observation_time']),['precip_quantity'] = toreal(data.['precip_quantity']),['temp_dry_shelter_avg'] = toreal(data.['temp_dry_shelter_avg']),['temp_grass_pt100_avg'] = toreal(data.['temp_grass_pt100_avg']),['temp_soil_avg'] = toreal(data.['temp_soil_avg']),['temp_soil_avg_5cm'] = toreal(data.['temp_soil_avg_5cm']),['temp_soil_avg_10cm'] = toreal(data.['temp_soil_avg_10cm']),['temp_soil_avg_20cm'] = toreal(data.['temp_soil_avg_20cm']),['temp_soil_avg_50cm'] = toreal(data.['temp_soil_avg_50cm']),['wind_speed_10m'] = toreal(data.['wind_speed_10m']),['wind_speed_avg_30m'] = toreal(data.['wind_speed_avg_30m']),['wind_direction'] = toreal(data.['wind_direction']),['wind_gusts_speed'] = toreal(data.['wind_gusts_speed']),['humidity_rel_shelter_avg'] = toreal(data.['humidity_rel_shelter_avg']),['pressure'] = toreal(data.['pressure']),['sun_duration'] = toreal(data.['sun_duration']),['short_wave_from_sky_avg'] = toreal(data.['short_wave_from_sky_avg']),['sun_int_avg'] = toreal(data.['sun_int_avg']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

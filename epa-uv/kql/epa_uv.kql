@@ -1,0 +1,185 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [HourlyForecast] (
+   [location_id]: string,
+   [city]: string,
+   [state]: string,
+   [forecast_datetime]: string,
+   [uv_index]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [HourlyForecast] docstring "{\"description\": \"Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.\"}";
+
+.alter table [HourlyForecast] column-docstrings (
+   [location_id]: "{\"description\": \"Stable slug derived from the configured city and state.\"}",
+   [city]: "{\"description\": \"City for which the hourly UV forecast was requested.\"}",
+   [state]: "{\"description\": \"Two-letter state abbreviation for the requested city.\"}",
+   [forecast_datetime]: "{\"description\": \"Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset.\"}",
+   [uv_index]: "{\"description\": \"Hourly UV Index forecast value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [HourlyForecast] ingestion json mapping "HourlyForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "city", "path": "$.city"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_datetime", "path": "$.forecast_datetime"},
+  {"column": "uv_index", "path": "$.uv_index"},
+]
+```
+
+.create-or-alter table [HourlyForecast] ingestion json mapping "HourlyForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "city", "path": "$.data.city"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_datetime", "path": "$.data.forecast_datetime"},
+  {"column": "uv_index", "path": "$.data.uv_index"},
+]
+```
+
+.drop materialized-view HourlyForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) HourlyForecastLatest on table HourlyForecast {
+    HourlyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [HourlyForecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.EPA.UVIndex.HourlyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_datetime'] = tostring(data.['forecast_datetime']),['uv_index'] = toint(data.['uv_index']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DailyForecast] (
+   [location_id]: string,
+   [city]: string,
+   [state]: string,
+   [forecast_date]: string,
+   [uv_index]: int,
+   [uv_alert]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DailyForecast] docstring "{\"description\": \"Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.\"}";
+
+.alter table [DailyForecast] column-docstrings (
+   [location_id]: "{\"description\": \"Stable slug derived from the configured city and state.\"}",
+   [city]: "{\"description\": \"City for which the daily UV forecast was requested.\"}",
+   [state]: "{\"description\": \"Two-letter state abbreviation for the requested city.\"}",
+   [forecast_date]: "{\"description\": \"Forecast date normalized to YYYY-MM-DD.\"}",
+   [uv_index]: "{\"description\": \"Daily UV Index forecast value.\"}",
+   [uv_alert]: "{\"description\": \"Character flag indicating whether a UV alert is issued for the forecast day.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DailyForecast] ingestion json mapping "DailyForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "city", "path": "$.city"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_date", "path": "$.forecast_date"},
+  {"column": "uv_index", "path": "$.uv_index"},
+  {"column": "uv_alert", "path": "$.uv_alert"},
+]
+```
+
+.create-or-alter table [DailyForecast] ingestion json mapping "DailyForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "city", "path": "$.data.city"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_date", "path": "$.data.forecast_date"},
+  {"column": "uv_index", "path": "$.data.uv_index"},
+  {"column": "uv_alert", "path": "$.data.uv_alert"},
+]
+```
+
+.drop materialized-view DailyForecastLatest ifexists;
+
+.create materialized-view with (backfill=true) DailyForecastLatest on table DailyForecast {
+    DailyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DailyForecast] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.EPA.UVIndex.DailyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_date'] = tostring(data.['forecast_date']),['uv_index'] = toint(data.['uv_index']),['uv_alert'] = tostring(data.['uv_alert']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

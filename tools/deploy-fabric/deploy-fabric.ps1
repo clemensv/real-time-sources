@@ -69,14 +69,17 @@ param(
 
     [string]$DatabaseName,
 
-    [switch]$SkipArm
+    [switch]$SkipArm,
+
+    [string]$Repo = "clemensv/real-time-sources",
+
+    [string]$Branch = "main"
 )
 
 $ErrorActionPreference = "Stop"
-$Repo = "clemensv/real-time-sources"
-$Branch = "main"
 $RawBase = "https://raw.githubusercontent.com/$Repo/$Branch"
 $FabricApi = "https://api.fabric.microsoft.com/v1"
+$TempDir = if ($env:TEMP) { $env:TEMP } elseif ($env:TMPDIR) { $env:TMPDIR } else { [System.IO.Path]::GetTempPath() }
 
 # Set Azure subscription if provided
 if ($SubscriptionId) {
@@ -103,6 +106,35 @@ function Write-OK { param([string]$Msg)
 }
 function Write-Info { param([string]$Msg)
     Write-Host "  $Msg" -ForegroundColor DarkYellow
+}
+
+function Convert-KqlForFabricDefinition {
+    # Filters a .kql script so it conforms to the restricted command set that
+    # the Fabric KQL "DatabaseSchema.kql" definition API accepts. Commands that
+    # the API rejects are dropped or rewritten:
+    #   .alter table X docstring ...           → dropped (cosmetic)
+    #   .alter table X column-docstrings ...   → dropped (cosmetic)
+    #   .drop materialized-view X ifexists;    → dropped
+    #   .create materialized-view ...          → .create-or-alter materialized-view ...
+    # All other commands (.create-merge table, .create-or-alter function,
+    # .create-or-alter materialized-view, .create-or-alter table ... ingestion
+    # ... mapping, .alter table ... policy ...) pass through unchanged.
+    param([string]$Script)
+    if (-not $Script) { return $Script }
+    $commands = [regex]::Split($Script, '(?m)^\s*$\r?\n')
+    $out = @()
+    foreach ($cmd in $commands) {
+        $trim = $cmd.Trim()
+        if (-not $trim) { continue }
+        if ($trim -match '^\.alter\s+table\s+\S+\s+docstring\b') { continue }
+        if ($trim -match '^\.alter\s+table\s+\S+\s+column-docstrings\b') { continue }
+        if ($trim -match '^\.drop\s+materialized-view\b') { continue }
+        if ($trim -match '^\.create\s+materialized-view\b') {
+            $trim = $trim -replace '^\.create\s+materialized-view\b', '.create-or-alter materialized-view'
+        }
+        $out += $trim
+    }
+    return ($out -join "`n`n")
 }
 
 function Invoke-FabricApi {
@@ -294,18 +326,17 @@ Write-OK "Workspace: $($wsInfo.displayName) ($WorkspaceId)"
 
 # Resolve eventhouse: accept name, GUID, or blank (auto-create)
 $eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
+$ehDetails = $null
+$EventhouseId = $null
 if ($Eventhouse -match $guidRx) {
     $EventhouseId = $Eventhouse
-    $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
 } else {
-    $eventhouse = $eventhouses.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
-    if ($eventhouse) {
-        $EventhouseId = $eventhouse.id
-        $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+    $match = $eventhouses.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
+    if ($match) {
+        $EventhouseId = $match.id
     } else {
         Write-Host "  Creating Eventhouse '$Eventhouse'..." -ForegroundColor Yellow
         Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses" -Body @{ displayName = $Eventhouse } | Out-Null
-        $EventhouseId = $null
         for ($i = 0; $i -lt 12; $i++) {
             Start-Sleep -Seconds 5
             $eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
@@ -314,12 +345,20 @@ if ($Eventhouse -match $guidRx) {
             Write-Host "  Waiting for Eventhouse... ($([int](($i+1)*5))s)" -ForegroundColor Gray
         }
         if (-not $EventhouseId) { throw "Failed to create Eventhouse '$Eventhouse'." }
-        $eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
-        Write-OK "Eventhouse created: $($eventhouse.displayName)"
     }
 }
-Write-OK "Eventhouse: $($eventhouse.displayName) ($EventhouseId)"
-$queryUri = $eventhouse.properties.queryServiceUri
+if (-not $EventhouseId) { throw "Could not resolve Eventhouse ID for '$Eventhouse'." }
+# Fetch full details for queryServiceUri (retry once if first call returns null)
+$ehDetails = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+if (-not $ehDetails -or -not $ehDetails.properties.queryServiceUri) {
+    Start-Sleep -Seconds 5
+    $ehDetails = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+}
+if (-not $ehDetails -or -not $ehDetails.properties.queryServiceUri) {
+    throw "Could not fetch eventhouse details (id=$EventhouseId)."
+}
+Write-OK "Eventhouse: $($ehDetails.displayName) ($EventhouseId)"
+$queryUri = $ehDetails.properties.queryServiceUri
 
 #  Step 1: Create KQL database with schema 
 
@@ -358,27 +397,40 @@ if ($existingDb) {
         Write-Step "2/6" "No KQL schema available — skipping"
     }
 } else {
-    # Create new database — with schema if available, without if not
+    # Always create DB without schema, then apply schema via dataplane.
+    # The definition API path silently fails to apply schemas in many cases
+    # (LRO succeeds but tables don't materialize), so we use .execute database
+    # script which gives per-command success/failure status.
     $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
     $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
-
-    if ($filteredKql) {
-        $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
-        $createBody = @{ displayName = $DatabaseName; definition = @{ parts = @(
-            @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
-            @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
-        )}}
-        Write-Host "  Creating database with schema definition..." -ForegroundColor Gray
-    } else {
-        $createBody = @{ displayName = $DatabaseName; definition = @{ parts = @(
-            @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" }
-        )}}
-        Write-Host "  Creating database..." -ForegroundColor Gray
-    }
+    $createBody = @{ displayName = $DatabaseName; definition = @{ parts = @(
+        @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" }
+    )}}
+    Write-Host "  Creating database..." -ForegroundColor Gray
 
     $createFile = Join-Path $TempDir "kql_create_$(Get-Random).json"
     [System.IO.File]::WriteAllText($createFile, ($createBody | ConvertTo-Json -Depth 10 -Compress), [System.Text.UTF8Encoding]::new($false))
-    az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" --resource "https://api.fabric.microsoft.com" --body "@$createFile" --headers "Content-Type=application/json" 2>&1 | Out-Null
+    # Use Invoke-WebRequest so we can capture the Operation Location header and surface async failures
+    $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
+    $createResp = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Method POST `
+        -Headers @{ Authorization="Bearer $accessToken"; "Content-Type"="application/json" } `
+        -Body ($createBody | ConvertTo-Json -Depth 10 -Compress) -SkipHttpErrorCheck
+    if ($createResp.StatusCode -ge 400) {
+        throw "kqlDatabases POST returned $($createResp.StatusCode): $($createResp.Content)"
+    }
+    $opLoc = $createResp.Headers['Location'] | Select-Object -First 1
+    if ($createResp.StatusCode -eq 202 -and $opLoc) {
+        Write-Host "  Tracking LRO $opLoc" -ForegroundColor Gray
+        for ($i = 0; $i -lt 36; $i++) {
+            Start-Sleep -Seconds 10
+            $op = Invoke-RestMethod -Uri ([uri]$opLoc) -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck
+            if ($op.status -eq 'Succeeded') { Write-OK "Database provisioned"; break }
+            if ($op.status -eq 'Failed') {
+                throw "Database creation failed: $($op.error.errorCode) - $($op.error.message)"
+            }
+            Write-Host "  LRO: $($op.status) ($([int](($i+1)*10))s)" -ForegroundColor DarkGray
+        }
+    }
     $databaseId = $null
     for ($i = 0; $i -lt 18; $i++) {
         Start-Sleep -Seconds 10
@@ -389,8 +441,25 @@ if ($existingDb) {
     }
     if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 180 seconds." }
     Write-OK "Database created (ID: $databaseId)"
-    if ($filteredKql) { Write-Step "2/6" "Schema applied via definition API" }
-    else { Write-Step "2/6" "No KQL schema available — skipping" }
+
+    if ($kqlContent) {
+        Write-Step "2/6" "Applying KQL schema via dataplane..."
+        # Brief delay to let the new DB's query/mgmt endpoint become ready
+        Start-Sleep -Seconds 20
+        $maxAttempts = 6
+        for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+            try {
+                Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptContent $kqlContent -Label "$Source.kql"
+                break
+            } catch {
+                if ($attempt -eq $maxAttempts) { throw }
+                Write-Host "  Schema apply attempt $attempt failed: $($_.Exception.Message.Split([Environment]::NewLine)[0]); retrying in 15s..." -ForegroundColor DarkYellow
+                Start-Sleep -Seconds 15
+            }
+        }
+    } else {
+        Write-Step "2/6" "No KQL schema available — skipping"
+    }
 }
 
 #  Step 3: Create Fabric Event Stream 
@@ -488,7 +557,7 @@ if (-not $SkipArm) {
 Write-Host "`n=== Deployment Complete ===" -ForegroundColor Cyan
 Write-Host ""
 if (-not $SkipArm) { Write-Host "  Container: $ContainerGroupName (in $ResourceGroup)" -ForegroundColor Gray }
-Write-Host "  Eventhouse: $($eventhouse.displayName)" -ForegroundColor Gray
+Write-Host "  Eventhouse: $($ehDetails.displayName)" -ForegroundColor Gray
 Write-Host "  KQL Database: $DatabaseName ($databaseId)" -ForegroundColor Gray
 Write-Host "  Event Stream: $EventStreamName ($eventstreamId)" -ForegroundColor Gray
 Write-Host ""

@@ -1,0 +1,189 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_triplet]: string,
+   [name]: string,
+   [state]: string,
+   [elevation]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference metadata for a USDA NRCS SNOTEL (SNOwpack TELemetry) station. SNOTEL is an automated system of over 900 snowpack monitoring sites in the western United States and Alaska operated by the Natural Resources Conservation Service. Each station reports snowpack, precipitation, and temperature data via satellite telemetry. This reference record provides the station identity and geographic context for the hourly telemetry observations.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_triplet]: "{\"description\": \"SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. This is the canonical identifier used by the USDA NRCS Water and Climate Center to uniquely reference each SNOTEL site (e.g. '838:CO:SNTL' for University Camp, Colorado).\"}",
+   [name]: "{\"description\": \"Human-readable station name assigned by the USDA NRCS (e.g. 'University Camp', 'Berthoud Summit'). Station names are generally geographic references to the site location.\"}",
+   [state]: "{\"description\": \"Two-letter US state or territory code where the station is located (e.g. 'CO', 'AK', 'MT'). Stations are distributed across the western United States and Alaska.\"}",
+   [elevation]: "{\"description\": \"Station elevation above sea level. Reported by the NRCS in feet. SNOTEL stations are typically located at high elevations in mountainous terrain to monitor snowpack.\"}",
+   [latitude]: "{\"description\": \"Latitude of the SNOTEL station in decimal degrees north. All SNOTEL stations are in the northern hemisphere (positive values).\"}",
+   [longitude]: "{\"description\": \"Longitude of the SNOTEL station in decimal degrees east. Western US stations have negative values indicating west of the Prime Meridian.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_triplet", "path": "$.station_triplet"},
+  {"column": "name", "path": "$.name"},
+  {"column": "state", "path": "$.state"},
+  {"column": "elevation", "path": "$.elevation"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_triplet", "path": "$.data.station_triplet"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "elevation", "path": "$.data.elevation"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.usda.nrcs.snotel.Station') | project['station_triplet'] = tostring(data.['station_triplet']),['name'] = tostring(data.['name']),['state'] = tostring(data.['state']),['elevation'] = toreal(data.['elevation']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [SnowObservation] (
+   [station_triplet]: string,
+   [date_time]: datetime,
+   [snow_water_equivalent]: real,
+   [snow_depth]: real,
+   [precipitation]: real,
+   [air_temperature]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SnowObservation] docstring "{\"description\": \"Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings \\u2014 the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/.\"}";
+
+.alter table [SnowObservation] column-docstrings (
+   [station_triplet]: "{\"description\": \"SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. Links this observation to the station that reported it.\"}",
+   [date_time]: "{\"description\": \"Observation timestamp reported by the SNOTEL station. Hourly readings are transmitted via satellite telemetry, typically at the top of each hour. The time is in the station's local standard time as reported by the NRCS Report Generator.\"}",
+   [snow_water_equivalent]: "{\"description\": \"Snow Water Equivalent (SWE) \\u2014 the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.\"}",
+   [snow_depth]: "{\"description\": \"Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise.\"}",
+   [precipitation]: "{\"description\": \"Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year.\"}",
+   [air_temperature]: "{\"description\": \"Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SnowObservation] ingestion json mapping "SnowObservation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_triplet", "path": "$.station_triplet"},
+  {"column": "date_time", "path": "$.date_time"},
+  {"column": "snow_water_equivalent", "path": "$.snow_water_equivalent"},
+  {"column": "snow_depth", "path": "$.snow_depth"},
+  {"column": "precipitation", "path": "$.precipitation"},
+  {"column": "air_temperature", "path": "$.air_temperature"},
+]
+```
+
+.create-or-alter table [SnowObservation] ingestion json mapping "SnowObservation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_triplet", "path": "$.data.station_triplet"},
+  {"column": "date_time", "path": "$.data.date_time"},
+  {"column": "snow_water_equivalent", "path": "$.data.snow_water_equivalent"},
+  {"column": "snow_depth", "path": "$.data.snow_depth"},
+  {"column": "precipitation", "path": "$.data.precipitation"},
+  {"column": "air_temperature", "path": "$.data.air_temperature"},
+]
+```
+
+.drop materialized-view SnowObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) SnowObservationLatest on table SnowObservation {
+    SnowObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SnowObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.usda.nrcs.snotel.SnowObservation') | project['station_triplet'] = tostring(data.['station_triplet']),['date_time'] = todatetime(data.['date_time']),['snow_water_equivalent'] = toreal(data.['snow_water_equivalent']),['snow_depth'] = toreal(data.['snow_depth']),['precipitation'] = toreal(data.['precipitation']),['air_temperature'] = toreal(data.['air_temperature']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
