@@ -36,6 +36,7 @@ from eaws_albina_producer_kafka_producer.producer import OrgEAWSALBINABulletinsE
 
 # imports for the data classes for each event
 
+from eaws_albina_producer_data.avalancheregion import AvalancheRegion
 from eaws_albina_producer_data.avalanchebulletin import AvalancheBulletin
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
@@ -55,6 +56,14 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
         org_eawsalbinabulletins_event_producer = OrgEAWSALBINABulletinsEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- org.EAWS.ALBINA.AvalancheRegion ----
+    # TODO: Supply event data for the org.EAWS.ALBINA.AvalancheRegion event
+    _avalanche_region = AvalancheRegion()
+
+    # sends the 'org.EAWS.ALBINA.AvalancheRegion' event to Kafka topic.
+    await org_eawsalbinabulletins_event_producer.send_org_eaws_albina_avalanche_region(_region_id = 'TODO: replace me', data = _avalanche_region)
+    print(f"Sent 'org.EAWS.ALBINA.AvalancheRegion' event: {_avalanche_region.to_json()}")
 
     # ---- org.EAWS.ALBINA.AvalancheBulletin ----
     # TODO: Supply event data for the org.EAWS.ALBINA.AvalancheBulletin event

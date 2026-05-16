@@ -1,4 +1,4 @@
-""" AvalancheBulletin dataclass. """
+""" AvalancheRegion dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -12,53 +12,30 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from eaws_albina_producer_data.maxdangerratingenum import MaxDangerRatingenum
 import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class AvalancheBulletin:
+class AvalancheRegion:
     """
-    AvalancheBulletin
+    Reference record describing an EAWS region (or super-region) the bridge is configured to observe. Emitted at startup so that downstream consumers know the regional context even in summer months when no daily bulletins are published.
     
     Attributes:
         region_id (str)
-        region_name (str)
-        bulletin_id (str)
-        publication_time (datetime.datetime)
-        valid_time_start (datetime.datetime)
-        valid_time_end (datetime.datetime)
         lang (str)
-        max_danger_rating (typing.Optional[MaxDangerRatingenum])
-        max_danger_rating_value (typing.Optional[int])
-        danger_ratings_json (str)
-        avalanche_problems_json (str)
-        tendency_type (typing.Optional[str])
-        danger_patterns_json (typing.Optional[str])
-        avalanche_activity_highlights (typing.Optional[str])
-        snowpack_structure_comment (typing.Optional[str])
+        configured_at (datetime.datetime)
+        bulletin_base_url (typing.Optional[str])
     """
     
     
     region_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
-    region_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_name"))
-    bulletin_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bulletin_id"))
-    publication_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="publication_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    valid_time_start: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_time_start", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    valid_time_end: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_time_end", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     lang: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lang"))
-    max_danger_rating: typing.Optional[MaxDangerRatingenum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="max_danger_rating"))
-    max_danger_rating_value: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="max_danger_rating_value"))
-    danger_ratings_json: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="danger_ratings_json"))
-    avalanche_problems_json: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="avalanche_problems_json"))
-    tendency_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tendency_type"))
-    danger_patterns_json: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="danger_patterns_json"))
-    avalanche_activity_highlights: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="avalanche_activity_highlights"))
-    snowpack_structure_comment: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="snowpack_structure_comment"))
+    configured_at: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="configured_at", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    bulletin_base_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bulletin_base_url"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'AvalancheBulletin':
+    def from_serializer_dict(cls, data: dict) -> 'AvalancheRegion':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -131,7 +108,7 @@ class AvalancheBulletin:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['AvalancheBulletin']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['AvalancheRegion']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -168,13 +145,13 @@ class AvalancheBulletin:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return AvalancheBulletin.from_serializer_dict(_record)
+                return AvalancheRegion.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'AvalancheBulletin':
+    def create_instance(cls) -> 'AvalancheRegion':
         """
         Creates an instance of the dataclass with test values.
         
@@ -182,19 +159,8 @@ class AvalancheBulletin:
             An instance of the dataclass.
         """
         return cls(
-            region_id='qjyiwxiokkptmghvhstc',
-            region_name='wgczzsvtyuhpriycpywk',
-            bulletin_id='rnbspyxqncepfxmajlli',
-            publication_time=datetime.datetime.now(datetime.timezone.utc),
-            valid_time_start=datetime.datetime.now(datetime.timezone.utc),
-            valid_time_end=datetime.datetime.now(datetime.timezone.utc),
-            lang='qxoppjypaxflljwyzrxi',
-            max_danger_rating=MaxDangerRatingenum.low,
-            max_danger_rating_value=int(55),
-            danger_ratings_json='lanedingueqjwpsuaesg',
-            avalanche_problems_json='kvrhegqhsjjihijbziny',
-            tendency_type='eafedtcvbgxfalfpduuf',
-            danger_patterns_json='bezqerousrgwnskrbumx',
-            avalanche_activity_highlights='vyyqvwzepuclcxkpdgyg',
-            snowpack_structure_comment='izsibvubkmcdnevgnswu'
+            region_id='mzuxcotnosqcquskezds',
+            lang='ouwiydxldkvbezbxnjwg',
+            configured_at=datetime.datetime.now(datetime.timezone.utc),
+            bulletin_base_url='txqsascguwjgrcjefmwl'
         )
