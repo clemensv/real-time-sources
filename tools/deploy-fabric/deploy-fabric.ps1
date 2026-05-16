@@ -261,20 +261,23 @@ function Get-EventStreamConnectionString {
         "Authorization" = "MwcToken $MwcToken"
         "Content-Type"  = "application/json"
     }
-    $maxRetries = 3
+    $maxRetries = 5
+    $lastErr = $null
     for ($retry = 0; $retry -lt $maxRetries; $retry++) {
         try {
             $url = "https://$TargetUriHost/webapi/capacities/$CapId/workloads/ES/ESService/Direct/v1/workspaces/$WsId/artifacts/$EventStreamId/datasource/$DatasourceId/keys"
-            $resp = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body "{}" -TimeoutSec 15
+            $resp = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body "{}" -TimeoutSec 30
             if ($resp.primaryConnectionString) {
                 return $resp.primaryConnectionString
             }
+            $lastErr = "Empty primaryConnectionString in response"
         } catch {
-            if ($retry -lt ($maxRetries - 1)) {
-                Start-Sleep -Seconds 3
-            }
+            $lastErr = $_.Exception.Message
+            if ($_.ErrorDetails -and $_.ErrorDetails.Message) { $lastErr += " | $($_.ErrorDetails.Message)" }
         }
+        if ($retry -lt ($maxRetries - 1)) { Start-Sleep -Seconds ([Math]::Min(15, 3 * ($retry + 1))) }
     }
+    Write-Warning "Get-EventStreamConnectionString failed after $maxRetries tries: $lastErr"
     return $null
 }
 
@@ -506,7 +509,7 @@ Write-OK "Event Stream topology configured"
 #  Step 5: Retrieve Custom Endpoint connection string 
 
 Write-Step "5/6" "Retrieving Event Stream connection string..."
-Start-Sleep -Seconds 5
+Start-Sleep -Seconds 30
 $esConnectionString = $null
 try {
     $cluster = Get-FabricClusterUrl
