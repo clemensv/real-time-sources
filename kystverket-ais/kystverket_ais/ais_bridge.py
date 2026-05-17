@@ -9,11 +9,11 @@ import time
 from typing import Dict, Optional, Set
 
 from confluent_kafka import Producer
-from kystverket_ais_producer_data.no.kystverket.ais.positionreportclassa import PositionReportClassA
-from kystverket_ais_producer_data.no.kystverket.ais.staticvoyagedata import StaticVoyageData
-from kystverket_ais_producer_data.no.kystverket.ais.positionreportclassb import PositionReportClassB
-from kystverket_ais_producer_data.no.kystverket.ais.staticdataclassb import StaticDataClassB
-from kystverket_ais_producer_data.no.kystverket.ais.aidtonavigation import AidToNavigation
+from kystverket_ais_producer_data.positionreportclassa import PositionReportClassA
+from kystverket_ais_producer_data.staticvoyagedata import StaticVoyageData
+from kystverket_ais_producer_data.positionreportclassb import PositionReportClassB
+from kystverket_ais_producer_data.staticdataclassb import StaticDataClassB
+from kystverket_ais_producer_data.aidtonavigation import AidToNavigation
 from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISEventProducer
 
 from kystverket_ais.nmea_decoder import NMEADecoder, DecodedAIS, SUPPORTED_TYPES
