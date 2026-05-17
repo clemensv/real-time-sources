@@ -30,9 +30,9 @@ FEED_URL = "https://www.imis.bfs.de/ogc/opendata/ows"
 
 WFS_PARAMS_BASE = {
     "service": "WFS",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "request": "GetFeature",
-    "typeName": "opendata:eurdep_latestValue",
+    "typeNames": "opendata:eurdep_latestValue",
     "outputFormat": "application/json",
 }
 
@@ -74,7 +74,7 @@ class EurdepAPI:
         while True:
             params = {
                 **WFS_PARAMS_BASE,
-                "maxFeatures": str(PAGE_SIZE),
+                "count": str(PAGE_SIZE),
                 "startIndex": str(start_index),
             }
             resp = self.session.get(WFS_BASE, params=params, timeout=120)
