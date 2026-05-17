@@ -224,6 +224,16 @@ composites (a few MB up to ~10 MB) and the per-directory `content.log.bz2`
 catalog logs (multi-MB, not a payload — filter out if you walk directories
 yourself rather than following `file_url` from events).
 
+## Microsoft Fabric Integration
+
+For a recommended end-to-end flow that lands the bridge's events into a
+**Fabric Lakehouse** (bronze raw bytes + silver Delta) and renders the
+results as **Fabric Maps** vector and imagery layers (including Cloud
+Optimized GeoTIFFs from ICON‑D2 GRIB2 and radar composites), see
+[FABRIC.md](FABRIC.md). It covers the Eventstream → Spark Notebook
+destination (preview) wiring, per‑channel pipelines, idempotency,
+scale, and ready‑to‑use Eventhouse KQL functions for map layers.
+
 ## Data Management
 
 The bridge maintains a state file (default `~/.dwd_state.json`) to track:
