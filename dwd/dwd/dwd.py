@@ -180,16 +180,16 @@ def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
             _identifier=data["identifier"], data=Alert(**data), flush_producer=False)
     elif etype == "radar_product_catalog":
         radar_event_producer.send_de_dwd_radar_radar_product_catalog(
-            _file_path=data["file_path"], data=RadarProductCatalog(**data), flush_producer=False)
+            _file_url=data["file_url"], data=RadarProductCatalog(**data), flush_producer=False)
     elif etype == "radar_file_product":
         radar_event_producer.send_de_dwd_radar_radar_file_product(
-            _file_path=data["file_path"], data=RadarFileProduct(**data), flush_producer=False)
+            _file_url=data["file_url"], data=RadarFileProduct(**data), flush_producer=False)
     elif etype == "forecast_model_catalog":
         forecast_event_producer.send_de_dwd_forecast_forecast_model_catalog(
-            _file_path=data["file_path"], data=ForecastModelCatalog(**data), flush_producer=False)
+            _file_url=data["file_url"], data=ForecastModelCatalog(**data), flush_producer=False)
     elif etype == "icon_d2_forecast_file":
         forecast_event_producer.send_de_dwd_forecast_icon_d2_forecast_file(
-            _file_path=data["file_path"], data=IconD2ForecastFile(**data), flush_producer=False)
+            _file_url=data["file_url"], data=IconD2ForecastFile(**data), flush_producer=False)
     else:
         logger.warning("Unknown event type: %s", etype)
 

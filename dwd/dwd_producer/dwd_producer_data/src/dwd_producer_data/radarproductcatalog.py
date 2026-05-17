@@ -17,20 +17,18 @@ import json
 @dataclass
 class RadarProductCatalog:
     """
-    Catalog metadata for a DWD radar product family emitted as reference data.
+    Reference (catalog) event describing a single DWD radar composite product family. One event is emitted per product directory the first time the bridge observes it, so consumers can build a catalog of available products and the URLs from which their files can be discovered.
     
     Attributes:
         product (str)
-        directory_path (str)
+        file_url (str)
         description (typing.Optional[str])
-        file_path (str)
     """
     
     
     product: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product"))
-    directory_path: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="directory_path"))
+    file_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_url"))
     description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
-    file_path: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_path"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RadarProductCatalog':
@@ -157,8 +155,7 @@ class RadarProductCatalog:
             An instance of the dataclass.
         """
         return cls(
-            product='opipclukxiewlcitnhrq',
-            directory_path='tscialypwzgjxzwejrlr',
-            description='ippwcslhwlqrcavfhqiq',
-            file_path='bfulkicdrxmvnpekvpjn'
+            product='brlnzlcpjwimprgapmep',
+            file_url='cpsnxfwwrztiqkcbpcsi',
+            description='bgnkqonjymhabevvzdws'
         )

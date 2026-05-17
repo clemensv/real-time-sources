@@ -28,11 +28,11 @@ class Test_ExtremeTemperature10Min(unittest.TestCase):
         Create instance of ExtremeTemperature10Min for testing
         """
         instance = ExtremeTemperature10Min(
-            station_id='wsxxnhjajdeunvsigydo',
-            timestamp='ysyqecdzfckyrkanaysh',
-            quality_level=int(33),
-            air_temperature_maximum_2m=float(27.727659516479587),
-            air_temperature_minimum_5cm=float(49.439141772289105)
+            station_id='uummqwwblnoodjqjoqpx',
+            timestamp='yorgvqmpzfxgdbuahsxm',
+            quality_level=int(75),
+            air_temperature_maximum_2m=float(15.210455509298148),
+            air_temperature_minimum_5cm=float(96.3492185891252)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ExtremeTemperature10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'wsxxnhjajdeunvsigydo'
+        test_value = 'uummqwwblnoodjqjoqpx'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_ExtremeTemperature10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'ysyqecdzfckyrkanaysh'
+        test_value = 'yorgvqmpzfxgdbuahsxm'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_ExtremeTemperature10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(33)
+        test_value = int(75)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -65,7 +65,7 @@ class Test_ExtremeTemperature10Min(unittest.TestCase):
         """
         Test air_temperature_maximum_2m property
         """
-        test_value = float(27.727659516479587)
+        test_value = float(15.210455509298148)
         self.instance.air_temperature_maximum_2m = test_value
         self.assertEqual(self.instance.air_temperature_maximum_2m, test_value)
     
@@ -73,7 +73,7 @@ class Test_ExtremeTemperature10Min(unittest.TestCase):
         """
         Test air_temperature_minimum_5cm property
         """
-        test_value = float(49.439141772289105)
+        test_value = float(96.3492185891252)
         self.instance.air_temperature_minimum_5cm = test_value
         self.assertEqual(self.instance.air_temperature_minimum_5cm, test_value)
     

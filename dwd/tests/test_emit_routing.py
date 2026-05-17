@@ -232,9 +232,8 @@ _EXTREME_TEMPERATURE_EVENT = {
 _RADAR_PRODUCT_CATALOG_EVENT = {
     "type": "radar_product_catalog",
     "data": {
-        "file_path": "weather/radar/composite/ry",
+        "file_url": "https://opendata.dwd.de/weather/radar/composite/ry/",
         "product": "ry",
-        "directory_path": "weather/radar/composite/ry",
         "description": "DWD radar product directory ry",
     },
 }
@@ -242,21 +241,19 @@ _RADAR_PRODUCT_CATALOG_EVENT = {
 _RADAR_FILE_EVENT = {
     "type": "radar_file_product",
     "data": {
-        "file_path": "weather/radar/composite/ry/raa01-ry_10000-latest-dwd---bin",
+        "file_url": "https://opendata.dwd.de/weather/radar/composite/ry/raa01-ry_10000-latest-dwd---bin",
         "product": "ry",
         "file_name": "raa01-ry_10000-latest-dwd---bin",
         "modified": "2026-01-01T00:00:00+00:00",
         "size_bytes": 1024,
-        "download_url": "https://opendata.dwd.de/weather/radar/composite/ry/raa01-ry_10000-latest-dwd---bin",
     },
 }
 
 _FORECAST_MODEL_CATALOG_EVENT = {
     "type": "forecast_model_catalog",
     "data": {
-        "file_path": "weather/nwp/icon-d2/grib",
+        "file_url": "https://opendata.dwd.de/weather/nwp/icon-d2/grib/",
         "model": "icon-d2",
-        "base_path": "weather/nwp/icon-d2/grib",
         "description": "DWD ICON-D2 NWP model forecast feed from Open Data directories.",
     },
 }
@@ -264,7 +261,7 @@ _FORECAST_MODEL_CATALOG_EVENT = {
 _ICON_D2_FILE_EVENT = {
     "type": "icon_d2_forecast_file",
     "data": {
-        "file_path": "weather/nwp/icon-d2/grib/icon-d2_germany_regular-lat-lon_single-level_2026010100_000_T_2M.grib2.bz2",
+        "file_url": "https://opendata.dwd.de/weather/nwp/icon-d2/grib/icon-d2_germany_regular-lat-lon_single-level_2026010100_000_T_2M.grib2.bz2",
         "model": "icon-d2",
         "file_name": "icon-d2_germany_regular-lat-lon_single-level_2026010100_000_T_2M.grib2.bz2",
         "run": "2026010100",
@@ -274,7 +271,6 @@ _ICON_D2_FILE_EVENT = {
         "level": "2026010100",
         "modified": "2026-01-01T00:00:00+00:00",
         "size_bytes": 2048,
-        "download_url": "https://opendata.dwd.de/weather/nwp/icon-d2/grib/icon-d2_germany_regular-lat-lon_single-level_2026010100_000_T_2M.grib2.bz2",
     },
 }
 

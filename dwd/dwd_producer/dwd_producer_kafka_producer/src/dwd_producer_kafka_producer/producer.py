@@ -504,23 +504,23 @@ class DEDWDRadarEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_de_dwd_radar_radar_product_catalog(self,_file_path : str, data: RadarProductCatalog, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RadarProductCatalog], str]=None) -> None:
+    def send_de_dwd_radar_radar_product_catalog(self,_file_url : str, data: RadarProductCatalog, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RadarProductCatalog], str]=None) -> None:
         """
         Sends the 'DE.DWD.Radar.RadarProductCatalog' event to the Kafka topic
 
         Args:
-            _file_path(str):  Value for placeholder file_path in attribute subject
+            _file_url(str):  Value for placeholder file_url in attribute subject
             data: (RadarProductCatalog): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, RadarProductCatalog], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{file_path}'
+                The default key is derived from the xRegistry Kafka key declaration '{file_url}'
         """
-        kafka_key = "{file_path}".format(file_path=_file_path)
+        kafka_key = "{file_url}".format(file_url=_file_url)
         attributes = {
              "type":"DE.DWD.Radar.RadarProductCatalog",
              "source":"https://opendata.dwd.de/weather/radar",
-             "subject":"{file_path}".format(file_path = _file_path)
+             "subject":"{file_url}".format(file_url = _file_url)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -536,23 +536,23 @@ class DEDWDRadarEventProducer:
             self.producer.flush()
 
 
-    def send_de_dwd_radar_radar_file_product(self,_file_path : str, data: RadarFileProduct, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RadarFileProduct], str]=None) -> None:
+    def send_de_dwd_radar_radar_file_product(self,_file_url : str, data: RadarFileProduct, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RadarFileProduct], str]=None) -> None:
         """
         Sends the 'DE.DWD.Radar.RadarFileProduct' event to the Kafka topic
 
         Args:
-            _file_path(str):  Value for placeholder file_path in attribute subject
+            _file_url(str):  Value for placeholder file_url in attribute subject
             data: (RadarFileProduct): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, RadarFileProduct], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{file_path}'
+                The default key is derived from the xRegistry Kafka key declaration '{file_url}'
         """
-        kafka_key = "{file_path}".format(file_path=_file_path)
+        kafka_key = "{file_url}".format(file_url=_file_url)
         attributes = {
              "type":"DE.DWD.Radar.RadarFileProduct",
              "source":"https://opendata.dwd.de/weather/radar",
-             "subject":"{file_path}".format(file_path = _file_path)
+             "subject":"{file_url}".format(file_url = _file_url)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -650,23 +650,23 @@ class DEDWDForecastEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_de_dwd_forecast_forecast_model_catalog(self,_file_path : str, data: ForecastModelCatalog, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ForecastModelCatalog], str]=None) -> None:
+    def send_de_dwd_forecast_forecast_model_catalog(self,_file_url : str, data: ForecastModelCatalog, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ForecastModelCatalog], str]=None) -> None:
         """
         Sends the 'DE.DWD.Forecast.ForecastModelCatalog' event to the Kafka topic
 
         Args:
-            _file_path(str):  Value for placeholder file_path in attribute subject
+            _file_url(str):  Value for placeholder file_url in attribute subject
             data: (ForecastModelCatalog): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ForecastModelCatalog], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{file_path}'
+                The default key is derived from the xRegistry Kafka key declaration '{file_url}'
         """
-        kafka_key = "{file_path}".format(file_path=_file_path)
+        kafka_key = "{file_url}".format(file_url=_file_url)
         attributes = {
              "type":"DE.DWD.Forecast.ForecastModelCatalog",
              "source":"https://opendata.dwd.de/weather/nwp/icon-d2",
-             "subject":"{file_path}".format(file_path = _file_path)
+             "subject":"{file_url}".format(file_url = _file_url)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -682,23 +682,23 @@ class DEDWDForecastEventProducer:
             self.producer.flush()
 
 
-    def send_de_dwd_forecast_icon_d2_forecast_file(self,_file_path : str, data: IconD2ForecastFile, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, IconD2ForecastFile], str]=None) -> None:
+    def send_de_dwd_forecast_icon_d2_forecast_file(self,_file_url : str, data: IconD2ForecastFile, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, IconD2ForecastFile], str]=None) -> None:
         """
         Sends the 'DE.DWD.Forecast.IconD2ForecastFile' event to the Kafka topic
 
         Args:
-            _file_path(str):  Value for placeholder file_path in attribute subject
+            _file_url(str):  Value for placeholder file_url in attribute subject
             data: (IconD2ForecastFile): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, IconD2ForecastFile], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{file_path}'
+                The default key is derived from the xRegistry Kafka key declaration '{file_url}'
         """
-        kafka_key = "{file_path}".format(file_path=_file_path)
+        kafka_key = "{file_url}".format(file_url=_file_url)
         attributes = {
              "type":"DE.DWD.Forecast.IconD2ForecastFile",
              "source":"https://opendata.dwd.de/weather/nwp/icon-d2",
-             "subject":"{file_path}".format(file_path = _file_path)
+             "subject":"{file_url}".format(file_url = _file_url)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)

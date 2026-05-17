@@ -697,7 +697,7 @@ def test_de_dwd_radar_dedwdradarradarproductcatalog(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_radar_radar_product_catalog(_file_path = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_radar_radar_product_catalog(_file_url = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -706,7 +706,7 @@ def test_de_dwd_radar_dedwdradarradarproductcatalog(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        expected_key = "{file_url}".format(file_url=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -760,7 +760,7 @@ def test_de_dwd_radar_dedwdradarradarfileproduct(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_radar_radar_file_product(_file_path = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_radar_radar_file_product(_file_url = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -769,7 +769,7 @@ def test_de_dwd_radar_dedwdradarradarfileproduct(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        expected_key = "{file_url}".format(file_url=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -823,7 +823,7 @@ def test_de_dwd_forecast_dedwdforecastforecastmodelcatalog(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_forecast_forecast_model_catalog(_file_path = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_forecast_forecast_model_catalog(_file_url = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -832,7 +832,7 @@ def test_de_dwd_forecast_dedwdforecastforecastmodelcatalog(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        expected_key = "{file_url}".format(file_url=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -886,7 +886,7 @@ def test_de_dwd_forecast_dedwdforecasticond2forecastfile(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_forecast_icon_d2_forecast_file(_file_path = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_forecast_icon_d2_forecast_file(_file_url = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -895,7 +895,7 @@ def test_de_dwd_forecast_dedwdforecasticond2forecastfile(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        expected_key = "{file_url}".format(file_url=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -988,8 +988,8 @@ def test_de_dwd_radar_cross_event_type_kafka_key(kafka_emulator):
     data1 = Test_RadarProductCatalog.create_instance()
     data2 = Test_RadarFileProduct.create_instance()
 
-    producer_instance.send_de_dwd_radar_radar_product_catalog(_file_path = shared_key_value, data = data1)
-    producer_instance.send_de_dwd_radar_radar_file_product(_file_path = shared_key_value, data = data2)
+    producer_instance.send_de_dwd_radar_radar_product_catalog(_file_url = shared_key_value, data = data1)
+    producer_instance.send_de_dwd_radar_radar_file_product(_file_url = shared_key_value, data = data2)
     kafka_producer.flush(timeout=5.0)
 
     # Collect keys from both messages
@@ -1007,7 +1007,7 @@ def test_de_dwd_radar_cross_event_type_kafka_key(kafka_emulator):
     assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
     assert collected_keys[0] == collected_keys[1], \
         f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
-    expected_key = "{file_path}".format(file_path=shared_key_value)
+    expected_key = "{file_url}".format(file_url=shared_key_value)
     assert collected_keys[0] == expected_key, \
         f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()
@@ -1044,8 +1044,8 @@ def test_de_dwd_forecast_cross_event_type_kafka_key(kafka_emulator):
     data1 = Test_ForecastModelCatalog.create_instance()
     data2 = Test_IconD2ForecastFile.create_instance()
 
-    producer_instance.send_de_dwd_forecast_forecast_model_catalog(_file_path = shared_key_value, data = data1)
-    producer_instance.send_de_dwd_forecast_icon_d2_forecast_file(_file_path = shared_key_value, data = data2)
+    producer_instance.send_de_dwd_forecast_forecast_model_catalog(_file_url = shared_key_value, data = data1)
+    producer_instance.send_de_dwd_forecast_icon_d2_forecast_file(_file_url = shared_key_value, data = data2)
     kafka_producer.flush(timeout=5.0)
 
     # Collect keys from both messages
@@ -1063,7 +1063,7 @@ def test_de_dwd_forecast_cross_event_type_kafka_key(kafka_emulator):
     assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
     assert collected_keys[0] == collected_keys[1], \
         f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
-    expected_key = "{file_path}".format(file_path=shared_key_value)
+    expected_key = "{file_url}".format(file_url=shared_key_value)
     assert collected_keys[0] == expected_key, \
         f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

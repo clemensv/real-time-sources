@@ -28,10 +28,9 @@ class Test_RadarProductCatalog(unittest.TestCase):
         Create instance of RadarProductCatalog for testing
         """
         instance = RadarProductCatalog(
-            product='opipclukxiewlcitnhrq',
-            directory_path='tscialypwzgjxzwejrlr',
-            description='ippwcslhwlqrcavfhqiq',
-            file_path='bfulkicdrxmvnpekvpjn'
+            product='brlnzlcpjwimprgapmep',
+            file_url='cpsnxfwwrztiqkcbpcsi',
+            description='bgnkqonjymhabevvzdws'
         )
         return instance
 
@@ -40,33 +39,25 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test product property
         """
-        test_value = 'opipclukxiewlcitnhrq'
+        test_value = 'brlnzlcpjwimprgapmep'
         self.instance.product = test_value
         self.assertEqual(self.instance.product, test_value)
     
-    def test_directory_path_property(self):
+    def test_file_url_property(self):
         """
-        Test directory_path property
+        Test file_url property
         """
-        test_value = 'tscialypwzgjxzwejrlr'
-        self.instance.directory_path = test_value
-        self.assertEqual(self.instance.directory_path, test_value)
+        test_value = 'cpsnxfwwrztiqkcbpcsi'
+        self.instance.file_url = test_value
+        self.assertEqual(self.instance.file_url, test_value)
     
     def test_description_property(self):
         """
         Test description property
         """
-        test_value = 'ippwcslhwlqrcavfhqiq'
+        test_value = 'bgnkqonjymhabevvzdws'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
-    
-    def test_file_path_property(self):
-        """
-        Test file_path property
-        """
-        test_value = 'bfulkicdrxmvnpekvpjn'
-        self.instance.file_path = test_value
-        self.assertEqual(self.instance.file_path, test_value)
     
     def test_to_byte_array_json(self):
         """

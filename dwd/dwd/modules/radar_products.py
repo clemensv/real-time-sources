@@ -63,9 +63,8 @@ class RadarProductsModule(BaseModule):
                 events.append({
                     "type": "radar_product_catalog",
                     "data": {
-                        "file_path": rel_dir,
+                        "file_url": f"{self._http.base_url}/{rel_dir}/",
                         "product": product,
-                        "directory_path": rel_dir,
                         "description": f"DWD radar product directory {product}",
                     },
                 })
@@ -86,12 +85,11 @@ class RadarProductsModule(BaseModule):
                 events.append({
                     "type": "radar_file_product",
                     "data": {
-                        "file_path": file_path,
+                        "file_url": f"{self._http.base_url}/{file_path}",
                         "product": product,
                         "file_name": entry.name,
                         "modified": modified,
                         "size_bytes": _parse_size_bytes(entry.size_str),
-                        "download_url": f"{self._http.base_url}/{file_path}",
                     },
                 })
 

@@ -74,9 +74,8 @@ class IconD2ForecastModule(BaseModule):
             events.append({
                 "type": "forecast_model_catalog",
                 "data": {
-                    "file_path": _ICON_D2_BASE_PATH.rstrip("/"),
+                    "file_url": f"{self._http.base_url}/{_ICON_D2_BASE_PATH}",
                     "model": "icon-d2",
-                    "base_path": _ICON_D2_BASE_PATH.rstrip("/"),
                     "description": "DWD ICON-D2 NWP model forecast feed from Open Data directories.",
                 },
             })
@@ -105,7 +104,7 @@ class IconD2ForecastModule(BaseModule):
                 events.append({
                     "type": "icon_d2_forecast_file",
                     "data": {
-                        "file_path": file_path,
+                        "file_url": f"{self._http.base_url}/{file_path}",
                         "model": "icon-d2",
                         "file_name": entry.name,
                         "run": meta["run"],
@@ -115,7 +114,6 @@ class IconD2ForecastModule(BaseModule):
                         "level": meta["level"],
                         "modified": modified,
                         "size_bytes": _parse_size_bytes(entry.size_str),
-                        "download_url": f"{self._http.base_url}/{file_path}",
                     },
                 })
 

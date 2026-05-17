@@ -17,24 +17,22 @@ import json
 @dataclass
 class RadarFileProduct:
     """
-    Metadata event for a newly discovered or updated DWD radar product file.
+    Telemetry-style event announcing that a single DWD radar composite product file has appeared or been updated on the Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
     
     Attributes:
-        file_path (str)
+        file_url (str)
         product (str)
         file_name (str)
         modified (str)
         size_bytes (typing.Optional[int])
-        download_url (str)
     """
     
     
-    file_path: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_path"))
+    file_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_url"))
     product: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product"))
     file_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_name"))
     modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
     size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
-    download_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="download_url"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RadarFileProduct':
@@ -161,10 +159,9 @@ class RadarFileProduct:
             An instance of the dataclass.
         """
         return cls(
-            file_path='jbkbbaoubnnixseeybak',
-            product='cucnzmvrkriqkbjjhjak',
-            file_name='wevxcmyaratoozlomrbe',
-            modified='ttbsladwnjxekbryzwdg',
-            size_bytes=int(61),
-            download_url='jlopmckjhkkwmkqzritk'
+            file_url='rqbbwynpqmdwukswsstz',
+            product='ljxafiewnhaqeoqlzcot',
+            file_name='wuhejoubvjqiekvlcupd',
+            modified='xduwqadfyafrwnxafbnz',
+            size_bytes=int(31)
         )

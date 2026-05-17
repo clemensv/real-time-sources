@@ -28,10 +28,9 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         Create instance of ForecastModelCatalog for testing
         """
         instance = ForecastModelCatalog(
-            model='koodueewyoxftfoswyev',
-            base_path='kwlqpgjeepzqvrdmaqkn',
-            description='miahjgnqrzhscllycrwm',
-            file_path='oyijmlemkersiodgnvte'
+            model='mmxanlqzzgjyzzghusjn',
+            file_url='qfgyyedbrfaackixlngp',
+            description='zprqnqpsncrbdeynneca'
         )
         return instance
 
@@ -40,33 +39,25 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test model property
         """
-        test_value = 'koodueewyoxftfoswyev'
+        test_value = 'mmxanlqzzgjyzzghusjn'
         self.instance.model = test_value
         self.assertEqual(self.instance.model, test_value)
     
-    def test_base_path_property(self):
+    def test_file_url_property(self):
         """
-        Test base_path property
+        Test file_url property
         """
-        test_value = 'kwlqpgjeepzqvrdmaqkn'
-        self.instance.base_path = test_value
-        self.assertEqual(self.instance.base_path, test_value)
+        test_value = 'qfgyyedbrfaackixlngp'
+        self.instance.file_url = test_value
+        self.assertEqual(self.instance.file_url, test_value)
     
     def test_description_property(self):
         """
         Test description property
         """
-        test_value = 'miahjgnqrzhscllycrwm'
+        test_value = 'zprqnqpsncrbdeynneca'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
-    
-    def test_file_path_property(self):
-        """
-        Test file_path property
-        """
-        test_value = 'oyijmlemkersiodgnvte'
-        self.instance.file_path = test_value
-        self.assertEqual(self.instance.file_path, test_value)
     
     def test_to_byte_array_json(self):
         """

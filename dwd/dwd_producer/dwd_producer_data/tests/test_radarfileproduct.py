@@ -28,29 +28,28 @@ class Test_RadarFileProduct(unittest.TestCase):
         Create instance of RadarFileProduct for testing
         """
         instance = RadarFileProduct(
-            file_path='jbkbbaoubnnixseeybak',
-            product='cucnzmvrkriqkbjjhjak',
-            file_name='wevxcmyaratoozlomrbe',
-            modified='ttbsladwnjxekbryzwdg',
-            size_bytes=int(61),
-            download_url='jlopmckjhkkwmkqzritk'
+            file_url='rqbbwynpqmdwukswsstz',
+            product='ljxafiewnhaqeoqlzcot',
+            file_name='wuhejoubvjqiekvlcupd',
+            modified='xduwqadfyafrwnxafbnz',
+            size_bytes=int(31)
         )
         return instance
 
     
-    def test_file_path_property(self):
+    def test_file_url_property(self):
         """
-        Test file_path property
+        Test file_url property
         """
-        test_value = 'jbkbbaoubnnixseeybak'
-        self.instance.file_path = test_value
-        self.assertEqual(self.instance.file_path, test_value)
+        test_value = 'rqbbwynpqmdwukswsstz'
+        self.instance.file_url = test_value
+        self.assertEqual(self.instance.file_url, test_value)
     
     def test_product_property(self):
         """
         Test product property
         """
-        test_value = 'cucnzmvrkriqkbjjhjak'
+        test_value = 'ljxafiewnhaqeoqlzcot'
         self.instance.product = test_value
         self.assertEqual(self.instance.product, test_value)
     
@@ -58,7 +57,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test file_name property
         """
-        test_value = 'wevxcmyaratoozlomrbe'
+        test_value = 'wuhejoubvjqiekvlcupd'
         self.instance.file_name = test_value
         self.assertEqual(self.instance.file_name, test_value)
     
@@ -66,7 +65,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test modified property
         """
-        test_value = 'ttbsladwnjxekbryzwdg'
+        test_value = 'xduwqadfyafrwnxafbnz'
         self.instance.modified = test_value
         self.assertEqual(self.instance.modified, test_value)
     
@@ -74,17 +73,9 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test size_bytes property
         """
-        test_value = int(61)
+        test_value = int(31)
         self.instance.size_bytes = test_value
         self.assertEqual(self.instance.size_bytes, test_value)
-    
-    def test_download_url_property(self):
-        """
-        Test download_url property
-        """
-        test_value = 'jlopmckjhkkwmkqzritk'
-        self.instance.download_url = test_value
-        self.assertEqual(self.instance.download_url, test_value)
     
     def test_to_byte_array_json(self):
         """

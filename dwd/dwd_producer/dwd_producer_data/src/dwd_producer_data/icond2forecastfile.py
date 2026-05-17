@@ -17,10 +17,10 @@ import json
 @dataclass
 class IconD2ForecastFile:
     """
-    Metadata event for a newly discovered or updated ICON-D2 forecast file from DWD Open Data.
+    Telemetry-style event announcing that a single ICON-D2 GRIB2 forecast file has appeared or been updated on the DWD Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
     
     Attributes:
-        file_path (str)
+        file_url (str)
         model (str)
         file_name (str)
         run (typing.Optional[str])
@@ -30,11 +30,10 @@ class IconD2ForecastFile:
         level (typing.Optional[str])
         modified (str)
         size_bytes (typing.Optional[int])
-        download_url (str)
     """
     
     
-    file_path: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_path"))
+    file_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_url"))
     model: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="model"))
     file_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_name"))
     run: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="run"))
@@ -44,7 +43,6 @@ class IconD2ForecastFile:
     level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level"))
     modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
     size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
-    download_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="download_url"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'IconD2ForecastFile':
@@ -171,15 +169,14 @@ class IconD2ForecastFile:
             An instance of the dataclass.
         """
         return cls(
-            file_path='uoyfuvvnksqebvhggrka',
-            model='hnwomycdjiqmnofvhedu',
-            file_name='imtphusacaahvvrxfozd',
-            run='xxqsuusrsqcfperpvlra',
-            forecast_hour=int(42),
-            parameter='uqswsxlrvhixkwnehtup',
-            level_type='iehusiokzugnwdplgkan',
-            level='mxyozjlwpdzutihaunsv',
-            modified='uudtrxopzksbyldrrbvx',
-            size_bytes=int(64),
-            download_url='rdxnvsjdogplrlgdjqfy'
+            file_url='vdpeffvcswnajozyphlg',
+            model='plfqbdbnwpdqbhowywzf',
+            file_name='xkjcbckvsfkmtwdubfeg',
+            run='qjgquadiisgkvlloszxg',
+            forecast_hour=int(21),
+            parameter='skmbpcupiatuppwmjqbl',
+            level_type='bwxnncfhklbpriapjzki',
+            level='fuwjpriofbvielqtgfsy',
+            modified='itjkrxwrutgoimpllldo',
+            size_bytes=int(49)
         )

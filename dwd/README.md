@@ -186,8 +186,8 @@ applies the following keep/drop decisions:
 | CDC 10-minute extremes | REST file ZIP (`.../10_minutes/{extreme_wind,extreme_temperature}/now/`) | `station_id` | ~10 min | Keep (implemented in this pass) | High-value near-real-time extremes. |
 | CDC hourly observations | REST file ZIP (`.../hourly/*/recent/`) | `station_id` + parameter | hourly/daily refresh | Keep (optional module) | Useful enrichment; lower freshness so disabled by default. |
 | Weather alerts (CAP) | REST ZIP (`weather/alerts/cap/.../LATEST...zip`) | `identifier` | minutes | Keep (implemented) | Operational severe-weather alerts. |
-| ICON-D2 forecasts | REST file products (`weather/nwp/icon-d2/grib/`) | `file_path` | rolling | Keep (implemented, optional module) | Emits forecast file metadata events keyed by stable file path. |
-| Radar products | REST file products (`weather/radar/composite/`) | `file_path` | minutes | Keep (implemented, optional module) | Emits radar file metadata events keyed by stable file path. |
+| ICON-D2 forecasts | REST file products (`weather/nwp/icon-d2/grib/`) | `file_url` | rolling | Keep (implemented, optional module) | Emits forecast file metadata events keyed by the file's absolute HTTPS URL. |
+| Radar products | REST file products (`weather/radar/composite/`) | `file_url` | minutes | Keep (implemented, optional module) | Emits radar file metadata events keyed by the file's absolute HTTPS URL. |
 | Satellite products | REST file products (`weather/satellite/`) | product + tile/area + validity time | minutes | Keep (next phase) | Distinct image/raster model and ingestion pattern. |
 
 ## Data Source

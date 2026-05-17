@@ -17,20 +17,18 @@ import json
 @dataclass
 class ForecastModelCatalog:
     """
-    Reference metadata describing a forecast model family exposed by DWD Open Data.
+    Reference (catalog) event describing a single NWP forecast model family published by DWD Open Data. One event is emitted per model the first time the bridge observes it, so consumers can build a catalog of available models and the URLs from which their forecast files can be discovered.
     
     Attributes:
         model (str)
-        base_path (str)
+        file_url (str)
         description (typing.Optional[str])
-        file_path (str)
     """
     
     
     model: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="model"))
-    base_path: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="base_path"))
+    file_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_url"))
     description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
-    file_path: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_path"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'ForecastModelCatalog':
@@ -157,8 +155,7 @@ class ForecastModelCatalog:
             An instance of the dataclass.
         """
         return cls(
-            model='koodueewyoxftfoswyev',
-            base_path='kwlqpgjeepzqvrdmaqkn',
-            description='miahjgnqrzhscllycrwm',
-            file_path='oyijmlemkersiodgnvte'
+            model='mmxanlqzzgjyzzghusjn',
+            file_url='qfgyyedbrfaackixlngp',
+            description='zprqnqpsncrbdeynneca'
         )

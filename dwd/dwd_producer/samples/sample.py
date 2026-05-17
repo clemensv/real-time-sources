@@ -164,7 +164,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _radar_product_catalog = RadarProductCatalog()
 
     # sends the 'DE.DWD.Radar.RadarProductCatalog' event to Kafka topic.
-    await dedwdradar_event_producer.send_de_dwd_radar_radar_product_catalog(_file_path = 'TODO: replace me', data = _radar_product_catalog)
+    await dedwdradar_event_producer.send_de_dwd_radar_radar_product_catalog(_file_url = 'TODO: replace me', data = _radar_product_catalog)
     print(f"Sent 'DE.DWD.Radar.RadarProductCatalog' event: {_radar_product_catalog.to_json()}")
 
     # ---- DE.DWD.Radar.RadarFileProduct ----
@@ -172,7 +172,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _radar_file_product = RadarFileProduct()
 
     # sends the 'DE.DWD.Radar.RadarFileProduct' event to Kafka topic.
-    await dedwdradar_event_producer.send_de_dwd_radar_radar_file_product(_file_path = 'TODO: replace me', data = _radar_file_product)
+    await dedwdradar_event_producer.send_de_dwd_radar_radar_file_product(_file_url = 'TODO: replace me', data = _radar_file_product)
     print(f"Sent 'DE.DWD.Radar.RadarFileProduct' event: {_radar_file_product.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -188,7 +188,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _forecast_model_catalog = ForecastModelCatalog()
 
     # sends the 'DE.DWD.Forecast.ForecastModelCatalog' event to Kafka topic.
-    await dedwdforecast_event_producer.send_de_dwd_forecast_forecast_model_catalog(_file_path = 'TODO: replace me', data = _forecast_model_catalog)
+    await dedwdforecast_event_producer.send_de_dwd_forecast_forecast_model_catalog(_file_url = 'TODO: replace me', data = _forecast_model_catalog)
     print(f"Sent 'DE.DWD.Forecast.ForecastModelCatalog' event: {_forecast_model_catalog.to_json()}")
 
     # ---- DE.DWD.Forecast.IconD2ForecastFile ----
@@ -196,7 +196,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _icon_d2_forecast_file = IconD2ForecastFile()
 
     # sends the 'DE.DWD.Forecast.IconD2ForecastFile' event to Kafka topic.
-    await dedwdforecast_event_producer.send_de_dwd_forecast_icon_d2_forecast_file(_file_path = 'TODO: replace me', data = _icon_d2_forecast_file)
+    await dedwdforecast_event_producer.send_de_dwd_forecast_icon_d2_forecast_file(_file_url = 'TODO: replace me', data = _icon_d2_forecast_file)
     print(f"Sent 'DE.DWD.Forecast.IconD2ForecastFile' event: {_icon_d2_forecast_file.to_json()}")
 
 if __name__ == "__main__":
