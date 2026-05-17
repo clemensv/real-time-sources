@@ -76,6 +76,7 @@ class EurdepAPI:
                 **WFS_PARAMS_BASE,
                 "count": str(PAGE_SIZE),
                 "startIndex": str(start_index),
+                "sortBy": "id",
             }
             resp = self.session.get(WFS_BASE, params=params, timeout=120)
             resp.raise_for_status()
