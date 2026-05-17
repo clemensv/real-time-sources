@@ -1,0 +1,221 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_number]: string,
+   [station_name]: string,
+   [prov_terr_state_loc]: string,
+   [status_en]: string,
+   [contributor_en]: string,
+   [drainage_area_gross]: real,
+   [drainage_area_effect]: real,
+   [rhbn]: bool,
+   [real_time]: bool,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference data for a Water Survey of Canada hydrometric monitoring station from the ECCC OGC API hydrometric-stations collection.\"}";
+
+.alter table [Station] column-docstrings (
+   [station_number]: "{\"description\": \"Unique WSC station identifier following the scheme 2-digit major drainage area + letter + station digits, e.g. '05BJ004'. Upstream field: STATION_NUMBER.\"}",
+   [station_name]: "{\"description\": \"Official name of the hydrometric station, e.g. 'ELBOW RIVER AT BRAGG CREEK'. Upstream field: STATION_NAME.\"}",
+   [prov_terr_state_loc]: "{\"description\": \"Two-letter province, territory or state location code where the station is situated, e.g. 'AB' for Alberta. Upstream field: PROV_TERR_STATE_LOC.\"}",
+   [status_en]: "{\"description\": \"Operational status of the station in English, e.g. 'Active', 'Discontinued'. Upstream field: STATUS_EN.\"}",
+   [contributor_en]: "{\"description\": \"Name of the contributing agency responsible for operating this station in English, e.g. 'Water Survey of Canada'. Upstream field: CONTRIBUTOR_EN.\"}",
+   [drainage_area_gross]: "{\"description\": \"Gross drainage area of the watershed upstream of this station in square kilometres. Upstream field: DRAINAGE_AREA_GROSS.\"}",
+   [drainage_area_effect]: "{\"description\": \"Effective (contributing) drainage area of the watershed upstream of this station in square kilometres, excluding non-contributing areas. Upstream field: DRAINAGE_AREA_EFFECT.\"}",
+   [rhbn]: "{\"description\": \"Indicates whether the station is part of the Reference Hydrometric Basin Network (RHBN), a subset of hydrologically stable, minimally disturbed basins used for climate change studies. Upstream field: RHBN.\"}",
+   [real_time]: "{\"description\": \"Indicates whether real-time data are available for this station via the WSC real-time data service. Upstream field: REAL_TIME.\"}",
+   [latitude]: "{\"description\": \"Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.\"}",
+   [longitude]: "{\"description\": \"Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.station_number"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "prov_terr_state_loc", "path": "$.prov_terr_state_loc"},
+  {"column": "status_en", "path": "$.status_en"},
+  {"column": "contributor_en", "path": "$.contributor_en"},
+  {"column": "drainage_area_gross", "path": "$.drainage_area_gross"},
+  {"column": "drainage_area_effect", "path": "$.drainage_area_effect"},
+  {"column": "rhbn", "path": "$.rhbn"},
+  {"column": "real_time", "path": "$.real_time"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.data.station_number"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "prov_terr_state_loc", "path": "$.data.prov_terr_state_loc"},
+  {"column": "status_en", "path": "$.data.status_en"},
+  {"column": "contributor_en", "path": "$.data.contributor_en"},
+  {"column": "drainage_area_gross", "path": "$.data.drainage_area_gross"},
+  {"column": "drainage_area_effect", "path": "$.data.drainage_area_effect"},
+  {"column": "rhbn", "path": "$.data.rhbn"},
+  {"column": "real_time", "path": "$.data.real_time"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'CA.Gov.ECCC.Hydro.Station') | project['station_number'] = tostring(data.['station_number']),['station_name'] = tostring(data.['station_name']),['prov_terr_state_loc'] = tostring(data.['prov_terr_state_loc']),['status_en'] = tostring(data.['status_en']),['contributor_en'] = tostring(data.['contributor_en']),['drainage_area_gross'] = toreal(data.['drainage_area_gross']),['drainage_area_effect'] = toreal(data.['drainage_area_effect']),['rhbn'] = tobool(data.['rhbn']),['real_time'] = tobool(data.['real_time']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Observation] (
+   [station_number]: string,
+   [identifier]: string,
+   [station_name]: string,
+   [prov_terr_state_loc]: string,
+   [observation_datetime]: datetime,
+   [level]: real,
+   [discharge]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Observation] docstring "{\"description\": \"Real-time hydrometric observation from the ECCC OGC API hydrometric-realtime collection. Data are provisional and updated approximately every 5 minutes.\"}";
+
+.alter table [Observation] column-docstrings (
+   [station_number]: "{\"description\": \"Unique WSC station identifier, e.g. '05BJ004'. Upstream field: STATION_NUMBER.\"}",
+   [identifier]: "{\"description\": \"Unique observation identifier composed of station number and ISO 8601 observation datetime, e.g. '05BJ004.2026-03-07T07:00:00Z'. Upstream field: IDENTIFIER.\"}",
+   [station_name]: "{\"description\": \"Official name of the hydrometric station. Upstream field: STATION_NAME.\"}",
+   [prov_terr_state_loc]: "{\"description\": \"Two-letter province, territory or state location code. Upstream field: PROV_TERR_STATE_LOC.\"}",
+   [observation_datetime]: "{\"description\": \"Timestamp of the observation in UTC. Upstream field: DATETIME.\"}",
+   [level]: "{\"description\": \"Water level at the station gauge in metres above the station datum. Null when not measured or unavailable. Upstream field: LEVEL.\"}",
+   [discharge]: "{\"description\": \"Water discharge (flow rate) at the station in cubic metres per second. Null when not measured or unavailable. Upstream field: DISCHARGE.\"}",
+   [latitude]: "{\"description\": \"Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.\"}",
+   [longitude]: "{\"description\": \"Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.station_number"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "prov_terr_state_loc", "path": "$.prov_terr_state_loc"},
+  {"column": "observation_datetime", "path": "$.observation_datetime"},
+  {"column": "level", "path": "$.level"},
+  {"column": "discharge", "path": "$.discharge"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Observation] ingestion json mapping "Observation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_number", "path": "$.data.station_number"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "prov_terr_state_loc", "path": "$.data.prov_terr_state_loc"},
+  {"column": "observation_datetime", "path": "$.data.observation_datetime"},
+  {"column": "level", "path": "$.data.level"},
+  {"column": "discharge", "path": "$.data.discharge"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ObservationLatest ifexists;
+
+.create materialized-view with (backfill=true) ObservationLatest on table Observation {
+    Observation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Observation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'CA.Gov.ECCC.Hydro.Observation') | project['station_number'] = tostring(data.['station_number']),['identifier'] = tostring(data.['identifier']),['station_name'] = tostring(data.['station_name']),['prov_terr_state_loc'] = tostring(data.['prov_terr_state_loc']),['observation_datetime'] = todatetime(data.['observation_datetime']),['level'] = toreal(data.['level']),['discharge'] = toreal(data.['discharge']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
