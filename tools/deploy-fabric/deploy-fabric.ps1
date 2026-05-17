@@ -530,6 +530,66 @@ else {
     Write-Host "  Retrieve it from the Fabric portal: Event Stream '$EventStreamName' > Custom Endpoint" -ForegroundColor White
 }
 
+# Wait for the Event Stream custom endpoint to actually accept Kafka metadata
+# requests. Fresh ES + EH namespaces can take several minutes after the topology
+# update before rdkafka can fetch metadata. Probe with confluent_kafka.AdminClient
+# in a retry loop so we don't deploy the bridge before the broker is ready.
+if ($esConnectionString -and -not $SkipArm) {
+    Write-Step "5b/6" "Probing Event Stream Kafka endpoint for readiness..."
+    $probeScript = Join-Path $TempDir "kafka_probe_$(Get-Random).py"
+    @"
+import os, sys, time
+from confluent_kafka.admin import AdminClient
+cs = os.environ['CS']
+# Parse Azure-style connection string: Endpoint=sb://<host>/;SharedAccessKeyName=...;...
+host = None
+for p in cs.split(';'):
+    if p.lower().startswith('endpoint='):
+        v = p.split('=', 1)[1].strip().replace('sb://', '').rstrip('/')
+        host = v
+        break
+if not host:
+    print('PROBE: cannot parse endpoint', flush=True); sys.exit(2)
+conf = {
+    'bootstrap.servers': f'{host}:9093',
+    'security.protocol': 'SASL_SSL',
+    'sasl.mechanism': 'PLAIN',
+    'sasl.username': '`$ConnectionString',
+    'sasl.password': cs,
+    'socket.timeout.ms': 15000,
+    'metadata.request.timeout.ms': 15000,
+}
+deadline = time.time() + 600  # up to 10 min
+attempt = 0
+while time.time() < deadline:
+    attempt += 1
+    try:
+        ac = AdminClient(conf)
+        md = ac.list_topics(timeout=20)
+        print(f'PROBE OK attempt={attempt} brokers={len(md.brokers)}', flush=True)
+        sys.exit(0)
+    except Exception as e:
+        print(f'PROBE attempt={attempt} failed: {e}', flush=True)
+        time.sleep(15)
+print('PROBE: gave up after 10 min', flush=True)
+sys.exit(1)
+"@ | Set-Content -Path $probeScript -Encoding UTF8
+    $env:CS = $esConnectionString
+    try {
+        python -c "import confluent_kafka" 2>$null
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "  confluent_kafka not installed locally; skipping probe (deploy may race)"
+        } else {
+            python $probeScript
+            if ($LASTEXITCODE -ne 0) {
+                Write-Warning "  Probe could not confirm broker readiness; deploying anyway"
+            } else {
+                Write-OK "Event Stream Kafka endpoint is ready"
+            }
+        }
+    } finally { Remove-Item Env:CS -ErrorAction SilentlyContinue }
+}
+
 #  Step 6: Deploy ACI container ─
 
 if (-not $SkipArm) {
