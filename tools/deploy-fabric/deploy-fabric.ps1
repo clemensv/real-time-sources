@@ -509,7 +509,7 @@ Write-OK "Event Stream topology configured"
 #  Step 5: Retrieve Custom Endpoint connection string 
 
 Write-Step "5/6" "Retrieving Event Stream connection string..."
-Start-Sleep -Seconds 30
+Start-Sleep -Seconds 90
 $esConnectionString = $null
 try {
     $cluster = Get-FabricClusterUrl
