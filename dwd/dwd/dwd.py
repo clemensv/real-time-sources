@@ -18,7 +18,16 @@ from dwd_producer_data import HourlyObservation
 from dwd_producer_data import ExtremeWind10Min
 from dwd_producer_data import ExtremeTemperature10Min
 from dwd_producer_data import Alert
-from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer, DEDWDWeatherEventProducer
+from dwd_producer_data import RadarProductCatalog
+from dwd_producer_data import RadarFileProduct
+from dwd_producer_data import ForecastModelCatalog
+from dwd_producer_data import IconD2ForecastFile
+from dwd_producer_kafka_producer.producer import (
+    DEDWDCDCEventProducer,
+    DEDWDWeatherEventProducer,
+    DEDWDRadarEventProducer,
+    DEDWDForecastEventProducer,
+)
 
 from dwd.modules.base import BaseModule
 from dwd.modules.station_metadata import StationMetadataModule
@@ -26,6 +35,8 @@ from dwd.modules.station_obs_10min import StationObs10MinModule
 from dwd.modules.station_obs_10min_extremes import StationObs10MinExtremesModule
 from dwd.modules.station_obs_hourly import StationObsHourlyModule
 from dwd.modules.weather_alerts import WeatherAlertsModule
+from dwd.modules.radar_products import RadarProductsModule
+from dwd.modules.icon_d2_forecast import IconD2ForecastModule
 from dwd.util.http_client import DWDHttpClient
 from dwd.util.state import load_state, save_state
 
@@ -43,6 +54,8 @@ MODULE_CLASSES = {
     "station_obs_10min_extremes": StationObs10MinExtremesModule,
     "station_obs_hourly": StationObsHourlyModule,
     "weather_alerts": WeatherAlertsModule,
+    "radar_products": RadarProductsModule,
+    "icon_d2_forecast": IconD2ForecastModule,
 }
 
 
@@ -121,13 +134,19 @@ def _create_module(key: str, http_client: DWDHttpClient,
         return StationMetadataModule(http_client)
     elif key == "weather_alerts":
         return WeatherAlertsModule(http_client)
+    elif key == "radar_products":
+        return RadarProductsModule(http_client)
+    elif key == "icon_d2_forecast":
+        return IconD2ForecastModule(http_client)
     else:
         raise ValueError(f"Unknown module: {key}")
 
 
 def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
-                weather_event_producer: DEDWDWeatherEventProducer,
-                event: Dict[str, Any]) -> None:
+                 weather_event_producer: DEDWDWeatherEventProducer,
+                 radar_event_producer: DEDWDRadarEventProducer,
+                 forecast_event_producer: DEDWDForecastEventProducer,
+                 event: Dict[str, Any]) -> None:
     """Send a single event through the typed Kafka producer."""
     etype = event["type"]
     data = event["data"]
@@ -159,6 +178,18 @@ def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
     elif etype == "weather_alert":
         weather_event_producer.send_de_dwd_weather_alert(
             _identifier=data["identifier"], data=Alert(**data), flush_producer=False)
+    elif etype == "radar_product_catalog":
+        radar_event_producer.send_de_dwd_radar_radar_product_catalog(
+            _file_path=data["file_path"], data=RadarProductCatalog(**data), flush_producer=False)
+    elif etype == "radar_file_product":
+        radar_event_producer.send_de_dwd_radar_radar_file_product(
+            _file_path=data["file_path"], data=RadarFileProduct(**data), flush_producer=False)
+    elif etype == "forecast_model_catalog":
+        forecast_event_producer.send_de_dwd_forecast_forecast_model_catalog(
+            _file_path=data["file_path"], data=ForecastModelCatalog(**data), flush_producer=False)
+    elif etype == "icon_d2_forecast_file":
+        forecast_event_producer.send_de_dwd_forecast_icon_d2_forecast_file(
+            _file_path=data["file_path"], data=IconD2ForecastFile(**data), flush_producer=False)
     else:
         logger.warning("Unknown event type: %s", etype)
 
@@ -171,6 +202,8 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
     kafka_producer = Producer(kafka_config)
     cdc_event_producer = DEDWDCDCEventProducer(kafka_producer, kafka_topic)
     weather_event_producer = DEDWDWeatherEventProducer(kafka_producer, kafka_topic)
+    radar_event_producer = DEDWDRadarEventProducer(kafka_producer, kafka_topic)
+    forecast_event_producer = DEDWDForecastEventProducer(kafka_producer, kafka_topic)
 
     module_names = ", ".join(m.name for m in modules)
     logger.info("Starting DWD feed → topic=%s, bootstrap=%s, modules=[%s]",
@@ -196,7 +229,13 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
                     events = []
 
                 for ev in events:
-                    _emit_event(cdc_event_producer, weather_event_producer, ev)
+                    _emit_event(
+                        cdc_event_producer,
+                        weather_event_producer,
+                        radar_event_producer,
+                        forecast_event_producer,
+                        ev,
+                    )
                     total_events += 1
 
                 if events:

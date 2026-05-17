@@ -1,4 +1,4 @@
-""" HourlyObservation dataclass. """
+""" IconD2ForecastFile dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,29 +15,39 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class HourlyObservation:
+class IconD2ForecastFile:
     """
-    HourlyObservation
+    Metadata event for a newly discovered or updated ICON-D2 forecast file from DWD Open Data.
     
     Attributes:
-        station_id (str)
-        timestamp (str)
-        quality_level (typing.Optional[int])
-        parameter (str)
-        value (typing.Optional[float])
-        unit (typing.Optional[str])
+        file_path (str)
+        model (str)
+        file_name (str)
+        run (typing.Optional[str])
+        forecast_hour (typing.Optional[int])
+        parameter (typing.Optional[str])
+        level_type (typing.Optional[str])
+        level (typing.Optional[str])
+        modified (str)
+        size_bytes (typing.Optional[int])
+        download_url (str)
     """
     
     
-    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
-    quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
-    parameter: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter"))
-    value: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unit"))
+    file_path: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_path"))
+    model: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="model"))
+    file_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_name"))
+    run: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="run"))
+    forecast_hour: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_hour"))
+    parameter: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter"))
+    level_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level_type"))
+    level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level"))
+    modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
+    size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
+    download_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="download_url"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'HourlyObservation':
+    def from_serializer_dict(cls, data: dict) -> 'IconD2ForecastFile':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -110,7 +120,7 @@ class HourlyObservation:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['HourlyObservation']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['IconD2ForecastFile']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -147,13 +157,13 @@ class HourlyObservation:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return HourlyObservation.from_serializer_dict(_record)
+                return IconD2ForecastFile.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'HourlyObservation':
+    def create_instance(cls) -> 'IconD2ForecastFile':
         """
         Creates an instance of the dataclass with test values.
         
@@ -161,10 +171,15 @@ class HourlyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='gzkshexgjcslvevtwrbb',
-            timestamp='pnnqrxtafkyzrcjvsrrr',
-            quality_level=int(49),
-            parameter='cyuakzrkzvezcspsfxjo',
-            value=float(85.36009779258846),
-            unit='erbcbxjlvjpbunukresu'
+            file_path='uoyfuvvnksqebvhggrka',
+            model='hnwomycdjiqmnofvhedu',
+            file_name='imtphusacaahvvrxfozd',
+            run='xxqsuusrsqcfperpvlra',
+            forecast_hour=int(42),
+            parameter='uqswsxlrvhixkwnehtup',
+            level_type='iehusiokzugnwdplgkan',
+            level='mxyozjlwpdzutihaunsv',
+            modified='uudtrxopzksbyldrrbvx',
+            size_bytes=int(64),
+            download_url='rdxnvsjdogplrlgdjqfy'
         )

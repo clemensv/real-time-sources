@@ -1314,16 +1314,20 @@ class TestDWDDockerFlow:
     def test_emits_reference_old_and_new_telemetry(self, kafka: KafkaFixture, dwd_image):
         _run_kafka_flow_test(
             kafka, dwd_image, self.TOPIC,
-            reference_types=['StationMetadata'],
-            telemetry_types=['Wind10Min', 'ExtremeWind10Min', 'ExtremeTemperature10Min'],
+            reference_types=['StationMetadata', 'RadarProductCatalog', 'ForecastModelCatalog'],
+            telemetry_types=['Wind10Min', 'ExtremeWind10Min', 'ExtremeTemperature10Min', 'RadarFileProduct', 'IconD2ForecastFile'],
             required_exact_types=[
                 'DE.DWD.CDC.StationMetadata',
                 'DE.DWD.CDC.Wind10Min',
                 'DE.DWD.CDC.ExtremeWind10Min',
                 'DE.DWD.CDC.ExtremeTemperature10Min',
             ],
+            required_any_types=[
+                'DE.DWD.Radar.RadarFileProduct',
+                'DE.DWD.Forecast.IconD2ForecastFile',
+            ],
             extra_env={
-                'DWD_MODULES': 'station_metadata,station_obs_10min,station_obs_10min_extremes',
+                'DWD_MODULES': 'station_metadata,station_obs_10min,station_obs_10min_extremes,radar_products,icon_d2_forecast',
             },
             min_messages=10,
             timeout=300,

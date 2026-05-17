@@ -1,10 +1,10 @@
 # DWD Open Data Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
 
-This container image provides a bridge between the DWD (Deutscher Wetterdienst) open-data file server and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge polls weather observations, extreme 10-minute observations, station metadata, and weather alerts from ~1,450 German weather stations and forwards them to the configured Kafka endpoint.
+This container image provides a bridge between the DWD (Deutscher Wetterdienst) open-data file server and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge polls weather observations, extreme 10-minute observations, station metadata, weather alerts, radar product files, and ICON-D2 forecast files and forwards them to the configured Kafka endpoint.
 
 ## DWD Open Data
 
-The DWD Climate Data Center (CDC) provides free access to weather and climate data from German weather stations at [opendata.dwd.de](https://opendata.dwd.de/). Data includes 10-minute observations (temperature, precipitation, wind, solar), 10-minute extremes (extreme wind and temperature), hourly observations, and CAP weather alerts.
+The DWD Climate Data Center (CDC) provides free access to weather and climate data from German weather stations at [opendata.dwd.de](https://opendata.dwd.de/). Data includes 10-minute observations (temperature, precipitation, wind, solar), 10-minute extremes (extreme wind and temperature), hourly observations, CAP weather alerts, radar product files, and ICON-D2 forecast files.
 
 ## Functionality
 
@@ -104,7 +104,7 @@ Path to the state file for checkpoint persistence. Defaults to `~/.dwd_state.jso
 
 ### `DWD_MODULES`
 
-Comma-separated list of module names to enable. Available modules: `station_metadata`, `station_obs_10min`, `station_obs_10min_extremes`, `station_obs_hourly`, `weather_alerts`.
+Comma-separated list of module names to enable. Available modules: `station_metadata`, `station_obs_10min`, `station_obs_10min_extremes`, `station_obs_hourly`, `weather_alerts`, `radar_products`, `icon_d2_forecast`.
 
 ### `DWD_MODULES_DISABLED`
 

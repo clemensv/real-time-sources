@@ -41,6 +41,48 @@
       "messagegroups": [
         "#/messagegroups/DE.DWD.Weather"
       ]
+    },
+    "DE.DWD.Radar.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "dwd",
+          "key": "{file_path}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Radar"
+      ]
+    },
+    "DE.DWD.Forecast.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "dwd",
+          "key": "{file_path}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Forecast"
+      ]
     }
   },
   "messagegroups": {
@@ -211,6 +253,86 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.Weather.Alert"
+        }
+      }
+    },
+    "DE.DWD.Radar": {
+      "messages": {
+        "DE.DWD.Radar.RadarProductCatalog": {
+          "name": "RadarProductCatalog",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarProductCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{file_path}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarProductCatalog"
+        },
+        "DE.DWD.Radar.RadarFileProduct": {
+          "name": "RadarFileProduct",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Radar.RadarFileProduct"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/radar"
+            },
+            "subject": {
+              "value": "{file_path}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Radar.jstruct/schemas/DE.DWD.Radar.RadarFileProduct"
+        }
+      }
+    },
+    "DE.DWD.Forecast": {
+      "messages": {
+        "DE.DWD.Forecast.ForecastModelCatalog": {
+          "name": "ForecastModelCatalog",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.ForecastModelCatalog"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{file_path}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.ForecastModelCatalog"
+        },
+        "DE.DWD.Forecast.IconD2ForecastFile": {
+          "name": "IconD2ForecastFile",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Forecast.IconD2ForecastFile"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/weather/nwp/icon-d2"
+            },
+            "subject": {
+              "value": "{file_path}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.IconD2ForecastFile"
         }
       }
     }
@@ -746,6 +868,235 @@
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeTemperature10Min",
                 "description": "ExtremeTemperature10Min"
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Radar.jstruct": {
+      "schemas": {
+        "DE.DWD.Radar.RadarProductCatalog": {
+          "name": "RadarProductCatalog",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "RadarProductCatalog",
+                "required": [
+                  "product",
+                  "directory_path",
+                  "file_path"
+                ],
+                "properties": {
+                  "product": {
+                    "type": "string",
+                    "description": "Radar product identifier derived from the first-level directory under weather/radar/composite."
+                  },
+                  "directory_path": {
+                    "type": "string",
+                    "description": "Relative DWD Open Data directory path for the radar product feed."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Human-readable product description configured by the bridge."
+                  },
+                  "file_path": {
+                    "type": "string",
+                    "description": "Relative path key for the radar product catalog record, typically the product directory path."
+                  }
+                },
+                "$id": "https://example.com/schemas/DE/DWD/Radar/RadarProductCatalog",
+                "description": "Catalog metadata for a DWD radar product family emitted as reference data."
+              }
+            }
+          }
+        },
+        "DE.DWD.Radar.RadarFileProduct": {
+          "name": "RadarFileProduct",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "RadarFileProduct",
+                "required": [
+                  "file_path",
+                  "product",
+                  "file_name",
+                  "modified",
+                  "download_url"
+                ],
+                "properties": {
+                  "file_path": {
+                    "type": "string",
+                    "description": "Relative path of the emitted radar file under opendata.dwd.de used as Kafka key and CloudEvents subject."
+                  },
+                  "product": {
+                    "type": "string",
+                    "description": "Radar product identifier derived from the directory name."
+                  },
+                  "file_name": {
+                    "type": "string",
+                    "description": "Radar file name as listed in the DWD directory index."
+                  },
+                  "modified": {
+                    "type": "string",
+                    "description": "UTC last-modified timestamp from the directory listing in ISO-8601 format."
+                  },
+                  "size_bytes": {
+                    "type": [
+                      "int64",
+                      "null"
+                    ],
+                    "description": "File size in bytes parsed from the DWD listing, or null when size is unavailable."
+                  },
+                  "download_url": {
+                    "type": "string",
+                    "description": "Absolute HTTPS URL from which the radar product file can be downloaded."
+                  }
+                },
+                "$id": "https://example.com/schemas/DE/DWD/Radar/RadarFileProduct",
+                "description": "Metadata event for a newly discovered or updated DWD radar product file."
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.Forecast.jstruct": {
+      "schemas": {
+        "DE.DWD.Forecast.ForecastModelCatalog": {
+          "name": "ForecastModelCatalog",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "ForecastModelCatalog",
+                "required": [
+                  "model",
+                  "base_path",
+                  "file_path"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "Forecast model identifier. For this bridge extension this value is icon-d2."
+                  },
+                  "base_path": {
+                    "type": "string",
+                    "description": "Relative DWD Open Data base path used to enumerate ICON-D2 GRIB products."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Human-readable description for the forecast model emitted as reference data."
+                  },
+                  "file_path": {
+                    "type": "string",
+                    "description": "Relative path key for the forecast model catalog record, typically the model base directory path."
+                  }
+                },
+                "$id": "https://example.com/schemas/DE/DWD/Forecast/ForecastModelCatalog",
+                "description": "Reference metadata describing a forecast model family exposed by DWD Open Data."
+              }
+            }
+          }
+        },
+        "DE.DWD.Forecast.IconD2ForecastFile": {
+          "name": "IconD2ForecastFile",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "name": "IconD2ForecastFile",
+                "required": [
+                  "file_path",
+                  "model",
+                  "file_name",
+                  "modified",
+                  "download_url"
+                ],
+                "properties": {
+                  "file_path": {
+                    "type": "string",
+                    "description": "Relative path of the ICON-D2 forecast file under opendata.dwd.de used as Kafka key and CloudEvents subject."
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "Forecast model identifier, currently icon-d2."
+                  },
+                  "file_name": {
+                    "type": "string",
+                    "description": "ICON-D2 file name as listed by the DWD directory index."
+                  },
+                  "run": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Model run cycle timestamp parsed from the file name (YYYYMMDDHH) when available."
+                  },
+                  "forecast_hour": {
+                    "type": [
+                      "int32",
+                      "null"
+                    ],
+                    "description": "Forecast lead time in hours parsed from the file name when available."
+                  },
+                  "parameter": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Forecast parameter token parsed from the file name when available."
+                  },
+                  "level_type": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Vertical level type token parsed from the file name when available."
+                  },
+                  "level": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Vertical level value token parsed from the file name when available."
+                  },
+                  "modified": {
+                    "type": "string",
+                    "description": "UTC last-modified timestamp from the directory listing in ISO-8601 format."
+                  },
+                  "size_bytes": {
+                    "type": [
+                      "int64",
+                      "null"
+                    ],
+                    "description": "File size in bytes parsed from the DWD listing, or null when size is unavailable."
+                  },
+                  "download_url": {
+                    "type": "string",
+                    "description": "Absolute HTTPS URL from which the forecast file can be downloaded."
+                  }
+                },
+                "$id": "https://example.com/schemas/DE/DWD/Forecast/IconD2ForecastFile",
+                "description": "Metadata event for a newly discovered or updated ICON-D2 forecast file from DWD Open Data."
               }
             }
           }

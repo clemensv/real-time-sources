@@ -19,6 +19,10 @@ Germany. The data is forwarded to a Kafka topic as
 - **Weather Alerts**: CAP (Common Alerting Protocol) weather alerts from the DWD
   warning system.
 - **Hourly Observations** (optional): Recent hourly data including cloud cover.
+- **Radar Product Feed** (optional): Radar product file metadata from
+  `weather/radar/composite/`.
+- **ICON-D2 Forecast Feed** (optional): ICON-D2 forecast file metadata from
+  `weather/nwp/icon-d2/grib/`.
 - **Modular Architecture**: Enable or disable individual data modules.
 - **Kafka Integration**: Send data to Apache Kafka, Azure Event Hubs, or
   Microsoft Fabric Event Streams using SASL PLAIN authentication.
@@ -67,6 +71,8 @@ Output:
   station_obs_10min_extremes OFF poll=600s
   station_obs_hourly        OFF  poll=3600s
   weather_alerts            ON   poll=300s
+  radar_products            OFF  poll=300s
+  icon_d2_forecast          OFF  poll=300s
 ```
 
 ### Start the Feed
@@ -152,6 +158,22 @@ updates once per day and is not truly real-time.
 Downloads the LATEST CAP alert bundle from DWD, extracts individual XML alert
 files, and emits new alerts. Tracks seen alert identifiers to avoid duplicates.
 
+### radar_products (default: OFF, poll: 300s)
+
+Polls DWD radar composite directories and emits:
+
+- `RadarProductCatalog` (reference metadata per radar product directory)
+- `RadarFileProduct` (metadata for new/updated radar files, including URL and
+  last-modified timestamp)
+
+### icon_d2_forecast (default: OFF, poll: 300s)
+
+Polls DWD ICON-D2 forecast GRIB directories and emits:
+
+- `ForecastModelCatalog` (reference metadata for the `icon-d2` model)
+- `IconD2ForecastFile` (metadata for new/updated forecast files, including URL
+  and parsed run/lead-time when available)
+
 ## Upstream Channel Inventory and Scope Decisions
 
 The current extension pass audited the major DWD Open Data channel families and
@@ -164,8 +186,8 @@ applies the following keep/drop decisions:
 | CDC 10-minute extremes | REST file ZIP (`.../10_minutes/{extreme_wind,extreme_temperature}/now/`) | `station_id` | ~10 min | Keep (implemented in this pass) | High-value near-real-time extremes. |
 | CDC hourly observations | REST file ZIP (`.../hourly/*/recent/`) | `station_id` + parameter | hourly/daily refresh | Keep (optional module) | Useful enrichment; lower freshness so disabled by default. |
 | Weather alerts (CAP) | REST ZIP (`weather/alerts/cap/.../LATEST...zip`) | `identifier` | minutes | Keep (implemented) | Operational severe-weather alerts. |
-| Forecasts (MOSMIX) | REST file products (`weather/local_forecasts/mos/`) | station/grid ID + validity time | rolling | Keep (next phase) | Valuable, but requires dedicated forecast contract + module split. |
-| Radar products | REST file products (`weather/radar/`) | grid tile + product + validity time | minutes | Keep (next phase) | Different identity/model than station telemetry; needs separate message group. |
+| ICON-D2 forecasts | REST file products (`weather/nwp/icon-d2/grib/`) | `file_path` | rolling | Keep (implemented, optional module) | Emits forecast file metadata events keyed by stable file path. |
+| Radar products | REST file products (`weather/radar/composite/`) | `file_path` | minutes | Keep (implemented, optional module) | Emits radar file metadata events keyed by stable file path. |
 | Satellite products | REST file products (`weather/satellite/`) | product + tile/area + validity time | minutes | Keep (next phase) | Distinct image/raster model and ingestion pattern. |
 
 ## Data Source

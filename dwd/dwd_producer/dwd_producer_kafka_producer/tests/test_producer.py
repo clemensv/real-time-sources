@@ -38,6 +38,16 @@ from test_dwd_producer_data_extremetemperature10min import Test_ExtremeTemperatu
 from dwd_producer_kafka_producer.producer import DEDWDWeatherEventProducer
 from dwd_producer_data import Alert
 from test_dwd_producer_data_alert import Test_Alert
+from dwd_producer_kafka_producer.producer import DEDWDRadarEventProducer
+from dwd_producer_data import RadarProductCatalog
+from test_dwd_producer_data_radarproductcatalog import Test_RadarProductCatalog
+from dwd_producer_data import RadarFileProduct
+from test_dwd_producer_data_radarfileproduct import Test_RadarFileProduct
+from dwd_producer_kafka_producer.producer import DEDWDForecastEventProducer
+from dwd_producer_data import ForecastModelCatalog
+from test_dwd_producer_data_forecastmodelcatalog import Test_ForecastModelCatalog
+from dwd_producer_data import IconD2ForecastFile
+from test_dwd_producer_data_icond2forecastfile import Test_IconD2ForecastFile
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -638,6 +648,258 @@ def test_de_dwd_weather_dedwdweatheralert(kafka_emulator):
     consumer.close()
 
 
+def test_de_dwd_radar_dedwdradarradarproductcatalog(kafka_emulator):
+    """Test the DEDWDRadarRadarProductCatalog event from the DE.DWD.Radar message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_de_dwd_radar_dedwdradarradarproductcatalog',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "DE.DWD.Radar.RadarProductCatalog":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DEDWDRadarEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_RadarProductCatalog.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_de_dwd_radar_radar_product_catalog(_file_path = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_de_dwd_radar_dedwdradarradarfileproduct(kafka_emulator):
+    """Test the DEDWDRadarRadarFileProduct event from the DE.DWD.Radar message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_de_dwd_radar_dedwdradarradarfileproduct',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "DE.DWD.Radar.RadarFileProduct":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DEDWDRadarEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_RadarFileProduct.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_de_dwd_radar_radar_file_product(_file_path = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_de_dwd_forecast_dedwdforecastforecastmodelcatalog(kafka_emulator):
+    """Test the DEDWDForecastForecastModelCatalog event from the DE.DWD.Forecast message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_de_dwd_forecast_dedwdforecastforecastmodelcatalog',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "DE.DWD.Forecast.ForecastModelCatalog":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DEDWDForecastEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_ForecastModelCatalog.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_de_dwd_forecast_forecast_model_catalog(_file_path = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_de_dwd_forecast_dedwdforecasticond2forecastfile(kafka_emulator):
+    """Test the DEDWDForecastIconD2ForecastFile event from the DE.DWD.Forecast message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_de_dwd_forecast_dedwdforecasticond2forecastfile',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "DE.DWD.Forecast.IconD2ForecastFile":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DEDWDForecastEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_IconD2ForecastFile.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_de_dwd_forecast_icon_d2_forecast_file(_file_path = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{file_path}".format(file_path=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
 def test_de_dwd_cdc_cross_event_type_kafka_key(kafka_emulator):
     """Test that different event types in DE.DWD.CDC produce the same Kafka key for the same placeholder values"""
 
@@ -690,6 +952,118 @@ def test_de_dwd_cdc_cross_event_type_kafka_key(kafka_emulator):
     assert collected_keys[0] == collected_keys[1], \
         f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
     expected_key = "{station_id}".format(station_id=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
+    consumer.close()
+
+def test_de_dwd_radar_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in DE.DWD.Radar produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_de_dwd_radar_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DEDWDRadarEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_RadarProductCatalog.create_instance()
+    data2 = Test_RadarFileProduct.create_instance()
+
+    producer_instance.send_de_dwd_radar_radar_product_catalog(_file_path = shared_key_value, data = data1)
+    producer_instance.send_de_dwd_radar_radar_file_product(_file_path = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["DE.DWD.Radar.RadarProductCatalog", "DE.DWD.Radar.RadarFileProduct"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{file_path}".format(file_path=shared_key_value)
+    assert collected_keys[0] == expected_key, \
+        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
+    consumer.close()
+
+def test_de_dwd_forecast_cross_event_type_kafka_key(kafka_emulator):
+    """Test that different event types in DE.DWD.Forecast produce the same Kafka key for the same placeholder values"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_de_dwd_forecast_cross_key',
+        'auto.offset.reset': 'latest'
+    })
+    consumer.subscribe([topic])
+
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    # Drain any pre-existing messages before producing our test messages
+    drain_timeout = time.time() + 3
+    while time.time() < drain_timeout:
+        msg = consumer.poll(0.5)
+    time.sleep(1)
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DEDWDForecastEventProducer(kafka_producer, topic, 'binary')
+
+    shared_key_value = "shared_entity_42"
+    data1 = Test_ForecastModelCatalog.create_instance()
+    data2 = Test_IconD2ForecastFile.create_instance()
+
+    producer_instance.send_de_dwd_forecast_forecast_model_catalog(_file_path = shared_key_value, data = data1)
+    producer_instance.send_de_dwd_forecast_icon_d2_forecast_file(_file_path = shared_key_value, data = data2)
+    kafka_producer.flush(timeout=5.0)
+
+    # Collect keys from both messages
+    collected_keys = []
+    timeout = time.time() + 20
+    while len(collected_keys) < 2 and time.time() < timeout:
+        msg = consumer.poll(1.0)
+        if msg is None or msg.error():
+            continue
+        cloudevent = parse_cloudevent(msg)
+        if cloudevent['type'] in ["DE.DWD.Forecast.ForecastModelCatalog", "DE.DWD.Forecast.IconD2ForecastFile"]:
+            key = msg.key().decode('utf-8') if msg.key() else None
+            collected_keys.append(key)
+
+    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
+    assert collected_keys[0] == collected_keys[1], \
+        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
+    expected_key = "{file_path}".format(file_path=shared_key_value)
     assert collected_keys[0] == expected_key, \
         f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()
