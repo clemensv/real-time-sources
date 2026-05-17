@@ -34,16 +34,16 @@
     },
     "gtfsRtUrls": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "http://api.bart.gov/gtfsrt/tripupdate.aspx,http://api.bart.gov/gtfsrt/alerts.aspx",
       "metadata": {
-        "description": "GTFS_RT_URLS configuration value."
+        "description": "Comma-separated GTFS-Realtime feed URLs (default: BART)."
       }
     },
     "gtfsUrls": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "http://www.bart.gov/dev/schedules/google_transit.zip",
       "metadata": {
-        "description": "GTFS_URLS configuration value."
+        "description": "Comma-separated GTFS schedule URLs (default: BART)."
       }
     },
     "route": {

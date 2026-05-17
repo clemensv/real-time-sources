@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the Gtfs bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
+    "description": "Deploys the canada eccc wateroffice bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
   },
   "parameters": {
     "connectionString": {
@@ -14,7 +14,7 @@
     },
     "containerGroupName": {
       "type": "string",
-      "defaultValue": "gtfs",
+      "defaultValue": "canada-eccc-wateroffice",
       "metadata": {
         "description": "Name for the container group resource."
       },
@@ -27,54 +27,12 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
-    },
-    "gtfsRtUrls": {
-      "type": "string",
-      "defaultValue": "http://api.bart.gov/gtfsrt/tripupdate.aspx,http://api.bart.gov/gtfsrt/alerts.aspx",
-      "metadata": {
-        "description": "Comma-separated GTFS-Realtime feed URLs (default: BART)."
-      }
-    },
-    "gtfsUrls": {
-      "type": "string",
-      "defaultValue": "http://www.bart.gov/dev/schedules/google_transit.zip",
-      "metadata": {
-        "description": "Comma-separated GTFS schedule URLs (default: BART)."
-      }
-    },
-    "route": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "ROUTE configuration value."
-      }
-    },
-    "gtfsRtHeaders": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "GTFS_RT_HEADERS configuration value."
-      }
-    },
-    "gtfsHeaders": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "GTFS_HEADERS configuration value."
-      }
-    },
-    "scheduleCacheDir": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "SCHEDULE_CACHE_DIR configuration value."
-      }
     }
   },
   "variables": {
     "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
     "fileShareName": "bridge-state",
-    "imageName": "ghcr.io/clemensv/real-time-sources-gtfs:latest",
+    "imageName": "ghcr.io/clemensv/real-time-sources-canada-eccc-wateroffice:latest",
     "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
   },
   "resources": [
@@ -164,28 +122,8 @@
                   "value": "INFO"
                 },
                 {
-                  "name": "GTFS_RT_URLS",
-                  "value": "[parameters('gtfsRtUrls')]"
-                },
-                {
-                  "name": "GTFS_URLS",
-                  "value": "[parameters('gtfsUrls')]"
-                },
-                {
-                  "name": "ROUTE",
-                  "value": "[parameters('route')]"
-                },
-                {
-                  "name": "GTFS_RT_HEADERS",
-                  "value": "[parameters('gtfsRtHeaders')]"
-                },
-                {
-                  "name": "GTFS_HEADERS",
-                  "value": "[parameters('gtfsHeaders')]"
-                },
-                {
-                  "name": "SCHEDULE_CACHE_DIR",
-                  "value": "[parameters('scheduleCacheDir')]"
+                  "name": "CANADA_ECCC_WATEROFFICE_STATE_FILE",
+                  "value": "/mnt/bridge-state/canada_eccc_wateroffice_state.json"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",

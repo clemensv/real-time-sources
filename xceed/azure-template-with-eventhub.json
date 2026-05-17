@@ -2,24 +2,28 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the Gtfs bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
+    "description": "Deploys the xceed bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics."
   },
   "parameters": {
-    "connectionString": {
-      "type": "securestring",
-      "minLength": 1,
-      "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
-      }
-    },
     "containerGroupName": {
       "type": "string",
-      "defaultValue": "gtfs",
+      "defaultValue": "xceed",
       "metadata": {
-        "description": "Name for the container group resource."
+        "description": "Name for the container group and base name for all resources."
       },
       "maxLength": 63,
       "minLength": 1
+    },
+    "eventHubSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Event Hub namespace SKU."
+      }
     },
     "location": {
       "type": "string",
@@ -27,54 +31,16 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
-    },
-    "gtfsRtUrls": {
-      "type": "string",
-      "defaultValue": "http://api.bart.gov/gtfsrt/tripupdate.aspx,http://api.bart.gov/gtfsrt/alerts.aspx",
-      "metadata": {
-        "description": "Comma-separated GTFS-Realtime feed URLs (default: BART)."
-      }
-    },
-    "gtfsUrls": {
-      "type": "string",
-      "defaultValue": "http://www.bart.gov/dev/schedules/google_transit.zip",
-      "metadata": {
-        "description": "Comma-separated GTFS schedule URLs (default: BART)."
-      }
-    },
-    "route": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "ROUTE configuration value."
-      }
-    },
-    "gtfsRtHeaders": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "GTFS_RT_HEADERS configuration value."
-      }
-    },
-    "gtfsHeaders": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "GTFS_HEADERS configuration value."
-      }
-    },
-    "scheduleCacheDir": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "SCHEDULE_CACHE_DIR configuration value."
-      }
     }
   },
   "variables": {
     "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
     "fileShareName": "bridge-state",
-    "imageName": "ghcr.io/clemensv/real-time-sources-gtfs:latest",
+    "imageName": "ghcr.io/clemensv/real-time-sources-xceed:latest",
+    "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
+    "eventHubName": "[parameters('containerGroupName')]",
+    "authRuleName": "bridge-send-listen",
+    "authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('authRuleName'))]",
     "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
   },
   "resources": [
@@ -88,6 +54,48 @@
           "name": "PerGB2018"
         },
         "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2024-01-01",
+      "name": "[variables('eventHubNamespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('eventHubSku')]",
+        "tier": "[parameters('eventHubSku')]",
+        "capacity": 1
+      },
+      "properties": {
+        "minimumTlsVersion": "1.2",
+        "isAutoInflateEnabled": false,
+        "kafkaEnabled": true
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(variables('eventHubNamespaceName'), '/', variables('eventHubName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+      ],
+      "properties": {
+        "partitionCount": 4,
+        "messageRetentionInDays": 1
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(variables('eventHubNamespaceName'), '/', variables('eventHubName'), '/', variables('authRuleName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('eventHubNamespaceName'), variables('eventHubName'))]"
+      ],
+      "properties": {
+        "rights": [
+          "Send",
+          "Listen"
+        ]
       }
     },
     {
@@ -131,6 +139,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[variables('authRuleResourceId')]",
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
       ],
       "properties": {
@@ -157,35 +166,15 @@
               "environmentVariables": [
                 {
                   "name": "CONNECTION_STRING",
-                  "secureValue": "[parameters('connectionString')]"
+                  "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
                 },
                 {
                   "name": "LOG_LEVEL",
                   "value": "INFO"
                 },
                 {
-                  "name": "GTFS_RT_URLS",
-                  "value": "[parameters('gtfsRtUrls')]"
-                },
-                {
-                  "name": "GTFS_URLS",
-                  "value": "[parameters('gtfsUrls')]"
-                },
-                {
-                  "name": "ROUTE",
-                  "value": "[parameters('route')]"
-                },
-                {
-                  "name": "GTFS_RT_HEADERS",
-                  "value": "[parameters('gtfsRtHeaders')]"
-                },
-                {
-                  "name": "GTFS_HEADERS",
-                  "value": "[parameters('gtfsHeaders')]"
-                },
-                {
-                  "name": "SCHEDULE_CACHE_DIR",
-                  "value": "[parameters('scheduleCacheDir')]"
+                  "name": "XCEED_STATE_FILE",
+                  "value": "/mnt/bridge-state/xceed_state.json"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",
@@ -218,6 +207,14 @@
     "containerGroupId": {
       "type": "string",
       "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "eventHubNamespaceName": {
+      "type": "string",
+      "value": "[variables('eventHubNamespaceName')]"
+    },
+    "eventHubName": {
+      "type": "string",
+      "value": "[variables('eventHubName')]"
     },
     "logAnalyticsWorkspaceId": {
       "type": "string",
