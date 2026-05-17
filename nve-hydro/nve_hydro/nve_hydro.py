@@ -158,7 +158,7 @@ def send_stations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer) -> di
             county_name=station.get('countyName', ''),
             drainage_basin_area=station.get('drainageBasinArea') or 0.0,
         )
-        producer.send_no_nve_hydrology_station(data=station_data, flush_producer=False)
+        producer.send_no_nve_hydrology_station(_station_id=sid, data=station_data, flush_producer=False)
         sent_count += 1
 
     producer.producer.flush()
@@ -217,7 +217,7 @@ def feed_observations(api: NVEHydroAPI, producer: NONVEHydrologyEventProducer,
                 discharge_unit='m3/s',
                 discharge_timestamp=q_ts,
             )
-            producer.send_no_nve_hydrology_water_level_observation(data=obs_data, flush_producer=False)
+            producer.send_no_nve_hydrology_water_level_observation(_station_id=sid, data=obs_data, flush_producer=False)
             sent_count += 1
             previous_readings[reading_key] = wl_ts or q_ts
 

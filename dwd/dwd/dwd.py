@@ -223,7 +223,7 @@ def main() -> None:
     feed_p.add_argument("-c", "--connection-string", type=str,
                         default=os.getenv("CONNECTION_STRING"))
     feed_p.add_argument("-i", "--polling-interval", type=int,
-                        default=int(os.getenv("POLLING_INTERVAL", "0")) or None,
+                        default=int(os.getenv("POLLING_INTERVAL") or "0") or None,
                         help="Global polling interval override in seconds (default: per-module)")
     feed_p.add_argument("--state-file", type=str,
                         default=os.getenv("STATE_FILE",
