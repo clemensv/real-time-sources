@@ -27,3 +27,4 @@ mode-s/kql/aircraft.csv
 
 # Poetry lock files (generated; not used by Docker builds)
 **/poetry.lock
+**/.playwright-mcp/
