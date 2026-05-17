@@ -22,9 +22,17 @@
       4. Calls tools/deploy-fabric/deploy-fabric-notebook.ps1 to upload the
          notebook into the workspace bound to the KQL database (parameters cell
          is patched with KUSTO_URI / KUSTO_DATABASE / LAKEHOUSE_PATH).
-      5. Adds the notebook as a 'Notebook' destination on the existing
-         dwd-ingest Eventstream (preview feature) so the stream is consumed
-         as a Spark Structured Streaming source.
+      5. Adds the notebook to the existing dwd-ingest Eventstream using the
+         supported triggering pattern. Eventstream has no 'Notebook' destination
+         type; the correct integration paths are:
+           a) Activator (Reflex) destination + a rule that runs the notebook
+              ("Run Fabric item" action) — event-driven, the closest match to
+              "trigger notebook per event/batch".
+           b) Eventhouse destination (already wired by deploy-fabric.ps1) plus
+              a scheduled notebook run that reads new rows from
+              _cloudevents_dispatch (or the typed tables) — simple default.
+         This script wires path (a) when an Activator item is provided, and
+         always documents path (b).
 
 .PARAMETER WorkspaceId
     Fabric workspace ID (GUID) — same one used by deploy-fabric.ps1.
@@ -45,6 +53,12 @@
 .PARAMETER NotebookName
     Display name for the uploaded notebook. Default 'dwd_ingest'.
 
+.PARAMETER ActivatorName
+    Optional Activator (Reflex) item name. When provided, the script wires the
+    Activator as an Eventstream destination so its rules can trigger the
+    notebook on incoming events. If omitted, no destination is added and the
+    notebook is expected to run on a schedule reading from the KQL DB.
+
 .PARAMETER SkipNotebook
     Skip notebook upload and Eventstream destination wiring (KQL only).
 
@@ -61,6 +75,7 @@ param(
     [string] $EventStreamName = "dwd-ingest",
     [string] $LakehouseName,
     [string] $NotebookName    = "dwd_ingest",
+    [string] $ActivatorName,
     [switch] $SkipNotebook
 )
 
@@ -175,8 +190,13 @@ $deployScript = Join-Path $RepoRoot "tools\deploy-fabric\deploy-fabric-notebook.
     -NotebookPath $nbPath
 if ($LASTEXITCODE -ne 0) { throw "deploy-fabric-notebook.ps1 failed (exit $LASTEXITCODE)" }
 
-# Wire the notebook as a Spark Notebook destination on the existing eventstream.
-Write-Host "`n[5/5] Adding Notebook destination to Eventstream '$EventStreamName'..." -ForegroundColor Yellow
+# Eventstream has no 'Notebook' destination type. Wire an Activator (Reflex)
+# destination if the caller named one — its rules can trigger the notebook via
+# a "Run Fabric item" action. Otherwise, leave the topology untouched: the
+# Eventhouse destination set up by deploy-fabric.ps1 already lands every event
+# in _cloudevents_dispatch, and the notebook is expected to run on a schedule
+# reading from there.
+Write-Host "`n[5/5] Wiring Eventstream → Notebook trigger path..." -ForegroundColor Yellow
 $esList = Invoke-FabricApi GET "$FabricApi/workspaces/$WorkspaceId/eventstreams"
 $es     = $esList.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
 if (-not $es) { throw "Eventstream '$EventStreamName' not found. Run tools/deploy-fabric/deploy-fabric.ps1 first." }
@@ -184,46 +204,51 @@ $nbList = Invoke-FabricApi GET "$FabricApi/workspaces/$WorkspaceId/notebooks"
 $nbItem = $nbList.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
 if (-not $nbItem) { throw "Notebook '$NotebookName' missing after upload." }
 
-$defResp = Invoke-FabricApi POST "$FabricApi/workspaces/$WorkspaceId/eventstreams/$($es.id)/getDefinition"
-$part    = $defResp.definition.parts | Where-Object { $_.path -eq 'eventstream.json' } | Select-Object -First 1
-if (-not $part) { throw "Eventstream definition missing eventstream.json part." }
-$esDef   = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($part.payload)) | ConvertFrom-Json
-
-$existingDest = $esDef.destinations | Where-Object { $_.name -eq 'dwd-ingest-notebook' }
-if ($existingDest) {
-    Write-Host "  Notebook destination already present — leaving as-is." -ForegroundColor DarkYellow
+if (-not $ActivatorName) {
+    Write-Host "  No -ActivatorName supplied. Skipping Eventstream destination wiring." -ForegroundColor DarkYellow
+    Write-Host "  The notebook '$NotebookName' should be run on a schedule; it reads"
+    Write-Host "  from KQL table '_cloudevents_dispatch' in database '$DatabaseName'."
+    Write-Host "  To enable event-driven triggering: create an Activator (Reflex) item"
+    Write-Host "  in this workspace, then re-run this script with"
+    Write-Host "  -ActivatorName <name> to wire it as an Eventstream destination."
 } else {
-    $notebookDest = [pscustomobject]@{
-        name       = "dwd-ingest-notebook"
-        type       = "Notebook"
-        properties = [pscustomobject]@{
-            workspaceId = $WorkspaceId
-            itemId      = $nbItem.id
-        }
-        inputNodes = @([pscustomobject]@{ name = $StreamName })
-    }
-    $esDef.destinations = @($esDef.destinations) + @($notebookDest)
+    $reflexList = Invoke-FabricApi GET "$FabricApi/workspaces/$WorkspaceId/reflexes"
+    $reflex     = $reflexList.value | Where-Object { $_.displayName -eq $ActivatorName } | Select-Object -First 1
+    if (-not $reflex) { throw "Activator '$ActivatorName' not found in workspace. Create it first." }
 
-    $updateJson = $esDef | ConvertTo-Json -Depth 30
-    $payloadB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updateJson))
-    try {
+    $defResp = Invoke-FabricApi POST "$FabricApi/workspaces/$WorkspaceId/eventstreams/$($es.id)/getDefinition"
+    $part    = $defResp.definition.parts | Where-Object { $_.path -eq 'eventstream.json' } | Select-Object -First 1
+    if (-not $part) { throw "Eventstream definition missing eventstream.json part." }
+    $esDef   = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($part.payload)) | ConvertFrom-Json
+
+    $existingDest = $esDef.destinations | Where-Object { $_.name -eq 'dwd-ingest-activator' }
+    if ($existingDest) {
+        Write-Host "  Activator destination already present — leaving as-is." -ForegroundColor DarkYellow
+    } else {
+        $activatorDest = [pscustomobject]@{
+            name       = "dwd-ingest-activator"
+            type       = "Activator"
+            properties = [pscustomobject]@{
+                workspaceId        = $WorkspaceId
+                itemId             = $reflex.id
+                inputSerialization = [pscustomobject]@{
+                    type       = "Json"
+                    properties = [pscustomobject]@{ encoding = "UTF8" }
+                }
+            }
+            inputNodes = @([pscustomobject]@{ name = $StreamName })
+        }
+        $esDef.destinations = @($esDef.destinations) + @($activatorDest)
+        $updateJson = $esDef | ConvertTo-Json -Depth 30
+        $payloadB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updateJson))
         Invoke-FabricApi POST "$FabricApi/workspaces/$WorkspaceId/eventstreams/$($es.id)/updateDefinition" -Body @{
             definition = @{
                 parts = @(@{ path = "eventstream.json"; payload = $payloadB64; payloadType = "InlineBase64" })
             }
         } | Out-Null
-        Write-Host "  Notebook destination added." -ForegroundColor Green
-    } catch {
-        # The Spark Notebook destination is a preview Eventstream feature (Dec 2025)
-        # that is not yet available in every tenant / region. When the API rejects
-        # the destination type, fall back to the KQL-source pattern: the notebook
-        # reads from the _cloudevents_dispatch table via the Kusto Spark connector
-        # (which is what the other feeders, e.g. eurowater/pugetsound, do).
-        Write-Warning ("Could not add Spark Notebook destination to Eventstream " +
-            "(preview feature may be unavailable in this tenant): $($_.Exception.Message)")
-        Write-Warning ("Fallback: run the notebook '$NotebookName' on a schedule " +
-            "or via a Data Activator rule; it will consume from the KQL table " +
-            "'_cloudevents_dispatch' in database '$DatabaseName'.")
+        Write-Host "  Activator destination '$ActivatorName' added to Eventstream." -ForegroundColor Green
+        Write-Host "  Open the Activator and add a rule with a 'Run Fabric item' action"
+        Write-Host "  targeting notebook '$NotebookName' to trigger per event/batch."
     }
 }
 
@@ -233,6 +258,9 @@ Write-Host "  Lakehouse:           $($lh.displayName) ($($lh.id))"
 Write-Host "  Notebook:            $NotebookName"
 Write-Host "  Eventstream:         $EventStreamName"
 Write-Host ""
-Write-Host "Open the Eventstream in the Fabric portal, then Publish to start the"
-Write-Host "Spark Notebook destination. The notebook will drain DWD events and write"
-Write-Host "bronze/gold files to the Lakehouse + CogCatalog rows to KQL."
+Write-Host "Triggering paths for the notebook:"
+Write-Host "  * Scheduled (default): notebook reads new rows from"
+Write-Host "    _cloudevents_dispatch in '$DatabaseName' on its schedule."
+Write-Host "  * Event-driven: create an Activator (Reflex) in the workspace and"
+Write-Host "    re-run with -ActivatorName <name>; then add an Activator rule with"
+Write-Host "    a 'Run Fabric item' action targeting notebook '$NotebookName'."

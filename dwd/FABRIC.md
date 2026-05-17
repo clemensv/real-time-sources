@@ -25,49 +25,47 @@ The bridge emits CloudEvents on Kafka topic `dwd`. Two shapes appear:
 ## Architecture
 
 ```
-DWD bridge ──Kafka / Event Hub──▶ Fabric Eventstream "dwd-stream"
+DWD bridge ──Kafka / Event Hub──▶ Fabric Eventstream "dwd-ingest"
                                           │
-                ┌─────────────────────────┼─────────────────────────────┐
-                ▼                         ▼                             ▼
-        Eventhouse table         Spark Notebook destination     Lakehouse Delta sink
-        dwd_events_raw           dwd_ingest  (preview)         (optional, for inline
-        (audit / KQL)            Structured Streaming job       channels only)
-                                          │
-                                          ▼
-                          ┌───────────────┴────────────────┐
-                          ▼                                ▼
-                Files/bronze/<channel>/...     Tables/silver.*    Files/gold/*_cog/...
-                (raw upstream bytes)           (parsed Delta)      (Cloud Optimized
-                                                                    GeoTIFF for maps)
+                ┌─────────────────────────┴──────────────────────────┐
+                ▼                                                    ▼
+        Eventhouse destination                          Activator destination (optional)
+        _cloudevents_dispatch                           dwd-ingest-activator
+        (every event, KQL-queryable)                    (rule → "Run Fabric item" → notebook)
+                │
+                ▼  (update policies in dwd.kql fan rows
+                │   into 13 typed tables)
+        Typed KQL tables  +  CogCatalog
+                │
+                ▼  dwd_ingest notebook pulls new rows
+                │   since a watermark
+        Lakehouse Files/bronze/<channel>/...   Files/gold/*_cog/...
+        (raw upstream bytes)                  (Cloud Optimized GeoTIFF
+                                               for Fabric Maps)
 ```
 
-The Eventstream **Spark Notebook destination** (preview, Dec 2025)
-runs a notebook as a continuous Structured Streaming job that consumes
-the stream directly — no Activator / Pipeline hop is required. See
-[Add a Spark Notebook destination to an
-Eventstream](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-destination-spark-notebook).
+Eventstream destinations are restricted to the types declared in the
+official [eventstream definition template](https://github.com/microsoft/fabric-event-streams/blob/main/API%20Templates/eventstream-definition.json):
+`Lakehouse`, `Eventhouse`, `Activator`, `AzureDataExplorer`,
+`DerivedStream`, `CustomEndpoint`. There is no "Notebook" destination —
+notebooks are invoked either on a schedule or by an Activator rule's
+"Run Fabric item" action.
 
-## Why streaming, not per‑event triggering
+## Trigger options for the notebook
+
+| Option | Pros | Cons | When to pick |
+|---|---|---|---|
+| **Scheduled** (Notebook → Schedule, e.g. every 1–5 min) | Trivial to set up, no extra items, predictable cost. | Latency floor = schedule interval; backlog risk during burst (ICON-D2 model runs). | Default. Good fit for all DWD channels: live observations are 10‑min cadence; ICON-D2 emits in concentrated bursts where micro-latency doesn't matter. |
+| **Activator rule** (Eventstream → Activator destination → rule with "Run Fabric item" action) | Event-driven; rule conditions can filter to a specific CloudEvents `type` or threshold. | Each rule fires a notebook job (cold start ~30 s); fan-out per event is expensive for ICON-D2 bursts. | Use for low-volume, high-importance triggers (e.g. fire only on `DE.DWD.Weather.Alert` Severe/Extreme alerts). |
+| **Scheduled + Activator** (hybrid) | Scheduled run drains everything; Activator rule provides low-latency notify for selected events. | More moving parts. | Production setups that need both throughput and selective fast-path. |
+
+## Why not per‑event triggering for ICON‑D2
 
 ICON‑D2 emits thousands of file‑reference events per 3‑hour model cycle.
-A per‑event Activator → Pipeline → Notebook fan‑out would saturate
-capacity and pay cold‑start cost per file. A single long‑running
-streaming notebook with `foreachBatch` and bounded HTTP concurrency
-fetches efficiently and respects DWD usage guidance.
-
-## Eventstream wiring
-
-1. Create an Eventstream `dwd-stream` with a **Custom Endpoint** source
-   bound to the bridge's Kafka topic `dwd` (or to an Event Hub the
-   bridge writes to).
-2. Add two destinations:
-   - **Eventhouse table** `dwd_events_raw` — raw event log for KQL
-     exploration, replay, and as the source for vector map layers.
-   - **Spark Notebook** `dwd_ingest` — the streaming worker described
-     below.
-3. Optional: a no‑code Event Processor stage that splits by `type`
-   into per‑family streams if you prefer one notebook per family
-   instead of a single router.
+Triggering a notebook per event via Activator would pay cold-start cost
+per file and saturate capacity. The scheduled notebook batches the
+backlog in one job with bounded HTTP concurrency, respecting DWD usage
+guidance.
 
 ## Per‑channel pipeline
 
@@ -79,51 +77,50 @@ fetches efficiently and respects DWD usage guidance.
 | Radar composite | `file_url` + product metadata | **Yes** | `Files/bronze/radar/<product>/yyyy=…/mm=…/dd=…/HH/<file_name>` | `silver.radar_product` (metadata only in v1) | `h5py` / `wradlib` for ODIM‑H5; `eccodes` / `pdbufr` for BUFR |
 | ICON‑D2 forecast | `file_url` + run/lead/level/param | **Yes** | `Files/bronze/icon-d2/run=YYYYMMDDHH/lead=NNN/<param>/<level_type>/<file_name>` | `silver.icon_d2_file` (parsed GRIB headers) | `cfgrib` (xarray) or `pygrib`; bz2 streamed via `bz2.open` |
 
-### Streaming notebook skeleton
+### Notebook skeleton (watermark-driven pull)
 
 ```python
+import json, requests
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 
-stream = spark.readStream.format("eventstream").load()
+# 1) load watermark from Files/_state/dwd_ingest_watermark.json
+# 2) KQL query _cloudevents_dispatch | where ['time'] > datetime(<since>)
+#    against the Eventhouse query URI (KUSTO_URI)
+# 3) classify each event, fan out file-reference events to a fetcher pool
+# 4) write bronze bytes, optionally render COG, ingest CogCatalog rows
+# 5) advance the watermark to max(time) seen
 
 def fetch_and_land(row):
-    # 1) anonymous HTTPS GET of row.file_url with If-None-Match
-    # 2) write bytes to Files/bronze/<channel>/...  (atomic .tmp + rename)
-    # 3) compute sha256 + size; decode headers for silver row
-    # 4) optionally render a Cloud Optimized GeoTIFF into Files/gold/...
+    # anonymous HTTPS GET of row.data.file_url with If-None-Match
+    # write bytes to Files/bronze/<channel>/... (atomic .tmp + rename)
+    # compute sha256 + size; decode headers for CogCatalog row
     ...
 
-def process_batch(df, epoch_id):
-    rows = df.filter("type LIKE 'io.dwd.icon-d2.%'").collect()
-    with ThreadPoolExecutor(max_workers=16) as pool:
-        results = list(pool.map(fetch_and_land, rows))
-    silver_df = spark.createDataFrame(results)
-    (silver_df.write.format("delta").mode("append")
-        .partitionBy("run", "parameter")
-        .saveAsTable("silver.icon_d2_file"))
-
-(stream.writeStream
-   .foreachBatch(process_batch)
-   .option("checkpointLocation", "Files/_checkpoints/icon_d2")
-   .trigger(processingTime="30 seconds")
-   .start())
+rows = kql_query(f"_cloudevents_dispatch | where ['time'] > datetime({since}) "
+                  "| where type startswith 'DE.DWD.' | order by ['time'] asc")
+with ThreadPoolExecutor(max_workers=16) as pool:
+    results = list(pool.map(fetch_and_land, rows))
+save_watermark(rows[-1]['time'])
 ```
 
 ### Idempotency & state
 
 - Natural key: `file_url` + upstream `Last-Modified` / `ETag`.
-- Silver tables use `MERGE INTO` on that key so retries and replays
+- CogCatalog uses `MERGE`-style ingest semantics so retries and replays
   don't duplicate.
-- Streaming checkpoint at `Files/_checkpoints/<channel>/` gives
-  exactly‑once semantics relative to the Eventstream offset.
+- Watermark file `Files/_state/dwd_ingest_watermark.json` is the only
+  durable state the notebook keeps; deleting it triggers a full backfill
+  bounded by the dispatch table retention.
 - Bronze writes are atomic (`.tmp` then rename) and skipped when the
   target exists with matching size + sha256.
 
 ### Scale & throttling
 
-- Bounded `ThreadPoolExecutor` per batch (≈16 workers for ICON‑D2,
+- Bounded `ThreadPoolExecutor` per run (≈16 workers for ICON‑D2,
   fewer for radar where individual files can be ~10 MB).
-- Backpressure via `trigger(processingTime=…)`.
+- Backpressure via the notebook schedule interval (more frequent runs =
+  smaller batches per run).
 - Custom `User-Agent: fabric-dwd-ingest/<workspace>` per DWD guidance.
 
 ### Auth & networking
@@ -153,7 +150,7 @@ basemap, **Cloud Optimized GeoTIFF in OneLake**, or WMS / WMTS). See
 ### COG conversion
 
 - Tooling: `rasterio` + `rio-cogeo` (or `gdal_translate -of COG`) inside
-  the streaming notebook's `foreachBatch`.
+  the notebook's per-row handler.
 - GRIB2 → `cfgrib` / `xarray` → numpy array → `rasterio.open(..., driver="COG", compress="DEFLATE", predictor=2, overview_levels=[2,4,8,16], blocksize=512)`.
 - ODIM‑H5 radar → `wradlib.io.read_odim` → georeferenced grid → COG.
   For native BUFR products (e.g. `pg`) use `eccodes`.
@@ -201,8 +198,8 @@ basemap, **Cloud Optimized GeoTIFF in OneLake**, or WMS / WMTS). See
 
 | Decision | Recommendation |
 |---|---|
-| Eventstream destinations | Eventhouse `dwd_events_raw` **and** Spark Notebook `dwd_ingest` |
-| Notebook layout | One streaming notebook per channel family; shared helpers via `%run` |
+| Eventstream destinations | Eventhouse `_cloudevents_dispatch` (mandatory) + Activator (optional, for selective fast-path triggering) |
+| Notebook layout | One scheduled notebook (`dwd_ingest`) that classifies events by `type` and dispatches per channel; shared helpers via `%run` |
 | Radar silver | Metadata-only in v1; per‑pixel materialization on demand |
 | ICON‑D2 parameters to render as COG (v1) | `t_2m`, `tot_prec`, `td_2m`, `u_10m`, `v_10m`, `ww` |
 | COG projection | **EPSG:3857** (Web Mercator, native to Azure Maps) |
@@ -210,7 +207,9 @@ basemap, **Cloud Optimized GeoTIFF in OneLake**, or WMS / WMTS). See
 
 ## Related Microsoft Learn docs
 
-- [Add a Spark Notebook destination to an Eventstream (preview)](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-destination-spark-notebook)
+- [Eventstream definition template](https://github.com/microsoft/fabric-event-streams/blob/main/API%20Templates/eventstream-definition.json) (authoritative source for valid destination types)
+- [Activator (Reflex) overview](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/data-activator/data-activator-introduction)
+- [Activator: run a Fabric item](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/data-activator/data-activator-trigger-fabric-items)
 - [Fabric Maps layers](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/map/about-layers)
 - [Apache Spark in Microsoft Fabric](https://learn.microsoft.com/en-us/fabric/data-engineering/spark-compute)
 - [Use Microsoft Fabric Notebooks](https://learn.microsoft.com/en-us/fabric/data-engineering/how-to-use-notebook)
