@@ -6,6 +6,13 @@ on:
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Push images to ghcr.io even on non-default branches'
+        type: boolean
+        required: false
+        default: true
 
 env:
   REGISTRY: ghcr.io
@@ -69,7 +76,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.container.image }}
           tags: |
             type=sha,format=long,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 

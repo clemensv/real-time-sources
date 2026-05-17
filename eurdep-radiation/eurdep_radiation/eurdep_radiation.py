@@ -79,7 +79,18 @@ class EurdepAPI:
             }
             resp = self.session.get(WFS_BASE, params=params, timeout=120)
             resp.raise_for_status()
-            data = resp.json()
+            try:
+                data = resp.json()
+            except ValueError:
+                # EURDEP occasionally returns HTML error pages or XML faults
+                # with a 200 status. Log a snippet and stop pagination.
+                snippet = (resp.text or "")[:200].replace("\n", " ")
+                logging.warning(
+                    "EURDEP returned non-JSON payload (content-type=%s, body=%r); stopping pagination",
+                    resp.headers.get("content-type"),
+                    snippet,
+                )
+                break
             features = data.get("features", [])
             all_features.extend(features)
             if len(features) < PAGE_SIZE:
