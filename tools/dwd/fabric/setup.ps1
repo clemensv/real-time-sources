@@ -206,12 +206,25 @@ if ($existingDest) {
 
     $updateJson = $esDef | ConvertTo-Json -Depth 30
     $payloadB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($updateJson))
-    Invoke-FabricApi POST "$FabricApi/workspaces/$WorkspaceId/eventstreams/$($es.id)/updateDefinition" -Body @{
-        definition = @{
-            parts = @(@{ path = "eventstream.json"; payload = $payloadB64; payloadType = "InlineBase64" })
-        }
-    } | Out-Null
-    Write-Host "  Notebook destination added." -ForegroundColor Green
+    try {
+        Invoke-FabricApi POST "$FabricApi/workspaces/$WorkspaceId/eventstreams/$($es.id)/updateDefinition" -Body @{
+            definition = @{
+                parts = @(@{ path = "eventstream.json"; payload = $payloadB64; payloadType = "InlineBase64" })
+            }
+        } | Out-Null
+        Write-Host "  Notebook destination added." -ForegroundColor Green
+    } catch {
+        # The Spark Notebook destination is a preview Eventstream feature (Dec 2025)
+        # that is not yet available in every tenant / region. When the API rejects
+        # the destination type, fall back to the KQL-source pattern: the notebook
+        # reads from the _cloudevents_dispatch table via the Kusto Spark connector
+        # (which is what the other feeders, e.g. eurowater/pugetsound, do).
+        Write-Warning ("Could not add Spark Notebook destination to Eventstream " +
+            "(preview feature may be unavailable in this tenant): $($_.Exception.Message)")
+        Write-Warning ("Fallback: run the notebook '$NotebookName' on a schedule " +
+            "or via a Data Activator rule; it will consume from the KQL table " +
+            "'_cloudevents_dispatch' in database '$DatabaseName'.")
+    }
 }
 
 Write-Host "`n=== DWD Fabric Extension Complete ===" -ForegroundColor Cyan
