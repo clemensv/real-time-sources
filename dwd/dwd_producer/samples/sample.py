@@ -43,6 +43,8 @@ from dwd_producer_data.precipitation10min import Precipitation10Min
 from dwd_producer_data.wind10min import Wind10Min
 from dwd_producer_data.solar10min import Solar10Min
 from dwd_producer_data.hourlyobservation import HourlyObservation
+from dwd_producer_data.extremewind10min import ExtremeWind10Min
+from dwd_producer_data.extremetemperature10min import ExtremeTemperature10Min
 from dwd_producer_data.alert import Alert
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
@@ -110,6 +112,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'DE.DWD.CDC.HourlyObservation' event to Kafka topic.
     await dedwdcdcevent_producer.send_de_dwd_cdc_hourly_observation(_station_id = 'TODO: replace me', data = _hourly_observation)
     print(f"Sent 'DE.DWD.CDC.HourlyObservation' event: {_hourly_observation.to_json()}")
+
+    # ---- DE.DWD.CDC.ExtremeWind10Min ----
+    # TODO: Supply event data for the DE.DWD.CDC.ExtremeWind10Min event
+    _extreme_wind10_min = ExtremeWind10Min()
+
+    # sends the 'DE.DWD.CDC.ExtremeWind10Min' event to Kafka topic.
+    await dedwdcdcevent_producer.send_de_dwd_cdc_extreme_wind10_min(_station_id = 'TODO: replace me', data = _extreme_wind10_min)
+    print(f"Sent 'DE.DWD.CDC.ExtremeWind10Min' event: {_extreme_wind10_min.to_json()}")
+
+    # ---- DE.DWD.CDC.ExtremeTemperature10Min ----
+    # TODO: Supply event data for the DE.DWD.CDC.ExtremeTemperature10Min event
+    _extreme_temperature10_min = ExtremeTemperature10Min()
+
+    # sends the 'DE.DWD.CDC.ExtremeTemperature10Min' event to Kafka topic.
+    await dedwdcdcevent_producer.send_de_dwd_cdc_extreme_temperature10_min(_station_id = 'TODO: replace me', data = _extreme_temperature10_min)
+    print(f"Sent 'DE.DWD.CDC.ExtremeTemperature10Min' event: {_extreme_temperature10_min.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string

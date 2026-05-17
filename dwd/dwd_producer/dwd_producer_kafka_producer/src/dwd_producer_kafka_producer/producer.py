@@ -13,6 +13,8 @@ from dwd_producer_data import Precipitation10Min
 from dwd_producer_data import Wind10Min
 from dwd_producer_data import Solar10Min
 from dwd_producer_data import HourlyObservation
+from dwd_producer_data import ExtremeWind10Min
+from dwd_producer_data import ExtremeTemperature10Min
 from dwd_producer_data import Alert
 
 class DEDWDCDCEventProducer:
@@ -221,6 +223,70 @@ class DEDWDCDCEventProducer:
         kafka_key = "{station_id}".format(station_id=_station_id)
         attributes = {
              "type":"DE.DWD.CDC.HourlyObservation",
+             "source":"https://opendata.dwd.de",
+             "subject":"{station_id}".format(station_id = _station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_de_dwd_cdc_extreme_wind10_min(self,_station_id : str, data: ExtremeWind10Min, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ExtremeWind10Min], str]=None) -> None:
+        """
+        Sends the 'DE.DWD.CDC.ExtremeWind10Min' event to the Kafka topic
+
+        Args:
+            _station_id(str):  Value for placeholder station_id in attribute subject
+            data: (ExtremeWind10Min): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ExtremeWind10Min], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_id}'
+        """
+        kafka_key = "{station_id}".format(station_id=_station_id)
+        attributes = {
+             "type":"DE.DWD.CDC.ExtremeWind10Min",
+             "source":"https://opendata.dwd.de",
+             "subject":"{station_id}".format(station_id = _station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        event = CloudEvent.create(attributes, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            # For binary mode, datacontenttype is already set in attributes above
+            # The to_binary() function will create the ce_datacontenttype header
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+    def send_de_dwd_cdc_extreme_temperature10_min(self,_station_id : str, data: ExtremeTemperature10Min, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ExtremeTemperature10Min], str]=None) -> None:
+        """
+        Sends the 'DE.DWD.CDC.ExtremeTemperature10Min' event to the Kafka topic
+
+        Args:
+            _station_id(str):  Value for placeholder station_id in attribute subject
+            data: (ExtremeTemperature10Min): The event data to be sent
+            content_type (str): The content type that the event data shall be sent with
+            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
+            key_mapper(Callable[[CloudEvent, ExtremeTemperature10Min], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
+                The default key is derived from the xRegistry Kafka key declaration '{station_id}'
+        """
+        kafka_key = "{station_id}".format(station_id=_station_id)
+        attributes = {
+             "type":"DE.DWD.CDC.ExtremeTemperature10Min",
              "source":"https://opendata.dwd.de",
              "subject":"{station_id}".format(station_id = _station_id)
         }

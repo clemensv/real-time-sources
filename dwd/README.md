@@ -12,6 +12,8 @@ Germany. The data is forwarded to a Kafka topic as
 
 - **10-Minute Observations**: Air temperature, precipitation, wind, and solar
   radiation updated every 10 minutes from the DWD "now" dataset.
+- **10-Minute Extremes** (optional): Extreme wind and extreme temperature
+  datasets from the DWD 10-minute "now" directories.
 - **Station Metadata**: Station list with coordinates, elevation, and state for
   all reporting stations.
 - **Weather Alerts**: CAP (Common Alerting Protocol) weather alerts from the DWD
@@ -60,8 +62,9 @@ dwd list-modules
 Output:
 
 ```
-  station_metadata          ON   poll=3600s
+  station_metadata          ON   poll=86400s
   station_obs_10min         ON   poll=600s
+  station_obs_10min_extremes OFF poll=600s
   station_obs_hourly        OFF  poll=3600s
   weather_alerts            ON   poll=300s
 ```
@@ -132,6 +135,13 @@ timestamp per station per category to emit only new measurements.
 Categories: `air_temperature`, `precipitation`, `wind`, `solar`,
 `extreme_wind`, `extreme_temperature`.
 
+### station_obs_10min_extremes (default: OFF, poll: 600s)
+
+Polls only the 10-minute extreme datasets and emits:
+
+- `ExtremeWind10Min` (fields from `FX_10`, `FNX_10`, `DX_10`)
+- `ExtremeTemperature10Min` (fields from `TX_10`, `TN_10`)
+
 ### station_obs_hourly (default: OFF, poll: 3600s)
 
 Polls hourly "recent" datasets. Disabled by default because the data only
@@ -141,6 +151,22 @@ updates once per day and is not truly real-time.
 
 Downloads the LATEST CAP alert bundle from DWD, extracts individual XML alert
 files, and emits new alerts. Tracks seen alert identifiers to avoid duplicates.
+
+## Upstream Channel Inventory and Scope Decisions
+
+The current extension pass audited the major DWD Open Data channel families and
+applies the following keep/drop decisions:
+
+| Family | Transport / Path | Identity | Cadence | Decision | Rationale |
+|---|---|---|---|---|---|
+| CDC station metadata | REST file (`.../10_minutes/*/now/*_Beschreibung_Stationen.txt`) | `station_id` | low-frequency updates | Keep (implemented) | Required reference data for station telemetry. |
+| CDC 10-minute observations | REST file ZIP (`.../10_minutes/{air_temperature,precipitation,wind,solar}/now/`) | `station_id` | ~10 min | Keep (implemented) | Core near-real-time weather telemetry. |
+| CDC 10-minute extremes | REST file ZIP (`.../10_minutes/{extreme_wind,extreme_temperature}/now/`) | `station_id` | ~10 min | Keep (implemented in this pass) | High-value near-real-time extremes. |
+| CDC hourly observations | REST file ZIP (`.../hourly/*/recent/`) | `station_id` + parameter | hourly/daily refresh | Keep (optional module) | Useful enrichment; lower freshness so disabled by default. |
+| Weather alerts (CAP) | REST ZIP (`weather/alerts/cap/.../LATEST...zip`) | `identifier` | minutes | Keep (implemented) | Operational severe-weather alerts. |
+| Forecasts (MOSMIX) | REST file products (`weather/local_forecasts/mos/`) | station/grid ID + validity time | rolling | Keep (next phase) | Valuable, but requires dedicated forecast contract + module split. |
+| Radar products | REST file products (`weather/radar/`) | grid tile + product + validity time | minutes | Keep (next phase) | Different identity/model than station telemetry; needs separate message group. |
+| Satellite products | REST file products (`weather/satellite/`) | product + tile/area + validity time | minutes | Keep (next phase) | Distinct image/raster model and ingestion pattern. |
 
 ## Data Source
 

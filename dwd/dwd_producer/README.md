@@ -740,6 +740,208 @@ de_dwd_weather_dispatcher.de_dwd_cdc_hourly_observation_async = de_dwd_cdc_hourl
 
 - `**kwargs`: Additional Kafka producer configuration
 
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_dwd_cdc_extreme_wind10_min_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_dwd_cdc_extreme_wind10_min_async:  Callable[[ConsumerRecord, CloudEvent,
+ExtremeWind10Min], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.DWD.CDC.ExtremeWind10Min`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.ExtremeWind10Min`.
+
+
+
+Producer for `DE.DWD.CDC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_wind10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ExtremeWind10Min)
+-> None:
+
+```python    # Process the event data
+
+DEDWDCDCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_cdc_dispatcher.de_dwd_cdc_extreme_wind10_min_async = de_dwd_cdc_extreme_wind10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.ExtremeWind10Min`.
+
+
+
+Producer for `DE.DWD.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_wind10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ExtremeWind10Min)
+-> None:
+
+```python    # Process the event data
+
+DEDWDWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_weather_dispatcher.de_dwd_cdc_extreme_wind10_min_async = de_dwd_cdc_extreme_wind10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_dwd_cdc_extreme_temperature10_min_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_dwd_cdc_extreme_temperature10_min_async:  Callable[[ConsumerRecord, CloudEvent,
+ExtremeTemperature10Min], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.DWD.CDC.ExtremeTemperature10Min`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDCDCProducer- `data`: The event data of type `dwd_producer_data.ExtremeTemperature10Min`.
+
+
+
+Producer for `DE.DWD.CDC` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_temperature10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtremeTemperature10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDCDCProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_cdc_dispatcher.de_dwd_cdc_extreme_temperature10_min_async = de_dwd_cdc_extreme_temperature10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEDWDWeatherProducer- `data`: The event data of type `dwd_producer_data.ExtremeTemperature10Min`.
+
+
+
+Producer for `DE.DWD.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_dwd_cdc_extreme_temperature10_min_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ExtremeTemperature10Min) -> None:
+
+```python    # Process the event data
+
+DEDWDWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_dwd_weather_dispatcher.de_dwd_cdc_extreme_temperature10_min_async = de_dwd_cdc_extreme_temperature10_min_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
 
 
 #### Send Methods## Internals
@@ -1353,6 +1555,212 @@ await producer.send_de_dwd_cdc_hourly_observation_batch(```
         HourlyObservation(...),
 
         HourlyObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_dwd_cdc_extreme_wind10_min`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_dwd_cdc_extreme_wind10_min(
+
+    self,##### `_process_event`
+
+    data: ExtremeWind10Min,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.DWD.CDC.ExtremeWind10Min` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ExtremeWind10Min`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_dwd_cdc_extreme_wind10_min(
+
+    data=ExtremeWind10Min(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.DWD.CDC.ExtremeWind10Min` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_dwd_cdc_extreme_wind10_min_batch(```
+
+    messages=[
+
+        ExtremeWind10Min(...),Initializes the runner with a Kafka consumer.
+
+        ExtremeWind10Min(...),
+
+        ExtremeWind10Min(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_dwd_cdc_extreme_temperature10_min`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_dwd_cdc_extreme_temperature10_min(
+
+    self,##### `_process_event`
+
+    data: ExtremeTemperature10Min,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.DWD.CDC.ExtremeTemperature10Min` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ExtremeTemperature10Min`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_dwd_cdc_extreme_temperature10_min(
+
+    data=ExtremeTemperature10Min(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.DWD.CDC.ExtremeTemperature10Min` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_dwd_cdc_extreme_temperature10_min_batch(```
+
+    messages=[
+
+        ExtremeTemperature10Min(...),Initializes the runner with a Kafka consumer.
+
+        ExtremeTemperature10Min(...),
+
+        ExtremeTemperature10Min(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

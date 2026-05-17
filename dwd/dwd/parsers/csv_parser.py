@@ -116,13 +116,13 @@ COLUMN_MAPS: Dict[str, Dict[str, str]] = {
         "LS_10": "longwave_radiation",
     },
     "extreme_wind": {
-        "FX_10": "wind_speed",
-        "FNX_10": "wind_speed",
-        "DX_10": "wind_direction",
+        "FX_10": "wind_speed_maximum",
+        "FNX_10": "wind_speed_minimum",
+        "DX_10": "wind_direction_at_maximum",
     },
     "extreme_temperature": {
-        "TX_10": "air_temperature_2m",
-        "TN_10": "air_temperature_5cm",
+        "TX_10": "air_temperature_maximum_2m",
+        "TN_10": "air_temperature_minimum_5cm",
     },
 }
 

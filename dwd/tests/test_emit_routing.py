@@ -42,6 +42,12 @@ class FakeCDCProducer:
     def send_de_dwd_cdc_hourly_observation(self, **_kw):
         self.calls.append("hourly_observation")
 
+    def send_de_dwd_cdc_extreme_wind10_min(self, **_kw):
+        self.calls.append("extreme_wind_10min")
+
+    def send_de_dwd_cdc_extreme_temperature10_min(self, **_kw):
+        self.calls.append("extreme_temperature_10min")
+
 
 class FakeWeatherProducer:
     def __init__(self, *_args, **_kwargs):
@@ -178,6 +184,29 @@ _HOURLY_EVENT = {
     },
 }
 
+_EXTREME_WIND_EVENT = {
+    "type": "extreme_wind_10min",
+    "data": {
+        "station_id": "44",
+        "timestamp": "2026-01-01T00:00:00+00:00",
+        "quality_level": 10,
+        "wind_speed_maximum": 12.0,
+        "wind_speed_minimum": 1.5,
+        "wind_direction_at_maximum": 210.0,
+    },
+}
+
+_EXTREME_TEMPERATURE_EVENT = {
+    "type": "extreme_temperature_10min",
+    "data": {
+        "station_id": "44",
+        "timestamp": "2026-01-01T00:00:00+00:00",
+        "quality_level": 10,
+        "air_temperature_maximum_2m": 8.5,
+        "air_temperature_minimum_5cm": -1.5,
+    },
+}
+
 
 # ---------------------------------------------------------------------------
 # Tests: _emit_event dispatch routing
@@ -237,6 +266,18 @@ class TestEmitEventRouting:
         cdc, wx = self._make()
         _emit_event(cdc, wx, _HOURLY_EVENT)
         assert cdc.calls == ["hourly_observation"]
+        assert wx.calls == []
+
+    def test_extreme_wind_routed_to_cdc(self):
+        cdc, wx = self._make()
+        _emit_event(cdc, wx, _EXTREME_WIND_EVENT)
+        assert cdc.calls == ["extreme_wind_10min"]
+        assert wx.calls == []
+
+    def test_extreme_temperature_routed_to_cdc(self):
+        cdc, wx = self._make()
+        _emit_event(cdc, wx, _EXTREME_TEMPERATURE_EVENT)
+        assert cdc.calls == ["extreme_temperature_10min"]
         assert wx.calls == []
 
     def test_unknown_type_routed_to_neither(self):

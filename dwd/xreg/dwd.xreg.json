@@ -153,6 +153,42 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.HourlyObservation"
+        },
+        "DE.DWD.CDC.ExtremeWind10Min": {
+          "name": "ExtremeWind10Min",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeWind10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeWind10Min"
+        },
+        "DE.DWD.CDC.ExtremeTemperature10Min": {
+          "name": "ExtremeTemperature10Min",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.CDC.ExtremeTemperature10Min"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.ExtremeTemperature10Min"
         }
       }
     },
@@ -199,7 +235,7 @@
                   "longitude",
                   "elevation"
                 ],
-                "name": "document",
+                "name": "StationMetadata",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -249,7 +285,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "AirTemperature10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -320,7 +356,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Precipitation10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -373,7 +409,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Wind10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -426,7 +462,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Solar10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -492,7 +528,7 @@
                   "timestamp",
                   "parameter"
                 ],
-                "name": "document",
+                "name": "HourlyObservation",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -545,7 +581,7 @@
                   "severity",
                   "event"
                 ],
-                "name": "document",
+                "name": "Alert",
                 "properties": {
                   "identifier": {
                     "type": "string"
@@ -601,482 +637,115 @@
               }
             }
           }
-        }
-      }
-    },
-    "DE.DWD.CDC.avro": {
-      "schemas": {
-        "DE.DWD.CDC.StationMetadata": {
-          "name": "StationMetadata",
-          "format": "Avro/1.11.3",
+        },
+        "DE.DWD.CDC.ExtremeWind10Min": {
+          "name": "ExtremeWind10Min",
+          "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
           "versions": {
             "1": {
-              "format": "Avro/1.11.3",
+              "format": "JsonStructure/draft-02",
               "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "StationMetadata",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "ExtremeWind10Min",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "STATIONS_ID"
+                    }
                   },
-                  {
-                    "name": "station_name",
-                    "type": "string"
+                  "timestamp": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "MESS_DATUM"
+                    }
                   },
-                  {
-                    "name": "latitude",
-                    "type": "double"
+                  "quality_level": {
+                    "type": "int32",
+                    "altnames": {
+                      "lang:de": "QN"
+                    }
                   },
-                  {
-                    "name": "longitude",
-                    "type": "double"
+                  "wind_speed_maximum": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "FX_10"
+                    }
                   },
-                  {
-                    "name": "elevation",
-                    "type": "double"
+                  "wind_speed_minimum": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "FNX_10"
+                    }
                   },
-                  {
-                    "name": "state",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "from_date",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "to_date",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
+                  "wind_direction_at_maximum": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "DX_10"
+                    }
                   }
-                ]
+                },
+                "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeWind10Min",
+                "description": "ExtremeWind10Min"
               }
             }
           }
         },
-        "DE.DWD.CDC.AirTemperature10Min": {
-          "name": "AirTemperature10Min",
-          "format": "Avro/1.11.3",
+        "DE.DWD.CDC.ExtremeTemperature10Min": {
+          "name": "ExtremeTemperature10Min",
+          "format": "JsonStructure/draft-02",
           "defaultversionid": "1",
           "versions": {
             "1": {
-              "format": "Avro/1.11.3",
+              "format": "JsonStructure/draft-02",
               "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "AirTemperature10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "type": "object",
+                "required": [
+                  "station_id",
+                  "timestamp"
+                ],
+                "name": "ExtremeTemperature10Min",
+                "properties": {
+                  "station_id": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "STATIONS_ID"
+                    }
                   },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
+                  "timestamp": {
+                    "type": "string",
+                    "altnames": {
+                      "lang:de": "MESS_DATUM"
+                    }
                   },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
+                  "quality_level": {
+                    "type": "int32",
+                    "altnames": {
+                      "lang:de": "QN"
+                    }
                   },
-                  {
-                    "name": "pressure_station_level",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
+                  "air_temperature_maximum_2m": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "TX_10"
+                    }
                   },
-                  {
-                    "name": "air_temperature_2m",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "air_temperature_5cm",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "relative_humidity",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "dew_point_temperature",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
+                  "air_temperature_minimum_5cm": {
+                    "type": "double",
+                    "altnames": {
+                      "lang:de": "TN_10"
+                    }
                   }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.CDC.Precipitation10Min": {
-          "name": "Precipitation10Min",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Precipitation10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "precipitation_height",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "precipitation_indicator",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.CDC.Wind10Min": {
-          "name": "Wind10Min",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Wind10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "wind_speed",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "wind_direction",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.CDC.Solar10Min": {
-          "name": "Solar10Min",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Solar10Min",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "global_radiation",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "sunshine_duration",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "diffuse_radiation",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "longwave_radiation",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.CDC.HourlyObservation": {
-          "name": "HourlyObservation",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "HourlyObservation",
-                "fields": [
-                  {
-                    "name": "station_id",
-                    "type": "string"
-                  },
-                  {
-                    "name": "timestamp",
-                    "type": "string"
-                  },
-                  {
-                    "name": "quality_level",
-                    "type": [
-                      "null",
-                      "int"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "parameter",
-                    "type": "string"
-                  },
-                  {
-                    "name": "value",
-                    "type": [
-                      "null",
-                      "double"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "unit",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "DE.DWD.Weather.Alert": {
-          "name": "Alert",
-          "format": "Avro/1.11.3",
-          "defaultversionid": "1",
-          "versions": {
-            "1": {
-              "format": "Avro/1.11.3",
-              "schema": {
-                "type": "record",
-                "name": "document",
-                "doc": "Alert",
-                "fields": [
-                  {
-                    "name": "identifier",
-                    "type": "string"
-                  },
-                  {
-                    "name": "sender",
-                    "type": "string"
-                  },
-                  {
-                    "name": "sent",
-                    "type": "string"
-                  },
-                  {
-                    "name": "status",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "msg_type",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "severity",
-                    "type": "string"
-                  },
-                  {
-                    "name": "urgency",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "certainty",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "event",
-                    "type": "string"
-                  },
-                  {
-                    "name": "headline",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "description",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "effective",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "onset",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "expires",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "area_desc",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  },
-                  {
-                    "name": "geocodes",
-                    "type": [
-                      "null",
-                      "string"
-                    ],
-                    "default": null
-                  }
-                ]
+                },
+                "$id": "https://example.com/schemas/DE/DWD/CDC/ExtremeTemperature10Min",
+                "description": "ExtremeTemperature10Min"
               }
             }
           }

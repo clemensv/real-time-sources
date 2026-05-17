@@ -9,18 +9,21 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Set
 
 from confluent_kafka import Producer
-from dwd_producer_data.de.dwd.cdc.stationmetadata import StationMetadata
-from dwd_producer_data.de.dwd.cdc.airtemperature10min import AirTemperature10Min
-from dwd_producer_data.de.dwd.cdc.precipitation10min import Precipitation10Min
-from dwd_producer_data.de.dwd.cdc.wind10min import Wind10Min
-from dwd_producer_data.de.dwd.cdc.solar10min import Solar10Min
-from dwd_producer_data.de.dwd.cdc.hourlyobservation import HourlyObservation
-from dwd_producer_data.de.dwd.cdc.alert import Alert
+from dwd_producer_data import StationMetadata
+from dwd_producer_data import AirTemperature10Min
+from dwd_producer_data import Precipitation10Min
+from dwd_producer_data import Wind10Min
+from dwd_producer_data import Solar10Min
+from dwd_producer_data import HourlyObservation
+from dwd_producer_data import ExtremeWind10Min
+from dwd_producer_data import ExtremeTemperature10Min
+from dwd_producer_data import Alert
 from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer, DEDWDWeatherEventProducer
 
 from dwd.modules.base import BaseModule
 from dwd.modules.station_metadata import StationMetadataModule
 from dwd.modules.station_obs_10min import StationObs10MinModule
+from dwd.modules.station_obs_10min_extremes import StationObs10MinExtremesModule
 from dwd.modules.station_obs_hourly import StationObsHourlyModule
 from dwd.modules.weather_alerts import WeatherAlertsModule
 from dwd.util.http_client import DWDHttpClient
@@ -37,9 +40,19 @@ logger = logging.getLogger(__name__)
 MODULE_CLASSES = {
     "station_metadata": StationMetadataModule,
     "station_obs_10min": StationObs10MinModule,
+    "station_obs_10min_extremes": StationObs10MinExtremesModule,
     "station_obs_hourly": StationObsHourlyModule,
     "weather_alerts": WeatherAlertsModule,
 }
+
+
+def _optional_int_env(var_name: str) -> Optional[int]:
+    """Parse an optional int env var; treat unset/empty as None."""
+    raw = os.getenv(var_name)
+    if raw is None or raw.strip() == "":
+        return None
+    value = int(raw)
+    return value or None
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -100,6 +113,8 @@ def _create_module(key: str, http_client: DWDHttpClient,
     if key == "station_obs_10min":
         categories = [p.strip() for p in ten_min_params.split(",")] if ten_min_params else None
         return StationObs10MinModule(http_client, categories=categories, station_filter=station_filter)
+    elif key == "station_obs_10min_extremes":
+        return StationObs10MinExtremesModule(http_client, station_filter=station_filter)
     elif key == "station_obs_hourly":
         return StationObsHourlyModule(http_client, station_filter=station_filter)
     elif key == "station_metadata":
@@ -135,6 +150,12 @@ def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
     elif etype == "hourly_observation":
         cdc_event_producer.send_de_dwd_cdc_hourly_observation(
             _station_id=data["station_id"], data=HourlyObservation(**data), flush_producer=False)
+    elif etype == "extreme_wind_10min":
+        cdc_event_producer.send_de_dwd_cdc_extreme_wind10_min(
+            _station_id=data["station_id"], data=ExtremeWind10Min(**data), flush_producer=False)
+    elif etype == "extreme_temperature_10min":
+        cdc_event_producer.send_de_dwd_cdc_extreme_temperature10_min(
+            _station_id=data["station_id"], data=ExtremeTemperature10Min(**data), flush_producer=False)
     elif etype == "weather_alert":
         weather_event_producer.send_de_dwd_weather_alert(
             _identifier=data["identifier"], data=Alert(**data), flush_producer=False)
@@ -223,7 +244,7 @@ def main() -> None:
     feed_p.add_argument("-c", "--connection-string", type=str,
                         default=os.getenv("CONNECTION_STRING"))
     feed_p.add_argument("-i", "--polling-interval", type=int,
-                        default=int(os.getenv("POLLING_INTERVAL", "0")) or None,
+                        default=_optional_int_env("POLLING_INTERVAL"),
                         help="Global polling interval override in seconds (default: per-module)")
     feed_p.add_argument("--state-file", type=str,
                         default=os.getenv("STATE_FILE",
