@@ -178,6 +178,15 @@ foreach ($cell in $nbObj.cells) {
     $cell.source = @($newLines)
     break
 }
+# Also bind the Lakehouse so mssparkutils.fs resolves OneLake paths without
+# explicit auth (the shared deploy-fabric-notebook.ps1 only binds the KQL DB).
+if (-not $nbObj.metadata) { $nbObj | Add-Member -NotePropertyName metadata -NotePropertyValue ([pscustomobject]@{}) }
+if (-not $nbObj.metadata.dependencies) { $nbObj.metadata | Add-Member -NotePropertyName dependencies -NotePropertyValue ([pscustomobject]@{}) }
+$nbObj.metadata.dependencies | Add-Member -NotePropertyName lakehouse -NotePropertyValue ([pscustomobject]@{
+    default_lakehouse              = $lh.id
+    default_lakehouse_name         = $lh.displayName
+    default_lakehouse_workspace_id = $WorkspaceId
+}) -Force
 [System.IO.File]::WriteAllText($nbPath, ($nbObj | ConvertTo-Json -Depth 50), [System.Text.UTF8Encoding]::new($false))
 
 $deployScript = Join-Path $RepoRoot "tools\deploy-fabric\deploy-fabric-notebook.ps1"
