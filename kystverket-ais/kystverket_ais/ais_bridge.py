@@ -60,33 +60,39 @@ def _mmsi_key_mapper(event, data) -> str:
 def _emit_event(event_producer: NOKystverketAISEventProducer, decoded: DecodedAIS) -> None:
     """Send a decoded AIS message through the typed Kafka producer."""
     fields = decoded.fields
+    mmsi = str(fields.get('mmsi', ''))
 
     if decoded.event_type == "position_report_class_a":
         event_producer.send_no_kystverket_ais_position_report_class_a(
+            _mmsi=mmsi,
             data=PositionReportClassA(**fields),
             flush_producer=False,
             key_mapper=_mmsi_key_mapper,
         )
     elif decoded.event_type == "static_voyage_data":
         event_producer.send_no_kystverket_ais_static_voyage_data(
+            _mmsi=mmsi,
             data=StaticVoyageData(**fields),
             flush_producer=False,
             key_mapper=_mmsi_key_mapper,
         )
     elif decoded.event_type == "position_report_class_b":
         event_producer.send_no_kystverket_ais_position_report_class_b(
+            _mmsi=mmsi,
             data=PositionReportClassB(**fields),
             flush_producer=False,
             key_mapper=_mmsi_key_mapper,
         )
     elif decoded.event_type == "static_data_class_b":
         event_producer.send_no_kystverket_ais_static_data_class_b(
+            _mmsi=mmsi,
             data=StaticDataClassB(**fields),
             flush_producer=False,
             key_mapper=_mmsi_key_mapper,
         )
     elif decoded.event_type == "aid_to_navigation":
         event_producer.send_no_kystverket_ais_aid_to_navigation(
+            _mmsi=mmsi,
             data=AidToNavigation(**fields),
             flush_producer=False,
             key_mapper=_mmsi_key_mapper,
