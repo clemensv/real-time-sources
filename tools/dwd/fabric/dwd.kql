@@ -1,0 +1,550 @@
+// DWD-specific KQL assets layered on top of the generic
+// _cloudevents_dispatch landing table created by tools/deploy-fabric/deploy-fabric.ps1.
+//
+// What this script creates:
+//   * Typed tables (one per DE.DWD.* CloudEvents type) populated by KQL
+//     update policies fanning out of _cloudevents_dispatch.
+//   * Materialized "Latest" views (arg_max by station_id / file_url / identifier).
+//   * gold.* tables maintained by the dwd_ingest Spark notebook
+//     (CogCatalog index for Fabric Maps imagery layers).
+//   * map.* KQL functions used as Fabric Maps vector layer sources.
+//
+// Naming follows the per-source convention used by tools/pugetsound/fabric and
+// tools/eurowater/fabric: PascalCase typed table per CloudEvents type + a
+// "<Name>Latest" materialized view.
+
+//
+// ============================================================================
+// Station metadata (DE.DWD.CDC.StationMetadata) — inline payload
+// ============================================================================
+//
+.create-merge table [StationMetadata] (
+    [station_id]: string,
+    [station_name]: string,
+    [latitude]: real,
+    [longitude]: real,
+    [elevation]: real,
+    [state]: string,
+    [from_date]: string,
+    [to_date]: string,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view StationMetadataLatest ifexists;
+.create materialized-view with (backfill=true) StationMetadataLatest on table StationMetadata {
+    StationMetadata | summarize arg_max(___time, *) by station_id
+}
+
+.alter table [StationMetadata] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.StationMetadata') | project ['station_id'] = tostring(data.['station_id']), ['station_name'] = tostring(data.['station_name']), ['latitude'] = toreal(data.['latitude']), ['longitude'] = toreal(data.['longitude']), ['elevation'] = toreal(data.['elevation']), ['state'] = tostring(data.['state']), ['from_date'] = tostring(data.['from_date']), ['to_date'] = tostring(data.['to_date']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// 10-minute air temperature (DE.DWD.CDC.AirTemperature10Min) — inline payload
+// ============================================================================
+//
+.create-merge table [AirTemperature10Min] (
+    [station_id]: string,
+    [timestamp]: datetime,
+    [quality_level]: int,
+    [pressure_station_level]: real,
+    [air_temperature_2m]: real,
+    [air_temperature_5cm]: real,
+    [relative_humidity]: real,
+    [dew_point_temperature]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view AirTemperature10MinLatest ifexists;
+.create materialized-view with (backfill=true) AirTemperature10MinLatest on table AirTemperature10Min {
+    AirTemperature10Min | summarize arg_max(timestamp, *) by station_id
+}
+
+.alter table [AirTemperature10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.AirTemperature10Min') | project ['station_id'] = tostring(data.['station_id']), ['timestamp'] = todatetime(data.['timestamp']), ['quality_level'] = toint(data.['quality_level']), ['pressure_station_level'] = toreal(data.['pressure_station_level']), ['air_temperature_2m'] = toreal(data.['air_temperature_2m']), ['air_temperature_5cm'] = toreal(data.['air_temperature_5cm']), ['relative_humidity'] = toreal(data.['relative_humidity']), ['dew_point_temperature'] = toreal(data.['dew_point_temperature']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// 10-minute precipitation (DE.DWD.CDC.Precipitation10Min) — inline payload
+// ============================================================================
+//
+.create-merge table [Precipitation10Min] (
+    [station_id]: string,
+    [timestamp]: datetime,
+    [quality_level]: int,
+    [precipitation_height]: real,
+    [precipitation_indicator]: int,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view Precipitation10MinLatest ifexists;
+.create materialized-view with (backfill=true) Precipitation10MinLatest on table Precipitation10Min {
+    Precipitation10Min | summarize arg_max(timestamp, *) by station_id
+}
+
+.alter table [Precipitation10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.Precipitation10Min') | project ['station_id'] = tostring(data.['station_id']), ['timestamp'] = todatetime(data.['timestamp']), ['quality_level'] = toint(data.['quality_level']), ['precipitation_height'] = toreal(data.['precipitation_height']), ['precipitation_indicator'] = toint(data.['precipitation_indicator']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// 10-minute wind (DE.DWD.CDC.Wind10Min) — inline payload
+// ============================================================================
+//
+.create-merge table [Wind10Min] (
+    [station_id]: string,
+    [timestamp]: datetime,
+    [quality_level]: int,
+    [wind_speed]: real,
+    [wind_direction]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view Wind10MinLatest ifexists;
+.create materialized-view with (backfill=true) Wind10MinLatest on table Wind10Min {
+    Wind10Min | summarize arg_max(timestamp, *) by station_id
+}
+
+.alter table [Wind10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.Wind10Min') | project ['station_id'] = tostring(data.['station_id']), ['timestamp'] = todatetime(data.['timestamp']), ['quality_level'] = toint(data.['quality_level']), ['wind_speed'] = toreal(data.['wind_speed']), ['wind_direction'] = toreal(data.['wind_direction']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// 10-minute solar radiation (DE.DWD.CDC.Solar10Min) — inline payload
+// ============================================================================
+//
+.create-merge table [Solar10Min] (
+    [station_id]: string,
+    [timestamp]: datetime,
+    [quality_level]: int,
+    [global_radiation]: real,
+    [sunshine_duration]: real,
+    [diffuse_radiation]: real,
+    [longwave_radiation]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view Solar10MinLatest ifexists;
+.create materialized-view with (backfill=true) Solar10MinLatest on table Solar10Min {
+    Solar10Min | summarize arg_max(timestamp, *) by station_id
+}
+
+.alter table [Solar10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.Solar10Min') | project ['station_id'] = tostring(data.['station_id']), ['timestamp'] = todatetime(data.['timestamp']), ['quality_level'] = toint(data.['quality_level']), ['global_radiation'] = toreal(data.['global_radiation']), ['sunshine_duration'] = toreal(data.['sunshine_duration']), ['diffuse_radiation'] = toreal(data.['diffuse_radiation']), ['longwave_radiation'] = toreal(data.['longwave_radiation']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// Hourly observation (DE.DWD.CDC.HourlyObservation) — inline payload
+// ============================================================================
+//
+.create-merge table [HourlyObservation] (
+    [station_id]: string,
+    [timestamp]: datetime,
+    [quality_level]: int,
+    [parameter]: string,
+    [value]: real,
+    [unit]: string,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view HourlyObservationLatest ifexists;
+.create materialized-view with (backfill=true) HourlyObservationLatest on table HourlyObservation {
+    HourlyObservation | summarize arg_max(timestamp, *) by station_id, parameter
+}
+
+.alter table [HourlyObservation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.HourlyObservation') | project ['station_id'] = tostring(data.['station_id']), ['timestamp'] = todatetime(data.['timestamp']), ['quality_level'] = toint(data.['quality_level']), ['parameter'] = tostring(data.['parameter']), ['value'] = toreal(data.['value']), ['unit'] = tostring(data.['unit']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// 10-minute extreme wind (DE.DWD.CDC.ExtremeWind10Min) — inline payload
+// ============================================================================
+//
+.create-merge table [ExtremeWind10Min] (
+    [station_id]: string,
+    [timestamp]: datetime,
+    [quality_level]: int,
+    [wind_speed_maximum]: real,
+    [wind_speed_minimum]: real,
+    [wind_direction_at_maximum]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view ExtremeWind10MinLatest ifexists;
+.create materialized-view with (backfill=true) ExtremeWind10MinLatest on table ExtremeWind10Min {
+    ExtremeWind10Min | summarize arg_max(timestamp, *) by station_id
+}
+
+.alter table [ExtremeWind10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.ExtremeWind10Min') | project ['station_id'] = tostring(data.['station_id']), ['timestamp'] = todatetime(data.['timestamp']), ['quality_level'] = toint(data.['quality_level']), ['wind_speed_maximum'] = toreal(data.['wind_speed_maximum']), ['wind_speed_minimum'] = toreal(data.['wind_speed_minimum']), ['wind_direction_at_maximum'] = toreal(data.['wind_direction_at_maximum']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// 10-minute extreme temperature (DE.DWD.CDC.ExtremeTemperature10Min) — inline
+// ============================================================================
+//
+.create-merge table [ExtremeTemperature10Min] (
+    [station_id]: string,
+    [timestamp]: datetime,
+    [quality_level]: int,
+    [air_temperature_maximum_2m]: real,
+    [air_temperature_minimum_5cm]: real,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view ExtremeTemperature10MinLatest ifexists;
+.create materialized-view with (backfill=true) ExtremeTemperature10MinLatest on table ExtremeTemperature10Min {
+    ExtremeTemperature10Min | summarize arg_max(timestamp, *) by station_id
+}
+
+.alter table [ExtremeTemperature10Min] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.CDC.ExtremeTemperature10Min') | project ['station_id'] = tostring(data.['station_id']), ['timestamp'] = todatetime(data.['timestamp']), ['quality_level'] = toint(data.['quality_level']), ['air_temperature_maximum_2m'] = toreal(data.['air_temperature_maximum_2m']), ['air_temperature_minimum_5cm'] = toreal(data.['air_temperature_minimum_5cm']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// Weather alerts (DE.DWD.Weather.Alert) — inline CAP payload
+// ============================================================================
+//
+.create-merge table [WeatherAlert] (
+    [identifier]: string,
+    [sender]: string,
+    [sent]: datetime,
+    [status]: string,
+    [msg_type]: string,
+    [severity]: string,
+    [urgency]: string,
+    [certainty]: string,
+    [event]: string,
+    [headline]: string,
+    [description]: string,
+    [effective]: datetime,
+    [onset]: datetime,
+    [expires]: datetime,
+    [area_desc]: string,
+    [geocodes]: dynamic,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view WeatherAlertLatest ifexists;
+.create materialized-view with (backfill=true) WeatherAlertLatest on table WeatherAlert {
+    WeatherAlert | summarize arg_max(sent, *) by identifier
+}
+
+.alter table [WeatherAlert] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.Weather.Alert') | project ['identifier'] = tostring(data.['identifier']), ['sender'] = tostring(data.['sender']), ['sent'] = todatetime(data.['sent']), ['status'] = tostring(data.['status']), ['msg_type'] = tostring(data.['msg_type']), ['severity'] = tostring(data.['severity']), ['urgency'] = tostring(data.['urgency']), ['certainty'] = tostring(data.['certainty']), ['event'] = tostring(data.['event']), ['headline'] = tostring(data.['headline']), ['description'] = tostring(data.['description']), ['effective'] = todatetime(data.['effective']), ['onset'] = todatetime(data.['onset']), ['expires'] = todatetime(data.['expires']), ['area_desc'] = tostring(data.['area_desc']), ['geocodes'] = todynamic(data.['geocodes']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// Radar product catalog (DE.DWD.Radar.RadarProductCatalog) — directory listing
+// ============================================================================
+//
+.create-merge table [RadarProductCatalog] (
+    [product]: string,
+    [file_url]: string,
+    [description]: string,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view RadarProductCatalogLatest ifexists;
+.create materialized-view with (backfill=true) RadarProductCatalogLatest on table RadarProductCatalog {
+    RadarProductCatalog | summarize arg_max(___time, *) by product
+}
+
+.alter table [RadarProductCatalog] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.Radar.RadarProductCatalog') | project ['product'] = tostring(data.['product']), ['file_url'] = tostring(data.['file_url']), ['description'] = tostring(data.['description']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// Radar file product (DE.DWD.Radar.RadarFileProduct) — file reference
+// (consumed by the dwd_ingest Spark notebook to fetch + bronze + COG gold)
+// ============================================================================
+//
+.create-merge table [RadarFileProduct] (
+    [file_url]: string,
+    [product]: string,
+    [file_name]: string,
+    [modified]: datetime,
+    [size_bytes]: long,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view RadarFileProductLatest ifexists;
+.create materialized-view with (backfill=true) RadarFileProductLatest on table RadarFileProduct {
+    RadarFileProduct | summarize arg_max(modified, *) by product
+}
+
+.alter table [RadarFileProduct] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.Radar.RadarFileProduct') | project ['file_url'] = tostring(data.['file_url']), ['product'] = tostring(data.['product']), ['file_name'] = tostring(data.['file_name']), ['modified'] = todatetime(data.['modified']), ['size_bytes'] = tolong(data.['size_bytes']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// Forecast model catalog (DE.DWD.Forecast.ForecastModelCatalog)
+// ============================================================================
+//
+.create-merge table [ForecastModelCatalog] (
+    [model]: string,
+    [file_url]: string,
+    [description]: string,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view ForecastModelCatalogLatest ifexists;
+.create materialized-view with (backfill=true) ForecastModelCatalogLatest on table ForecastModelCatalog {
+    ForecastModelCatalog | summarize arg_max(___time, *) by model
+}
+
+.alter table [ForecastModelCatalog] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.Forecast.ForecastModelCatalog') | project ['model'] = tostring(data.['model']), ['file_url'] = tostring(data.['file_url']), ['description'] = tostring(data.['description']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// ICON-D2 forecast file (DE.DWD.Forecast.IconD2ForecastFile) — file reference
+// (consumed by the dwd_ingest Spark notebook to fetch + bronze + COG gold)
+// ============================================================================
+//
+.create-merge table [IconD2ForecastFile] (
+    [file_url]: string,
+    [model]: string,
+    [file_name]: string,
+    [run]: datetime,
+    [forecast_hour]: int,
+    [parameter]: string,
+    [level_type]: string,
+    [level]: string,
+    [modified]: datetime,
+    [size_bytes]: long,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.drop materialized-view IconD2ForecastFileLatest ifexists;
+.create materialized-view with (backfill=true) IconD2ForecastFileLatest on table IconD2ForecastFile {
+    IconD2ForecastFile | summarize arg_max(modified, *) by parameter, level_type, level, forecast_hour
+}
+
+.alter table [IconD2ForecastFile] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.Forecast.IconD2ForecastFile') | project ['file_url'] = tostring(data.['file_url']), ['model'] = tostring(data.['model']), ['file_name'] = tostring(data.['file_name']), ['run'] = todatetime(data.['run']), ['forecast_hour'] = toint(data.['forecast_hour']), ['parameter'] = tostring(data.['parameter']), ['level_type'] = tostring(data.['level_type']), ['level'] = tostring(data.['level']), ['modified'] = todatetime(data.['modified']), ['size_bytes'] = tolong(data.['size_bytes']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+//
+// ============================================================================
+// Gold tier — CogCatalog
+// Populated by the dwd_ingest Spark notebook with one row per published
+// Cloud Optimized GeoTIFF in Lakehouse Files/gold/. Read by Fabric Maps
+// to resolve the latest COG per (channel, product) for imagery layers.
+// ============================================================================
+//
+.create-merge table [CogCatalog] (
+    [channel]: string,           // 'radar' or 'icon-d2'
+    [product]: string,           // radar product (e.g. 'wn') or '<param>/<level_type>/<level>'
+    [valid_time]: datetime,      // observation time (radar) or run+lead (icon-d2)
+    [run]: datetime,             // model run reference time (icon-d2 only)
+    [lead_hour]: int,            // forecast lead hour (icon-d2 only)
+    [parameter]: string,         // GRIB parameter shortname (icon-d2 only)
+    [level_type]: string,        // 'single-level' | 'pressure-level' | ...
+    [level]: string,             // hPa or surface tag
+    [file_url]: string,          // original opendata.dwd.de URL
+    [cog_path]: string,          // OneLake relative path under Files/gold/...
+    [bbox]: dynamic,             // [minLon, minLat, maxLon, maxLat] in EPSG:4326
+    [crs]: string,               // e.g. 'EPSG:3857'
+    [bytes]: long,
+    [sha256]: string,
+    [written_at]: datetime
+);
+
+//
+// ============================================================================
+// Fabric Maps layer sources
+// Functions consumed by Fabric Maps vector layers.
+// ============================================================================
+//
+
+.create-or-alter function map_stations() {
+    StationMetadataLatest
+    | project station_id, name = station_name, lat = latitude, lon = longitude, elevation, state
+}
+
+.create-or-alter function map_obs_latest() {
+    AirTemperature10MinLatest
+    | join kind=leftouter (Precipitation10MinLatest | project station_id, precipitation_height) on station_id
+    | join kind=leftouter (Wind10MinLatest          | project station_id, wind_speed, wind_direction) on station_id
+    | join kind=leftouter (StationMetadataLatest    | project station_id, station_name, latitude, longitude) on station_id
+    | project station_id, station_name, lat = latitude, lon = longitude,
+              ts = timestamp, air_temperature_2m, precipitation_height, wind_speed, wind_direction
+}
+
+.create-or-alter function map_cap_active() {
+    WeatherAlertLatest
+    | where status =~ 'Actual'
+    | where isnull(expires) or expires > now()
+    | project identifier, severity, urgency, certainty, event, headline, area_desc,
+              effective, onset, expires, geocodes
+}
+
+.create-or-alter function map_radar_latest_index() {
+    CogCatalog
+    | where channel == 'radar'
+    | summarize arg_max(valid_time, cog_path, bbox, crs, bytes) by product
+}
+
+.create-or-alter function map_icon_d2_latest_index(parameter_name:string, level_type_name:string, level_name:string) {
+    CogCatalog
+    | where channel == 'icon-d2'
+        and parameter == parameter_name
+        and level_type == level_type_name
+        and level == level_name
+    | summarize arg_max(valid_time, run, lead_hour, cog_path, bbox, crs, bytes) by parameter, level_type, level
+}

@@ -1,8 +1,15 @@
 # Ingesting DWD Events into Microsoft Fabric
 
-This guide describes a recommended flow for landing the DWD bridge's events
+This guide describes the recommended flow for landing the DWD bridge's events
 into a **Microsoft Fabric Lakehouse** and exposing the results as
 **Fabric Maps** layers.
+
+> **Executable extension:** The design below is realized by
+> [`tools/dwd/fabric/`](../tools/dwd/fabric/README.md) — DWD-specific KQL
+> assets, a Spark Structured Streaming notebook, and a `setup.ps1` that
+> layers them on top of the basic per-source deployment from
+> [`tools/deploy-fabric/`](../tools/deploy-fabric/README.md). The rest of
+> this document is the design narrative; the executable bits live there.
 
 The bridge emits CloudEvents on Kafka topic `dwd`. Two shapes appear:
 
