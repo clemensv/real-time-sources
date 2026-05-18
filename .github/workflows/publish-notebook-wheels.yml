@@ -1,0 +1,166 @@
+name: Publish Notebook Wheels
+
+# Build per-source wheel bundles for sources marked `notebook: true` in
+# catalog.json and publish them as assets on the `notebook-wheels` release
+# so deploy-feeder-notebook.ps1 can download them from Cloud Shell without
+# needing to build them locally.
+#
+# The release tag is fixed (`notebook-wheels`) and recreated on every push.
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'catalog.json'
+      - '**/pyproject.toml'
+      - '**/poetry.lock'
+      - '**/notebook/*.ipynb'
+      - 'tools/deploy-fabric/strip-wheel-pathdeps.py'
+      - '.github/workflows/publish-notebook-wheels.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      sources: ${{ steps.pick.outputs.sources }}
+      count: ${{ steps.pick.outputs.count }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: pick
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, pathlib
+          catalog = json.loads(pathlib.Path('catalog.json').read_text(encoding='utf-8'))
+          ids = [c['id'] for c in catalog if c.get('notebook')]
+          print(f"sources={json.dumps(ids)}")
+          print(f"count={len(ids)}")
+          PY
+      - run: |
+          echo "Selected sources: ${{ steps.pick.outputs.sources }}"
+          echo "Count: ${{ steps.pick.outputs.count }}"
+
+  build:
+    needs: discover
+    if: needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        source: ${{ fromJson(needs.discover.outputs.sources) }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Verify notebook + producer present
+        run: |
+          test -f "${{ matrix.source }}/notebook/${{ matrix.source }}-feed.ipynb" \
+            || { echo "::error::Missing notebook for ${{ matrix.source }}"; exit 1; }
+          test -d "${{ matrix.source }}/${{ matrix.source }}_producer" \
+            || { echo "::error::Missing generated producer for ${{ matrix.source }}"; exit 1; }
+
+      - name: Build wheels
+        working-directory: ${{ matrix.source }}
+        run: |
+          python -m pip install --upgrade pip wheel poetry-core
+          mkdir -p ../_wheels-out
+          # Bridge package
+          python -m pip wheel --no-deps --no-build-isolation \
+            --wheel-dir ../_wheels-out .
+          # Producer sub-packages (skip any without pyproject.toml such as samples/)
+          for sub in ${{ matrix.source }}_producer/*/ ; do
+            if [ -f "$sub/pyproject.toml" ]; then
+              echo "Building $sub"
+              python -m pip wheel --no-deps --no-build-isolation \
+                --wheel-dir ../_wheels-out "$sub"
+            fi
+          done
+
+      - name: Strip poetry path-deps from wheel METADATA
+        run: |
+          python tools/deploy-fabric/strip-wheel-pathdeps.py _wheels-out/*.whl
+
+      - name: Compute commit short SHA
+        id: sha
+        run: echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Write manifest
+        run: |
+          python - <<'PY'
+          import json, pathlib, datetime, os
+          out = pathlib.Path('_wheels-out')
+          wheels = sorted(p.name for p in out.glob('*.whl'))
+          manifest = {
+              'source': '${{ matrix.source }}',
+              'commit': '${{ github.sha }}',
+              'shortCommit': '${{ steps.sha.outputs.short }}',
+              'built_utc': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'wheels': wheels,
+          }
+          (out / 'manifest.json').write_text(json.dumps(manifest, indent=2))
+          print(json.dumps(manifest, indent=2))
+          PY
+
+      - name: Bundle wheels
+        run: |
+          cd _wheels-out
+          zip -j "../${{ matrix.source }}-notebook-wheels.zip" *.whl manifest.json
+          ls -la ../${{ matrix.source }}-notebook-wheels.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.source }}-notebook-wheels
+          path: ${{ matrix.source }}-notebook-wheels.zip
+          retention-days: 7
+
+  publish:
+    needs: [discover, build]
+    if: needs.discover.outputs.count != '0'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
+        with:
+          path: bundles
+          pattern: '*-notebook-wheels'
+          merge-multiple: true
+
+      - name: List bundles
+        run: ls -la bundles/
+
+      - name: Recreate `notebook-wheels` release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          if gh release view notebook-wheels >/dev/null 2>&1; then
+            gh release delete notebook-wheels --yes --cleanup-tag
+          fi
+          notes=$(cat <<EOF
+          Per-source wheel bundles for Fabric notebook deployments.
+
+          Each \`<source>-notebook-wheels.zip\` contains the bridge wheel,
+          the 2 generated producer sub-package wheels, and a \`manifest.json\`
+          with the source commit SHA. Path-dep \`file://\` URLs are stripped
+          from wheel METADATA.
+
+          Consumed by \`tools/deploy-fabric/deploy-feeder-notebook.ps1\`.
+          Refreshed on every push to \`main\` that touches a notebook source
+          or the wheel build pipeline.
+
+          Built from commit ${{ github.sha }}.
+          EOF
+          )
+          gh release create notebook-wheels \
+            --title "Notebook wheels (latest from main)" \
+            --notes "$notes" \
+            --target ${{ github.sha }} \
+            bundles/*.zip

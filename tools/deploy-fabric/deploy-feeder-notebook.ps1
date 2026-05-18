@@ -114,6 +114,8 @@ param(
 
     [string]$EnvironmentName,
     [switch]$SkipEnvironment,
+    [switch]$BuildWheelsLocally,
+    [string]$WheelsBundleUrl,
 
     [string]$DefaultLakehouse,
     [int]$ScheduleIntervalMinutes = 15,
@@ -173,6 +175,46 @@ function Invoke-FabricApiRaw {
     }
     $result = & az @azArgs 2>&1
     return [pscustomobject]@{ ExitCode = $LASTEXITCODE; Body = ($result | Out-String) }
+}
+
+function Get-PrebuiltWheels {
+    <#
+    Download the per-source wheel bundle from the `notebook-wheels` release
+    (built by .github/workflows/publish-notebook-wheels.yml). Returns the
+    array of extracted .whl FileInfo objects in a fresh temp dir.
+
+    -WheelsBundleUrl overrides the default release-asset URL. Useful for
+    pinning to a specific commit or using a fork.
+    #>
+    param([string]$Source, [string]$Repo, [string]$WheelsBundleUrl)
+
+    if (-not $WheelsBundleUrl) {
+        $WheelsBundleUrl = "https://github.com/$Repo/releases/download/notebook-wheels/$Source-notebook-wheels.zip"
+    }
+
+    $outDir = Join-Path $TempDir "feeder-wheels-$Source-$(Get-Random)"
+    New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+    $zipFile = Join-Path $outDir "$Source-notebook-wheels.zip"
+
+    Write-Info "  downloading $WheelsBundleUrl"
+    try {
+        Invoke-WebRequest -Uri $WheelsBundleUrl -OutFile $zipFile -ErrorAction Stop
+    } catch {
+        throw "Failed to download wheel bundle from $WheelsBundleUrl`: $($_.Exception.Message)`nIf the source's wheels haven't been published yet, rerun with -BuildWheelsLocally."
+    }
+
+    Expand-Archive -LiteralPath $zipFile -DestinationPath $outDir -Force
+    Remove-Item $zipFile
+
+    $manifestFile = Join-Path $outDir "manifest.json"
+    if (Test-Path $manifestFile) {
+        $manifest = Get-Content $manifestFile -Raw | ConvertFrom-Json
+        Write-OK "  bundle built from commit $($manifest.shortCommit) at $($manifest.built_utc)"
+    }
+
+    $wheels = Get-ChildItem -LiteralPath $outDir -Filter *.whl
+    if (-not $wheels) { throw "No wheels found in $WheelsBundleUrl" }
+    return ,$wheels
 }
 
 function Build-SourceWheels {
@@ -382,8 +424,20 @@ $EnvironmentId = $null
 if (-not $SkipEnvironment) {
     Write-Step "B/2.5" "Building source wheels and publishing Fabric Environment '$EnvironmentName'..."
 
-    $wheels = Build-SourceWheels -Source $Source -RepoRoot $repoRoot
-    Write-OK "Built $($wheels.Count) wheel(s):"
+    $wheels = if ($BuildWheelsLocally) {
+        Write-Info "Building wheels locally (-BuildWheelsLocally)..."
+        Build-SourceWheels -Source $Source -RepoRoot $repoRoot
+    } else {
+        Write-Info "Downloading pre-built wheel bundle from GitHub release..."
+        try {
+            Get-PrebuiltWheels -Source $Source -Repo $Repo -WheelsBundleUrl $WheelsBundleUrl
+        } catch {
+            Write-Info "  bundle download failed; falling back to local build."
+            Write-Info "  ($($_.Exception.Message))"
+            Build-SourceWheels -Source $Source -RepoRoot $repoRoot
+        }
+    }
+    Write-OK "Got $($wheels.Count) wheel(s):"
     foreach ($w in $wheels) { Write-Info "  $($w.Name)" }
 
     # Resolve-or-create the environment item.
