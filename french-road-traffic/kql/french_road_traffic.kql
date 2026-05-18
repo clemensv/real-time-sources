@@ -1,0 +1,241 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [TrafficFlowMeasurement] (
+   [site_id]: string,
+   [measurement_time]: string,
+   [vehicle_flow_rate]: int,
+   [average_speed]: real,
+   [input_values_flow]: int,
+   [input_values_speed]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [TrafficFlowMeasurement] docstring "{\"description\": \"Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Each record corresponds to one siteMeasurements element in the Bison Fut\\u00e9 MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.\"}";
+
+.alter table [TrafficFlowMeasurement] column-docstrings (
+   [site_id]: "{\"description\": \"Unique identifier of the DATEX II measurement site record, as declared in the measurementSiteReference element (e.g. 'MUM76.h1', 'MB631.B8'). Stable across publication snapshots.\"}",
+   [measurement_time]: "{\"description\": \"ISO 8601 timestamp of the measurement, taken from the measurementTimeDefault element in the DATEX II siteMeasurements block. Represents the end of the aggregation interval.\"}",
+   [vehicle_flow_rate]: "{\"description\": \"Number of vehicles per hour passing the measurement site during the aggregation interval, from the DATEX II TrafficFlow/vehicleFlowRate element. Null when flow data is not available for this site in the current snapshot.\"}",
+   [average_speed]: "{\"description\": \"Average speed of vehicles in kilometres per hour at the measurement site during the aggregation interval, from the DATEX II TrafficSpeed/averageVehicleSpeed/speed element. Null when speed data is not available for this site in the current snapshot.\"}",
+   [input_values_flow]: "{\"description\": \"Number of individual vehicle observations used to compute the vehicle flow rate, from the numberOfInputValuesUsed attribute on the vehicleFlow element. Null when flow data is not present.\"}",
+   [input_values_speed]: "{\"description\": \"Number of individual vehicle observations used to compute the average speed, from the numberOfInputValuesUsed attribute on the averageVehicleSpeed element. Null when speed data is not present.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [TrafficFlowMeasurement] ingestion json mapping "TrafficFlowMeasurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_id", "path": "$.site_id"},
+  {"column": "measurement_time", "path": "$.measurement_time"},
+  {"column": "vehicle_flow_rate", "path": "$.vehicle_flow_rate"},
+  {"column": "average_speed", "path": "$.average_speed"},
+  {"column": "input_values_flow", "path": "$.input_values_flow"},
+  {"column": "input_values_speed", "path": "$.input_values_speed"},
+]
+```
+
+.create-or-alter table [TrafficFlowMeasurement] ingestion json mapping "TrafficFlowMeasurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "site_id", "path": "$.data.site_id"},
+  {"column": "measurement_time", "path": "$.data.measurement_time"},
+  {"column": "vehicle_flow_rate", "path": "$.data.vehicle_flow_rate"},
+  {"column": "average_speed", "path": "$.data.average_speed"},
+  {"column": "input_values_flow", "path": "$.data.input_values_flow"},
+  {"column": "input_values_speed", "path": "$.data.input_values_speed"},
+]
+```
+
+.drop materialized-view TrafficFlowMeasurementLatest ifexists;
+
+.create materialized-view with (backfill=true) TrafficFlowMeasurementLatest on table TrafficFlowMeasurement {
+    TrafficFlowMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [TrafficFlowMeasurement] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement') | project['site_id'] = tostring(data.['site_id']),['measurement_time'] = tostring(data.['measurement_time']),['vehicle_flow_rate'] = toint(data.['vehicle_flow_rate']),['average_speed'] = toreal(data.['average_speed']),['input_values_flow'] = toint(data.['input_values_flow']),['input_values_speed'] = toint(data.['input_values_speed']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [RoadEvent] (
+   [situation_id]: string,
+   [record_id]: string,
+   [version]: string,
+   [severity]: string,
+   [record_type]: string,
+   [probability]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [road_number]: string,
+   [town_name]: string,
+   [direction]: string,
+   [description]: string,
+   [location_description]: string,
+   [source_name]: string,
+   [validity_status]: string,
+   [overall_start_time]: string,
+   [overall_end_time]: string,
+   [creation_time]: string,
+   [observation_time]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [RoadEvent] docstring "{\"description\": \"Real-time road situation record from the French national non-conceded road network DATEX II SituationPublication feed. Each record represents one situationRecord element within a situation, describing a traffic incident, construction works, lane management, environmental obstruction, or other event affecting road conditions. Location is provided as WGS84 coordinates and road identifiers.\"}";
+
+.alter table [RoadEvent] column-docstrings (
+   [situation_id]: "{\"description\": \"Unique identifier of the parent DATEX II situation element (e.g. '230814-001797'). Stable across version updates of the same situation.\"}",
+   [record_id]: "{\"description\": \"Unique identifier of this specific situation record within the parent situation (e.g. '230814-001797-1'). Each situation may contain multiple records.\"}",
+   [version]: "{\"description\": \"Version number of the parent situation, incremented each time the situation is updated by the publisher.\"}",
+   [severity]: "{\"description\": \"Overall severity of the parent situation as published in the overallSeverity element. Possible values include 'low', 'medium', 'high', 'highest'. Null when severity is not provided.\"}",
+   [record_type]: "{\"description\": \"DATEX II xsi:type of the situation record, indicating the category of road event. Known values: Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, RoadsideServiceDisruption.\"}",
+   [probability]: "{\"description\": \"Probability of occurrence of the event from the probabilityOfOccurrence element. Possible values: 'certain', 'probable', 'riskOf'. Null when not specified.\"}",
+   [latitude]: "{\"description\": \"WGS84 latitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record.\"}",
+   [longitude]: "{\"description\": \"WGS84 longitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record.\"}",
+   [road_number]: "{\"description\": \"Road identifier (e.g. 'N20', 'A10', 'D906') from the linearElement/roadNumber or tpegOtherPointDescriptor linkName element. Null when no road number is available.\"}",
+   [town_name]: "{\"description\": \"Name of the nearest town from the tpegOtherPointDescriptor townName element. Null when no town name is provided.\"}",
+   [direction]: "{\"description\": \"Direction of traffic affected by the event from the tpegDirection element. Possible values: 'bothWays', 'positive', 'negative'. Null when direction is not specified.\"}",
+   [description]: "{\"description\": \"Human-readable description of the event from the generalPublicComment element with commentType 'description'. Null when no description comment is provided.\"}",
+   [location_description]: "{\"description\": \"Human-readable description of the event location from the generalPublicComment element with commentType 'locationDescriptor'. When multiple location descriptors exist, they are concatenated with ' | '. Null when no location comment is provided.\"}",
+   [source_name]: "{\"description\": \"Name of the organization or directorate that published this situation record, from the source/sourceIdentification element. Null when not specified.\"}",
+   [validity_status]: "{\"description\": \"Validity status of the situation record from the validity/validityStatus element (e.g. 'definedByValidityTimeSpec', 'active'). Null when not provided.\"}",
+   [overall_start_time]: "{\"description\": \"ISO 8601 start time of the event validity period from the overallStartTime element. Null when the validity period is not defined.\"}",
+   [overall_end_time]: "{\"description\": \"ISO 8601 end time of the event validity period from the overallEndTime element. Null when the event has no defined end time (open-ended).\"}",
+   [creation_time]: "{\"description\": \"ISO 8601 timestamp when the situation record was first created, from the situationRecordCreationTime element.\"}",
+   [observation_time]: "{\"description\": \"ISO 8601 timestamp of the most recent observation of this situation, from the situationRecordObservationTime element. Null when not provided.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_id", "path": "$.situation_id"},
+  {"column": "record_id", "path": "$.record_id"},
+  {"column": "version", "path": "$.version"},
+  {"column": "severity", "path": "$.severity"},
+  {"column": "record_type", "path": "$.record_type"},
+  {"column": "probability", "path": "$.probability"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "road_number", "path": "$.road_number"},
+  {"column": "town_name", "path": "$.town_name"},
+  {"column": "direction", "path": "$.direction"},
+  {"column": "description", "path": "$.description"},
+  {"column": "location_description", "path": "$.location_description"},
+  {"column": "source_name", "path": "$.source_name"},
+  {"column": "validity_status", "path": "$.validity_status"},
+  {"column": "overall_start_time", "path": "$.overall_start_time"},
+  {"column": "overall_end_time", "path": "$.overall_end_time"},
+  {"column": "creation_time", "path": "$.creation_time"},
+  {"column": "observation_time", "path": "$.observation_time"},
+]
+```
+
+.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "situation_id", "path": "$.data.situation_id"},
+  {"column": "record_id", "path": "$.data.record_id"},
+  {"column": "version", "path": "$.data.version"},
+  {"column": "severity", "path": "$.data.severity"},
+  {"column": "record_type", "path": "$.data.record_type"},
+  {"column": "probability", "path": "$.data.probability"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "road_number", "path": "$.data.road_number"},
+  {"column": "town_name", "path": "$.data.town_name"},
+  {"column": "direction", "path": "$.data.direction"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "location_description", "path": "$.data.location_description"},
+  {"column": "source_name", "path": "$.data.source_name"},
+  {"column": "validity_status", "path": "$.data.validity_status"},
+  {"column": "overall_start_time", "path": "$.data.overall_start_time"},
+  {"column": "overall_end_time", "path": "$.data.overall_end_time"},
+  {"column": "creation_time", "path": "$.data.creation_time"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+]
+```
+
+.drop materialized-view RoadEventLatest ifexists;
+
+.create materialized-view with (backfill=true) RoadEventLatest on table RoadEvent {
+    RoadEvent | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [RoadEvent] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'fr.gouv.transport.bison_fute.RoadEvent') | project['situation_id'] = tostring(data.['situation_id']),['record_id'] = tostring(data.['record_id']),['version'] = tostring(data.['version']),['severity'] = tostring(data.['severity']),['record_type'] = tostring(data.['record_type']),['probability'] = tostring(data.['probability']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['road_number'] = tostring(data.['road_number']),['town_name'] = tostring(data.['town_name']),['direction'] = tostring(data.['direction']),['description'] = tostring(data.['description']),['location_description'] = tostring(data.['location_description']),['source_name'] = tostring(data.['source_name']),['validity_status'] = tostring(data.['validity_status']),['overall_start_time'] = tostring(data.['overall_start_time']),['overall_end_time'] = tostring(data.['overall_end_time']),['creation_time'] = tostring(data.['creation_time']),['observation_time'] = tostring(data.['observation_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

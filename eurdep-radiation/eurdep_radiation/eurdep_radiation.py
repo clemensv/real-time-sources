@@ -30,9 +30,9 @@ FEED_URL = "https://www.imis.bfs.de/ogc/opendata/ows"
 
 WFS_PARAMS_BASE = {
     "service": "WFS",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "request": "GetFeature",
-    "typeName": "opendata:eurdep_latestValue",
+    "typeNames": "opendata:eurdep_latestValue",
     "outputFormat": "application/json",
 }
 
@@ -74,12 +74,24 @@ class EurdepAPI:
         while True:
             params = {
                 **WFS_PARAMS_BASE,
-                "maxFeatures": str(PAGE_SIZE),
+                "count": str(PAGE_SIZE),
                 "startIndex": str(start_index),
+                "sortBy": "id",
             }
             resp = self.session.get(WFS_BASE, params=params, timeout=120)
             resp.raise_for_status()
-            data = resp.json()
+            try:
+                data = resp.json()
+            except ValueError:
+                # EURDEP occasionally returns HTML error pages or XML faults
+                # with a 200 status. Log a snippet and stop pagination.
+                snippet = (resp.text or "")[:200].replace("\n", " ")
+                logging.warning(
+                    "EURDEP returned non-JSON payload (content-type=%s, body=%r); stopping pagination",
+                    resp.headers.get("content-type"),
+                    snippet,
+                )
+                break
             features = data.get("features", [])
             all_features.extend(features)
             if len(features) < PAGE_SIZE:

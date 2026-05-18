@@ -98,6 +98,7 @@
       "schemas": {
         "USGS.WaterQuality.Sites.MonitoringSite": {
           "format": "JsonStructure/draft-02",
+          "defaultversionid": "1.0",
           "versions": {
             "1.0": {
               "format": "JsonStructure/draft-02",
@@ -163,6 +164,7 @@
       "schemas": {
         "USGS.WaterQuality.Readings.WaterQualityReading": {
           "format": "JsonStructure/draft-02",
+          "defaultversionid": "1.0",
           "versions": {
             "1.0": {
               "format": "JsonStructure/draft-02",

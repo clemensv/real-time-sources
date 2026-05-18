@@ -29,6 +29,31 @@ else:
 VATSIM_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json"
 
 
+def _parse_iso(value: str) -> datetime.datetime:
+    """Parse an ISO-8601 timestamp tolerating 'Z' suffix and >6-digit fractional seconds.
+
+    VATSIM emits timestamps like ``2026-05-17T07:48:40.5031859Z`` (7-digit
+    fractional seconds and 'Z' UTC marker) which ``datetime.fromisoformat``
+    rejects on Python <3.11.
+    """
+    if value.endswith("Z"):
+        value = value[:-1] + "+00:00"
+    if "." in value:
+        head, frac_and_tz = value.split(".", 1)
+        # Split off timezone (after '+' or '-' that isn't the leading sign of fraction)
+        tz_sep = ""
+        for sep in ("+", "-"):
+            idx = frac_and_tz.find(sep)
+            if idx > 0:
+                tz_sep = frac_and_tz[idx:]
+                frac_and_tz = frac_and_tz[:idx]
+                break
+        # Truncate fractional seconds to 6 digits (microseconds precision)
+        frac = frac_and_tz[:6].ljust(6, "0")
+        value = f"{head}.{frac}{tz_sep}"
+    return datetime.datetime.fromisoformat(value)
+
+
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
     try:
@@ -84,7 +109,7 @@ class VatsimBridge:
             route=fp.get("route"),
             cruise_altitude=fp.get("altitude"),
             pilot_rating=pilot.get("pilot_rating", 0),
-            last_updated=datetime.datetime.fromisoformat(pilot["last_updated"]),
+            last_updated=_parse_iso(pilot["last_updated"]),
         )
 
     @staticmethod
@@ -103,7 +128,7 @@ class VatsimBridge:
             facility=ctrl["facility"],
             rating=ctrl["rating"],
             text_atis=text_atis,
-            last_updated=datetime.datetime.fromisoformat(ctrl["last_updated"]),
+            last_updated=_parse_iso(ctrl["last_updated"]),
         )
 
     @staticmethod
@@ -111,7 +136,7 @@ class VatsimBridge:
         """Build a NetworkStatus from the general section."""
         return NetworkStatus(
             callsign="status",
-            update_timestamp=datetime.datetime.fromisoformat(general["update_timestamp"]),
+            update_timestamp=_parse_iso(general["update_timestamp"]),
             connected_clients=general.get("connected_clients", 0),
             unique_users=general.get("unique_users", 0),
             pilot_count=pilot_count,

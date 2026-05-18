@@ -174,7 +174,7 @@ def send_stations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer) -> 
             latitude=lat,
             longitude=lon,
         )
-        producer.send_fi_syke_hydrology_station(data=station_data, flush_producer=False)
+        producer.send_fi_syke_hydrology_station(_station_id=str(pid), data=station_data, flush_producer=False)
         sent_count += 1
 
     producer.producer.flush()
@@ -223,7 +223,7 @@ def feed_observations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer,
             discharge_unit='m3/s',
             discharge_timestamp=q_ts,
         )
-        producer.send_fi_syke_hydrology_water_level_observation(data=obs_data, flush_producer=False)
+        producer.send_fi_syke_hydrology_water_level_observation(_station_id=str(pid), data=obs_data, flush_producer=False)
         sent_count += 1
         previous_readings[reading_key] = wl_ts or q_ts
 

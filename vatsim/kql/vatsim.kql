@@ -1,0 +1,318 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [PilotPosition] (
+   [cid]: int,
+   [callsign]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [altitude]: int,
+   [groundspeed]: int,
+   [heading]: int,
+   [transponder]: string,
+   [qnh_mb]: int,
+   [flight_rules]: string,
+   [aircraft_short]: string,
+   [departure]: string,
+   [arrival]: string,
+   [route]: string,
+   [cruise_altitude]: string,
+   [pilot_rating]: int,
+   [last_updated]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [PilotPosition] docstring "{\"description\": \"Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network. Updated every 15 seconds at the source.\"}";
+
+.alter table [PilotPosition] column-docstrings (
+   [cid]: "{\"description\": \"VATSIM Certificate Identifier (CID) \\u2014 unique numeric member ID.\"}",
+   [callsign]: "{\"description\": \"ATC-style callsign chosen by the pilot for this session (e.g. 'BAW123', 'N12345').\"}",
+   [latitude]: "{\"description\": \"Aircraft latitude in decimal degrees (WGS-84). Positive is north.\"}",
+   [longitude]: "{\"description\": \"Aircraft longitude in decimal degrees (WGS-84). Positive is east.\"}",
+   [altitude]: "{\"description\": \"Indicated altitude of the aircraft in feet above mean sea level.\"}",
+   [groundspeed]: "{\"description\": \"Ground speed of the aircraft in knots.\"}",
+   [heading]: "{\"description\": \"Magnetic heading of the aircraft in degrees (0-359).\"}",
+   [transponder]: "{\"description\": \"Four-digit transponder (squawk) code currently set by the pilot.\"}",
+   [qnh_mb]: "{\"description\": \"Altimeter setting (QNH) in millibars / hectopascals as reported by the pilot client.\"}",
+   [flight_rules]: "{\"description\": \"Flight rules filed in the flight plan: 'I' for Instrument Flight Rules, 'V' for Visual Flight Rules. Null if no flight plan is filed.\"}",
+   [aircraft_short]: "{\"description\": \"ICAO aircraft type designator from the filed flight plan (e.g. 'B738', 'A320'). Null if no flight plan is filed.\"}",
+   [departure]: "{\"description\": \"ICAO code of the departure airport from the filed flight plan. Null if no flight plan is filed.\"}",
+   [arrival]: "{\"description\": \"ICAO code of the arrival airport from the filed flight plan. Null if no flight plan is filed.\"}",
+   [route]: "{\"description\": \"Route string from the filed flight plan. Null if no flight plan is filed.\"}",
+   [cruise_altitude]: "{\"description\": \"Planned cruise altitude or flight level from the filed flight plan (e.g. '36000' or 'FL350'). Null if no flight plan is filed.\"}",
+   [pilot_rating]: "{\"description\": \"VATSIM pilot rating bitmask. 0 = New Member (P0), 1 = PPL, 3 = IR, 7 = CMEL, 15 = ATPL.\"}",
+   [last_updated]: "{\"description\": \"UTC timestamp of the last position update received by the VATSIM data servers.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [PilotPosition] ingestion json mapping "PilotPosition_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cid", "path": "$.cid"},
+  {"column": "callsign", "path": "$.callsign"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "altitude", "path": "$.altitude"},
+  {"column": "groundspeed", "path": "$.groundspeed"},
+  {"column": "heading", "path": "$.heading"},
+  {"column": "transponder", "path": "$.transponder"},
+  {"column": "qnh_mb", "path": "$.qnh_mb"},
+  {"column": "flight_rules", "path": "$.flight_rules"},
+  {"column": "aircraft_short", "path": "$.aircraft_short"},
+  {"column": "departure", "path": "$.departure"},
+  {"column": "arrival", "path": "$.arrival"},
+  {"column": "route", "path": "$.route"},
+  {"column": "cruise_altitude", "path": "$.cruise_altitude"},
+  {"column": "pilot_rating", "path": "$.pilot_rating"},
+  {"column": "last_updated", "path": "$.last_updated"},
+]
+```
+
+.create-or-alter table [PilotPosition] ingestion json mapping "PilotPosition_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cid", "path": "$.data.cid"},
+  {"column": "callsign", "path": "$.data.callsign"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "altitude", "path": "$.data.altitude"},
+  {"column": "groundspeed", "path": "$.data.groundspeed"},
+  {"column": "heading", "path": "$.data.heading"},
+  {"column": "transponder", "path": "$.data.transponder"},
+  {"column": "qnh_mb", "path": "$.data.qnh_mb"},
+  {"column": "flight_rules", "path": "$.data.flight_rules"},
+  {"column": "aircraft_short", "path": "$.data.aircraft_short"},
+  {"column": "departure", "path": "$.data.departure"},
+  {"column": "arrival", "path": "$.data.arrival"},
+  {"column": "route", "path": "$.data.route"},
+  {"column": "cruise_altitude", "path": "$.data.cruise_altitude"},
+  {"column": "pilot_rating", "path": "$.data.pilot_rating"},
+  {"column": "last_updated", "path": "$.data.last_updated"},
+]
+```
+
+.drop materialized-view PilotPositionLatest ifexists;
+
+.create materialized-view with (backfill=true) PilotPositionLatest on table PilotPosition {
+    PilotPosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [PilotPosition] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'net.vatsim.PilotPosition') | project['cid'] = toint(data.['cid']),['callsign'] = tostring(data.['callsign']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['altitude'] = toint(data.['altitude']),['groundspeed'] = toint(data.['groundspeed']),['heading'] = toint(data.['heading']),['transponder'] = tostring(data.['transponder']),['qnh_mb'] = toint(data.['qnh_mb']),['flight_rules'] = tostring(data.['flight_rules']),['aircraft_short'] = tostring(data.['aircraft_short']),['departure'] = tostring(data.['departure']),['arrival'] = tostring(data.['arrival']),['route'] = tostring(data.['route']),['cruise_altitude'] = tostring(data.['cruise_altitude']),['pilot_rating'] = toint(data.['pilot_rating']),['last_updated'] = todatetime(data.['last_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [ControllerPosition] (
+   [cid]: int,
+   [callsign]: string,
+   [frequency]: string,
+   [facility]: int,
+   [rating]: int,
+   [text_atis]: string,
+   [last_updated]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [ControllerPosition] docstring "{\"description\": \"Current state and frequency of an air traffic controller or observer connected to the VATSIM virtual aviation network.\"}";
+
+.alter table [ControllerPosition] column-docstrings (
+   [cid]: "{\"description\": \"VATSIM Certificate Identifier (CID) \\u2014 unique numeric member ID.\"}",
+   [callsign]: "{\"description\": \"Controller position callsign (e.g. 'EGLL_TWR', 'KJFK_APP').\"}",
+   [frequency]: "{\"description\": \"Radio frequency the controller is operating on, in MHz with three decimal places (e.g. '118.500').\"}",
+   [facility]: "{\"description\": \"VATSIM facility type code. 0 = Observer, 1 = Flight Service Station, 2 = Delivery, 3 = Ground, 4 = Tower, 5 = Approach/Departure, 6 = Center/Enroute.\"}",
+   [rating]: "{\"description\": \"VATSIM ATC rating. 1 = OBS, 2 = S1, 3 = S2, 4 = S3, 5 = C1, 6 = C2, 7 = C3, 8 = I1, 9 = I2, 10 = I3, 11 = SUP, 12 = ADM.\"}",
+   [text_atis]: "{\"description\": \"Controller information or ATIS text, with individual lines joined by newline characters. Null when the controller has not set any ATIS text.\"}",
+   [last_updated]: "{\"description\": \"UTC timestamp of the last update received by the VATSIM data servers.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [ControllerPosition] ingestion json mapping "ControllerPosition_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cid", "path": "$.cid"},
+  {"column": "callsign", "path": "$.callsign"},
+  {"column": "frequency", "path": "$.frequency"},
+  {"column": "facility", "path": "$.facility"},
+  {"column": "rating", "path": "$.rating"},
+  {"column": "text_atis", "path": "$.text_atis"},
+  {"column": "last_updated", "path": "$.last_updated"},
+]
+```
+
+.create-or-alter table [ControllerPosition] ingestion json mapping "ControllerPosition_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cid", "path": "$.data.cid"},
+  {"column": "callsign", "path": "$.data.callsign"},
+  {"column": "frequency", "path": "$.data.frequency"},
+  {"column": "facility", "path": "$.data.facility"},
+  {"column": "rating", "path": "$.data.rating"},
+  {"column": "text_atis", "path": "$.data.text_atis"},
+  {"column": "last_updated", "path": "$.data.last_updated"},
+]
+```
+
+.drop materialized-view ControllerPositionLatest ifexists;
+
+.create materialized-view with (backfill=true) ControllerPositionLatest on table ControllerPosition {
+    ControllerPosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [ControllerPosition] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'net.vatsim.ControllerPosition') | project['cid'] = toint(data.['cid']),['callsign'] = tostring(data.['callsign']),['frequency'] = tostring(data.['frequency']),['facility'] = toint(data.['facility']),['rating'] = toint(data.['rating']),['text_atis'] = tostring(data.['text_atis']),['last_updated'] = todatetime(data.['last_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [NetworkStatus] (
+   [callsign]: string,
+   [update_timestamp]: datetime,
+   [connected_clients]: int,
+   [unique_users]: int,
+   [pilot_count]: int,
+   [controller_count]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [NetworkStatus] docstring "{\"description\": \"Aggregate VATSIM network status snapshot emitted once per poll cycle, summarising connected client counts.\"}";
+
+.alter table [NetworkStatus] column-docstrings (
+   [callsign]: "{\"description\": \"Constant key value 'status' used to identify this network status record.\"}",
+   [update_timestamp]: "{\"description\": \"UTC timestamp of the VATSIM data snapshot as reported by the data feed.\"}",
+   [connected_clients]: "{\"description\": \"Total number of clients (pilots, controllers, observers) currently connected to the network.\"}",
+   [unique_users]: "{\"description\": \"Number of unique VATSIM user IDs currently connected.\"}",
+   [pilot_count]: "{\"description\": \"Number of pilots currently connected and flying.\"}",
+   [controller_count]: "{\"description\": \"Number of controllers (including observers) currently connected and providing ATC services.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [NetworkStatus] ingestion json mapping "NetworkStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "callsign", "path": "$.callsign"},
+  {"column": "update_timestamp", "path": "$.update_timestamp"},
+  {"column": "connected_clients", "path": "$.connected_clients"},
+  {"column": "unique_users", "path": "$.unique_users"},
+  {"column": "pilot_count", "path": "$.pilot_count"},
+  {"column": "controller_count", "path": "$.controller_count"},
+]
+```
+
+.create-or-alter table [NetworkStatus] ingestion json mapping "NetworkStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "callsign", "path": "$.data.callsign"},
+  {"column": "update_timestamp", "path": "$.data.update_timestamp"},
+  {"column": "connected_clients", "path": "$.data.connected_clients"},
+  {"column": "unique_users", "path": "$.data.unique_users"},
+  {"column": "pilot_count", "path": "$.data.pilot_count"},
+  {"column": "controller_count", "path": "$.data.controller_count"},
+]
+```
+
+.drop materialized-view NetworkStatusLatest ifexists;
+
+.create materialized-view with (backfill=true) NetworkStatusLatest on table NetworkStatus {
+    NetworkStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [NetworkStatus] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'net.vatsim.NetworkStatus') | project['callsign'] = tostring(data.['callsign']),['update_timestamp'] = todatetime(data.['update_timestamp']),['connected_clients'] = toint(data.['connected_clients']),['unique_users'] = toint(data.['unique_users']),['pilot_count'] = toint(data.['pilot_count']),['controller_count'] = toint(data.['controller_count']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

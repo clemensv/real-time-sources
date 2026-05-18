@@ -1,0 +1,209 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Station] (
+   [station_id]: string,
+   [name]: string,
+   [country_code]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [height_above_sea]: real,
+   [site_status]: int,
+   [site_status_text]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Station] docstring "{\"description\": \"Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. EURDEP (European Radiological Data Exchange Platform) is operated by the European Commission's Joint Research Centre (JRC) and aggregates real-time radiological monitoring data from national networks across 39 European countries. Each station is identified by a country-prefixed alphanumeric code (e.g. 'AT0001' for Austria, 'DE0123' for Germany).\"}";
+
+.alter table [Station] column-docstrings (
+   [station_id]: "{\"description\": \"Alphanumeric station identifier assigned within the EURDEP network. The first two characters are the ISO 3166-1 alpha-2 country code of the operating country, followed by a numeric station sequence. Example: 'AT0001' (Austria), 'DE0123' (Germany), 'FR0456' (France). This is the stable key used for data retrieval and cross-referencing.\"}",
+   [name]: "{\"description\": \"Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'.\"}",
+   [country_code]: "{\"description\": \"ISO 3166-1 alpha-2 country code extracted from the first two characters of the station_id. Identifies the country operating the monitoring station. Example: 'AT' for Austria, 'DE' for Germany, 'CZ' for Czech Republic.\"}",
+   [latitude]: "{\"description\": \"Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.\"}",
+   [longitude]: "{\"description\": \"Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.\"}",
+   [height_above_sea]: "{\"description\": \"Elevation of the station above mean sea level in meters. Determines the cosmic radiation component contribution. Null if the elevation is not reported by the national network.\"}",
+   [site_status]: "{\"description\": \"Numeric operational status code of the station. 1 = active and reporting, other values indicate the station is inactive, under maintenance, or decommissioned.\"}",
+   [site_status_text]: "{\"description\": \"Human-readable text describing the operational status of the station. Language depends on the reporting country. Example: 'in Betrieb' (German for 'in operation').\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "country_code", "path": "$.country_code"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "height_above_sea", "path": "$.height_above_sea"},
+  {"column": "site_status", "path": "$.site_status"},
+  {"column": "site_status_text", "path": "$.site_status_text"},
+]
+```
+
+.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "country_code", "path": "$.data.country_code"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "height_above_sea", "path": "$.data.height_above_sea"},
+  {"column": "site_status", "path": "$.data.site_status"},
+  {"column": "site_status_text", "path": "$.data.site_status_text"},
+]
+```
+
+.drop materialized-view StationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationLatest on table Station {
+    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Station] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.jrc.eurdep.Station') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['country_code'] = tostring(data.['country_code']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['height_above_sea'] = toreal(data.['height_above_sea']),['site_status'] = toint(data.['site_status']),['site_status_text'] = tostring(data.['site_status_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [DoseRateReading] (
+   [station_id]: string,
+   [name]: string,
+   [value]: real,
+   [unit]: string,
+   [start_measure]: string,
+   [end_measure]: string,
+   [nuclide]: string,
+   [duration]: string,
+   [validated]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [DoseRateReading] docstring "{\"description\": \"An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (\\u00b5Sv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 \\u00b5Sv/h depending on local geology and altitude.\"}";
+
+.alter table [DoseRateReading] column-docstrings (
+   [station_id]: "{\"description\": \"Alphanumeric station identifier from the EURDEP network. Matches the station_id in the Station schema. Example: 'AT0001'.\"}",
+   [name]: "{\"description\": \"Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join.\"}",
+   [value]: "{\"description\": \"Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (\\u00b5Sv/h). Null if the station did not report a valid measurement for this interval.\"}",
+   [unit]: "{\"description\": \"Unit of the dose rate value as reported by the upstream EURDEP system. Typically '\\u00b5Sv/h' (microsieverts per hour), though encoding artifacts may appear in the raw API response.\"}",
+   [start_measure]: "{\"description\": \"Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T19:00:00Z'.\"}",
+   [end_measure]: "{\"description\": \"End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T20:00:00Z'.\"}",
+   [nuclide]: "{\"description\": \"Nuclide identifier describing the type of radiation measured. For standard gamma dose rate probes this is 'Gamma-ODL-Brutto' (gross gamma ambient dose rate).\"}",
+   [duration]: "{\"description\": \"Measurement integration period as reported by the upstream system. Example: '1h' for one hour.\"}",
+   [validated]: "{\"description\": \"Data validation status flag. 0 = not validated, 1 = validated by national authority, 2 = validated by EURDEP system. Higher values indicate stronger quality assurance.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [DoseRateReading] ingestion json mapping "DoseRateReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "value", "path": "$.value"},
+  {"column": "unit", "path": "$.unit"},
+  {"column": "start_measure", "path": "$.start_measure"},
+  {"column": "end_measure", "path": "$.end_measure"},
+  {"column": "nuclide", "path": "$.nuclide"},
+  {"column": "duration", "path": "$.duration"},
+  {"column": "validated", "path": "$.validated"},
+]
+```
+
+.create-or-alter table [DoseRateReading] ingestion json mapping "DoseRateReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "unit", "path": "$.data.unit"},
+  {"column": "start_measure", "path": "$.data.start_measure"},
+  {"column": "end_measure", "path": "$.data.end_measure"},
+  {"column": "nuclide", "path": "$.data.nuclide"},
+  {"column": "duration", "path": "$.data.duration"},
+  {"column": "validated", "path": "$.data.validated"},
+]
+```
+
+.drop materialized-view DoseRateReadingLatest ifexists;
+
+.create materialized-view with (backfill=true) DoseRateReadingLatest on table DoseRateReading {
+    DoseRateReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [DoseRateReading] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'eu.jrc.eurdep.DoseRateReading') | project['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['value'] = toreal(data.['value']),['unit'] = tostring(data.['unit']),['start_measure'] = tostring(data.['start_measure']),['end_measure'] = tostring(data.['end_measure']),['nuclide'] = tostring(data.['nuclide']),['duration'] = tostring(data.['duration']),['validated'] = toint(data.['validated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -234,6 +234,11 @@ class BlueskyFirehose:
         if not commit.blocks:
             return
 
+        # Sync messages share the seq/blocks shape with Commit messages but
+        # carry no ops; skip them gracefully (atproto >=0.0.49 splits them).
+        if not hasattr(commit, "ops") or not commit.ops:
+            return
+
         try:
             car = CAR.from_bytes(commit.blocks)
         except Exception as e:

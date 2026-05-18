@@ -1,0 +1,289 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Port] (
+   [port_number]: string,
+   [port_name]: string,
+   [border]: string,
+   [crossing_name]: string,
+   [hours]: string,
+   [passenger_vehicle_max_lanes]: int,
+   [commercial_vehicle_max_lanes]: int,
+   [pedestrian_max_lanes]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Port] docstring "{\"description\": \"Reference data for a US CBP land border port of entry. Describes the port identity, geographic border, crossing name, and operating hours. The port_number is a six-digit code assigned by CBP that uniquely identifies each crossing point. A single city (port_name) may have multiple crossings, each with its own port_number.\"}";
+
+.alter table [Port] column-docstrings (
+   [port_number]: "{\"description\": \"Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups.\"}",
+   [port_name]: "{\"description\": \"Name of the city or locality where the port is located. Example: 'Blaine', 'San Ysidro'. Multiple crossings may share the same port_name.\"}",
+   [border]: "{\"description\": \"Which international border this port serves. One of 'Canadian Border' or 'Mexican Border'.\"}",
+   [crossing_name]: "{\"description\": \"Name of the specific border crossing facility. Example: 'Peace Arch', 'Thousand Islands Bridge', 'San Ysidro'. Distinguishes multiple crossings within the same port_name city.\"}",
+   [hours]: "{\"description\": \"Operating hours of the port as a human-readable string. Examples: '24 hrs/day', '6:00 am - 10:00 pm'. Empty string if not reported.\"}",
+   [passenger_vehicle_max_lanes]: "{\"description\": \"Maximum number of passenger vehicle inspection lanes available at this crossing. Null if passenger vehicle processing is not available at this port.\"}",
+   [commercial_vehicle_max_lanes]: "{\"description\": \"Maximum number of commercial vehicle inspection lanes available at this crossing. Null if commercial vehicle processing is not available at this port.\"}",
+   [pedestrian_max_lanes]: "{\"description\": \"Maximum number of pedestrian inspection lanes available at this crossing. Null if pedestrian processing is not available at this port.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Port] ingestion json mapping "Port_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "port_number", "path": "$.port_number"},
+  {"column": "port_name", "path": "$.port_name"},
+  {"column": "border", "path": "$.border"},
+  {"column": "crossing_name", "path": "$.crossing_name"},
+  {"column": "hours", "path": "$.hours"},
+  {"column": "passenger_vehicle_max_lanes", "path": "$.passenger_vehicle_max_lanes"},
+  {"column": "commercial_vehicle_max_lanes", "path": "$.commercial_vehicle_max_lanes"},
+  {"column": "pedestrian_max_lanes", "path": "$.pedestrian_max_lanes"},
+]
+```
+
+.create-or-alter table [Port] ingestion json mapping "Port_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "port_number", "path": "$.data.port_number"},
+  {"column": "port_name", "path": "$.data.port_name"},
+  {"column": "border", "path": "$.data.border"},
+  {"column": "crossing_name", "path": "$.data.crossing_name"},
+  {"column": "hours", "path": "$.data.hours"},
+  {"column": "passenger_vehicle_max_lanes", "path": "$.data.passenger_vehicle_max_lanes"},
+  {"column": "commercial_vehicle_max_lanes", "path": "$.data.commercial_vehicle_max_lanes"},
+  {"column": "pedestrian_max_lanes", "path": "$.data.pedestrian_max_lanes"},
+]
+```
+
+.drop materialized-view PortLatest ifexists;
+
+.create materialized-view with (backfill=true) PortLatest on table Port {
+    Port | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Port] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.cbp.borderwait.Port') | project['port_number'] = tostring(data.['port_number']),['port_name'] = tostring(data.['port_name']),['border'] = tostring(data.['border']),['crossing_name'] = tostring(data.['crossing_name']),['hours'] = tostring(data.['hours']),['passenger_vehicle_max_lanes'] = toint(data.['passenger_vehicle_max_lanes']),['commercial_vehicle_max_lanes'] = toint(data.['commercial_vehicle_max_lanes']),['pedestrian_max_lanes'] = toint(data.['pedestrian_max_lanes']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [WaitTime] (
+   [port_number]: string,
+   [port_name]: string,
+   [border]: string,
+   [crossing_name]: string,
+   [port_status]: string,
+   [date]: string,
+   [time]: string,
+   [passenger_vehicle_standard_delay]: int,
+   [passenger_vehicle_standard_lanes_open]: int,
+   [passenger_vehicle_standard_operational_status]: string,
+   [passenger_vehicle_nexus_sentri_delay]: int,
+   [passenger_vehicle_nexus_sentri_lanes_open]: int,
+   [passenger_vehicle_nexus_sentri_operational_status]: string,
+   [passenger_vehicle_ready_delay]: int,
+   [passenger_vehicle_ready_lanes_open]: int,
+   [passenger_vehicle_ready_operational_status]: string,
+   [pedestrian_standard_delay]: int,
+   [pedestrian_standard_lanes_open]: int,
+   [pedestrian_standard_operational_status]: string,
+   [pedestrian_ready_delay]: int,
+   [pedestrian_ready_lanes_open]: int,
+   [pedestrian_ready_operational_status]: string,
+   [commercial_vehicle_standard_delay]: int,
+   [commercial_vehicle_standard_lanes_open]: int,
+   [commercial_vehicle_standard_operational_status]: string,
+   [commercial_vehicle_fast_delay]: int,
+   [commercial_vehicle_fast_lanes_open]: int,
+   [commercial_vehicle_fast_operational_status]: string,
+   [construction_notice]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [WaitTime] docstring "{\"description\": \"Flattened wait time snapshot for a single US land border port of entry. Derived from the CBP Border Wait Time API nested lane structure. Each record captures delay in minutes and number of open lanes for every combination of traveler category (passenger vehicle, pedestrian, commercial vehicle) and lane type (standard, SENTRI/NEXUS, Ready Lane, FAST). Operational status values from CBP include 'no delay', 'delay', 'N/A', 'Lanes Closed', and 'Update Pending'.\"}";
+
+.alter table [WaitTime] column-docstrings (
+   [port_number]: "{\"description\": \"Six-digit CBP port number identifying this crossing. Matches the port_number in the Port schema.\"}",
+   [port_name]: "{\"description\": \"Name of the city or locality where the port is located.\"}",
+   [border]: "{\"description\": \"Which international border this port serves. One of 'Canadian Border' or 'Mexican Border'.\"}",
+   [crossing_name]: "{\"description\": \"Name of the specific border crossing facility.\"}",
+   [port_status]: "{\"description\": \"Overall operational status of the port. Typically 'Open' when the port is accepting traffic.\"}",
+   [date]: "{\"description\": \"Date of the wait time report in US format (M/D/YYYY) as provided by CBP. Example: '4/8/2026'.\"}",
+   [time]: "{\"description\": \"Time of the wait time report in HH:MM:SS format as provided by CBP, in the port's local time zone. Example: '16:16:47'.\"}",
+   [passenger_vehicle_standard_delay]: "{\"description\": \"Delay in minutes for standard (non-trusted-traveler) passenger vehicle lanes. Null when the lane type is not available at this port (operational_status 'N/A').\"}",
+   [passenger_vehicle_standard_lanes_open]: "{\"description\": \"Number of standard passenger vehicle lanes currently open. Null when not available.\"}",
+   [passenger_vehicle_standard_operational_status]: "{\"description\": \"Operational status of standard passenger vehicle lanes. Values: 'no delay', 'delay', 'N/A', 'Lanes Closed', 'Update Pending'. Null when not reported.\"}",
+   [passenger_vehicle_nexus_sentri_delay]: "{\"description\": \"Delay in minutes for NEXUS (Canadian border) or SENTRI (Mexican border) trusted-traveler passenger vehicle lanes. Null when not available.\"}",
+   [passenger_vehicle_nexus_sentri_lanes_open]: "{\"description\": \"Number of NEXUS/SENTRI trusted-traveler passenger vehicle lanes currently open. Null when not available.\"}",
+   [passenger_vehicle_nexus_sentri_operational_status]: "{\"description\": \"Operational status of NEXUS/SENTRI passenger vehicle lanes. Null when not reported.\"}",
+   [passenger_vehicle_ready_delay]: "{\"description\": \"Delay in minutes for Ready Lane passenger vehicle lanes. Ready Lanes accept RFID-enabled documents for expedited processing. Null when not available.\"}",
+   [passenger_vehicle_ready_lanes_open]: "{\"description\": \"Number of Ready Lane passenger vehicle lanes currently open. Null when not available.\"}",
+   [passenger_vehicle_ready_operational_status]: "{\"description\": \"Operational status of Ready Lane passenger vehicle lanes. Null when not reported.\"}",
+   [pedestrian_standard_delay]: "{\"description\": \"Delay in minutes for standard pedestrian lanes. Null when pedestrian processing is not available at this port.\"}",
+   [pedestrian_standard_lanes_open]: "{\"description\": \"Number of standard pedestrian lanes currently open. Null when not available.\"}",
+   [pedestrian_standard_operational_status]: "{\"description\": \"Operational status of standard pedestrian lanes. Null when not reported.\"}",
+   [pedestrian_ready_delay]: "{\"description\": \"Delay in minutes for Ready Lane pedestrian lanes. Null when not available.\"}",
+   [pedestrian_ready_lanes_open]: "{\"description\": \"Number of Ready Lane pedestrian lanes currently open. Null when not available.\"}",
+   [pedestrian_ready_operational_status]: "{\"description\": \"Operational status of Ready Lane pedestrian lanes. Null when not reported.\"}",
+   [commercial_vehicle_standard_delay]: "{\"description\": \"Delay in minutes for standard commercial vehicle lanes. Null when commercial processing is not available at this port.\"}",
+   [commercial_vehicle_standard_lanes_open]: "{\"description\": \"Number of standard commercial vehicle lanes currently open. Null when not available.\"}",
+   [commercial_vehicle_standard_operational_status]: "{\"description\": \"Operational status of standard commercial vehicle lanes. Null when not reported.\"}",
+   [commercial_vehicle_fast_delay]: "{\"description\": \"Delay in minutes for FAST (Free and Secure Trade) trusted-traveler commercial vehicle lanes. Null when not available.\"}",
+   [commercial_vehicle_fast_lanes_open]: "{\"description\": \"Number of FAST commercial vehicle lanes currently open. Null when not available.\"}",
+   [commercial_vehicle_fast_operational_status]: "{\"description\": \"Operational status of FAST commercial vehicle lanes. Null when not reported.\"}",
+   [construction_notice]: "{\"description\": \"Free-text construction or closure notice for the port. Empty string or null when no notice is active.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [WaitTime] ingestion json mapping "WaitTime_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "port_number", "path": "$.port_number"},
+  {"column": "port_name", "path": "$.port_name"},
+  {"column": "border", "path": "$.border"},
+  {"column": "crossing_name", "path": "$.crossing_name"},
+  {"column": "port_status", "path": "$.port_status"},
+  {"column": "date", "path": "$.date"},
+  {"column": "time", "path": "$.time"},
+  {"column": "passenger_vehicle_standard_delay", "path": "$.passenger_vehicle_standard_delay"},
+  {"column": "passenger_vehicle_standard_lanes_open", "path": "$.passenger_vehicle_standard_lanes_open"},
+  {"column": "passenger_vehicle_standard_operational_status", "path": "$.passenger_vehicle_standard_operational_status"},
+  {"column": "passenger_vehicle_nexus_sentri_delay", "path": "$.passenger_vehicle_nexus_sentri_delay"},
+  {"column": "passenger_vehicle_nexus_sentri_lanes_open", "path": "$.passenger_vehicle_nexus_sentri_lanes_open"},
+  {"column": "passenger_vehicle_nexus_sentri_operational_status", "path": "$.passenger_vehicle_nexus_sentri_operational_status"},
+  {"column": "passenger_vehicle_ready_delay", "path": "$.passenger_vehicle_ready_delay"},
+  {"column": "passenger_vehicle_ready_lanes_open", "path": "$.passenger_vehicle_ready_lanes_open"},
+  {"column": "passenger_vehicle_ready_operational_status", "path": "$.passenger_vehicle_ready_operational_status"},
+  {"column": "pedestrian_standard_delay", "path": "$.pedestrian_standard_delay"},
+  {"column": "pedestrian_standard_lanes_open", "path": "$.pedestrian_standard_lanes_open"},
+  {"column": "pedestrian_standard_operational_status", "path": "$.pedestrian_standard_operational_status"},
+  {"column": "pedestrian_ready_delay", "path": "$.pedestrian_ready_delay"},
+  {"column": "pedestrian_ready_lanes_open", "path": "$.pedestrian_ready_lanes_open"},
+  {"column": "pedestrian_ready_operational_status", "path": "$.pedestrian_ready_operational_status"},
+  {"column": "commercial_vehicle_standard_delay", "path": "$.commercial_vehicle_standard_delay"},
+  {"column": "commercial_vehicle_standard_lanes_open", "path": "$.commercial_vehicle_standard_lanes_open"},
+  {"column": "commercial_vehicle_standard_operational_status", "path": "$.commercial_vehicle_standard_operational_status"},
+  {"column": "commercial_vehicle_fast_delay", "path": "$.commercial_vehicle_fast_delay"},
+  {"column": "commercial_vehicle_fast_lanes_open", "path": "$.commercial_vehicle_fast_lanes_open"},
+  {"column": "commercial_vehicle_fast_operational_status", "path": "$.commercial_vehicle_fast_operational_status"},
+  {"column": "construction_notice", "path": "$.construction_notice"},
+]
+```
+
+.create-or-alter table [WaitTime] ingestion json mapping "WaitTime_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "port_number", "path": "$.data.port_number"},
+  {"column": "port_name", "path": "$.data.port_name"},
+  {"column": "border", "path": "$.data.border"},
+  {"column": "crossing_name", "path": "$.data.crossing_name"},
+  {"column": "port_status", "path": "$.data.port_status"},
+  {"column": "date", "path": "$.data.date"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "passenger_vehicle_standard_delay", "path": "$.data.passenger_vehicle_standard_delay"},
+  {"column": "passenger_vehicle_standard_lanes_open", "path": "$.data.passenger_vehicle_standard_lanes_open"},
+  {"column": "passenger_vehicle_standard_operational_status", "path": "$.data.passenger_vehicle_standard_operational_status"},
+  {"column": "passenger_vehicle_nexus_sentri_delay", "path": "$.data.passenger_vehicle_nexus_sentri_delay"},
+  {"column": "passenger_vehicle_nexus_sentri_lanes_open", "path": "$.data.passenger_vehicle_nexus_sentri_lanes_open"},
+  {"column": "passenger_vehicle_nexus_sentri_operational_status", "path": "$.data.passenger_vehicle_nexus_sentri_operational_status"},
+  {"column": "passenger_vehicle_ready_delay", "path": "$.data.passenger_vehicle_ready_delay"},
+  {"column": "passenger_vehicle_ready_lanes_open", "path": "$.data.passenger_vehicle_ready_lanes_open"},
+  {"column": "passenger_vehicle_ready_operational_status", "path": "$.data.passenger_vehicle_ready_operational_status"},
+  {"column": "pedestrian_standard_delay", "path": "$.data.pedestrian_standard_delay"},
+  {"column": "pedestrian_standard_lanes_open", "path": "$.data.pedestrian_standard_lanes_open"},
+  {"column": "pedestrian_standard_operational_status", "path": "$.data.pedestrian_standard_operational_status"},
+  {"column": "pedestrian_ready_delay", "path": "$.data.pedestrian_ready_delay"},
+  {"column": "pedestrian_ready_lanes_open", "path": "$.data.pedestrian_ready_lanes_open"},
+  {"column": "pedestrian_ready_operational_status", "path": "$.data.pedestrian_ready_operational_status"},
+  {"column": "commercial_vehicle_standard_delay", "path": "$.data.commercial_vehicle_standard_delay"},
+  {"column": "commercial_vehicle_standard_lanes_open", "path": "$.data.commercial_vehicle_standard_lanes_open"},
+  {"column": "commercial_vehicle_standard_operational_status", "path": "$.data.commercial_vehicle_standard_operational_status"},
+  {"column": "commercial_vehicle_fast_delay", "path": "$.data.commercial_vehicle_fast_delay"},
+  {"column": "commercial_vehicle_fast_lanes_open", "path": "$.data.commercial_vehicle_fast_lanes_open"},
+  {"column": "commercial_vehicle_fast_operational_status", "path": "$.data.commercial_vehicle_fast_operational_status"},
+  {"column": "construction_notice", "path": "$.data.construction_notice"},
+]
+```
+
+.drop materialized-view WaitTimeLatest ifexists;
+
+.create materialized-view with (backfill=true) WaitTimeLatest on table WaitTime {
+    WaitTime | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [WaitTime] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'gov.cbp.borderwait.WaitTime') | project['port_number'] = tostring(data.['port_number']),['port_name'] = tostring(data.['port_name']),['border'] = tostring(data.['border']),['crossing_name'] = tostring(data.['crossing_name']),['port_status'] = tostring(data.['port_status']),['date'] = tostring(data.['date']),['time'] = tostring(data.['time']),['passenger_vehicle_standard_delay'] = toint(data.['passenger_vehicle_standard_delay']),['passenger_vehicle_standard_lanes_open'] = toint(data.['passenger_vehicle_standard_lanes_open']),['passenger_vehicle_standard_operational_status'] = tostring(data.['passenger_vehicle_standard_operational_status']),['passenger_vehicle_nexus_sentri_delay'] = toint(data.['passenger_vehicle_nexus_sentri_delay']),['passenger_vehicle_nexus_sentri_lanes_open'] = toint(data.['passenger_vehicle_nexus_sentri_lanes_open']),['passenger_vehicle_nexus_sentri_operational_status'] = tostring(data.['passenger_vehicle_nexus_sentri_operational_status']),['passenger_vehicle_ready_delay'] = toint(data.['passenger_vehicle_ready_delay']),['passenger_vehicle_ready_lanes_open'] = toint(data.['passenger_vehicle_ready_lanes_open']),['passenger_vehicle_ready_operational_status'] = tostring(data.['passenger_vehicle_ready_operational_status']),['pedestrian_standard_delay'] = toint(data.['pedestrian_standard_delay']),['pedestrian_standard_lanes_open'] = toint(data.['pedestrian_standard_lanes_open']),['pedestrian_standard_operational_status'] = tostring(data.['pedestrian_standard_operational_status']),['pedestrian_ready_delay'] = toint(data.['pedestrian_ready_delay']),['pedestrian_ready_lanes_open'] = toint(data.['pedestrian_ready_lanes_open']),['pedestrian_ready_operational_status'] = tostring(data.['pedestrian_ready_operational_status']),['commercial_vehicle_standard_delay'] = toint(data.['commercial_vehicle_standard_delay']),['commercial_vehicle_standard_lanes_open'] = toint(data.['commercial_vehicle_standard_lanes_open']),['commercial_vehicle_standard_operational_status'] = tostring(data.['commercial_vehicle_standard_operational_status']),['commercial_vehicle_fast_delay'] = toint(data.['commercial_vehicle_fast_delay']),['commercial_vehicle_fast_lanes_open'] = toint(data.['commercial_vehicle_fast_lanes_open']),['commercial_vehicle_fast_operational_status'] = tostring(data.['commercial_vehicle_fast_operational_status']),['construction_notice'] = tostring(data.['construction_notice']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -117,7 +117,7 @@ def send_stations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer) -> 
             latitude=details.get('lat', 0.0),
             longitude=details.get('lon', 0.0),
         )
-        producer.send_ch_bafu_hydrology_station(data=station_data, flush_producer=False)
+        producer.send_ch_bafu_hydrology_station(_station_id=station_id, data=station_data, flush_producer=False)
         sent_count += 1
 
     producer.producer.flush()
@@ -190,7 +190,7 @@ def feed_observations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer,
             water_temperature_unit='C',
             water_temperature_timestamp=temp_ts_str,
         )
-        producer.send_ch_bafu_hydrology_water_level_observation(data=obs_data, flush_producer=False)
+        producer.send_ch_bafu_hydrology_water_level_observation(_station_id=station_id, data=obs_data, flush_producer=False)
         sent_count += 1
         previous_readings[reading_key] = wl_ts_str or q_ts_str or temp_ts_str
 

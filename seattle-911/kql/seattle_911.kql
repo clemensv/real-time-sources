@@ -1,0 +1,108 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [Incident] (
+   [incident_number]: string,
+   [incident_type]: string,
+   [incident_datetime]: string,
+   [address]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Incident] docstring "{\"description\": \"Seattle Fire Department 911 dispatch record from the City of Seattle real-time fire calls dataset.\"}";
+
+.alter table [Incident] column-docstrings (
+   [incident_number]: "{\"description\": \"Stable Seattle Fire Department incident identifier for the dispatch record.\"}",
+   [incident_type]: "{\"description\": \"Seattle Fire Department response type for the incident, such as Aid Response or Medic Response.\"}",
+   [incident_datetime]: "{\"description\": \"Date and time of the call as published by the Seattle Open Data dataset, in local dataset timestamp form without an explicit UTC offset.\"}",
+   [address]: "{\"description\": \"Incident location text as published by the dataset.\"}",
+   [latitude]: "{\"description\": \"Latitude of the incident location in decimal degrees north.\"}",
+   [longitude]: "{\"description\": \"Longitude of the incident location in decimal degrees east of Greenwich; Seattle values are negative because they lie west of Greenwich.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Incident] ingestion json mapping "Incident_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "incident_number", "path": "$.incident_number"},
+  {"column": "incident_type", "path": "$.incident_type"},
+  {"column": "incident_datetime", "path": "$.incident_datetime"},
+  {"column": "address", "path": "$.address"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table [Incident] ingestion json mapping "Incident_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "incident_number", "path": "$.data.incident_number"},
+  {"column": "incident_type", "path": "$.data.incident_type"},
+  {"column": "incident_datetime", "path": "$.data.incident_datetime"},
+  {"column": "address", "path": "$.data.address"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view IncidentLatest ifexists;
+
+.create materialized-view with (backfill=true) IncidentLatest on table Incident {
+    Incident | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Incident] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.WA.Seattle.Fire911.Incident') | project['incident_number'] = tostring(data.['incident_number']),['incident_type'] = tostring(data.['incident_type']),['incident_datetime'] = tostring(data.['incident_datetime']),['address'] = tostring(data.['address']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -62,6 +62,8 @@ def parse_state_txt(text: str) -> dict[str, Any]:
             result["sequence_number"] = int(value)
         elif key == "timestamp":
             ts_str = value.replace("\\:", ":")
+            if ts_str.endswith("Z"):
+                ts_str = ts_str[:-1] + "+00:00"
             result["timestamp"] = datetime.datetime.fromisoformat(ts_str)
     return result
 
@@ -111,6 +113,8 @@ def parse_osmchange_xml(xml_bytes: bytes, sequence_number: int) -> list[dict[str
 
             ts_str = elem.get("timestamp", "")
             if ts_str:
+                if ts_str.endswith("Z"):
+                    ts_str = ts_str[:-1] + "+00:00"
                 ts = datetime.datetime.fromisoformat(ts_str)
             else:
                 ts = datetime.datetime.now(datetime.timezone.utc)

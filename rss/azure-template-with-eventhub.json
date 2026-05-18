@@ -34,14 +34,14 @@
     },
     "feedUrls": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "https://news.ycombinator.com/rss,https://feeds.bbci.co.uk/news/world/rss.xml,https://www.theguardian.com/world/rss",
       "metadata": {
-        "description": "FEED_URLS configuration value."
+        "description": "Comma-separated list of RSS/Atom feed URLs."
       }
     }
   },
   "variables": {
-    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg'), 24)]",
+    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
     "fileShareName": "bridge-state",
     "imageName": "ghcr.io/clemensv/real-time-sources-rss:latest",
     "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
