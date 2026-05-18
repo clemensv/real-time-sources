@@ -148,7 +148,7 @@ function Invoke-FabricApi {
     $azArgs = @("rest", "--method", $Method, "--url", $Url,
                 "--resource", "https://api.fabric.microsoft.com")
     if ($Body) {
-        $bodyFile = Join-Path $env:TEMP "fabric_body_$(Get-Random).json"
+        $bodyFile = Join-Path $TempDir "fabric_body_$(Get-Random).json"
         $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 20 -Compress }
         [System.IO.File]::WriteAllText($bodyFile, $json, [System.Text.UTF8Encoding]::new($false))
         $azArgs += @("--body", "@$bodyFile", "--headers", "Content-Type=application/json")
@@ -173,7 +173,7 @@ function Invoke-KqlScript {
         csl = ".execute database script <|`n$ScriptContent"
         db  = $Database
     }
-    $bodyFile = Join-Path $env:TEMP "kql_body_$(Get-Random).json"
+    $bodyFile = Join-Path $TempDir "kql_body_$(Get-Random).json"
     [System.IO.File]::WriteAllText(
         $bodyFile,
         ($body | ConvertTo-Json -Compress),
