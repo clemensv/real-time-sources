@@ -94,7 +94,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Source,
 
-    [string]$ResourceGroup = "rg-$($PSBoundParameters['Source'])-notebook",
+    [string]$ResourceGroup,
     [string]$Location,
     [string]$SubscriptionId,
 
@@ -121,6 +121,7 @@ $FabricApi = "https://api.fabric.microsoft.com/v1"
 $guidRx = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 $TempDir = if ($env:TEMP) { $env:TEMP } elseif ($env:TMPDIR) { $env:TMPDIR } else { [System.IO.Path]::GetTempPath() }
 
+if (-not $ResourceGroup)           { $ResourceGroup = "rg-$Source-notebook" }
 if (-not $DatabaseName)            { $DatabaseName = $Source -replace '-', '_' }
 if ([string]::IsNullOrWhiteSpace($Eventhouse)) { $Eventhouse = $Source -replace '-', '_' }
 if (-not $NotebookName)            { $NotebookName = "$Source-feed" }
