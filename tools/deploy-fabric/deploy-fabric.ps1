@@ -73,7 +73,9 @@ param(
 
     [string]$Repo = "clemensv/real-time-sources",
 
-    [string]$Branch = "main"
+    [string]$Branch = "main",
+
+    [string]$OutCsFile
 )
 
 $ErrorActionPreference = "Stop"
@@ -197,80 +199,42 @@ function Invoke-KqlScript {
     Write-OK "Applied $Label"
 }
 
-function Get-FabricClusterUrl {
-    $aadToken = az account get-access-token `
-        --resource "https://analysis.windows.net/powerbi/api" `
-        --query accessToken -o tsv
-    if (-not $aadToken) { throw "Failed to get Azure AD token for Power BI" }
-    $clusterDetails = Invoke-RestMethod `
-        -Uri "https://api.powerbi.com/powerbi/globalservice/v201606/clusterDetails" `
-        -Headers @{ "Authorization" = "Bearer $aadToken" } -TimeoutSec 15
-    return @{
-        ClusterUrl = $clusterDetails.clusterUrl -replace '^https://', ''
-        AadToken   = $aadToken
-    }
-}
+function Get-EventStreamConnectionString {
+    <#
+    Retrieve the CustomEndpoint primary connection string for an Event Stream
+    using the public Fabric Topology API:
 
-function Get-FabricMwcToken {
+      GET /workspaces/{ws}/eventstreams/{es}/topology
+      GET /workspaces/{ws}/eventstreams/{es}/sources/{src}/connection
+
+    Replaces the legacy 7-step MWC (Power BI workload token) dance. Documented at
+    https://learn.microsoft.com/en-us/rest/api/fabric/eventstream/topology/get-eventstream-source-connection
+    #>
     param(
-        [string]$ClusterUrl,
-        [string]$AadToken,
         [string]$WsId,
-        [string]$CapId,
         [string]$EventStreamId
     )
-    $body = @{
-        workloadType             = "ES"
-        workloadId               = "ES"
-        workspaceObjectId        = $WsId
-        customerCapacityObjectId = $CapId
-        artifacts                = @(
-            @{
-                artifactObjectId = $EventStreamId
-                artifactType     = "EventStream"
-            }
-        )
-    } | ConvertTo-Json -Depth 5
-
-    $headers = @{
-        "Authorization"                  = "Bearer $AadToken"
-        "x-ms-orig-aad-token"            = $AadToken
-        "x-ms-workload-resource-moniker" = $EventStreamId
-        "Content-Type"                   = "application/json"
-    }
-    $resp = Invoke-RestMethod `
-        -Uri "https://$ClusterUrl/metadata/v201606/generatemwctokenv2" `
-        -Method Post -Headers $headers -Body $body -TimeoutSec 30
-    if (-not $resp.Token) { throw "MWC token exchange returned empty token" }
-    return @{
-        Token         = $resp.Token
-        TargetUriHost = $resp.TargetUriHost
-    }
-}
-
-function Get-EventStreamConnectionString {
-    param(
-        [string]$WsId,
-        [string]$CapId,
-        [string]$EventStreamId,
-        [string]$DatasourceId,
-        [string]$MwcToken,
-        [string]$TargetUriHost
-    )
-    $headers = @{
-        "Authorization" = "MwcToken $MwcToken"
-        "Content-Type"  = "application/json"
-    }
     $maxRetries = 5
     $lastErr = $null
     for ($retry = 0; $retry -lt $maxRetries; $retry++) {
         try {
-            $url = "https://$TargetUriHost/webapi/capacities/$CapId/workloads/ES/ESService/Direct/v1/workspaces/$WsId/artifacts/$EventStreamId/datasource/$DatasourceId/keys"
-            $resp = Invoke-RestMethod -Uri $url -Method Post -Headers $headers -Body "{}" -TimeoutSec 30
-            if ($resp.primaryConnectionString) {
-                return $resp.primaryConnectionString
+            $topo = Invoke-FabricApi -Method GET `
+                -Url "$FabricApi/workspaces/$WsId/eventstreams/$EventStreamId/topology"
+            $src = $topo.sources | Where-Object { $_.type -eq "CustomEndpoint" } | Select-Object -First 1
+            if (-not $src) { throw "Event Stream has no CustomEndpoint source." }
+
+            $conn = Invoke-FabricApi -Method GET `
+                -Url "$FabricApi/workspaces/$WsId/eventstreams/$EventStreamId/sources/$($src.id)/connection"
+            $cs = $conn.accessKeys.primaryConnectionString
+            if ($cs) {
+                return [pscustomobject]@{
+                    PrimaryConnectionString = $cs
+                    Namespace               = $conn.fullyQualifiedNamespace
+                    EventHubName            = $conn.eventHubName
+                    SourceId                = $src.id
+                }
             }
-            $lastErr = "Empty primaryConnectionString in response"
+            $lastErr = "Empty primaryConnectionString in /sources/{id}/connection response"
         } catch {
             $lastErr = $_.Exception.Message
             if ($_.ErrorDetails -and $_.ErrorDetails.Message) { $lastErr += " | $($_.ErrorDetails.Message)" }
@@ -509,25 +473,26 @@ Write-OK "Event Stream topology configured"
 #  Step 5: Retrieve Custom Endpoint connection string 
 
 Write-Step "5/6" "Retrieving Event Stream connection string..."
-Start-Sleep -Seconds 90
+Start-Sleep -Seconds 30
 $esConnectionString = $null
 try {
-    $cluster = Get-FabricClusterUrl
-    $mwc = Get-FabricMwcToken -ClusterUrl $cluster.ClusterUrl -AadToken $cluster.AadToken -WsId $WorkspaceId -CapId $CapacityId -EventStreamId $eventstreamId
-    $topologyRaw = az rest --method GET --uri "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/topology" --resource "https://api.fabric.microsoft.com" 2>$null
-    if ($topologyRaw) {
-        $topology = $topologyRaw | ConvertFrom-Json
-        $inputSource = $topology.sources | Where-Object { $_.type -eq "CustomEndpoint" } | Select-Object -First 1
-        if ($inputSource) {
-            Write-Host "  Datasource ID: $($inputSource.id)" -ForegroundColor Gray
-            $esConnectionString = Get-EventStreamConnectionString -WsId $WorkspaceId -CapId $CapacityId -EventStreamId $eventstreamId -DatasourceId $inputSource.id -MwcToken $mwc.Token -TargetUriHost $mwc.TargetUriHost
-        }
+    $csInfo = Get-EventStreamConnectionString -WsId $WorkspaceId -EventStreamId $eventstreamId
+    if ($csInfo) {
+        Write-Host "  Source ID:   $($csInfo.SourceId)"     -ForegroundColor Gray
+        Write-Host "  Namespace:   $($csInfo.Namespace)"     -ForegroundColor Gray
+        Write-Host "  EventHub:    $($csInfo.EventHubName)"  -ForegroundColor Gray
+        $esConnectionString = $csInfo.PrimaryConnectionString
     }
 } catch { Write-Warning "Could not retrieve connection string: $_" }
 if ($esConnectionString) { Write-OK "Event Stream connection string retrieved" }
 else {
     Write-Warning "Could not retrieve the connection string automatically."
     Write-Host "  Retrieve it from the Fabric portal: Event Stream '$EventStreamName' > Custom Endpoint" -ForegroundColor White
+}
+
+if ($OutCsFile -and $esConnectionString) {
+    Set-Content -Path $OutCsFile -Value $esConnectionString -Encoding UTF8 -NoNewline
+    Write-Host "  Connection string written to: $OutCsFile" -ForegroundColor Gray
 }
 
 # Wait for the Event Stream custom endpoint to actually accept Kafka metadata
