@@ -73,7 +73,9 @@ param(
 
     [string]$Repo = "clemensv/real-time-sources",
 
-    [string]$Branch = "main"
+    [string]$Branch = "main",
+
+    [string]$OutCsFile
 )
 
 $ErrorActionPreference = "Stop"
@@ -528,6 +530,11 @@ if ($esConnectionString) { Write-OK "Event Stream connection string retrieved" }
 else {
     Write-Warning "Could not retrieve the connection string automatically."
     Write-Host "  Retrieve it from the Fabric portal: Event Stream '$EventStreamName' > Custom Endpoint" -ForegroundColor White
+}
+
+if ($OutCsFile -and $esConnectionString) {
+    Set-Content -Path $OutCsFile -Value $esConnectionString -Encoding UTF8 -NoNewline
+    Write-Host "  Connection string written to: $OutCsFile" -ForegroundColor Gray
 }
 
 # Wait for the Event Stream custom endpoint to actually accept Kafka metadata

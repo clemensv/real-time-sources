@@ -21,7 +21,7 @@ const SOURCES = [
   { id: "noaa-ndbc",             name: "NOAA NDBC",               cat: "Hydrology",    key: false, desc: "United States — buoy observations" },
   { id: "king-county-marine",    name: "King County Marine",      cat: "Hydrology",    key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry" },
   { id: "nve-hydro",             name: "NVE Hydro",               cat: "Hydrology",    key: true,  desc: "Norway — NVE (requires free API key)" },
-  { id: "pegelonline",           name: "Pegelonline",             cat: "Hydrology",    key: false, desc: "Germany — federal waterways, ~3,000 stations" },
+  { id: "pegelonline",           name: "Pegelonline",             cat: "Hydrology",    key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true },
   { id: "rws-waterwebservices",  name: "RWS Waterwebservices",    cat: "Hydrology",    key: false, desc: "Netherlands — ~785 stations" },
   { id: "smhi-hydro",            name: "SMHI Hydro",              cat: "Hydrology",    key: false, desc: "Sweden — SMHI" },
   { id: "snotel",                name: "SNOTEL Snow",             cat: "Hydrology",    key: false, desc: "Western US & Alaska — ~900 snowpack stations, NRCS" },
@@ -133,6 +133,7 @@ const $deployBarFabric = document.getElementById("deploy-bar-fabric");
 const $btnContainer = document.getElementById("btn-container");
 const $btnContainerEH = document.getElementById("btn-container-eh");
 const $btnFabric = document.getElementById("btn-container-eh-adx");
+const $btnFabricNotebook = document.getElementById("btn-fabric-notebook");
 const $deployPane = document.getElementById("deploy-pane");
 const $deployTitle = document.getElementById("deploy-pane-title");
 const $deployClose = document.getElementById("deploy-pane-close");
@@ -219,6 +220,11 @@ async function selectSource(s) {
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   };
   $btnFabric.onclick      = () => openDeployForm(s, "fabric");
+  if ($btnFabricNotebook) {
+    // Notebook deploy is opt-in per source (requires <source>/notebook/<source>-feed.ipynb).
+    $btnFabricNotebook.style.display = s.notebook ? "" : "none";
+    $btnFabricNotebook.onclick = () => openDeployForm(s, "fabric-notebook");
+  }
 
   // fetch and render CONTAINER.md
   $content.innerHTML = '<div class="loading-indicator">Loading documentation…</div>';
@@ -325,7 +331,7 @@ function launchCloudShell(source, mode) {
   if (!rg) { alert("Resource Group is required."); return; }
   if (!loc) { alert("Location is required."); return; }
 
-  if (mode === "fabric") {
+  if (mode === "fabric" || mode === "fabric-notebook") {
     const wsId = getValue("workspaceId");
     const ehId = getValue("eventhouseId");
     if (!wsId || !ehId) {
@@ -334,15 +340,19 @@ function launchCloudShell(source, mode) {
     }
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
 
-    let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
-      + `./deploy-fabric.ps1`
+    const scriptName = mode === "fabric-notebook" ? "deploy-feeder-notebook.ps1" : "deploy-fabric.ps1";
+    let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/${scriptName}' -OutFile ${scriptName}; `
+      + `./${scriptName}`
       + ` -Source '${source.id}'`
       + ` -ResourceGroup '${rg}'`
       + ` -Location '${loc}'`;
     if (subId) cmd += ` -SubscriptionId '${subId}'`;
-    cmd += ` -WorkspaceId '${wsId}'`
-      + ` -EventhouseId '${ehId}'`
+    cmd += ` -Workspace '${wsId}'`
+      + ` -Eventhouse '${ehId}'`
       + ` -DatabaseName '${dbName}'`;
+    if (mode === "fabric-notebook") {
+      cmd += ` -Branch '${BRANCH}'`;
+    }
 
     navigator.clipboard.writeText(cmd).then(() => {
       showDeployNotice("PowerShell command copied to clipboard. Paste it into the Cloud Shell tab.");
