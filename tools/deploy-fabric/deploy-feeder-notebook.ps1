@@ -141,7 +141,19 @@ if (-not $EnvironmentName)         { $EnvironmentName = "$Source-feeder-env" }
 $repoRoot     = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $notebookPath = Join-Path $repoRoot "$Source/notebook/$Source-feed.ipynb"
 if (-not (Test-Path $notebookPath)) {
-    throw "Notebook not found: $notebookPath`nAdd <source>/notebook/<source>-feed.ipynb to enable notebook deploy for this source."
+    # Cloud Shell / standalone usage: only the helper scripts were downloaded,
+    # not the full repo. Try to fetch the notebook from GitHub raw.
+    $rawNbUrl = "https://raw.githubusercontent.com/$Repo/$Branch/$Source/notebook/$Source-feed.ipynb"
+    $localNb  = Join-Path $TempDir "$Source-feed_$(Get-Random).ipynb"
+    Write-Host "Notebook not in working tree; downloading from $rawNbUrl" -ForegroundColor DarkYellow
+    try {
+        Invoke-WebRequest -Uri $rawNbUrl -OutFile $localNb -UseBasicParsing -ErrorAction Stop
+        $notebookPath = $localNb
+    } catch {
+        throw "Notebook not found locally and could not be downloaded from $rawNbUrl. " +
+              "Source '$Source' may not have a Fabric notebook published yet (expected " +
+              "$Source/notebook/$Source-feed.ipynb in the repo). Underlying error: $($_.Exception.Message)"
+    }
 }
 
 function Write-Step { param([string]$Step, [string]$Msg) Write-Host "`n[$Step] $Msg" -ForegroundColor Yellow }
