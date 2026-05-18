@@ -172,6 +172,28 @@ KAFKA_ENABLE_TLS=false
 - Root `README.md` — organized by topic category; add new sources to the
   appropriate section.
 
+## Fabric Notebook Hosting (optional per source)
+
+A source may optionally ship a Fabric notebook feeder under
+`<source>/notebook/<source>-feed.ipynb`. This is a separate deployment
+option from ACI+Fabric and uses `tools/deploy-fabric/deploy-feeder-notebook.ps1`
+which builds a per-source Fabric Environment with the producer + bridge
+wheels, binds Lakehouse + KQL + Environment to the notebook, looks up the
+Event Stream connection string at runtime via the public Topology API, and
+schedules the notebook. Three non-obvious rules apply:
+
+- **No `asyncio.run()` in cells.** The Fabric kernel owns the loop; run
+  `feeder.main()` in a worker thread.
+- **No `%pip install` in cells.** Wheels live in the per-source Environment;
+  the deploy script builds and uploads them.
+- **OneLake is the only diagnostic channel** for scheduled runs. The notebook
+  must log to `/lakehouse/default/Files/feeder-state/<source>/last-run.log`
+  and call `notebookutils.notebook.exit("FAIL: …")` on error — Fabric REST
+  does not expose cell output.
+
+Full playbook: `.github/skills/fabric-notebook-deployment/SKILL.md`.
+Reference implementation: `pegelonline/notebook/pegelonline-feed.ipynb`.
+
 ## Things That Are Not Allowed
 
 - Hand-editing generated producer code.
@@ -183,3 +205,7 @@ KAFKA_ENABLE_TLS=false
 - Stopping the upstream API audit after the first two obvious endpoints.
 - Shipping a source without CONTAINER.md, EVENTS.md, or a generator script.
 - Bypassing `tools/require-xrcg.ps1` version enforcement.
+- Calling `asyncio.run()` inside a Fabric notebook cell.
+- Adding a `CONNECTION_STRING` parameter to a Fabric notebook (look it up
+  at runtime via the Topology API instead).
+- Using the legacy MWC token chain for Event Stream connection strings.
