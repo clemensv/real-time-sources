@@ -194,6 +194,25 @@ schedules the notebook. Three non-obvious rules apply:
 Full playbook: `.github/skills/fabric-notebook-deployment/SKILL.md`.
 Reference implementation: `pegelonline/notebook/pegelonline-feed.ipynb`.
 
+### Retrofitting existing pollers (fleet operation)
+
+To add notebook hosting to an **already-shipped** poll-based source,
+use the dedicated upgrade agent specified in
+`.github/skills/notebook-feeder-retrofit/SKILL.md`. It is designed to
+be dispatched in parallel — one agent per source — by an orchestrator.
+The agent copies the canonical `pegelonline` notebook, performs an
+exact substitution table, flips `catalog.json` `notebook: true`,
+validates locally, and opens a PR. It does **not** deploy to Fabric.
+
+To discover the eligible-source set:
+
+```powershell
+pwsh .github/skills/notebook-feeder-retrofit/references/eligibility-discovery.ps1 -Format Lines
+```
+
+Sources in `skip:streaming` (websocket/MQTT) or `skip:not-a-poller`
+(no polling loop) are out of scope for notebook hosting.
+
 ## Things That Are Not Allowed
 
 - Hand-editing generated producer code.
@@ -209,3 +228,7 @@ Reference implementation: `pegelonline/notebook/pegelonline-feed.ipynb`.
 - Adding a `CONNECTION_STRING` parameter to a Fabric notebook (look it up
   at runtime via the Topology API instead).
 - Using the legacy MWC token chain for Event Stream connection strings.
+- Bundling multiple sources into one notebook-retrofit PR. The
+  `notebook-feeder-retrofit` agent must produce one PR per source.
+- Deploying notebook-retrofit PRs to Fabric from the retrofit agent
+  itself. End-to-end Fabric verification is a separate, serial step.
