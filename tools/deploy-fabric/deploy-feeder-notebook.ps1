@@ -170,19 +170,19 @@ if (-not $SkipInfra) {
     $deployFabric = Join-Path $PSScriptRoot "deploy-fabric.ps1"
     if (-not (Test-Path $deployFabric)) { throw "deploy-fabric.ps1 not found alongside this script." }
 
-    $fwdArgs = @(
-        '-Source', $Source,
-        '-ResourceGroup', $ResourceGroup,
-        '-Workspace', $Workspace,
-        '-Eventhouse', $Eventhouse,
-        '-DatabaseName', $DatabaseName,
-        '-Repo', $Repo,
-        '-Branch', $Branch,
-        '-OutCsFile', $csFile,
-        '-SkipArm'
-    )
-    if ($Location)       { $fwdArgs += @('-Location', $Location) }
-    if ($SubscriptionId) { $fwdArgs += @('-SubscriptionId', $SubscriptionId) }
+    $fwdArgs = @{
+        Source        = $Source
+        ResourceGroup = $ResourceGroup
+        Workspace     = $Workspace
+        Eventhouse    = $Eventhouse
+        DatabaseName  = $DatabaseName
+        Repo          = $Repo
+        Branch        = $Branch
+        OutCsFile     = $csFile
+        SkipArm       = $true
+    }
+    if ($Location)       { $fwdArgs['Location']       = $Location }
+    if ($SubscriptionId) { $fwdArgs['SubscriptionId'] = $SubscriptionId }
 
     & $deployFabric @fwdArgs
     if ($LASTEXITCODE -ne 0 -and -not (Test-Path $csFile)) {
