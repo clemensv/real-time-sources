@@ -74,12 +74,9 @@
     (e.g., always-on Spark session).
 
 .PARAMETER SkipInfra
-    Skip Stage A. Use when the KQL DB / Event Stream already exist and
-    you pass -ConnectionString directly.
-
-.PARAMETER ConnectionString
-    Event Stream custom-endpoint connection string. If provided with
-    -SkipInfra, Stage A is bypassed.
+    Skip Stage A. Use when the KQL DB / Event Stream already exist.
+    The notebook resolves the Event Stream connection string at runtime
+    via the Topology API, so no -ConnectionString parameter is needed.
 
 .EXAMPLE
     ./deploy-feeder-notebook.ps1 -Source pegelonline `
@@ -122,8 +119,7 @@ param(
     [switch]$NoSchedule,
     [switch]$NoTriggerNow,
 
-    [switch]$SkipInfra,
-    [string]$ConnectionString
+    [switch]$SkipInfra
 )
 
 $ErrorActionPreference = "Stop"
@@ -362,11 +358,12 @@ Write-Host "  Notebook file:    $notebookPath"    -ForegroundColor White
 Write-Host "  Source ref:       $Repo@$Branch"    -ForegroundColor White
 Write-Host "  Polling interval: $PollingInterval s (once-mode=$OnceMode)" -ForegroundColor White
 
-# ── Stage A: Fabric infra + connection string ─────────────────────────────
-$esConnectionString = $ConnectionString
+# ── Stage A: Fabric infra (Eventhouse + KQL DB + Event Stream) ────────────
+# The notebook resolves the Event Stream connection string at runtime via
+# the Topology API using its workspace/user identity, so Stage A only needs
+# to ensure the Fabric infra exists. No connection string is required here.
 if (-not $SkipInfra) {
     Write-Step "A" "Setting up Fabric infra via deploy-fabric.ps1 -SkipArm..."
-    $csFile = Join-Path $TempDir "feeder_cs_$(Get-Random).txt"
     $deployFabric = Join-Path $PSScriptRoot "deploy-fabric.ps1"
     if (-not (Test-Path $deployFabric)) { throw "deploy-fabric.ps1 not found alongside this script." }
 
@@ -378,26 +375,16 @@ if (-not $SkipInfra) {
         DatabaseName  = $DatabaseName
         Repo          = $Repo
         Branch        = $Branch
-        OutCsFile     = $csFile
         SkipArm       = $true
     }
     if ($Location)       { $fwdArgs['Location']       = $Location }
     if ($SubscriptionId) { $fwdArgs['SubscriptionId'] = $SubscriptionId }
 
     & $deployFabric @fwdArgs
-    if ($LASTEXITCODE -ne 0 -and -not (Test-Path $csFile)) {
+    if ($LASTEXITCODE -ne 0) {
         throw "deploy-fabric.ps1 failed; aborting notebook deploy."
     }
-    if (Test-Path $csFile) {
-        $esConnectionString = (Get-Content -Raw -LiteralPath $csFile).Trim()
-        Remove-Item $csFile -ErrorAction SilentlyContinue
-    }
 }
-
-if (-not $esConnectionString) {
-    throw "No Event Stream connection string available. Pass -ConnectionString manually or rerun without -SkipInfra."
-}
-Write-OK "Connection string ready (length=$($esConnectionString.Length))"
 
 # ── Stage B: Resolve workspace + KQL DB ───────────────────────────────────
 Write-Step "B/1" "Resolving Fabric workspace..."
