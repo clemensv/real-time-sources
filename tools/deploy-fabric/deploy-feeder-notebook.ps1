@@ -112,6 +112,9 @@ param(
     [int]$PollingInterval = 900,
     [bool]$OnceMode = $true,
 
+    [string]$EnvironmentName,
+    [switch]$SkipEnvironment,
+
     [switch]$SkipInfra,
     [string]$ConnectionString
 )
@@ -126,6 +129,7 @@ if (-not $DatabaseName)            { $DatabaseName = $Source -replace '-', '_' }
 if ([string]::IsNullOrWhiteSpace($Eventhouse)) { $Eventhouse = $Source -replace '-', '_' }
 if (-not $NotebookName)            { $NotebookName = "$Source-feed" }
 if (-not $StatePath)               { $StatePath    = "/lakehouse/default/Files/feeder-state/$Source" }
+if (-not $EnvironmentName)         { $EnvironmentName = "$Source-feeder-env" }
 
 $repoRoot     = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $notebookPath = Join-Path $repoRoot "$Source/notebook/$Source-feed.ipynb"
@@ -150,6 +154,143 @@ function Invoke-FabricApi {
     if ($LASTEXITCODE -ne 0) { throw "Fabric API error ($Method $Url): $($result | Out-String)" }
     if ($result) { return $result | ConvertFrom-Json }
     return $null
+}
+
+function Invoke-FabricApiRaw {
+    # Same as Invoke-FabricApi, but returns the raw response (so 202 LROs can be inspected).
+    param([string]$Method, [string]$Url, [object]$Body)
+    $azArgs = @("rest", "--method", $Method, "--url", $Url, "--resource", "https://api.fabric.microsoft.com", "--output", "json")
+    if ($Body) {
+        $bodyFile = Join-Path $TempDir "fabric_body_$(Get-Random).json"
+        $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 30 -Compress }
+        [System.IO.File]::WriteAllText($bodyFile, $json, [System.Text.UTF8Encoding]::new($false))
+        $azArgs += @("--body", "@$bodyFile", "--headers", "Content-Type=application/json")
+    }
+    $result = & az @azArgs 2>&1
+    return [pscustomobject]@{ ExitCode = $LASTEXITCODE; Body = ($result | Out-String) }
+}
+
+function Build-SourceWheels {
+    <#
+    Builds wheels for the source's bridge + its generated producer sub-packages
+    using `pip wheel --no-deps` and strips poetry path-deps from the top-level
+    wheel's METADATA so it installs cleanly in the Fabric Environment.
+
+    Returns an array of FileInfo objects pointing at the wheels under $outDir.
+    #>
+    param([string]$Source, [string]$RepoRoot)
+
+    $srcDir = Join-Path $RepoRoot $Source
+    if (-not (Test-Path $srcDir)) { throw "Source folder not found: $srcDir" }
+
+    $producerRoot = Join-Path $srcDir "$($Source -replace '-', '_')_producer"
+    if (-not (Test-Path $producerRoot)) { throw "Generated producer folder not found: $producerRoot. Run generate_producer.ps1 first." }
+
+    $outDir = Join-Path $TempDir "feeder-wheels-$Source-$(Get-Random)"
+    New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+
+    # Build the producer sub-packages first (each is a self-contained poetry project),
+    # then the top-level source bridge package which references them via path-deps.
+    $subPackages = Get-ChildItem -Directory $producerRoot |
+        Where-Object { Test-Path (Join-Path $_.FullName "pyproject.toml") } |
+        ForEach-Object { $_.FullName }
+    $toBuild = @($subPackages) + @($srcDir)
+
+    foreach ($pkgDir in $toBuild) {
+        Write-Info "  pip wheel $($pkgDir | Split-Path -Leaf)"
+        & python -m pip wheel --no-deps --no-build-isolation --wheel-dir $outDir $pkgDir 2>&1 | Out-Host
+        if ($LASTEXITCODE -ne 0) { throw "pip wheel failed for $pkgDir" }
+    }
+
+    $wheels = Get-ChildItem -LiteralPath $outDir -Filter *.whl
+    if (-not $wheels) { throw "No wheels produced in $outDir" }
+
+    $stripper = Join-Path $PSScriptRoot "strip-wheel-pathdeps.py"
+    & python $stripper @($wheels | ForEach-Object { $_.FullName }) | Out-Host
+    if ($LASTEXITCODE -ne 0) { throw "Wheel METADATA post-processing failed." }
+
+    return ,$wheels
+}
+
+function Get-FabricToken {
+    $tok = az account get-access-token --resource https://api.fabric.microsoft.com --query accessToken -o tsv 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "Failed to acquire Fabric token: $tok" }
+    return ($tok | Out-String).Trim()
+}
+
+function Upload-EnvironmentLibrary {
+    <#
+    POST /environments/{id}/staging/libraries with multipart/form-data 'file' part.
+    The Fabric SDKs perform this upload one library file at a time.
+    #>
+    param([string]$WorkspaceId, [string]$EnvironmentId, [System.IO.FileInfo]$Wheel, [string]$Token)
+
+    $url = "$FabricApi/workspaces/$WorkspaceId/environments/$EnvironmentId/staging/libraries"
+    try {
+        $resp = Invoke-WebRequest -Uri $url -Method Post `
+            -Headers @{ Authorization = "Bearer $Token" } `
+            -Form @{ file = $Wheel } `
+            -UseBasicParsing -ErrorAction Stop
+        return $resp.StatusCode
+    } catch {
+        $errBody = ""
+        if ($_.Exception.Response) {
+            try {
+                $stream = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($stream)
+                $errBody = $reader.ReadToEnd()
+            } catch {}
+        }
+        throw "Upload library '$($Wheel.Name)' failed: $($_.Exception.Message)`n$errBody"
+    }
+}
+
+function Update-EnvironmentSparkCompute {
+    param([string]$WorkspaceId, [string]$EnvironmentId)
+
+    # The staging/sparkcompute endpoint accepts JSON; runtime_version 1.3 keeps things current.
+    $body = @{
+        instancePool = @{ name = "Starter Pool"; type = "Workspace" }
+        driverCores = 4
+        driverMemory = "28g"
+        executorCores = 4
+        executorMemory = "28g"
+        dynamicExecutorAllocation = @{ enabled = $false }
+        runtimeVersion = "1.3"
+        sparkProperties = @{}
+    }
+    Invoke-FabricApi -Method PATCH `
+        -Url "$FabricApi/workspaces/$WorkspaceId/environments/$EnvironmentId/staging/sparkcompute" `
+        -Body $body | Out-Null
+}
+
+function Wait-EnvironmentPublished {
+    param([string]$WorkspaceId, [string]$EnvironmentId, [int]$TimeoutMinutes = 25)
+
+    $deadline = (Get-Date).AddMinutes($TimeoutMinutes)
+    $lastState = ""
+    while ((Get-Date) -lt $deadline) {
+        try {
+            $publishUri = "$FabricApi/workspaces/$WorkspaceId/environments/$EnvironmentId"
+            $env = Invoke-FabricApi -Method GET -Url $publishUri
+            $state = $null
+            if ($env.properties -and $env.properties.publishDetails) {
+                $state = $env.properties.publishDetails.state
+            }
+            if ($state -and $state -ne $lastState) {
+                Write-Info "    publish state: $state"
+                $lastState = $state
+            }
+            if ($state -eq "Success" -or $state -eq "Published") { return }
+            if ($state -eq "Failed" -or $state -eq "Cancelled") {
+                throw "Environment publish ended in state '$state'."
+            }
+        } catch {
+            Write-Info "    poll error (will retry): $_"
+        }
+        Start-Sleep -Seconds 15
+    }
+    throw "Environment publish did not finish within $TimeoutMinutes minutes."
 }
 
 Write-Host "=== $Source Notebook Feeder Deployment ===" -ForegroundColor Cyan
@@ -231,8 +372,63 @@ Write-OK "KQL database: $($db.displayName) ($($db.id))"
 
 $queryUri = $eh.properties.queryServiceUri
 
+# ── Stage B/2.5: Fabric Environment with pre-built source wheels ─────────
+$EnvironmentId = $null
+if (-not $SkipEnvironment) {
+    Write-Step "B/2.5" "Building source wheels and publishing Fabric Environment '$EnvironmentName'..."
+
+    $wheels = Build-SourceWheels -Source $Source -RepoRoot $repoRoot
+    Write-OK "Built $($wheels.Count) wheel(s):"
+    foreach ($w in $wheels) { Write-Info "  $($w.Name)" }
+
+    # Resolve-or-create the environment item.
+    $envList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments"
+    $envItem = $envList.value | Where-Object { $_.displayName -eq $EnvironmentName } | Select-Object -First 1
+    if (-not $envItem) {
+        Write-Info "Creating environment '$EnvironmentName'..."
+        $createEnv = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/environments" `
+            -Body @{ displayName = $EnvironmentName; description = "Pre-built libraries for $Source feeder notebook." }
+        if ($createEnv -and $createEnv.id) {
+            $envItem = $createEnv
+        } else {
+            $envList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments"
+            $envItem = $envList2.value | Where-Object { $_.displayName -eq $EnvironmentName } | Select-Object -First 1
+            if (-not $envItem) { throw "Environment '$EnvironmentName' was not found after create." }
+        }
+    }
+    $EnvironmentId = $envItem.id
+    Write-OK "Environment: $EnvironmentName ($EnvironmentId)"
+
+    Write-Info "Uploading wheels one at a time to staging libraries..."
+    $fabricToken = Get-FabricToken
+    foreach ($w in $wheels) {
+        Write-Info "  uploading $($w.Name)"
+        $sc = Upload-EnvironmentLibrary -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId -Wheel $w -Token $fabricToken
+        Write-Info "    -> HTTP $sc"
+    }
+
+    Write-Info "Setting Spark compute (runtime 1.3, Starter Pool)..."
+    try {
+        Update-EnvironmentSparkCompute -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId
+    } catch {
+        Write-Info "  Spark compute update warning (non-fatal, defaults will be used): $($_.Exception.Message)"
+    }
+
+    Write-Info "Publishing environment (3-6 min — building Spark image with custom libraries)..."
+    Invoke-FabricApiRaw -Method POST `
+        -Url "$FabricApi/workspaces/$WorkspaceId/environments/$EnvironmentId/staging/publish" | Out-Null
+
+    Wait-EnvironmentPublished -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId
+    Write-OK "Environment published."
+} else {
+    # Look it up to bind metadata.
+    $envList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments"
+    $envItem = $envList.value | Where-Object { $_.displayName -eq $EnvironmentName } | Select-Object -First 1
+    if ($envItem) { $EnvironmentId = $envItem.id; Write-Info "Reusing environment '$EnvironmentName' ($EnvironmentId)" }
+}
+
 # ── Stage B/3: Patch notebook ─────────────────────────────────────────────
-Write-Step "B/3" "Patching notebook parameters + KQL binding..."
+Write-Step "B/3" "Patching notebook parameters + KQL/Environment binding..."
 $nbJson = Get-Content -LiteralPath $notebookPath -Raw -Encoding UTF8
 $nb = $nbJson | ConvertFrom-Json
 
@@ -248,9 +444,16 @@ $kqlBinding = @(
 )
 $nb.metadata.dependencies | Add-Member -NotePropertyName kqlDatabases -NotePropertyValue $kqlBinding -Force
 
+if ($EnvironmentId) {
+    $envBinding = [pscustomobject]@{
+        environmentId   = $EnvironmentId
+        workspaceId     = $WorkspaceId
+        environmentName = $EnvironmentName
+    }
+    $nb.metadata.dependencies | Add-Member -NotePropertyName environment -NotePropertyValue $envBinding -Force
+}
+
 $onceLiteral = if ($OnceMode) { "True" } else { "False" }
-# Escape quotes/backslashes in CS to safely embed in a Python string literal.
-$csPyLiteral = $esConnectionString -replace '\\', '\\' -replace '"', '\"'
 
 $paramsPatched = $false
 foreach ($cell in $nb.cells) {
@@ -261,14 +464,15 @@ foreach ($cell in $nb.cells) {
 
     $srcLines = @($cell.source) | ForEach-Object { $_ }
     $newLines = foreach ($line in $srcLines) {
-        if     ($line -match '^\s*CONNECTION_STRING\s*=') { "CONNECTION_STRING = `"$csPyLiteral`"`n" }
-        elseif ($line -match '^\s*STATE_FILE\s*=')        { "STATE_FILE        = `"$StatePath/state.json`"`n" }
-        elseif ($line -match '^\s*POLLING_INTERVAL\s*=')  { "POLLING_INTERVAL  = $PollingInterval`n" }
-        elseif ($line -match '^\s*ONCE_MODE\s*=')         { "ONCE_MODE         = $onceLiteral`n" }
-        elseif ($line -match '^\s*KUSTO_URI\s*=')         { "KUSTO_URI         = `"$queryUri`"`n" }
-        elseif ($line -match '^\s*KUSTO_DATABASE\s*=')    { "KUSTO_DATABASE    = `"$($db.displayName)`"`n" }
-        elseif ($line -match '^\s*SOURCE_REF\s*=')        { "SOURCE_REF        = `"$Branch`"`n" }
-        else                                              { $line }
+        if     ($line -match '^\s*EVENTSTREAM_NAME\s*=') { "EVENTSTREAM_NAME = `"$Source-ingest`"`n" }
+        elseif ($line -match '^\s*STATE_FILE\s*=')       { "STATE_FILE       = `"$StatePath/state.json`"`n" }
+        elseif ($line -match '^\s*POLLING_INTERVAL\s*=') { "POLLING_INTERVAL = $PollingInterval`n" }
+        elseif ($line -match '^\s*ONCE_MODE\s*=')        { "ONCE_MODE        = $onceLiteral`n" }
+        elseif ($line -match '^\s*WORKSPACE_ID\s*=')     { "WORKSPACE_ID     = `"$WorkspaceId`"`n" }
+        elseif ($line -match '^\s*KUSTO_URI\s*=')        { "KUSTO_URI        = `"$queryUri`"`n" }
+        elseif ($line -match '^\s*KUSTO_DATABASE\s*=')   { "KUSTO_DATABASE   = `"$($db.displayName)`"`n" }
+        elseif ($line -match '^\s*SOURCE_REF\s*=')       { "SOURCE_REF       = `"$Branch`"`n" }
+        else                                             { $line }
     }
     $cell.source = @($newLines)
     $paramsPatched = $true
@@ -318,6 +522,9 @@ Write-Host "`n=== Notebook Feeder Deployment Complete ===" -ForegroundColor Cyan
 Write-Host "  Notebook:     $NotebookName ($notebookId)" -ForegroundColor Gray
 Write-Host "  Workspace:    $($wsInfo.displayName) ($WorkspaceId)" -ForegroundColor Gray
 Write-Host "  KQL Database: $($db.displayName) ($($db.id))" -ForegroundColor Gray
+if ($EnvironmentId) {
+    Write-Host "  Environment:  $EnvironmentName ($EnvironmentId)" -ForegroundColor Gray
+}
 Write-Host "  State path:   $StatePath  (Lakehouse Files)" -ForegroundColor Gray
 Write-Host ""
 Write-Host "  Open in Fabric portal:" -ForegroundColor White
