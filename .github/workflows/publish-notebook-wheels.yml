@@ -17,6 +17,11 @@ on:
       - '**/notebook/*.ipynb'
       - 'tools/deploy-fabric/strip-wheel-pathdeps.py'
       - '.github/workflows/publish-notebook-wheels.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - '.github/workflows/publish-notebook-wheels.yml'
+      - 'tools/deploy-fabric/strip-wheel-pathdeps.py'
   workflow_dispatch:
 
 permissions:
@@ -123,7 +128,7 @@ jobs:
 
   publish:
     needs: [discover, build]
-    if: needs.discover.outputs.count != '0'
+    if: needs.discover.outputs.count != '0' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
