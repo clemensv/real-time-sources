@@ -115,6 +115,11 @@ param(
     [string]$EnvironmentName,
     [switch]$SkipEnvironment,
 
+    [string]$DefaultLakehouse,
+    [int]$ScheduleIntervalMinutes = 15,
+    [switch]$NoSchedule,
+    [switch]$NoTriggerNow,
+
     [switch]$SkipInfra,
     [string]$ConnectionString
 )
@@ -444,6 +449,27 @@ $kqlBinding = @(
 )
 $nb.metadata.dependencies | Add-Member -NotePropertyName kqlDatabases -NotePropertyValue $kqlBinding -Force
 
+# Resolve and bind a default Lakehouse so the notebook's /lakehouse/default/Files/... path works.
+$lakehouseList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/lakehouses"
+$lh = $null
+if ($DefaultLakehouse) {
+    $lh = $lakehouseList.value | Where-Object { $_.displayName -eq $DefaultLakehouse -or $_.id -eq $DefaultLakehouse } | Select-Object -First 1
+    if (-not $lh) { throw "Default lakehouse '$DefaultLakehouse' not found in workspace." }
+} elseif ($lakehouseList.value.Count -eq 1) {
+    $lh = $lakehouseList.value[0]
+    Write-Info "Auto-selected only lakehouse in workspace: $($lh.displayName)"
+} elseif ($lakehouseList.value.Count -gt 1) {
+    throw "Workspace has $($lakehouseList.value.Count) lakehouses. Pass -DefaultLakehouse <name> to choose one."
+} else {
+    throw "Workspace has no Lakehouse. Create one (or pass -DefaultLakehouse) so the notebook can write feeder state."
+}
+$nb.metadata.dependencies | Add-Member -NotePropertyName lakehouse -NotePropertyValue ([pscustomobject]@{
+    default_lakehouse              = $lh.id
+    default_lakehouse_name         = $lh.displayName
+    default_lakehouse_workspace_id = $WorkspaceId
+}) -Force
+Write-OK "Default Lakehouse bound: $($lh.displayName) ($($lh.id))"
+
 if ($EnvironmentId) {
     $envBinding = [pscustomobject]@{
         environmentId   = $EnvironmentId
@@ -517,6 +543,53 @@ if ($existing) {
 }
 
 Remove-Item $tmpNb -ErrorAction SilentlyContinue
+
+# ── Stage B/5: Trigger a first run + create a recurring schedule ─────────
+if (-not $NoTriggerNow) {
+    Write-Step "B/5a" "Triggering immediate notebook run..."
+    $runResp = Invoke-FabricApiRaw -Method POST `
+        -Url "$FabricApi/workspaces/$WorkspaceId/items/$notebookId/jobs/instances?jobType=RunNotebook"
+    if ($runResp.ExitCode -eq 0) {
+        Write-OK "Run triggered (202 Accepted)."
+    } else {
+        Write-Warning "Could not trigger immediate run (run it manually from the portal):`n$($runResp.Body)"
+    }
+}
+
+if (-not $NoSchedule) {
+    Write-Step "B/5b" "Creating recurring schedule (every $ScheduleIntervalMinutes min)..."
+    $existingSchedules = $null
+    try {
+        $existingSchedules = Invoke-FabricApi -Method GET `
+            -Url "$FabricApi/workspaces/$WorkspaceId/items/$notebookId/jobs/RunNotebook/schedules"
+    } catch { }
+
+    if ($existingSchedules -and $existingSchedules.value -and $existingSchedules.value.Count -gt 0) {
+        Write-Info "Schedule already exists ($($existingSchedules.value.Count) entries); skipping create."
+    } else {
+        # Cron interval supports 5-60 minutes per Fabric scheduler docs.
+        $startDt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss")
+        $endDt   = (Get-Date).ToUniversalTime().AddYears(5).ToString("yyyy-MM-ddTHH:mm:ss")
+        $schedBody = @{
+            enabled = $true
+            configuration = @{
+                type             = "Cron"
+                interval         = $ScheduleIntervalMinutes
+                startDateTime    = $startDt
+                endDateTime      = $endDt
+                localTimeZoneId  = "UTC"
+            }
+        }
+        $schedResp = Invoke-FabricApiRaw -Method POST `
+            -Url "$FabricApi/workspaces/$WorkspaceId/items/$notebookId/jobs/RunNotebook/schedules" `
+            -Body $schedBody
+        if ($schedResp.ExitCode -eq 0) {
+            Write-OK "Schedule created (every $ScheduleIntervalMinutes min UTC)."
+        } else {
+            Write-Warning "Could not create schedule (create it manually from the portal):`n$($schedResp.Body)"
+        }
+    }
+}
 
 Write-Host "`n=== Notebook Feeder Deployment Complete ===" -ForegroundColor Cyan
 Write-Host "  Notebook:     $NotebookName ($notebookId)" -ForegroundColor Gray
