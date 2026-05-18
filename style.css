@@ -359,6 +359,22 @@ a:hover { text-decoration: underline; }
 
 .deploy-bar-fabric { border-top: none; }
 
+.btn-logo-combo {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.btn-logo-combo svg { flex-shrink: 0; }
+.btn-logo-sep {
+  color: currentColor;
+  font-weight: 600;
+  opacity: .55;
+  font-size: 12px;
+  line-height: 1;
+}
+
 .content-area {
   flex: 1;
   overflow-y: auto;
