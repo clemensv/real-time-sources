@@ -108,11 +108,30 @@
           </svg>
           Deploy to Fabric:
         </span>
-        <button class="deploy-btn deploy-btn-fabric" id="btn-container-eh-adx" title="Deploy container with Fabric Event Stream and KQL database">
-          Container + Event Stream + KQL Database
+        <button class="deploy-btn deploy-btn-fabric" id="btn-container-eh-adx" title="Deploy Azure container with Fabric Event Stream and Fabric Eventhouse (KQL)">
+          <span class="btn-logo-combo">
+            <svg viewBox="0 0 256 256" width="14" height="14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="az-mini-g1" x1="-960.606" y1="283.397" x2="-1032.511" y2="70.972" gradientTransform="matrix(1 0 0 -1 1075 318)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#114a8b"/><stop offset="1" stop-color="#0669bc"/></linearGradient>
+                <linearGradient id="az-mini-g2" x1="-947.292" y1="289.594" x2="-868.363" y2="79.308" gradientTransform="matrix(1 0 0 -1 1075 318)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3ccbf4"/><stop offset="1" stop-color="#2892df"/></linearGradient>
+              </defs>
+              <path d="M89.158 18.266h69.238L86.523 231.224a11.041 11.041 0 01-10.461 7.51H22.179a11.023 11.023 0 01-10.445-14.548l66.963-198.41a11.04 11.04 0 0110.461-7.51z" fill="url(#az-mini-g1)"/>
+              <path d="M189.77 161.104H79.976a5.083 5.083 0 00-3.468 8.8l70.552 65.847a11.091 11.091 0 007.567 2.983h62.167z" fill="#0078d4"/>
+              <path d="M177.592 25.764a11.023 11.023 0 00-10.444-7.498H89.984a11.024 11.024 0 0110.445 7.498l66.967 198.421a11.024 11.024 0 01-10.445 14.549h77.164a11.024 11.024 0 0010.444-14.549z" fill="url(#az-mini-g2)"/>
+            </svg>
+            <span class="btn-logo-sep">/</span>
+            <svg viewBox="0 0 48 48" width="14" height="14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <use href="#fab-a"/>
+              <path fill="url(#fab-a)" fill-rule="evenodd" d="m5.64 31.6-.586 2.144c-.218.685-.524 1.693-.689 2.59a5.63 5.63 0 004.638 7.588c.792.114 1.688.108 2.692-.04l4.613-.636a2.92 2.92 0 002.421-2.127l3.175-11.662L5.64 31.599Z" clip-rule="evenodd"/>
+              <path fill="url(#fab-b)" d="M10.14 32.152c-4.863.753-5.861 4.423-5.861 4.423l4.656-17.11 24.333-3.292-3.318 12.052a1.71 1.71 0 01-1.388 1.244l-.136.022-18.423 2.684z"/>
+              <path fill="url(#fab-d)" d="m12.899 21.235 26.938-3.98a1.6 1.6 0 001.323-1.17l2.78-10.06a1.595 1.595 0 00-1.74-2.012L16.498 7.81a7.19 7.19 0 00-5.777 5.193L7.013 26.438c.744-2.717 1.202-4.355 5.886-5.203"/>
+              <path fill="url(#fab-e)" d="m12.899 21.235 26.938-3.98a1.6 1.6 0 001.323-1.17l2.78-10.06a1.595 1.595 0 00-1.74-2.012L16.498 7.81a7.19 7.19 0 00-5.777 5.193L7.013 26.438c.744-2.717 1.202-4.355 5.886-5.203"/>
+            </svg>
+          </span>
+          Azure Container + Fabric Eventstream + Fabric Eventhouse
         </button>
-        <button class="deploy-btn deploy-btn-fabric" id="btn-fabric-notebook" title="Deploy the feeder as a Fabric notebook (no container)" style="display:none">
-          Fabric Notebook
+        <button class="deploy-btn deploy-btn-fabric" id="btn-fabric-notebook" title="Deploy the feeder as a Fabric notebook with a Fabric Event Stream and Fabric Eventhouse (no Azure container)" style="display:none">
+          Fabric Notebook + Eventstream + Eventhouse
         </button>
       </div>
       <div id="content-area" class="content-area">

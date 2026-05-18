@@ -260,16 +260,18 @@ async function openDeployForm(source, mode) {
   $deployPane.style.display = "flex";
   $deployForm.innerHTML = "";
 
-  // Azure section
-  const azSection = el("div", { class: "form-section" });
-  azSection.innerHTML = '<div class="form-section-title">Azure Resources</div>';
-  azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
-    "", "Azure subscription GUID (leave blank for default)", false));
-  azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
-    `rg-${source.id}-feeder`, "Azure resource group name", true));
-  azSection.appendChild(makeField("location", "Location", "text",
-    "westcentralus", "Azure region for deployment", true));
-  $deployForm.appendChild(azSection);
+  // Azure section (not needed for notebook hosting — everything lives in Fabric)
+  if (!isNotebook) {
+    const azSection = el("div", { class: "form-section" });
+    azSection.innerHTML = '<div class="form-section-title">Azure Resources</div>';
+    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
+      "", "Azure subscription GUID (leave blank for default)", false));
+    azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
+      `rg-${source.id}-feeder`, "Azure resource group name", true));
+    azSection.appendChild(makeField("location", "Location", "text",
+      "westcentralus", "Azure region for deployment", true));
+    $deployForm.appendChild(azSection);
+  }
 
   // Fabric section
   const fabSection = el("div", { class: "form-section" });
@@ -335,12 +337,15 @@ function launchCloudShell(source, mode) {
     return el ? el.value.trim() : "";
   };
 
+  const isNotebook = mode === "notebook";
   const rg = getValue("resourceGroup");
   const loc = getValue("location");
   const subId = getValue("subscriptionId");
 
-  if (!rg) { alert("Resource Group is required."); return; }
-  if (!loc) { alert("Location is required."); return; }
+  if (!isNotebook) {
+    if (!rg) { alert("Resource Group is required."); return; }
+    if (!loc) { alert("Location is required."); return; }
+  }
 
   if (mode === "fabric") {
     const ws = getValue("workspace");
@@ -388,10 +393,7 @@ function launchCloudShell(source, mode) {
       + `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/deploy-fabric.ps1' -OutFile deploy-fabric.ps1; `
       + `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/strip-wheel-pathdeps.py' -OutFile strip-wheel-pathdeps.py; `
       + `./deploy-feeder-notebook.ps1`
-      + ` -Source '${source.id}'`
-      + ` -ResourceGroup '${rg}'`
-      + ` -Location '${loc}'`;
-    if (subId) cmd += ` -SubscriptionId '${subId}'`;
+      + ` -Source '${source.id}'`;
     cmd += ` -Workspace '${ws}'`;
     if (eh) cmd += ` -Eventhouse '${eh}'`;
     cmd += ` -DatabaseName '${dbName}'`;
