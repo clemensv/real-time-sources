@@ -477,7 +477,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Seattle, WA — real-time fire dispatch incidents",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-earthquakes",
