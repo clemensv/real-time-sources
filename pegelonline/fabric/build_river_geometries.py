@@ -72,6 +72,11 @@ ALIASES: List[Tuple[str, str, Sequence[str]]] = [
     ("SOW", "SPREE-ODER-WASSERSTRASSE", ("Spree", "Spréva")),
     ("PEENE", "PEENE", ("Peene",)),
     ("REGEN", "REGEN", ("Regen",)),
+    # Canals + tributaries: MVT labels we already see at z=12 but used to
+    # fall back to straight-line station-backbone because they weren't aliased.
+    ("MLK", "MITTELLANDKANAL", ("Mittellandkanal",)),
+    ("HUNTE", "HUNTE", ("Hunte",)),
+    ("MEW", "MÜRITZ-ELDE-WASSERSTRASSE", ("Elde",)),
     # Newly-discovered MVT names that map to pegelonline waters.
     ("NOK", "NORD-OSTSEE-KANAL", ("Nord-Ostsee-Kanal",)),
     ("MDK", "MAIN-DONAU-KANAL", ("Main-Donau-Kanal",)),

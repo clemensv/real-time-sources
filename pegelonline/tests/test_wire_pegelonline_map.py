@@ -33,10 +33,11 @@ class WirePegelonlineMapTests(unittest.TestCase):
 
     def test_layer_names_unique_and_complete(self) -> None:
         m = self.mod
-        # Five layers (v3.5: per-station river-segment metrics + labels).
+        # v3.6: state, navigation, 1h/3h/6h/24h trend, freshness, labels.
         self.assertEqual(
             m.LAYER_NAMES,
-            {m.NAME_STATE, m.NAME_NAV, m.NAME_TREND,
+            {m.NAME_STATE, m.NAME_NAV,
+             m.NAME_TREND_1H, m.NAME_TREND_3H, m.NAME_TREND_6H, m.NAME_TREND,
              m.NAME_FRESH, m.NAME_LABELS},
         )
         for name in m.LAYER_NAMES:
@@ -55,7 +56,10 @@ class WirePegelonlineMapTests(unittest.TestCase):
         segment_builders = {
             "state":      (m._kql_state_segments, "StateSegments"),
             "navigation": (m._kql_nav_segments,   "NavSegments"),
-            "trend":      (m._kql_trend_segments, "TrendSegments"),
+            "trend_1h":   (lambda: m._kql_trend_segments("1h"),  "TrendSegments1h"),
+            "trend_3h":   (lambda: m._kql_trend_segments("3h"),  "TrendSegments3h"),
+            "trend_6h":   (lambda: m._kql_trend_segments("6h"),  "TrendSegments6h"),
+            "trend_24h":  (lambda: m._kql_trend_segments("24h"), "TrendSegments24h"),
             "freshness":  (m._kql_fresh_segments, "FreshSegments"),
         }
         for layer_name, (fn, helper) in segment_builders.items():
@@ -80,7 +84,10 @@ class WirePegelonlineMapTests(unittest.TestCase):
         segment_layers = [
             m._state_layer(default_visible=True),
             m._navigation_layer(),
-            m._trend_layer(),
+            m._trend_layer("1h"),
+            m._trend_layer("3h"),
+            m._trend_layer("6h"),
+            m._trend_layer("24h"),
             m._freshness_layer(),
         ]
         for layer in segment_layers:
@@ -111,7 +118,10 @@ class WirePegelonlineMapTests(unittest.TestCase):
         layers = [
             (m._state_layer(default_visible=True),    True),
             (m._navigation_layer(),                   False),
-            (m._trend_layer(),                        False),
+            (m._trend_layer("1h"),                    False),
+            (m._trend_layer("3h"),                    False),
+            (m._trend_layer("6h"),                    False),
+            (m._trend_layer("24h"),                   False),
             (m._freshness_layer(),                    False),
             (m._labels_layer(default_visible=True),   True),
         ]

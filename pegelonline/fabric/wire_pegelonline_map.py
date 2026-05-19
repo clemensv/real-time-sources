@@ -61,13 +61,20 @@ import requests
 
 LAYER_PREFIX = "pegelonline "
 
-NAME_STATE   = f"{LAYER_PREFIX}hydrological state"
-NAME_NAV     = f"{LAYER_PREFIX}navigation state"
-NAME_TREND   = f"{LAYER_PREFIX}24h trend"
-NAME_FRESH   = f"{LAYER_PREFIX}data freshness"
-NAME_LABELS  = f"{LAYER_PREFIX}station labels"
+NAME_STATE    = f"{LAYER_PREFIX}hydrological state"
+NAME_NAV      = f"{LAYER_PREFIX}navigation state"
+NAME_TREND_1H = f"{LAYER_PREFIX}1h trend"
+NAME_TREND_3H = f"{LAYER_PREFIX}3h trend"
+NAME_TREND_6H = f"{LAYER_PREFIX}6h trend"
+NAME_TREND    = f"{LAYER_PREFIX}24h trend"
+NAME_FRESH    = f"{LAYER_PREFIX}data freshness"
+NAME_LABELS   = f"{LAYER_PREFIX}station labels"
 
-LAYER_NAMES = {NAME_STATE, NAME_NAV, NAME_TREND, NAME_FRESH, NAME_LABELS}
+LAYER_NAMES = {
+    NAME_STATE, NAME_NAV,
+    NAME_TREND_1H, NAME_TREND_3H, NAME_TREND_6H, NAME_TREND,
+    NAME_FRESH, NAME_LABELS,
+}
 
 # Layer names from previous map deployments that should be cleaned up during
 # the idempotent rewire. Includes both the v1/v2 stitched backbone and the
@@ -102,10 +109,16 @@ def _kql_nav_segments() -> str:
 """
 
 
-def _kql_trend_segments() -> str:
-    """Per-station river segment coloured by 24h-trend direction;
-    stroke weight scales with absolute delta."""
-    return """TrendSegments()
+def _kql_trend_segments(window: str = "24h") -> str:
+    """Per-station river segment coloured by `window`-trend direction;
+    stroke weight scales with absolute delta over that window."""
+    func = {
+        "1h":  "TrendSegments1h",
+        "3h":  "TrendSegments3h",
+        "6h":  "TrendSegments6h",
+        "24h": "TrendSegments24h",
+    }[window]
+    return f"""{func}()
 | project geometry, station_id, water_shortname, shortname, longname,
           value, direction, delta_cm, abs_delta, stroke_color, stroke_weight, label
 """
@@ -239,11 +252,18 @@ def _navigation_layer() -> dict:
     }
 
 
-def _trend_layer() -> dict:
-    """River segments coloured by 24h direction; thickness scales with |delta|."""
+def _trend_layer(window: str = "24h") -> dict:
+    """River segments coloured by `window`-trend direction; thickness scales
+    with |delta|. `window` in {"1h","3h","6h","24h"}."""
+    name = {
+        "1h":  NAME_TREND_1H,
+        "3h":  NAME_TREND_3H,
+        "6h":  NAME_TREND_6H,
+        "24h": NAME_TREND,
+    }[window]
     return {
-        "name": NAME_TREND,
-        "kql": _kql_trend_segments(),
+        "name": name,
+        "kql": _kql_trend_segments(window),
         "options": {
             "type": "vector",
             "visible": False,
@@ -382,7 +402,10 @@ def wire(workspace_id: str, map_id: str, kql_db_id: str,
     layers = [
         _state_layer(default_visible=True),
         _navigation_layer(),
-        _trend_layer(),
+        _trend_layer("1h"),
+        _trend_layer("3h"),
+        _trend_layer("6h"),
+        _trend_layer("24h"),
         _freshness_layer(),
         _labels_layer(default_visible=True),
     ]
