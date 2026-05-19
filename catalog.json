@@ -605,7 +605,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "France — national road network, DATEX II",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "gtfs",

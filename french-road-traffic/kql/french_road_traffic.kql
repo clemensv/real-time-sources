@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [TrafficFlowMeasurement] (
+.create-merge table ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] (
    [site_id]: string,
    [measurement_time]: string,
    [vehicle_flow_rate]: int,
@@ -39,9 +39,9 @@
    [___subject]: string
 );
 
-.alter table [TrafficFlowMeasurement] docstring "{\"description\": \"Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Each record corresponds to one siteMeasurements element in the Bison Fut\\u00e9 MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.\"}";
+.alter table ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] docstring "{\"description\": \"Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Each record corresponds to one siteMeasurements element in the Bison Fut\\u00e9 MeasuredDataPublication DATEX II feed, containing aggregated vehicle flow rate (vehicles per hour) and average vehicle speed (km/h) for the measurement interval.\"}";
 
-.alter table [TrafficFlowMeasurement] column-docstrings (
+.alter table ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] column-docstrings (
    [site_id]: "{\"description\": \"Unique identifier of the DATEX II measurement site record, as declared in the measurementSiteReference element (e.g. 'MUM76.h1', 'MB631.B8'). Stable across publication snapshots.\"}",
    [measurement_time]: "{\"description\": \"ISO 8601 timestamp of the measurement, taken from the measurementTimeDefault element in the DATEX II siteMeasurements block. Represents the end of the aggregation interval.\"}",
    [vehicle_flow_rate]: "{\"description\": \"Number of vehicles per hour passing the measurement site during the aggregation interval, from the DATEX II TrafficFlow/vehicleFlowRate element. Null when flow data is not available for this site in the current snapshot.\"}",
@@ -55,7 +55,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TrafficFlowMeasurement] ingestion json mapping "TrafficFlowMeasurement_json_flat"
+.create-or-alter table ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] ingestion json mapping "fr.gouv.transport.bison_fute.TrafficFlowMeasurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,7 +72,7 @@
 ]
 ```
 
-.create-or-alter table [TrafficFlowMeasurement] ingestion json mapping "TrafficFlowMeasurement_json_ce_structured"
+.create-or-alter table ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] ingestion json mapping "fr.gouv.transport.bison_fute.TrafficFlowMeasurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,13 +89,13 @@
 ]
 ```
 
-.drop materialized-view TrafficFlowMeasurementLatest ifexists;
+.drop materialized-view ['fr.gouv.transport.bison_fute.TrafficFlowMeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TrafficFlowMeasurementLatest on table TrafficFlowMeasurement {
-    TrafficFlowMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fr.gouv.transport.bison_fute.TrafficFlowMeasurementLatest'] on table ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] {
+    ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TrafficFlowMeasurement] policy update
+.alter table ['fr.gouv.transport.bison_fute.TrafficFlowMeasurement'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -106,7 +106,7 @@
 }]
 ```
 
-.create-merge table [RoadEvent] (
+.create-merge table ['fr.gouv.transport.bison_fute.RoadEvent'] (
    [situation_id]: string,
    [record_id]: string,
    [version]: string,
@@ -133,9 +133,9 @@
    [___subject]: string
 );
 
-.alter table [RoadEvent] docstring "{\"description\": \"Real-time road situation record from the French national non-conceded road network DATEX II SituationPublication feed. Each record represents one situationRecord element within a situation, describing a traffic incident, construction works, lane management, environmental obstruction, or other event affecting road conditions. Location is provided as WGS84 coordinates and road identifiers.\"}";
+.alter table ['fr.gouv.transport.bison_fute.RoadEvent'] docstring "{\"description\": \"Real-time road situation record from the French national non-conceded road network DATEX II SituationPublication feed. Each record represents one situationRecord element within a situation, describing a traffic incident, construction works, lane management, environmental obstruction, or other event affecting road conditions. Location is provided as WGS84 coordinates and road identifiers.\"}";
 
-.alter table [RoadEvent] column-docstrings (
+.alter table ['fr.gouv.transport.bison_fute.RoadEvent'] column-docstrings (
    [situation_id]: "{\"description\": \"Unique identifier of the parent DATEX II situation element (e.g. '230814-001797'). Stable across version updates of the same situation.\"}",
    [record_id]: "{\"description\": \"Unique identifier of this specific situation record within the parent situation (e.g. '230814-001797-1'). Each situation may contain multiple records.\"}",
    [version]: "{\"description\": \"Version number of the parent situation, incremented each time the situation is updated by the publisher.\"}",
@@ -162,7 +162,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_flat"
+.create-or-alter table ['fr.gouv.transport.bison_fute.RoadEvent'] ingestion json mapping "fr.gouv.transport.bison_fute.RoadEvent_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -192,7 +192,7 @@
 ]
 ```
 
-.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_ce_structured"
+.create-or-alter table ['fr.gouv.transport.bison_fute.RoadEvent'] ingestion json mapping "fr.gouv.transport.bison_fute.RoadEvent_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -222,13 +222,13 @@
 ]
 ```
 
-.drop materialized-view RoadEventLatest ifexists;
+.drop materialized-view ['fr.gouv.transport.bison_fute.RoadEventLatest'] ifexists;
 
-.create materialized-view with (backfill=true) RoadEventLatest on table RoadEvent {
-    RoadEvent | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fr.gouv.transport.bison_fute.RoadEventLatest'] on table ['fr.gouv.transport.bison_fute.RoadEvent'] {
+    ['fr.gouv.transport.bison_fute.RoadEvent'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [RoadEvent] policy update
+.alter table ['fr.gouv.transport.bison_fute.RoadEvent'] policy update
 ```
 [{
   "IsEnabled": true,
