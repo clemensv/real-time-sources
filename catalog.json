@@ -740,7 +740,8 @@
     "cat": "Social",
     "key": false,
     "desc": "Global — OSM minutely replication diffs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "rss",
