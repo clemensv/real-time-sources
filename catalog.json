@@ -135,7 +135,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Finland — SYKE",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "uk-ea-flood-monitoring",
