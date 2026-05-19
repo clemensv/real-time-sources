@@ -76,6 +76,13 @@ uba_airdata feed --kafka-bootstrap-servers "<host:port>" --kafka-topic "uba-aird
 
 For container usage, see [CONTAINER.md](CONTAINER.md).
 
+## Fabric notebook hosting
+
+This source can also be deployed as a scheduled Fabric notebook via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
+which runs `uba_airdata feed --once` on a Fabric schedule using
+`notebook/uba-airdata-feed.ipynb`.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment
