@@ -40,7 +40,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "France — ~6,300 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "imgw-hydro",
