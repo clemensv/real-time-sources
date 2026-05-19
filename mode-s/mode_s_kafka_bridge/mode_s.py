@@ -63,9 +63,10 @@ class ADSBClient(TcpClient):
         try:
             if self.stop_flag:
                 return
-            if (len(self.task_queue ) + 1) > 200:
-                logger.warning("Dropping input. Queue capacity exceeded.")   
-                return             
+            queue_cap = int(os.environ.get('MODE_S_QUEUE_CAPACITY', '20000'))
+            if (len(self.task_queue) + 1) > queue_cap:
+                logger.warning("Dropping input. Queue capacity exceeded (cap=%d).", queue_cap)
+                return
             msgs = []
             for msg, ts in messages:
                 try:
@@ -167,7 +168,9 @@ class ADSBClient(TcpClient):
                             content_type="application/json",
                             flush_producer=False
                         )
-                        if (datetime.now() - last_flush) > timedelta(seconds=1) or self.records_since_last_flush >= 1000:
+                        flush_interval_s = int(os.environ.get('MODE_S_FLUSH_INTERVAL_SECONDS', '10'))
+                        flush_record_threshold = int(os.environ.get('MODE_S_FLUSH_RECORD_THRESHOLD', '50000'))
+                        if (datetime.now() - last_flush) > timedelta(seconds=flush_interval_s) or self.records_since_last_flush >= flush_record_threshold:
                             if last_info_log < datetime.now() - timedelta(seconds=5*60):
                                 logger.info("Messages %d, records %d, queue length is %d", messages_since_last_log, records_since_last_log, len(self.task_queue))
                                 last_info_log = datetime.now()
@@ -308,6 +311,14 @@ async def run():
             tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
             kafka_config = {
                 'bootstrap.servers': kafka_bootstrap_servers,
+                # Batching/throughput tuning for high-rate Mode-S feeds.
+                # Override any of these via the matching env var if needed.
+                'linger.ms': int(os.environ.get('KAFKA_LINGER_MS', '500')),
+                'batch.num.messages': int(os.environ.get('KAFKA_BATCH_NUM_MESSAGES', '10000')),
+                'queue.buffering.max.messages': int(os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_MESSAGES', '1000000')),
+                'queue.buffering.max.kbytes': int(os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_KBYTES', '1048576')),
+                'compression.type': os.environ.get('KAFKA_COMPRESSION_TYPE', 'lz4'),
+                'socket.send.buffer.bytes': int(os.environ.get('KAFKA_SOCKET_SEND_BUFFER_BYTES', '1048576')),
             }
             if sasl_username and sasl_password:
                 kafka_config.update({
