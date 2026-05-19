@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [RoadEvent] (
+.create-merge table ['DE.Autobahn.RoadEvent'] (
    [identifier]: string,
    [road_ids]: dynamic,
    [event_time]: datetime,
@@ -55,9 +55,9 @@
    [___subject]: string
 );
 
-.alter table [RoadEvent] docstring "{\"description\": \"Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.\"}";
+.alter table ['DE.Autobahn.RoadEvent'] docstring "{\"description\": \"Normalized Autobahn road-event payload used for roadworks and closure-like items. Source pages: https://verkehr.autobahn.de/o/autobahn/A1/services/roadworks and https://verkehr.autobahn.de/o/autobahn/A1/services/closure.\"}";
 
-.alter table [RoadEvent] column-docstrings (
+.alter table ['DE.Autobahn.RoadEvent'] column-docstrings (
    [identifier]: "{\"description\": \"Stable Autobahn item identifier used for the CloudEvents subject and Kafka key.\"}",
    [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families.\"}}",
    [event_time]: "{\"description\": \"CloudEvents event time for the emitted record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp.\"}",
@@ -87,7 +87,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_flat"
+.create-or-alter table ['DE.Autobahn.RoadEvent'] ingestion json mapping "DE.Autobahn.RoadEvent_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -120,7 +120,7 @@
 ]
 ```
 
-.create-or-alter table [RoadEvent] ingestion json mapping "RoadEvent_json_ce_structured"
+.create-or-alter table ['DE.Autobahn.RoadEvent'] ingestion json mapping "DE.Autobahn.RoadEvent_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -153,13 +153,13 @@
 ]
 ```
 
-.drop materialized-view RoadEventLatest ifexists;
+.drop materialized-view ['DE.Autobahn.RoadEventLatest'] ifexists;
 
-.create materialized-view with (backfill=true) RoadEventLatest on table RoadEvent {
-    RoadEvent | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['DE.Autobahn.RoadEventLatest'] on table ['DE.Autobahn.RoadEvent'] {
+    ['DE.Autobahn.RoadEvent'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [RoadEvent] policy update
+.alter table ['DE.Autobahn.RoadEvent'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -170,7 +170,7 @@
 }]
 ```
 
-.create-merge table [WarningEvent] (
+.create-merge table ['DE.Autobahn.WarningEvent'] (
    [identifier]: string,
    [road_ids]: dynamic,
    [event_time]: datetime,
@@ -204,9 +204,9 @@
    [___subject]: string
 );
 
-.alter table [WarningEvent] docstring "{\"description\": \"Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.\"}";
+.alter table ['DE.Autobahn.WarningEvent'] docstring "{\"description\": \"Normalized Autobahn warning payload with delay and traffic source details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/warning.\"}";
 
-.alter table [WarningEvent] column-docstrings (
+.alter table ['DE.Autobahn.WarningEvent'] column-docstrings (
    [identifier]: "{\"description\": \"Stable Autobahn warning identifier used for the CloudEvents subject and Kafka key.\"}",
    [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this warning item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this warning item.\"}}",
    [event_time]: "{\"description\": \"CloudEvents event time for the emitted warning record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp.\"}",
@@ -240,7 +240,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WarningEvent] ingestion json mapping "WarningEvent_json_flat"
+.create-or-alter table ['DE.Autobahn.WarningEvent'] ingestion json mapping "DE.Autobahn.WarningEvent_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -277,7 +277,7 @@
 ]
 ```
 
-.create-or-alter table [WarningEvent] ingestion json mapping "WarningEvent_json_ce_structured"
+.create-or-alter table ['DE.Autobahn.WarningEvent'] ingestion json mapping "DE.Autobahn.WarningEvent_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -314,13 +314,13 @@
 ]
 ```
 
-.drop materialized-view WarningEventLatest ifexists;
+.drop materialized-view ['DE.Autobahn.WarningEventLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WarningEventLatest on table WarningEvent {
-    WarningEvent | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['DE.Autobahn.WarningEventLatest'] on table ['DE.Autobahn.WarningEvent'] {
+    ['DE.Autobahn.WarningEvent'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WarningEvent] policy update
+.alter table ['DE.Autobahn.WarningEvent'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -331,7 +331,7 @@
 }]
 ```
 
-.create-merge table [ParkingLorry] (
+.create-merge table ['DE.Autobahn.ParkingLorry'] (
    [identifier]: string,
    [road_ids]: dynamic,
    [event_time]: datetime,
@@ -359,9 +359,9 @@
    [___subject]: string
 );
 
-.alter table [ParkingLorry] docstring "{\"description\": \"Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.\"}";
+.alter table ['DE.Autobahn.ParkingLorry'] docstring "{\"description\": \"Normalized Autobahn lorry parking payload with parsed amenity and space counts. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/parking_lorry.\"}";
 
-.alter table [ParkingLorry] column-docstrings (
+.alter table ['DE.Autobahn.ParkingLorry'] column-docstrings (
    [identifier]: "{\"description\": \"Stable Autobahn parking identifier used for the CloudEvents subject and Kafka key.\"}",
    [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this parking item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this parking item.\"}}",
    [event_time]: "{\"description\": \"CloudEvents event time for the emitted parking record. The bridge uses the poll timestamp because parking items do not expose startTimestamp in the normalized payload.\"}",
@@ -389,7 +389,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ParkingLorry] ingestion json mapping "ParkingLorry_json_flat"
+.create-or-alter table ['DE.Autobahn.ParkingLorry'] ingestion json mapping "DE.Autobahn.ParkingLorry_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -420,7 +420,7 @@
 ]
 ```
 
-.create-or-alter table [ParkingLorry] ingestion json mapping "ParkingLorry_json_ce_structured"
+.create-or-alter table ['DE.Autobahn.ParkingLorry'] ingestion json mapping "DE.Autobahn.ParkingLorry_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -451,13 +451,13 @@
 ]
 ```
 
-.drop materialized-view ParkingLorryLatest ifexists;
+.drop materialized-view ['DE.Autobahn.ParkingLorryLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ParkingLorryLatest on table ParkingLorry {
-    ParkingLorry | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['DE.Autobahn.ParkingLorryLatest'] on table ['DE.Autobahn.ParkingLorry'] {
+    ['DE.Autobahn.ParkingLorry'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ParkingLorry] policy update
+.alter table ['DE.Autobahn.ParkingLorry'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -468,7 +468,7 @@
 }]
 ```
 
-.create-merge table [ChargingStation] (
+.create-merge table ['DE.Autobahn.ChargingStation'] (
    [identifier]: string,
    [road_ids]: dynamic,
    [event_time]: datetime,
@@ -495,9 +495,9 @@
    [___subject]: string
 );
 
-.alter table [ChargingStation] docstring "{\"description\": \"Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.\"}";
+.alter table ['DE.Autobahn.ChargingStation'] docstring "{\"description\": \"Normalized Autobahn charging-station payload with parsed address and charging point details. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/electric_charging_station.\"}";
 
-.alter table [ChargingStation] column-docstrings (
+.alter table ['DE.Autobahn.ChargingStation'] column-docstrings (
    [identifier]: "{\"description\": \"Stable Autobahn charging-station identifier used for the CloudEvents subject and Kafka key.\"}",
    [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this charging station item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this charging station item.\"}}",
    [event_time]: "{\"description\": \"CloudEvents event time for the emitted charging-station record. The bridge uses the poll timestamp because charging station items do not expose startTimestamp in the normalized payload.\"}",
@@ -524,7 +524,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ChargingStation] ingestion json mapping "ChargingStation_json_flat"
+.create-or-alter table ['DE.Autobahn.ChargingStation'] ingestion json mapping "DE.Autobahn.ChargingStation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -554,7 +554,7 @@
 ]
 ```
 
-.create-or-alter table [ChargingStation] ingestion json mapping "ChargingStation_json_ce_structured"
+.create-or-alter table ['DE.Autobahn.ChargingStation'] ingestion json mapping "DE.Autobahn.ChargingStation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -584,13 +584,13 @@
 ]
 ```
 
-.drop materialized-view ChargingStationLatest ifexists;
+.drop materialized-view ['DE.Autobahn.ChargingStationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ChargingStationLatest on table ChargingStation {
-    ChargingStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['DE.Autobahn.ChargingStationLatest'] on table ['DE.Autobahn.ChargingStation'] {
+    ['DE.Autobahn.ChargingStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ChargingStation] policy update
+.alter table ['DE.Autobahn.ChargingStation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -601,7 +601,7 @@
 }]
 ```
 
-.create-merge table [Webcam] (
+.create-merge table ['DE.Autobahn.Webcam'] (
    [identifier]: string,
    [road_ids]: dynamic,
    [event_time]: datetime,
@@ -628,9 +628,9 @@
    [___subject]: string
 );
 
-.alter table [Webcam] docstring "{\"description\": \"Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.\"}";
+.alter table ['DE.Autobahn.Webcam'] docstring "{\"description\": \"Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.\"}";
 
-.alter table [Webcam] column-docstrings (
+.alter table ['DE.Autobahn.Webcam'] column-docstrings (
    [identifier]: "{\"description\": \"Stable Autobahn webcam identifier used for the CloudEvents subject and Kafka key.\"}",
    [road_ids]: "{\"description\": \"Autobahn road identifiers for the road query that yielded this webcam item.\", \"schema\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}, \"minItems\": 1, \"uniqueItems\": true, \"description\": \"Autobahn road identifiers for the road query that yielded this webcam item.\"}}",
    [event_time]: "{\"description\": \"CloudEvents event time for the emitted webcam record. The bridge uses the poll timestamp because webcam items do not expose startTimestamp in the normalized payload.\"}",
@@ -657,7 +657,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Webcam] ingestion json mapping "Webcam_json_flat"
+.create-or-alter table ['DE.Autobahn.Webcam'] ingestion json mapping "DE.Autobahn.Webcam_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -687,7 +687,7 @@
 ]
 ```
 
-.create-or-alter table [Webcam] ingestion json mapping "Webcam_json_ce_structured"
+.create-or-alter table ['DE.Autobahn.Webcam'] ingestion json mapping "DE.Autobahn.Webcam_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -717,13 +717,13 @@
 ]
 ```
 
-.drop materialized-view WebcamLatest ifexists;
+.drop materialized-view ['DE.Autobahn.WebcamLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WebcamLatest on table Webcam {
-    Webcam | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['DE.Autobahn.WebcamLatest'] on table ['DE.Autobahn.Webcam'] {
+    ['DE.Autobahn.Webcam'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Webcam] policy update
+.alter table ['DE.Autobahn.Webcam'] policy update
 ```
 [{
   "IsEnabled": true,
