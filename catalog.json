@@ -429,7 +429,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "European Alps — daily avalanche bulletins, CAAMLv6",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "gdacs",
