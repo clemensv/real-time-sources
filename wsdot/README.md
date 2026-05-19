@@ -51,6 +51,7 @@ is polled every 120 seconds (configurable).
 - Ferries API: https://www.wsdot.wa.gov/ferries/api/vessels/rest/
 - Event catalog: [EVENTS.md](EVENTS.md)
 - Container deployment: [CONTAINER.md](CONTAINER.md)
+- Fabric notebook hosting: deploy this feeder as a scheduled Fabric notebook with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (uses [`wsdot/notebook/wsdot-feed.ipynb`](notebook/wsdot-feed.ipynb)).
 
 ## Deploying into Azure Container Instances
 

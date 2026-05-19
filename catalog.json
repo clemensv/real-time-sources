@@ -669,7 +669,8 @@
     "cat": "Transport",
     "key": true,
     "desc": "Washington State — ~1,000 traffic flow sensors (requires free key)",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "irail",
