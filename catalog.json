@@ -23,7 +23,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Czech Republic — CHMU",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "german-waters",
