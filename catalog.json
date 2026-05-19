@@ -509,7 +509,8 @@
     "cat": "Radiation",
     "key": false,
     "desc": "United States — 14 observatories, 1-min geomagnetic field",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "aisstream",

@@ -11,6 +11,7 @@
 - **Deduplication**: Tracks last seen timestamp per observatory in a state file to avoid reprocessing.
 - **Kafka Integration**: Send readings to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: Optionally schedule this feeder as a Microsoft Fabric notebook using [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); see [`notebook/usgs-geomag-feed.ipynb`](notebook/usgs-geomag-feed.ipynb).
 
 ## Observatories
 

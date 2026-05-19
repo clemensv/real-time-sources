@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Observatory] (
+.create-merge table ['gov.usgs.geomag.Observatory'] (
    [iaga_code]: string,
    [name]: string,
    [agency]: string,
@@ -43,9 +43,9 @@
    [___subject]: string
 );
 
-.alter table [Observatory] docstring "{\"description\": \"Reference data for a USGS Geomagnetism Program observatory, sourced from the INTERMAGNET-compatible observatories GeoJSON endpoint at https://geomag.usgs.gov/ws/observatories/. Each feature represents a ground-based magnetometer station that continuously records geomagnetic field variations.\"}";
+.alter table ['gov.usgs.geomag.Observatory'] docstring "{\"description\": \"Reference data for a USGS Geomagnetism Program observatory, sourced from the INTERMAGNET-compatible observatories GeoJSON endpoint at https://geomag.usgs.gov/ws/observatories/. Each feature represents a ground-based magnetometer station that continuously records geomagnetic field variations.\"}";
 
-.alter table [Observatory] column-docstrings (
+.alter table ['gov.usgs.geomag.Observatory'] column-docstrings (
    [iaga_code]: "{\"description\": \"IAGA (International Association of Geomagnetism and Aeronomy) three- or four-character observatory code, e.g. BOU for Boulder, BRW for Barrow. This is the primary stable identifier for an observatory.\"}",
    [name]: "{\"description\": \"Human-readable name of the observatory, e.g. 'Boulder', 'Barrow', 'College'.\"}",
    [agency]: "{\"description\": \"Short identifier of the operating agency, e.g. 'USGS' for United States Geological Survey.\"}",
@@ -63,7 +63,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Observatory] ingestion json mapping "Observatory_json_flat"
+.create-or-alter table ['gov.usgs.geomag.Observatory'] ingestion json mapping "gov.usgs.geomag.Observatory_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -84,7 +84,7 @@
 ]
 ```
 
-.create-or-alter table [Observatory] ingestion json mapping "Observatory_json_ce_structured"
+.create-or-alter table ['gov.usgs.geomag.Observatory'] ingestion json mapping "gov.usgs.geomag.Observatory_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -105,13 +105,13 @@
 ]
 ```
 
-.drop materialized-view ObservatoryLatest ifexists;
+.drop materialized-view ['gov.usgs.geomag.ObservatoryLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ObservatoryLatest on table Observatory {
-    Observatory | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.usgs.geomag.ObservatoryLatest'] on table ['gov.usgs.geomag.Observatory'] {
+    ['gov.usgs.geomag.Observatory'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Observatory] policy update
+.alter table ['gov.usgs.geomag.Observatory'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -122,7 +122,7 @@
 }]
 ```
 
-.create-merge table [MagneticFieldReading] (
+.create-merge table ['gov.usgs.geomag.MagneticFieldReading'] (
    [iaga_code]: string,
    [timestamp]: datetime,
    [h]: real,
@@ -136,9 +136,9 @@
    [___subject]: string
 );
 
-.alter table [MagneticFieldReading] docstring "{\"description\": \"One-minute resolution geomagnetic field variation reading from a USGS Geomagnetism Program observatory, sourced from the timeseries web-service at https://geomag.usgs.gov/ws/data/. The H, D, Z, and F elements correspond to the four standard INTERMAGNET variation data components. The timeseries API returns parallel arrays (times + per-element value arrays) which the bridge transforms into individual timestamped events.\"}";
+.alter table ['gov.usgs.geomag.MagneticFieldReading'] docstring "{\"description\": \"One-minute resolution geomagnetic field variation reading from a USGS Geomagnetism Program observatory, sourced from the timeseries web-service at https://geomag.usgs.gov/ws/data/. The H, D, Z, and F elements correspond to the four standard INTERMAGNET variation data components. The timeseries API returns parallel arrays (times + per-element value arrays) which the bridge transforms into individual timestamped events.\"}";
 
-.alter table [MagneticFieldReading] column-docstrings (
+.alter table ['gov.usgs.geomag.MagneticFieldReading'] column-docstrings (
    [iaga_code]: "{\"description\": \"IAGA observatory code identifying the station that produced this reading, e.g. BOU, BRW, FRN.\"}",
    [timestamp]: "{\"description\": \"UTC timestamp of the 1-minute magnetic field sample, in ISO 8601 format. Derived from the 'times' array in the USGS Geomagnetism web-service timeseries response.\"}",
    [h]: "{\"description\": \"Horizontal intensity component of the geomagnetic field vector. Represents the magnitude of the horizontal projection of the total field vector. Null when the observatory does not report this element or the value is missing for this minute.\"}",
@@ -152,7 +152,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [MagneticFieldReading] ingestion json mapping "MagneticFieldReading_json_flat"
+.create-or-alter table ['gov.usgs.geomag.MagneticFieldReading'] ingestion json mapping "gov.usgs.geomag.MagneticFieldReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -169,7 +169,7 @@
 ]
 ```
 
-.create-or-alter table [MagneticFieldReading] ingestion json mapping "MagneticFieldReading_json_ce_structured"
+.create-or-alter table ['gov.usgs.geomag.MagneticFieldReading'] ingestion json mapping "gov.usgs.geomag.MagneticFieldReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -186,13 +186,13 @@
 ]
 ```
 
-.drop materialized-view MagneticFieldReadingLatest ifexists;
+.drop materialized-view ['gov.usgs.geomag.MagneticFieldReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MagneticFieldReadingLatest on table MagneticFieldReading {
-    MagneticFieldReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.usgs.geomag.MagneticFieldReadingLatest'] on table ['gov.usgs.geomag.MagneticFieldReading'] {
+    ['gov.usgs.geomag.MagneticFieldReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [MagneticFieldReading] policy update
+.alter table ['gov.usgs.geomag.MagneticFieldReading'] policy update
 ```
 [{
   "IsEnabled": true,
