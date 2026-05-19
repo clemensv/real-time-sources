@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Site] (
+.create-merge table ['USGS.Sites.Site'] (
    [agency_cd]: string,
    [site_no]: string,
    [station_nm]: string,
@@ -75,9 +75,9 @@
    [___subject]: string
 );
 
-.alter table [Site] docstring "{\"description\": \"USGS site metadata.\"}";
+.alter table ['USGS.Sites.Site'] docstring "{\"description\": \"USGS site metadata.\"}";
 
-.alter table [Site] column-docstrings (
+.alter table ['USGS.Sites.Site'] column-docstrings (
    [agency_cd]: "{\"description\": \"Agency code.\"}",
    [site_no]: "{\"description\": \"USGS site number.\"}",
    [station_nm]: "{\"description\": \"Station name.\"}",
@@ -127,7 +127,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Site] ingestion json mapping "Site_json_flat"
+.create-or-alter table ['USGS.Sites.Site'] ingestion json mapping "USGS.Sites.Site_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -180,7 +180,7 @@
 ]
 ```
 
-.create-or-alter table [Site] ingestion json mapping "Site_json_ce_structured"
+.create-or-alter table ['USGS.Sites.Site'] ingestion json mapping "USGS.Sites.Site_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -233,13 +233,13 @@
 ]
 ```
 
-.drop materialized-view SiteLatest ifexists;
+.drop materialized-view ['USGS.Sites.SiteLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SiteLatest on table Site {
-    Site | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.Sites.SiteLatest'] on table ['USGS.Sites.Site'] {
+    ['USGS.Sites.Site'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Site] policy update
+.alter table ['USGS.Sites.Site'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -250,7 +250,7 @@
 }]
 ```
 
-.create-merge table [SiteTimeseries] (
+.create-merge table ['USGS.Sites.SiteTimeseries'] (
    [agency_cd]: string,
    [site_no]: string,
    [parameter_cd]: string,
@@ -263,9 +263,9 @@
    [___subject]: string
 );
 
-.alter table [SiteTimeseries] docstring "{\"description\": \"USGS site timeseries metadata.\"}";
+.alter table ['USGS.Sites.SiteTimeseries'] docstring "{\"description\": \"USGS site timeseries metadata.\"}";
 
-.alter table [SiteTimeseries] column-docstrings (
+.alter table ['USGS.Sites.SiteTimeseries'] column-docstrings (
    [agency_cd]: "{\"description\": \"Agency code.\"}",
    [site_no]: "{\"description\": \"USGS site number.\"}",
    [parameter_cd]: "{\"description\": \"Parameter code.\"}",
@@ -278,7 +278,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [SiteTimeseries] ingestion json mapping "SiteTimeseries_json_flat"
+.create-or-alter table ['USGS.Sites.SiteTimeseries'] ingestion json mapping "USGS.Sites.SiteTimeseries_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -294,7 +294,7 @@
 ]
 ```
 
-.create-or-alter table [SiteTimeseries] ingestion json mapping "SiteTimeseries_json_ce_structured"
+.create-or-alter table ['USGS.Sites.SiteTimeseries'] ingestion json mapping "USGS.Sites.SiteTimeseries_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -310,13 +310,13 @@
 ]
 ```
 
-.drop materialized-view SiteTimeseriesLatest ifexists;
+.drop materialized-view ['USGS.Sites.SiteTimeseriesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SiteTimeseriesLatest on table SiteTimeseries {
-    SiteTimeseries | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.Sites.SiteTimeseriesLatest'] on table ['USGS.Sites.SiteTimeseries'] {
+    ['USGS.Sites.SiteTimeseries'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [SiteTimeseries] policy update
+.alter table ['USGS.Sites.SiteTimeseries'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -327,7 +327,7 @@
 }]
 ```
 
-.create-merge table [OtherParameter] (
+.create-merge table ['USGS.InstantaneousValues.OtherParameter'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -342,9 +342,9 @@
    [___subject]: string
 );
 
-.alter table [OtherParameter] docstring "{\"description\": \"USGS other parameter data.\"}";
+.alter table ['USGS.InstantaneousValues.OtherParameter'] docstring "{\"description\": \"USGS other parameter data.\"}";
 
-.alter table [OtherParameter] column-docstrings (
+.alter table ['USGS.InstantaneousValues.OtherParameter'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value.\\\"}\"}",
@@ -359,7 +359,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [OtherParameter] ingestion json mapping "OtherParameter_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.OtherParameter'] ingestion json mapping "USGS.InstantaneousValues.OtherParameter_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -377,7 +377,7 @@
 ]
 ```
 
-.create-or-alter table [OtherParameter] ingestion json mapping "OtherParameter_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.OtherParameter'] ingestion json mapping "USGS.InstantaneousValues.OtherParameter_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -395,13 +395,13 @@
 ]
 ```
 
-.drop materialized-view OtherParameterLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.OtherParameterLatest'] ifexists;
 
-.create materialized-view with (backfill=true) OtherParameterLatest on table OtherParameter {
-    OtherParameter | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.OtherParameterLatest'] on table ['USGS.InstantaneousValues.OtherParameter'] {
+    ['USGS.InstantaneousValues.OtherParameter'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [OtherParameter] policy update
+.alter table ['USGS.InstantaneousValues.OtherParameter'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -412,7 +412,7 @@
 }]
 ```
 
-.create-merge table [Precipitation] (
+.create-merge table ['USGS.InstantaneousValues.Precipitation'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -427,9 +427,9 @@
    [___subject]: string
 );
 
-.alter table [Precipitation] docstring "{\"description\": \"USGS precipitation data. Parameter code 00045.\"}";
+.alter table ['USGS.InstantaneousValues.Precipitation'] docstring "{\"description\": \"USGS precipitation data. Parameter code 00045.\"}";
 
-.alter table [Precipitation] column-docstrings (
+.alter table ['USGS.InstantaneousValues.Precipitation'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Precipitation value, inches.\\\"}\"}",
@@ -444,7 +444,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Precipitation] ingestion json mapping "Precipitation_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.Precipitation'] ingestion json mapping "USGS.InstantaneousValues.Precipitation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -462,7 +462,7 @@
 ]
 ```
 
-.create-or-alter table [Precipitation] ingestion json mapping "Precipitation_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.Precipitation'] ingestion json mapping "USGS.InstantaneousValues.Precipitation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -480,13 +480,13 @@
 ]
 ```
 
-.drop materialized-view PrecipitationLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.PrecipitationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) PrecipitationLatest on table Precipitation {
-    Precipitation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.PrecipitationLatest'] on table ['USGS.InstantaneousValues.Precipitation'] {
+    ['USGS.InstantaneousValues.Precipitation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Precipitation] policy update
+.alter table ['USGS.InstantaneousValues.Precipitation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -497,7 +497,7 @@
 }]
 ```
 
-.create-merge table [Streamflow] (
+.create-merge table ['USGS.InstantaneousValues.Streamflow'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -512,9 +512,9 @@
    [___subject]: string
 );
 
-.alter table [Streamflow] docstring "{\"description\": \"USGS streamflow data. Parameter code 00060.\"}";
+.alter table ['USGS.InstantaneousValues.Streamflow'] docstring "{\"description\": \"USGS streamflow data. Parameter code 00060.\"}";
 
-.alter table [Streamflow] column-docstrings (
+.alter table ['USGS.InstantaneousValues.Streamflow'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Discharge value.\\\"}\"}",
@@ -529,7 +529,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Streamflow] ingestion json mapping "Streamflow_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.Streamflow'] ingestion json mapping "USGS.InstantaneousValues.Streamflow_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -547,7 +547,7 @@
 ]
 ```
 
-.create-or-alter table [Streamflow] ingestion json mapping "Streamflow_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.Streamflow'] ingestion json mapping "USGS.InstantaneousValues.Streamflow_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -565,13 +565,13 @@
 ]
 ```
 
-.drop materialized-view StreamflowLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.StreamflowLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StreamflowLatest on table Streamflow {
-    Streamflow | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.StreamflowLatest'] on table ['USGS.InstantaneousValues.Streamflow'] {
+    ['USGS.InstantaneousValues.Streamflow'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Streamflow] policy update
+.alter table ['USGS.InstantaneousValues.Streamflow'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -582,7 +582,7 @@
 }]
 ```
 
-.create-merge table [GageHeight] (
+.create-merge table ['USGS.InstantaneousValues.GageHeight'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -597,9 +597,9 @@
    [___subject]: string
 );
 
-.alter table [GageHeight] docstring "{\"description\": \"USGS gage height data. Parameter code 00065.\"}";
+.alter table ['USGS.InstantaneousValues.GageHeight'] docstring "{\"description\": \"USGS gage height data. Parameter code 00065.\"}";
 
-.alter table [GageHeight] column-docstrings (
+.alter table ['USGS.InstantaneousValues.GageHeight'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Gage height value.\\\"}\"}",
@@ -614,7 +614,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [GageHeight] ingestion json mapping "GageHeight_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.GageHeight'] ingestion json mapping "USGS.InstantaneousValues.GageHeight_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -632,7 +632,7 @@
 ]
 ```
 
-.create-or-alter table [GageHeight] ingestion json mapping "GageHeight_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.GageHeight'] ingestion json mapping "USGS.InstantaneousValues.GageHeight_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -650,13 +650,13 @@
 ]
 ```
 
-.drop materialized-view GageHeightLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.GageHeightLatest'] ifexists;
 
-.create materialized-view with (backfill=true) GageHeightLatest on table GageHeight {
-    GageHeight | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.GageHeightLatest'] on table ['USGS.InstantaneousValues.GageHeight'] {
+    ['USGS.InstantaneousValues.GageHeight'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [GageHeight] policy update
+.alter table ['USGS.InstantaneousValues.GageHeight'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -667,7 +667,7 @@
 }]
 ```
 
-.create-merge table [WaterTemperature] (
+.create-merge table ['USGS.InstantaneousValues.WaterTemperature'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -682,9 +682,9 @@
    [___subject]: string
 );
 
-.alter table [WaterTemperature] docstring "{\"description\": \"USGS water temperature data. Parameter code 00010.\"}";
+.alter table ['USGS.InstantaneousValues.WaterTemperature'] docstring "{\"description\": \"USGS water temperature data. Parameter code 00010.\"}";
 
-.alter table [WaterTemperature] column-docstrings (
+.alter table ['USGS.InstantaneousValues.WaterTemperature'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Water temperature value.\\\"}\"}",
@@ -699,7 +699,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.WaterTemperature'] ingestion json mapping "USGS.InstantaneousValues.WaterTemperature_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -717,7 +717,7 @@
 ]
 ```
 
-.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.WaterTemperature'] ingestion json mapping "USGS.InstantaneousValues.WaterTemperature_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -735,13 +735,13 @@
 ]
 ```
 
-.drop materialized-view WaterTemperatureLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.WaterTemperatureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterTemperatureLatest on table WaterTemperature {
-    WaterTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.WaterTemperatureLatest'] on table ['USGS.InstantaneousValues.WaterTemperature'] {
+    ['USGS.InstantaneousValues.WaterTemperature'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterTemperature] policy update
+.alter table ['USGS.InstantaneousValues.WaterTemperature'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -752,7 +752,7 @@
 }]
 ```
 
-.create-merge table [DissolvedOxygen] (
+.create-merge table ['USGS.InstantaneousValues.DissolvedOxygen'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -767,9 +767,9 @@
    [___subject]: string
 );
 
-.alter table [DissolvedOxygen] docstring "{\"description\": \"USGS dissolved oxygen data. Parameter code 00300.\"}";
+.alter table ['USGS.InstantaneousValues.DissolvedOxygen'] docstring "{\"description\": \"USGS dissolved oxygen data. Parameter code 00300.\"}";
 
-.alter table [DissolvedOxygen] column-docstrings (
+.alter table ['USGS.InstantaneousValues.DissolvedOxygen'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved oxygen value.\\\"}\"}",
@@ -784,7 +784,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [DissolvedOxygen] ingestion json mapping "DissolvedOxygen_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.DissolvedOxygen'] ingestion json mapping "USGS.InstantaneousValues.DissolvedOxygen_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -802,7 +802,7 @@
 ]
 ```
 
-.create-or-alter table [DissolvedOxygen] ingestion json mapping "DissolvedOxygen_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.DissolvedOxygen'] ingestion json mapping "USGS.InstantaneousValues.DissolvedOxygen_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -820,13 +820,13 @@
 ]
 ```
 
-.drop materialized-view DissolvedOxygenLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.DissolvedOxygenLatest'] ifexists;
 
-.create materialized-view with (backfill=true) DissolvedOxygenLatest on table DissolvedOxygen {
-    DissolvedOxygen | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.DissolvedOxygenLatest'] on table ['USGS.InstantaneousValues.DissolvedOxygen'] {
+    ['USGS.InstantaneousValues.DissolvedOxygen'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [DissolvedOxygen] policy update
+.alter table ['USGS.InstantaneousValues.DissolvedOxygen'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -837,7 +837,7 @@
 }]
 ```
 
-.create-merge table [pH] (
+.create-merge table ['USGS.InstantaneousValues.pH'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -852,9 +852,9 @@
    [___subject]: string
 );
 
-.alter table [pH] docstring "{\"description\": \"USGS pH data. Parameter code 00400.\"}";
+.alter table ['USGS.InstantaneousValues.pH'] docstring "{\"description\": \"USGS pH data. Parameter code 00400.\"}";
 
-.alter table [pH] column-docstrings (
+.alter table ['USGS.InstantaneousValues.pH'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"pH value.\\\"}\"}",
@@ -869,7 +869,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [pH] ingestion json mapping "pH_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.pH'] ingestion json mapping "USGS.InstantaneousValues.pH_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -887,7 +887,7 @@
 ]
 ```
 
-.create-or-alter table [pH] ingestion json mapping "pH_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.pH'] ingestion json mapping "USGS.InstantaneousValues.pH_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -905,13 +905,13 @@
 ]
 ```
 
-.drop materialized-view pHLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.pHLatest'] ifexists;
 
-.create materialized-view with (backfill=true) pHLatest on table pH {
-    pH | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.pHLatest'] on table ['USGS.InstantaneousValues.pH'] {
+    ['USGS.InstantaneousValues.pH'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [pH] policy update
+.alter table ['USGS.InstantaneousValues.pH'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -922,7 +922,7 @@
 }]
 ```
 
-.create-merge table [SpecificConductance] (
+.create-merge table ['USGS.InstantaneousValues.SpecificConductance'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -937,9 +937,9 @@
    [___subject]: string
 );
 
-.alter table [SpecificConductance] docstring "{\"description\": \"USGS specific conductance data. Parameter code 00095.\"}";
+.alter table ['USGS.InstantaneousValues.SpecificConductance'] docstring "{\"description\": \"USGS specific conductance data. Parameter code 00095.\"}";
 
-.alter table [SpecificConductance] column-docstrings (
+.alter table ['USGS.InstantaneousValues.SpecificConductance'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Specific conductance value.\\\"}\"}",
@@ -954,7 +954,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [SpecificConductance] ingestion json mapping "SpecificConductance_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.SpecificConductance'] ingestion json mapping "USGS.InstantaneousValues.SpecificConductance_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -972,7 +972,7 @@
 ]
 ```
 
-.create-or-alter table [SpecificConductance] ingestion json mapping "SpecificConductance_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.SpecificConductance'] ingestion json mapping "USGS.InstantaneousValues.SpecificConductance_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -990,13 +990,13 @@
 ]
 ```
 
-.drop materialized-view SpecificConductanceLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.SpecificConductanceLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SpecificConductanceLatest on table SpecificConductance {
-    SpecificConductance | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.SpecificConductanceLatest'] on table ['USGS.InstantaneousValues.SpecificConductance'] {
+    ['USGS.InstantaneousValues.SpecificConductance'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [SpecificConductance] policy update
+.alter table ['USGS.InstantaneousValues.SpecificConductance'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1007,7 +1007,7 @@
 }]
 ```
 
-.create-merge table [Turbidity] (
+.create-merge table ['USGS.InstantaneousValues.Turbidity'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1022,9 +1022,9 @@
    [___subject]: string
 );
 
-.alter table [Turbidity] docstring "{\"description\": \"USGS turbidity data. Parameter code 00076.\"}";
+.alter table ['USGS.InstantaneousValues.Turbidity'] docstring "{\"description\": \"USGS turbidity data. Parameter code 00076.\"}";
 
-.alter table [Turbidity] column-docstrings (
+.alter table ['USGS.InstantaneousValues.Turbidity'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\"}",
@@ -1039,7 +1039,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Turbidity] ingestion json mapping "Turbidity_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.Turbidity'] ingestion json mapping "USGS.InstantaneousValues.Turbidity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1057,7 +1057,7 @@
 ]
 ```
 
-.create-or-alter table [Turbidity] ingestion json mapping "Turbidity_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.Turbidity'] ingestion json mapping "USGS.InstantaneousValues.Turbidity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1075,13 +1075,13 @@
 ]
 ```
 
-.drop materialized-view TurbidityLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.TurbidityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TurbidityLatest on table Turbidity {
-    Turbidity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.TurbidityLatest'] on table ['USGS.InstantaneousValues.Turbidity'] {
+    ['USGS.InstantaneousValues.Turbidity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Turbidity] policy update
+.alter table ['USGS.InstantaneousValues.Turbidity'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1092,7 +1092,7 @@
 }]
 ```
 
-.create-merge table [AirTemperature] (
+.create-merge table ['USGS.InstantaneousValues.AirTemperature'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1107,9 +1107,9 @@
    [___subject]: string
 );
 
-.alter table [AirTemperature] docstring "{\"description\": \"USGS air temperature data. Parameter code 00020.\"}";
+.alter table ['USGS.InstantaneousValues.AirTemperature'] docstring "{\"description\": \"USGS air temperature data. Parameter code 00020.\"}";
 
-.alter table [AirTemperature] column-docstrings (
+.alter table ['USGS.InstantaneousValues.AirTemperature'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Air temperature value.\\\"}\"}",
@@ -1124,7 +1124,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.AirTemperature'] ingestion json mapping "USGS.InstantaneousValues.AirTemperature_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1142,7 +1142,7 @@
 ]
 ```
 
-.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.AirTemperature'] ingestion json mapping "USGS.InstantaneousValues.AirTemperature_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1160,13 +1160,13 @@
 ]
 ```
 
-.drop materialized-view AirTemperatureLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.AirTemperatureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AirTemperatureLatest on table AirTemperature {
-    AirTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.AirTemperatureLatest'] on table ['USGS.InstantaneousValues.AirTemperature'] {
+    ['USGS.InstantaneousValues.AirTemperature'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [AirTemperature] policy update
+.alter table ['USGS.InstantaneousValues.AirTemperature'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1177,7 +1177,7 @@
 }]
 ```
 
-.create-merge table [WindSpeed] (
+.create-merge table ['USGS.InstantaneousValues.WindSpeed'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1192,9 +1192,9 @@
    [___subject]: string
 );
 
-.alter table [WindSpeed] docstring "{\"description\": \"USGS wind speed data. Parameter code 00035.\"}";
+.alter table ['USGS.InstantaneousValues.WindSpeed'] docstring "{\"description\": \"USGS wind speed data. Parameter code 00035.\"}";
 
-.alter table [WindSpeed] column-docstrings (
+.alter table ['USGS.InstantaneousValues.WindSpeed'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind speed value.\\\"}\"}",
@@ -1209,7 +1209,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WindSpeed] ingestion json mapping "WindSpeed_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.WindSpeed'] ingestion json mapping "USGS.InstantaneousValues.WindSpeed_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1227,7 +1227,7 @@
 ]
 ```
 
-.create-or-alter table [WindSpeed] ingestion json mapping "WindSpeed_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.WindSpeed'] ingestion json mapping "USGS.InstantaneousValues.WindSpeed_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1245,13 +1245,13 @@
 ]
 ```
 
-.drop materialized-view WindSpeedLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.WindSpeedLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WindSpeedLatest on table WindSpeed {
-    WindSpeed | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.WindSpeedLatest'] on table ['USGS.InstantaneousValues.WindSpeed'] {
+    ['USGS.InstantaneousValues.WindSpeed'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WindSpeed] policy update
+.alter table ['USGS.InstantaneousValues.WindSpeed'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1262,7 +1262,7 @@
 }]
 ```
 
-.create-merge table [WindDirection] (
+.create-merge table ['USGS.InstantaneousValues.WindDirection'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1277,9 +1277,9 @@
    [___subject]: string
 );
 
-.alter table [WindDirection] docstring "{\"description\": \"USGS wind direction data. Parameter codes 00036 and 163695.\"}";
+.alter table ['USGS.InstantaneousValues.WindDirection'] docstring "{\"description\": \"USGS wind direction data. Parameter codes 00036 and 163695.\"}";
 
-.alter table [WindDirection] column-docstrings (
+.alter table ['USGS.InstantaneousValues.WindDirection'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Wind direction value.\\\"}\"}",
@@ -1294,7 +1294,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WindDirection] ingestion json mapping "WindDirection_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.WindDirection'] ingestion json mapping "USGS.InstantaneousValues.WindDirection_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1312,7 +1312,7 @@
 ]
 ```
 
-.create-or-alter table [WindDirection] ingestion json mapping "WindDirection_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.WindDirection'] ingestion json mapping "USGS.InstantaneousValues.WindDirection_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1330,13 +1330,13 @@
 ]
 ```
 
-.drop materialized-view WindDirectionLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.WindDirectionLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WindDirectionLatest on table WindDirection {
-    WindDirection | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.WindDirectionLatest'] on table ['USGS.InstantaneousValues.WindDirection'] {
+    ['USGS.InstantaneousValues.WindDirection'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WindDirection] policy update
+.alter table ['USGS.InstantaneousValues.WindDirection'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1347,7 +1347,7 @@
 }]
 ```
 
-.create-merge table [RelativeHumidity] (
+.create-merge table ['USGS.InstantaneousValues.RelativeHumidity'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1362,9 +1362,9 @@
    [___subject]: string
 );
 
-.alter table [RelativeHumidity] docstring "{\"description\": \"USGS relative humidity data. Parameter code 00052.\"}";
+.alter table ['USGS.InstantaneousValues.RelativeHumidity'] docstring "{\"description\": \"USGS relative humidity data. Parameter code 00052.\"}";
 
-.alter table [RelativeHumidity] column-docstrings (
+.alter table ['USGS.InstantaneousValues.RelativeHumidity'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Relative humidity value.\\\"}\"}",
@@ -1379,7 +1379,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [RelativeHumidity] ingestion json mapping "RelativeHumidity_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.RelativeHumidity'] ingestion json mapping "USGS.InstantaneousValues.RelativeHumidity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1397,7 +1397,7 @@
 ]
 ```
 
-.create-or-alter table [RelativeHumidity] ingestion json mapping "RelativeHumidity_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.RelativeHumidity'] ingestion json mapping "USGS.InstantaneousValues.RelativeHumidity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1415,13 +1415,13 @@
 ]
 ```
 
-.drop materialized-view RelativeHumidityLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.RelativeHumidityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) RelativeHumidityLatest on table RelativeHumidity {
-    RelativeHumidity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.RelativeHumidityLatest'] on table ['USGS.InstantaneousValues.RelativeHumidity'] {
+    ['USGS.InstantaneousValues.RelativeHumidity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [RelativeHumidity] policy update
+.alter table ['USGS.InstantaneousValues.RelativeHumidity'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1432,7 +1432,7 @@
 }]
 ```
 
-.create-merge table [BarometricPressure] (
+.create-merge table ['USGS.InstantaneousValues.BarometricPressure'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1447,9 +1447,9 @@
    [___subject]: string
 );
 
-.alter table [BarometricPressure] docstring "{\"description\": \"USGS barometric pressure data. Parameter codes 62605 and 75969.\"}";
+.alter table ['USGS.InstantaneousValues.BarometricPressure'] docstring "{\"description\": \"USGS barometric pressure data. Parameter codes 62605 and 75969.\"}";
 
-.alter table [BarometricPressure] column-docstrings (
+.alter table ['USGS.InstantaneousValues.BarometricPressure'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Barometric pressure value.\\\"}\"}",
@@ -1464,7 +1464,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BarometricPressure] ingestion json mapping "BarometricPressure_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.BarometricPressure'] ingestion json mapping "USGS.InstantaneousValues.BarometricPressure_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1482,7 +1482,7 @@
 ]
 ```
 
-.create-or-alter table [BarometricPressure] ingestion json mapping "BarometricPressure_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.BarometricPressure'] ingestion json mapping "USGS.InstantaneousValues.BarometricPressure_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1500,13 +1500,13 @@
 ]
 ```
 
-.drop materialized-view BarometricPressureLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.BarometricPressureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BarometricPressureLatest on table BarometricPressure {
-    BarometricPressure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.BarometricPressureLatest'] on table ['USGS.InstantaneousValues.BarometricPressure'] {
+    ['USGS.InstantaneousValues.BarometricPressure'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BarometricPressure] policy update
+.alter table ['USGS.InstantaneousValues.BarometricPressure'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1517,7 +1517,7 @@
 }]
 ```
 
-.create-merge table [TurbidityFNU] (
+.create-merge table ['USGS.InstantaneousValues.TurbidityFNU'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1532,9 +1532,9 @@
    [___subject]: string
 );
 
-.alter table [TurbidityFNU] docstring "{\"description\": \"USGS turbidity data (FNU). Parameter code 63680.\"}";
+.alter table ['USGS.InstantaneousValues.TurbidityFNU'] docstring "{\"description\": \"USGS turbidity data (FNU). Parameter code 63680.\"}";
 
-.alter table [TurbidityFNU] column-docstrings (
+.alter table ['USGS.InstantaneousValues.TurbidityFNU'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Turbidity value.\\\"}\"}",
@@ -1549,7 +1549,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TurbidityFNU] ingestion json mapping "TurbidityFNU_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.TurbidityFNU'] ingestion json mapping "USGS.InstantaneousValues.TurbidityFNU_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1567,7 +1567,7 @@
 ]
 ```
 
-.create-or-alter table [TurbidityFNU] ingestion json mapping "TurbidityFNU_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.TurbidityFNU'] ingestion json mapping "USGS.InstantaneousValues.TurbidityFNU_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1585,13 +1585,13 @@
 ]
 ```
 
-.drop materialized-view TurbidityFNULatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.TurbidityFNULatest'] ifexists;
 
-.create materialized-view with (backfill=true) TurbidityFNULatest on table TurbidityFNU {
-    TurbidityFNU | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.TurbidityFNULatest'] on table ['USGS.InstantaneousValues.TurbidityFNU'] {
+    ['USGS.InstantaneousValues.TurbidityFNU'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TurbidityFNU] policy update
+.alter table ['USGS.InstantaneousValues.TurbidityFNU'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1602,7 +1602,7 @@
 }]
 ```
 
-.create-merge table [fDOM] (
+.create-merge table ['USGS.InstantaneousValues.fDOM'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1617,9 +1617,9 @@
    [___subject]: string
 );
 
-.alter table [fDOM] docstring "{\"description\": \"USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.\"}";
+.alter table ['USGS.InstantaneousValues.fDOM'] docstring "{\"description\": \"USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.\"}";
 
-.alter table [fDOM] column-docstrings (
+.alter table ['USGS.InstantaneousValues.fDOM'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Dissolved organic matter fluorescence value.\\\"}\"}",
@@ -1634,7 +1634,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [fDOM] ingestion json mapping "fDOM_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.fDOM'] ingestion json mapping "USGS.InstantaneousValues.fDOM_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1652,7 +1652,7 @@
 ]
 ```
 
-.create-or-alter table [fDOM] ingestion json mapping "fDOM_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.fDOM'] ingestion json mapping "USGS.InstantaneousValues.fDOM_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1670,13 +1670,13 @@
 ]
 ```
 
-.drop materialized-view fDOMLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.fDOMLatest'] ifexists;
 
-.create materialized-view with (backfill=true) fDOMLatest on table fDOM {
-    fDOM | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.fDOMLatest'] on table ['USGS.InstantaneousValues.fDOM'] {
+    ['USGS.InstantaneousValues.fDOM'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [fDOM] policy update
+.alter table ['USGS.InstantaneousValues.fDOM'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1687,7 +1687,7 @@
 }]
 ```
 
-.create-merge table [ReservoirStorage] (
+.create-merge table ['USGS.InstantaneousValues.ReservoirStorage'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1702,9 +1702,9 @@
    [___subject]: string
 );
 
-.alter table [ReservoirStorage] docstring "{\"description\": \"USGS reservoir storage data. Parameter code 00054.\"}";
+.alter table ['USGS.InstantaneousValues.ReservoirStorage'] docstring "{\"description\": \"USGS reservoir storage data. Parameter code 00054.\"}";
 
-.alter table [ReservoirStorage] column-docstrings (
+.alter table ['USGS.InstantaneousValues.ReservoirStorage'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Reservoir storage value.\\\"}\"}",
@@ -1719,7 +1719,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ReservoirStorage] ingestion json mapping "ReservoirStorage_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.ReservoirStorage'] ingestion json mapping "USGS.InstantaneousValues.ReservoirStorage_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1737,7 +1737,7 @@
 ]
 ```
 
-.create-or-alter table [ReservoirStorage] ingestion json mapping "ReservoirStorage_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.ReservoirStorage'] ingestion json mapping "USGS.InstantaneousValues.ReservoirStorage_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1755,13 +1755,13 @@
 ]
 ```
 
-.drop materialized-view ReservoirStorageLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.ReservoirStorageLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ReservoirStorageLatest on table ReservoirStorage {
-    ReservoirStorage | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.ReservoirStorageLatest'] on table ['USGS.InstantaneousValues.ReservoirStorage'] {
+    ['USGS.InstantaneousValues.ReservoirStorage'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ReservoirStorage] policy update
+.alter table ['USGS.InstantaneousValues.ReservoirStorage'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1772,7 +1772,7 @@
 }]
 ```
 
-.create-merge table [LakeElevationNGVD29] (
+.create-merge table ['USGS.InstantaneousValues.LakeElevationNGVD29'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1787,9 +1787,9 @@
    [___subject]: string
 );
 
-.alter table [LakeElevationNGVD29] docstring "{\"description\": \"USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.\"}";
+.alter table ['USGS.InstantaneousValues.LakeElevationNGVD29'] docstring "{\"description\": \"USGS lake or reservoir water surface elevation above NGVD 1929, feet. Parameter code 62614.\"}";
 
-.alter table [LakeElevationNGVD29] column-docstrings (
+.alter table ['USGS.InstantaneousValues.LakeElevationNGVD29'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NGVD 1929.\\\"}\"}",
@@ -1804,7 +1804,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LakeElevationNGVD29] ingestion json mapping "LakeElevationNGVD29_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.LakeElevationNGVD29'] ingestion json mapping "USGS.InstantaneousValues.LakeElevationNGVD29_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1822,7 +1822,7 @@
 ]
 ```
 
-.create-or-alter table [LakeElevationNGVD29] ingestion json mapping "LakeElevationNGVD29_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.LakeElevationNGVD29'] ingestion json mapping "USGS.InstantaneousValues.LakeElevationNGVD29_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1840,13 +1840,13 @@
 ]
 ```
 
-.drop materialized-view LakeElevationNGVD29Latest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.LakeElevationNGVD29Latest'] ifexists;
 
-.create materialized-view with (backfill=true) LakeElevationNGVD29Latest on table LakeElevationNGVD29 {
-    LakeElevationNGVD29 | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.LakeElevationNGVD29Latest'] on table ['USGS.InstantaneousValues.LakeElevationNGVD29'] {
+    ['USGS.InstantaneousValues.LakeElevationNGVD29'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LakeElevationNGVD29] policy update
+.alter table ['USGS.InstantaneousValues.LakeElevationNGVD29'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1857,7 +1857,7 @@
 }]
 ```
 
-.create-merge table [WaterDepth] (
+.create-merge table ['USGS.InstantaneousValues.WaterDepth'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -1872,9 +1872,9 @@
    [___subject]: string
 );
 
-.alter table [WaterDepth] docstring "{\"description\": \"USGS water depth data. Parameter code 72199.\"}";
+.alter table ['USGS.InstantaneousValues.WaterDepth'] docstring "{\"description\": \"USGS water depth data. Parameter code 72199.\"}";
 
-.alter table [WaterDepth] column-docstrings (
+.alter table ['USGS.InstantaneousValues.WaterDepth'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Water depth value.\\\"}\"}",
@@ -1889,7 +1889,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaterDepth] ingestion json mapping "WaterDepth_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.WaterDepth'] ingestion json mapping "USGS.InstantaneousValues.WaterDepth_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1907,7 +1907,7 @@
 ]
 ```
 
-.create-or-alter table [WaterDepth] ingestion json mapping "WaterDepth_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.WaterDepth'] ingestion json mapping "USGS.InstantaneousValues.WaterDepth_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1925,13 +1925,13 @@
 ]
 ```
 
-.drop materialized-view WaterDepthLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.WaterDepthLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterDepthLatest on table WaterDepth {
-    WaterDepth | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.WaterDepthLatest'] on table ['USGS.InstantaneousValues.WaterDepth'] {
+    ['USGS.InstantaneousValues.WaterDepth'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterDepth] policy update
+.alter table ['USGS.InstantaneousValues.WaterDepth'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1942,7 +1942,7 @@
 }]
 ```
 
-.create-merge table [EquipmentStatus] (
+.create-merge table ['USGS.InstantaneousValues.EquipmentStatus'] (
    [site_no]: string,
    [datetime]: string,
    [status]: string,
@@ -1955,9 +1955,9 @@
    [___subject]: string
 );
 
-.alter table [EquipmentStatus] docstring "{\"description\": \"USGS equipment alarm status data. Parameter code 99235.\"}";
+.alter table ['USGS.InstantaneousValues.EquipmentStatus'] docstring "{\"description\": \"USGS equipment alarm status data. Parameter code 99235.\"}";
 
-.alter table [EquipmentStatus] column-docstrings (
+.alter table ['USGS.InstantaneousValues.EquipmentStatus'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [status]: "{\"description\": \"{\\\"description\\\": \\\"Status of equipment alarm as codes.\\\"}\"}",
@@ -1970,7 +1970,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [EquipmentStatus] ingestion json mapping "EquipmentStatus_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.EquipmentStatus'] ingestion json mapping "USGS.InstantaneousValues.EquipmentStatus_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1986,7 +1986,7 @@
 ]
 ```
 
-.create-or-alter table [EquipmentStatus] ingestion json mapping "EquipmentStatus_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.EquipmentStatus'] ingestion json mapping "USGS.InstantaneousValues.EquipmentStatus_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2002,13 +2002,13 @@
 ]
 ```
 
-.drop materialized-view EquipmentStatusLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.EquipmentStatusLatest'] ifexists;
 
-.create materialized-view with (backfill=true) EquipmentStatusLatest on table EquipmentStatus {
-    EquipmentStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.EquipmentStatusLatest'] on table ['USGS.InstantaneousValues.EquipmentStatus'] {
+    ['USGS.InstantaneousValues.EquipmentStatus'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [EquipmentStatus] policy update
+.alter table ['USGS.InstantaneousValues.EquipmentStatus'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2019,7 +2019,7 @@
 }]
 ```
 
-.create-merge table [TidallyFilteredDischarge] (
+.create-merge table ['USGS.InstantaneousValues.TidallyFilteredDischarge'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -2034,9 +2034,9 @@
    [___subject]: string
 );
 
-.alter table [TidallyFilteredDischarge] docstring "{\"description\": \"USGS tidally filtered discharge data. Parameter code 72137.\"}";
+.alter table ['USGS.InstantaneousValues.TidallyFilteredDischarge'] docstring "{\"description\": \"USGS tidally filtered discharge data. Parameter code 72137.\"}";
 
-.alter table [TidallyFilteredDischarge] column-docstrings (
+.alter table ['USGS.InstantaneousValues.TidallyFilteredDischarge'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Tidally filtered discharge value.\\\"}\"}",
@@ -2051,7 +2051,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TidallyFilteredDischarge] ingestion json mapping "TidallyFilteredDischarge_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.TidallyFilteredDischarge'] ingestion json mapping "USGS.InstantaneousValues.TidallyFilteredDischarge_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2069,7 +2069,7 @@
 ]
 ```
 
-.create-or-alter table [TidallyFilteredDischarge] ingestion json mapping "TidallyFilteredDischarge_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.TidallyFilteredDischarge'] ingestion json mapping "USGS.InstantaneousValues.TidallyFilteredDischarge_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2087,13 +2087,13 @@
 ]
 ```
 
-.drop materialized-view TidallyFilteredDischargeLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.TidallyFilteredDischargeLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TidallyFilteredDischargeLatest on table TidallyFilteredDischarge {
-    TidallyFilteredDischarge | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.TidallyFilteredDischargeLatest'] on table ['USGS.InstantaneousValues.TidallyFilteredDischarge'] {
+    ['USGS.InstantaneousValues.TidallyFilteredDischarge'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TidallyFilteredDischarge] policy update
+.alter table ['USGS.InstantaneousValues.TidallyFilteredDischarge'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2104,7 +2104,7 @@
 }]
 ```
 
-.create-merge table [WaterVelocity] (
+.create-merge table ['USGS.InstantaneousValues.WaterVelocity'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -2119,9 +2119,9 @@
    [___subject]: string
 );
 
-.alter table [WaterVelocity] docstring "{\"description\": \"USGS water velocity data. Parameter code 72254.\"}";
+.alter table ['USGS.InstantaneousValues.WaterVelocity'] docstring "{\"description\": \"USGS water velocity data. Parameter code 72254.\"}";
 
-.alter table [WaterVelocity] column-docstrings (
+.alter table ['USGS.InstantaneousValues.WaterVelocity'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Water velocity value.\\\"}\"}",
@@ -2136,7 +2136,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaterVelocity] ingestion json mapping "WaterVelocity_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.WaterVelocity'] ingestion json mapping "USGS.InstantaneousValues.WaterVelocity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2154,7 +2154,7 @@
 ]
 ```
 
-.create-or-alter table [WaterVelocity] ingestion json mapping "WaterVelocity_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.WaterVelocity'] ingestion json mapping "USGS.InstantaneousValues.WaterVelocity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2172,13 +2172,13 @@
 ]
 ```
 
-.drop materialized-view WaterVelocityLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.WaterVelocityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterVelocityLatest on table WaterVelocity {
-    WaterVelocity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.WaterVelocityLatest'] on table ['USGS.InstantaneousValues.WaterVelocity'] {
+    ['USGS.InstantaneousValues.WaterVelocity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterVelocity] policy update
+.alter table ['USGS.InstantaneousValues.WaterVelocity'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2189,7 +2189,7 @@
 }]
 ```
 
-.create-merge table [EstuaryElevationNGVD29] (
+.create-merge table ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -2204,9 +2204,9 @@
    [___subject]: string
 );
 
-.alter table [EstuaryElevationNGVD29] docstring "{\"description\": \"USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.\"}";
+.alter table ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] docstring "{\"description\": \"USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.\"}";
 
-.alter table [EstuaryElevationNGVD29] column-docstrings (
+.alter table ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Estuary or ocean water surface elevation above NGVD 1929.\\\"}\"}",
@@ -2221,7 +2221,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [EstuaryElevationNGVD29] ingestion json mapping "EstuaryElevationNGVD29_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] ingestion json mapping "USGS.InstantaneousValues.EstuaryElevationNGVD29_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2239,7 +2239,7 @@
 ]
 ```
 
-.create-or-alter table [EstuaryElevationNGVD29] ingestion json mapping "EstuaryElevationNGVD29_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] ingestion json mapping "USGS.InstantaneousValues.EstuaryElevationNGVD29_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2257,13 +2257,13 @@
 ]
 ```
 
-.drop materialized-view EstuaryElevationNGVD29Latest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.EstuaryElevationNGVD29Latest'] ifexists;
 
-.create materialized-view with (backfill=true) EstuaryElevationNGVD29Latest on table EstuaryElevationNGVD29 {
-    EstuaryElevationNGVD29 | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.EstuaryElevationNGVD29Latest'] on table ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] {
+    ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [EstuaryElevationNGVD29] policy update
+.alter table ['USGS.InstantaneousValues.EstuaryElevationNGVD29'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2274,7 +2274,7 @@
 }]
 ```
 
-.create-merge table [LakeElevationNAVD88] (
+.create-merge table ['USGS.InstantaneousValues.LakeElevationNAVD88'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -2289,9 +2289,9 @@
    [___subject]: string
 );
 
-.alter table [LakeElevationNAVD88] docstring "{\"description\": \"USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.\"}";
+.alter table ['USGS.InstantaneousValues.LakeElevationNAVD88'] docstring "{\"description\": \"USGS lake or reservoir water surface elevation above NAVD 1988, feet. Parameter code 62615.\"}";
 
-.alter table [LakeElevationNAVD88] column-docstrings (
+.alter table ['USGS.InstantaneousValues.LakeElevationNAVD88'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Lake elevation above NAVD 1988.\\\"}\"}",
@@ -2306,7 +2306,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LakeElevationNAVD88] ingestion json mapping "LakeElevationNAVD88_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.LakeElevationNAVD88'] ingestion json mapping "USGS.InstantaneousValues.LakeElevationNAVD88_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2324,7 +2324,7 @@
 ]
 ```
 
-.create-or-alter table [LakeElevationNAVD88] ingestion json mapping "LakeElevationNAVD88_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.LakeElevationNAVD88'] ingestion json mapping "USGS.InstantaneousValues.LakeElevationNAVD88_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2342,13 +2342,13 @@
 ]
 ```
 
-.drop materialized-view LakeElevationNAVD88Latest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.LakeElevationNAVD88Latest'] ifexists;
 
-.create materialized-view with (backfill=true) LakeElevationNAVD88Latest on table LakeElevationNAVD88 {
-    LakeElevationNAVD88 | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.LakeElevationNAVD88Latest'] on table ['USGS.InstantaneousValues.LakeElevationNAVD88'] {
+    ['USGS.InstantaneousValues.LakeElevationNAVD88'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LakeElevationNAVD88] policy update
+.alter table ['USGS.InstantaneousValues.LakeElevationNAVD88'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2359,7 +2359,7 @@
 }]
 ```
 
-.create-merge table [Salinity] (
+.create-merge table ['USGS.InstantaneousValues.Salinity'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -2374,9 +2374,9 @@
    [___subject]: string
 );
 
-.alter table [Salinity] docstring "{\"description\": \"USGS salinity data. Parameter code 00480.\"}";
+.alter table ['USGS.InstantaneousValues.Salinity'] docstring "{\"description\": \"USGS salinity data. Parameter code 00480.\"}";
 
-.alter table [Salinity] column-docstrings (
+.alter table ['USGS.InstantaneousValues.Salinity'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Salinity value.\\\"}\"}",
@@ -2391,7 +2391,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.Salinity'] ingestion json mapping "USGS.InstantaneousValues.Salinity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2409,7 +2409,7 @@
 ]
 ```
 
-.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.Salinity'] ingestion json mapping "USGS.InstantaneousValues.Salinity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2427,13 +2427,13 @@
 ]
 ```
 
-.drop materialized-view SalinityLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.SalinityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SalinityLatest on table Salinity {
-    Salinity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.SalinityLatest'] on table ['USGS.InstantaneousValues.Salinity'] {
+    ['USGS.InstantaneousValues.Salinity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Salinity] policy update
+.alter table ['USGS.InstantaneousValues.Salinity'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2444,7 +2444,7 @@
 }]
 ```
 
-.create-merge table [GateOpening] (
+.create-merge table ['USGS.InstantaneousValues.GateOpening'] (
    [site_no]: string,
    [datetime]: string,
    [value]: real,
@@ -2459,9 +2459,9 @@
    [___subject]: string
 );
 
-.alter table [GateOpening] docstring "{\"description\": \"USGS gate opening data. Parameter code 45592.\"}";
+.alter table ['USGS.InstantaneousValues.GateOpening'] docstring "{\"description\": \"USGS gate opening data. Parameter code 45592.\"}";
 
-.alter table [GateOpening] column-docstrings (
+.alter table ['USGS.InstantaneousValues.GateOpening'] column-docstrings (
    [site_no]: "{\"description\": \"{\\\"description\\\": \\\"USGS site number.\\\"}\"}",
    [datetime]: "{\"description\": \"{\\\"description\\\": \\\"Date and time of the measurement in ISO-8601 format.\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Gate opening value.\\\"}\"}",
@@ -2476,7 +2476,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [GateOpening] ingestion json mapping "GateOpening_json_flat"
+.create-or-alter table ['USGS.InstantaneousValues.GateOpening'] ingestion json mapping "USGS.InstantaneousValues.GateOpening_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2494,7 +2494,7 @@
 ]
 ```
 
-.create-or-alter table [GateOpening] ingestion json mapping "GateOpening_json_ce_structured"
+.create-or-alter table ['USGS.InstantaneousValues.GateOpening'] ingestion json mapping "USGS.InstantaneousValues.GateOpening_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2512,13 +2512,13 @@
 ]
 ```
 
-.drop materialized-view GateOpeningLatest ifexists;
+.drop materialized-view ['USGS.InstantaneousValues.GateOpeningLatest'] ifexists;
 
-.create materialized-view with (backfill=true) GateOpeningLatest on table GateOpening {
-    GateOpening | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['USGS.InstantaneousValues.GateOpeningLatest'] on table ['USGS.InstantaneousValues.GateOpening'] {
+    ['USGS.InstantaneousValues.GateOpening'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [GateOpening] policy update
+.alter table ['USGS.InstantaneousValues.GateOpening'] policy update
 ```
 [{
   "IsEnabled": true,

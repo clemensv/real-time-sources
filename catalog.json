@@ -161,7 +161,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "United States — ~1.5M stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-nwis-wq",
