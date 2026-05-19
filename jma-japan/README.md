@@ -20,6 +20,9 @@ tracks previously seen bulletin IDs to avoid sending duplicates.
   authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in
   [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: This source ships a Fabric notebook feeder
+  at [`notebook/jma-japan-feed.ipynb`](notebook/jma-japan-feed.ipynb),
+  deployable via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
 
 ## Data Sources
 
