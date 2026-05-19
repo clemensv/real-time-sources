@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [FireIncident] (
+.create-merge table ['AU.Gov.Emergency.Wildfires.FireIncident'] (
    [incident_id]: string,
    [state]: string,
    [title]: string,
@@ -46,9 +46,9 @@
    [___subject]: string
 );
 
-.alter table [FireIncident] docstring "{\"description\": \"Normalized bushfire or grass fire incident record aggregated from three Australian state emergency services: NSW Rural Fire Service (GeoJSON major-incidents feed), VicEmergency (GeoJSON all-hazards feed filtered to fire events), and Queensland Fire Department (GeoJSON bushfire-alert feed). Each record represents a single active fire incident with its alert level, location, size, and responsible agency.\"}";
+.alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] docstring "{\"description\": \"Normalized bushfire or grass fire incident record aggregated from three Australian state emergency services: NSW Rural Fire Service (GeoJSON major-incidents feed), VicEmergency (GeoJSON all-hazards feed filtered to fire events), and Queensland Fire Department (GeoJSON bushfire-alert feed). Each record represents a single active fire incident with its alert level, location, size, and responsible agency.\"}";
 
-.alter table [FireIncident] column-docstrings (
+.alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] column-docstrings (
    [incident_id]: "{\"description\": \"Stable identifier for the fire incident, derived from the source system. NSW: numeric incident ID extracted from the RFS GUID URL. VIC: numeric sourceId from the VicEmergency feed. QLD: alphanumeric UniqueID from the QFD feed (e.g. 'IF39-5661721').\"}",
    [state]: "{\"description\": \"Australian state abbreviation indicating which emergency service reported this incident. One of 'NSW' (New South Wales Rural Fire Service), 'VIC' (VicEmergency / Country Fire Authority / Fire Rescue Victoria), or 'QLD' (Queensland Fire Department).\"}",
    [title]: "{\"description\": \"Human-readable title or headline for the incident as provided by the source agency. NSW: location-based title from the RFS feed (e.g. '(GWYDIR HWY), MATHESON'). VIC: warning name or sourceTitle from VicEmergency. QLD: WarningTitle from the QFD feed.\"}",
@@ -69,7 +69,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FireIncident] ingestion json mapping "FireIncident_json_flat"
+.create-or-alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] ingestion json mapping "AU.Gov.Emergency.Wildfires.FireIncident_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -93,7 +93,7 @@
 ]
 ```
 
-.create-or-alter table [FireIncident] ingestion json mapping "FireIncident_json_ce_structured"
+.create-or-alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] ingestion json mapping "AU.Gov.Emergency.Wildfires.FireIncident_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -117,13 +117,13 @@
 ]
 ```
 
-.drop materialized-view FireIncidentLatest ifexists;
+.drop materialized-view ['AU.Gov.Emergency.Wildfires.FireIncidentLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FireIncidentLatest on table FireIncident {
-    FireIncident | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['AU.Gov.Emergency.Wildfires.FireIncidentLatest'] on table ['AU.Gov.Emergency.Wildfires.FireIncident'] {
+    ['AU.Gov.Emergency.Wildfires.FireIncident'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FireIncident] policy update
+.alter table ['AU.Gov.Emergency.Wildfires.FireIncident'] policy update
 ```
 [{
   "IsEnabled": true,
