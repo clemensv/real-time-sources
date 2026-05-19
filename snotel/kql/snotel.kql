@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['gov.usda.nrcs.snotel.Station'] (
    [station_triplet]: string,
    [name]: string,
    [state]: string,
@@ -39,9 +39,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference metadata for a USDA NRCS SNOTEL (SNOwpack TELemetry) station. SNOTEL is an automated system of over 900 snowpack monitoring sites in the western United States and Alaska operated by the Natural Resources Conservation Service. Each station reports snowpack, precipitation, and temperature data via satellite telemetry. This reference record provides the station identity and geographic context for the hourly telemetry observations.\"}";
+.alter table ['gov.usda.nrcs.snotel.Station'] docstring "{\"description\": \"Reference metadata for a USDA NRCS SNOTEL (SNOwpack TELemetry) station. SNOTEL is an automated system of over 900 snowpack monitoring sites in the western United States and Alaska operated by the Natural Resources Conservation Service. Each station reports snowpack, precipitation, and temperature data via satellite telemetry. This reference record provides the station identity and geographic context for the hourly telemetry observations.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['gov.usda.nrcs.snotel.Station'] column-docstrings (
    [station_triplet]: "{\"description\": \"SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. This is the canonical identifier used by the USDA NRCS Water and Climate Center to uniquely reference each SNOTEL site (e.g. '838:CO:SNTL' for University Camp, Colorado).\"}",
    [name]: "{\"description\": \"Human-readable station name assigned by the USDA NRCS (e.g. 'University Camp', 'Berthoud Summit'). Station names are generally geographic references to the site location.\"}",
    [state]: "{\"description\": \"Two-letter US state or territory code where the station is located (e.g. 'CO', 'AK', 'MT'). Stations are distributed across the western United States and Alaska.\"}",
@@ -55,7 +55,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['gov.usda.nrcs.snotel.Station'] ingestion json mapping "gov.usda.nrcs.snotel.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,7 +72,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['gov.usda.nrcs.snotel.Station'] ingestion json mapping "gov.usda.nrcs.snotel.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,13 +89,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['gov.usda.nrcs.snotel.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.usda.nrcs.snotel.StationLatest'] on table ['gov.usda.nrcs.snotel.Station'] {
+    ['gov.usda.nrcs.snotel.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['gov.usda.nrcs.snotel.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -106,7 +106,7 @@
 }]
 ```
 
-.create-merge table [SnowObservation] (
+.create-merge table ['gov.usda.nrcs.snotel.SnowObservation'] (
    [station_triplet]: string,
    [date_time]: datetime,
    [snow_water_equivalent]: real,
@@ -120,9 +120,9 @@
    [___subject]: string
 );
 
-.alter table [SnowObservation] docstring "{\"description\": \"Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings \\u2014 the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/.\"}";
+.alter table ['gov.usda.nrcs.snotel.SnowObservation'] docstring "{\"description\": \"Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings \\u2014 the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/.\"}";
 
-.alter table [SnowObservation] column-docstrings (
+.alter table ['gov.usda.nrcs.snotel.SnowObservation'] column-docstrings (
    [station_triplet]: "{\"description\": \"SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. Links this observation to the station that reported it.\"}",
    [date_time]: "{\"description\": \"Observation timestamp reported by the SNOTEL station. Hourly readings are transmitted via satellite telemetry, typically at the top of each hour. The time is in the station's local standard time as reported by the NRCS Report Generator.\"}",
    [snow_water_equivalent]: "{\"description\": \"Snow Water Equivalent (SWE) \\u2014 the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.\"}",
@@ -136,7 +136,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [SnowObservation] ingestion json mapping "SnowObservation_json_flat"
+.create-or-alter table ['gov.usda.nrcs.snotel.SnowObservation'] ingestion json mapping "gov.usda.nrcs.snotel.SnowObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -153,7 +153,7 @@
 ]
 ```
 
-.create-or-alter table [SnowObservation] ingestion json mapping "SnowObservation_json_ce_structured"
+.create-or-alter table ['gov.usda.nrcs.snotel.SnowObservation'] ingestion json mapping "gov.usda.nrcs.snotel.SnowObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -170,13 +170,13 @@
 ]
 ```
 
-.drop materialized-view SnowObservationLatest ifexists;
+.drop materialized-view ['gov.usda.nrcs.snotel.SnowObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SnowObservationLatest on table SnowObservation {
-    SnowObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.usda.nrcs.snotel.SnowObservationLatest'] on table ['gov.usda.nrcs.snotel.SnowObservation'] {
+    ['gov.usda.nrcs.snotel.SnowObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [SnowObservation] policy update
+.alter table ['gov.usda.nrcs.snotel.SnowObservation'] policy update
 ```
 [{
   "IsEnabled": true,
