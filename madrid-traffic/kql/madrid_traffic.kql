@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [MeasurementPoint] (
+.create-merge table ['es.madrid.informo.MeasurementPoint'] (
    [sensor_id]: string,
    [description]: string,
    [element_type]: string,
@@ -40,9 +40,9 @@
    [___subject]: string
 );
 
-.alter table [MeasurementPoint] docstring "{\"description\": \"Reference data for a traffic measurement point (sensor) in Madrid's Informo road traffic monitoring system. Each measurement point is installed on a specific road segment and reports traffic intensity, occupancy, and service level readings. This data is relatively static and describes the sensor installation, not the real-time traffic conditions.\"}";
+.alter table ['es.madrid.informo.MeasurementPoint'] docstring "{\"description\": \"Reference data for a traffic measurement point (sensor) in Madrid's Informo road traffic monitoring system. Each measurement point is installed on a specific road segment and reports traffic intensity, occupancy, and service level readings. This data is relatively static and describes the sensor installation, not the real-time traffic conditions.\"}";
 
-.alter table [MeasurementPoint] column-docstrings (
+.alter table ['es.madrid.informo.MeasurementPoint'] column-docstrings (
    [sensor_id]: "{\"description\": \"Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point.\"}",
    [description]: "{\"description\": \"Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish.\"}",
    [element_type]: "{\"description\": \"Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway.\"}",
@@ -57,7 +57,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [MeasurementPoint] ingestion json mapping "MeasurementPoint_json_flat"
+.create-or-alter table ['es.madrid.informo.MeasurementPoint'] ingestion json mapping "es.madrid.informo.MeasurementPoint_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -75,7 +75,7 @@
 ]
 ```
 
-.create-or-alter table [MeasurementPoint] ingestion json mapping "MeasurementPoint_json_ce_structured"
+.create-or-alter table ['es.madrid.informo.MeasurementPoint'] ingestion json mapping "es.madrid.informo.MeasurementPoint_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -93,13 +93,13 @@
 ]
 ```
 
-.drop materialized-view MeasurementPointLatest ifexists;
+.drop materialized-view ['es.madrid.informo.MeasurementPointLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MeasurementPointLatest on table MeasurementPoint {
-    MeasurementPoint | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['es.madrid.informo.MeasurementPointLatest'] on table ['es.madrid.informo.MeasurementPoint'] {
+    ['es.madrid.informo.MeasurementPoint'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [MeasurementPoint] policy update
+.alter table ['es.madrid.informo.MeasurementPoint'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -110,7 +110,7 @@
 }]
 ```
 
-.create-merge table [TrafficReading] (
+.create-merge table ['es.madrid.informo.TrafficReading'] (
    [sensor_id]: string,
    [intensity]: int,
    [occupancy]: int,
@@ -125,9 +125,9 @@
    [___subject]: string
 );
 
-.alter table [TrafficReading] docstring "{\"description\": \"Real-time traffic reading from a measurement point in Madrid's Informo road traffic monitoring system. Updated approximately every 5 minutes. Each reading provides the current traffic intensity, road occupancy, load, and service level for a specific sensor on Madrid's road network, including the M-30 ring motorway and urban streets.\"}";
+.alter table ['es.madrid.informo.TrafficReading'] docstring "{\"description\": \"Real-time traffic reading from a measurement point in Madrid's Informo road traffic monitoring system. Updated approximately every 5 minutes. Each reading provides the current traffic intensity, road occupancy, load, and service level for a specific sensor on Madrid's road network, including the M-30 ring motorway and urban streets.\"}";
 
-.alter table [TrafficReading] column-docstrings (
+.alter table ['es.madrid.informo.TrafficReading'] column-docstrings (
    [sensor_id]: "{\"description\": \"Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data.\"}",
    [intensity]: "{\"description\": \"Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode.\"}",
    [occupancy]: "{\"description\": \"Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100.\"}",
@@ -142,7 +142,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TrafficReading] ingestion json mapping "TrafficReading_json_flat"
+.create-or-alter table ['es.madrid.informo.TrafficReading'] ingestion json mapping "es.madrid.informo.TrafficReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -160,7 +160,7 @@
 ]
 ```
 
-.create-or-alter table [TrafficReading] ingestion json mapping "TrafficReading_json_ce_structured"
+.create-or-alter table ['es.madrid.informo.TrafficReading'] ingestion json mapping "es.madrid.informo.TrafficReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -178,13 +178,13 @@
 ]
 ```
 
-.drop materialized-view TrafficReadingLatest ifexists;
+.drop materialized-view ['es.madrid.informo.TrafficReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TrafficReadingLatest on table TrafficReading {
-    TrafficReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['es.madrid.informo.TrafficReadingLatest'] on table ['es.madrid.informo.TrafficReading'] {
+    ['es.madrid.informo.TrafficReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TrafficReading] policy update
+.alter table ['es.madrid.informo.TrafficReading'] policy update
 ```
 [{
   "IsEnabled": true,
