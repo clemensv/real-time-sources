@@ -83,7 +83,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "United States — buoy observations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "king-county-marine",
