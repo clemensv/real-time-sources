@@ -322,6 +322,7 @@ def feed(args):
 
     polling_interval = int(args.polling_interval or os.environ.get("POLLING_INTERVAL", "300"))
     station_filter = args.station_filter or os.environ.get("STATION_FILTER", "")
+    once = bool(getattr(args, "once", False))
 
     producer = Producer(kafka_config)
     event_producer = BeIrailEventProducer(producer, kafka_topic)
@@ -406,6 +407,9 @@ def feed(args):
                 elapsed,
                 (datetime.now(timezone.utc) + timedelta(seconds=effective_interval)).isoformat(),
             )
+            if once:
+                logging.info("--once mode: exiting after first polling cycle")
+                break
             if effective_interval > 0:
                 time.sleep(effective_interval)
         except KeyboardInterrupt:
@@ -425,6 +429,12 @@ def main():
     feed_parser.add_argument("--connection-string", help="Kafka connection string")
     feed_parser.add_argument("--polling-interval", type=int, default=300, help="Polling interval in seconds (default: 300)")
     feed_parser.add_argument("--station-filter", help="Comma-separated station IDs to poll (default: all)")
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     if args.command == "feed":

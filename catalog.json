@@ -637,7 +637,8 @@
     "cat": "Railway",
     "key": false,
     "desc": "Belgium — ~600 NMBS/SNCB stations, departures, delays",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "carbon-intensity",
