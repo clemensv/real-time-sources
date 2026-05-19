@@ -29,3 +29,4 @@ mode-s/kql/aircraft.csv
 **/poetry.lock
 **/.playwright-mcp/
 gracedb/.venv/
+energy-charts/.venv/

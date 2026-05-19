@@ -716,7 +716,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "Europe — 40+ countries, electricity generation & prices",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "entsoe",
