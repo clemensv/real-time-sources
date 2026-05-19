@@ -54,7 +54,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Ireland — ~500 OPW hydrometric stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nepal-bipad-hydrology",

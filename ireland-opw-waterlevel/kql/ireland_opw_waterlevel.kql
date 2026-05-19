@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['ie.gov.opw.waterlevel.Station'] (
    [station_ref]: string,
    [station_name]: string,
    [region_id]: int,
@@ -38,9 +38,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference data for an OPW hydrometric station in Ireland, including location and region.\"}";
+.alter table ['ie.gov.opw.waterlevel.Station'] docstring "{\"description\": \"Reference data for an OPW hydrometric station in Ireland, including location and region.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['ie.gov.opw.waterlevel.Station'] column-docstrings (
    [station_ref]: "{\"description\": \"Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').\"}",
    [station_name]: "{\"description\": \"Human-readable name of the hydrometric station (e.g. 'Sandy Mills').\"}",
    [region_id]: "{\"description\": \"Integer identifier of the OPW hydrometric region the station belongs to.\"}",
@@ -53,7 +53,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['ie.gov.opw.waterlevel.Station'] ingestion json mapping "ie.gov.opw.waterlevel.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -69,7 +69,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['ie.gov.opw.waterlevel.Station'] ingestion json mapping "ie.gov.opw.waterlevel.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -85,13 +85,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['ie.gov.opw.waterlevel.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['ie.gov.opw.waterlevel.StationLatest'] on table ['ie.gov.opw.waterlevel.Station'] {
+    ['ie.gov.opw.waterlevel.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['ie.gov.opw.waterlevel.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -102,7 +102,7 @@
 }]
 ```
 
-.create-merge table [WaterLevelReading] (
+.create-merge table ['ie.gov.opw.waterlevel.WaterLevelReading'] (
    [station_ref]: string,
    [station_name]: string,
    [sensor_ref]: string,
@@ -116,9 +116,9 @@
    [___subject]: string
 );
 
-.alter table [WaterLevelReading] docstring "{\"description\": \"A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.\"}";
+.alter table ['ie.gov.opw.waterlevel.WaterLevelReading'] docstring "{\"description\": \"A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.\"}";
 
-.alter table [WaterLevelReading] column-docstrings (
+.alter table ['ie.gov.opw.waterlevel.WaterLevelReading'] column-docstrings (
    [station_ref]: "{\"description\": \"Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').\"}",
    [station_name]: "{\"description\": \"Human-readable name of the hydrometric station (e.g. 'Sandy Mills').\"}",
    [sensor_ref]: "{\"description\": \"Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres).\"}",
@@ -132,7 +132,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaterLevelReading] ingestion json mapping "WaterLevelReading_json_flat"
+.create-or-alter table ['ie.gov.opw.waterlevel.WaterLevelReading'] ingestion json mapping "ie.gov.opw.waterlevel.WaterLevelReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -149,7 +149,7 @@
 ]
 ```
 
-.create-or-alter table [WaterLevelReading] ingestion json mapping "WaterLevelReading_json_ce_structured"
+.create-or-alter table ['ie.gov.opw.waterlevel.WaterLevelReading'] ingestion json mapping "ie.gov.opw.waterlevel.WaterLevelReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -166,13 +166,13 @@
 ]
 ```
 
-.drop materialized-view WaterLevelReadingLatest ifexists;
+.drop materialized-view ['ie.gov.opw.waterlevel.WaterLevelReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterLevelReadingLatest on table WaterLevelReading {
-    WaterLevelReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['ie.gov.opw.waterlevel.WaterLevelReadingLatest'] on table ['ie.gov.opw.waterlevel.WaterLevelReading'] {
+    ['ie.gov.opw.waterlevel.WaterLevelReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterLevelReading] policy update
+.alter table ['ie.gov.opw.waterlevel.WaterLevelReading'] policy update
 ```
 [{
   "IsEnabled": true,
