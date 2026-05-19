@@ -25,7 +25,80 @@
 ]
 ```
 
-.create-merge table [AvalancheBulletin] (
+.create-merge table ['org.EAWS.ALBINA.AvalancheRegion'] (
+   [region_id]: string,
+   [lang]: string,
+   [configured_at]: datetime,
+   [bulletin_base_url]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.EAWS.ALBINA.AvalancheRegion'] docstring "{\"description\": \"Reference record describing an EAWS region (or super-region) the bridge is configured to observe. Emitted at startup so that downstream consumers know the regional context even in summer months when no daily bulletins are published.\"}";
+
+.alter table ['org.EAWS.ALBINA.AvalancheRegion'] column-docstrings (
+   [region_id]: "{\"description\": \"EAWS region identifier (country prefix plus warning service code), e.g. AT-07 for Tirol, IT-32-BZ for South Tyrol. Matches the regionID used in CAAMLv6 bulletins.\"}",
+   [lang]: "{\"description\": \"ISO 639-1 language code used by the bridge when requesting bulletins for this region (de, en, it, fr, etc.).\"}",
+   [configured_at]: "{\"description\": \"ISO 8601 UTC timestamp when this region was registered in the bridge configuration. Updated whenever the bridge starts and re-emits its catalog.\"}",
+   [bulletin_base_url]: "{\"description\": \"Base URL used by the bridge to fetch CAAMLv6 bulletins for this region (typically https://avalanche.report/albina_files). Null when not provided.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.EAWS.ALBINA.AvalancheRegion'] ingestion json mapping "org.EAWS.ALBINA.AvalancheRegion_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "lang", "path": "$.lang"},
+  {"column": "configured_at", "path": "$.configured_at"},
+  {"column": "bulletin_base_url", "path": "$.bulletin_base_url"},
+]
+```
+
+.create-or-alter table ['org.EAWS.ALBINA.AvalancheRegion'] ingestion json mapping "org.EAWS.ALBINA.AvalancheRegion_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "lang", "path": "$.data.lang"},
+  {"column": "configured_at", "path": "$.data.configured_at"},
+  {"column": "bulletin_base_url", "path": "$.data.bulletin_base_url"},
+]
+```
+
+.drop materialized-view ['org.EAWS.ALBINA.AvalancheRegionLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.EAWS.ALBINA.AvalancheRegionLatest'] on table ['org.EAWS.ALBINA.AvalancheRegion'] {
+    ['org.EAWS.ALBINA.AvalancheRegion'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.EAWS.ALBINA.AvalancheRegion'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.EAWS.ALBINA.AvalancheRegion') | project['region_id'] = tostring(data.['region_id']),['lang'] = tostring(data.['lang']),['configured_at'] = todatetime(data.['configured_at']),['bulletin_base_url'] = tostring(data.['bulletin_base_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['org.EAWS.ALBINA.AvalancheBulletin'] (
    [region_id]: string,
    [region_name]: string,
    [bulletin_id]: string,
@@ -48,7 +121,7 @@
    [___subject]: string
 );
 
-.alter table [AvalancheBulletin] column-docstrings (
+.alter table ['org.EAWS.ALBINA.AvalancheBulletin'] column-docstrings (
    [region_id]: "{\"description\": \"EAWS micro-region identifier from the CAAMLv6 regions array, e.g. AT-07-04-02 for Karwendel Mountains East.\"}",
    [region_name]: "{\"description\": \"Human-readable name of the EAWS micro-region, e.g. 'Karwendel Mountains East'.\"}",
    [bulletin_id]: "{\"description\": \"Unique UUID assigned to this bulletin by the ALBINA system, from the CAAMLv6 bulletinID field.\"}",
@@ -71,7 +144,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [AvalancheBulletin] ingestion json mapping "AvalancheBulletin_json_flat"
+.create-or-alter table ['org.EAWS.ALBINA.AvalancheBulletin'] ingestion json mapping "org.EAWS.ALBINA.AvalancheBulletin_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,7 +170,7 @@
 ]
 ```
 
-.create-or-alter table [AvalancheBulletin] ingestion json mapping "AvalancheBulletin_json_ce_structured"
+.create-or-alter table ['org.EAWS.ALBINA.AvalancheBulletin'] ingestion json mapping "org.EAWS.ALBINA.AvalancheBulletin_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -123,13 +196,13 @@
 ]
 ```
 
-.drop materialized-view AvalancheBulletinLatest ifexists;
+.drop materialized-view ['org.EAWS.ALBINA.AvalancheBulletinLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AvalancheBulletinLatest on table AvalancheBulletin {
-    AvalancheBulletin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['org.EAWS.ALBINA.AvalancheBulletinLatest'] on table ['org.EAWS.ALBINA.AvalancheBulletin'] {
+    ['org.EAWS.ALBINA.AvalancheBulletin'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [AvalancheBulletin] policy update
+.alter table ['org.EAWS.ALBINA.AvalancheBulletin'] policy update
 ```
 [{
   "IsEnabled": true,

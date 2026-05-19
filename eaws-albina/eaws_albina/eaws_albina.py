@@ -242,8 +242,14 @@ class AlbinaPoller:
             self.kafka_producer.flush()
         return count
 
-    def poll_and_send(self):
-        """Main loop: emit region catalog once, then poll today and yesterday on a schedule."""
+    def poll_and_send(self, once: bool = False):
+        """Emit region catalog once, then poll today and yesterday.
+
+        When ``once`` is True the loop runs exactly one polling cycle and
+        returns, which is the execution model used by the Fabric notebook
+        scheduler. Otherwise it runs forever, sleeping ``POLL_INTERVAL_SECONDS``
+        between cycles.
+        """
         print(f"Starting EAWS ALBINA Avalanche Bulletin poller, polling every {POLL_INTERVAL_SECONDS}s")
         print(f"  Regions: {self.regions}")
         print(f"  Language: {self.lang}")
@@ -263,6 +269,10 @@ class AlbinaPoller:
                         print(f"Sent {count} bulletin event(s) for {date_str}")
             except Exception as e:
                 print(f"Error in polling loop: {e}")
+
+            if once:
+                print("--once mode: exiting after first polling cycle")
+                return
 
             time.sleep(POLL_INTERVAL_SECONDS)
 
@@ -315,6 +325,12 @@ def main():
         help="Comma-separated region codes (default: AT-07,IT-32-BZ,IT-32-TN,AT-02)",
     )
     parser.add_argument("--lang", type=str, default="en", help="Language code (default: en)")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
 
@@ -375,7 +391,7 @@ def main():
         regions=regions,
         lang=lang,
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":
