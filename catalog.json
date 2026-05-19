@@ -49,7 +49,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Poland — IMGW-PIB",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "ireland-opw-waterlevel",
