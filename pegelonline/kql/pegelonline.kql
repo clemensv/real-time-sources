@@ -256,3 +256,70 @@
           and longitude != 0.0 and latitude != 0.0
 }
 
+// Per-river polyline that traces all gauges of a named water body, ordered
+// downstream by river-km. Aggregates worst-of state so the line itself takes
+// on the colour of the most severe gauge along the river. Single-gauge rivers
+// are skipped (no line to draw).
+//
+// Severity scale: very-high(4) > high(3) > normal(2) > low(1) > unknown(0).
+// Worst-of is reported as a string so the map can match against it.
+
+.create-or-alter function with (folder = "Map") RiverBackbones() {
+    let severity = (s:string) {
+        case(
+            s == "very-high", 4,
+            s == "high",      3,
+            s == "normal",    2,
+            s == "low",       1,
+            0)
+    };
+    let ordered = EnrichedMeasurements()
+        | extend sev = severity(stateMnwMhw)
+        | where isnotempty(water_shortname) and isnotnull(km)
+        | order by water_shortname asc, km asc;
+    // Per-river max gap (km, great-circle approx). Sea coasts and umbrella
+    // "water_shortname" groups (OSTSEE, NORDSEE, …) end up with huge gaps
+    // because km values aren't comparable across disjoint sub-bodies — skip
+    // them so the map doesn't render giant diagonal lines.
+    let gaps = ordered
+        | extend prev_lon = case(prev(water_shortname) == water_shortname,
+                                 prev(longitude), real(null)),
+                 prev_lat = case(prev(water_shortname) == water_shortname,
+                                 prev(latitude),  real(null))
+        | extend seg_km = case(isnull(prev_lon), real(0),
+                               sqrt(pow((latitude - prev_lat) * 111.0, 2) +
+                                    pow((longitude - prev_lon) * 111.0 *
+                                        cos(latitude * pi() / 180.0), 2)))
+        | summarize max_seg_km = max(seg_km) by water_shortname;
+    ordered
+    | summarize
+        n_gauges     = count(),
+        worst_sev    = max(sev),
+        avg_value    = avg(value),
+        lons         = make_list(longitude),
+        lats         = make_list(latitude),
+        gauge_names  = make_list(shortname),
+        gauge_values = make_list(value),
+        gauge_states = make_list(stateMnwMhw)
+        by water_shortname, water_longname
+    | join kind=inner gaps on water_shortname
+    | project-away water_shortname1
+    | where n_gauges >= 2 and max_seg_km <= 50.0
+    // Build [[lon,lat],...] pairs as a JSON string and parse_json once —
+    // `make_list(pack_array(lon,lat))` flattens nested dynamics in Kusto.
+    | mv-apply lon = lons to typeof(double), lat = lats to typeof(double) on (
+        extend pair = strcat('[', lon, ',', lat, ']')
+        | summarize pair_strs = make_list(pair)
+      )
+    | extend coords = parse_json(strcat('[', strcat_array(pair_strs, ','), ']'))
+    | extend worst_state = case(
+        worst_sev == 4, "very-high",
+        worst_sev == 3, "high",
+        worst_sev == 2, "normal",
+        worst_sev == 1, "low",
+        "unknown")
+    | extend geometry = bag_pack("type", "LineString", "coordinates", coords)
+    | extend label = strcat(water_longname, "  (", tostring(n_gauges), " gauges)")
+    | project water_shortname, water_longname, label, worst_state, n_gauges,
+              avg_value, geometry
+}

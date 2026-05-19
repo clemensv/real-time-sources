@@ -33,11 +33,11 @@ class WirePegelonlineMapTests(unittest.TestCase):
 
     def test_layer_names_unique_and_complete(self) -> None:
         m = self.mod
-        # Set must equal the six declared constants.
+        # Set must equal the seven declared constants (v2 adds rivers).
         self.assertEqual(
             m.LAYER_NAMES,
             {m.NAME_STATE, m.NAME_NAV, m.NAME_TREND,
-             m.NAME_FRESH, m.NAME_LABELS, m.NAME_REPLAY},
+             m.NAME_FRESH, m.NAME_LABELS, m.NAME_REPLAY, m.NAME_RIVERS},
         )
         # All layer names must share the common prefix used for the
         # idempotent drop-and-replace logic.
@@ -47,7 +47,7 @@ class WirePegelonlineMapTests(unittest.TestCase):
 
     def test_each_kql_body_well_formed(self) -> None:
         m = self.mod
-        builders = {
+        point_builders = {
             "state":      m._kql_state,
             "navigation": m._kql_navigation,
             "trend":      m._kql_trend,
@@ -55,7 +55,7 @@ class WirePegelonlineMapTests(unittest.TestCase):
             "labels":     m._kql_labels,
             "replay":     m._kql_replay,
         }
-        for layer_name, fn in builders.items():
+        for layer_name, fn in point_builders.items():
             with self.subTest(layer=layer_name):
                 body = fn()
                 self.assertIn("geometry", body, "geometry alias missing")
@@ -63,16 +63,23 @@ class WirePegelonlineMapTests(unittest.TestCase):
                               "point projection missing")
                 self.assertIn("pack_array(longitude, latitude)", body,
                               "coordinates must be (lon, lat)")
-                # Replay layer must declare the time-slider column;
-                # everything else must not.
                 if layer_name == "replay":
                     self.assertIn("Time (UTC, 15-min)", body)
                 else:
                     self.assertNotIn("Time (UTC, 15-min)", body)
+        # Rivers layer just wraps the dedicated KQL function.
+        rivers_body = m._kql_rivers()
+        self.assertIn("RiverBackbones()", rivers_body)
+        self.assertIn("geometry", rivers_body)
 
-    def test_layer_builders_return_filters_list(self) -> None:
+    def test_layer_builders_v2_schema_shape(self) -> None:
+        """Every layer must follow the Fabric Map 2.0.0 vector-layer shape:
+        type='vector' + geometry-specific options (bubble/line). Data-driven
+        colour expressions must appear at BOTH options.color and inside the
+        nested options block — only the dual-write form is honoured by the
+        Fabric Map renderer (verified live against ContosoRealTimeTest)."""
         m = self.mod
-        layers = [
+        bubble_layers = [
             m._layer_state(default_visible=True),
             m._layer_navigation(),
             m._layer_trend(),
@@ -80,14 +87,29 @@ class WirePegelonlineMapTests(unittest.TestCase):
             m._layer_labels(default_visible=True),
             m._layer_replay("2026-05-19 12:30 UTC"),
         ]
-        for layer in layers:
+        for layer in bubble_layers:
             with self.subTest(name=layer["name"]):
+                opts = layer["options"]
+                self.assertEqual(opts["type"], "vector")
+                self.assertEqual(opts["pointLayerType"], "bubble")
+                self.assertIn("bubbleOptions", opts)
+                self.assertIn("color", opts["bubbleOptions"])
+                # All point layers share a single geometry column.
+                self.assertEqual(layer["geometryColumnName"], "geometry")
                 self.assertIn("filters", layer)
                 self.assertIsInstance(layer["filters"], list)
-                self.assertIn("options", layer)
-                self.assertIn("kql", layer)
-        # Replay must carry the time-slider filter seeded to the bucket.
-        replay = layers[-1]
+        # Rivers layer is a line layer, not point.
+        rivers = m._layer_rivers(default_visible=True)
+        ropts = rivers["options"]
+        self.assertEqual(ropts["type"], "vector")
+        self.assertNotIn("pointLayerType", ropts)
+        self.assertIn("lineOptions", ropts)
+        self.assertIn("strokeColor", ropts["lineOptions"])
+        self.assertIn("strokeWidth", ropts["lineOptions"])
+        # Dual-write of the colour expression.
+        self.assertEqual(ropts["color"], ropts["lineOptions"]["strokeColor"])
+        # Replay carries the time-slider filter seeded to the bucket.
+        replay = bubble_layers[-1]
         self.assertEqual(len(replay["filters"]), 1)
         self.assertEqual(replay["filters"][0]["field"], "Time (UTC, 15-min)")
         self.assertEqual(replay["filters"][0]["value"], ["2026-05-19 12:30 UTC"])
@@ -97,14 +119,16 @@ class WirePegelonlineMapTests(unittest.TestCase):
         self.assertEqual(replay["filters"][0]["value"], [])
 
     def test_default_visibility(self) -> None:
-        """Exactly the two headline layers should default-on."""
+        """Rivers + hydrological state default-on; everything else default-off
+        (incl. the dense labels layer — that one is gated by minZoom anyway)."""
         m = self.mod
         layers = [
+            (m._layer_rivers(default_visible=True),  True),
             (m._layer_state(default_visible=True),   True),
             (m._layer_navigation(),                  False),
             (m._layer_trend(),                       False),
             (m._layer_freshness(),                   False),
-            (m._layer_labels(default_visible=True),  True),
+            (m._layer_labels(default_visible=False), False),
             (m._layer_replay(None),                  False),
         ]
         for layer, expected in layers:

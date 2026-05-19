@@ -72,6 +72,7 @@ import requests
 
 LAYER_PREFIX = "pegelonline "
 
+NAME_RIVERS  = f"{LAYER_PREFIX}river backbone"
 NAME_STATE   = f"{LAYER_PREFIX}hydrological state"
 NAME_NAV     = f"{LAYER_PREFIX}navigation state"
 NAME_TREND   = f"{LAYER_PREFIX}24h trend"
@@ -79,7 +80,8 @@ NAME_FRESH   = f"{LAYER_PREFIX}data freshness"
 NAME_LABELS  = f"{LAYER_PREFIX}station labels"
 NAME_REPLAY  = f"{LAYER_PREFIX}historical replay"
 
-LAYER_NAMES = {NAME_STATE, NAME_NAV, NAME_TREND, NAME_FRESH, NAME_LABELS, NAME_REPLAY}
+LAYER_NAMES = {NAME_RIVERS, NAME_STATE, NAME_NAV, NAME_TREND,
+               NAME_FRESH, NAME_LABELS, NAME_REPLAY}
 
 # Common geometry projection appended to every KQL body.
 GEOM_PROJECTION = (
@@ -149,13 +151,28 @@ def _kql_replay() -> str:
 """
 
 
+def _kql_rivers() -> str:
+    # RiverBackbones() already projects a LineString `geometry` and the
+    # `worst_state` colour key. We just hand it to the map.
+    return """RiverBackbones()
+| project geometry, water_shortname, water_longname, label, worst_state,
+          n_gauges, avg_value
+"""
+
+
 # ---------------------------------------------------------------------------
 # Layer styling (colour expressions, sizes)
 # ---------------------------------------------------------------------------
+#
+# Fabric Map v2.0.0 schema only accepts `type: vector | raster`. Point
+# rendering goes via `pointLayerType` ("bubble" | "marker" | "heatmap") with
+# the corresponding `bubbleOptions` / `markerOptions` / `heatmapOptions`
+# sub-object. Line and polygon styling goes via `lineOptions` / `polygonOptions`
+# regardless of the geometry type.
 
 # stateMnwMhw values per pegelonline docs: low / normal / high / unknown /
 # commented / out-dated.  Map "very-high" (when present) to the same red as
-# "high" but slightly larger.
+# "high" but slightly darker.
 
 STATE_COLOR = [
     "match", ["get", "state"],
@@ -166,6 +183,16 @@ STATE_COLOR = [
     "commented", "#999999",
     "out-dated", "#bdbdbd",
     "#cccccc",
+]
+
+# Same palette but keyed on `worst_state` (used by the river-backbone layer).
+WORST_STATE_COLOR = [
+    "match", ["get", "worst_state"],
+    "low",       "#2c7bb6",
+    "normal",    "#1a9850",
+    "high",      "#fdae61",
+    "very-high", "#d7191c",
+    "#7f7f7f",
 ]
 
 NAV_COLOR = [
@@ -198,14 +225,18 @@ FRESH_COLOR = [
 TREND_RADIUS = ["interpolate", ["linear"], ["get", "abs_delta"],
                 0, 4, 25, 7, 50, 10, 100, 14, 250, 18]
 
+# River stroke width scales by gauge count (more gauges = trunk river).
+# Beefier values so the river backbone reads clearly even at country zoom.
+RIVER_STROKE_WIDTH = ["interpolate", ["linear"], ["get", "n_gauges"],
+                       2, 3.5, 5, 5.0, 15, 7.5, 40, 10.0]
+
 LABEL_OPTIONS_BASE = {
     "enabled": True,
-    "size": 12,
-    "color": "#000000",
+    "size": 11,
+    "color": "#1a1a1a",
     "textStrokeColor": "#FFFFFF",
-    "textStrokeWidth": 2,
+    "textStrokeWidth": 2.5,
     "allowOverlap": False,
-    "offset": [0, -1.2],
 }
 
 
@@ -277,21 +308,38 @@ def _latest_replay_bucket(kusto_uri: str, kusto_db: str,
 # ---------------------------------------------------------------------------
 
 def _layer_state(default_visible: bool) -> dict:
+    """Bubble signposts colour-coded by hydrological state. Bubble (not
+    marker) because data-driven `fillColor` only works reliably on bubbles
+    in Fabric Maps; custom marker icons silently fall back to the default
+    blue pin and lose the colour mapping.
+
+    Fabric Maps requires the data-driven colour expression at BOTH
+    `options.color` (top-level) AND nested under the geometry-specific
+    options object (`bubbleOptions` / `polygonOptions` / `lineOptions`) —
+    only the nested form is applied if you set just one. Pattern verified
+    against the live DWD ICON-D2 map in this workspace."""
     return {
         "name": NAME_STATE,
         "kql": _kql_state(),
         "options": {
-            "type": "bubble",
+            "type": "vector",
             "visible": default_visible,
+            "pointLayerType": "bubble",
             "color": STATE_COLOR,
-            "radius": 7,
-            "strokeColor": "#222222",
-            "strokeWidth": 0.5,
-            "blur": 0,
-            "opacity": 0.95,
+            "bubbleOptions": {
+                "color": STATE_COLOR,
+                "radius": 7,
+                "strokeColor": "#1a1a1a",
+                "strokeWidth": 1.2,
+                "opacity": 0.95,
+            },
             "dataLabelKeys": ["label"],
-            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
+            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False, size=11),
+            "tooltipKeys": ["shortname", "longname", "water_shortname",
+                            "value", "state", "agency"],
+            "enablePopups": True,
         },
+        "geometryColumnName": "geometry",
         "filters": [],
     }
 
@@ -301,71 +349,108 @@ def _layer_navigation() -> dict:
         "name": NAME_NAV,
         "kql": _kql_navigation(),
         "options": {
-            "type": "symbol",
+            "type": "vector",
             "visible": False,
-            "iconOptions": {
-                "image": "marker-square",
+            "pointLayerType": "bubble",
+            "color": NAV_COLOR,
+            "bubbleOptions": {
                 "color": NAV_COLOR,
-                "size": 0.8,
-                "allowOverlap": True,
+                "radius": 8,
+                "strokeColor": "#1a1a1a",
+                "strokeWidth": 1.2,
+                "opacity": 0.95,
             },
             "dataLabelKeys": ["label"],
             "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
+            "tooltipKeys": ["shortname", "nav_state", "value"],
+            "enablePopups": True,
         },
+        "geometryColumnName": "geometry",
         "filters": [],
     }
 
 
 def _layer_trend() -> dict:
+    """Bubble layer (not marker) because we need data-driven radius."""
     return {
         "name": NAME_TREND,
         "kql": _kql_trend(),
         "options": {
-            "type": "bubble",
+            "type": "vector",
             "visible": False,
+            "pointLayerType": "bubble",
             "color": TREND_COLOR,
-            "radius": TREND_RADIUS,
-            "strokeColor": "#222222",
-            "strokeWidth": 0.5,
-            "opacity": 0.9,
+            "bubbleOptions": {
+                "color": TREND_COLOR,
+                "radius": TREND_RADIUS,
+                "strokeColor": "#1a1a1a",
+                "strokeWidth": 0.8,
+                "opacity": 0.9,
+            },
             "dataLabelKeys": ["label"],
             "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
+            "tooltipKeys": ["shortname", "direction", "delta_cm", "value"],
+            "enablePopups": True,
         },
+        "geometryColumnName": "geometry",
         "filters": [],
     }
 
 
 def _layer_freshness() -> dict:
+    """Hollow ring overlay; diagnostic-only."""
     return {
         "name": NAME_FRESH,
         "kql": _kql_freshness(),
         "options": {
-            "type": "bubble",
+            "type": "vector",
             "visible": False,
-            "color": "#ffffff00",
-            "radius": 10,
-            "strokeColor": FRESH_COLOR,
-            "strokeWidth": 2.5,
-            "opacity": 1.0,
+            "pointLayerType": "bubble",
+            "color": FRESH_COLOR,
+            "bubbleOptions": {
+                "color": "#ffffff00",
+                "radius": 12,
+                "strokeColor": FRESH_COLOR,
+                "strokeWidth": 2.5,
+                "opacity": 1.0,
+            },
             "dataLabelKeys": ["label"],
             "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
+            "tooltipKeys": ["shortname", "freshness", "age_min"],
+            "enablePopups": True,
         },
+        "geometryColumnName": "geometry",
         "filters": [],
     }
 
 
 def _layer_labels(default_visible: bool) -> dict:
+    """Dense readable labels at deep zoom levels.
+
+    The pins on the hydrological-state layer already carry a label, so this
+    layer kicks in only when that layer is hidden or the user wants the
+    plain-text view at street-level zoom.
+    """
     return {
         "name": NAME_LABELS,
         "kql": _kql_labels(),
         "options": {
-            "type": "symbol",
+            "type": "vector",
             "visible": default_visible,
+            "pointLayerType": "bubble",
             "minZoom": 9,
-            "iconOptions": {"image": "none", "allowOverlap": False},
+            "bubbleOptions": {
+                "color": "#ffffff00",
+                "radius": 2,
+                "strokeColor": "#ffffff00",
+                "strokeWidth": 0,
+                "opacity": 0,
+            },
             "dataLabelKeys": ["label"],
-            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=True, size=11),
+            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=True,
+                                     size=12, allowOverlap=False),
         },
+        "geometryColumnName": "geometry",
         "filters": [],
     }
 
@@ -376,16 +461,23 @@ def _layer_replay(default_bucket: Optional[str]) -> dict:
         "name": NAME_REPLAY,
         "kql": _kql_replay(),
         "options": {
-            "type": "bubble",
+            "type": "vector",
             "visible": False,
+            "pointLayerType": "bubble",
             "color": STATE_COLOR,
-            "radius": 7,
-            "strokeColor": "#222222",
-            "strokeWidth": 0.5,
-            "opacity": 0.95,
+            "bubbleOptions": {
+                "color": STATE_COLOR,
+                "radius": 8,
+                "strokeColor": "#1a1a1a",
+                "strokeWidth": 1.2,
+                "opacity": 0.95,
+            },
             "dataLabelKeys": ["label"],
-            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False),
+            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=True, size=11),
+            "tooltipKeys": ["shortname", "state", "value", "Time (UTC, 15-min)"],
+            "enablePopups": True,
         },
+        "geometryColumnName": "geometry",
         "filters": [{
             "id": filter_id,
             "type": "text",
@@ -393,6 +485,34 @@ def _layer_replay(default_bucket: Optional[str]) -> dict:
             "locked": False,
             "value": [default_bucket] if default_bucket else [],
         }],
+    }
+
+
+def _layer_rivers(default_visible: bool) -> dict:
+    """Per-river polyline that traces all gauges of a named water body in
+    downstream order, coloured by the worst gauge state on that river. This
+    is the layer that visually links the gauge readings to the river network.
+    """
+    return {
+        "name": NAME_RIVERS,
+        "kql": _kql_rivers(),
+        "options": {
+            "type": "vector",
+            "visible": default_visible,
+            "color": WORST_STATE_COLOR,
+            "lineOptions": {
+                "strokeColor": WORST_STATE_COLOR,
+                "strokeWidth": RIVER_STROKE_WIDTH,
+                "strokeOpacity": 0.9,
+            },
+            "dataLabelKeys": ["water_longname"],
+            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False, size=11),
+            "tooltipKeys": ["water_longname", "n_gauges",
+                            "worst_state", "avg_value"],
+            "enablePopups": True,
+        },
+        "geometryColumnName": "geometry",
+        "filters": [],
     }
 
 
@@ -443,17 +563,34 @@ def wire(workspace_id: str, map_id: str, kql_db_id: str,
             "itemId": kql_db_id,
         })
 
+    # 3b. Set a beautiful default basemap centered on Germany.  Only seed
+    # fields the user has not already customised so re-runs are non-destructive.
+    bm = mp.setdefault("basemap", {})
+    bm_opts = bm.setdefault("options", {})
+    bm_opts.setdefault("style", "road_shaded_relief")
+    bm_opts.setdefault("center", [10.45, 51.16])  # geographic centre of Germany
+    bm_opts.setdefault("zoom", 5.6)
+    bm_opts.setdefault("showLabels", True)
+    bm_opts.setdefault("language", "de-DE")
+    bm_ctrl = bm.setdefault("controls", {})
+    bm_ctrl.setdefault("zoom", True)
+    bm_ctrl.setdefault("scale", True)
+    bm_ctrl.setdefault("style", True)
+    bm_ctrl.setdefault("compass", True)
+
     # 4. Resolve the default time-slider bucket for the replay layer.
     default_bucket = _latest_replay_bucket(kusto_uri, kusto_db, ks)
     print(f"  replay default bucket = {default_bucket or '(none yet)'}")
 
-    # 5. Build & append the 6 layers in the user-facing legend order.
+    # 5. Build & append the 7 layers in the user-facing legend order.
+    #    River backbone goes first so it renders underneath the pins.
     layers = [
+        _layer_rivers(default_visible=True),
         _layer_state(default_visible=True),
         _layer_navigation(),
         _layer_trend(),
         _layer_freshness(),
-        _layer_labels(default_visible=True),
+        _layer_labels(default_visible=False),
         _layer_replay(default_bucket),
     ]
 
@@ -471,7 +608,7 @@ def wire(workspace_id: str, map_id: str, kql_db_id: str,
             "id": str(uuid.uuid4()),
             "name": layer["name"],
             "sourceId": src_id,
-            "geometryColumnName": "geometry",
+            "geometryColumnName": layer.get("geometryColumnName", "geometry"),
             "filters": layer["filters"],
             "options": layer["options"],
         })
@@ -513,7 +650,10 @@ def main(argv: Optional[list[str]] = None) -> int:
                                                           for m in missing))
 
     fab_tok = _get_token("FABRIC_TOKEN", "https://api.fabric.microsoft.com/.default")
-    ks_tok  = _get_token("KUSTO_TOKEN",  "https://kusto.fabric.microsoft.com/.default")
+    # Use the specific cluster URI as the audience: the generic
+    # https://kusto.fabric.microsoft.com is not a registered AAD resource
+    # principal in every tenant.
+    ks_tok  = _get_token("KUSTO_TOKEN",  args.kusto_uri.rstrip("/") + "/.default")
 
     wire(args.workspace_id, args.map_id, args.kql_db_id,
          args.kusto_uri, args.kusto_db,
