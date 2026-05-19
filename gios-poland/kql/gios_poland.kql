@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['pl.gov.gios.airquality.Station'] (
    [station_id]: int,
    [station_code]: string,
    [name]: string,
@@ -44,9 +44,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference record for a GIO\\u015a air quality monitoring station in Poland. Contains the station identifier, code, name, WGS84 coordinates, and administrative location (city, commune, district, voivodeship, street). Fields are mapped from the Polish-language GIO\\u015a REST API /station/findAll endpoint.\"}";
+.alter table ['pl.gov.gios.airquality.Station'] docstring "{\"description\": \"Reference record for a GIO\\u015a air quality monitoring station in Poland. Contains the station identifier, code, name, WGS84 coordinates, and administrative location (city, commune, district, voivodeship, street). Fields are mapped from the Polish-language GIO\\u015a REST API /station/findAll endpoint.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['pl.gov.gios.airquality.Station'] column-docstrings (
    [station_id]: "{\"description\": \"Unique numeric identifier of the monitoring station assigned by GIO\\u015a. Mapped from the Polish field 'Identyfikator stacji'.\"}",
    [station_code]: "{\"description\": \"Short alphanumeric code uniquely identifying the station, e.g. 'DsLegAlRzecz'. Mapped from 'Kod stacji'.\"}",
    [name]: "{\"description\": \"Human-readable name of the monitoring station, typically including city and street. Mapped from 'Nazwa stacji'.\"}",
@@ -65,7 +65,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['pl.gov.gios.airquality.Station'] ingestion json mapping "pl.gov.gios.airquality.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -87,7 +87,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['pl.gov.gios.airquality.Station'] ingestion json mapping "pl.gov.gios.airquality.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -109,13 +109,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['pl.gov.gios.airquality.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['pl.gov.gios.airquality.StationLatest'] on table ['pl.gov.gios.airquality.Station'] {
+    ['pl.gov.gios.airquality.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['pl.gov.gios.airquality.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -126,7 +126,7 @@
 }]
 ```
 
-.create-merge table [Sensor] (
+.create-merge table ['pl.gov.gios.airquality.Sensor'] (
    [sensor_id]: int,
    [station_id]: int,
    [parameter_name]: string,
@@ -140,9 +140,9 @@
    [___subject]: string
 );
 
-.alter table [Sensor] docstring "{\"description\": \"Reference record for a sensor installed at a GIO\\u015a air quality station. Identifies the specific pollutant being measured (e.g. PM10, NO\\u2082, O\\u2083) along with the sensor and station identifiers. Fields are mapped from the Polish-language /station/sensors/{stationId} endpoint.\"}";
+.alter table ['pl.gov.gios.airquality.Sensor'] docstring "{\"description\": \"Reference record for a sensor installed at a GIO\\u015a air quality station. Identifies the specific pollutant being measured (e.g. PM10, NO\\u2082, O\\u2083) along with the sensor and station identifiers. Fields are mapped from the Polish-language /station/sensors/{stationId} endpoint.\"}";
 
-.alter table [Sensor] column-docstrings (
+.alter table ['pl.gov.gios.airquality.Sensor'] column-docstrings (
    [sensor_id]: "{\"description\": \"Unique numeric identifier of the sensor (measurement point) assigned by GIO\\u015a. Mapped from 'Identyfikator stanowiska'.\"}",
    [station_id]: "{\"description\": \"Numeric identifier of the parent monitoring station. Mapped from 'Identyfikator stacji'.\"}",
    [parameter_name]: "{\"description\": \"Polish-language name of the measured pollutant, e.g. 'py\\u0142 zawieszony PM10', 'dwutlenek azotu'. Mapped from 'Wska\\u017anik'.\"}",
@@ -156,7 +156,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Sensor] ingestion json mapping "Sensor_json_flat"
+.create-or-alter table ['pl.gov.gios.airquality.Sensor'] ingestion json mapping "pl.gov.gios.airquality.Sensor_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -173,7 +173,7 @@
 ]
 ```
 
-.create-or-alter table [Sensor] ingestion json mapping "Sensor_json_ce_structured"
+.create-or-alter table ['pl.gov.gios.airquality.Sensor'] ingestion json mapping "pl.gov.gios.airquality.Sensor_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -190,13 +190,13 @@
 ]
 ```
 
-.drop materialized-view SensorLatest ifexists;
+.drop materialized-view ['pl.gov.gios.airquality.SensorLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SensorLatest on table Sensor {
-    Sensor | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['pl.gov.gios.airquality.SensorLatest'] on table ['pl.gov.gios.airquality.Sensor'] {
+    ['pl.gov.gios.airquality.Sensor'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Sensor] policy update
+.alter table ['pl.gov.gios.airquality.Sensor'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -207,7 +207,7 @@
 }]
 ```
 
-.create-merge table [Measurement] (
+.create-merge table ['pl.gov.gios.airquality.Measurement'] (
    [station_id]: int,
    [sensor_id]: int,
    [sensor_code]: string,
@@ -220,9 +220,9 @@
    [___subject]: string
 );
 
-.alter table [Measurement] docstring "{\"description\": \"Hourly air quality measurement from a GIO\\u015a sensor. Reports the pollutant concentration in \\u00b5g/m\\u00b3 at a specific timestamp. The measurement may be null when data is missing or under validation. Fields are mapped from the Polish-language /data/getData/{sensorId} endpoint.\"}";
+.alter table ['pl.gov.gios.airquality.Measurement'] docstring "{\"description\": \"Hourly air quality measurement from a GIO\\u015a sensor. Reports the pollutant concentration in \\u00b5g/m\\u00b3 at a specific timestamp. The measurement may be null when data is missing or under validation. Fields are mapped from the Polish-language /data/getData/{sensorId} endpoint.\"}";
 
-.alter table [Measurement] column-docstrings (
+.alter table ['pl.gov.gios.airquality.Measurement'] column-docstrings (
    [station_id]: "{\"description\": \"Numeric identifier of the monitoring station that owns this sensor.\"}",
    [sensor_id]: "{\"description\": \"Numeric identifier of the sensor that produced this measurement.\"}",
    [sensor_code]: "{\"description\": \"Code identifying the sensor and its aggregation period, e.g. 'DsLegAlRzecz-NO2-1g'. Mapped from 'Kod stanowiska'.\"}",
@@ -235,7 +235,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_flat"
+.create-or-alter table ['pl.gov.gios.airquality.Measurement'] ingestion json mapping "pl.gov.gios.airquality.Measurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -251,7 +251,7 @@
 ]
 ```
 
-.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_ce_structured"
+.create-or-alter table ['pl.gov.gios.airquality.Measurement'] ingestion json mapping "pl.gov.gios.airquality.Measurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -267,13 +267,13 @@
 ]
 ```
 
-.drop materialized-view MeasurementLatest ifexists;
+.drop materialized-view ['pl.gov.gios.airquality.MeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MeasurementLatest on table Measurement {
-    Measurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['pl.gov.gios.airquality.MeasurementLatest'] on table ['pl.gov.gios.airquality.Measurement'] {
+    ['pl.gov.gios.airquality.Measurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Measurement] policy update
+.alter table ['pl.gov.gios.airquality.Measurement'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -284,7 +284,7 @@
 }]
 ```
 
-.create-merge table [AirQualityIndex] (
+.create-merge table ['pl.gov.gios.airquality.AirQualityIndex'] (
    [station_id]: int,
    [calculation_timestamp]: datetime,
    [index_value]: int,
@@ -319,9 +319,9 @@
    [___subject]: string
 );
 
-.alter table [AirQualityIndex] docstring "{\"description\": \"Current Polish Air Quality Index (Indeks Jako\\u015bci Powietrza) for a GIO\\u015a monitoring station. Includes the overall index value and category plus sub-indices for SO\\u2082, NO\\u2082, PM10, PM2.5, and O\\u2083. Each sub-index uses a 0\\u20135 scale: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Z\\u0142y (Bad), 5=Bardzo z\\u0142y (Very bad). Fields are mapped from the Polish-language /aqindex/getIndex/{stationId} endpoint.\"}";
+.alter table ['pl.gov.gios.airquality.AirQualityIndex'] docstring "{\"description\": \"Current Polish Air Quality Index (Indeks Jako\\u015bci Powietrza) for a GIO\\u015a monitoring station. Includes the overall index value and category plus sub-indices for SO\\u2082, NO\\u2082, PM10, PM2.5, and O\\u2083. Each sub-index uses a 0\\u20135 scale: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Z\\u0142y (Bad), 5=Bardzo z\\u0142y (Very bad). Fields are mapped from the Polish-language /aqindex/getIndex/{stationId} endpoint.\"}";
 
-.alter table [AirQualityIndex] column-docstrings (
+.alter table ['pl.gov.gios.airquality.AirQualityIndex'] column-docstrings (
    [station_id]: "{\"description\": \"Numeric identifier of the monitoring station. Mapped from 'Identyfikator stacji pomiarowej'.\"}",
    [calculation_timestamp]: "{\"description\": \"Timestamp when the overall index was calculated (ISO 8601 in local Polish time). Mapped from 'Data wykonania oblicze\\u0144 indeksu'.\"}",
    [index_value]: "{\"description\": \"Overall air quality index value: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Z\\u0142y (Bad), 5=Bardzo z\\u0142y (Very bad). Mapped from 'Warto\\u015b\\u0107 indeksu'.\"}",
@@ -356,7 +356,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [AirQualityIndex] ingestion json mapping "AirQualityIndex_json_flat"
+.create-or-alter table ['pl.gov.gios.airquality.AirQualityIndex'] ingestion json mapping "pl.gov.gios.airquality.AirQualityIndex_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -394,7 +394,7 @@
 ]
 ```
 
-.create-or-alter table [AirQualityIndex] ingestion json mapping "AirQualityIndex_json_ce_structured"
+.create-or-alter table ['pl.gov.gios.airquality.AirQualityIndex'] ingestion json mapping "pl.gov.gios.airquality.AirQualityIndex_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -432,13 +432,13 @@
 ]
 ```
 
-.drop materialized-view AirQualityIndexLatest ifexists;
+.drop materialized-view ['pl.gov.gios.airquality.AirQualityIndexLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AirQualityIndexLatest on table AirQualityIndex {
-    AirQualityIndex | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['pl.gov.gios.airquality.AirQualityIndexLatest'] on table ['pl.gov.gios.airquality.AirQualityIndex'] {
+    ['pl.gov.gios.airquality.AirQualityIndex'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [AirQualityIndex] policy update
+.alter table ['pl.gov.gios.airquality.AirQualityIndex'] policy update
 ```
 [{
   "IsEnabled": true,
