@@ -176,7 +176,7 @@ class VatsimBridge:
             config_dict['sasl.mechanism'] = 'PLAIN'
         return config_dict
 
-    def feed(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '') -> None:
+    def feed(self, kafka_config: dict, kafka_topic: str, polling_interval: int, state_file: str = '', once: bool = False) -> None:
         """Poll VATSIM and emit events to Kafka."""
         previous_pilots: Dict[str, str] = _load_state(state_file).get('pilots', {})
         previous_controllers: Dict[str, str] = _load_state(state_file).get('controllers', {})
@@ -250,6 +250,9 @@ class VatsimBridge:
                     pilot_count, ctrl_count, elapsed, effective_interval
                 )
                 _save_state(state_file, {'pilots': previous_pilots, 'controllers': previous_controllers})
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if effective_interval > 0:
                     time.sleep(effective_interval)
             except KeyboardInterrupt:
@@ -291,6 +294,10 @@ def main() -> None:
                              default=polling_interval_default)
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE', os.path.expanduser('~/.vatsim_state.json')))
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). '
+                                  'Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
     bridge = VatsimBridge()
@@ -329,7 +336,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config['security.protocol'] = 'SSL'
 
-        bridge.feed(kafka_config, kafka_topic, args.polling_interval, args.state_file)
+        bridge.feed(kafka_config, kafka_topic, args.polling_interval, args.state_file, args.once)
     else:
         parser.print_help()
 

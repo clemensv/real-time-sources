@@ -39,6 +39,10 @@ pip install .
 
 For containerized deployment, see [CONTAINER.md](CONTAINER.md).
 
+- **Fabric notebook hosting** — schedule the bridge as a Fabric notebook
+  via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+  (see [`notebook/vatsim-feed.ipynb`](notebook/vatsim-feed.ipynb)).
+
 ## Usage
 
 ```bash

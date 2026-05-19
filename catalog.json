@@ -583,7 +583,8 @@
     "cat": "Aviation",
     "key": false,
     "desc": "Global — virtual aviation network, pilots & controllers",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "autobahn",
