@@ -55,9 +55,9 @@ ALIASES: List[Tuple[str, str, Sequence[str]]] = [
     ("MAIN", "MAIN", ("Main",)),
     ("EMS", "EMS", ("Ems",)),
     ("ODER", "ODER", ("Oder", "Odra")),
-    ("HAVEL", "UNTERE HAVEL-WASSERSTRASSE", ("Havel",)),
-    ("HAVEL", "OBERE HAVEL-WASSERSTRASSE", ("Havel",)),
-    ("HAVEL", "HAVEL-ODER-WASSERSTRASSE", ("Havel",)),
+    ("HOW", "HAVEL-ODER-WASSERSTRASSE", ("Havel",)),
+    ("OHW", "OBERE HAVEL-WASSERSTRASSE", ("Havel",)),
+    ("UHW", "UNTERE HAVEL-WASSERSTRASSE", ("Havel",)),
     ("SAALE", "SAALE", ("Saale",)),
     ("WERRA", "WERRA", ("Werra",)),
     ("FULDA", "FULDA", ("Fulda",)),
@@ -69,7 +69,7 @@ ALIASES: List[Tuple[str, str, Sequence[str]]] = [
     ("LEINE", "LEINE", ("Leine",)),
     ("ISAR", "ISAR", ("Isar",)),
     ("INN", "INN", ("Inn",)),
-    ("SPREE", "SPREE-ODER-WASSERSTRASSE", ("Spree", "Spréva")),
+    ("SOW", "SPREE-ODER-WASSERSTRASSE", ("Spree", "Spréva")),
     ("PEENE", "PEENE", ("Peene",)),
     ("REGEN", "REGEN", ("Regen",)),
     # Newly-discovered MVT names that map to pegelonline waters.
@@ -216,95 +216,53 @@ def _interp(p: Tuple[float, float], q: Tuple[float, float], t: float) -> Tuple[f
     return (p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t)
 
 
-def assign_stations_to_lines(
+def segment_water_lines(
     lines: List[List[Tuple[float, float]]],
     stations: List[Tuple[str, float, float]],
-    max_dist_deg: float = 0.5,
-) -> Dict[int, List[Tuple[int, str, float, float]]]:
-    """For each station, find its nearest vertex across all lines and route it
-    to that line. Returns ``{line_index: [(vertex_index, station_id, lon, lat)]}``.
-    Stations whose nearest vertex is more than ``max_dist_deg`` away are
-    dropped (probably belong to a different water or an off-channel oxbow).
-    """
-    per_line: Dict[int, List[Tuple[int, str, float, float]]] = defaultdict(list)
-    max_d_sq = max_dist_deg * max_dist_deg
-    for sid, sx, sy in stations:
-        best = (float("inf"), -1, -1)  # (dist_sq, line_idx, vertex_idx)
-        for li, line in enumerate(lines):
-            for vi, v in enumerate(line):
-                d = _dist_sq((sx, sy), v)
-                if d < best[0]:
-                    best = (d, li, vi)
-        if best[1] < 0 or best[0] > max_d_sq:
-            continue
-        per_line[best[1]].append((best[2], sid, sx, sy))
-    return per_line
-
-
-def split_polyline_per_station(
-    line: List[Tuple[float, float]],
-    assignments: List[Tuple[int, str, float, float]],
 ) -> List[Tuple[str, List[List[float]]]]:
-    """Split a single polyline into one segment per station.
+    """Walk every line vertex-by-vertex and assign it to its nearest station
+    of this water. Emit one segment per maximal run of consecutive same-station
+    vertices, with bridging midpoints at run boundaries so adjacent segments
+    share endpoints (no visual gaps in the rendered ribbon).
 
-    The boundary between adjacent stations is placed at the midpoint of the
-    segment between their nearest-vertex indices. Each emitted segment
-    includes the midpoint vertices on both sides so adjacent segments share
-    endpoints (no visual gaps in the rendered ribbon).
+    Unlike a per-station-pick-best-vertex approach, this guarantees **every**
+    MVT polyline fragment of the water is attributed to some station — no
+    fragment is silently dropped, even if it's far from any gauge or if a line
+    contains no nearby station at all (the whole fragment then becomes one
+    segment under that water's nearest gauge).
     """
-    if len(line) < 2 or not assignments:
+    if not stations:
         return []
-
-    # If two stations share the same nearest vertex, keep insertion order but
-    # nudge subsequent ones to the next vertex so each gets a distinct slice.
-    assignments = sorted(assignments, key=lambda a: a[0])
-    seen_idx: Dict[int, int] = {}
-    nudged: List[Tuple[int, str, float, float]] = []
-    for idx, sid, sx, sy in assignments:
-        cur = idx
-        while cur in seen_idx and cur + 1 < len(line):
-            cur += 1
-        seen_idx[cur] = 1
-        nudged.append((cur, sid, sx, sy))
-    nudged.sort(key=lambda a: a[0])
-
     out: List[Tuple[str, List[List[float]]]] = []
-    n = len(nudged)
-    for i, (vidx, sid, _sx, _sy) in enumerate(nudged):
-        # boundary to previous neighbour
-        if i == 0:
-            start_idx = 0
-            start_mid: Optional[Tuple[float, float]] = None
-        else:
-            prev_vidx = nudged[i - 1][0]
-            mid_idx = (prev_vidx + vidx) // 2
-            start_idx = mid_idx + 1
-            if mid_idx + 1 < len(line):
-                # midpoint between vertices mid_idx and mid_idx+1
-                start_mid = _interp(line[mid_idx], line[mid_idx + 1], 0.5)
-            else:
-                start_mid = None
-        # boundary to next neighbour
-        if i == n - 1:
-            end_idx = len(line) - 1
-            end_mid: Optional[Tuple[float, float]] = None
-        else:
-            next_vidx = nudged[i + 1][0]
-            mid_idx = (vidx + next_vidx) // 2
-            end_idx = mid_idx
-            if mid_idx + 1 < len(line):
-                end_mid = _interp(line[mid_idx], line[mid_idx + 1], 0.5)
-            else:
-                end_mid = None
-
-        seg: List[Tuple[float, float]] = []
-        if start_mid is not None:
-            seg.append(start_mid)
-        seg.extend(line[start_idx:end_idx + 1])
-        if end_mid is not None:
-            seg.append(end_mid)
-        if len(seg) >= 2:
-            out.append((sid, round_coords(seg)))
+    for line in lines:
+        if len(line) < 2:
+            continue
+        # 1. Per-vertex nearest-station
+        assigns: List[str] = []
+        for vx, vy in line:
+            best_sid = stations[0][0]
+            best_d = _dist_sq((vx, vy), (stations[0][1], stations[0][2]))
+            for sid, sx, sy in stations[1:]:
+                d = _dist_sq((vx, vy), (sx, sy))
+                if d < best_d:
+                    best_d, best_sid = d, sid
+            assigns.append(best_sid)
+        # 2. Walk runs and emit each as a segment with bridging midpoints.
+        n = len(line)
+        i = 0
+        while i < n:
+            j = i
+            while j + 1 < n and assigns[j + 1] == assigns[i]:
+                j += 1
+            seg: List[Tuple[float, float]] = []
+            if i > 0:
+                seg.append(_interp(line[i - 1], line[i], 0.5))
+            seg.extend(line[i:j + 1])
+            if j + 1 < n:
+                seg.append(_interp(line[j], line[j + 1], 0.5))
+            if len(seg) >= 2:
+                out.append((assigns[i], round_coords(seg)))
+            i = j + 1
     return out
 
 
@@ -348,26 +306,48 @@ def build_segment_rows(
 
     water_lines: Dict[Tuple[str, str], Tuple[List[List[Tuple[float, float]]], str]] = {}
 
-    # 1. MVT-matched waters
+    # 1. MVT-matched waters. Multiple ALIASES entries may share an alias
+    #    (e.g. HOW/OHW/UHW all match 'Havel'); in that case partition the MVT
+    #    lines among them by routing each line to whichever sibling's stations
+    #    are collectively closest.
     matched: set = set()
+    grouped: Dict[str, List[Tuple[str, str]]] = defaultdict(list)
     for short, longn, aliases in ALIASES:
-        segs: List[List[Tuple[float, float]]] = []
-        matched_alias = None
         for alias in aliases:
-            cand = indexed.get(alias.lower())
-            if cand:
-                segs.extend(cand)
-                matched_alias = alias
+            if alias.lower() in indexed:
+                grouped[alias.lower()].append((short, longn))
                 break
-        if not segs:
+
+    for alias_key, sibs in grouped.items():
+        mvt_lines = [s for s in merge_segments(indexed[alias_key]) if len(s) >= 4]
+        if not mvt_lines:
             continue
-        final = [s for s in merge_segments(segs) if len(s) >= 4]
-        if not final:
+        if len(sibs) == 1:
+            short, longn = sibs[0]
+            water_lines[(short, longn)] = (mvt_lines, "mvt")
+            matched.add((short, longn))
+            print(f"  MVT  {short:15s}/{longn:35s} alias={alias_key:18s} lines={len(mvt_lines)}",
+                  file=sys.stderr)
             continue
-        water_lines[(short, longn)] = (final, "mvt")
-        matched.add((short, longn))
-        print(f"  MVT  {short:15s}/{longn:35s} alias={matched_alias:18s} lines={len(final)}",
-              file=sys.stderr)
+        # Multi-sibling: route each line to the sibling with closest station mean.
+        sib_stations = {sib: stations_per_water.get(sib, []) for sib in sibs}
+        sib_buckets: Dict[Tuple[str, str], List[List[Tuple[float, float]]]] = defaultdict(list)
+        for line in mvt_lines:
+            mid = line[len(line) // 2]
+            best_sib, best_d = sibs[0], float("inf")
+            for sib in sibs:
+                stns = sib_stations.get(sib) or []
+                if not stns:
+                    continue
+                d = min(_dist_sq(mid, (sx, sy)) for _sid, sx, sy in stns)
+                if d < best_d:
+                    best_d, best_sib = d, sib
+            sib_buckets[best_sib].append(line)
+        for sib, lines in sib_buckets.items():
+            water_lines[sib] = (lines, "mvt")
+            matched.add(sib)
+            print(f"  MVT  {sib[0]:15s}/{sib[1]:35s} alias={alias_key:18s} lines={len(lines)} "
+                  f"(of {len(mvt_lines)} shared)", file=sys.stderr)
 
     # 2. Station-backbone fallback for remaining waters
     skipped_lake = skipped_few = 0
@@ -398,19 +378,11 @@ def build_segment_rows(
         if not stations:
             print(f"  NO-STATIONS {ws}/{wl}", file=sys.stderr)
             continue
-        per_line = assign_stations_to_lines(lines, stations)
-        emitted = 0
-        for li, line in enumerate(lines):
-            assigns = per_line.get(li, [])
-            if not assigns:
-                continue
-            segs = split_polyline_per_station(list(line), assigns)
-            for sid, coords in segs:
-                geometry = {"type": "LineString", "coordinates": coords}
-                rows.append((ws, wl, sid, geometry, source))
-                emitted += 1
-        if emitted:
-            n_seg += emitted
+        segs = segment_water_lines(lines, stations)
+        for sid, coords in segs:
+            geometry = {"type": "LineString", "coordinates": coords}
+            rows.append((ws, wl, sid, geometry, source))
+            n_seg += 1
     print(f"  total segments: {n_seg} across {len(water_lines)} waters", file=sys.stderr)
     return rows
 
