@@ -52,6 +52,10 @@ pip install -e .
 python -m pytest tests/ -v
 ```
 
+## Fabric notebook hosting
+
+- This source ships a Fabric notebook (`notebook/carbon-intensity-feed.ipynb`) that runs the bridge with `--once` on the Fabric scheduler. Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Project Structure
 
 | Path | Description |

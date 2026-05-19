@@ -645,7 +645,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "United Kingdom — national grid carbon intensity",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "elexon-bmrs",
