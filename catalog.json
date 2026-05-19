@@ -397,7 +397,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Global — citizen air sensors, PM and climate readings",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "uba-airdata",
