@@ -231,7 +231,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Canada — ~963 SWOB stations, hourly obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "geosphere-austria",
