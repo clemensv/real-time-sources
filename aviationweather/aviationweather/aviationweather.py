@@ -610,6 +610,9 @@ def main():
                         help=f"METAR poll interval in seconds (default: {METAR_POLL_INTERVAL})")
     parser.add_argument('--sigmet-poll-interval', type=int, default=SIGMET_POLL_INTERVAL,
                         help=f"SIGMET poll interval in seconds (default: {SIGMET_POLL_INTERVAL})")
+    parser.add_argument('--once', action='store_true',
+                        default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                        help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
 
@@ -663,7 +666,7 @@ def main():
         metar_poll_interval=args.metar_poll_interval,
         sigmet_poll_interval=args.sigmet_poll_interval,
     )
-    poller.poll_and_send()
+    poller.poll_and_send(once=args.once)
 
 
 if __name__ == "__main__":

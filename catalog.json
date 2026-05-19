@@ -185,7 +185,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Global — METAR, SIGMET advisories",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "blitzortung",
