@@ -330,7 +330,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Sweden — ~232 stations, hourly obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "canada-aqhi",
