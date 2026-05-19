@@ -422,7 +422,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Germany — stations, pollutant components, hourly measures",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "wallonia-issep",
