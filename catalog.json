@@ -312,7 +312,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Global — space weather, solar wind, K-index",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "singapore-nea",
