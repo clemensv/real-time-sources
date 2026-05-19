@@ -64,6 +64,10 @@ configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template-with-eventhub.json)
 
+## Fabric notebook hosting
+
+- This bridge can also be hosted as a scheduled Microsoft Fabric notebook. See `tools/deploy-fabric/deploy-feeder-notebook.ps1` and `epa-uv/notebook/epa-uv-feed.ipynb`.
+
 ## Upstream Links
 
 - Docs: https://www.epa.gov/enviro/web-services
