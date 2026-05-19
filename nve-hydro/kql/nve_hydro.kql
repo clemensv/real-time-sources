@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['no.nve.hydrology.Station'] (
    [station_id]: string,
    [station_name]: string,
    [river_name]: string,
@@ -42,9 +42,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Station\"}";
+.alter table ['no.nve.hydrology.Station'] docstring "{\"description\": \"Station\"}";
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['no.nve.hydrology.Station'] ingestion json mapping "no.nve.hydrology.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -64,7 +64,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['no.nve.hydrology.Station'] ingestion json mapping "no.nve.hydrology.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -84,13 +84,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['no.nve.hydrology.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['no.nve.hydrology.StationLatest'] on table ['no.nve.hydrology.Station'] {
+    ['no.nve.hydrology.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['no.nve.hydrology.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -101,7 +101,7 @@
 }]
 ```
 
-.create-merge table [WaterLevelObservation] (
+.create-merge table ['no.nve.hydrology.WaterLevelObservation'] (
    [station_id]: string,
    [water_level]: real,
    [water_level_unit]: string,
@@ -116,9 +116,9 @@
    [___subject]: string
 );
 
-.alter table [WaterLevelObservation] docstring "{\"description\": \"WaterLevelObservation\"}";
+.alter table ['no.nve.hydrology.WaterLevelObservation'] docstring "{\"description\": \"WaterLevelObservation\"}";
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_flat"
+.create-or-alter table ['no.nve.hydrology.WaterLevelObservation'] ingestion json mapping "no.nve.hydrology.WaterLevelObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -136,7 +136,7 @@
 ]
 ```
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_ce_structured"
+.create-or-alter table ['no.nve.hydrology.WaterLevelObservation'] ingestion json mapping "no.nve.hydrology.WaterLevelObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -154,13 +154,13 @@
 ]
 ```
 
-.drop materialized-view WaterLevelObservationLatest ifexists;
+.drop materialized-view ['no.nve.hydrology.WaterLevelObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterLevelObservationLatest on table WaterLevelObservation {
-    WaterLevelObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['no.nve.hydrology.WaterLevelObservationLatest'] on table ['no.nve.hydrology.WaterLevelObservation'] {
+    ['no.nve.hydrology.WaterLevelObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterLevelObservation] policy update
+.alter table ['no.nve.hydrology.WaterLevelObservation'] policy update
 ```
 [{
   "IsEnabled": true,

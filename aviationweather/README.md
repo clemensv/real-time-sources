@@ -12,6 +12,7 @@
 - **Deduplication**: Tracks last seen METAR observation time per station and SIGMET identity to avoid reprocessing.
 - **Kafka Integration**: Send events to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: deploy the feeder as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (uses [`notebook/aviationweather-feed.ipynb`](notebook/aviationweather-feed.ipynb)).
 
 ## Installation
 

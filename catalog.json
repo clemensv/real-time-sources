@@ -14,7 +14,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "California — ~2,600 stations, DWR",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "chmi-hydro",
@@ -22,7 +23,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Czech Republic — CHMU",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "german-waters",
@@ -38,7 +40,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "France — ~6,300 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "imgw-hydro",
@@ -54,7 +57,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Ireland — ~500 OPW hydrometric stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nepal-bipad-hydrology",
@@ -62,7 +66,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Nepal — Himalayan river basins, BIPAD",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "noaa",
@@ -94,7 +99,8 @@
     "cat": "Hydrology",
     "key": true,
     "desc": "Norway — NVE (requires free API key)",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "pegelonline",
@@ -111,7 +117,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Netherlands — ~785 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "smhi-hydro",
@@ -127,7 +134,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Western US & Alaska — ~900 snowpack stations, NRCS",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "syke-hydro",
@@ -135,7 +143,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Finland — SYKE",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "uk-ea-flood-monitoring",
@@ -143,7 +152,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "England — ~4,000 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-iv",
@@ -175,7 +185,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Global — METAR, SIGMET advisories",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "blitzortung",
@@ -223,7 +234,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Austria — ~280 TAWES stations, 10-min obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "hko-hong-kong",
@@ -231,7 +243,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Hong Kong — 27 temp stations, 18 rainfall districts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "jma-japan",
@@ -239,7 +252,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Japan — weather bulletins, warnings, forecasts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "kmi-belgium",

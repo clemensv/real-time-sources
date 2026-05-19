@@ -6,6 +6,13 @@ Event Hubs, or Microsoft Fabric Event Streams. It provides real-time water level
 (height) and flow (discharge) data from approximately 6,300 monitoring stations
 across France.
 
+## Fabric notebook hosting
+
+This source can also be hosted as a scheduled Microsoft Fabric notebook via
+`tools/deploy-fabric/deploy-feeder-notebook.ps1`, which deploys
+[`notebook/hubeau-hydrometrie-feed.ipynb`](notebook/hubeau-hydrometrie-feed.ipynb)
+as an alternative to the Azure Container Instance bridge.
+
 ## Hub'Eau Hydrométrie API
 
 Hub'Eau is a service provided by the French Ministry for an Ecological

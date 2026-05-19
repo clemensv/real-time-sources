@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['fi.syke.hydrology.Station'] (
    [station_id]: string,
    [name]: string,
    [river_name]: string,
@@ -40,9 +40,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Station\"}";
+.alter table ['fi.syke.hydrology.Station'] docstring "{\"description\": \"Station\"}";
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['fi.syke.hydrology.Station'] ingestion json mapping "fi.syke.hydrology.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -60,7 +60,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['fi.syke.hydrology.Station'] ingestion json mapping "fi.syke.hydrology.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -78,13 +78,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['fi.syke.hydrology.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fi.syke.hydrology.StationLatest'] on table ['fi.syke.hydrology.Station'] {
+    ['fi.syke.hydrology.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['fi.syke.hydrology.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -95,7 +95,7 @@
 }]
 ```
 
-.create-merge table [WaterLevelObservation] (
+.create-merge table ['fi.syke.hydrology.WaterLevelObservation'] (
    [station_id]: string,
    [water_level]: real,
    [water_level_unit]: string,
@@ -110,9 +110,9 @@
    [___subject]: string
 );
 
-.alter table [WaterLevelObservation] docstring "{\"description\": \"WaterLevelObservation\"}";
+.alter table ['fi.syke.hydrology.WaterLevelObservation'] docstring "{\"description\": \"WaterLevelObservation\"}";
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_flat"
+.create-or-alter table ['fi.syke.hydrology.WaterLevelObservation'] ingestion json mapping "fi.syke.hydrology.WaterLevelObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -130,7 +130,7 @@
 ]
 ```
 
-.create-or-alter table [WaterLevelObservation] ingestion json mapping "WaterLevelObservation_json_ce_structured"
+.create-or-alter table ['fi.syke.hydrology.WaterLevelObservation'] ingestion json mapping "fi.syke.hydrology.WaterLevelObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -148,13 +148,13 @@
 ]
 ```
 
-.drop materialized-view WaterLevelObservationLatest ifexists;
+.drop materialized-view ['fi.syke.hydrology.WaterLevelObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterLevelObservationLatest on table WaterLevelObservation {
-    WaterLevelObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['fi.syke.hydrology.WaterLevelObservationLatest'] on table ['fi.syke.hydrology.WaterLevelObservation'] {
+    ['fi.syke.hydrology.WaterLevelObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterLevelObservation] policy update
+.alter table ['fi.syke.hydrology.WaterLevelObservation'] policy update
 ```
 [{
   "IsEnabled": true,

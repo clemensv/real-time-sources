@@ -13,7 +13,7 @@ of a successful deploy.
 | File | Purpose |
 | ---- | ------- |
 | `post-deploy.ps1` | Hook auto-invoked by `tools/deploy-fabric/deploy-fabric.ps1`. Acquires Fabric + Kusto tokens, then runs `wire_icond2_map.py` with the workspace/db/cluster IDs from the deployer's `-Context` hashtable. Can also be run standalone. |
-| `wire_icond2_map.py` | Idempotently (re)wires 8 ICON-D2 Kusto-backed vector layers (t_2m, tot_prec, vmax_10m, clct, cape_ml, dbz_cmax, pmsl, h_snow) onto an existing Fabric Map item. Each layer queries `IconD2Points` for the latest model run of its parameter, so the map auto-refreshes as the bridge ingests new runs. |
+| `wire_icond2_map.py` | Idempotently (re)wires 8 ICON-D2 Kusto-backed vector layers (t_2m, tot_prec, vmax_10m, clct, cape_ml, dbz_cmax, pmsl, h_snow) onto an existing Fabric Map item. Each layer queries `['de.dwd.icond2.GridPoints']` for the latest model run of its parameter, so the map auto-refreshes as the bridge ingests new runs. |
 
 ## Prerequisites
 
@@ -84,7 +84,7 @@ immediately when toggled on.
 
 | File | Purpose |
 | ---- | ------- |
-| `wire_icond2_map.py` | Idempotently (re)wires 8 ICON-D2 Kusto-backed vector layers (t_2m, tot_prec, vmax_10m, clct, cape_ml, dbz_cmax, pmsl, h_snow) onto an existing Fabric Map item. Each layer queries `IconD2Points` for the latest model run of its parameter (`toscalar(... | summarize max(run))`), so the map auto-refreshes as the bridge ingests new runs. |
+| `wire_icond2_map.py` | Idempotently (re)wires 8 ICON-D2 Kusto-backed vector layers (t_2m, tot_prec, vmax_10m, clct, cape_ml, dbz_cmax, pmsl, h_snow) onto an existing Fabric Map item. Each layer queries `['de.dwd.icond2.GridPoints']` for the latest model run of its parameter (`toscalar(... | summarize max(run))`), so the map auto-refreshes as the bridge ingests new runs. |
 | `setup.ps1` | Thin PowerShell wrapper that acquires Fabric + Kusto bearer tokens via `az account get-access-token` and invokes `wire_icond2_map.py`. |
 
 ## Prerequisites

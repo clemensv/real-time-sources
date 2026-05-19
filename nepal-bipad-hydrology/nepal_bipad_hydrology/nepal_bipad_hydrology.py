@@ -140,7 +140,7 @@ class NepalBipadHydrologyAPI:
 
     def feed_stations(self, kafka_config: dict, kafka_topic: str,
                       polling_interval: int, state_file: str = '',
-                      reference_refresh_hours: int = 6) -> None:
+                      reference_refresh_hours: int = 6, once: bool = False) -> None:
         """Fetch stations, emit reference data and telemetry in a loop."""
         previous_readings: Dict[str, str] = _load_state(state_file)
 
@@ -231,6 +231,9 @@ class NepalBipadHydrologyAPI:
                 effective_interval = max(0, polling_interval - (end_time - start_time).total_seconds())
                 logging.info("Sent %d water level readings in %.1fs. Sleeping %.0fs.",
                               count, (end_time - start_time).total_seconds(), effective_interval)
+                if once:
+                    logging.info("--once mode: exiting after first polling cycle")
+                    break
                 if effective_interval > 0:
                     time.sleep(effective_interval)
             except KeyboardInterrupt:
@@ -277,6 +280,9 @@ def main() -> None:
     feed_parser.add_argument('--state-file', type=str,
                              default=os.getenv('STATE_FILE',
                                                os.path.expanduser('~/.nepal_bipad_hydrology_state.json')))
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
     api = NepalBipadHydrologyAPI()
@@ -320,7 +326,7 @@ def main() -> None:
         elif tls_enabled:
             kafka_config['security.protocol'] = 'SSL'
 
-        api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file)
+        api.feed_stations(kafka_config, kafka_topic, args.polling_interval, args.state_file, once=args.once)
     else:
         parser.print_help()
 

@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['hk.gov.hko.weather.Station'] (
    [place_id]: string,
    [name]: string,
    [data_types]: string,
@@ -36,9 +36,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference data for a HKO weather observation place. Places include automatic weather stations (temperature), rainfall reporting districts, and special measurement locations (humidity at HKO headquarters, UV index at King's Park).\"}";
+.alter table ['hk.gov.hko.weather.Station'] docstring "{\"description\": \"Reference data for a HKO weather observation place. Places include automatic weather stations (temperature), rainfall reporting districts, and special measurement locations (humidity at HKO headquarters, UV index at King's Park).\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['hk.gov.hko.weather.Station'] column-docstrings (
    [place_id]: "{\"description\": \"URL-safe slug identifier derived from the English place name, e.g. 'kings-park', 'central-western-district'. Used as Kafka key and CloudEvents subject.\"}",
    [name]: "{\"description\": \"Original English place name from the HKO rhrread API, e.g. 'King's Park', 'Central & Western District'.\"}",
    [data_types]: "{\"description\": \"Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'.\"}",
@@ -49,7 +49,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['hk.gov.hko.weather.Station'] ingestion json mapping "hk.gov.hko.weather.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -63,7 +63,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['hk.gov.hko.weather.Station'] ingestion json mapping "hk.gov.hko.weather.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -77,13 +77,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['hk.gov.hko.weather.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['hk.gov.hko.weather.StationLatest'] on table ['hk.gov.hko.weather.Station'] {
+    ['hk.gov.hko.weather.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['hk.gov.hko.weather.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -94,7 +94,7 @@
 }]
 ```
 
-.create-merge table [WeatherObservation] (
+.create-merge table ['hk.gov.hko.weather.WeatherObservation'] (
    [place_id]: string,
    [place_name]: string,
    [observation_time]: datetime,
@@ -110,9 +110,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherObservation] docstring "{\"description\": \"Current weather observation for a HKO place from the rhrread endpoint. Temperature from automatic weather stations, rainfall from district-level rain gauges, humidity from HKO headquarters, UV index from King's Park. Fields are null when the place does not report that data type.\"}";
+.alter table ['hk.gov.hko.weather.WeatherObservation'] docstring "{\"description\": \"Current weather observation for a HKO place from the rhrread endpoint. Temperature from automatic weather stations, rainfall from district-level rain gauges, humidity from HKO headquarters, UV index from King's Park. Fields are null when the place does not report that data type.\"}";
 
-.alter table [WeatherObservation] column-docstrings (
+.alter table ['hk.gov.hko.weather.WeatherObservation'] column-docstrings (
    [place_id]: "{\"description\": \"URL-safe slug identifier for the place, matching the Kafka key.\"}",
    [place_name]: "{\"description\": \"Original English place name from the HKO API.\"}",
    [observation_time]: "{\"description\": \"ISO 8601 timestamp of the observation including Hong Kong timezone offset (+08:00), from the updateTime field.\"}",
@@ -128,7 +128,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+.create-or-alter table ['hk.gov.hko.weather.WeatherObservation'] ingestion json mapping "hk.gov.hko.weather.WeatherObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -147,7 +147,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+.create-or-alter table ['hk.gov.hko.weather.WeatherObservation'] ingestion json mapping "hk.gov.hko.weather.WeatherObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -166,13 +166,13 @@
 ]
 ```
 
-.drop materialized-view WeatherObservationLatest ifexists;
+.drop materialized-view ['hk.gov.hko.weather.WeatherObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
-    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['hk.gov.hko.weather.WeatherObservationLatest'] on table ['hk.gov.hko.weather.WeatherObservation'] {
+    ['hk.gov.hko.weather.WeatherObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherObservation] policy update
+.alter table ['hk.gov.hko.weather.WeatherObservation'] policy update
 ```
 [{
   "IsEnabled": true,

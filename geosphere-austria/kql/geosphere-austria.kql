@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [WeatherStation] (
+.create-merge table ['at.geosphere.tawes.WeatherStation'] (
    [station_id]: string,
    [station_name]: string,
    [latitude]: real,
@@ -39,9 +39,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherStation] docstring "{\"description\": \"Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID. Metadata is sourced from the TAWES v1 10-minute current dataset metadata endpoint.\"}";
+.alter table ['at.geosphere.tawes.WeatherStation'] docstring "{\"description\": \"Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID. Metadata is sourced from the TAWES v1 10-minute current dataset metadata endpoint.\"}";
 
-.alter table [WeatherStation] column-docstrings (
+.alter table ['at.geosphere.tawes.WeatherStation'] column-docstrings (
    [station_id]: "{\"description\": \"Stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata.\"}",
    [station_name]: "{\"description\": \"Station name from the GeoSphere metadata, for example 'WIEN HOHE WARTE' or 'INNSBRUCK FLUGHAFEN'. Mapped from the upstream 'name' field.\"}",
    [latitude]: "{\"description\": \"WGS84 latitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lat' field.\"}",
@@ -55,7 +55,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_flat"
+.create-or-alter table ['at.geosphere.tawes.WeatherStation'] ingestion json mapping "at.geosphere.tawes.WeatherStation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,7 +72,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherStation] ingestion json mapping "WeatherStation_json_ce_structured"
+.create-or-alter table ['at.geosphere.tawes.WeatherStation'] ingestion json mapping "at.geosphere.tawes.WeatherStation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,13 +89,13 @@
 ]
 ```
 
-.drop materialized-view WeatherStationLatest ifexists;
+.drop materialized-view ['at.geosphere.tawes.WeatherStationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherStationLatest on table WeatherStation {
-    WeatherStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['at.geosphere.tawes.WeatherStationLatest'] on table ['at.geosphere.tawes.WeatherStation'] {
+    ['at.geosphere.tawes.WeatherStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherStation] policy update
+.alter table ['at.geosphere.tawes.WeatherStation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -106,7 +106,7 @@
 }]
 ```
 
-.create-merge table [WeatherObservation] (
+.create-merge table ['at.geosphere.tawes.WeatherObservation'] (
    [station_id]: string,
    [observation_time]: string,
    [temperature]: real,
@@ -124,9 +124,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherObservation] docstring "{\"description\": \"10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters. Values are null when the station does not report a parameter or the measurement is missing for the current interval.\"}";
+.alter table ['at.geosphere.tawes.WeatherObservation'] docstring "{\"description\": \"10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters. Values are null when the station does not report a parameter or the measurement is missing for the current interval.\"}";
 
-.alter table [WeatherObservation] column-docstrings (
+.alter table ['at.geosphere.tawes.WeatherObservation'] column-docstrings (
    [station_id]: "{\"description\": \"GeoSphere Austria numeric station identifier for the observing station. Mapped from the upstream 'station' property in the GeoJSON features.\"}",
    [observation_time]: "{\"description\": \"Observation timestamp in UTC from the GeoSphere API 'timestamps' array, formatted as an ISO-8601 instant such as '2024-01-15T13:00:00+00:00'.\"}",
    [temperature]: "{\"description\": \"Air temperature (Lufttemperatur) in degrees Celsius over the 10-minute interval, from the GeoSphere TL parameter. Null when the station does not report this parameter.\"}",
@@ -144,7 +144,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+.create-or-alter table ['at.geosphere.tawes.WeatherObservation'] ingestion json mapping "at.geosphere.tawes.WeatherObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -165,7 +165,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+.create-or-alter table ['at.geosphere.tawes.WeatherObservation'] ingestion json mapping "at.geosphere.tawes.WeatherObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -186,13 +186,13 @@
 ]
 ```
 
-.drop materialized-view WeatherObservationLatest ifexists;
+.drop materialized-view ['at.geosphere.tawes.WeatherObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
-    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['at.geosphere.tawes.WeatherObservationLatest'] on table ['at.geosphere.tawes.WeatherObservation'] {
+    ['at.geosphere.tawes.WeatherObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherObservation] policy update
+.alter table ['at.geosphere.tawes.WeatherObservation'] policy update
 ```
 [{
   "IsEnabled": true,
