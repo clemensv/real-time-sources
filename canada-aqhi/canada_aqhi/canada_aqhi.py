@@ -10,6 +10,7 @@ import os
 import sys
 import time
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Iterable, Optional, Sequence
 
@@ -247,7 +248,7 @@ class CanadaAQHIBridge:
         response.raise_for_status()
         return response.json()
 
-    def fetch_text(self, url: str, *, timeout: int = 30) -> Optional[str]:
+    def fetch_text(self, url: str, *, timeout: int = 15) -> Optional[str]:
         try:
             response = self.session.get(url, timeout=timeout)
             if response.status_code == 404:
@@ -510,11 +511,12 @@ class CanadaAQHIBridge:
         communities: Iterable[dict[str, Any]],
     ) -> int:
         sent = 0
-        for entry in communities:
-            observation_url = entry.get("observation_url")
-            if not observation_url:
-                continue
-            xml_text = self.fetch_text(observation_url)
+        entries = [e for e in communities if e.get("observation_url")]
+        if not entries:
+            return 0
+        with ThreadPoolExecutor(max_workers=min(16, len(entries))) as pool:
+            xml_texts = list(pool.map(lambda e: self.fetch_text(e["observation_url"]), entries))
+        for entry, xml_text in zip(entries, xml_texts):
             if not xml_text:
                 continue
             parsed = self.parse_observation_xml(xml_text)
@@ -545,11 +547,12 @@ class CanadaAQHIBridge:
         communities: Iterable[dict[str, Any]],
     ) -> int:
         sent = 0
-        for entry in communities:
-            forecast_url = entry.get("forecast_url")
-            if not forecast_url:
-                continue
-            xml_text = self.fetch_text(forecast_url)
+        entries = [e for e in communities if e.get("forecast_url")]
+        if not entries:
+            return 0
+        with ThreadPoolExecutor(max_workers=min(16, len(entries))) as pool:
+            xml_texts = list(pool.map(lambda e: self.fetch_text(e["forecast_url"]), entries))
+        for entry, xml_text in zip(entries, xml_texts):
             if not xml_text:
                 continue
             parsed = self.parse_forecast_xml(xml_text)
