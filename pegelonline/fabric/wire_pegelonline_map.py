@@ -73,6 +73,7 @@ import requests
 LAYER_PREFIX = "pegelonline "
 
 NAME_RIVERS  = f"{LAYER_PREFIX}river backbone"
+NAME_REAL_RIVERS = f"{LAYER_PREFIX}real rivers"
 NAME_STATE   = f"{LAYER_PREFIX}hydrological state"
 NAME_NAV     = f"{LAYER_PREFIX}navigation state"
 NAME_TREND   = f"{LAYER_PREFIX}24h trend"
@@ -80,7 +81,7 @@ NAME_FRESH   = f"{LAYER_PREFIX}data freshness"
 NAME_LABELS  = f"{LAYER_PREFIX}station labels"
 NAME_REPLAY  = f"{LAYER_PREFIX}historical replay"
 
-LAYER_NAMES = {NAME_RIVERS, NAME_STATE, NAME_NAV, NAME_TREND,
+LAYER_NAMES = {NAME_RIVERS, NAME_REAL_RIVERS, NAME_STATE, NAME_NAV, NAME_TREND,
                NAME_FRESH, NAME_LABELS, NAME_REPLAY}
 
 # Common geometry projection appended to every KQL body.
@@ -157,6 +158,28 @@ def _kql_rivers() -> str:
     return """RiverBackbones()
 | project geometry, water_shortname, water_longname, label, worst_state,
           n_gauges, avg_value
+"""
+
+
+def _kql_real_rivers() -> str:
+    """RealRiverBackbones() projects a MultiLineString `geometry` sourced
+    from Azure Maps tiles, so the overlay aligns pixel-perfectly with the
+    basemap river rendering. Stroke colour & width are computed here so the
+    Fabric Map can use simple `["get", ...]` expressions."""
+    return """RealRiverBackbones()
+| extend stroke_color = case(
+    worst_state == "very-high", "#d73027",
+    worst_state == "high",      "#fc8d59",
+    worst_state == "low",       "#91bfdb",
+    worst_state == "normal",    "#1a9850",
+                                "#9aa0a6")
+| extend stroke_weight = todouble(case(
+    n_gauges >= 30, 6,
+    n_gauges >= 10, 4,
+    n_gauges >=  3, 3,
+                    2))
+| project geometry, water_shortname, water_longname, label, worst_state,
+          n_gauges, avg_value, stroke_color, stroke_weight
 """
 
 
@@ -516,6 +539,42 @@ def _layer_rivers(default_visible: bool) -> dict:
     }
 
 
+def _layer_real_rivers(default_visible: bool) -> dict:
+    """Real meandering river polylines sourced from Azure Maps' own
+    microsoft.base.labels vector tiles. Geometry aligns pixel-perfectly
+    with the basemap, so a thick coloured overlay highlights the river's
+    actual course rather than the straight gauge-to-gauge backbone.
+
+    Requires the ``RiverGeometries`` table to be populated by
+    ``build_river_geometries.py`` + the post-deploy hook. If the table is
+    empty the layer simply renders nothing (no error).
+    """
+    return {
+        "name": NAME_REAL_RIVERS,
+        "kql": _kql_real_rivers(),
+        "options": {
+            "type": "vector",
+            "visible": default_visible,
+            "color": ["get", "stroke_color"],
+            "lineOptions": {
+                "strokeColor": ["get", "stroke_color"],
+                "strokeWidth": ["get", "stroke_weight"],
+                "strokeOpacity": 0.9,
+                "lineJoin": "round",
+                "lineCap": "round",
+            },
+            "dataLabelKeys": ["label"],
+            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=True,
+                                     size=12, allowOverlap=False),
+            "tooltipKeys": ["water_longname", "n_gauges",
+                            "worst_state", "avg_value"],
+            "enablePopups": True,
+        },
+        "geometryColumnName": "geometry",
+        "filters": [],
+    }
+
+
 # ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
@@ -582,10 +641,13 @@ def wire(workspace_id: str, map_id: str, kql_db_id: str,
     default_bucket = _latest_replay_bucket(kusto_uri, kusto_db, ks)
     print(f"  replay default bucket = {default_bucket or '(none yet)'}")
 
-    # 5. Build & append the 7 layers in the user-facing legend order.
-    #    River backbone goes first so it renders underneath the pins.
+    # 5. Build & append the layers in legend order. Real rivers go first so
+    #    they render under the gauge-stitched backbone and the pins. The
+    #    legacy stitched-line backbone is kept as a default-off fallback for
+    #    rivers/canals not present in RiverGeometries.
     layers = [
-        _layer_rivers(default_visible=True),
+        _layer_real_rivers(default_visible=True),
+        _layer_rivers(default_visible=False),
         _layer_state(default_visible=True),
         _layer_navigation(),
         _layer_trend(),

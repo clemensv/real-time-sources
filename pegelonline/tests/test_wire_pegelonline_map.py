@@ -33,11 +33,12 @@ class WirePegelonlineMapTests(unittest.TestCase):
 
     def test_layer_names_unique_and_complete(self) -> None:
         m = self.mod
-        # Set must equal the seven declared constants (v2 adds rivers).
+        # Set must equal the eight declared constants (v3 adds real rivers).
         self.assertEqual(
             m.LAYER_NAMES,
             {m.NAME_STATE, m.NAME_NAV, m.NAME_TREND,
-             m.NAME_FRESH, m.NAME_LABELS, m.NAME_REPLAY, m.NAME_RIVERS},
+             m.NAME_FRESH, m.NAME_LABELS, m.NAME_REPLAY,
+             m.NAME_RIVERS, m.NAME_REAL_RIVERS},
         )
         # All layer names must share the common prefix used for the
         # idempotent drop-and-replace logic.
@@ -71,6 +72,12 @@ class WirePegelonlineMapTests(unittest.TestCase):
         rivers_body = m._kql_rivers()
         self.assertIn("RiverBackbones()", rivers_body)
         self.assertIn("geometry", rivers_body)
+        # Real rivers layer wraps the RealRiverBackbones() function and
+        # adds data-driven stroke colour + weight as plain columns.
+        real_body = m._kql_real_rivers()
+        self.assertIn("RealRiverBackbones()", real_body)
+        self.assertIn("stroke_color", real_body)
+        self.assertIn("stroke_weight", real_body)
 
     def test_layer_builders_v2_schema_shape(self) -> None:
         """Every layer must follow the Fabric Map 2.0.0 vector-layer shape:
@@ -108,6 +115,14 @@ class WirePegelonlineMapTests(unittest.TestCase):
         self.assertIn("strokeWidth", ropts["lineOptions"])
         # Dual-write of the colour expression.
         self.assertEqual(ropts["color"], ropts["lineOptions"]["strokeColor"])
+        # Real-rivers is also a line layer with data-driven stroke colour/width.
+        real_rivers = m._layer_real_rivers(default_visible=True)
+        rropts = real_rivers["options"]
+        self.assertEqual(rropts["type"], "vector")
+        self.assertIn("lineOptions", rropts)
+        self.assertEqual(rropts["color"], ["get", "stroke_color"])
+        self.assertEqual(rropts["lineOptions"]["strokeColor"], ["get", "stroke_color"])
+        self.assertEqual(rropts["lineOptions"]["strokeWidth"], ["get", "stroke_weight"])
         # Replay carries the time-slider filter seeded to the bucket.
         replay = bubble_layers[-1]
         self.assertEqual(len(replay["filters"]), 1)
@@ -119,17 +134,19 @@ class WirePegelonlineMapTests(unittest.TestCase):
         self.assertEqual(replay["filters"][0]["value"], [])
 
     def test_default_visibility(self) -> None:
-        """Rivers + hydrological state default-on; everything else default-off
-        (incl. the dense labels layer — that one is gated by minZoom anyway)."""
+        """Real rivers + hydrological state default-on; everything else
+        default-off (incl. the legacy stitched backbone and the dense labels
+        layer — the latter is gated by minZoom anyway)."""
         m = self.mod
         layers = [
-            (m._layer_rivers(default_visible=True),  True),
-            (m._layer_state(default_visible=True),   True),
-            (m._layer_navigation(),                  False),
-            (m._layer_trend(),                       False),
-            (m._layer_freshness(),                   False),
-            (m._layer_labels(default_visible=False), False),
-            (m._layer_replay(None),                  False),
+            (m._layer_real_rivers(default_visible=True), True),
+            (m._layer_rivers(default_visible=False),  False),
+            (m._layer_state(default_visible=True),    True),
+            (m._layer_navigation(),                   False),
+            (m._layer_trend(),                        False),
+            (m._layer_freshness(),                    False),
+            (m._layer_labels(default_visible=False),  False),
+            (m._layer_replay(None),                   False),
         ]
         for layer, expected in layers:
             with self.subTest(name=layer["name"]):

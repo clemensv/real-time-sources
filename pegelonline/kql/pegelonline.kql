@@ -323,3 +323,49 @@
     | project water_shortname, water_longname, label, worst_state, n_gauges,
               avg_value, geometry
 }
+
+// =====================================================================
+// RealRiverBackbones
+//
+// Same shape as RiverBackbones(), but joins to a static RiverGeometries
+// table that holds real meandering river centerlines (MultiLineString)
+// sourced from Azure Maps' microsoft.base.labels tileset. Because both
+// the basemap *and* this overlay derive from the same Azure Maps tiles,
+// the overlay geometry aligns pixel-perfectly with the underlying river
+// rendering in the basemap - no jitter, no mismatched bends.
+//
+// The RiverGeometries table is populated by
+// pegelonline/fabric/build_river_geometries.py, which crawls Germany at
+// zoom 12 and merges per-tile "River label" line segments by river name.
+//
+// Severity is computed from EnrichedMeasurements() gauges that match by
+// water_shortname; rivers with no live gauges still draw (in grey).
+
+.create-or-alter function with (folder = "Map") RealRiverBackbones() {
+    let state_rk = (s:string) {
+        case(s == "very-high", 4,
+             s == "high",      3,
+             s == "normal",    2,
+             s == "low",       1,
+             0)
+    };
+    let agg = EnrichedMeasurements()
+        | extend sr = state_rk(stateMnwMhw)
+        | summarize raw_n = count(), worst_rk = max(sr), avg_v = avg(value)
+            by water_shortname;
+    RiverGeometries
+    | join kind=leftouter agg on water_shortname
+    | extend worst_state = case(
+        worst_rk == 4, "very-high",
+        worst_rk == 3, "high",
+        worst_rk == 2, "normal",
+        worst_rk == 1, "low",
+        "unknown")
+    // tolong(coalesce(_, long(0))) sidesteps a KQL type-inference quirk on
+    // the right-side of leftouter joins where bare coalesce(raw_n, 0L)
+    // fails with a BadRequest.
+    | extend n_gauges = tolong(coalesce(raw_n, long(0)))
+    | extend label = strcat(water_shortname, " (", tostring(n_gauges), ")")
+    | project water_shortname, water_longname, label, worst_state, n_gauges,
+              avg_value = avg_v, geometry
+}
