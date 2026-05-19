@@ -14,7 +14,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "California — ~2,600 stations, DWR",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "chmi-hydro",

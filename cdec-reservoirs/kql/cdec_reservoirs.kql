@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [ReservoirReading] (
+.create-merge table ['gov.ca.water.cdec.ReservoirReading'] (
    [station_id]: string,
    [sensor_num]: int,
    [sensor_type]: string,
@@ -41,9 +41,9 @@
    [___subject]: string
 );
 
-.alter table [ReservoirReading] docstring "{\"description\": \"A single sensor reading from a CDEC reservoir station. The California Data Exchange Center (CDEC) publishes hourly and sub-hourly observations for over 2,600 stations across California. Each reading captures one measurement for a specific station, sensor type, and timestamp.\"}";
+.alter table ['gov.ca.water.cdec.ReservoirReading'] docstring "{\"description\": \"A single sensor reading from a CDEC reservoir station. The California Data Exchange Center (CDEC) publishes hourly and sub-hourly observations for over 2,600 stations across California. Each reading captures one measurement for a specific station, sensor type, and timestamp.\"}";
 
-.alter table [ReservoirReading] column-docstrings (
+.alter table ['gov.ca.water.cdec.ReservoirReading'] column-docstrings (
    [station_id]: "{\"description\": \"Three-letter CDEC station identifier (e.g. SHA for Shasta Dam, ORO for Oroville Dam, FOL for Folsom Dam). This is the primary key for the monitoring station and is immutable.\"}",
    [sensor_num]: "{\"description\": \"CDEC numeric sensor identifier. Standard sensor numbers: 15=STORAGE (acre-feet), 6=RESERVOIR ELEVATION (feet), 76=INFLOW (cubic feet per second), 23=OUTFLOW (cubic feet per second), 1=RIVER STAGE (feet).\"}",
    [sensor_type]: "{\"description\": \"Human-readable sensor type label as returned by the CDEC API (e.g. 'STORAGE', 'RES ELE', 'INFLOW', 'OUTFLOW', 'STAGE').\"}",
@@ -59,7 +59,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ReservoirReading] ingestion json mapping "ReservoirReading_json_flat"
+.create-or-alter table ['gov.ca.water.cdec.ReservoirReading'] ingestion json mapping "gov.ca.water.cdec.ReservoirReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -78,7 +78,7 @@
 ]
 ```
 
-.create-or-alter table [ReservoirReading] ingestion json mapping "ReservoirReading_json_ce_structured"
+.create-or-alter table ['gov.ca.water.cdec.ReservoirReading'] ingestion json mapping "gov.ca.water.cdec.ReservoirReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,13 +97,13 @@
 ]
 ```
 
-.drop materialized-view ReservoirReadingLatest ifexists;
+.drop materialized-view ['gov.ca.water.cdec.ReservoirReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ReservoirReadingLatest on table ReservoirReading {
-    ReservoirReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.ca.water.cdec.ReservoirReadingLatest'] on table ['gov.ca.water.cdec.ReservoirReading'] {
+    ['gov.ca.water.cdec.ReservoirReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ReservoirReading] policy update
+.alter table ['gov.ca.water.cdec.ReservoirReading'] policy update
 ```
 [{
   "IsEnabled": true,
