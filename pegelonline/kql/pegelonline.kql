@@ -407,41 +407,48 @@
 }
 
 .create-or-alter function with (folder = "Map") TrendSegments() {
-    let now_reads = CurrentMeasurementLatest
-        | project station_id, value_now = value;
+    // Reference reading per station: pick the reading closest to 24h ago that
+    // we still have, but tolerate shorter retention by falling back to the
+    // earliest reading we hold (CurrentMeasurement is typically a sliding
+    // ~24h window, sometimes shorter while the ingest is warming up).
     let then_reads = CurrentMeasurement
-        | where ___time between (ago(25h) .. ago(23h))
-        | summarize arg_max(___time, value) by station_id
-        | project station_id, value_then = value;
+        | extend dist_24h = abs(datetime_diff('second', ___time, ago(24h)))
+        | summarize arg_min(dist_24h, ___time, value) by station_id
+        | project station_id, value_then = value, time_then = ___time;
     let trend = CurrentByStation()
-        | join kind=leftouter (now_reads) on station_id
         | join kind=leftouter (then_reads) on station_id
-        | project-away station_id1, station_id2
-        | extend delta_cm = iif(isnull(value_then), real(null), value - value_then)
+        | project-away station_id1
+        | extend hours_back = round((todouble(datetime_diff('minute', ___time, time_then))) / 60.0, 1)
+        | extend delta_cm = iif(isnull(value_then) or hours_back < 1.0, real(null), value - value_then)
+        // Scale the "meaningful change" threshold to the window we have so a
+        // 4h window doesn't get flagged "rising" for noise.
+        | extend thresh_cm = 5.0 * max_of(hours_back / 24.0, 0.25)
         | extend direction = case(
-            isnull(delta_cm),  "unknown",
-            delta_cm >  5.0,   "rising",
-            delta_cm < -5.0,   "falling",
+            isnull(delta_cm),       "unknown",
+            delta_cm >  thresh_cm,  "rising",
+            delta_cm < -thresh_cm,  "falling",
             "steady");
     RiverSegments
     | join kind=leftouter trend on station_id
     | project-away station_id1, water_shortname1
     | extend direction = coalesce(direction, "unknown")
     | extend abs_delta = abs(coalesce(delta_cm, real(0)))
+    | extend hours_back = coalesce(hours_back, real(0))
     | extend stroke_color = case(
         direction == "rising",  "#d7191c",
         direction == "falling", "#2c7bb6",
         direction == "steady",  "#bdbdbd",
         "#7f7f7f")
-    // Thicker line where the change is bigger; clamp at 250 cm/24h.
+    // Thicker line where the change is bigger; clamp at 250 cm over the window.
     | extend stroke_weight = 3.0 + 5.0 * iif(abs_delta > 250.0, 1.0, abs_delta / 250.0)
+    | extend window_label = strcat(tostring(toint(round(hours_back, 0))), "h")
     | extend label = strcat(coalesce(shortname, "n/a"), "  ",
-        case(direction == "rising",  strcat("+", tostring(round(abs_delta, 0)), " cm/24h"),
-             direction == "falling", strcat("-", tostring(round(abs_delta, 0)), " cm/24h"),
-             direction == "steady",  "~ steady",
-                                     "no 24h ref"))
+        case(direction == "rising",  strcat("+", tostring(round(abs_delta, 0)), " cm/", window_label),
+             direction == "falling", strcat("-", tostring(round(abs_delta, 0)), " cm/", window_label),
+             direction == "steady",  strcat("~ steady (", window_label, ")"),
+                                     "no trend ref"))
     | project geometry, station_id, water_shortname, shortname, longname,
-              value, direction, delta_cm, abs_delta, stroke_color, stroke_weight, label
+              value, direction, delta_cm, abs_delta, hours_back, stroke_color, stroke_weight, label
 }
 
 .create-or-alter function with (folder = "Map") FreshSegments() {
