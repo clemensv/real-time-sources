@@ -261,7 +261,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Belgium — ~14 AWS stations, 10-min observations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "meteoalarm",

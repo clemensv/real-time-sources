@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['BE.Gov.KMI.Weather.Station'] (
    [station_code]: string,
    [latitude]: real,
    [longitude]: real,
@@ -36,9 +36,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.\"}";
+.alter table ['BE.Gov.KMI.Weather.Station'] docstring "{\"description\": \"Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['BE.Gov.KMI.Weather.Station'] column-docstrings (
    [station_code]: "{\"description\": \"KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network.\"}",
    [latitude]: "{\"description\": \"Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array.\"}",
    [longitude]: "{\"description\": \"Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.\"}",
@@ -49,7 +49,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['BE.Gov.KMI.Weather.Station'] ingestion json mapping "BE.Gov.KMI.Weather.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -63,7 +63,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['BE.Gov.KMI.Weather.Station'] ingestion json mapping "BE.Gov.KMI.Weather.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -77,13 +77,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['BE.Gov.KMI.Weather.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['BE.Gov.KMI.Weather.StationLatest'] on table ['BE.Gov.KMI.Weather.Station'] {
+    ['BE.Gov.KMI.Weather.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['BE.Gov.KMI.Weather.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -94,7 +94,7 @@
 }]
 ```
 
-.create-merge table [WeatherObservation] (
+.create-merge table ['BE.Gov.KMI.Weather.WeatherObservation'] (
    [station_code]: string,
    [observation_time]: datetime,
    [precip_quantity]: real,
@@ -121,9 +121,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherObservation] docstring "{\"description\": \"Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.\"}";
+.alter table ['BE.Gov.KMI.Weather.WeatherObservation'] docstring "{\"description\": \"Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.\"}";
 
-.alter table [WeatherObservation] column-docstrings (
+.alter table ['BE.Gov.KMI.Weather.WeatherObservation'] column-docstrings (
    [station_code]: "{\"description\": \"KMI/RMI automatic weather station code from the `code` property of the reporting observation feature.\"}",
    [observation_time]: "{\"description\": \"Observation timestamp in UTC from the feature property `timestamp`.\"}",
    [precip_quantity]: "{\"description\": \"Precipitation quantity reported for the 10-minute observation period.\"}",
@@ -150,7 +150,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_flat"
+.create-or-alter table ['BE.Gov.KMI.Weather.WeatherObservation'] ingestion json mapping "BE.Gov.KMI.Weather.WeatherObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -180,7 +180,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherObservation] ingestion json mapping "WeatherObservation_json_ce_structured"
+.create-or-alter table ['BE.Gov.KMI.Weather.WeatherObservation'] ingestion json mapping "BE.Gov.KMI.Weather.WeatherObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -210,13 +210,13 @@
 ]
 ```
 
-.drop materialized-view WeatherObservationLatest ifexists;
+.drop materialized-view ['BE.Gov.KMI.Weather.WeatherObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherObservationLatest on table WeatherObservation {
-    WeatherObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['BE.Gov.KMI.Weather.WeatherObservationLatest'] on table ['BE.Gov.KMI.Weather.WeatherObservation'] {
+    ['BE.Gov.KMI.Weather.WeatherObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherObservation] policy update
+.alter table ['BE.Gov.KMI.Weather.WeatherObservation'] policy update
 ```
 [{
   "IsEnabled": true,
