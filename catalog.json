@@ -634,7 +634,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "paris-bicycle-counters",
