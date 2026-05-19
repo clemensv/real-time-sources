@@ -169,7 +169,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "United States — ~3,000 continuous WQ sites",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "waterinfo-vmm",
