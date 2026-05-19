@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [StreetClosure] (
+.create-merge table ['us.wa.seattle.streetclosures.StreetClosure'] (
    [closure_id]: string,
    [permit_number]: string,
    [permit_type]: string,
@@ -52,9 +52,9 @@
    [___subject]: string
 );
 
-.alter table [StreetClosure] docstring "{\"description\": \"Street closure row from the Seattle Department of Transportation street closures dataset, describing one closed street segment and its active occurrence window.\"}";
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] docstring "{\"description\": \"Street closure row from the Seattle Department of Transportation street closures dataset, describing one closed street segment and its active occurrence window.\"}";
 
-.alter table [StreetClosure] column-docstrings (
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] column-docstrings (
    [closure_id]: "{\"description\": \"Derived stable identity for the closure row, composed from permit number, street segment key, start date, and end date.\"}",
    [permit_number]: "{\"description\": \"Identifier for the permit record granting authorization to close the street.\"}",
    [permit_type]: "{\"description\": \"Type of permit, such as Block Party, Play Street, Farmers Market, or Temporary Activation.\"}",
@@ -81,7 +81,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [StreetClosure] ingestion json mapping "StreetClosure_json_flat"
+.create-or-alter table ['us.wa.seattle.streetclosures.StreetClosure'] ingestion json mapping "us.wa.seattle.streetclosures.StreetClosure_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -111,7 +111,7 @@
 ]
 ```
 
-.create-or-alter table [StreetClosure] ingestion json mapping "StreetClosure_json_ce_structured"
+.create-or-alter table ['us.wa.seattle.streetclosures.StreetClosure'] ingestion json mapping "us.wa.seattle.streetclosures.StreetClosure_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -141,13 +141,13 @@
 ]
 ```
 
-.drop materialized-view StreetClosureLatest ifexists;
+.drop materialized-view ['us.wa.seattle.streetclosures.StreetClosureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StreetClosureLatest on table StreetClosure {
-    StreetClosure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.wa.seattle.streetclosures.StreetClosureLatest'] on table ['us.wa.seattle.streetclosures.StreetClosure'] {
+    ['us.wa.seattle.streetclosures.StreetClosure'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [StreetClosure] policy update
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] policy update
 ```
 [{
   "IsEnabled": true,
