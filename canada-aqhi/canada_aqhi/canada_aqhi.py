@@ -742,6 +742,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
         default=os.getenv("PROVINCES", ",".join(PROVINCES)),
         help="Comma-separated province/territory codes to emit",
     )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     list_parser = subparsers.add_parser("list", help="List AQHI communities known to the bridge")
     list_parser.add_argument(
@@ -806,6 +812,9 @@ def main() -> None:
             break
         except Exception as exc:  # pylint: disable=broad-except
             LOGGER.error("Error during AQHI poll cycle: %s", exc)
+        if args.once:
+            LOGGER.info("--once mode: exiting after first polling cycle")
+            break
         time.sleep(args.polling_interval)
 
     producer.flush()

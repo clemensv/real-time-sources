@@ -325,7 +325,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Canada — community AQHI observations and forecasts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "defra-aurn",
