@@ -375,7 +375,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Belgium — station, timeseries, and hourly observations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "laqn-london",
