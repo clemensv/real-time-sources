@@ -65,9 +65,12 @@ if (-not $env:FABRIC_TOKEN) {
         --query accessToken -o tsv)
 }
 if (-not $env:KUSTO_TOKEN) {
+    # The Kusto audience must be the specific cluster URI: the generic
+    # https://kusto.fabric.microsoft.com is not a registered AAD resource
+    # principal in some tenants (e.g. Microsoft corp).
     Write-Host "  [pegelonline post-deploy] Acquiring Kusto token via az CLI..."
     $env:KUSTO_TOKEN = (az account get-access-token `
-        --resource "https://kusto.fabric.microsoft.com" `
+        --resource $KustoUri `
         --query accessToken -o tsv)
 }
 
