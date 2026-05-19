@@ -396,7 +396,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Netherlands — station measurements, components, LKI index",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "epa-uv",
