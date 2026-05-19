@@ -512,7 +512,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Global — seismic events",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "bfs-odl",
