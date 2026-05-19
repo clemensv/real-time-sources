@@ -343,7 +343,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "United Kingdom — 300+ monitoring locations, hourly pollutants",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "fmi-finland",

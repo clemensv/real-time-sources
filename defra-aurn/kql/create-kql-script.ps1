@@ -3,4 +3,4 @@ $inputFile = Join-Path $scriptDir "..\xreg\defra_aurn.xreg.json"
 $kqlFile = Join-Path $scriptDir "defra_aurn.kql"
 $generatorScript = Join-Path $scriptDir "..\..\tools\generate-kql-from-xreg.ps1"
 
-& $generatorScript -XregPath $inputFile -OutputPath $kqlFile
+& $generatorScript -XregPath $inputFile -OutputPath $kqlFile -Qualified -Namespace "uk.gov.defra.aurn"

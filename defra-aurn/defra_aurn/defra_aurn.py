@@ -431,6 +431,10 @@ def run_feed(args: argparse.Namespace) -> None:
             emitted = api.emit_observations(timeseries_producer, timeseries_catalog, state)
             _save_state(state_file, state)
             LOGGER.info("Emitted %d observation events", emitted)
+            if getattr(args, "once", False):
+                LOGGER.info("--once mode: exiting after first polling cycle")
+                producer.flush()
+                return
             time.sleep(args.polling_interval)
         except KeyboardInterrupt:
             LOGGER.info("Stopping Defra AURN bridge")
@@ -487,6 +491,15 @@ def build_parser() -> argparse.ArgumentParser:
         "--kafka-enable-tls",
         default=os.getenv("KAFKA_ENABLE_TLS", "true"),
         help="Whether TLS is enabled for Kafka connections",
+    )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help=(
+            "Exit after one polling cycle (also via ONCE_MODE env var). "
+            "Useful for scheduled execution in Fabric notebooks."
+        ),
     )
 
     return parser
