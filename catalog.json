@@ -218,7 +218,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Germany — daily pollen forecasts, 27 regions",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "environment-canada",

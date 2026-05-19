@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Region] (
+.create-merge table ['DE.DWD.Pollenflug.Region'] (
    [region_id]: int,
    [region_name]: string,
    [partregion_id]: int,
@@ -37,9 +37,9 @@
    [___subject]: string
 );
 
-.alter table [Region] docstring "{\"description\": \"Reference data for a DWD pollen forecast region or sub-region. Germany is divided into 11 main regions, some of which are subdivided into 2\\u20134 sub-regions for a total of 27 forecast areas. Emitted at bridge startup so downstream consumers can correlate forecast events with region metadata.\"}";
+.alter table ['DE.DWD.Pollenflug.Region'] docstring "{\"description\": \"Reference data for a DWD pollen forecast region or sub-region. Germany is divided into 11 main regions, some of which are subdivided into 2\\u20134 sub-regions for a total of 27 forecast areas. Emitted at bridge startup so downstream consumers can correlate forecast events with region metadata.\"}";
 
-.alter table [Region] column-docstrings (
+.alter table ['DE.DWD.Pollenflug.Region'] column-docstrings (
    [region_id]: "{\"description\": \"Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id.\"}",
    [region_name]: "{\"description\": \"Name of the main geographic region as published by DWD (e.g. 'Schleswig-Holstein und Hamburg', 'Bayern'). Sourced from the 'region_name' field in the DWD API response.\"}",
    [partregion_id]: "{\"description\": \"Numeric identifier of the sub-region within the parent region. Set to -1 by DWD when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_id' field in the DWD API response.\"}",
@@ -51,7 +51,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Region] ingestion json mapping "Region_json_flat"
+.create-or-alter table ['DE.DWD.Pollenflug.Region'] ingestion json mapping "DE.DWD.Pollenflug.Region_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -66,7 +66,7 @@
 ]
 ```
 
-.create-or-alter table [Region] ingestion json mapping "Region_json_ce_structured"
+.create-or-alter table ['DE.DWD.Pollenflug.Region'] ingestion json mapping "DE.DWD.Pollenflug.Region_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -81,13 +81,13 @@
 ]
 ```
 
-.drop materialized-view RegionLatest ifexists;
+.drop materialized-view ['DE.DWD.Pollenflug.RegionLatest'] ifexists;
 
-.create materialized-view with (backfill=true) RegionLatest on table Region {
-    Region | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['DE.DWD.Pollenflug.RegionLatest'] on table ['DE.DWD.Pollenflug.Region'] {
+    ['DE.DWD.Pollenflug.Region'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Region] policy update
+.alter table ['DE.DWD.Pollenflug.Region'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -98,7 +98,7 @@
 }]
 ```
 
-.create-merge table [PollenForecast] (
+.create-merge table ['DE.DWD.Pollenflug.PollenForecast'] (
    [region_id]: int,
    [region_name]: string,
    [last_update]: string,
@@ -135,9 +135,9 @@
    [___subject]: string
 );
 
-.alter table [PollenForecast] docstring "{\"description\": \"Daily pollen forecast for a single German region or sub-region, published by the Deutscher Wetterdienst (DWD). Contains intensity values for eight pollen types across three forecast days (today, tomorrow, day after tomorrow). Intensity is on a scale from 0 (no load) to 3 (high load) with intermediate half-step ranges such as '0-1', '1-2', '2-3'. The bridge maps the German pollen names from the upstream API to English equivalents.\"}";
+.alter table ['DE.DWD.Pollenflug.PollenForecast'] docstring "{\"description\": \"Daily pollen forecast for a single German region or sub-region, published by the Deutscher Wetterdienst (DWD). Contains intensity values for eight pollen types across three forecast days (today, tomorrow, day after tomorrow). Intensity is on a scale from 0 (no load) to 3 (high load) with intermediate half-step ranges such as '0-1', '1-2', '2-3'. The bridge maps the German pollen names from the upstream API to English equivalents.\"}";
 
-.alter table [PollenForecast] column-docstrings (
+.alter table ['DE.DWD.Pollenflug.PollenForecast'] column-docstrings (
    [region_id]: "{\"description\": \"Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id.\"}",
    [region_name]: "{\"description\": \"Display name of the forecast area. Uses partregion_name when available, otherwise region_name.\"}",
    [last_update]: "{\"description\": \"Timestamp of the last forecast update as published by DWD, e.g. '2025-04-08 11:00 Uhr'. Retained as a string because the upstream format includes the German suffix 'Uhr'.\"}",
@@ -174,7 +174,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [PollenForecast] ingestion json mapping "PollenForecast_json_flat"
+.create-or-alter table ['DE.DWD.Pollenflug.PollenForecast'] ingestion json mapping "DE.DWD.Pollenflug.PollenForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -214,7 +214,7 @@
 ]
 ```
 
-.create-or-alter table [PollenForecast] ingestion json mapping "PollenForecast_json_ce_structured"
+.create-or-alter table ['DE.DWD.Pollenflug.PollenForecast'] ingestion json mapping "DE.DWD.Pollenflug.PollenForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -254,13 +254,13 @@
 ]
 ```
 
-.drop materialized-view PollenForecastLatest ifexists;
+.drop materialized-view ['DE.DWD.Pollenflug.PollenForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) PollenForecastLatest on table PollenForecast {
-    PollenForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['DE.DWD.Pollenflug.PollenForecastLatest'] on table ['DE.DWD.Pollenflug.PollenForecast'] {
+    ['DE.DWD.Pollenflug.PollenForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [PollenForecast] policy update
+.alter table ['DE.DWD.Pollenflug.PollenForecast'] policy update
 ```
 [{
   "IsEnabled": true,
