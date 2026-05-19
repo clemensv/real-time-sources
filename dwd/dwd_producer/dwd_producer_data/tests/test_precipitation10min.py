@@ -28,11 +28,11 @@ class Test_Precipitation10Min(unittest.TestCase):
         Create instance of Precipitation10Min for testing
         """
         instance = Precipitation10Min(
-            station_id='bklkgdbnqeryioxgyxsm',
-            timestamp='valeeltnatuzymrlerie',
-            quality_level=int(93),
-            precipitation_height=float(28.469173801896897),
-            precipitation_indicator=int(74)
+            station_id='fuurjojkmyuuwmeyflak',
+            timestamp='nqylhmbicefbnaorkqyn',
+            quality_level=int(34),
+            precipitation_height=float(0.7166888379408265),
+            precipitation_indicator=int(56)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'bklkgdbnqeryioxgyxsm'
+        test_value = 'fuurjojkmyuuwmeyflak'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'valeeltnatuzymrlerie'
+        test_value = 'nqylhmbicefbnaorkqyn'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(93)
+        test_value = int(34)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -65,7 +65,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test precipitation_height property
         """
-        test_value = float(28.469173801896897)
+        test_value = float(0.7166888379408265)
         self.instance.precipitation_height = test_value
         self.assertEqual(self.instance.precipitation_height, test_value)
     
@@ -73,17 +73,26 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test precipitation_indicator property
         """
-        test_value = int(74)
+        test_value = int(56)
         self.instance.precipitation_indicator = test_value
         self.assertEqual(self.instance.precipitation_indicator, test_value)
     
-    @unittest.skip("xrcg 0.10.1 regen dropped Avro codec support; tracked separately")
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = Precipitation10Min.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Precipitation10Min.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

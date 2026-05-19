@@ -41,6 +41,27 @@
       "messagegroups": [
         "#/messagegroups/DE.DWD.Weather"
       ]
+    },
+    "DE.DWD.IconD2.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "dwd",
+          "key": "{run_id}/{parameter}/{lead_hour}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.IconD2"
+      ]
     }
   },
   "messagegroups": {
@@ -177,6 +198,30 @@
           "dataschemauri": "#/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.Weather.Alert"
         }
       }
+    },
+    "DE.DWD.IconD2": {
+      "description": "ICON-D2 numerical weather-prediction forecast grids. One event per (model run, parameter, lead hour) carrying the parameter's value on the regular 0.1 degree lat/lon grid as parallel arrays. Source GRIB2 files are published at https://opendata.dwd.de/weather/nwp/icon-d2/grib/.",
+      "messages": {
+        "DE.DWD.IconD2.Grid": {
+          "name": "Grid",
+          "description": "One ICON-D2 forecast grid for a single (run, parameter, lead_hour) combination.",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.IconD2.Grid"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de"
+            },
+            "subject": {
+              "value": "{run_id}/{parameter}/{lead_hour}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/DE.DWD.IconD2.jstruct/schemas/DE.DWD.IconD2.Grid"
+        }
+      }
     }
   },
   "schemagroups": {
@@ -199,7 +244,7 @@
                   "longitude",
                   "elevation"
                 ],
-                "name": "document",
+                "name": "StationMetadata",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -230,7 +275,8 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/StationMetadata",
-                "description": "StationMetadata"
+                "description": "StationMetadata",
+                "namespace": "de.dwd.cdc"
               }
             }
           }
@@ -249,7 +295,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "AirTemperature10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -301,7 +347,8 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/AirTemperature10Min",
-                "description": "AirTemperature10Min"
+                "description": "AirTemperature10Min",
+                "namespace": "de.dwd.cdc"
               }
             }
           }
@@ -320,7 +367,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Precipitation10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -354,7 +401,8 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Precipitation10Min",
-                "description": "Precipitation10Min"
+                "description": "Precipitation10Min",
+                "namespace": "de.dwd.cdc"
               }
             }
           }
@@ -373,7 +421,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Wind10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -407,7 +455,8 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Wind10Min",
-                "description": "Wind10Min"
+                "description": "Wind10Min",
+                "namespace": "de.dwd.cdc"
               }
             }
           }
@@ -426,7 +475,7 @@
                   "station_id",
                   "timestamp"
                 ],
-                "name": "document",
+                "name": "Solar10Min",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -472,7 +521,8 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/Solar10Min",
-                "description": "Solar10Min"
+                "description": "Solar10Min",
+                "namespace": "de.dwd.cdc"
               }
             }
           }
@@ -492,7 +542,7 @@
                   "timestamp",
                   "parameter"
                 ],
-                "name": "document",
+                "name": "HourlyObservation",
                 "properties": {
                   "station_id": {
                     "type": "string",
@@ -523,7 +573,8 @@
                   }
                 },
                 "$id": "https://example.com/schemas/DE/DWD/CDC/HourlyObservation",
-                "description": "HourlyObservation"
+                "description": "HourlyObservation",
+                "namespace": "de.dwd.cdc"
               }
             }
           }
@@ -545,7 +596,7 @@
                   "severity",
                   "event"
                 ],
-                "name": "document",
+                "name": "Alert",
                 "properties": {
                   "identifier": {
                     "type": "string"
@@ -597,7 +648,8 @@
                   }
                 },
                 "$id": "https://example.com/DE/DWD/Weather.schema.json",
-                "description": "Alert"
+                "description": "Alert",
+                "namespace": "de.dwd.weather"
               }
             }
           }
@@ -1077,6 +1129,149 @@
                     "default": null
                   }
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "DE.DWD.IconD2.jstruct": {
+      "schemas": {
+        "DE.DWD.IconD2.Grid": {
+          "name": "Grid",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://example.com/schemas/DE/DWD/IconD2/Grid",
+                "name": "Grid",
+                "type": "object",
+                "description": "An ICON-D2 forecast grid for one model run, one parameter, and one lead hour. Values are pre-aggregated to a regular 0.1 degree lat/lon grid by area mean over the source ICON triangular cells. The lats/lons/values arrays have the same length and are aligned by index: cell i has coordinates (lats[i], lons[i]) and value values[i].",
+                "required": [
+                  "run_id",
+                  "run_time",
+                  "parameter",
+                  "unit",
+                  "lead_hour",
+                  "valid_time",
+                  "produced_at",
+                  "source_url",
+                  "resolution_deg",
+                  "bbox_min_lon",
+                  "bbox_min_lat",
+                  "bbox_max_lon",
+                  "bbox_max_lat",
+                  "lats",
+                  "lons",
+                  "values"
+                ],
+                "properties": {
+                  "run_id": {
+                    "type": "string",
+                    "description": "Compact run identifier in the form YYYYMMDDHH (UTC). Used in Kafka subject and source URL.",
+                    "pattern": "^\\d{10}$"
+                  },
+                  "run_time": {
+                    "type": "string",
+                    "description": "Model initialization time in ISO 8601 UTC, e.g. 2026-05-18T00:00:00Z."
+                  },
+                  "parameter": {
+                    "type": "string",
+                    "description": "DWD short name of the ICON-D2 parameter, e.g. t_2m, tot_prec, vmax_10m, clct, cape_ml, dbz_cmax, pmsl, h_snow.",
+                    "altenums": {
+                      "t_2m": "2 m air temperature (K in upstream GRIB, converted to degC by the bridge)",
+                      "tot_prec": "Accumulated total precipitation since run start",
+                      "vmax_10m": "10 m wind-gust maximum over the past hour",
+                      "clct": "Total cloud cover",
+                      "cape_ml": "Convective available potential energy, mixed-layer",
+                      "dbz_cmax": "Simulated column-maximum radar reflectivity",
+                      "pmsl": "Mean sea-level pressure (Pa in upstream GRIB, converted to hPa by the bridge)",
+                      "h_snow": "Snow depth (water equivalent depth not included)"
+                    }
+                  },
+                  "unit": {
+                    "type": "string",
+                    "description": "Unit of the values array after bridge-side conversion (e.g. degC, mm, m/s, %, J/kg, dBZ, hPa, m).",
+                    "symbol": "unit"
+                  },
+                  "lead_hour": {
+                    "type": "int32",
+                    "description": "Forecast lead time in hours from run_time. ICON-D2 publishes 0..48 inclusive.",
+                    "minimum": 0,
+                    "maximum": 48
+                  },
+                  "valid_time": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC datetime to which the forecast applies = run_time + lead_hour hours."
+                  },
+                  "produced_at": {
+                    "type": "string",
+                    "description": "ISO 8601 UTC datetime at which the bridge emitted this event."
+                  },
+                  "source_url": {
+                    "type": "string",
+                    "description": "Fully qualified URL of the upstream GRIB2.bz2 file from which this grid was decoded."
+                  },
+                  "resolution_deg": {
+                    "type": "double",
+                    "description": "Cell side length in degrees of the regular lat/lon aggregation grid (e.g. 0.1).",
+                    "unit": "degree",
+                    "symbol": "deg"
+                  },
+                  "bbox_min_lon": {
+                    "type": "double",
+                    "unit": "degree",
+                    "symbol": "deg",
+                    "description": "Minimum longitude of the aggregation bounding box."
+                  },
+                  "bbox_min_lat": {
+                    "type": "double",
+                    "unit": "degree",
+                    "symbol": "deg",
+                    "description": "Minimum latitude of the aggregation bounding box."
+                  },
+                  "bbox_max_lon": {
+                    "type": "double",
+                    "unit": "degree",
+                    "symbol": "deg",
+                    "description": "Maximum longitude of the aggregation bounding box."
+                  },
+                  "bbox_max_lat": {
+                    "type": "double",
+                    "unit": "degree",
+                    "symbol": "deg",
+                    "description": "Maximum latitude of the aggregation bounding box."
+                  },
+                  "lats": {
+                    "type": "array",
+                    "description": "Cell centre latitudes in degrees north, aligned by index with lons[] and values[].",
+                    "items": {
+                      "type": "double",
+                      "unit": "degree",
+                      "symbol": "deg"
+                    }
+                  },
+                  "lons": {
+                    "type": "array",
+                    "description": "Cell centre longitudes in degrees east, aligned by index with lats[] and values[].",
+                    "items": {
+                      "type": "double",
+                      "unit": "degree",
+                      "symbol": "deg"
+                    }
+                  },
+                  "values": {
+                    "type": "array",
+                    "description": "Parameter values in the unit advertised by `unit`, aligned by index with lats[] and lons[]. Missing cells are omitted from all three arrays.",
+                    "items": {
+                      "type": "double"
+                    }
+                  }
+                },
+                "namespace": "de.dwd.icond2"
               }
             }
           }

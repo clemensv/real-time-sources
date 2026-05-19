@@ -30,7 +30,7 @@
     },
     "dwdModules": {
       "type": "string",
-      "defaultValue": "station_obs_10min,weather_alerts,station_metadata",
+      "defaultValue": "station_obs_10min,weather_alerts,station_metadata,icond2_grid",
       "metadata": {
         "description": "DWD_MODULES configuration value."
       }

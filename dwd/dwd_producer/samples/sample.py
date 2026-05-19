@@ -34,6 +34,7 @@ from confluent_kafka import Producer as KafkaProducer
 
 from dwd_producer_kafka_producer.producer import DEDWDCDCEventProducer
 from dwd_producer_kafka_producer.producer import DEDWDWeatherEventProducer
+from dwd_producer_kafka_producer.producer import DEDWDIconD2EventProducer
 
 # imports for the data classes for each event
 
@@ -44,6 +45,7 @@ from dwd_producer_data.wind10min import Wind10Min
 from dwd_producer_data.solar10min import Solar10Min
 from dwd_producer_data.hourlyobservation import HourlyObservation
 from dwd_producer_data.alert import Alert
+from dwd_producer_data.grid import Grid
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -126,6 +128,22 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'DE.DWD.Weather.Alert' event to Kafka topic.
     await dedwdweather_event_producer.send_de_dwd_weather_alert(_identifier = 'TODO: replace me', data = _alert)
     print(f"Sent 'DE.DWD.Weather.Alert' event: {_alert.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        dedwdicon_d2_event_producer = DEDWDIconD2EventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        dedwdicon_d2_event_producer = DEDWDIconD2EventProducer(kafka_producer, topic, 'binary')
+
+    # ---- DE.DWD.IconD2.Grid ----
+    # TODO: Supply event data for the DE.DWD.IconD2.Grid event
+    _grid = Grid()
+
+    # sends the 'DE.DWD.IconD2.Grid' event to Kafka topic.
+    await dedwdicon_d2_event_producer.send_de_dwd_icon_d2_grid(_run_id = 'TODO: replace me', _parameter = 'TODO: replace me', _lead_hour = 'TODO: replace me', data = _grid)
+    print(f"Sent 'DE.DWD.IconD2.Grid' event: {_grid.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

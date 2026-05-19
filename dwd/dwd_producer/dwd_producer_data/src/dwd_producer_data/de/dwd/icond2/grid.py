@@ -1,4 +1,4 @@
-""" HourlyObservation dataclass. """
+""" Grid dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,29 +15,49 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class HourlyObservation:
+class Grid:
     """
-    HourlyObservation
+    An ICON-D2 forecast grid for one model run, one parameter, and one lead hour. Values are pre-aggregated to a regular 0.1 degree lat/lon grid by area mean over the source ICON triangular cells. The lats/lons/values arrays have the same length and are aligned by index: cell i has coordinates (lats[i], lons[i]) and value values[i].
     
     Attributes:
-        station_id (str)
-        timestamp (str)
-        quality_level (typing.Optional[int])
+        run_id (str)
+        run_time (str)
         parameter (str)
-        value (typing.Optional[float])
-        unit (typing.Optional[str])
+        unit (str)
+        lead_hour (int)
+        valid_time (str)
+        produced_at (str)
+        source_url (str)
+        resolution_deg (float)
+        bbox_min_lon (float)
+        bbox_min_lat (float)
+        bbox_max_lon (float)
+        bbox_max_lat (float)
+        lats (typing.List[float])
+        lons (typing.List[float])
+        values (typing.List[float])
     """
     
     
-    station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
-    timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
-    quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
+    run_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="run_id"))
+    run_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="run_time"))
     parameter: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter"))
-    value: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
-    unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unit"))
+    unit: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unit"))
+    lead_hour: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lead_hour"))
+    valid_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="valid_time"))
+    produced_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="produced_at"))
+    source_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_url"))
+    resolution_deg: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="resolution_deg"))
+    bbox_min_lon: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bbox_min_lon"))
+    bbox_min_lat: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bbox_min_lat"))
+    bbox_max_lon: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bbox_max_lon"))
+    bbox_max_lat: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bbox_max_lat"))
+    lats: typing.List[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lats"))
+    lons: typing.List[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lons"))
+    values: typing.List[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="values"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'HourlyObservation':
+    def from_serializer_dict(cls, data: dict) -> 'Grid':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -110,7 +130,7 @@ class HourlyObservation:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['HourlyObservation']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Grid']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -147,13 +167,13 @@ class HourlyObservation:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return HourlyObservation.from_serializer_dict(_record)
+                return Grid.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'HourlyObservation':
+    def create_instance(cls) -> 'Grid':
         """
         Creates an instance of the dataclass with test values.
         
@@ -161,10 +181,20 @@ class HourlyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='myciejjmwotnmtqbhexk',
-            timestamp='ezvsddtblbitomtjzwlk',
-            quality_level=int(63),
-            parameter='wqjtmehunbptuylackve',
-            value=float(60.255053633587785),
-            unit='mdkwwfzqhcpwjycxupqb'
+            run_id='fbwxbhhdiylivoirxtjm',
+            run_time='vpuejmrdahqhhuamdnhr',
+            parameter='rrztexdawnogkvoprtqd',
+            unit='ninijtcwhauzfctckolb',
+            lead_hour=int(42),
+            valid_time='mlekfqgyjccgxvjskcbx',
+            produced_at='civrqaaikdrpgrrymnww',
+            source_url='zptojjzmjooxtdrbgmhr',
+            resolution_deg=float(57.489659757633014),
+            bbox_min_lon=float(86.34681962440187),
+            bbox_min_lat=float(99.49208569174088),
+            bbox_max_lon=float(12.254348066598542),
+            bbox_max_lat=float(38.58950624026703),
+            lats=[float(39.92187281437259), float(43.721652771192396)],
+            lons=[float(26.50590691509871)],
+            values=[float(65.46033357057797)]
         )

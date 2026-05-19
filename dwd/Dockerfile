@@ -10,6 +10,11 @@ LABEL org.opencontainers.image.license="MIT"
 # Set the working directory in the container
 WORKDIR /app
 
+# libeccodes-dev provides the GRIB2 decoder used by the optional icond2_grid module.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libeccodes-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 

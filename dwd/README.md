@@ -142,6 +142,29 @@ updates once per day and is not truly real-time.
 Downloads the LATEST CAP alert bundle from DWD, extracts individual XML alert
 files, and emits new alerts. Tracks seen alert identifiers to avoid duplicates.
 
+### icond2_grid (default: OFF, poll: 600s)
+
+Polls the DWD ICON-D2 numerical weather prediction grids
+(`/weather/nwp/icon-d2/grib/{HH}/{param}/`). For each new model run × lead
+hour × parameter, the bridge downloads the GRIB2.bz2 file, decodes it with
+eccodes, aggregates the native ~2.2 km icosahedral grid to a regular 0.1°
+lat/lon mean grid, and emits a single CloudEvent carrying the parallel
+`lats` / `lons` / `values` arrays.
+
+Configured parameters (one event per (run, parameter, lead) per poll):
+`t_2m` (°C), `tot_prec` (mm), `vmax_10m` (m/s), `clct` (%), `cape_ml` (J/kg),
+`dbz_cmax` (dBZ), `pmsl` (hPa), `h_snow` (m).
+
+**Requires** `libeccodes-dev` (Debian/Ubuntu) or the `eccodes` system package
+on the host. The container image installs it automatically. The module is
+disabled by default because of the heavier system dependency and the
+additional ~300 MB/day of upstream bandwidth.
+
+KQL for the destination Eventhouse is in [`kql/icond2.kql`](kql/icond2.kql):
+it creates `IconD2Grid` (one row per event) plus `IconD2Points`
+(per-cell, populated by an update policy that `mv-expand`s the parallel
+arrays). Fabric Map layers read from `IconD2Points`.
+
 ## Data Source
 
 All data originates from the [DWD Open Data Server](https://opendata.dwd.de/)
