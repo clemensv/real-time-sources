@@ -82,3 +82,11 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbfs-odl%2Fazure-template-with-eventhub.json)
+
+## Fabric notebook hosting
+
+This bridge can also run as a scheduled Fabric notebook
+(`notebook/bfs-odl-feed.ipynb`) deployed via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
+which builds a per-source Fabric Environment, binds Lakehouse + KQL +
+Event Stream, and schedules single-cycle runs of `bfs-odl feed --once`.
