@@ -402,7 +402,7 @@ class NWSForecastPoller:
             )
         return emitted
 
-    def run(self) -> None:
+    def run(self, once: bool = False) -> None:
         LOGGER.info("Starting NWS forecast poller for zones: %s", ", ".join(self.zones))
         self.refresh_zone_cache()
         self.emit_reference_data()
@@ -415,6 +415,8 @@ class NWSForecastPoller:
 
             emitted = self.poll_once()
             LOGGER.info("Completed forecast poll; emitted %s changed forecast snapshot(s).", emitted)
+            if once:
+                return
             time.sleep(self.poll_interval_seconds)
 
 
@@ -442,6 +444,12 @@ def build_argument_parser() -> argparse.ArgumentParser:
         default=os.getenv("KAFKA_ENABLE_TLS", "true").lower() != "false",
         type=lambda value: str(value).lower() != "false",
     )
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "false").lower() == "true",
+        help="Run a single polling cycle and exit (used by Fabric notebook hosting).",
+    )
     return parser
 
 
@@ -460,7 +468,7 @@ def main() -> None:
         poll_interval_seconds=args.poll_interval_seconds,
         reference_refresh_seconds=args.reference_refresh_seconds,
     )
-    poller.run()
+    poller.run(once=args.once)
 
 
 if __name__ == "__main__":
