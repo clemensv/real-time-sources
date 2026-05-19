@@ -3,7 +3,20 @@ param(
     [string]$XregPath,
 
     [Parameter(Mandatory = $true)]
-    [string]$OutputPath
+    [string]$OutputPath,
+
+    # When set, passes --qualified-table-names to avrotize s2k/a2k so that
+    # generated tables, materialized views, mappings, and update policies
+    # are prefixed with the schema's namespace (e.g. ['de.dwd.cdc.Station']).
+    # This avoids collisions when multiple feeders share an Eventhouse.
+    [switch]$Qualified,
+
+    # Optional namespace override forwarded to avrotize as --namespace.
+    # When the schema already declares a namespace (Avro `namespace`, or a
+    # JsonStructure namespace key), this override replaces it. When the
+    # schema has no namespace, this value provides one. Only meaningful in
+    # combination with -Qualified.
+    [string]$Namespace
 )
 
 Set-StrictMode -Version Latest
@@ -351,20 +364,51 @@ try {
                        ($schemaObject.PSObject.Properties['$root'] -eq $null)
 
         if ($isAvroShape) {
-            & avrotize a2k $schemaFile --out $kqlPartFile --record-type $recordType --emit-cloudevents-columns --emit-cloudevents-dispatch
+            $avrotizeArgs = @('a2k', $schemaFile, '--out', $kqlPartFile, '--record-type', $recordType, '--emit-cloudevents-columns', '--emit-cloudevents-dispatch')
+            if ($Qualified) { $avrotizeArgs += '--qualified-table-names' }
+            if (-not [string]::IsNullOrWhiteSpace($Namespace)) { $avrotizeArgs += @('--namespace', $Namespace) }
+            & avrotize @avrotizeArgs
             if ($LASTEXITCODE -ne 0) {
                 throw "avrotize a2k failed for schema '$schemaUri'."
             }
         }
         else {
-            & avrotize s2k $schemaFile --out $kqlPartFile --record-type $recordType --emit-cloudevents-columns --emit-cloudevents-dispatch
+            $avrotizeArgs = @('s2k', $schemaFile, '--out', $kqlPartFile, '--record-type', $recordType, '--emit-cloudevents-columns', '--emit-cloudevents-dispatch')
+            if ($Qualified) { $avrotizeArgs += '--qualified-table-names' }
+            if (-not [string]::IsNullOrWhiteSpace($Namespace)) { $avrotizeArgs += @('--namespace', $Namespace) }
+            & avrotize @avrotizeArgs
             if ($LASTEXITCODE -ne 0) {
                 throw "avrotize s2k failed for schema '$schemaUri'."
             }
         }
 
         $kqlContent = Get-Content $kqlPartFile -Raw
-        $kqlContent = Set-KqlEventTypes -KqlContent $kqlContent -EventTypes $schemaEventTypes[$schemaUri].ToArray() -RecordType $recordType
+        # The update-policy KQL query that avrotize emits contains a
+        # `type == '<RecordType-or-FQN>'` predicate. Set-KqlEventTypes
+        # rewrites it to the real upstream CloudEvents type(s) from xreg.
+        # Determine the token avrotize used so the regex matches whether
+        # we asked for qualified names or not.
+        $emittedRecordToken = if ($Qualified) {
+            if (-not [string]::IsNullOrWhiteSpace($Namespace)) {
+                "$Namespace.$recordType"
+            }
+            else {
+                $schemaNamespace = $null
+                if ($schemaObject.PSObject.Properties['namespace']) {
+                    $schemaNamespace = [string]$schemaObject.namespace
+                }
+                if (-not [string]::IsNullOrWhiteSpace($schemaNamespace)) {
+                    "$schemaNamespace.$recordType"
+                }
+                else {
+                    $recordType
+                }
+            }
+        }
+        else {
+            $recordType
+        }
+        $kqlContent = Set-KqlEventTypes -KqlContent $kqlContent -EventTypes $schemaEventTypes[$schemaUri].ToArray() -RecordType $emittedRecordToken
         $kqlContent | Set-Content -Path $kqlPartFile -Encoding UTF8
 
         $generatedPartFiles.Add($kqlPartFile)

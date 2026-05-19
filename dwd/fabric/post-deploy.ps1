@@ -31,7 +31,7 @@
     $env:DWD_FABRIC_MAP_ID.
 
 .PARAMETER KqlDatabaseId
-    Standalone-mode override. GUID of the KQL database with IconD2Points.
+    Standalone-mode override. GUID of the KQL database with ['de.dwd.icond2.GridPoints'].
 
 .PARAMETER KustoUri
     Standalone-mode override. Full https URI of the Kusto cluster.
@@ -96,9 +96,12 @@ if (-not $env:FABRIC_TOKEN) {
         --query accessToken -o tsv)
 }
 if (-not $env:KUSTO_TOKEN) {
+    # The Kusto audience must be the specific cluster URI: the generic
+    # https://kusto.fabric.microsoft.com is not a registered AAD resource
+    # principal in some tenants (e.g. Microsoft corp).
     Write-Host "  [dwd post-deploy] Acquiring Kusto token via az CLI..."
     $env:KUSTO_TOKEN = (az account get-access-token `
-        --resource "https://kusto.fabric.microsoft.com" `
+        --resource $KustoUri `
         --query accessToken -o tsv)
 }
 
