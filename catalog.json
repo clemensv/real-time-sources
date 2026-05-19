@@ -231,7 +231,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Hong Kong — 27 temp stations, 18 rainfall districts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "jma-japan",
