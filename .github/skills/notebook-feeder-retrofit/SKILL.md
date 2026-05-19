@@ -182,10 +182,33 @@ The agent is done when:
 - Local validation passed (notebook JSON, bridge tests, placeholder
   check, forbidden-pattern check).
 - The PR body cites this skill and lists the validations performed.
+- **After the PR merges**, the agent (or its orchestrator) verifies the
+  `publish-notebook-wheels.yml` workflow run for the merge commit
+  succeeded and that `<source>-notebook-wheels.zip` is present on the
+  `notebook-wheels` release. If the workflow fails, the downstream
+  deploy will fail with "wheel bundle not found in release". The
+  workflow failure is infrastructure scope — file an issue or fix the
+  workflow; do **not** patch it as part of this retrofit.
 
 If any retrofit step cannot complete (e.g. bridge has no extractable
 CLI shape, tests fail and the cause is the new code), abort, push
 nothing, and call `task_complete` with a clear blocker description.
+
+## Known Pitfalls
+
+- **Hyphenated source ids** (e.g. `bafu-hydro`): the bridge package and
+  generated producer dir use underscores (`bafu_hydro_producer`).
+  `deploy-feeder-notebook.ps1` handles this; the wheel-publish workflow
+  was patched to handle it in #249. If you see "Missing generated
+  producer for `<src>`" in CI, that's the same class of bug —
+  hyphen-vs-underscore in another consumer.
+- **Lakehouse attachment** is automatic. The deploy script auto-binds
+  the workspace's only Lakehouse (or aborts if there are 0 or 2+).
+  Do **not** add Lakehouse-selection logic to the notebook itself.
+- **Stage A connection-string warning is harmless.** If
+  `Get-EventStreamConnectionString` in `deploy-fabric.ps1` fails with a
+  JSON parse warning, the notebook flow still succeeds — the notebook
+  resolves the CS at runtime via the Topology API.
 
 ## Things That Are Not Allowed
 
