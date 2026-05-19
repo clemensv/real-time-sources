@@ -194,3 +194,65 @@
 }]
 ```
 
+// ---------------------------------------------------------------------------
+// Map-friendly enrichment + trend helpers
+// ---------------------------------------------------------------------------
+// Joins the latest measurement per station with the latest Station metadata
+// (lat/lon, names, agency, water body). Consumed by the Fabric Map layers
+// wired by ``pegelonline/fabric/wire_pegelonline_map.py``.
+
+.create-or-alter function with (folder = "Map") EnrichedMeasurements() {
+    let stations = StationLatest
+        | project station_id, shortname, longname, agency, longitude, latitude, km,
+                  water_shortname = tostring(water.shortname),
+                  water_longname  = tostring(water.longname);
+    CurrentMeasurementLatest
+    | project station_id, value, stateMnwMhw, stateNswHsw, ___time
+    | join kind=inner stations on station_id
+    | project-away station_id1
+    | where isnotnull(longitude) and isnotnull(latitude)
+          and longitude != 0.0 and latitude != 0.0
+}
+
+// 24-hour trend (rising / steady / falling) computed against the reading
+// closest to 24h ago, with a +/- 1h tolerance window.
+
+.create-or-alter function with (folder = "Map") MeasurementTrend24h() {
+    let now_reads = CurrentMeasurementLatest
+        | project station_id, value_now = value, ___time;
+    let then_reads = CurrentMeasurement
+        | where ___time between (ago(25h) .. ago(23h))
+        | summarize arg_max(___time, value) by station_id
+        | project station_id, value_then = value;
+    EnrichedMeasurements()
+    | join kind=leftouter (now_reads) on station_id
+    | join kind=leftouter (then_reads) on station_id
+    | extend delta_cm = iif(isnull(value_then), real(null), value - value_then)
+    | extend direction = case(
+        isnull(delta_cm),  "unknown",
+        delta_cm >  5.0,   "rising",
+        delta_cm < -5.0,   "falling",
+        "steady")
+    | project-away station_id1, station_id2
+}
+
+// 15-minute time-bucketed history (last 24h) used by the time-slider layer.
+// One row per (station, 15-min bucket) carrying the latest sample of that
+// bucket plus the enriched station metadata.
+
+.create-or-alter function with (folder = "Map") MeasurementHistoryBuckets(window:timespan = 24h) {
+    let stations = StationLatest
+        | project station_id, shortname, longname, agency, longitude, latitude, km,
+                  water_shortname = tostring(water.shortname),
+                  water_longname  = tostring(water.longname);
+    CurrentMeasurement
+    | where ___time > ago(window)
+    | extend bucket = bin(___time, 15m)
+    | summarize arg_max(___time, value, stateMnwMhw, stateNswHsw) by station_id, bucket
+    | extend ['Time (UTC, 15-min)'] = strcat(format_datetime(bucket, 'yyyy-MM-dd HH:mm'), ' UTC')
+    | join kind=inner stations on station_id
+    | project-away station_id1
+    | where isnotnull(longitude) and isnotnull(latitude)
+          and longitude != 0.0 and latitude != 0.0
+}
+
