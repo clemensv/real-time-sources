@@ -40,6 +40,7 @@ view.
 | [xreg/hongkong_epd.xreg.json](xreg/hongkong_epd.xreg.json) | xRegistry manifest |
 | [hongkong_epd/hongkong_epd.py](hongkong_epd/hongkong_epd.py) | Runtime bridge |
 | [hongkong_epd_producer/](hongkong_epd_producer/) | Generated producer (xrcg 0.10.1) |
+| [notebook/hongkong-epd-feed.ipynb](notebook/hongkong-epd-feed.ipynb) | Fabric notebook hosting (deployed via [tools/deploy-fabric/deploy-feeder-notebook.ps1](../tools/deploy-fabric/deploy-feeder-notebook.ps1)) |
 | [tests/](tests/) | Unit tests |
 | [Dockerfile](Dockerfile) | Container image |
 | [CONTAINER.md](CONTAINER.md) | Deployment contract |

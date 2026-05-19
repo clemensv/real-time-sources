@@ -357,7 +357,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Hong Kong — 18 AQHI stations, hourly health index",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "irceline-belgium",
