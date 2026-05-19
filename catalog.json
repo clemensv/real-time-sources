@@ -589,7 +589,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Madrid, Spain — ~4,000 sensors, Informo",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "ndl-netherlands",

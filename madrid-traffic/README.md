@@ -20,6 +20,10 @@ See [EVENTS.md](EVENTS.md) for full schema details.
 3. Reference data is refreshed hourly.
 4. Deduplication: readings with the same 5-minute timestamp boundary are not re-emitted.
 
+## Fabric notebook hosting
+
+This source can also be hosted as a scheduled Fabric notebook (single-cycle execution against an attached Fabric Environment + Lakehouse + Event Stream). Deploy with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook lives at [`notebook/madrid-traffic-feed.ipynb`](notebook/madrid-traffic-feed.ipynb).
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment
