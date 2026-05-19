@@ -33,105 +33,87 @@ class WirePegelonlineMapTests(unittest.TestCase):
 
     def test_layer_names_unique_and_complete(self) -> None:
         m = self.mod
-        # Seven declared constants (legacy river backbone removed in v3).
+        # Five layers (v3.5: per-station river-segment metrics + labels).
         self.assertEqual(
             m.LAYER_NAMES,
             {m.NAME_STATE, m.NAME_NAV, m.NAME_TREND,
-             m.NAME_FRESH, m.NAME_LABELS, m.NAME_REPLAY,
-             m.NAME_REAL_RIVERS},
+             m.NAME_FRESH, m.NAME_LABELS},
         )
-        # All layer names must share the common prefix used for the
-        # idempotent drop-and-replace logic.
         for name in m.LAYER_NAMES:
             self.assertTrue(name.startswith(m.LAYER_PREFIX),
                             f"{name!r} missing prefix {m.LAYER_PREFIX!r}")
+        # Legacy names are still cleaned up by the wire script.
+        for legacy in (
+            "pegelonline river backbone",
+            "pegelonline real rivers",
+            "pegelonline historical replay",
+        ):
+            self.assertIn(legacy, m.LEGACY_LAYER_NAMES)
 
     def test_each_kql_body_well_formed(self) -> None:
         m = self.mod
-        point_builders = {
-            "state":      m._kql_state,
-            "navigation": m._kql_navigation,
-            "trend":      m._kql_trend,
-            "freshness":  m._kql_freshness,
-            "labels":     m._kql_labels,
-            "replay":     m._kql_replay,
+        segment_builders = {
+            "state":      (m._kql_state_segments, "StateSegments"),
+            "navigation": (m._kql_nav_segments,   "NavSegments"),
+            "trend":      (m._kql_trend_segments, "TrendSegments"),
+            "freshness":  (m._kql_fresh_segments, "FreshSegments"),
         }
-        for layer_name, fn in point_builders.items():
+        for layer_name, (fn, helper) in segment_builders.items():
             with self.subTest(layer=layer_name):
                 body = fn()
-                self.assertIn("geometry", body, "geometry alias missing")
-                self.assertIn('bag_pack("type","Point"', body,
-                              "point projection missing")
-                self.assertIn("pack_array(longitude, latitude)", body,
-                              "coordinates must be (lon, lat)")
-                if layer_name == "replay":
-                    self.assertIn("Time (UTC, 15-min)", body)
-                else:
-                    self.assertNotIn("Time (UTC, 15-min)", body)
-        # Real rivers layer wraps the RealRiverBackbones() function and
-        # adds data-driven stroke colour + weight as plain columns.
-        real_body = m._kql_real_rivers()
-        self.assertIn("RealRiverBackbones()", real_body)
-        self.assertIn("stroke_color", real_body)
-        self.assertIn("stroke_weight", real_body)
+                self.assertIn(f"{helper}()", body, f"missing call to {helper}")
+                self.assertIn("geometry", body)
+                self.assertIn("station_id", body)
+                self.assertIn("stroke_color", body)
+                self.assertIn("stroke_weight", body)
+                # Segment layers must NOT carry a point projection.
+                self.assertNotIn('bag_pack("type","Point"', body)
+        labels_body = m._kql_labels()
+        self.assertIn("StationLabels()", labels_body)
+        self.assertIn("geometry", labels_body)
 
-    def test_layer_builders_v2_schema_shape(self) -> None:
-        """Every layer must follow the Fabric Map 2.0.0 vector-layer shape:
-        type='vector' + geometry-specific options (bubble/line). Data-driven
-        colour expressions must appear at BOTH options.color and inside the
-        nested options block — only the dual-write form is honoured by the
-        Fabric Map renderer (verified live against ContosoRealTimeTest)."""
+    def test_layer_builders_v3_segment_shape(self) -> None:
+        """Hydrological / navigation / trend / freshness layers must be line
+        layers driven by the precomputed ``stroke_color`` / ``stroke_weight``
+        columns. Labels layer stays a point bubble layer."""
         m = self.mod
-        bubble_layers = [
-            m._layer_state(default_visible=True),
-            m._layer_navigation(),
-            m._layer_trend(),
-            m._layer_freshness(),
-            m._layer_labels(default_visible=True),
-            m._layer_replay("2026-05-19 12:30 UTC"),
+        segment_layers = [
+            m._state_layer(default_visible=True),
+            m._navigation_layer(),
+            m._trend_layer(),
+            m._freshness_layer(),
         ]
-        for layer in bubble_layers:
+        for layer in segment_layers:
             with self.subTest(name=layer["name"]):
                 opts = layer["options"]
                 self.assertEqual(opts["type"], "vector")
-                self.assertEqual(opts["pointLayerType"], "bubble")
-                self.assertIn("bubbleOptions", opts)
-                self.assertIn("color", opts["bubbleOptions"])
-                # All point layers share a single geometry column.
+                self.assertNotIn("pointLayerType", opts,
+                                 "segment layers must not declare a point type")
+                self.assertEqual(opts["color"], ["get", "stroke_color"])
+                self.assertIn("lineOptions", opts)
+                lo = opts["lineOptions"]
+                self.assertEqual(lo["strokeColor"], ["get", "stroke_color"])
+                self.assertEqual(lo["strokeWidth"], ["get", "stroke_weight"])
                 self.assertEqual(layer["geometryColumnName"], "geometry")
-                self.assertIn("filters", layer)
-                self.assertIsInstance(layer["filters"], list)
-        # Real-rivers is a line layer with data-driven stroke colour/width.
-        real_rivers = m._layer_real_rivers(default_visible=True)
-        rropts = real_rivers["options"]
-        self.assertEqual(rropts["type"], "vector")
-        self.assertNotIn("pointLayerType", rropts)
-        self.assertIn("lineOptions", rropts)
-        self.assertEqual(rropts["color"], ["get", "stroke_color"])
-        self.assertEqual(rropts["lineOptions"]["strokeColor"], ["get", "stroke_color"])
-        self.assertEqual(rropts["lineOptions"]["strokeWidth"], ["get", "stroke_weight"])
-        # Replay carries the time-slider filter seeded to the bucket.
-        replay = bubble_layers[-1]
-        self.assertEqual(len(replay["filters"]), 1)
-        self.assertEqual(replay["filters"][0]["field"], "Time (UTC, 15-min)")
-        self.assertEqual(replay["filters"][0]["value"], ["2026-05-19 12:30 UTC"])
-
-    def test_replay_with_no_default_bucket_emits_empty_value(self) -> None:
-        replay = self.mod._layer_replay(None)
-        self.assertEqual(replay["filters"][0]["value"], [])
+                self.assertEqual(layer["filters"], [])
+        # Labels stays a point bubble layer with an active text label.
+        labels = m._labels_layer(default_visible=True)
+        lopts = labels["options"]
+        self.assertEqual(lopts["type"], "vector")
+        self.assertEqual(lopts["pointLayerType"], "bubble")
+        self.assertIn("bubbleOptions", lopts)
+        self.assertTrue(lopts["dataLabelOptions"]["enabled"])
 
     def test_default_visibility(self) -> None:
-        """Real rivers + hydrological state default-on; everything else
-        default-off (the labels layer is gated by minZoom anyway)."""
+        """Hydrological state + station labels default-on; the alternate
+        metrics default-off so the user toggles between them."""
         m = self.mod
         layers = [
-            (m._layer_real_rivers(default_visible=True), True),
-            (m._layer_state(default_visible=True),    True),
-            (m._layer_navigation(),                   False),
-            (m._layer_trend(),                        False),
-            (m._layer_freshness(),                    False),
-            (m._layer_labels(default_visible=False),  False),
-            (m._layer_replay(None),                   False),
+            (m._state_layer(default_visible=True),    True),
+            (m._navigation_layer(),                   False),
+            (m._trend_layer(),                        False),
+            (m._freshness_layer(),                    False),
+            (m._labels_layer(default_visible=True),   True),
         ]
         for layer, expected in layers:
             with self.subTest(name=layer["name"]):

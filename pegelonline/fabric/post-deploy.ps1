@@ -76,10 +76,12 @@ if (-not $env:KUSTO_TOKEN) {
 
 $py = if ($env:PYTHON) { $env:PYTHON } else { "python" }
 
-# ---- Optional: ingest RiverGeometries (real river polylines from Azure Maps) ----
+# ---- Optional: ingest RiverSegments (per-station river polylines) ----
+# The Kusto mgmt API throttles bursts (HTTP 429); we retry each failed
+# command with a small backoff so the post-deploy run is robust.
 $riverKql = Join-Path $PSScriptRoot "river_geometries.kql"
 if (Test-Path $riverKql) {
-    Write-Host "  [pegelonline post-deploy] Ingesting RiverGeometries from $riverKql ..."
+    Write-Host "  [pegelonline post-deploy] Ingesting RiverSegments from $riverKql ..."
     $src = Get-Content $riverKql -Raw
     $cmds = $src -split "`r?`n`r?`n" | Where-Object { $_.Trim().Length -gt 0 }
     $h = @{ 'Authorization' = "Bearer $($env:KUSTO_TOKEN)"; 'Content-Type' = 'application/json; charset=utf-8' }
@@ -87,18 +89,27 @@ if (Test-Path $riverKql) {
     $ok = 0; $fail = 0
     foreach ($c in $cmds) {
         $body = (@{ db = $KustoDatabase; csl = $c } | ConvertTo-Json -Compress -Depth 50)
-        try {
-            Invoke-RestMethod -Uri $mgmtUrl -Method Post -Headers $h -Body $body -ErrorAction Stop | Out-Null
-            $ok++
-        } catch {
-            $fail++
-            Write-Host "    FAIL: $($c.Substring(0, [Math]::Min(80, $c.Length)))" -ForegroundColor Red
+        $tries = 0
+        while ($true) {
+            $tries++
+            try {
+                Invoke-RestMethod -Uri $mgmtUrl -Method Post -Headers $h -Body $body -ErrorAction Stop | Out-Null
+                $ok++; break
+            } catch {
+                if ($tries -lt 4 -and $_.Exception.Message -match '429|TooManyRequests') {
+                    Start-Sleep -Milliseconds (500 * $tries)
+                } else {
+                    $fail++
+                    Write-Host "    FAIL: $($c.Substring(0, [Math]::Min(80, $c.Length)))" -ForegroundColor Red
+                    break
+                }
+            }
         }
     }
-    Write-Host "  [pegelonline post-deploy] RiverGeometries: $ok ok / $fail failed (of $($cmds.Count) commands)."
-    if ($fail -gt 0) { throw "RiverGeometries ingest had $fail failures." }
+    Write-Host "  [pegelonline post-deploy] RiverSegments: $ok ok / $fail failed (of $($cmds.Count) commands)."
+    if ($fail -gt 0) { throw "RiverSegments ingest had $fail failures." }
 } else {
-    Write-Host "  [pegelonline post-deploy] $riverKql not present; skipping RiverGeometries ingest." -ForegroundColor DarkYellow
+    Write-Host "  [pegelonline post-deploy] $riverKql not present; skipping RiverSegments ingest." -ForegroundColor DarkYellow
     Write-Host "  Regenerate via:  python pegelonline/fabric/build_river_geometries.py  (requires MAPS_KEY)" -ForegroundColor DarkYellow
 }
 

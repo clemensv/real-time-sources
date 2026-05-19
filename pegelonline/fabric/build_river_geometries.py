@@ -204,6 +204,217 @@ def round_coords(line: List[Tuple[float, float]], digits: int = 5) -> List[List[
     return [[round(x, digits), round(y, digits)] for x, y in line]
 
 
+# ---------------------------------------------------------------------------
+# Per-station segmentation
+# ---------------------------------------------------------------------------
+
+def _dist_sq(a: Tuple[float, float], b: Tuple[float, float]) -> float:
+    return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
+
+
+def _interp(p: Tuple[float, float], q: Tuple[float, float], t: float) -> Tuple[float, float]:
+    return (p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t)
+
+
+def assign_stations_to_lines(
+    lines: List[List[Tuple[float, float]]],
+    stations: List[Tuple[str, float, float]],
+    max_dist_deg: float = 0.5,
+) -> Dict[int, List[Tuple[int, str, float, float]]]:
+    """For each station, find its nearest vertex across all lines and route it
+    to that line. Returns ``{line_index: [(vertex_index, station_id, lon, lat)]}``.
+    Stations whose nearest vertex is more than ``max_dist_deg`` away are
+    dropped (probably belong to a different water or an off-channel oxbow).
+    """
+    per_line: Dict[int, List[Tuple[int, str, float, float]]] = defaultdict(list)
+    max_d_sq = max_dist_deg * max_dist_deg
+    for sid, sx, sy in stations:
+        best = (float("inf"), -1, -1)  # (dist_sq, line_idx, vertex_idx)
+        for li, line in enumerate(lines):
+            for vi, v in enumerate(line):
+                d = _dist_sq((sx, sy), v)
+                if d < best[0]:
+                    best = (d, li, vi)
+        if best[1] < 0 or best[0] > max_d_sq:
+            continue
+        per_line[best[1]].append((best[2], sid, sx, sy))
+    return per_line
+
+
+def split_polyline_per_station(
+    line: List[Tuple[float, float]],
+    assignments: List[Tuple[int, str, float, float]],
+) -> List[Tuple[str, List[List[float]]]]:
+    """Split a single polyline into one segment per station.
+
+    The boundary between adjacent stations is placed at the midpoint of the
+    segment between their nearest-vertex indices. Each emitted segment
+    includes the midpoint vertices on both sides so adjacent segments share
+    endpoints (no visual gaps in the rendered ribbon).
+    """
+    if len(line) < 2 or not assignments:
+        return []
+
+    # If two stations share the same nearest vertex, keep insertion order but
+    # nudge subsequent ones to the next vertex so each gets a distinct slice.
+    assignments = sorted(assignments, key=lambda a: a[0])
+    seen_idx: Dict[int, int] = {}
+    nudged: List[Tuple[int, str, float, float]] = []
+    for idx, sid, sx, sy in assignments:
+        cur = idx
+        while cur in seen_idx and cur + 1 < len(line):
+            cur += 1
+        seen_idx[cur] = 1
+        nudged.append((cur, sid, sx, sy))
+    nudged.sort(key=lambda a: a[0])
+
+    out: List[Tuple[str, List[List[float]]]] = []
+    n = len(nudged)
+    for i, (vidx, sid, _sx, _sy) in enumerate(nudged):
+        # boundary to previous neighbour
+        if i == 0:
+            start_idx = 0
+            start_mid: Optional[Tuple[float, float]] = None
+        else:
+            prev_vidx = nudged[i - 1][0]
+            mid_idx = (prev_vidx + vidx) // 2
+            start_idx = mid_idx + 1
+            if mid_idx + 1 < len(line):
+                # midpoint between vertices mid_idx and mid_idx+1
+                start_mid = _interp(line[mid_idx], line[mid_idx + 1], 0.5)
+            else:
+                start_mid = None
+        # boundary to next neighbour
+        if i == n - 1:
+            end_idx = len(line) - 1
+            end_mid: Optional[Tuple[float, float]] = None
+        else:
+            next_vidx = nudged[i + 1][0]
+            mid_idx = (vidx + next_vidx) // 2
+            end_idx = mid_idx
+            if mid_idx + 1 < len(line):
+                end_mid = _interp(line[mid_idx], line[mid_idx + 1], 0.5)
+            else:
+                end_mid = None
+
+        seg: List[Tuple[float, float]] = []
+        if start_mid is not None:
+            seg.append(start_mid)
+        seg.extend(line[start_idx:end_idx + 1])
+        if end_mid is not None:
+            seg.append(end_mid)
+        if len(seg) >= 2:
+            out.append((sid, round_coords(seg)))
+    return out
+
+
+def fetch_stations_per_water() -> Dict[Tuple[str, str], List[Tuple[str, float, float]]]:
+    """Return {(water_shortname, water_longname): [(station_id, lon, lat), ...]}.
+
+    Uses arg_max per station_id so each station appears once with its latest
+    coordinates. Stations with invalid coords are filtered out.
+    """
+    csl = (
+        "Station "
+        "| extend ws=tostring(water.shortname), wl=tostring(water.longname) "
+        "| where isnotempty(ws) and isnotempty(wl) "
+        "| where longitude > 0 and latitude > 0 "
+        "| summarize arg_max(___time, longitude, latitude, km, ws, wl) by station_id "
+        "| project ws, wl, station_id, km, longitude, latitude "
+        "| order by ws asc, wl asc, km asc"
+    )
+    rows = kusto_query(csl)
+    out: Dict[Tuple[str, str], List[Tuple[str, float, float]]] = defaultdict(list)
+    for ws, wl, sid, _km, lon, lat in rows:
+        out[(ws, wl)].append((sid, float(lon), float(lat)))
+    return out
+
+
+def build_segment_rows(
+    rivers: Dict[str, List[List[Tuple[float, float]]]],
+) -> List[Tuple[str, str, str, dict, str]]:
+    """End-to-end: MVT lines + station-backbone fallback, then per-station split.
+
+    Returns list of ``(water_shortname, water_longname, station_id, geometry, source)``.
+    """
+    # Build per-water polylines: MVT-matched first, then station-backbone fallback.
+    indexed: Dict[str, List[List[Tuple[float, float]]]] = {
+        name.lower(): merge_segments(segs) for name, segs in rivers.items()
+    }
+    print("  querying Kusto for per-water stations...", file=sys.stderr)
+    stations_per_water = fetch_stations_per_water()
+    print(f"  got {sum(len(v) for v in stations_per_water.values())} unique stations "
+          f"across {len(stations_per_water)} waters", file=sys.stderr)
+
+    water_lines: Dict[Tuple[str, str], Tuple[List[List[Tuple[float, float]]], str]] = {}
+
+    # 1. MVT-matched waters
+    matched: set = set()
+    for short, longn, aliases in ALIASES:
+        segs: List[List[Tuple[float, float]]] = []
+        matched_alias = None
+        for alias in aliases:
+            cand = indexed.get(alias.lower())
+            if cand:
+                segs.extend(cand)
+                matched_alias = alias
+                break
+        if not segs:
+            continue
+        final = [s for s in merge_segments(segs) if len(s) >= 4]
+        if not final:
+            continue
+        water_lines[(short, longn)] = (final, "mvt")
+        matched.add((short, longn))
+        print(f"  MVT  {short:15s}/{longn:35s} alias={matched_alias:18s} lines={len(final)}",
+              file=sys.stderr)
+
+    # 2. Station-backbone fallback for remaining waters
+    skipped_lake = skipped_few = 0
+    for (ws, wl), stations in sorted(stations_per_water.items()):
+        if (ws, wl) in matched:
+            continue
+        if wl in SKIP_WATERS or ws in SKIP_WATERS:
+            skipped_lake += 1
+            continue
+        coords = [[lon, lat] for _sid, lon, lat in stations]
+        deduped: List[List[float]] = []
+        for c in coords:
+            if not deduped or deduped[-1] != c:
+                deduped.append(c)
+        if len(deduped) < MIN_STATIONS_FOR_BACKBONE:
+            skipped_few += 1
+            continue
+        water_lines[(ws, wl)] = ([[tuple(c) for c in deduped]], "stations")
+        print(f"  STN  {ws:15s}/{wl:35s} stations={len(deduped)}", file=sys.stderr)
+    print(f"  station-backbone: {sum(1 for k,v in water_lines.items() if v[1]=='stations')} emitted, "
+          f"{skipped_lake} lakes/seas skipped, {skipped_few} too few stations", file=sys.stderr)
+
+    # 3. For each water polyline, split into per-station segments.
+    rows: List[Tuple[str, str, str, dict, str]] = []
+    n_seg = 0
+    for (ws, wl), (lines, source) in sorted(water_lines.items()):
+        stations = stations_per_water.get((ws, wl), [])
+        if not stations:
+            print(f"  NO-STATIONS {ws}/{wl}", file=sys.stderr)
+            continue
+        per_line = assign_stations_to_lines(lines, stations)
+        emitted = 0
+        for li, line in enumerate(lines):
+            assigns = per_line.get(li, [])
+            if not assigns:
+                continue
+            segs = split_polyline_per_station(list(line), assigns)
+            for sid, coords in segs:
+                geometry = {"type": "LineString", "coordinates": coords}
+                rows.append((ws, wl, sid, geometry, source))
+                emitted += 1
+        if emitted:
+            n_seg += emitted
+    print(f"  total segments: {n_seg} across {len(water_lines)} waters", file=sys.stderr)
+    return rows
+
+
 def crawl(zoom: int, key: str, bbox=GERMANY_BBOX, cache_path: Optional[Path] = None) -> Dict[str, List[List[Tuple[float, float]]]]:
     if cache_path and cache_path.exists():
         print(f"loading MVT cache from {cache_path}", file=sys.stderr)
@@ -244,53 +455,6 @@ def crawl(zoom: int, key: str, bbox=GERMANY_BBOX, cache_path: Optional[Path] = N
     return rivers
 
 
-def build_table_rows(
-    rivers: Dict[str, List[List[Tuple[float, float]]]]
-) -> Tuple[List[Tuple[str, str, dict, str]], set]:
-    """Match Azure Maps river names against ALIASES and emit (short, long, geom, source) rows.
-
-    Returns ``(rows, matched_keys)`` where ``matched_keys`` is the set of
-    ``(water_shortname, water_longname)`` tuples covered by MVT so the caller
-    can synthesise station-backbone polylines for the rest.
-    """
-    indexed: Dict[str, List[List[Tuple[float, float]]]] = {
-        name.lower(): merge_segments(segs) for name, segs in rivers.items()
-    }
-    rows: List[Tuple[str, str, dict, str]] = []
-    matched: set = set()
-    for short, longn, aliases in ALIASES:
-        match_segs: List[List[Tuple[float, float]]] = []
-        matched_alias = None
-        for alias in aliases:
-            segs = indexed.get(alias.lower())
-            if segs:
-                match_segs.extend(segs)
-                matched_alias = alias
-                break
-        if not match_segs:
-            print(f"  MVT-MISS: {short} / {longn} (aliases={list(aliases)})", file=sys.stderr)
-            continue
-        final = merge_segments(match_segs)
-        final = [s for s in final if len(s) >= 4]
-        if not final:
-            print(f"  MVT-EMPTY: {short} / {longn}", file=sys.stderr)
-            continue
-        coords = [round_coords(s) for s in final]
-        geometry = (
-            {"type": "LineString", "coordinates": coords[0]}
-            if len(coords) == 1
-            else {"type": "MultiLineString", "coordinates": coords}
-        )
-        total = sum(len(s) for s in coords)
-        print(
-            f"  MVT OK  {short:15s}/{longn:35s} alias={matched_alias:18s} segs={len(coords)} coords={total}",
-            file=sys.stderr,
-        )
-        rows.append((short, longn, geometry, "mvt"))
-        matched.add((short, longn))
-    return rows, matched
-
-
 def kusto_token() -> str:
     tok = os.environ.get("KUSTO_TOKEN")
     if tok:
@@ -320,89 +484,30 @@ def kusto_query(csl: str) -> List[List]:
     return data["Tables"][0]["Rows"]
 
 
-def fetch_station_backbones(matched: set) -> List[Tuple[str, str, dict, str]]:
-    """Build station-interpolated polylines for waters not covered by MVT.
+def emit_segments_kql(rows: List[Tuple[str, str, str, dict, str]]) -> str:
+    """Emit per-segment .append commands to stay under the mgmt payload limit.
 
-    Queries pegelonline Station table (collapsing snapshots per station_id via
-    arg_max(___time)), groups stations per (water_shortname, water_longname),
-    filters out invalid coords / km, orders by km, and emits a LineString per
-    water with ≥2 valid stations.
-    """
-    csl = (
-        "Station "
-        "| extend ws=tostring(water.shortname), wl=tostring(water.longname) "
-        "| where isnotempty(ws) and isnotempty(wl) "
-        "| where longitude > 0 and latitude > 0 "
-        "| where isnotnull(km) and km > -1 "
-        "| summarize arg_max(___time, longitude, latitude, km, ws, wl) by station_id "
-        "| project ws, wl, station_id, km, longitude, latitude "
-        "| order by ws asc, wl asc, km asc"
-    )
-    print("  querying Kusto for station backbones...", file=sys.stderr)
-    rows = kusto_query(csl)
-    print(f"  got {len(rows)} unique stations from Kusto", file=sys.stderr)
-
-    by_water: Dict[Tuple[str, str], List[Tuple[float, float, float]]] = defaultdict(list)
-    for ws, wl, _station_id, km, lon, lat in rows:
-        by_water[(ws, wl)].append((float(km), float(lon), float(lat)))
-
-    out: List[Tuple[str, str, dict, str]] = []
-    skipped_lake = 0
-    skipped_few = 0
-    for (ws, wl), pts in sorted(by_water.items()):
-        if (ws, wl) in matched:
-            continue
-        if wl in SKIP_WATERS or ws in SKIP_WATERS:
-            skipped_lake += 1
-            continue
-        pts.sort(key=lambda p: p[0])
-        coords = [[round(p[1], 5), round(p[2], 5)] for p in pts]
-        # Dedupe consecutive duplicates
-        deduped: List[List[float]] = []
-        for c in coords:
-            if not deduped or deduped[-1] != c:
-                deduped.append(c)
-        if len(deduped) < MIN_STATIONS_FOR_BACKBONE:
-            skipped_few += 1
-            continue
-        geometry = {"type": "LineString", "coordinates": deduped}
-        out.append((ws, wl, geometry, "stations"))
-        print(
-            f"  STN OK  {ws:15s}/{wl:35s} stations={len(deduped)}",
-            file=sys.stderr,
-        )
-    print(
-        f"  station backbones: {len(out)} emitted, "
-        f"{skipped_lake} lakes/seas skipped, {skipped_few} too few stations",
-        file=sys.stderr,
-    )
-    return out
-
-
-def emit_kql(rows: List[Tuple[str, str, dict, str]]) -> str:
-    """Emit per-river .append commands to stay under the mgmt payload limit.
-
-    The first command drops + recreates the table; subsequent ones append one
-    row each. The driver script splits on the blank-line separator and posts
-    each command individually. ``source`` is ``mvt`` or ``stations`` so the
-    KQL helpers and the map UI can distinguish high-fidelity from synthesised
-    polylines.
+    The first command drops + recreates RiverSegments; subsequent ones append
+    one row each. The driver script (post-deploy.ps1) splits on the blank-line
+    separator and posts each command individually.
     """
     parts = [
-        ".drop table RiverGeometries ifexists",
-        ".create table RiverGeometries"
-        " (water_shortname:string, water_longname:string, geometry:dynamic, source:string)"
+        ".drop table RiverSegments ifexists",
+        ".create table RiverSegments"
+        " (water_shortname:string, water_longname:string, station_id:string,"
+        " geometry:dynamic, source:string)"
         " with (folder='Map')",
     ]
-    for short, longn, geom, source in rows:
+    for ws, wl, sid, geom, source in rows:
         geom_lit = "dynamic(" + json.dumps(geom, separators=(",", ":")) + ")"
-        # KQL string literals: escape backslashes and double quotes
-        short_lit = short.replace("\\", "\\\\").replace('"', '\\"')
-        longn_lit = longn.replace("\\", "\\\\").replace('"', '\\"')
+        ws_lit  = ws.replace("\\", "\\\\").replace('"', '\\"')
+        wl_lit  = wl.replace("\\", "\\\\").replace('"', '\\"')
+        sid_lit = sid.replace("\\", "\\\\").replace('"', '\\"')
         parts.append(
-            ".append RiverGeometries <|\n"
-            f'print water_shortname="{short_lit}",'
-            f' water_longname="{longn_lit}",'
+            ".append RiverSegments <|\n"
+            f'print water_shortname="{ws_lit}",'
+            f' water_longname="{wl_lit}",'
+            f' station_id="{sid_lit}",'
             f' geometry={geom_lit},'
             f' source="{source}"'
         )
@@ -415,10 +520,6 @@ def main() -> int:
     ap.add_argument("--zoom", default=DEFAULT_ZOOM, type=int)
     ap.add_argument("--maps-key", default=os.environ.get("MAPS_KEY"))
     ap.add_argument(
-        "--skip-stations", action="store_true",
-        help="Skip station-backbone fallback (MVT-only output)",
-    )
-    ap.add_argument(
         "--mvt-cache", type=Path, default=None,
         help="Cache decoded MVT segments to/from this JSON file for re-runs.",
     )
@@ -429,23 +530,15 @@ def main() -> int:
         return 2
 
     rivers = crawl(args.zoom, args.maps_key, cache_path=args.mvt_cache)
-    mvt_rows, matched = build_table_rows(rivers)
-    if args.skip_stations:
-        rows = mvt_rows
-    else:
-        try:
-            station_rows = fetch_station_backbones(matched)
-        except Exception as exc:
-            print(f"  WARN: station fallback failed: {exc}", file=sys.stderr)
-            station_rows = []
-        rows = mvt_rows + station_rows
-    kql = emit_kql(rows)
+    rows = build_segment_rows(rivers)
+    kql = emit_segments_kql(rows)
     args.out.write_text(kql, encoding="utf-8")
-    mvt_n = sum(1 for r in rows if r[3] == "mvt")
-    stn_n = sum(1 for r in rows if r[3] == "stations")
+    mvt_n = sum(1 for r in rows if r[4] == "mvt")
+    stn_n = sum(1 for r in rows if r[4] == "stations")
+    waters = {(r[0], r[1]) for r in rows}
     print(
-        f"wrote {args.out.resolve()} ({len(kql)} chars, {len(rows)} rows: "
-        f"{mvt_n} mvt + {stn_n} station-backbone)",
+        f"wrote {args.out.resolve()} ({len(kql)} chars, {len(rows)} segment-rows "
+        f"across {len(waters)} waters: {mvt_n} mvt + {stn_n} station-backbone)",
         file=sys.stderr,
     )
     return 0
