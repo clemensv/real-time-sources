@@ -115,7 +115,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Netherlands — ~785 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "smhi-hydro",
