@@ -91,7 +91,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Washington State / Puget Sound — buoy and mooring telemetry",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nve-hydro",

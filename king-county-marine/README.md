@@ -53,6 +53,13 @@ configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fking-county-marine%2Fazure-template-with-eventhub.json)
 
+## Fabric notebook hosting
+
+You can also host this feeder as a scheduled Microsoft Fabric notebook (no
+container required) using
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+The notebook lives at [`notebook/king-county-marine-feed.ipynb`](notebook/king-county-marine-feed.ipynb).
+
 ## Upstream Links
 
 - King County buoy search surface: https://data.kingcounty.gov/
