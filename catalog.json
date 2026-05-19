@@ -717,6 +717,7 @@
     "cat": "Science",
     "key": false,
     "desc": "Global — LIGO/Virgo/KAGRA gravitational wave candidates",
-    "kql": true
+    "kql": true,
+    "notebook": true
   }
 ]

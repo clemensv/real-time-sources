@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Superevent] (
+.create-merge table ['org.ligo.gracedb.Superevent'] (
    [superevent_id]: string,
    [category]: string,
    [created]: string,
@@ -54,9 +54,9 @@
    [___subject]: string
 );
 
-.alter table [Superevent] docstring "{\"description\": \"A gravitational wave candidate superevent from the LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a single candidate and carries significance, classification, and alert-lifecycle metadata.\"}";
+.alter table ['org.ligo.gracedb.Superevent'] docstring "{\"description\": \"A gravitational wave candidate superevent from the LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a single candidate and carries significance, classification, and alert-lifecycle metadata.\"}";
 
-.alter table [Superevent] column-docstrings (
+.alter table ['org.ligo.gracedb.Superevent'] column-docstrings (
    [superevent_id]: "{\"description\": \"Unique identifier for the superevent assigned by GraceDB, e.g. 'S240414a' for production events or 'MS260408x' for MDC (mock data challenge) events.\"}",
    [category]: "{\"description\": \"Category of the superevent. 'Production' for real observing-run candidates, 'MDC' for mock data challenge injections, 'Test' for engineering/test events.\"}",
    [created]: "{\"description\": \"ISO-8601 UTC timestamp when the superevent was first created in GraceDB, e.g. '2026-04-08 23:59:34 UTC'.\"}",
@@ -85,7 +85,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Superevent] ingestion json mapping "Superevent_json_flat"
+.create-or-alter table ['org.ligo.gracedb.Superevent'] ingestion json mapping "org.ligo.gracedb.Superevent_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -117,7 +117,7 @@
 ]
 ```
 
-.create-or-alter table [Superevent] ingestion json mapping "Superevent_json_ce_structured"
+.create-or-alter table ['org.ligo.gracedb.Superevent'] ingestion json mapping "org.ligo.gracedb.Superevent_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -149,13 +149,13 @@
 ]
 ```
 
-.drop materialized-view SupereventLatest ifexists;
+.drop materialized-view ['org.ligo.gracedb.SupereventLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SupereventLatest on table Superevent {
-    Superevent | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['org.ligo.gracedb.SupereventLatest'] on table ['org.ligo.gracedb.Superevent'] {
+    ['org.ligo.gracedb.Superevent'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Superevent] policy update
+.alter table ['org.ligo.gracedb.Superevent'] policy update
 ```
 [{
   "IsEnabled": true,
