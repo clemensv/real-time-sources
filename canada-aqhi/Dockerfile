@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.title="Canada AQHI bridge to Kafka"
 LABEL org.opencontainers.image.description="Bridges Canada Air Quality Health Index observations and forecasts from Environment and Climate Change Canada to Kafka and CloudEvents."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/canada-aqhi/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
+LABEL org.opencontainers.image.version="0.1.1"
 
 WORKDIR /app
 COPY . /app
