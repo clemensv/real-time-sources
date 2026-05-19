@@ -85,3 +85,7 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-with-eventhub.json)
+
+## Deploying as a Fabric notebook feeder
+
+- This source ships a Microsoft Fabric notebook that polls one cycle per scheduled run, looks up the Event Stream connection string at runtime, and writes dedupe state to OneLake. Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook source is at [`gios-poland/notebook/gios-poland-feed.ipynb`](notebook/gios-poland-feed.ipynb).
