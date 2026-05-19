@@ -9,7 +9,7 @@ const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
 /* ── Source catalog ────────────────────────────────────────────────────── */
 const SOURCES = [
   // ── Hydrology and Water Monitoring ──
-  { id: "bafu-hydro", name: "BAFU Hydro", cat: "Hydrology", key: false, desc: "Switzerland — ~300 stations, FOEN", kql: true, notebook: false },
+  { id: "bafu-hydro", name: "BAFU Hydro", cat: "Hydrology", key: false, desc: "Switzerland — ~300 stations, FOEN", kql: true, notebook: true },
   { id: "cdec-reservoirs", name: "CDEC Reservoirs", cat: "Hydrology", key: false, desc: "California — ~2,600 stations, DWR", kql: true, notebook: false },
   { id: "chmi-hydro", name: "CHMI Hydro", cat: "Hydrology", key: false, desc: "Czech Republic — CHMU", kql: true, notebook: false },
   { id: "german-waters", name: "German Waters", cat: "Hydrology", key: false, desc: "Germany — 12 state portals, ~2,724 stations", kql: true, notebook: false },
