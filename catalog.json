@@ -390,7 +390,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "United States — city-scoped hourly and daily UV forecasts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "sensor-community",

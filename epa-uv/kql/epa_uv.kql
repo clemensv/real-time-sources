@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [HourlyForecast] (
+.create-merge table ['us.epa.uvindex.HourlyForecast'] (
    [location_id]: string,
    [city]: string,
    [state]: string,
@@ -38,9 +38,9 @@
    [___subject]: string
 );
 
-.alter table [HourlyForecast] docstring "{\"description\": \"Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.\"}";
+.alter table ['us.epa.uvindex.HourlyForecast'] docstring "{\"description\": \"Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.\"}";
 
-.alter table [HourlyForecast] column-docstrings (
+.alter table ['us.epa.uvindex.HourlyForecast'] column-docstrings (
    [location_id]: "{\"description\": \"Stable slug derived from the configured city and state.\"}",
    [city]: "{\"description\": \"City for which the hourly UV forecast was requested.\"}",
    [state]: "{\"description\": \"Two-letter state abbreviation for the requested city.\"}",
@@ -53,7 +53,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [HourlyForecast] ingestion json mapping "HourlyForecast_json_flat"
+.create-or-alter table ['us.epa.uvindex.HourlyForecast'] ingestion json mapping "us.epa.uvindex.HourlyForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -69,7 +69,7 @@
 ]
 ```
 
-.create-or-alter table [HourlyForecast] ingestion json mapping "HourlyForecast_json_ce_structured"
+.create-or-alter table ['us.epa.uvindex.HourlyForecast'] ingestion json mapping "us.epa.uvindex.HourlyForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -85,13 +85,13 @@
 ]
 ```
 
-.drop materialized-view HourlyForecastLatest ifexists;
+.drop materialized-view ['us.epa.uvindex.HourlyForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) HourlyForecastLatest on table HourlyForecast {
-    HourlyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.epa.uvindex.HourlyForecastLatest'] on table ['us.epa.uvindex.HourlyForecast'] {
+    ['us.epa.uvindex.HourlyForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [HourlyForecast] policy update
+.alter table ['us.epa.uvindex.HourlyForecast'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -102,7 +102,7 @@
 }]
 ```
 
-.create-merge table [DailyForecast] (
+.create-merge table ['us.epa.uvindex.DailyForecast'] (
    [location_id]: string,
    [city]: string,
    [state]: string,
@@ -116,9 +116,9 @@
    [___subject]: string
 );
 
-.alter table [DailyForecast] docstring "{\"description\": \"Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.\"}";
+.alter table ['us.epa.uvindex.DailyForecast'] docstring "{\"description\": \"Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.\"}";
 
-.alter table [DailyForecast] column-docstrings (
+.alter table ['us.epa.uvindex.DailyForecast'] column-docstrings (
    [location_id]: "{\"description\": \"Stable slug derived from the configured city and state.\"}",
    [city]: "{\"description\": \"City for which the daily UV forecast was requested.\"}",
    [state]: "{\"description\": \"Two-letter state abbreviation for the requested city.\"}",
@@ -132,7 +132,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [DailyForecast] ingestion json mapping "DailyForecast_json_flat"
+.create-or-alter table ['us.epa.uvindex.DailyForecast'] ingestion json mapping "us.epa.uvindex.DailyForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -149,7 +149,7 @@
 ]
 ```
 
-.create-or-alter table [DailyForecast] ingestion json mapping "DailyForecast_json_ce_structured"
+.create-or-alter table ['us.epa.uvindex.DailyForecast'] ingestion json mapping "us.epa.uvindex.DailyForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -166,13 +166,13 @@
 ]
 ```
 
-.drop materialized-view DailyForecastLatest ifexists;
+.drop materialized-view ['us.epa.uvindex.DailyForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) DailyForecastLatest on table DailyForecast {
-    DailyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['us.epa.uvindex.DailyForecastLatest'] on table ['us.epa.uvindex.DailyForecast'] {
+    ['us.epa.uvindex.DailyForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [DailyForecast] policy update
+.alter table ['us.epa.uvindex.DailyForecast'] policy update
 ```
 [{
   "IsEnabled": true,
