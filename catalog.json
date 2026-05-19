@@ -441,7 +441,8 @@
     "cat": "Disasters",
     "key": false,
     "desc": "Australia — NSW, QLD, VIC bushfire incidents",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "eaws-albina",
