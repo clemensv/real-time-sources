@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [GenerationMix] (
+.create-merge table ['UK.Co.Elexon.BMRS.GenerationMix'] (
    [settlement_period]: int,
    [start_time]: datetime,
    [biomass_mw]: real,
@@ -52,9 +52,9 @@
    [___subject]: string
 );
 
-.alter table [GenerationMix] docstring "{\"description\": \"Half-hourly generation outturn summary for the GB electricity system from the Elexon BMRS API. Each record represents one settlement period and contains the generation output in megawatts (MW) broken down by fuel type, including domestic generation (biomass, CCGT, coal, nuclear, wind, OCGT, oil, hydro, pumped storage) and interconnector imports (France IFA, France IFA2, Netherlands BritNed, Belgium Nemo, Ireland EWIC, Norway NSL, Denmark Viking Link). Sourced from the BMRS /generation/outturn/summary endpoint.\"}";
+.alter table ['UK.Co.Elexon.BMRS.GenerationMix'] docstring "{\"description\": \"Half-hourly generation outturn summary for the GB electricity system from the Elexon BMRS API. Each record represents one settlement period and contains the generation output in megawatts (MW) broken down by fuel type, including domestic generation (biomass, CCGT, coal, nuclear, wind, OCGT, oil, hydro, pumped storage) and interconnector imports (France IFA, France IFA2, Netherlands BritNed, Belgium Nemo, Ireland EWIC, Norway NSL, Denmark Viking Link). Sourced from the BMRS /generation/outturn/summary endpoint.\"}";
 
-.alter table [GenerationMix] column-docstrings (
+.alter table ['UK.Co.Elexon.BMRS.GenerationMix'] column-docstrings (
    [settlement_period]: "{\"description\": \"GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC. Period 1 covers 00:00-00:30, period 2 covers 00:30-01:00, and so on.\"}",
    [start_time]: "{\"description\": \"UTC start time of the settlement period as reported by the BMRS generation outturn summary endpoint.\"}",
    [biomass_mw]: "{\"description\": \"Generation output from biomass-fuelled power stations in megawatts (MW). Biomass includes dedicated biomass plants and biomass co-firing units.\"}",
@@ -81,7 +81,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [GenerationMix] ingestion json mapping "GenerationMix_json_flat"
+.create-or-alter table ['UK.Co.Elexon.BMRS.GenerationMix'] ingestion json mapping "UK.Co.Elexon.BMRS.GenerationMix_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -111,7 +111,7 @@
 ]
 ```
 
-.create-or-alter table [GenerationMix] ingestion json mapping "GenerationMix_json_ce_structured"
+.create-or-alter table ['UK.Co.Elexon.BMRS.GenerationMix'] ingestion json mapping "UK.Co.Elexon.BMRS.GenerationMix_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -141,13 +141,13 @@
 ]
 ```
 
-.drop materialized-view GenerationMixLatest ifexists;
+.drop materialized-view ['UK.Co.Elexon.BMRS.GenerationMixLatest'] ifexists;
 
-.create materialized-view with (backfill=true) GenerationMixLatest on table GenerationMix {
-    GenerationMix | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['UK.Co.Elexon.BMRS.GenerationMixLatest'] on table ['UK.Co.Elexon.BMRS.GenerationMix'] {
+    ['UK.Co.Elexon.BMRS.GenerationMix'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [GenerationMix] policy update
+.alter table ['UK.Co.Elexon.BMRS.GenerationMix'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -158,7 +158,7 @@
 }]
 ```
 
-.create-merge table [DemandOutturn] (
+.create-merge table ['UK.Co.Elexon.BMRS.DemandOutturn'] (
    [settlement_period]: int,
    [settlement_date]: string,
    [start_time]: datetime,
@@ -172,9 +172,9 @@
    [___subject]: string
 );
 
-.alter table [DemandOutturn] docstring "{\"description\": \"Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon.\"}";
+.alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] docstring "{\"description\": \"Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon.\"}";
 
-.alter table [DemandOutturn] column-docstrings (
+.alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] column-docstrings (
    [settlement_period]: "{\"description\": \"GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC.\"}",
    [settlement_date]: "{\"description\": \"Settlement date in ISO 8601 format (YYYY-MM-DD) as reported by the BMRS demand outturn endpoint.\"}",
    [start_time]: "{\"description\": \"UTC start time of the settlement period as reported by the BMRS demand outturn endpoint.\"}",
@@ -188,7 +188,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [DemandOutturn] ingestion json mapping "DemandOutturn_json_flat"
+.create-or-alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] ingestion json mapping "UK.Co.Elexon.BMRS.DemandOutturn_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -205,7 +205,7 @@
 ]
 ```
 
-.create-or-alter table [DemandOutturn] ingestion json mapping "DemandOutturn_json_ce_structured"
+.create-or-alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] ingestion json mapping "UK.Co.Elexon.BMRS.DemandOutturn_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -222,13 +222,13 @@
 ]
 ```
 
-.drop materialized-view DemandOutturnLatest ifexists;
+.drop materialized-view ['UK.Co.Elexon.BMRS.DemandOutturnLatest'] ifexists;
 
-.create materialized-view with (backfill=true) DemandOutturnLatest on table DemandOutturn {
-    DemandOutturn | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['UK.Co.Elexon.BMRS.DemandOutturnLatest'] on table ['UK.Co.Elexon.BMRS.DemandOutturn'] {
+    ['UK.Co.Elexon.BMRS.DemandOutturn'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [DemandOutturn] policy update
+.alter table ['UK.Co.Elexon.BMRS.DemandOutturn'] policy update
 ```
 [{
   "IsEnabled": true,

@@ -698,7 +698,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "Great Britain — electricity market, generation, demand",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "energidataservice-dk",
