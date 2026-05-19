@@ -614,7 +614,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Seattle, WA — permit-driven street closure windows",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "cbp-border-wait",
