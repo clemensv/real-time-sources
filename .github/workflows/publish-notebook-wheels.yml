@@ -64,12 +64,18 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Compute package id (hyphens → underscores)
+        id: pkg
+        run: |
+          src="${{ matrix.source }}"
+          echo "id=${src//-/_}" >> "$GITHUB_OUTPUT"
+
       - name: Verify notebook + producer present
         run: |
           test -f "${{ matrix.source }}/notebook/${{ matrix.source }}-feed.ipynb" \
             || { echo "::error::Missing notebook for ${{ matrix.source }}"; exit 1; }
-          test -d "${{ matrix.source }}/${{ matrix.source }}_producer" \
-            || { echo "::error::Missing generated producer for ${{ matrix.source }}"; exit 1; }
+          test -d "${{ matrix.source }}/${{ steps.pkg.outputs.id }}_producer" \
+            || { echo "::error::Missing generated producer for ${{ matrix.source }} (expected ${{ steps.pkg.outputs.id }}_producer)"; exit 1; }
 
       - name: Build wheels
         working-directory: ${{ matrix.source }}
@@ -80,7 +86,7 @@ jobs:
           python -m pip wheel --no-deps --no-build-isolation \
             --wheel-dir ../_wheels-out .
           # Producer sub-packages (skip any without pyproject.toml such as samples/)
-          for sub in ${{ matrix.source }}_producer/*/ ; do
+          for sub in ${{ steps.pkg.outputs.id }}_producer/*/ ; do
             if [ -f "$sub/pyproject.toml" ]; then
               echo "Building $sub"
               python -m pip wheel --no-deps --no-build-isolation \
