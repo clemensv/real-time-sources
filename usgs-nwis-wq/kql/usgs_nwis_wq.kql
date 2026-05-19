@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [MonitoringSite] (
+.create-merge table ['gov.usgs.waterservices.wq.MonitoringSite'] (
    [site_number]: string,
    [site_name]: string,
    [agency_code]: string,
@@ -42,7 +42,7 @@
    [___subject]: string
 );
 
-.create-or-alter table [MonitoringSite] ingestion json mapping "MonitoringSite_json_flat"
+.create-or-alter table ['gov.usgs.waterservices.wq.MonitoringSite'] ingestion json mapping "gov.usgs.waterservices.wq.MonitoringSite_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -62,7 +62,7 @@
 ]
 ```
 
-.create-or-alter table [MonitoringSite] ingestion json mapping "MonitoringSite_json_ce_structured"
+.create-or-alter table ['gov.usgs.waterservices.wq.MonitoringSite'] ingestion json mapping "gov.usgs.waterservices.wq.MonitoringSite_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -82,13 +82,13 @@
 ]
 ```
 
-.drop materialized-view MonitoringSiteLatest ifexists;
+.drop materialized-view ['gov.usgs.waterservices.wq.MonitoringSiteLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MonitoringSiteLatest on table MonitoringSite {
-    MonitoringSite | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.usgs.waterservices.wq.MonitoringSiteLatest'] on table ['gov.usgs.waterservices.wq.MonitoringSite'] {
+    ['gov.usgs.waterservices.wq.MonitoringSite'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [MonitoringSite] policy update
+.alter table ['gov.usgs.waterservices.wq.MonitoringSite'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -99,7 +99,7 @@
 }]
 ```
 
-.create-merge table [WaterQualityReading] (
+.create-merge table ['gov.usgs.waterservices.wq.WaterQualityReading'] (
    [site_number]: string,
    [site_name]: string,
    [parameter_code]: string,
@@ -115,7 +115,7 @@
    [___subject]: string
 );
 
-.create-or-alter table [WaterQualityReading] ingestion json mapping "WaterQualityReading_json_flat"
+.create-or-alter table ['gov.usgs.waterservices.wq.WaterQualityReading'] ingestion json mapping "gov.usgs.waterservices.wq.WaterQualityReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -134,7 +134,7 @@
 ]
 ```
 
-.create-or-alter table [WaterQualityReading] ingestion json mapping "WaterQualityReading_json_ce_structured"
+.create-or-alter table ['gov.usgs.waterservices.wq.WaterQualityReading'] ingestion json mapping "gov.usgs.waterservices.wq.WaterQualityReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -153,13 +153,13 @@
 ]
 ```
 
-.drop materialized-view WaterQualityReadingLatest ifexists;
+.drop materialized-view ['gov.usgs.waterservices.wq.WaterQualityReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterQualityReadingLatest on table WaterQualityReading {
-    WaterQualityReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.usgs.waterservices.wq.WaterQualityReadingLatest'] on table ['gov.usgs.waterservices.wq.WaterQualityReading'] {
+    ['gov.usgs.waterservices.wq.WaterQualityReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterQualityReading] policy update
+.alter table ['gov.usgs.waterservices.wq.WaterQualityReading'] policy update
 ```
 [{
   "IsEnabled": true,

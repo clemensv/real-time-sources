@@ -293,8 +293,13 @@ class USGSWaterQualityPoller:
         if last_polled.get(key, "") < date_time:
             last_polled[key] = date_time
 
-    async def poll_and_send(self) -> None:
-        """Main polling loop: fetches water quality data and sends to Kafka."""
+    async def poll_and_send(self, once: bool = False) -> None:
+        """Main polling loop: fetches water quality data and sends to Kafka.
+
+        Args:
+            once: If True, exit after a single polling cycle (used by scheduled
+                Fabric notebook runs).
+        """
         last_polled = self.load_last_polled_times()
 
         while True:
@@ -382,6 +387,10 @@ class USGSWaterQualityPoller:
             elapsed = (datetime.now(timezone.utc) - start_time).total_seconds()
             logger.info("Poll complete: %d sites, %d new readings in %.1fs", total_sites, total_readings, elapsed)
 
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
+
             # Wait before next poll (5 minutes)
             await asyncio.sleep(300)
 
@@ -432,6 +441,13 @@ def main():
     feed_parser.add_argument("--states", type=str, help="Comma-separated state codes (default: all)")
     feed_parser.add_argument("--sites", type=str, help="Comma-separated USGS site numbers")
     feed_parser.add_argument("--parameter-codes", type=str, help="Comma-separated parameter codes")
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). "
+             "Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
 
@@ -481,7 +497,7 @@ def main():
         parameter_codes=param_codes or None,
     )
 
-    asyncio.run(poller.poll_and_send())
+    asyncio.run(poller.poll_and_send(once=getattr(args, 'once', False)))
 
 
 if __name__ == "__main__":
