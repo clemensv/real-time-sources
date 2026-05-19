@@ -297,7 +297,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "United States — configurable land and marine forecast zones",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nws-alerts",

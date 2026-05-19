@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [ForecastZone] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] (
    [zone_id]: string,
    [zone_type]: string,
    [name]: string,
@@ -47,9 +47,9 @@
    [___subject]: string
 );
 
-.alter table [ForecastZone] docstring "{\"description\": \"Reference data for an NWS forecast zone selected by the bridge. The api.weather.gov /zones/forecast/{zoneId} endpoint returns both public land forecast zones such as WAZ315 and marine forecast zones such as PZZ135. The bridge emits this reference event at startup and on periodic refresh so downstream consumers can correlate forecast snapshots with stable zone metadata.\"}";
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] docstring "{\"description\": \"Reference data for an NWS forecast zone selected by the bridge. The api.weather.gov /zones/forecast/{zoneId} endpoint returns both public land forecast zones such as WAZ315 and marine forecast zones such as PZZ135. The bridge emits this reference event at startup and on periodic refresh so downstream consumers can correlate forecast snapshots with stable zone metadata.\"}";
 
-.alter table [ForecastZone] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] column-docstrings (
    [zone_id]: "{\"description\": \"NWS forecast zone identifier from the upstream properties.id field, such as WAZ315 for the City of Seattle public forecast zone or PZZ135 for the Puget Sound and Hood Canal marine zone.\"}",
    [zone_type]: "{\"description\": \"NWS zone category from the upstream properties.type field. Forecast-zone responses use 'public' for land forecast zones and marine-oriented values such as 'coastal', 'offshore', or 'marine' for waters forecasts.\"}",
    [name]: "{\"description\": \"Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'.\"}",
@@ -71,7 +71,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ForecastZone] ingestion json mapping "ForecastZone_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -96,7 +96,7 @@
 ]
 ```
 
-.create-or-alter table [ForecastZone] ingestion json mapping "ForecastZone_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -121,13 +121,13 @@
 ]
 ```
 
-.drop materialized-view ForecastZoneLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZoneLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ForecastZoneLatest on table ForecastZone {
-    ForecastZone | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZoneLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ForecastZone] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -138,7 +138,7 @@
 }]
 ```
 
-.create-merge table [LandZoneForecast] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] (
    [zone_id]: string,
    [updated]: datetime,
    [periods]: dynamic,
@@ -149,9 +149,9 @@
    [___subject]: string
 );
 
-.alter table [LandZoneForecast] docstring "{\"description\": \"Public land-zone forecast snapshot from api.weather.gov /zones/forecast/{zoneId}/forecast. This endpoint returns narrative forecast periods for a land forecast zone such as Seattle or Tacoma. The bridge preserves the ordered forecast periods and emits the zone identifier as the Kafka key so each event represents the current forecast snapshot for one zone.\"}";
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] docstring "{\"description\": \"Public land-zone forecast snapshot from api.weather.gov /zones/forecast/{zoneId}/forecast. This endpoint returns narrative forecast periods for a land forecast zone such as Seattle or Tacoma. The bridge preserves the ordered forecast periods and emits the zone identifier as the Kafka key so each event represents the current forecast snapshot for one zone.\"}";
 
-.alter table [LandZoneForecast] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] column-docstrings (
    [zone_id]: "{\"description\": \"Forecast zone identifier for the land forecast snapshot. This matches the configured zone identifier and the upstream properties.zone URL suffix.\"}",
    [updated]: "{\"description\": \"Timestamp from properties.updated indicating when the NWS most recently updated this zone forecast.\"}",
    [periods]: "{\"description\": \"Ordered narrative forecast periods from properties.periods. Each element represents one named daypart or day-level outlook such as Tonight, Tuesday, or Tuesday Night.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
@@ -162,7 +162,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LandZoneForecast] ingestion json mapping "LandZoneForecast_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -176,7 +176,7 @@
 ]
 ```
 
-.create-or-alter table [LandZoneForecast] ingestion json mapping "LandZoneForecast_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -190,13 +190,13 @@
 ]
 ```
 
-.drop materialized-view LandZoneForecastLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) LandZoneForecastLatest on table LandZoneForecast {
-    LandZoneForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecastLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LandZoneForecast] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -207,7 +207,7 @@
 }]
 ```
 
-.create-merge table [MarineZoneForecast] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] (
    [zone_id]: string,
    [zone_name]: string,
    [product_title]: string,
@@ -226,9 +226,9 @@
    [___subject]: string
 );
 
-.alter table [MarineZoneForecast] docstring "{\"description\": \"Marine forecast bulletin snapshot parsed from the NOAA/NWS coastal waters text feed under tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/. The upstream feed is plain text rather than structured JSON, so the bridge emits the bulletin metadata plus an ordered array of named narrative periods for the selected marine zone.\"}";
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] docstring "{\"description\": \"Marine forecast bulletin snapshot parsed from the NOAA/NWS coastal waters text feed under tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/. The upstream feed is plain text rather than structured JSON, so the bridge emits the bulletin metadata plus an ordered array of named narrative periods for the selected marine zone.\"}";
 
-.alter table [MarineZoneForecast] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] column-docstrings (
    [zone_id]: "{\"description\": \"Marine forecast zone identifier parsed from the bulletin zone header line, such as PZZ135 for Puget Sound and Hood Canal.\"}",
    [zone_name]: "{\"description\": \"Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin.\"}",
    [product_title]: "{\"description\": \"Bulletin title line, such as 'Coastal Waters Forecast for Washington'.\"}",
@@ -247,7 +247,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [MarineZoneForecast] ingestion json mapping "MarineZoneForecast_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -269,7 +269,7 @@
 ]
 ```
 
-.create-or-alter table [MarineZoneForecast] ingestion json mapping "MarineZoneForecast_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -291,13 +291,13 @@
 ]
 ```
 
-.drop materialized-view MarineZoneForecastLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecastLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MarineZoneForecastLatest on table MarineZoneForecast {
-    MarineZoneForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecastLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [MarineZoneForecast] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] policy update
 ```
 [{
   "IsEnabled": true,
