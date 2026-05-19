@@ -194,6 +194,63 @@ If any retrofit step cannot complete (e.g. bridge has no extractable
 CLI shape, tests fail and the cause is the new code), abort, push
 nothing, and call `task_complete` with a clear blocker description.
 
+## Optional: Post-Deploy Hook
+
+If the source needs **additional Fabric wiring** beyond the generic
+deployer's 6 steps (e.g. wiring Map layers, importing a Dashboard,
+attaching an Environment), drop a `<SOURCE>/fabric/post-deploy.ps1`
+script. Both `deploy-fabric.ps1` and `deploy-feeder-notebook.ps1`
+auto-discover the hook (local working tree first, raw-GitHub fallback)
+and invoke it with a populated `-Context` hashtable as the **last
+deployment step**.
+
+This is **opt-in**: most retrofitted sources do not need a hook and
+should not add one. Add a hook only if your source genuinely has
+post-bootstrap wiring that today is a manual portal click and that you
+can automate via REST or a Kusto control command.
+
+### Hook contract
+
+```powershell
+param([hashtable] $Context, ...)
+```
+
+The hook receives a `$Context` hashtable with all relevant IDs the
+deployer created. Common keys: `Source`, `Mode` (`notebook` for the
+notebook deployer, absent for the container deployer), `WorkspaceId`,
+`WorkspaceName`, `EventhouseId`, `EventhouseClusterUri`, `DatabaseId`,
+`DatabaseName`, `RawBase`, `Repo`, `Branch`, `TempDir`. Container
+deployer additionally provides `EventstreamId`, `ContainerGroupName`,
+`ConnectionString`. Notebook deployer additionally provides
+`NotebookId`, `NotebookName`.
+
+Hooks should:
+
+- Accept the `-Context` hashtable as the primary entry point.
+- Also accept explicit named parameters so the hook can be re-run
+  standalone (`pwsh dwd/fabric/post-deploy.ps1 -WorkspaceId ... -KqlDatabaseId ...`).
+- `exit 0` when there is no work to do (e.g. a required env var is
+  unset) — do **not** throw, or you fail the bootstrap.
+- Throw on real failure — the deployer treats hook failure as
+  deployment failure (operators can re-run with `-SkipPostDeployHook`).
+
+### Reference implementation
+
+`dwd/fabric/post-deploy.ps1` wires 8 ICON-D2 Kusto-backed Map layers
+onto a pre-existing Fabric Map item (item ID supplied via
+`DWD_FABRIC_MAP_ID` env var, because Fabric REST cannot yet create Map
+items programmatically). See also `tools/deploy-fabric/README.md` for
+the full hook documentation including the complete `$Context` schema.
+
+### What NOT to put in a hook
+
+- Anything the generic deployer already does (KQL DDL, Eventstream
+  wiring, ACI restart) — those are not your concern.
+- Manual portal steps that have no REST API (e.g. creating a Map item)
+  — gracefully degrade with an `exit 0` and printed instructions
+  instead.
+- Source-specific data-plane logic — that belongs in the bridge.
+
 ## Known Pitfalls
 
 - **Hyphenated source ids** (e.g. `bafu-hydro`): the bridge package and

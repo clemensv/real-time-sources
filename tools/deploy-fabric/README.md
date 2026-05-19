@@ -31,8 +31,56 @@ integration. Runs in Azure Cloud Shell.
 │  Steps 6–7: Wire it up                                         │
 │   → Retrieve Custom Endpoint connection string                  │
 │   → Update ACI container to send directly to Fabric             │
+└──────────────────────────┬─────────────────────────────────────┘
+                           │
+┌──────────────────────────▼─────────────────────────────────────┐
+│  Optional post-deploy hook                                     │
+│   → Auto-discover {Source}/fabric/post-deploy.ps1               │
+│     (local working tree first, then $RawBase fallback)          │
+│   → Invoke with a -Context hashtable of all created IDs         │
+│   → Used by sources that need extra Fabric wiring (maps,        │
+│     dashboards, environments, …). Disable with                  │
+│     -SkipPostDeployHook.                                        │
 └────────────────────────────────────────────────────────────────┘
 ```
+
+## Optional per-source post-deploy hooks
+
+A source MAY ship a `{Source}/fabric/post-deploy.ps1` script. After a
+successful deployment, both `deploy-fabric.ps1` and
+`deploy-fabric-notebook.ps1` look for that file (first in the local working
+tree, then via raw GitHub for cloud-shell scenarios) and invoke it with:
+
+```powershell
+param([hashtable] $Context, ...)
+```
+
+The `$Context` hashtable contains keys the hook may need without having to
+re-discover them:
+
+| Key | Description |
+| --- | --- |
+| `Source` | Source name (e.g. `dwd`, `pegelonline`). |
+| `Mode` | Either implicit (deploy-fabric) or `notebook` (deploy-fabric-notebook). |
+| `RawBase`, `Repo`, `Branch` | Raw GitHub URL base for downloading siblings. |
+| `FabricApi`, `TempDir` | Constants. |
+| `WorkspaceId`, `WorkspaceName` | Fabric workspace. |
+| `EventhouseId`, `EventhouseName`, `EventhouseClusterUri` | Eventhouse + query URI. |
+| `DatabaseId`, `DatabaseName` | KQL database. |
+| `EventstreamId`, `EventstreamName` | Eventstream item (deploy-fabric only). |
+| `ContainerGroupName`, `ResourceGroup`, `Location`, `SubscriptionId` | Azure container (deploy-fabric only). |
+| `ConnectionString` | Eventstream custom-endpoint CS (deploy-fabric only, if retrievable). |
+| `NotebookId`, `NotebookName` | Notebook item (deploy-fabric-notebook only). |
+
+Hooks should ignore keys they don't care about and may consume additional
+context from environment variables (e.g. `DWD_FABRIC_MAP_ID`). A hook that
+chooses to no-op should `exit 0` so the bootstrap remains green.
+
+If the hook throws, the deployment is treated as failed (re-run with
+`-SkipPostDeployHook` to bypass and re-run the hook manually later).
+
+Example: see [`dwd/fabric/post-deploy.ps1`](../../dwd/fabric/post-deploy.ps1)
+(wires Fabric Map layers).
 
 ## Prerequisites
 
