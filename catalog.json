@@ -704,7 +704,8 @@
     "cat": "Energy",
     "key": false,
     "desc": "Denmark — power system, spot prices, CO₂",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "energy-charts",
