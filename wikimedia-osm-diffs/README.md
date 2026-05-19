@@ -45,6 +45,12 @@ pip install .
 For a packaged install, consider using the [CONTAINER.md](CONTAINER.md)
 instructions.
 
+### Fabric notebook hosting
+
+A scheduled Fabric notebook (`notebook/wikimedia-osm-diffs-feed.ipynb`)
+is provided as an alternative to a long-running container. Deploy it with
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## How to Use
 
 After installation, the tool can be run with `wikimedia-osm-diffs`.
