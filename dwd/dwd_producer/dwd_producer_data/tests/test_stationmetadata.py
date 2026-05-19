@@ -28,14 +28,14 @@ class Test_StationMetadata(unittest.TestCase):
         Create instance of StationMetadata for testing
         """
         instance = StationMetadata(
-            station_id='pmsjagkmiqsvpwekczbp',
-            station_name='ejwdwrkcoeefpyktlkrw',
-            latitude=float(59.27028360306669),
-            longitude=float(6.864104581867158),
-            elevation=float(18.38422820478024),
-            state='jvbneumjeiabxlzdoawb',
-            from_date='mbialvyoiwttognoyege',
-            to_date='cqreuwpringyqgzlyvxo'
+            station_id='txdzqlkzgkpclibetbjq',
+            station_name='dbbovyvudfpuliucuypc',
+            latitude=float(24.688445417421555),
+            longitude=float(80.8020019666054),
+            elevation=float(8.189509998808697),
+            state='rydgzzcvllybdwmtjciw',
+            from_date='gqwzbqakmioqbkuqzjnt',
+            to_date='iqysjdhmenhsztcbvddp'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'pmsjagkmiqsvpwekczbp'
+        test_value = 'txdzqlkzgkpclibetbjq'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'ejwdwrkcoeefpyktlkrw'
+        test_value = 'dbbovyvudfpuliucuypc'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -60,7 +60,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(59.27028360306669)
+        test_value = float(24.688445417421555)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -68,7 +68,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(6.864104581867158)
+        test_value = float(80.8020019666054)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -76,7 +76,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = float(18.38422820478024)
+        test_value = float(8.189509998808697)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     
@@ -84,7 +84,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'jvbneumjeiabxlzdoawb'
+        test_value = 'rydgzzcvllybdwmtjciw'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -92,7 +92,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test from_date property
         """
-        test_value = 'mbialvyoiwttognoyege'
+        test_value = 'gqwzbqakmioqbkuqzjnt'
         self.instance.from_date = test_value
         self.assertEqual(self.instance.from_date, test_value)
     
@@ -100,17 +100,26 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test to_date property
         """
-        test_value = 'cqreuwpringyqgzlyvxo'
+        test_value = 'iqysjdhmenhsztcbvddp'
         self.instance.to_date = test_value
         self.assertEqual(self.instance.to_date, test_value)
     
-    @unittest.skip("xrcg 0.10.1 regen dropped Avro codec support; tracked separately")
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = StationMetadata.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = StationMetadata.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

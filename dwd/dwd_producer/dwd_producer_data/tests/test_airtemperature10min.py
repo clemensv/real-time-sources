@@ -28,14 +28,14 @@ class Test_AirTemperature10Min(unittest.TestCase):
         Create instance of AirTemperature10Min for testing
         """
         instance = AirTemperature10Min(
-            station_id='basmkqmhwhlxpseczapr',
-            timestamp='vdbjzrfqvqdaudmdqxas',
-            quality_level=int(90),
-            pressure_station_level=float(11.27001734730182),
-            air_temperature_2m=float(89.94574720399882),
-            air_temperature_5cm=float(78.46874655826207),
-            relative_humidity=float(19.778842792442852),
-            dew_point_temperature=float(31.539855323395972)
+            station_id='slosiajxxaubopaasmtk',
+            timestamp='pmjynbnujpmzlrwkwuzz',
+            quality_level=int(79),
+            pressure_station_level=float(72.85805607742044),
+            air_temperature_2m=float(14.523432829120352),
+            air_temperature_5cm=float(55.52193751897325),
+            relative_humidity=float(16.94333339492331),
+            dew_point_temperature=float(96.10692215346626)
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'basmkqmhwhlxpseczapr'
+        test_value = 'slosiajxxaubopaasmtk'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'vdbjzrfqvqdaudmdqxas'
+        test_value = 'pmjynbnujpmzlrwkwuzz'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -60,7 +60,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(90)
+        test_value = int(79)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -68,7 +68,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test pressure_station_level property
         """
-        test_value = float(11.27001734730182)
+        test_value = float(72.85805607742044)
         self.instance.pressure_station_level = test_value
         self.assertEqual(self.instance.pressure_station_level, test_value)
     
@@ -76,7 +76,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test air_temperature_2m property
         """
-        test_value = float(89.94574720399882)
+        test_value = float(14.523432829120352)
         self.instance.air_temperature_2m = test_value
         self.assertEqual(self.instance.air_temperature_2m, test_value)
     
@@ -84,7 +84,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test air_temperature_5cm property
         """
-        test_value = float(78.46874655826207)
+        test_value = float(55.52193751897325)
         self.instance.air_temperature_5cm = test_value
         self.assertEqual(self.instance.air_temperature_5cm, test_value)
     
@@ -92,7 +92,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test relative_humidity property
         """
-        test_value = float(19.778842792442852)
+        test_value = float(16.94333339492331)
         self.instance.relative_humidity = test_value
         self.assertEqual(self.instance.relative_humidity, test_value)
     
@@ -100,17 +100,26 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test dew_point_temperature property
         """
-        test_value = float(31.539855323395972)
+        test_value = float(96.10692215346626)
         self.instance.dew_point_temperature = test_value
         self.assertEqual(self.instance.dew_point_temperature, test_value)
     
-    @unittest.skip("xrcg 0.10.1 regen dropped Avro codec support; tracked separately")
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = AirTemperature10Min.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = AirTemperature10Min.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

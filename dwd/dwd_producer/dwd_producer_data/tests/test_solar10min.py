@@ -1,5 +1,5 @@
 """
-Test case for Document
+Test case for Solar10Min
 """
 
 import os
@@ -8,33 +8,33 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from dwd_producer_data.dwd_producer_data.document import Document
+from dwd_producer_data.de.dwd.cdc.solar10min import Solar10Min
 
 
-class Test_Document(unittest.TestCase):
+class Test_Solar10Min(unittest.TestCase):
     """
-    Test case for Document
+    Test case for Solar10Min
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Document.create_instance()
+        self.instance = Test_Solar10Min.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Document for testing
+        Create instance of Solar10Min for testing
         """
-        instance = Document(
-            station_id='wwjpufzlhvixlnpktrlk',
-            timestamp='gjpvezwtlpqxggmqgxfv',
-            quality_level=int(66),
-            global_radiation=float(11.90945613831822),
-            sunshine_duration=float(61.190019602780474),
-            diffuse_radiation=float(29.45380446161544),
-            longwave_radiation=float(47.001941620085084)
+        instance = Solar10Min(
+            station_id='ccobemxuuwtdfveaptcw',
+            timestamp='xclnbzfqdunfqaevqvrg',
+            quality_level=int(80),
+            global_radiation=float(13.035503356348443),
+            sunshine_duration=float(9.958248515869016),
+            diffuse_radiation=float(45.16247409202526),
+            longwave_radiation=float(69.15001124141716)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Document(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'wwjpufzlhvixlnpktrlk'
+        test_value = 'ccobemxuuwtdfveaptcw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Document(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'gjpvezwtlpqxggmqgxfv'
+        test_value = 'xclnbzfqdunfqaevqvrg'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_Document(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(66)
+        test_value = int(80)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -67,7 +67,7 @@ class Test_Document(unittest.TestCase):
         """
         Test global_radiation property
         """
-        test_value = float(11.90945613831822)
+        test_value = float(13.035503356348443)
         self.instance.global_radiation = test_value
         self.assertEqual(self.instance.global_radiation, test_value)
     
@@ -75,7 +75,7 @@ class Test_Document(unittest.TestCase):
         """
         Test sunshine_duration property
         """
-        test_value = float(61.190019602780474)
+        test_value = float(9.958248515869016)
         self.instance.sunshine_duration = test_value
         self.assertEqual(self.instance.sunshine_duration, test_value)
     
@@ -83,7 +83,7 @@ class Test_Document(unittest.TestCase):
         """
         Test diffuse_radiation property
         """
-        test_value = float(29.45380446161544)
+        test_value = float(45.16247409202526)
         self.instance.diffuse_radiation = test_value
         self.assertEqual(self.instance.diffuse_radiation, test_value)
     
@@ -91,16 +91,26 @@ class Test_Document(unittest.TestCase):
         """
         Test longwave_radiation property
         """
-        test_value = float(47.001941620085084)
+        test_value = float(69.15001124141716)
         self.instance.longwave_radiation = test_value
         self.assertEqual(self.instance.longwave_radiation, test_value)
     
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Document.from_data(bytes_data, media_type)
+        new_instance = Solar10Min.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Solar10Min.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

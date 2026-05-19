@@ -28,11 +28,11 @@ class Test_Wind10Min(unittest.TestCase):
         Create instance of Wind10Min for testing
         """
         instance = Wind10Min(
-            station_id='kvmbbvpyiqocyrvycqwd',
-            timestamp='zszdxicayloxxujubigu',
-            quality_level=int(7),
-            wind_speed=float(88.58590235158128),
-            wind_direction=float(27.97089743346418)
+            station_id='xzcpdigbdshagsqfiyxg',
+            timestamp='lyduufhtexfatxuflnja',
+            quality_level=int(74),
+            wind_speed=float(33.52303999821057),
+            wind_direction=float(14.561975904788104)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'kvmbbvpyiqocyrvycqwd'
+        test_value = 'xzcpdigbdshagsqfiyxg'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'zszdxicayloxxujubigu'
+        test_value = 'lyduufhtexfatxuflnja'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(7)
+        test_value = int(74)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -65,7 +65,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(88.58590235158128)
+        test_value = float(33.52303999821057)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -73,17 +73,26 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test wind_direction property
         """
-        test_value = float(27.97089743346418)
+        test_value = float(14.561975904788104)
         self.instance.wind_direction = test_value
         self.assertEqual(self.instance.wind_direction, test_value)
     
-    @unittest.skip("xrcg 0.10.1 regen dropped Avro codec support; tracked separately")
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = Wind10Min.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Wind10Min.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

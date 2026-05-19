@@ -71,6 +71,8 @@ param(
 
     [switch]$SkipArm,
 
+    [switch]$SkipPostDeployHook,
+
     [string]$Repo = "clemensv/real-time-sources",
 
     [string]$Branch = "main",
@@ -243,6 +245,61 @@ function Get-EventStreamConnectionString {
     }
     Write-Warning "Get-EventStreamConnectionString failed after $maxRetries tries: $lastErr"
     return $null
+}
+
+# ── Optional post-deploy hook ───────────────────────────────────────────
+# Each source MAY ship a {Source}/fabric/post-deploy.ps1 to perform extra
+# wiring (Fabric Map layers, dashboards, environment seeding, …). The hook
+# is auto-discovered (local working tree first, then $RawBase as fallback)
+# and invoked with a -Context hashtable carrying every ID the source
+# bootstrap might need. Hook authors can ignore keys they don't care about.
+function Invoke-SourcePostDeployHook {
+    param([Parameter(Mandatory)] [hashtable]$Context)
+
+    if ($SkipPostDeployHook) {
+        Write-Info "Post-deploy hook skipped (-SkipPostDeployHook)"
+        return
+    }
+
+    $rel = "$Source/fabric/post-deploy.ps1"
+    $localPath = $null
+    try {
+        $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..") -ErrorAction Stop
+        $candidate = Join-Path $repoRoot $rel
+        if (Test-Path $candidate) { $localPath = $candidate }
+    } catch { }
+
+    $hookPath = $null
+    if ($localPath) {
+        $hookPath = $localPath
+        Write-Info "Post-deploy hook found locally: $hookPath"
+    } else {
+        $hookUrl = "$RawBase/$rel"
+        try {
+            $null = Invoke-WebRequest -Uri $hookUrl -Method Head -UseBasicParsing -ErrorAction Stop
+            $tmp = Join-Path $TempDir "post-deploy-$Source-$([Guid]::NewGuid().ToString('N')).ps1"
+            Invoke-WebRequest -Uri $hookUrl -OutFile $tmp -UseBasicParsing | Out-Null
+            $hookPath = $tmp
+            Write-Info "Post-deploy hook downloaded from $hookUrl"
+        } catch {
+            Write-Info "No post-deploy hook for '$Source' (looked for $rel) — skipping"
+            return
+        }
+    }
+
+    Write-Step "7/7" "Running post-deploy hook ($Source/fabric/post-deploy.ps1)..."
+    try {
+        & $hookPath -Context $Context
+        if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
+            throw "Post-deploy hook exited with code $LASTEXITCODE"
+        }
+        Write-OK "Post-deploy hook completed"
+    } catch {
+        Write-Warning "Post-deploy hook failed: $($_.Exception.Message)"
+        Write-Warning "Core deployment was successful; re-run the hook manually:"
+        Write-Warning "  pwsh $hookPath -Context <hashtable>"
+        throw
+    }
 }
 
 # ── Validate source ─────────────────────────────────────────────────────
@@ -582,6 +639,32 @@ if (-not $SkipArm) {
 } else {
     Write-Step "6/6" "Skipping ARM deployment (--SkipArm)"
 }
+
+# ── Optional post-deploy hook ───────────────────────────────────────────
+
+$hookContext = @{
+    Source                 = $Source
+    ResourceGroup          = $ResourceGroup
+    Location               = $Location
+    SubscriptionId         = $SubscriptionId
+    Repo                   = $Repo
+    Branch                 = $Branch
+    RawBase                = $RawBase
+    FabricApi              = $FabricApi
+    TempDir                = $TempDir
+    WorkspaceId            = $WorkspaceId
+    WorkspaceName          = $wsInfo.displayName
+    EventhouseId           = $EventhouseId
+    EventhouseName         = $ehDetails.displayName
+    EventhouseClusterUri   = $ehDetails.properties.queryServiceUri
+    DatabaseId             = $databaseId
+    DatabaseName           = $DatabaseName
+    EventstreamId          = $eventstreamId
+    EventstreamName        = $EventStreamName
+    ContainerGroupName     = $ContainerGroupName
+    ConnectionString       = $esConnectionString
+}
+Invoke-SourcePostDeployHook -Context $hookContext
 
 #  Summary ─
 

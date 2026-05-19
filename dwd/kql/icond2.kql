@@ -1,0 +1,148 @@
+// ICON-D2 forecast grid — KQL DDL for the Fabric Eventhouse fed by the dwd
+// bridge (Eventstream destination on DE.DWD.IconD2.Grid CloudEvents).
+//
+// Two tables:
+//   IconD2Grid    — landing table for the DE.DWD.IconD2.Grid CloudEvent.
+//                   One row per (run_id, parameter, lead_hour) carrying the
+//                   parallel lats/lons/values arrays.
+//   IconD2Points  — exploded per-cell table. Populated automatically by an
+//                   update policy that mv-expands the arrays.
+//
+// The IconD2Points schema is intentionally identical to the schema used by
+// the existing Fabric Map demo layers:
+//   run:datetime, lead_hour:int, parameter:string,
+//   lat:real, lon:real, value:real, unit:string
+// so the 8 ICON-D2 map layers keep working without rewiring.
+//
+// Wire-up:
+//   1. Apply this script (./run-kql-script.ps1 icond2.kql).
+//   2. No new Eventstream destination is required: the dwd Eventstream already
+//      lands every CloudEvent into _cloudevents_dispatch. The dispatch update
+//      policy below filters that table for type == "DE.DWD.IconD2.Grid" and
+//      projects into IconD2Grid (same pattern as every other typed table in
+//      this database, e.g. IconD2ForecastFile, WeatherAlert).
+//   3. A second update policy on IconD2Points then mv-expands the parallel
+//      arrays into per-cell rows. Fabric Map layers query IconD2Points
+//      filtered by parameter + run.
+//
+// Chain:  bridge -> Kafka -> Eventstream -> _cloudevents_dispatch
+//                                              -> IconD2Grid (dispatch update policy)
+//                                                   -> IconD2Points (mv-expand update policy)
+//
+// The IconD2Grid_json_ce_structured mapping below is retained so the table can
+// also be ingested directly (REST .ingest, SDK, smoke tests) without going via
+// the dispatch table.
+
+.create-merge table [IconD2Grid] (
+    [run_id]: string,
+    [run_time]: datetime,
+    [parameter]: string,
+    [unit]: string,
+    [lead_hour]: int,
+    [valid_time]: datetime,
+    [produced_at]: datetime,
+    [source_url]: string,
+    [resolution_deg]: real,
+    [bbox_min_lon]: real,
+    [bbox_min_lat]: real,
+    [bbox_max_lon]: real,
+    [bbox_max_lat]: real,
+    [lats]: dynamic,
+    [lons]: dynamic,
+    [values]: dynamic,
+    [___type]: string,
+    [___source]: string,
+    [___id]: string,
+    [___time]: datetime,
+    [___subject]: string
+);
+
+.alter table [IconD2Grid] docstring "ICON-D2 forecast grid CloudEvent landing table. One row per (run, parameter, lead_hour). Parallel lats/lons/values arrays carry the 0.1 deg aggregated grid. Populated by an update policy that filters _cloudevents_dispatch for type =~ 'DE.DWD.IconD2.Grid'.";
+
+// Dispatch update policy: filter the central CloudEvents landing table for
+// DE.DWD.IconD2.Grid events and project into IconD2Grid columns. Mirrors the
+// pattern used by every other typed table in this database (IconD2ForecastFile,
+// WeatherAlert, AirTemperature10Min, etc.).
+.alter table [IconD2Grid] policy update
+```
+[
+  {
+    "IsEnabled": true,
+    "Source": "_cloudevents_dispatch",
+    "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'DE.DWD.IconD2.Grid') | project ['run_id'] = tostring(data.['run_id']), ['run_time'] = todatetime(data.['run_time']), ['parameter'] = tostring(data.['parameter']), ['unit'] = tostring(data.['unit']), ['lead_hour'] = toint(data.['lead_hour']), ['valid_time'] = todatetime(data.['valid_time']), ['produced_at'] = todatetime(data.['produced_at']), ['source_url'] = tostring(data.['source_url']), ['resolution_deg'] = toreal(data.['resolution_deg']), ['bbox_min_lon'] = toreal(data.['bbox_min_lon']), ['bbox_min_lat'] = toreal(data.['bbox_min_lat']), ['bbox_max_lon'] = toreal(data.['bbox_max_lon']), ['bbox_max_lat'] = toreal(data.['bbox_max_lat']), ['lats'] = todynamic(data.['lats']), ['lons'] = todynamic(data.['lons']), ['values'] = todynamic(data.['values']), ___type = type, ___source = source, ___id = ['id'], ___time = ['time'], ___subject = subject",
+    "IsTransactional": false,
+    "PropagateIngestionProperties": true
+  }
+]
+```
+
+.create-or-alter table [IconD2Grid] ingestion json mapping "IconD2Grid_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "run_id", "path": "$.data.run_id"},
+  {"column": "run_time", "path": "$.data.run_time"},
+  {"column": "parameter", "path": "$.data.parameter"},
+  {"column": "unit", "path": "$.data.unit"},
+  {"column": "lead_hour", "path": "$.data.lead_hour"},
+  {"column": "valid_time", "path": "$.data.valid_time"},
+  {"column": "produced_at", "path": "$.data.produced_at"},
+  {"column": "source_url", "path": "$.data.source_url"},
+  {"column": "resolution_deg", "path": "$.data.resolution_deg"},
+  {"column": "bbox_min_lon", "path": "$.data.bbox_min_lon"},
+  {"column": "bbox_min_lat", "path": "$.data.bbox_min_lat"},
+  {"column": "bbox_max_lon", "path": "$.data.bbox_max_lon"},
+  {"column": "bbox_max_lat", "path": "$.data.bbox_max_lat"},
+  {"column": "lats", "path": "$.data.lats"},
+  {"column": "lons", "path": "$.data.lons"},
+  {"column": "values", "path": "$.data.values"}
+]
+```
+
+.create-merge table [IconD2Points] (
+    [run]: datetime,
+    [lead_hour]: int,
+    [parameter]: string,
+    [lat]: real,
+    [lon]: real,
+    [value]: real,
+    [unit]: string
+);
+
+.alter table [IconD2Points] docstring "Per-cell ICON-D2 forecast values, expanded from IconD2Grid via update policy. Schema matches the existing Fabric Map demo layers.";
+
+// Update-policy function: explode the parallel arrays into one row per cell.
+// `dbz_cmax` carries a clear-air sentinel around -150 dBZ that we drop here.
+.create-or-alter function with (folder='IconD2', skipvalidation='true') [_expand_icond2_grid] () {
+    IconD2Grid
+    | mv-expand i = range(0, array_length(lats) - 1) to typeof(int)
+    | extend lat = todouble(lats[i]),
+             lon = todouble(lons[i]),
+             value = todouble(values[i])
+    | where isnotnull(value)
+    | where parameter != "dbz_cmax" or value > -50.0
+    | project run = run_time,
+              lead_hour,
+              parameter,
+              lat = toreal(lat),
+              lon = toreal(lon),
+              value = toreal(value),
+              unit
+}
+
+.alter table [IconD2Points] policy update
+```
+[
+  {
+    "IsEnabled": true,
+    "Source": "IconD2Grid",
+    "Query": "_expand_icond2_grid()",
+    "IsTransactional": false,
+    "PropagateIngestionProperties": false
+  }
+]
+```

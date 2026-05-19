@@ -28,12 +28,12 @@ class Test_HourlyObservation(unittest.TestCase):
         Create instance of HourlyObservation for testing
         """
         instance = HourlyObservation(
-            station_id='hgjcaglqhjliobxacgvf',
-            timestamp='qgyhcwjesftnaeyqdexi',
-            quality_level=int(5),
-            parameter='seklnownrspbkwqmoikx',
-            value=float(68.64821327746654),
-            unit='rbqgjspgwwmezmxonyji'
+            station_id='myciejjmwotnmtqbhexk',
+            timestamp='ezvsddtblbitomtjzwlk',
+            quality_level=int(63),
+            parameter='wqjtmehunbptuylackve',
+            value=float(60.255053633587785),
+            unit='mdkwwfzqhcpwjycxupqb'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'hgjcaglqhjliobxacgvf'
+        test_value = 'myciejjmwotnmtqbhexk'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'qgyhcwjesftnaeyqdexi'
+        test_value = 'ezvsddtblbitomtjzwlk'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(5)
+        test_value = int(63)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -66,7 +66,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test parameter property
         """
-        test_value = 'seklnownrspbkwqmoikx'
+        test_value = 'wqjtmehunbptuylackve'
         self.instance.parameter = test_value
         self.assertEqual(self.instance.parameter, test_value)
     
@@ -74,7 +74,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(68.64821327746654)
+        test_value = float(60.255053633587785)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -82,17 +82,26 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test unit property
         """
-        test_value = 'rbqgjspgwwmezmxonyji'
+        test_value = 'mdkwwfzqhcpwjycxupqb'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
     
-    @unittest.skip("xrcg 0.10.1 regen dropped Avro codec support; tracked separately")
-    def test_to_byte_array_avro(self):
+    def test_to_byte_array_json(self):
         """
-        Test to_byte_array method with avro media type
+        Test to_byte_array method with json media type
         """
-        media_type = "application/vnd.apache.avro+avro"
+        media_type = "application/json"
         bytes_data = self.instance.to_byte_array(media_type)
         new_instance = HourlyObservation.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = HourlyObservation.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

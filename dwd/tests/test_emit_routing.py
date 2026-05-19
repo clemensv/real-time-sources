@@ -51,6 +51,16 @@ class FakeWeatherProducer:
         self.calls.append("weather_alert")
 
 
+class FakeIconD2Producer:
+    def __init__(self, *_args, **_kwargs):
+        self.calls: List[str] = []
+        self.last_kwargs: Dict[str, Any] = {}
+
+    def send_de_dwd_icon_d2_grid(self, **kw):
+        self.calls.append("icond2_grid")
+        self.last_kwargs = kw
+
+
 # ---------------------------------------------------------------------------
 # Fake BaseModule for run_feed wiring tests
 # ---------------------------------------------------------------------------
@@ -178,6 +188,29 @@ _HOURLY_EVENT = {
     },
 }
 
+_ICOND2_EVENT = {
+    "type": "icond2_grid",
+    "data": {
+        "run_id": "2026010100",
+        "run_time": "2026-01-01T00:00:00Z",
+        "parameter": "t_2m",
+        "unit": "degC",
+        "lead_hour": 0,
+        "valid_time": "2026-01-01T00:00:00Z",
+        "produced_at": "2026-01-01T00:05:00Z",
+        "source_url": ("https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t_2m/"
+                       "icon-d2_germany_icosahedral_single-level_2026010100_000_2d_t_2m.grib2.bz2"),
+        "resolution_deg": 0.1,
+        "bbox_min_lon": -4.0,
+        "bbox_min_lat": 43.0,
+        "bbox_max_lon": 20.5,
+        "bbox_max_lat": 58.2,
+        "lats": [50.0, 50.1, 50.2],
+        "lons": [10.0, 10.1, 10.2],
+        "values": [5.0, 5.5, 6.0],
+    },
+}
+
 
 # ---------------------------------------------------------------------------
 # Tests: _emit_event dispatch routing
@@ -187,63 +220,75 @@ class TestEmitEventRouting:
     """_emit_event routes each event type to the correct generated producer class."""
 
     def _make(self):
-        return FakeCDCProducer(), FakeWeatherProducer()
+        return FakeCDCProducer(), FakeWeatherProducer(), FakeIconD2Producer()
 
     def test_station_metadata_routed_to_cdc(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, _STATION_EVENT)
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _STATION_EVENT)
         assert cdc.calls == ["station_metadata"]
         assert wx.calls == []
 
     def test_weather_alert_routed_to_weather(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, _ALERT_EVENT)
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _ALERT_EVENT)
         assert cdc.calls == []
         assert wx.calls == ["weather_alert"]
 
     def test_both_families_in_one_logical_sequence(self):
         """Both producer classes are exercised when both event families are present."""
-        cdc, wx = self._make()
+        cdc, wx, ic = self._make()
         for ev in [_STATION_EVENT, _ALERT_EVENT]:
-            _emit_event(cdc, wx, ev)
+            _emit_event(cdc, wx, ic, ev)
         assert "station_metadata" in cdc.calls
         assert "weather_alert" in wx.calls
 
     def test_air_temperature_routed_to_cdc(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, _AIR_TEMP_EVENT)
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _AIR_TEMP_EVENT)
         assert cdc.calls == ["air_temperature_10min"]
         assert wx.calls == []
 
     def test_precipitation_routed_to_cdc(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, _PRECIP_EVENT)
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _PRECIP_EVENT)
         assert cdc.calls == ["precipitation_10min"]
         assert wx.calls == []
 
     def test_wind_routed_to_cdc(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, _WIND_EVENT)
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _WIND_EVENT)
         assert cdc.calls == ["wind_10min"]
         assert wx.calls == []
 
     def test_solar_routed_to_cdc(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, _SOLAR_EVENT)
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _SOLAR_EVENT)
         assert cdc.calls == ["solar_10min"]
         assert wx.calls == []
 
     def test_hourly_observation_routed_to_cdc(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, _HOURLY_EVENT)
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _HOURLY_EVENT)
         assert cdc.calls == ["hourly_observation"]
         assert wx.calls == []
 
     def test_unknown_type_routed_to_neither(self):
-        cdc, wx = self._make()
-        _emit_event(cdc, wx, {"type": "unknown_type", "data": {}})
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, {"type": "unknown_type", "data": {}})
         assert cdc.calls == []
         assert wx.calls == []
+        assert ic.calls == []
+
+    def test_icond2_grid_routed_to_icond2(self):
+        cdc, wx, ic = self._make()
+        _emit_event(cdc, wx, ic, _ICOND2_EVENT)
+        assert cdc.calls == []
+        assert wx.calls == []
+        assert ic.calls == ["icond2_grid"]
+        # Kafka key placeholders must be exactly the data field values.
+        assert ic.last_kwargs["_run_id"] == "2026010100"
+        assert ic.last_kwargs["_parameter"] == "t_2m"
+        assert ic.last_kwargs["_lead_hour"] == "0"
 
 
 # ---------------------------------------------------------------------------
@@ -280,6 +325,7 @@ class TestRunFeedDualProducerWiring:
         with patch("dwd.dwd.Producer", return_value=fake_kafka), \
              patch("dwd.dwd.DEDWDCDCEventProducer", FakeCDC), \
              patch("dwd.dwd.DEDWDWeatherEventProducer", FakeWeather), \
+             patch("dwd.dwd.DEDWDIconD2EventProducer", FakeIconD2Producer), \
              patch("dwd.dwd.load_state", return_value={}), \
              patch("dwd.dwd.save_state"), \
              patch("dwd.dwd.time.sleep", side_effect=KeyboardInterrupt):
@@ -293,3 +339,6 @@ class TestRunFeedDualProducerWiring:
 
         assert "cdc:station_metadata" in sent, "CDC producer was not called"
         assert "weather:weather_alert" in sent, "Weather producer was not called"
+
+
+
