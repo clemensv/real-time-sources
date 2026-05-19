@@ -25,6 +25,13 @@ situations). No authentication is required.
 See [EVENTS.md](EVENTS.md) for the full schema documentation and
 [CONTAINER.md](CONTAINER.md) for deployment instructions.
 
+## Fabric notebook hosting
+
+This source can also be hosted as a Microsoft Fabric notebook (scheduled
+single-cycle execution) via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1);
+the notebook template lives at [`notebook/ndl-netherlands-feed.ipynb`](notebook/ndl-netherlands-feed.ipynb).
+
 ## Quick Start
 
 ```bash
