@@ -31,6 +31,10 @@ bridge.
 
 See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
 
+Fabric notebook hosting: this source ships a Fabric notebook
+(`notebook/imgw-hydro-feed.ipynb`) deployable via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Usage
 
 ### List all stations
