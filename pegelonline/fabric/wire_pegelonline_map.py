@@ -1,24 +1,33 @@
 """Create or update the pegelonline Fabric Map item.
 
-Wires 5 Kusto-backed map layers that visualise the live state of the German
+Wires 8 Kusto-backed map layers that visualise the live state of the German
 Federal Waterways gauge network as **river-segment ribbons** (one polyline
 per gauge, sourced from ``RiverSegments``), plus station labels:
 
   1. Hydrological state  - river segments coloured by ``stateMnwMhw``
                            (low / normal / high / very-high / unknown). Default-on.
   2. Navigation state    - segments coloured by ``stateNswHsw``.
-  3. 24-hour trend       - segments coloured by direction (rising / steady /
-                           falling); stroke width scales with |delta_cm/24h|.
-  4. Data freshness      - segments coloured by data age (fresh / stale /
+  3. 1-hour trend        - segments coloured by direction over the last 1h.
+  4. 3-hour trend        - segments coloured by direction over the last 3h.
+  5. 6-hour trend        - segments coloured by direction over the last 6h.
+  6. 24-hour trend       - segments coloured by direction over the last 24h.
+                           All trend layers share a palette where grey is
+                           reserved for "no reference reading" and red/blue
+                           are reserved for *extreme* rates (> 3 cm/h
+                           sustained). Stroke width scales with |delta|.
+  7. Data freshness      - segments coloured by data age (fresh / stale /
                            old / very-old / no-data); diagnostic layer.
-  5. Station labels      - text labels ``shortname  NNN cm`` at zoom >= 9.
+  8. Station labels      - text labels ``shortname  NNN cm`` at zoom >= 9.
                            Default-on.
 
 All layers query helper functions in ``kql/pegelonline.kql``:
 
-  * ``StateSegments()``, ``NavSegments()``, ``TrendSegments()``,
-    ``FreshSegments()`` - per-station river segments enriched with the
-    current metric value and a precomputed ``stroke_color`` / ``stroke_weight``.
+  * ``StateSegments()``, ``NavSegments()``, ``FreshSegments()`` - per-station
+    river segments enriched with the current metric value and a precomputed
+    ``stroke_color`` / ``stroke_weight``.
+  * ``TrendBase(window:timespan)`` and its four wrappers
+    ``TrendSegments1h()`` / ``TrendSegments3h()`` / ``TrendSegments6h()`` /
+    ``TrendSegments24h()`` - same shape, parametrised by window length.
   * ``StationLabels()``  - one point per station with the value-string label.
 
 Inputs (env vars or CLI args):

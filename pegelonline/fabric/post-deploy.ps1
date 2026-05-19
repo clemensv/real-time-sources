@@ -1,13 +1,25 @@
 <#
 .SYNOPSIS
-    pegelonline-specific post-deploy hook: wires the 6 Kusto-backed point
-    layers into an existing Fabric Map item.
+    pegelonline-specific post-deploy hook: ingests the per-station river
+    polylines into the `RiverSegments` table and wires the 8 Kusto-backed
+    river-line layers into an existing Fabric Map item.
 
 .DESCRIPTION
     Auto-invoked by tools/deploy-fabric/deploy-fabric.ps1 (and the notebook
     variant) at the end of a generic deployment via the well-known path
     `<source>/fabric/post-deploy.ps1`. Can also be run standalone for
     re-wiring after a layer/colour/KQL change.
+
+    The generic deployer has already applied `kql/pegelonline.kql` which
+    defines all the helper functions consumed by the map
+    (StateSegments, NavSegments, TrendBase + TrendSegments{1h,3h,6h,24h},
+    FreshSegments, StationLabels). This hook then:
+
+      1. Ingests `river_geometries.kql` (~1900 `.append` commands) into the
+         `RiverSegments` table. Throttles via per-command retry on HTTP 429.
+      2. Runs `wire_pegelonline_map.py` to (re)create 8 layers:
+         hydrological state, navigation state, 1h/3h/6h/24h trend,
+         data freshness, station labels.
 
     When invoked as a hook, the generic deployer passes a -Context hashtable
     containing the IDs created by the bootstrap. The Fabric Map item itself
