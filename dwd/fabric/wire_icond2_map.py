@@ -1,7 +1,8 @@
 """Create or update the ICON-D2 Fabric Map item that visualises the 8 most
 useful single-level forecast parameters as Kusto-backed vector layers.
 
-Layers (all sourced from the ``IconD2Points`` table in the dwd KQL database):
+Layers (all sourced from the ``['de.dwd.icond2.GridPoints']`` table in the dwd
+KQL database):
 
   * t_2m     - 2 m air temperature   (default-on)
   * tot_prec - total precipitation
@@ -14,8 +15,8 @@ Layers (all sourced from the ``IconD2Points`` table in the dwd KQL database):
 
 Each layer always renders the **latest** ICON-D2 run available for its
 parameter, computed dynamically via
-``toscalar(IconD2Points | where parameter == "X" | summarize max(run))`` so the
-map auto-refreshes as the bridge ingests new model runs.
+``toscalar(['de.dwd.icond2.GridPoints'] | where parameter == "X" | summarize max(run))``
+so the map auto-refreshes as the bridge ingests new model runs.
 
 A per-layer single-select filter on ``Forecast time (UTC)`` (label-formatted)
 lets the user pick which lead-hour to display.
@@ -29,7 +30,7 @@ Inputs (env vars or CLI args):
 
   FABRIC_WORKSPACE_ID   - GUID of the Fabric workspace containing the map
   FABRIC_MAP_ID         - GUID of the Fabric Map item to patch
-  FABRIC_KQL_DB_ID      - GUID of the KQL database with IconD2Points
+  FABRIC_KQL_DB_ID      - GUID of the KQL database with ['de.dwd.icond2.GridPoints']
   KUSTO_CLUSTER_URI     - https://<cluster>.kusto.fabric.microsoft.com
   KUSTO_DB              - KQL database name (default: dwd)
   FABRIC_TOKEN          - bearer token for the Fabric REST API
@@ -87,8 +88,8 @@ DEFAULT_VISIBLE = "t_2m"
 
 KQL_TEMPLATE = r"""let RES = 0.1;
 let HALF = RES / 2.0;
-let LatestRun = toscalar(IconD2Points | where parameter == "{PARAM}" | summarize max(run));
-IconD2Points
+let LatestRun = toscalar(['de.dwd.icond2.GridPoints'] | where parameter == "{PARAM}" | summarize max(run));
+['de.dwd.icond2.GridPoints']
 | where parameter == "{PARAM}" and run == LatestRun
 | extend valid_time = datetime_add('hour', toint(lead_hour), run)
 | extend ['Forecast time (UTC)'] = strcat(format_datetime(valid_time, 'yyyy-MM-dd HH:mm'), ' UTC')
@@ -140,7 +141,7 @@ def _latest_first_hour(kusto_uri: str, kusto_db: str, kusto_session: requests.Se
                        param: str) -> Optional[str]:
     """Look up the first-hour label string for the latest run of ``param``."""
     q = (
-        f'IconD2Points | where parameter == "{param}" '
+        f'[\'de.dwd.icond2.GridPoints\'] | where parameter == "{param}" '
         f'| summarize r = max(run) '
         f'| extend t = datetime_add("hour", 0, r) '
         f'| project strcat(format_datetime(t, "yyyy-MM-dd HH:mm"), " UTC")'

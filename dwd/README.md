@@ -160,10 +160,13 @@ on the host. The container image installs it automatically. The module is
 disabled by default because of the heavier system dependency and the
 additional ~300 MB/day of upstream bandwidth.
 
-KQL for the destination Eventhouse is in [`kql/icond2.kql`](kql/icond2.kql):
-it creates `IconD2Grid` (one row per event) plus `IconD2Points`
-(per-cell, populated by an update policy that `mv-expand`s the parallel
-arrays). Fabric Map layers read from `IconD2Points`.
+KQL for the destination Eventhouse is split across
+[`kql/dwd.kql`](kql/dwd.kql) (auto-generated from the xreg manifest; creates
+the landing tables for every event type including `['de.dwd.icond2.Grid']`)
+and [`kql/icond2.kql`](kql/icond2.kql) (hand-authored expansion that adds
+`['de.dwd.icond2.GridPoints']`, populated by an update policy that
+`mv-expand`s the parallel `lats`/`lons`/`values` arrays into one row per
+cell). Fabric Map layers read from `['de.dwd.icond2.GridPoints']`.
 
 ## Data Source
 

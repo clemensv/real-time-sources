@@ -31,7 +31,7 @@
     $env:DWD_FABRIC_MAP_ID.
 
 .PARAMETER KqlDatabaseId
-    Standalone-mode override. GUID of the KQL database with IconD2Points.
+    Standalone-mode override. GUID of the KQL database with ['de.dwd.icond2.GridPoints'].
 
 .PARAMETER KustoUri
     Standalone-mode override. Full https URI of the Kusto cluster.
