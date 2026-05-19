@@ -62,6 +62,12 @@ configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-911%2Fazure-template-with-eventhub.json)
 
+## Fabric Notebook Hosting
+
+This source can also be hosted in Microsoft Fabric as a scheduled notebook
+feeder. See [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+and the notebook at [`notebook/seattle-911-feed.ipynb`](notebook/seattle-911-feed.ipynb).
+
 ## Upstream Links
 
 - Dataset page: https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj

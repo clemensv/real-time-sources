@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Incident] (
+.create-merge table ['US.WA.Seattle.Fire911.Incident'] (
    [incident_number]: string,
    [incident_type]: string,
    [incident_datetime]: string,
@@ -39,9 +39,9 @@
    [___subject]: string
 );
 
-.alter table [Incident] docstring "{\"description\": \"Seattle Fire Department 911 dispatch record from the City of Seattle real-time fire calls dataset.\"}";
+.alter table ['US.WA.Seattle.Fire911.Incident'] docstring "{\"description\": \"Seattle Fire Department 911 dispatch record from the City of Seattle real-time fire calls dataset.\"}";
 
-.alter table [Incident] column-docstrings (
+.alter table ['US.WA.Seattle.Fire911.Incident'] column-docstrings (
    [incident_number]: "{\"description\": \"Stable Seattle Fire Department incident identifier for the dispatch record.\"}",
    [incident_type]: "{\"description\": \"Seattle Fire Department response type for the incident, such as Aid Response or Medic Response.\"}",
    [incident_datetime]: "{\"description\": \"Date and time of the call as published by the Seattle Open Data dataset, in local dataset timestamp form without an explicit UTC offset.\"}",
@@ -55,7 +55,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Incident] ingestion json mapping "Incident_json_flat"
+.create-or-alter table ['US.WA.Seattle.Fire911.Incident'] ingestion json mapping "US.WA.Seattle.Fire911.Incident_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,7 +72,7 @@
 ]
 ```
 
-.create-or-alter table [Incident] ingestion json mapping "Incident_json_ce_structured"
+.create-or-alter table ['US.WA.Seattle.Fire911.Incident'] ingestion json mapping "US.WA.Seattle.Fire911.Incident_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,13 +89,13 @@
 ]
 ```
 
-.drop materialized-view IncidentLatest ifexists;
+.drop materialized-view ['US.WA.Seattle.Fire911.IncidentLatest'] ifexists;
 
-.create materialized-view with (backfill=true) IncidentLatest on table Incident {
-    Incident | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['US.WA.Seattle.Fire911.IncidentLatest'] on table ['US.WA.Seattle.Fire911.Incident'] {
+    ['US.WA.Seattle.Fire911.Incident'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Incident] policy update
+.alter table ['US.WA.Seattle.Fire911.Incident'] policy update
 ```
 [{
   "IsEnabled": true,
