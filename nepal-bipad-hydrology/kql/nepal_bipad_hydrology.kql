@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [RiverStation] (
+.create-merge table ['np.gov.bipad.hydrology.RiverStation'] (
    [station_id]: string,
    [title]: string,
    [basin]: string,
@@ -47,9 +47,9 @@
    [___subject]: string
 );
 
-.alter table [RiverStation] docstring "{\"description\": \"Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.\"}";
+.alter table ['np.gov.bipad.hydrology.RiverStation'] docstring "{\"description\": \"Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.\"}";
 
-.alter table [RiverStation] column-docstrings (
+.alter table ['np.gov.bipad.hydrology.RiverStation'] column-docstrings (
    [station_id]: "{\"description\": \"Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.\"}",
    [title]: "{\"description\": \"Human-readable name of the river station, typically in the format 'River at Location' (e.g. 'Babai at Chepang').\"}",
    [basin]: "{\"description\": \"Name of the river basin the station belongs to (e.g. 'Bagmati', 'Narayani', 'Koshi', 'Karnali', 'Mahakali', 'Babai').\"}",
@@ -71,7 +71,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [RiverStation] ingestion json mapping "RiverStation_json_flat"
+.create-or-alter table ['np.gov.bipad.hydrology.RiverStation'] ingestion json mapping "np.gov.bipad.hydrology.RiverStation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -96,7 +96,7 @@
 ]
 ```
 
-.create-or-alter table [RiverStation] ingestion json mapping "RiverStation_json_ce_structured"
+.create-or-alter table ['np.gov.bipad.hydrology.RiverStation'] ingestion json mapping "np.gov.bipad.hydrology.RiverStation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -121,13 +121,13 @@
 ]
 ```
 
-.drop materialized-view RiverStationLatest ifexists;
+.drop materialized-view ['np.gov.bipad.hydrology.RiverStationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) RiverStationLatest on table RiverStation {
-    RiverStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['np.gov.bipad.hydrology.RiverStationLatest'] on table ['np.gov.bipad.hydrology.RiverStation'] {
+    ['np.gov.bipad.hydrology.RiverStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [RiverStation] policy update
+.alter table ['np.gov.bipad.hydrology.RiverStation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -138,7 +138,7 @@
 }]
 ```
 
-.create-merge table [WaterLevelReading] (
+.create-merge table ['np.gov.bipad.hydrology.WaterLevelReading'] (
    [station_id]: string,
    [title]: string,
    [basin]: string,
@@ -155,9 +155,9 @@
    [___subject]: string
 );
 
-.alter table [WaterLevelReading] docstring "{\"description\": \"Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.\"}";
+.alter table ['np.gov.bipad.hydrology.WaterLevelReading'] docstring "{\"description\": \"Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.\"}";
 
-.alter table [WaterLevelReading] column-docstrings (
+.alter table ['np.gov.bipad.hydrology.WaterLevelReading'] column-docstrings (
    [station_id]: "{\"description\": \"Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.\"}",
    [title]: "{\"description\": \"Human-readable name of the river station at the time of the reading.\"}",
    [basin]: "{\"description\": \"Name of the river basin the station belongs to at the time of the reading.\"}",
@@ -174,7 +174,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaterLevelReading] ingestion json mapping "WaterLevelReading_json_flat"
+.create-or-alter table ['np.gov.bipad.hydrology.WaterLevelReading'] ingestion json mapping "np.gov.bipad.hydrology.WaterLevelReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -194,7 +194,7 @@
 ]
 ```
 
-.create-or-alter table [WaterLevelReading] ingestion json mapping "WaterLevelReading_json_ce_structured"
+.create-or-alter table ['np.gov.bipad.hydrology.WaterLevelReading'] ingestion json mapping "np.gov.bipad.hydrology.WaterLevelReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -214,13 +214,13 @@
 ]
 ```
 
-.drop materialized-view WaterLevelReadingLatest ifexists;
+.drop materialized-view ['np.gov.bipad.hydrology.WaterLevelReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterLevelReadingLatest on table WaterLevelReading {
-    WaterLevelReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['np.gov.bipad.hydrology.WaterLevelReadingLatest'] on table ['np.gov.bipad.hydrology.WaterLevelReading'] {
+    ['np.gov.bipad.hydrology.WaterLevelReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterLevelReading] policy update
+.alter table ['np.gov.bipad.hydrology.WaterLevelReading'] policy update
 ```
 [{
   "IsEnabled": true,
