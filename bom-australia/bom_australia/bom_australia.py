@@ -482,6 +482,9 @@ def main():
                         help="Comma-separated state abbreviations to filter (e.g. NSW,VIC)")
     parser.add_argument("--warning-feeds", type=str, default=os.environ.get("BOM_WARNING_FEEDS", ""),
                         help="Comma-separated BOM warning RSS feed URLs or /fwo/... feed paths")
+    parser.add_argument("--once", action="store_true",
+                        default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+                        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List configured stations")
     subparsers.add_parser("feed", help="Feed data to Kafka")
@@ -539,6 +542,9 @@ def main():
                 logger.info("Sent %d observation events and %d warning events", observation_count, warning_count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if args.once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()
