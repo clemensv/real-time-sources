@@ -31,6 +31,7 @@ argument-hint: "Describe the upstream source, transport, auth model, cadence, st
 - Plan to consume `xrcg` output as generated. Do not design a source around post-generation Python edits, vendored rewrites, or import-fixup scripts as a normal integration step.
 - If the upstream review is not strong enough to support exhaustive field descriptions in the eventual schemas, the source is not ready for contract authoring.
 - A new source is not done when the manifest generates or the unit tests pass; it is done when the source's repo-level Docker E2E test is passing if the source is expected to ship as a containerized bridge.
+- **Poll-based sources must ship a Fabric notebook alongside the container.** If the bridge is a poller (HTTP/file fetch on a fixed cadence, not a long-lived stream), the source's deliverables include `<source>/notebook/<source>-feed.ipynb` and a `notebook: true` flag in `catalog.json`, so the gh-pages portal exposes the Fabric Notebook deploy button. Streaming bridges (WebSocket / MQTT / raw TCP / SSE firehose) do not qualify and must skip the notebook artifact. See [`notebook-feeder-retrofit`](../notebook-feeder-retrofit/SKILL.md) for the canonical pegelonline pattern; new sources follow the same shape from day one rather than being retrofitted later.
 
 ## Procedure
 
@@ -42,7 +43,8 @@ argument-hint: "Describe the upstream source, transport, auth model, cadence, st
 6. Split the source into event families (including reference types) and determine whether their identities can share one message group, preserving meaningful upstream schema and subtype distinctions unless you can prove they are semantically identical.
 7. Lay out the source folder using the scaffold in [bootstrap checklist](references/bootstrap-checklist.md).
 8. Use `xreg-source-contract` for contract work, `stream-bridge-implementation` for runtime work, and `container-and-delivery` for packaging and documentation.
-9. Treat the source as incomplete until its expected repo-level Docker E2E coverage is passing.
+9. **If the source is a poller, add a Fabric notebook hosting option.** Copy `pegelonline/notebook/pegelonline-feed.ipynb` verbatim, perform the substitutions in `.github/skills/notebook-feeder-retrofit/references/notebook-substitution-table.md`, place the result at `<source>/notebook/<source>-feed.ipynb`, and set `notebook: true` in the source's `catalog.json` entry. Ensure the bridge supports `--once` (single-cycle execution) — this is mandatory for the notebook flow because Fabric runs the notebook on a schedule, not as a daemon. Skip this step for streaming bridges.
+10. Treat the source as incomplete until its expected repo-level Docker E2E coverage is passing.
 
 ## Outputs
 
@@ -55,6 +57,11 @@ argument-hint: "Describe the upstream source, transport, auth model, cadence, st
 ## References
 
 - [Bootstrap checklist](references/bootstrap-checklist.md)
+- [`xreg-source-contract`](../xreg-source-contract/SKILL.md) — contract authoring
+- [`stream-bridge-implementation`](../stream-bridge-implementation/SKILL.md) — runtime
+- [`container-and-delivery`](../container-and-delivery/SKILL.md) — packaging
+- [`notebook-feeder-retrofit`](../notebook-feeder-retrofit/SKILL.md) — Fabric notebook pattern (also the model for new poll-based sources)
+- [`fabric-notebook-deployment`](../fabric-notebook-deployment/SKILL.md) — how the notebook gets deployed
 - JSON Structure Core: https://json-structure.github.io/core/draft-vasters-json-structure-core.html
 - JSON Structure Alternate Names and Descriptions: https://json-structure.github.io/alternate-names/draft-vasters-json-structure-alternate-names.html
 - JSON Structure Symbols, Scientific Units, and Currencies: https://json-structure.github.io/units/draft-vasters-json-structure-units.html

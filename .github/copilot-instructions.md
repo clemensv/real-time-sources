@@ -172,11 +172,14 @@ KAFKA_ENABLE_TLS=false
 - Root `README.md` — organized by topic category; add new sources to the
   appropriate section.
 
-## Fabric Notebook Hosting (optional per source)
+## Fabric Notebook Hosting (required for poll-based sources)
 
-A source may optionally ship a Fabric notebook feeder under
-`<source>/notebook/<source>-feed.ipynb`. This is a separate deployment
-option from ACI+Fabric and uses `tools/deploy-fabric/deploy-feeder-notebook.ps1`
+Every poll-based source ships a Fabric notebook feeder under
+`<source>/notebook/<source>-feed.ipynb` and sets `notebook: true` in its
+`catalog.json` entry. Streaming bridges (WebSocket / MQTT / raw TCP /
+SSE firehose) are out of scope and skip this artifact. This is a
+separate deployment option from ACI+Fabric and uses
+`tools/deploy-fabric/deploy-feeder-notebook.ps1`
 which builds a per-source Fabric Environment with the producer + bridge
 wheels, binds Lakehouse + KQL + Environment to the notebook, looks up the
 Event Stream connection string at runtime via the public Topology API, and
