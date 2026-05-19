@@ -143,7 +143,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "England — ~4,000 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-iv",
