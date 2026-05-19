@@ -12,6 +12,7 @@
 - **Family-Aware Deduplication**: Tracks last seen observation timestamps per station and feed family in a state file to avoid reprocessing.
 - **Kafka Integration**: Send buoy observations to a Kafka topic using SASL PLAIN authentication.
 - **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
+- **Fabric notebook hosting**: A Fabric notebook variant lives under `notebook/noaa-ndbc-feed.ipynb` and is deployable via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for serverless, scheduled execution.
 
 ## Installation
 

@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [BuoyObservation] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] (
    [station_id]: string,
    [latitude]: real,
    [longitude]: real,
@@ -51,9 +51,9 @@
    [___subject]: string
 );
 
-.alter table [BuoyObservation] docstring "{\"description\": \"Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] docstring "{\"description\": \"Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide.\"}";
 
-.alter table [BuoyObservation] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier. Five-character alphanumeric code assigned by NDBC (e.g. '41001' for deep-ocean buoys, 'BURL1' for C-MAN stations).\"}",
    [latitude]: "{\"description\": \"Latitude of the observing platform in decimal degrees north. Negative values indicate southern hemisphere.\"}",
    [longitude]: "{\"description\": \"Longitude of the observing platform in decimal degrees east. Negative values indicate western hemisphere.\"}",
@@ -79,7 +79,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoyObservation] ingestion json mapping "BuoyObservation_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -108,7 +108,7 @@
 ]
 ```
 
-.create-or-alter table [BuoyObservation] ingestion json mapping "BuoyObservation_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -137,13 +137,13 @@
 ]
 ```
 
-.drop materialized-view BuoyObservationLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoyObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoyObservationLatest on table BuoyObservation {
-    BuoyObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoyObservationLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoyObservation] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyObservation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -154,7 +154,7 @@
 }]
 ```
 
-.create-merge table [BuoyStation] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] (
    [station_id]: string,
    [owner]: string,
    [station_type]: string,
@@ -170,9 +170,9 @@
    [___subject]: string
 );
 
-.alter table [BuoyStation] docstring "{\"description\": \"Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] docstring "{\"description\": \"Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform.\"}";
 
-.alter table [BuoyStation] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products.\"}",
    [owner]: "{\"description\": \"Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency.\"}",
    [station_type]: "{\"description\": \"Platform type from the station table, such as Weather Buoy or C-MAN Station.\"}",
@@ -188,7 +188,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoyStation] ingestion json mapping "BuoyStation_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyStation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -207,7 +207,7 @@
 ]
 ```
 
-.create-or-alter table [BuoyStation] ingestion json mapping "BuoyStation_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyStation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -226,13 +226,13 @@
 ]
 ```
 
-.drop materialized-view BuoyStationLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoyStationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoyStationLatest on table BuoyStation {
-    BuoyStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoyStationLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoyStation] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyStation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -243,7 +243,7 @@
 }]
 ```
 
-.create-merge table [BuoySolarRadiationObservation] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] (
    [station_id]: string,
    [timestamp]: datetime,
    [shortwave_radiation_licor]: real,
@@ -256,9 +256,9 @@
    [___subject]: string
 );
 
-.alter table [BuoySolarRadiationObservation] docstring "{\"description\": \"Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] docstring "{\"description\": \"Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station.\"}";
 
-.alter table [BuoySolarRadiationObservation] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier. The .srad realtime2 file is published per station and keyed by this identifier.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file.\"}",
    [shortwave_radiation_licor]: "{\"description\": \"Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter.\"}",
@@ -271,7 +271,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoySolarRadiationObservation] ingestion json mapping "BuoySolarRadiationObservation_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -287,7 +287,7 @@
 ]
 ```
 
-.create-or-alter table [BuoySolarRadiationObservation] ingestion json mapping "BuoySolarRadiationObservation_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -303,13 +303,13 @@
 ]
 ```
 
-.drop materialized-view BuoySolarRadiationObservationLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoySolarRadiationObservationLatest on table BuoySolarRadiationObservation {
-    BuoySolarRadiationObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservationLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoySolarRadiationObservation] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoySolarRadiationObservation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -320,7 +320,7 @@
 }]
 ```
 
-.create-merge table [BuoyOceanographicObservation] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] (
    [station_id]: string,
    [timestamp]: datetime,
    [depth]: real,
@@ -340,9 +340,9 @@
    [___subject]: string
 );
 
-.alter table [BuoyOceanographicObservation] docstring "{\"description\": \"Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] docstring "{\"description\": \"Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp.\"}";
 
-.alter table [BuoyOceanographicObservation] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier. The .ocean realtime2 file is published per station and keyed by this identifier.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .ocean realtime2 file.\"}",
    [depth]: "{\"description\": \"Depth in meters at which the oceanographic measurements in this record were taken.\"}",
@@ -362,7 +362,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoyOceanographicObservation] ingestion json mapping "BuoyOceanographicObservation_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -385,7 +385,7 @@
 ]
 ```
 
-.create-or-alter table [BuoyOceanographicObservation] ingestion json mapping "BuoyOceanographicObservation_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -408,13 +408,13 @@
 ]
 ```
 
-.drop materialized-view BuoyOceanographicObservationLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoyOceanographicObservationLatest on table BuoyOceanographicObservation {
-    BuoyOceanographicObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservationLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoyOceanographicObservation] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyOceanographicObservation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -425,7 +425,7 @@
 }]
 ```
 
-.create-merge table [BuoyDartMeasurement] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] (
    [station_id]: string,
    [timestamp]: datetime,
    [measurement_type_code]: int,
@@ -437,9 +437,9 @@
    [___subject]: string
 );
 
-.alter table [BuoyDartMeasurement] docstring "{\"description\": \"Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] docstring "{\"description\": \"Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station.\"}";
 
-.alter table [BuoyDartMeasurement] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file.\"}",
    [measurement_type_code]: "{\"description\": \"Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement.\"}",
@@ -451,7 +451,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoyDartMeasurement] ingestion json mapping "BuoyDartMeasurement_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -466,7 +466,7 @@
 ]
 ```
 
-.create-or-alter table [BuoyDartMeasurement] ingestion json mapping "BuoyDartMeasurement_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -481,13 +481,13 @@
 ]
 ```
 
-.drop materialized-view BuoyDartMeasurementLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoyDartMeasurementLatest on table BuoyDartMeasurement {
-    BuoyDartMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurementLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoyDartMeasurement] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDartMeasurement'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -498,7 +498,7 @@
 }]
 ```
 
-.create-merge table [BuoyContinuousWindObservation] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] (
    [station_id]: string,
    [timestamp]: datetime,
    [wind_direction]: real,
@@ -513,9 +513,9 @@
    [___subject]: string
 );
 
-.alter table [BuoyContinuousWindObservation] docstring "{\"description\": \"Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] docstring "{\"description\": \"Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred.\"}";
 
-.alter table [BuoyContinuousWindObservation] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .cwind realtime2 file.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file.\"}",
    [wind_direction]: "{\"description\": \"Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true.\"}",
@@ -530,7 +530,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoyContinuousWindObservation] ingestion json mapping "BuoyContinuousWindObservation_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -548,7 +548,7 @@
 ]
 ```
 
-.create-or-alter table [BuoyContinuousWindObservation] ingestion json mapping "BuoyContinuousWindObservation_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -566,13 +566,13 @@
 ]
 ```
 
-.drop materialized-view BuoyContinuousWindObservationLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoyContinuousWindObservationLatest on table BuoyContinuousWindObservation {
-    BuoyContinuousWindObservation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservationLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoyContinuousWindObservation] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyContinuousWindObservation'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -583,7 +583,7 @@
 }]
 ```
 
-.create-merge table [BuoySupplementalMeasurement] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] (
    [station_id]: string,
    [timestamp]: datetime,
    [lowest_pressure]: real,
@@ -598,9 +598,9 @@
    [___subject]: string
 );
 
-.alter table [BuoySupplementalMeasurement] docstring "{\"description\": \"Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] docstring "{\"description\": \"Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times.\"}";
 
-.alter table [BuoySupplementalMeasurement] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .supl realtime2 file.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file.\"}",
    [lowest_pressure]: "{\"description\": \"Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals.\"}",
@@ -615,7 +615,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoySupplementalMeasurement] ingestion json mapping "BuoySupplementalMeasurement_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -633,7 +633,7 @@
 ]
 ```
 
-.create-or-alter table [BuoySupplementalMeasurement] ingestion json mapping "BuoySupplementalMeasurement_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -651,13 +651,13 @@
 ]
 ```
 
-.drop materialized-view BuoySupplementalMeasurementLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoySupplementalMeasurementLatest on table BuoySupplementalMeasurement {
-    BuoySupplementalMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurementLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoySupplementalMeasurement] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoySupplementalMeasurement'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -668,7 +668,7 @@
 }]
 ```
 
-.create-merge table [BuoyDetailedWaveSummary] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] (
    [station_id]: string,
    [timestamp]: datetime,
    [significant_wave_height]: real,
@@ -688,9 +688,9 @@
    [___subject]: string
 );
 
-.alter table [BuoyDetailedWaveSummary] docstring "{\"description\": \"Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] docstring "{\"description\": \"Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp.\"}";
 
-.alter table [BuoyDetailedWaveSummary] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .spec realtime2 file.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file.\"}",
    [significant_wave_height]: "{\"description\": \"Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters.\"}",
@@ -710,7 +710,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoyDetailedWaveSummary] ingestion json mapping "BuoyDetailedWaveSummary_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -733,7 +733,7 @@
 ]
 ```
 
-.create-or-alter table [BuoyDetailedWaveSummary] ingestion json mapping "BuoyDetailedWaveSummary_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -756,13 +756,13 @@
 ]
 ```
 
-.drop materialized-view BuoyDetailedWaveSummaryLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummaryLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoyDetailedWaveSummaryLatest on table BuoyDetailedWaveSummary {
-    BuoyDetailedWaveSummary | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummaryLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoyDetailedWaveSummary] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyDetailedWaveSummary'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -773,7 +773,7 @@
 }]
 ```
 
-.create-merge table [BuoyHourlyRainMeasurement] (
+.create-merge table ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] (
    [station_id]: string,
    [timestamp]: datetime,
    [accumulation]: real,
@@ -784,9 +784,9 @@
    [___subject]: string
 );
 
-.alter table [BuoyHourlyRainMeasurement] docstring "{\"description\": \"Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp.\"}";
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] docstring "{\"description\": \"Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp.\"}";
 
-.alter table [BuoyHourlyRainMeasurement] column-docstrings (
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] column-docstrings (
    [station_id]: "{\"description\": \"NDBC station identifier for the station publishing the .rain realtime2 file.\"}",
    [timestamp]: "{\"description\": \"Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file.\"}",
    [accumulation]: "{\"description\": \"Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters.\"}",
@@ -797,7 +797,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BuoyHourlyRainMeasurement] ingestion json mapping "BuoyHourlyRainMeasurement_json_flat"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -811,7 +811,7 @@
 ]
 ```
 
-.create-or-alter table [BuoyHourlyRainMeasurement] ingestion json mapping "BuoyHourlyRainMeasurement_json_ce_structured"
+.create-or-alter table ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] ingestion json mapping "microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -825,13 +825,13 @@
 ]
 ```
 
-.drop materialized-view BuoyHourlyRainMeasurementLatest ifexists;
+.drop materialized-view ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BuoyHourlyRainMeasurementLatest on table BuoyHourlyRainMeasurement {
-    BuoyHourlyRainMeasurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurementLatest'] on table ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] {
+    ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BuoyHourlyRainMeasurement] policy update
+.alter table ['microsoft.opendata.us.noaa.ndbc.BuoyHourlyRainMeasurement'] policy update
 ```
 [{
   "IsEnabled": true,
