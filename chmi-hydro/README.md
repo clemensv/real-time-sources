@@ -28,6 +28,8 @@ bridge.
 
 ## Deployment
 
+- **Fabric notebook hosting (recommended for Fabric users):** Deploy this bridge as a scheduled Fabric notebook with `tools/deploy-fabric/deploy-feeder-notebook.ps1`. It auto-builds the per-source Environment, looks up the Event Stream connection string at runtime, and schedules `chmi-hydro feed --once`.
+
 See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
 
 ## Usage
