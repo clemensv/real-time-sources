@@ -514,7 +514,21 @@ if ($DefaultLakehouse) {
 } elseif ($lakehouseList.value.Count -gt 1) {
     throw "Workspace has $($lakehouseList.value.Count) lakehouses. Pass -DefaultLakehouse <name> to choose one."
 } else {
-    throw "Workspace has no Lakehouse. Create one (or pass -DefaultLakehouse) so the notebook can write feeder state."
+    # No Lakehouse — auto-create one for feeder state. Use a stable
+    # workspace-scoped name so subsequent deploys to the same workspace
+    # reuse it (the bridge writes per-source under Files/feeder-state/<src>).
+    $newLakehouseName = 'feeder-state-lake'
+    Write-Info "Workspace has no Lakehouse; creating '$newLakehouseName' for feeder state..."
+    $createBody = @{ displayName = $newLakehouseName } | ConvertTo-Json
+    $lh = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/lakehouses" -Body $createBody
+    if (-not $lh -or -not $lh.id) {
+        # Long-running operation: re-list and resolve by name.
+        Start-Sleep -Seconds 5
+        $lakehouseList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/lakehouses"
+        $lh = $lakehouseList.value | Where-Object { $_.displayName -eq $newLakehouseName } | Select-Object -First 1
+    }
+    if (-not $lh) { throw "Failed to create default Lakehouse '$newLakehouseName'." }
+    Write-OK "Created Lakehouse: $($lh.displayName) ($($lh.id))"
 }
 $nb.metadata.dependencies | Add-Member -NotePropertyName lakehouse -NotePropertyValue ([pscustomobject]@{
     default_lakehouse              = $lh.id
@@ -657,6 +671,5 @@ Write-Host "  Open in Fabric portal:" -ForegroundColor White
 Write-Host "    https://app.fabric.microsoft.com/groups/$WorkspaceId/synapsenotebooks/$notebookId" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  Next steps:" -ForegroundColor White
-Write-Host "    1. Attach a Lakehouse to the notebook (workspace default Lakehouse recommended)." -ForegroundColor White
-Write-Host "    2. Click 'Run all' to execute one polling cycle, OR schedule the notebook from the portal." -ForegroundColor White
-Write-Host "    3. For production scheduling, create a Data Factory pipeline that runs the notebook at the source's native cadence." -ForegroundColor White
+Write-Host "    1. Click 'Run all' to execute one polling cycle now, OR wait for the 15-min schedule." -ForegroundColor White
+Write-Host "    2. For production scheduling, create a Data Factory pipeline that runs the notebook at the source's native cadence." -ForegroundColor White
