@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['gov.noaa.aviationweather.Station'] (
    [icao_id]: string,
    [iata_id]: string,
    [faa_id]: string,
@@ -44,9 +44,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products.\"}";
+.alter table ['gov.noaa.aviationweather.Station'] docstring "{\"description\": \"Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['gov.noaa.aviationweather.Station'] column-docstrings (
    [icao_id]: "{\"description\": \"ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport).\"}",
    [iata_id]: "{\"description\": \"IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations.\"}",
    [faa_id]: "{\"description\": \"FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations.\"}",
@@ -65,7 +65,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['gov.noaa.aviationweather.Station'] ingestion json mapping "gov.noaa.aviationweather.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -87,7 +87,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['gov.noaa.aviationweather.Station'] ingestion json mapping "gov.noaa.aviationweather.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -109,13 +109,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['gov.noaa.aviationweather.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.noaa.aviationweather.StationLatest'] on table ['gov.noaa.aviationweather.Station'] {
+    ['gov.noaa.aviationweather.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['gov.noaa.aviationweather.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -126,7 +126,7 @@
 }]
 ```
 
-.create-merge table [Metar] (
+.create-merge table ['gov.noaa.aviationweather.Metar'] (
    [icao_id]: string,
    [obs_time]: datetime,
    [report_time]: datetime,
@@ -155,9 +155,9 @@
    [___subject]: string
 );
 
-.alter table [Metar] docstring "{\"description\": \"METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station.\"}";
+.alter table ['gov.noaa.aviationweather.Metar'] docstring "{\"description\": \"METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station.\"}";
 
-.alter table [Metar] column-docstrings (
+.alter table ['gov.noaa.aviationweather.Metar'] column-docstrings (
    [icao_id]: "{\"description\": \"ICAO station identifier for the reporting station (e.g. 'KJFK').\"}",
    [obs_time]: "{\"description\": \"Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response.\"}",
    [report_time]: "{\"description\": \"Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported.\"}",
@@ -186,7 +186,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Metar] ingestion json mapping "Metar_json_flat"
+.create-or-alter table ['gov.noaa.aviationweather.Metar'] ingestion json mapping "gov.noaa.aviationweather.Metar_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -218,7 +218,7 @@
 ]
 ```
 
-.create-or-alter table [Metar] ingestion json mapping "Metar_json_ce_structured"
+.create-or-alter table ['gov.noaa.aviationweather.Metar'] ingestion json mapping "gov.noaa.aviationweather.Metar_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -250,13 +250,13 @@
 ]
 ```
 
-.drop materialized-view MetarLatest ifexists;
+.drop materialized-view ['gov.noaa.aviationweather.MetarLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MetarLatest on table Metar {
-    Metar | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.noaa.aviationweather.MetarLatest'] on table ['gov.noaa.aviationweather.Metar'] {
+    ['gov.noaa.aviationweather.Metar'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Metar] policy update
+.alter table ['gov.noaa.aviationweather.Metar'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -267,7 +267,7 @@
 }]
 ```
 
-.create-merge table [Sigmet] (
+.create-merge table ['gov.noaa.aviationweather.Sigmet'] (
    [icao_id]: string,
    [series_id]: string,
    [valid_time_from]: datetime,
@@ -289,9 +289,9 @@
    [___subject]: string
 );
 
-.alter table [Sigmet] docstring "{\"description\": \"SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash.\"}";
+.alter table ['gov.noaa.aviationweather.Sigmet'] docstring "{\"description\": \"SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash.\"}";
 
-.alter table [Sigmet] column-docstrings (
+.alter table ['gov.noaa.aviationweather.Sigmet'] column-docstrings (
    [icao_id]: "{\"description\": \"ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs.\"}",
    [series_id]: "{\"description\": \"SIGMET series identifier combining alphanumeric sequence (e.g. '6W' for domestic, '8' for international).\"}",
    [valid_time_from]: "{\"description\": \"Start of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z).\"}",
@@ -313,7 +313,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Sigmet] ingestion json mapping "Sigmet_json_flat"
+.create-or-alter table ['gov.noaa.aviationweather.Sigmet'] ingestion json mapping "gov.noaa.aviationweather.Sigmet_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -338,7 +338,7 @@
 ]
 ```
 
-.create-or-alter table [Sigmet] ingestion json mapping "Sigmet_json_ce_structured"
+.create-or-alter table ['gov.noaa.aviationweather.Sigmet'] ingestion json mapping "gov.noaa.aviationweather.Sigmet_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -363,13 +363,13 @@
 ]
 ```
 
-.drop materialized-view SigmetLatest ifexists;
+.drop materialized-view ['gov.noaa.aviationweather.SigmetLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SigmetLatest on table Sigmet {
-    Sigmet | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.noaa.aviationweather.SigmetLatest'] on table ['gov.noaa.aviationweather.Sigmet'] {
+    ['gov.noaa.aviationweather.Sigmet'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Sigmet] policy update
+.alter table ['gov.noaa.aviationweather.Sigmet'] policy update
 ```
 [{
   "IsEnabled": true,
