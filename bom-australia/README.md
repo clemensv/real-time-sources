@@ -45,6 +45,13 @@ Additional stations can be configured via the `BOM_STATIONS` environment variabl
 - [BOM Data Feeds](http://www.bom.gov.au/catalogue/data-feeds.shtml)
 - [72-hour Observation Products User Guide](https://www.bom.gov.au/catalogue/72_hr_historical_obs.pdf)
 
+## Fabric notebook hosting
+
+This source can also run as a scheduled Fabric notebook feeder (single polling
+cycle per run, no always-on container). Deploy via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1);
+the notebook lives at [`notebook/bom-australia-feed.ipynb`](notebook/bom-australia-feed.ipynb).
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment

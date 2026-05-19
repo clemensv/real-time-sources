@@ -202,7 +202,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Australia — ~8 capital city airports, half-hourly obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "dwd",
