@@ -605,7 +605,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Paris — ~141 counting stations, hourly counts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "seattle-street-closures",

@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Counter] (
+.create-merge table ['FR.Paris.OpenData.Velo.Counter'] (
    [counter_id]: string,
    [counter_name]: string,
    [channel_name]: string,
@@ -39,9 +39,9 @@
    [___subject]: string
 );
 
-.alter table [Counter] docstring "{\"description\": \"Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.\"}";
+.alter table ['FR.Paris.OpenData.Velo.Counter'] docstring "{\"description\": \"Reference record describing a permanent bicycle counting station in Paris, including its identifier, display name, directional channel, installation date, and geographic coordinates.\"}";
 
-.alter table [Counter] column-docstrings (
+.alter table ['FR.Paris.OpenData.Velo.Counter'] column-docstrings (
    [counter_id]: "{\"description\": \"Unique identifier for the counting channel, combining the site ID and channel ID (mapped from 'id_compteur').\"}",
    [counter_name]: "{\"description\": \"Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').\"}",
    [channel_name]: "{\"description\": \"Directional channel label for the counter, e.g. 'SE-NO' or 'E-O' (mapped from 'channel_name').\"}",
@@ -55,7 +55,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Counter] ingestion json mapping "Counter_json_flat"
+.create-or-alter table ['FR.Paris.OpenData.Velo.Counter'] ingestion json mapping "FR.Paris.OpenData.Velo.Counter_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,7 +72,7 @@
 ]
 ```
 
-.create-or-alter table [Counter] ingestion json mapping "Counter_json_ce_structured"
+.create-or-alter table ['FR.Paris.OpenData.Velo.Counter'] ingestion json mapping "FR.Paris.OpenData.Velo.Counter_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,13 +89,13 @@
 ]
 ```
 
-.drop materialized-view CounterLatest ifexists;
+.drop materialized-view ['FR.Paris.OpenData.Velo.CounterLatest'] ifexists;
 
-.create materialized-view with (backfill=true) CounterLatest on table Counter {
-    Counter | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['FR.Paris.OpenData.Velo.CounterLatest'] on table ['FR.Paris.OpenData.Velo.Counter'] {
+    ['FR.Paris.OpenData.Velo.Counter'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Counter] policy update
+.alter table ['FR.Paris.OpenData.Velo.Counter'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -106,7 +106,7 @@
 }]
 ```
 
-.create-merge table [BicycleCount] (
+.create-merge table ['FR.Paris.OpenData.Velo.BicycleCount'] (
    [counter_id]: string,
    [counter_name]: string,
    [count]: int,
@@ -120,9 +120,9 @@
    [___subject]: string
 );
 
-.alter table [BicycleCount] docstring "{\"description\": \"Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.\"}";
+.alter table ['FR.Paris.OpenData.Velo.BicycleCount'] docstring "{\"description\": \"Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.\"}";
 
-.alter table [BicycleCount] column-docstrings (
+.alter table ['FR.Paris.OpenData.Velo.BicycleCount'] column-docstrings (
    [counter_id]: "{\"description\": \"Unique identifier for the counting channel (mapped from 'id_compteur').\"}",
    [counter_name]: "{\"description\": \"Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').\"}",
    [count]: "{\"description\": \"Number of bicycles counted during the one-hour window (mapped from 'sum_counts').\"}",
@@ -136,7 +136,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BicycleCount] ingestion json mapping "BicycleCount_json_flat"
+.create-or-alter table ['FR.Paris.OpenData.Velo.BicycleCount'] ingestion json mapping "FR.Paris.OpenData.Velo.BicycleCount_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -153,7 +153,7 @@
 ]
 ```
 
-.create-or-alter table [BicycleCount] ingestion json mapping "BicycleCount_json_ce_structured"
+.create-or-alter table ['FR.Paris.OpenData.Velo.BicycleCount'] ingestion json mapping "FR.Paris.OpenData.Velo.BicycleCount_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -170,13 +170,13 @@
 ]
 ```
 
-.drop materialized-view BicycleCountLatest ifexists;
+.drop materialized-view ['FR.Paris.OpenData.Velo.BicycleCountLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BicycleCountLatest on table BicycleCount {
-    BicycleCount | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['FR.Paris.OpenData.Velo.BicycleCountLatest'] on table ['FR.Paris.OpenData.Velo.BicycleCount'] {
+    ['FR.Paris.OpenData.Velo.BicycleCount'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BicycleCount] policy update
+.alter table ['FR.Paris.OpenData.Velo.BicycleCount'] policy update
 ```
 [{
   "IsEnabled": true,
