@@ -181,7 +181,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Belgium / Flanders — ~1,785 stations",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "aviationweather",
