@@ -125,8 +125,12 @@ class GraceDBPoller:
             with open(self.last_polled_file, 'w', encoding='utf-8') as f:
                 json.dump({"seen_ids": sorted(seen_ids)}, f)
 
-    async def poll_and_send(self):
-        """Continuously poll the GraceDB API and send new superevents to Kafka."""
+    async def poll_and_send(self, once: bool = False):
+        """Continuously poll the GraceDB API and send new superevents to Kafka.
+
+        If ``once`` is True, exit after a single polling cycle. Useful for
+        scheduled execution in Fabric notebooks.
+        """
         seen_ids = self.load_seen_ids()
         poll_interval = timedelta(minutes=2)
 
@@ -164,6 +168,10 @@ class GraceDBPoller:
             # Prune seen set to bounded size (keep latest 5000)
             if len(seen_ids) > 5000:
                 seen_ids = set(sorted(seen_ids)[-5000:])
+
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
 
             elapsed = datetime.now(timezone.utc) - start_poll_time
             remaining = poll_interval - elapsed
@@ -230,6 +238,10 @@ def main():
     feed_parser.add_argument('--categories', type=str, default=DEFAULT_CATEGORIES,
                              help=f'Comma-separated categories to include (default: {DEFAULT_CATEGORIES})')
     feed_parser.add_argument('--log-level', type=str, help='Logging level', default='INFO')
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). '
+                                  'Useful for scheduled execution in Fabric notebooks.')
 
     events_parser = subparsers.add_parser('events', help="List recent superevents")
     events_parser.add_argument('--count', type=int, default=10, help='Number of events to display')
@@ -292,7 +304,7 @@ def main():
             poll_count=args.poll_count,
             categories=args.categories,
         )
-        asyncio.run(poller.poll_and_send())
+        asyncio.run(poller.poll_and_send(once=args.once))
     else:
         parser.print_help()
 

@@ -30,6 +30,12 @@ The bridge emits a single event type, documented in [EVENTS.md](EVENTS.md):
 - [GraceDB API Docs](https://gracedb.ligo.org/documentation/rest.html)
 - [LIGO Scientific Collaboration](https://www.ligo.org/)
 
+## Fabric notebook hosting
+
+This source can also be hosted as a scheduled Fabric notebook via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+which deploys `gracedb/notebook/gracedb-feed.ipynb` to a Fabric workspace.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment
