@@ -25,6 +25,10 @@ See [EVENTS.md](EVENTS.md) for the full event catalog.
 
 See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
 
+## Fabric notebook hosting
+
+A Fabric notebook (`notebook/eurdep-radiation-feed.ipynb`) is available for hosting the bridge inside a Microsoft Fabric workspace. Deploy with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Upstream Source
 
 - EURDEP: https://eurdep.jrc.ec.europa.eu/

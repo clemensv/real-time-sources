@@ -533,7 +533,8 @@
     "cat": "Radiation",
     "key": false,
     "desc": "Europe — ~5,500 stations, 39 countries, gamma dose",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "usgs-geomag",

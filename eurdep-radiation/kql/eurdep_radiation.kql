@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['eu.jrc.eurdep.Station'] (
    [station_id]: string,
    [name]: string,
    [country_code]: string,
@@ -41,9 +41,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. EURDEP (European Radiological Data Exchange Platform) is operated by the European Commission's Joint Research Centre (JRC) and aggregates real-time radiological monitoring data from national networks across 39 European countries. Each station is identified by a country-prefixed alphanumeric code (e.g. 'AT0001' for Austria, 'DE0123' for Germany).\"}";
+.alter table ['eu.jrc.eurdep.Station'] docstring "{\"description\": \"Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. EURDEP (European Radiological Data Exchange Platform) is operated by the European Commission's Joint Research Centre (JRC) and aggregates real-time radiological monitoring data from national networks across 39 European countries. Each station is identified by a country-prefixed alphanumeric code (e.g. 'AT0001' for Austria, 'DE0123' for Germany).\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['eu.jrc.eurdep.Station'] column-docstrings (
    [station_id]: "{\"description\": \"Alphanumeric station identifier assigned within the EURDEP network. The first two characters are the ISO 3166-1 alpha-2 country code of the operating country, followed by a numeric station sequence. Example: 'AT0001' (Austria), 'DE0123' (Germany), 'FR0456' (France). This is the stable key used for data retrieval and cross-referencing.\"}",
    [name]: "{\"description\": \"Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'.\"}",
    [country_code]: "{\"description\": \"ISO 3166-1 alpha-2 country code extracted from the first two characters of the station_id. Identifies the country operating the monitoring station. Example: 'AT' for Austria, 'DE' for Germany, 'CZ' for Czech Republic.\"}",
@@ -59,7 +59,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['eu.jrc.eurdep.Station'] ingestion json mapping "eu.jrc.eurdep.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -78,7 +78,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['eu.jrc.eurdep.Station'] ingestion json mapping "eu.jrc.eurdep.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,13 +97,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['eu.jrc.eurdep.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.jrc.eurdep.StationLatest'] on table ['eu.jrc.eurdep.Station'] {
+    ['eu.jrc.eurdep.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['eu.jrc.eurdep.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -114,7 +114,7 @@
 }]
 ```
 
-.create-merge table [DoseRateReading] (
+.create-merge table ['eu.jrc.eurdep.DoseRateReading'] (
    [station_id]: string,
    [name]: string,
    [value]: real,
@@ -131,9 +131,9 @@
    [___subject]: string
 );
 
-.alter table [DoseRateReading] docstring "{\"description\": \"An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (\\u00b5Sv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 \\u00b5Sv/h depending on local geology and altitude.\"}";
+.alter table ['eu.jrc.eurdep.DoseRateReading'] docstring "{\"description\": \"An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (\\u00b5Sv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 \\u00b5Sv/h depending on local geology and altitude.\"}";
 
-.alter table [DoseRateReading] column-docstrings (
+.alter table ['eu.jrc.eurdep.DoseRateReading'] column-docstrings (
    [station_id]: "{\"description\": \"Alphanumeric station identifier from the EURDEP network. Matches the station_id in the Station schema. Example: 'AT0001'.\"}",
    [name]: "{\"description\": \"Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join.\"}",
    [value]: "{\"description\": \"Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (\\u00b5Sv/h). Null if the station did not report a valid measurement for this interval.\"}",
@@ -150,7 +150,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [DoseRateReading] ingestion json mapping "DoseRateReading_json_flat"
+.create-or-alter table ['eu.jrc.eurdep.DoseRateReading'] ingestion json mapping "eu.jrc.eurdep.DoseRateReading_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -170,7 +170,7 @@
 ]
 ```
 
-.create-or-alter table [DoseRateReading] ingestion json mapping "DoseRateReading_json_ce_structured"
+.create-or-alter table ['eu.jrc.eurdep.DoseRateReading'] ingestion json mapping "eu.jrc.eurdep.DoseRateReading_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -190,13 +190,13 @@
 ]
 ```
 
-.drop materialized-view DoseRateReadingLatest ifexists;
+.drop materialized-view ['eu.jrc.eurdep.DoseRateReadingLatest'] ifexists;
 
-.create materialized-view with (backfill=true) DoseRateReadingLatest on table DoseRateReading {
-    DoseRateReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['eu.jrc.eurdep.DoseRateReadingLatest'] on table ['eu.jrc.eurdep.DoseRateReading'] {
+    ['eu.jrc.eurdep.DoseRateReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [DoseRateReading] policy update
+.alter table ['eu.jrc.eurdep.DoseRateReading'] policy update
 ```
 [{
   "IsEnabled": true,
