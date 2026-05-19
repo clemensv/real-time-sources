@@ -61,6 +61,12 @@ pip install .
 For a packaged install, consider using the [CONTAINER.md](CONTAINER.md)
 instructions.
 
+## Fabric notebook hosting
+
+This source can also run as a scheduled Microsoft Fabric notebook via
+[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
+using the notebook at [`notebook/syke-hydro-feed.ipynb`](notebook/syke-hydro-feed.ipynb).
+
 ## How to Use
 
 After installation, the tool can be run using `python -m syke_hydro`. It
