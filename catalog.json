@@ -233,7 +233,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Austria — ~280 TAWES stations, 10-min obs",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "hko-hong-kong",
