@@ -99,7 +99,8 @@
     "cat": "Hydrology",
     "key": true,
     "desc": "Norway — NVE (requires free API key)",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "pegelonline",
