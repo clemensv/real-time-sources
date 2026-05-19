@@ -590,7 +590,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "Germany — roadworks, warnings, closures, webcams",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "digitraffic-road",

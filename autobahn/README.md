@@ -56,6 +56,10 @@ python -m autobahn feed \
   --resources roadworks,warning,closure
 ```
 
+- Fabric notebook hosting: deploy a single-cycle scheduled feeder via
+  [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
+  (uses `autobahn/notebook/autobahn-feed.ipynb`).
+
 ## Environment Variables
 
 The bridge accepts these environment variables when the corresponding command
