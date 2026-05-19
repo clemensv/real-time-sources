@@ -621,7 +621,8 @@
     "cat": "Transport",
     "key": false,
     "desc": "US borders — ~81 ports of entry",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "wsdot",

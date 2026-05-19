@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Port] (
+.create-merge table ['gov.cbp.borderwait.Port'] (
    [port_number]: string,
    [port_name]: string,
    [border]: string,
@@ -41,9 +41,9 @@
    [___subject]: string
 );
 
-.alter table [Port] docstring "{\"description\": \"Reference data for a US CBP land border port of entry. Describes the port identity, geographic border, crossing name, and operating hours. The port_number is a six-digit code assigned by CBP that uniquely identifies each crossing point. A single city (port_name) may have multiple crossings, each with its own port_number.\"}";
+.alter table ['gov.cbp.borderwait.Port'] docstring "{\"description\": \"Reference data for a US CBP land border port of entry. Describes the port identity, geographic border, crossing name, and operating hours. The port_number is a six-digit code assigned by CBP that uniquely identifies each crossing point. A single city (port_name) may have multiple crossings, each with its own port_number.\"}";
 
-.alter table [Port] column-docstrings (
+.alter table ['gov.cbp.borderwait.Port'] column-docstrings (
    [port_number]: "{\"description\": \"Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups.\"}",
    [port_name]: "{\"description\": \"Name of the city or locality where the port is located. Example: 'Blaine', 'San Ysidro'. Multiple crossings may share the same port_name.\"}",
    [border]: "{\"description\": \"Which international border this port serves. One of 'Canadian Border' or 'Mexican Border'.\"}",
@@ -59,7 +59,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Port] ingestion json mapping "Port_json_flat"
+.create-or-alter table ['gov.cbp.borderwait.Port'] ingestion json mapping "gov.cbp.borderwait.Port_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -78,7 +78,7 @@
 ]
 ```
 
-.create-or-alter table [Port] ingestion json mapping "Port_json_ce_structured"
+.create-or-alter table ['gov.cbp.borderwait.Port'] ingestion json mapping "gov.cbp.borderwait.Port_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -97,13 +97,13 @@
 ]
 ```
 
-.drop materialized-view PortLatest ifexists;
+.drop materialized-view ['gov.cbp.borderwait.PortLatest'] ifexists;
 
-.create materialized-view with (backfill=true) PortLatest on table Port {
-    Port | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.cbp.borderwait.PortLatest'] on table ['gov.cbp.borderwait.Port'] {
+    ['gov.cbp.borderwait.Port'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Port] policy update
+.alter table ['gov.cbp.borderwait.Port'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -114,7 +114,7 @@
 }]
 ```
 
-.create-merge table [WaitTime] (
+.create-merge table ['gov.cbp.borderwait.WaitTime'] (
    [port_number]: string,
    [port_name]: string,
    [border]: string,
@@ -151,9 +151,9 @@
    [___subject]: string
 );
 
-.alter table [WaitTime] docstring "{\"description\": \"Flattened wait time snapshot for a single US land border port of entry. Derived from the CBP Border Wait Time API nested lane structure. Each record captures delay in minutes and number of open lanes for every combination of traveler category (passenger vehicle, pedestrian, commercial vehicle) and lane type (standard, SENTRI/NEXUS, Ready Lane, FAST). Operational status values from CBP include 'no delay', 'delay', 'N/A', 'Lanes Closed', and 'Update Pending'.\"}";
+.alter table ['gov.cbp.borderwait.WaitTime'] docstring "{\"description\": \"Flattened wait time snapshot for a single US land border port of entry. Derived from the CBP Border Wait Time API nested lane structure. Each record captures delay in minutes and number of open lanes for every combination of traveler category (passenger vehicle, pedestrian, commercial vehicle) and lane type (standard, SENTRI/NEXUS, Ready Lane, FAST). Operational status values from CBP include 'no delay', 'delay', 'N/A', 'Lanes Closed', and 'Update Pending'.\"}";
 
-.alter table [WaitTime] column-docstrings (
+.alter table ['gov.cbp.borderwait.WaitTime'] column-docstrings (
    [port_number]: "{\"description\": \"Six-digit CBP port number identifying this crossing. Matches the port_number in the Port schema.\"}",
    [port_name]: "{\"description\": \"Name of the city or locality where the port is located.\"}",
    [border]: "{\"description\": \"Which international border this port serves. One of 'Canadian Border' or 'Mexican Border'.\"}",
@@ -190,7 +190,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaitTime] ingestion json mapping "WaitTime_json_flat"
+.create-or-alter table ['gov.cbp.borderwait.WaitTime'] ingestion json mapping "gov.cbp.borderwait.WaitTime_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -230,7 +230,7 @@
 ]
 ```
 
-.create-or-alter table [WaitTime] ingestion json mapping "WaitTime_json_ce_structured"
+.create-or-alter table ['gov.cbp.borderwait.WaitTime'] ingestion json mapping "gov.cbp.borderwait.WaitTime_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -270,13 +270,13 @@
 ]
 ```
 
-.drop materialized-view WaitTimeLatest ifexists;
+.drop materialized-view ['gov.cbp.borderwait.WaitTimeLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaitTimeLatest on table WaitTime {
-    WaitTime | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['gov.cbp.borderwait.WaitTimeLatest'] on table ['gov.cbp.borderwait.WaitTime'] {
+    ['gov.cbp.borderwait.WaitTime'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaitTime] policy update
+.alter table ['gov.cbp.borderwait.WaitTime'] policy update
 ```
 [{
   "IsEnabled": true,

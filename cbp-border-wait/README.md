@@ -60,6 +60,10 @@ same partition.
 - API endpoint: https://bwt.cbp.gov/api/bwtnew
 - License: US Public Domain
 
+## Fabric notebook hosting
+
+This source ships an optional Fabric notebook (`notebook/cbp-border-wait-feed.ipynb`) that runs one polling cycle per scheduled execution and is deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment
