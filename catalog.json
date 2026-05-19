@@ -133,7 +133,8 @@
     "cat": "Hydrology",
     "key": false,
     "desc": "Western US & Alaska — ~900 snowpack stations, NRCS",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "syke-hydro",
