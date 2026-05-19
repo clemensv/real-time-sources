@@ -277,7 +277,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "United States — weather alerts, CAP",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "nws-forecasts",
