@@ -231,7 +231,9 @@ def main():
                         default=os.environ.get("STATE_FILE", os.path.expanduser("~/.hko_hong_kong_state.json")))
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List places from current weather")
-    subparsers.add_parser("feed", help="Feed data to Kafka")
+    feed_parser = subparsers.add_parser("feed", help="Feed data to Kafka")
+    feed_parser.add_argument("--once", action="store_true",
+                             help="Run a single polling cycle and exit (for scheduled hosts).")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
     api = HKOWeatherAPI(polling_interval=args.polling_interval)
@@ -264,6 +266,7 @@ def main():
         logger.info("Starting HKO Hong Kong Weather bridge, polling every %d seconds", args.polling_interval)
         previous_readings = _load_state(args.state_file)
         send_stations(api, event_producer)
+        once = bool(getattr(args, "once", False))
         while True:
             try:
                 count = feed_observations(api, event_producer, previous_readings)
@@ -271,6 +274,9 @@ def main():
                 logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
             time.sleep(args.polling_interval)
     else:
         parser.print_help()
