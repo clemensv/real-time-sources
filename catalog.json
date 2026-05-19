@@ -388,7 +388,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "London, UK — site metadata, species, hourly measurements",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "luchtmeetnet-nl",

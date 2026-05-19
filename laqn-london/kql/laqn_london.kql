@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Site] (
+.create-merge table ['uk.kcl.laqn.Site'] (
    [site_code]: string,
    [site_name]: string,
    [site_type]: string,
@@ -44,9 +44,9 @@
    [___subject]: string
 );
 
-.alter table [Site] docstring "{\"description\": \"Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.\"}";
+.alter table ['uk.kcl.laqn.Site'] docstring "{\"description\": \"Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.\"}";
 
-.alter table [Site] column-docstrings (
+.alter table ['uk.kcl.laqn.Site'] column-docstrings (
    [site_code]: "{\"description\": \"Stable LAQN site code that identifies the monitoring site, such as BX1.\"}",
    [site_name]: "{\"description\": \"Human-readable LAQN site name published for the monitoring site.\"}",
    [site_type]: "{\"description\": \"Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.\"}",
@@ -65,7 +65,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Site] ingestion json mapping "Site_json_flat"
+.create-or-alter table ['uk.kcl.laqn.Site'] ingestion json mapping "uk.kcl.laqn.Site_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -87,7 +87,7 @@
 ]
 ```
 
-.create-or-alter table [Site] ingestion json mapping "Site_json_ce_structured"
+.create-or-alter table ['uk.kcl.laqn.Site'] ingestion json mapping "uk.kcl.laqn.Site_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -109,13 +109,13 @@
 ]
 ```
 
-.drop materialized-view SiteLatest ifexists;
+.drop materialized-view ['uk.kcl.laqn.SiteLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SiteLatest on table Site {
-    Site | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.kcl.laqn.SiteLatest'] on table ['uk.kcl.laqn.Site'] {
+    ['uk.kcl.laqn.Site'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Site] policy update
+.alter table ['uk.kcl.laqn.Site'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -126,7 +126,7 @@
 }]
 ```
 
-.create-merge table [Measurement] (
+.create-merge table ['uk.kcl.laqn.Measurement'] (
    [site_code]: string,
    [species_code]: string,
    [measurement_date_gmt]: string,
@@ -138,9 +138,9 @@
    [___subject]: string
 );
 
-.alter table [Measurement] docstring "{\"description\": \"Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.\"}";
+.alter table ['uk.kcl.laqn.Measurement'] docstring "{\"description\": \"Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.\"}";
 
-.alter table [Measurement] column-docstrings (
+.alter table ['uk.kcl.laqn.Measurement'] column-docstrings (
    [site_code]: "{\"description\": \"Stable LAQN site code for the monitoring site that produced the measurement.\"}",
    [species_code]: "{\"description\": \"Stable LAQN pollutant code for the measured species.\"}",
    [measurement_date_gmt]: "{\"description\": \"Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS.\"}",
@@ -152,7 +152,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_flat"
+.create-or-alter table ['uk.kcl.laqn.Measurement'] ingestion json mapping "uk.kcl.laqn.Measurement_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -167,7 +167,7 @@
 ]
 ```
 
-.create-or-alter table [Measurement] ingestion json mapping "Measurement_json_ce_structured"
+.create-or-alter table ['uk.kcl.laqn.Measurement'] ingestion json mapping "uk.kcl.laqn.Measurement_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -182,13 +182,13 @@
 ]
 ```
 
-.drop materialized-view MeasurementLatest ifexists;
+.drop materialized-view ['uk.kcl.laqn.MeasurementLatest'] ifexists;
 
-.create materialized-view with (backfill=true) MeasurementLatest on table Measurement {
-    Measurement | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.kcl.laqn.MeasurementLatest'] on table ['uk.kcl.laqn.Measurement'] {
+    ['uk.kcl.laqn.Measurement'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Measurement] policy update
+.alter table ['uk.kcl.laqn.Measurement'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -199,7 +199,7 @@
 }]
 ```
 
-.create-merge table [DailyIndex] (
+.create-merge table ['uk.kcl.laqn.DailyIndex'] (
    [site_code]: string,
    [bulletin_date]: string,
    [species_code]: string,
@@ -213,9 +213,9 @@
    [___subject]: string
 );
 
-.alter table [DailyIndex] docstring "{\"description\": \"Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.\"}";
+.alter table ['uk.kcl.laqn.DailyIndex'] docstring "{\"description\": \"Daily Air Quality Index bulletin record for a LAQN site and pollutant species within the latest London-wide index publication.\"}";
 
-.alter table [DailyIndex] column-docstrings (
+.alter table ['uk.kcl.laqn.DailyIndex'] column-docstrings (
    [site_code]: "{\"description\": \"Stable LAQN site code for the monitoring site to which the daily index applies.\"}",
    [bulletin_date]: "{\"description\": \"Bulletin date and time published by LAQN for the daily index, encoded as YYYY-MM-DD HH:MM:SS.\"}",
    [species_code]: "{\"description\": \"Stable LAQN pollutant code for the species to which the daily index applies.\"}",
@@ -229,7 +229,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [DailyIndex] ingestion json mapping "DailyIndex_json_flat"
+.create-or-alter table ['uk.kcl.laqn.DailyIndex'] ingestion json mapping "uk.kcl.laqn.DailyIndex_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -246,7 +246,7 @@
 ]
 ```
 
-.create-or-alter table [DailyIndex] ingestion json mapping "DailyIndex_json_ce_structured"
+.create-or-alter table ['uk.kcl.laqn.DailyIndex'] ingestion json mapping "uk.kcl.laqn.DailyIndex_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -263,13 +263,13 @@
 ]
 ```
 
-.drop materialized-view DailyIndexLatest ifexists;
+.drop materialized-view ['uk.kcl.laqn.DailyIndexLatest'] ifexists;
 
-.create materialized-view with (backfill=true) DailyIndexLatest on table DailyIndex {
-    DailyIndex | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.kcl.laqn.DailyIndexLatest'] on table ['uk.kcl.laqn.DailyIndex'] {
+    ['uk.kcl.laqn.DailyIndex'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [DailyIndex] policy update
+.alter table ['uk.kcl.laqn.DailyIndex'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -280,7 +280,7 @@
 }]
 ```
 
-.create-merge table [Species] (
+.create-merge table ['uk.kcl.laqn.Species'] (
    [species_code]: string,
    [species_name]: string,
    [description]: string,
@@ -293,9 +293,9 @@
    [___subject]: string
 );
 
-.alter table [Species] docstring "{\"description\": \"Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.\"}";
+.alter table ['uk.kcl.laqn.Species'] docstring "{\"description\": \"Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.\"}";
 
-.alter table [Species] column-docstrings (
+.alter table ['uk.kcl.laqn.Species'] column-docstrings (
    [species_code]: "{\"description\": \"Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO.\"}",
    [species_name]: "{\"description\": \"Human-readable pollutant name published by LAQN for the pollutant code.\"}",
    [description]: "{\"description\": \"LAQN explanatory description of the pollutant and how it is formed or encountered.\"}",
@@ -308,7 +308,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Species] ingestion json mapping "Species_json_flat"
+.create-or-alter table ['uk.kcl.laqn.Species'] ingestion json mapping "uk.kcl.laqn.Species_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -324,7 +324,7 @@
 ]
 ```
 
-.create-or-alter table [Species] ingestion json mapping "Species_json_ce_structured"
+.create-or-alter table ['uk.kcl.laqn.Species'] ingestion json mapping "uk.kcl.laqn.Species_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -340,13 +340,13 @@
 ]
 ```
 
-.drop materialized-view SpeciesLatest ifexists;
+.drop materialized-view ['uk.kcl.laqn.SpeciesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SpeciesLatest on table Species {
-    Species | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['uk.kcl.laqn.SpeciesLatest'] on table ['uk.kcl.laqn.Species'] {
+    ['uk.kcl.laqn.Species'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Species] policy update
+.alter table ['uk.kcl.laqn.Species'] policy update
 ```
 [{
   "IsEnabled": true,
