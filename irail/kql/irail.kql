@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['be.irail.Station'] (
    [station_id]: string,
    [name]: string,
    [standard_name]: string,
@@ -39,9 +39,9 @@
    [___subject]: string
 );
 
-.alter table [Station] docstring "{\"description\": \"Metadata for a Belgian railway station in the NMBS/SNCB (Nationale Maatschappij der Belgische Spoorwegen / Soci\\u00e9t\\u00e9 Nationale des Chemins de fer Belges) network. Station identifiers follow the UIC (Union Internationale des Chemins de fer) numbering scheme with a Belgian country prefix of 0088. The iRail API provides these as nine-digit codes prefixed with 'BE.NMBS.'.\"}";
+.alter table ['be.irail.Station'] docstring "{\"description\": \"Metadata for a Belgian railway station in the NMBS/SNCB (Nationale Maatschappij der Belgische Spoorwegen / Soci\\u00e9t\\u00e9 Nationale des Chemins de fer Belges) network. Station identifiers follow the UIC (Union Internationale des Chemins de fer) numbering scheme with a Belgian country prefix of 0088. The iRail API provides these as nine-digit codes prefixed with 'BE.NMBS.'.\"}";
 
-.alter table [Station] column-docstrings (
+.alter table ['be.irail.Station'] column-docstrings (
    [station_id]: "{\"description\": \"Nine-digit UIC-derived numeric station identifier assigned by NMBS. Extracted from the iRail id field by stripping the 'BE.NMBS.' prefix. Example: '008814001' for Brussels-South (Bruxelles-Midi / Brussel-Zuid).\"}",
    [name]: "{\"description\": \"Default display name of the station in the requested language. Example: 'Brussels-South'.\"}",
    [standard_name]: "{\"description\": \"Consistent official station name that does not vary by language, typically using the primary local name. Example: 'Bruxelles-Midi / Brussel-Zuid'.\"}",
@@ -55,7 +55,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['be.irail.Station'] ingestion json mapping "be.irail.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -72,7 +72,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['be.irail.Station'] ingestion json mapping "be.irail.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -89,13 +89,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['be.irail.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['be.irail.StationLatest'] on table ['be.irail.Station'] {
+    ['be.irail.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['be.irail.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -106,7 +106,7 @@
 }]
 ```
 
-.create-merge table [StationBoard] (
+.create-merge table ['be.irail.StationBoard'] (
    [station_id]: string,
    [station_name]: string,
    [retrieved_at]: string,
@@ -119,9 +119,9 @@
    [___subject]: string
 );
 
-.alter table [StationBoard] docstring "{\"description\": \"Real-time departure board for a Belgian railway station. Contains all currently visible departures from the station as returned by the iRail liveboard API. The board reflects the current state of the departure display at the station, including delays, cancellations, and platform assignments. Typically shows the next 30-50 departures within a rolling time window.\"}";
+.alter table ['be.irail.StationBoard'] docstring "{\"description\": \"Real-time departure board for a Belgian railway station. Contains all currently visible departures from the station as returned by the iRail liveboard API. The board reflects the current state of the departure display at the station, including delays, cancellations, and platform assignments. Typically shows the next 30-50 departures within a rolling time window.\"}";
 
-.alter table [StationBoard] column-docstrings (
+.alter table ['be.irail.StationBoard'] column-docstrings (
    [station_id]: "{\"description\": \"Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema.\"}",
    [station_name]: "{\"description\": \"Display name of the station this board belongs to.\"}",
    [retrieved_at]: "{\"description\": \"ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field.\"}",
@@ -134,7 +134,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [StationBoard] ingestion json mapping "StationBoard_json_flat"
+.create-or-alter table ['be.irail.StationBoard'] ingestion json mapping "be.irail.StationBoard_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -150,7 +150,7 @@
 ]
 ```
 
-.create-or-alter table [StationBoard] ingestion json mapping "StationBoard_json_ce_structured"
+.create-or-alter table ['be.irail.StationBoard'] ingestion json mapping "be.irail.StationBoard_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -166,13 +166,13 @@
 ]
 ```
 
-.drop materialized-view StationBoardLatest ifexists;
+.drop materialized-view ['be.irail.StationBoardLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationBoardLatest on table StationBoard {
-    StationBoard | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['be.irail.StationBoardLatest'] on table ['be.irail.StationBoard'] {
+    ['be.irail.StationBoard'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [StationBoard] policy update
+.alter table ['be.irail.StationBoard'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -183,7 +183,7 @@
 }]
 ```
 
-.create-merge table [ArrivalBoard] (
+.create-merge table ['be.irail.ArrivalBoard'] (
    [station_id]: string,
    [station_name]: string,
    [retrieved_at]: string,
@@ -196,9 +196,9 @@
    [___subject]: string
 );
 
-.alter table [ArrivalBoard] docstring "{\"description\": \"Real-time arrival board for a Belgian railway station. Contains all currently visible arrivals at the station as returned by the iRail liveboard API with arrdep=arrival. The board reflects the current state of the arrival display at the station, including delays, cancellations, and platform assignments.\"}";
+.alter table ['be.irail.ArrivalBoard'] docstring "{\"description\": \"Real-time arrival board for a Belgian railway station. Contains all currently visible arrivals at the station as returned by the iRail liveboard API with arrdep=arrival. The board reflects the current state of the arrival display at the station, including delays, cancellations, and platform assignments.\"}";
 
-.alter table [ArrivalBoard] column-docstrings (
+.alter table ['be.irail.ArrivalBoard'] column-docstrings (
    [station_id]: "{\"description\": \"Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema.\"}",
    [station_name]: "{\"description\": \"Display name of the station this board belongs to.\"}",
    [retrieved_at]: "{\"description\": \"ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field.\"}",
@@ -211,7 +211,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [ArrivalBoard] ingestion json mapping "ArrivalBoard_json_flat"
+.create-or-alter table ['be.irail.ArrivalBoard'] ingestion json mapping "be.irail.ArrivalBoard_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -227,7 +227,7 @@
 ]
 ```
 
-.create-or-alter table [ArrivalBoard] ingestion json mapping "ArrivalBoard_json_ce_structured"
+.create-or-alter table ['be.irail.ArrivalBoard'] ingestion json mapping "be.irail.ArrivalBoard_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -243,13 +243,13 @@
 ]
 ```
 
-.drop materialized-view ArrivalBoardLatest ifexists;
+.drop materialized-view ['be.irail.ArrivalBoardLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ArrivalBoardLatest on table ArrivalBoard {
-    ArrivalBoard | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['be.irail.ArrivalBoardLatest'] on table ['be.irail.ArrivalBoard'] {
+    ['be.irail.ArrivalBoard'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [ArrivalBoard] policy update
+.alter table ['be.irail.ArrivalBoard'] policy update
 ```
 [{
   "IsEnabled": true,
