@@ -70,3 +70,7 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template-with-eventhub.json)
+
+## Fabric notebook hosting
+
+This source can also run as a scheduled Microsoft Fabric notebook (single-cycle execution per run). Deploy via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook template lives at [`notebook/singapore-nea-feed.ipynb`](notebook/singapore-nea-feed.ipynb).

@@ -320,7 +320,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Singapore — 62 weather stations + 5 air-quality regions",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "smhi-weather",
