@@ -242,13 +242,14 @@ class CanadaAQHIBridge:
         return math.sqrt((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2)
 
     def fetch_json(self, url: str, **kwargs: Any) -> Any:
-        response = self.session.get(url, timeout=60, **kwargs)
+        timeout = kwargs.pop("timeout", 30)
+        response = self.session.get(url, timeout=timeout, **kwargs)
         response.raise_for_status()
         return response.json()
 
-    def fetch_text(self, url: str) -> Optional[str]:
+    def fetch_text(self, url: str, *, timeout: int = 30) -> Optional[str]:
         try:
-            response = self.session.get(url, timeout=60)
+            response = self.session.get(url, timeout=timeout)
             if response.status_code == 404:
                 return None
             response.raise_for_status()
@@ -338,14 +339,46 @@ class CanadaAQHIBridge:
             entry["forecast_url"] = canonicalize_feed_url(properties.get("path_to_current_forecast"))
         return merged
 
-    def load_reference_catalogs(self, selected_provinces: set[str]) -> dict[str, dict[str, Any]]:
-        """Load and enrich AQHI community metadata."""
+    def load_reference_catalogs(
+        self,
+        selected_provinces: set[str],
+        *,
+        max_communities: int = 0,
+    ) -> dict[str, dict[str, Any]]:
+        """Load and enrich AQHI community metadata.
+
+        ``max_communities`` (when > 0) lets the caller cap the result so the
+        method can early-exit once enough entries are filtered, avoiding the
+        expensive per-community geolocator round-trips for the rest of the
+        catalog. Items whose URLs already pin a single selected province are
+        preferred so the cap can be reached without any geolocator call.
+        """
         community_geojson = self.fetch_json(COMMUNITY_GEOJSON_URL)
         station_geojson = self.fetch_json(STATION_GEOJSON_URL)
         communities = self.merge_community_catalogs(community_geojson, station_geojson)
         filtered: dict[str, dict[str, Any]] = {}
 
-        for cgndb_code, entry in communities.items():
+        def _priority(item: tuple[str, dict[str, Any]]) -> tuple[int, str]:
+            cgndb_code, entry = item
+            if cgndb_code in self.province_cache:
+                if self.province_cache[cgndb_code] in selected_provinces:
+                    return (0, cgndb_code)
+                return (3, cgndb_code)
+            candidates = (
+                province_candidates_for_feed(entry.get("observation_url"))
+                or province_candidates_for_feed(entry.get("forecast_url"))
+            )
+            if len(candidates) == 1 and next(iter(candidates)) in selected_provinces:
+                return (0, cgndb_code)
+            if candidates and candidates.isdisjoint(selected_provinces):
+                return (4, cgndb_code)
+            if candidates and not candidates.isdisjoint(selected_provinces):
+                return (1, cgndb_code)
+            return (2, cgndb_code)
+
+        ordered_items = sorted(communities.items(), key=_priority)
+
+        for cgndb_code, entry in ordered_items:
             province = self.province_cache.get(cgndb_code)
             candidate_provinces = (
                 province_candidates_for_feed(entry.get("observation_url"))
@@ -366,6 +399,8 @@ class CanadaAQHIBridge:
                 continue
             entry["province"] = province
             filtered[cgndb_code] = entry
+            if max_communities > 0 and len(filtered) >= max_communities:
+                break
 
         self.communities = filtered
         return filtered
@@ -580,7 +615,9 @@ class CanadaAQHIBridge:
         reference_count = 0
         if needs_reference_refresh:
             try:
-                communities = self.load_reference_catalogs(selected_provinces)
+                communities = self.load_reference_catalogs(
+                    selected_provinces, max_communities=max_communities
+                )
                 communities = self.limit_communities(communities, max_communities=max_communities)
                 self.communities = communities
                 reference_count = self.emit_reference_data(producer, communities)
