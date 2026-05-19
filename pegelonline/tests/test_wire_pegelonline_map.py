@@ -33,12 +33,12 @@ class WirePegelonlineMapTests(unittest.TestCase):
 
     def test_layer_names_unique_and_complete(self) -> None:
         m = self.mod
-        # Set must equal the eight declared constants (v3 adds real rivers).
+        # Seven declared constants (legacy river backbone removed in v3).
         self.assertEqual(
             m.LAYER_NAMES,
             {m.NAME_STATE, m.NAME_NAV, m.NAME_TREND,
              m.NAME_FRESH, m.NAME_LABELS, m.NAME_REPLAY,
-             m.NAME_RIVERS, m.NAME_REAL_RIVERS},
+             m.NAME_REAL_RIVERS},
         )
         # All layer names must share the common prefix used for the
         # idempotent drop-and-replace logic.
@@ -68,10 +68,6 @@ class WirePegelonlineMapTests(unittest.TestCase):
                     self.assertIn("Time (UTC, 15-min)", body)
                 else:
                     self.assertNotIn("Time (UTC, 15-min)", body)
-        # Rivers layer just wraps the dedicated KQL function.
-        rivers_body = m._kql_rivers()
-        self.assertIn("RiverBackbones()", rivers_body)
-        self.assertIn("geometry", rivers_body)
         # Real rivers layer wraps the RealRiverBackbones() function and
         # adds data-driven stroke colour + weight as plain columns.
         real_body = m._kql_real_rivers()
@@ -105,20 +101,11 @@ class WirePegelonlineMapTests(unittest.TestCase):
                 self.assertEqual(layer["geometryColumnName"], "geometry")
                 self.assertIn("filters", layer)
                 self.assertIsInstance(layer["filters"], list)
-        # Rivers layer is a line layer, not point.
-        rivers = m._layer_rivers(default_visible=True)
-        ropts = rivers["options"]
-        self.assertEqual(ropts["type"], "vector")
-        self.assertNotIn("pointLayerType", ropts)
-        self.assertIn("lineOptions", ropts)
-        self.assertIn("strokeColor", ropts["lineOptions"])
-        self.assertIn("strokeWidth", ropts["lineOptions"])
-        # Dual-write of the colour expression.
-        self.assertEqual(ropts["color"], ropts["lineOptions"]["strokeColor"])
-        # Real-rivers is also a line layer with data-driven stroke colour/width.
+        # Real-rivers is a line layer with data-driven stroke colour/width.
         real_rivers = m._layer_real_rivers(default_visible=True)
         rropts = real_rivers["options"]
         self.assertEqual(rropts["type"], "vector")
+        self.assertNotIn("pointLayerType", rropts)
         self.assertIn("lineOptions", rropts)
         self.assertEqual(rropts["color"], ["get", "stroke_color"])
         self.assertEqual(rropts["lineOptions"]["strokeColor"], ["get", "stroke_color"])
@@ -135,12 +122,10 @@ class WirePegelonlineMapTests(unittest.TestCase):
 
     def test_default_visibility(self) -> None:
         """Real rivers + hydrological state default-on; everything else
-        default-off (incl. the legacy stitched backbone and the dense labels
-        layer — the latter is gated by minZoom anyway)."""
+        default-off (the labels layer is gated by minZoom anyway)."""
         m = self.mod
         layers = [
             (m._layer_real_rivers(default_visible=True), True),
-            (m._layer_rivers(default_visible=False),  False),
             (m._layer_state(default_visible=True),    True),
             (m._layer_navigation(),                   False),
             (m._layer_trend(),                        False),

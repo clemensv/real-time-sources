@@ -72,7 +72,6 @@ import requests
 
 LAYER_PREFIX = "pegelonline "
 
-NAME_RIVERS  = f"{LAYER_PREFIX}river backbone"
 NAME_REAL_RIVERS = f"{LAYER_PREFIX}real rivers"
 NAME_STATE   = f"{LAYER_PREFIX}hydrological state"
 NAME_NAV     = f"{LAYER_PREFIX}navigation state"
@@ -81,8 +80,17 @@ NAME_FRESH   = f"{LAYER_PREFIX}data freshness"
 NAME_LABELS  = f"{LAYER_PREFIX}station labels"
 NAME_REPLAY  = f"{LAYER_PREFIX}historical replay"
 
-LAYER_NAMES = {NAME_RIVERS, NAME_REAL_RIVERS, NAME_STATE, NAME_NAV, NAME_TREND,
+LAYER_NAMES = {NAME_REAL_RIVERS, NAME_STATE, NAME_NAV, NAME_TREND,
                NAME_FRESH, NAME_LABELS, NAME_REPLAY}
+
+# Legacy layer names from previous map deployments that should be removed
+# during the idempotent rewire (in addition to anything currently in
+# LAYER_NAMES). These were created by older versions of this script or by
+# one-off ad-hoc scripts.
+LEGACY_LAYER_NAMES = {
+    "pegelonline river backbone",                    # v1/v2 stitched-line backbone
+    "pegelonline real rivers (Azure Maps geometry)", # v3 ad-hoc-script earlier name
+}
 
 # Common geometry projection appended to every KQL body.
 GEOM_PROJECTION = (
@@ -152,20 +160,12 @@ def _kql_replay() -> str:
 """
 
 
-def _kql_rivers() -> str:
-    # RiverBackbones() already projects a LineString `geometry` and the
-    # `worst_state` colour key. We just hand it to the map.
-    return """RiverBackbones()
-| project geometry, water_shortname, water_longname, label, worst_state,
-          n_gauges, avg_value
-"""
-
-
 def _kql_real_rivers() -> str:
     """RealRiverBackbones() projects a MultiLineString `geometry` sourced
-    from Azure Maps tiles, so the overlay aligns pixel-perfectly with the
-    basemap river rendering. Stroke colour & width are computed here so the
-    Fabric Map can use simple `["get", ...]` expressions."""
+    from Azure Maps tiles (where available) or a station-interpolated polyline
+    fallback for canals/tributaries Azure Maps doesn't label. Stroke colour
+    & width are computed here so the Fabric Map can use simple `["get", ...]`
+    expressions."""
     return """RealRiverBackbones()
 | extend stroke_color = case(
     worst_state == "very-high", "#d73027",
@@ -511,34 +511,6 @@ def _layer_replay(default_bucket: Optional[str]) -> dict:
     }
 
 
-def _layer_rivers(default_visible: bool) -> dict:
-    """Per-river polyline that traces all gauges of a named water body in
-    downstream order, coloured by the worst gauge state on that river. This
-    is the layer that visually links the gauge readings to the river network.
-    """
-    return {
-        "name": NAME_RIVERS,
-        "kql": _kql_rivers(),
-        "options": {
-            "type": "vector",
-            "visible": default_visible,
-            "color": WORST_STATE_COLOR,
-            "lineOptions": {
-                "strokeColor": WORST_STATE_COLOR,
-                "strokeWidth": RIVER_STROKE_WIDTH,
-                "strokeOpacity": 0.9,
-            },
-            "dataLabelKeys": ["water_longname"],
-            "dataLabelOptions": dict(LABEL_OPTIONS_BASE, enabled=False, size=11),
-            "tooltipKeys": ["water_longname", "n_gauges",
-                            "worst_state", "avg_value"],
-            "enablePopups": True,
-        },
-        "geometryColumnName": "geometry",
-        "filters": [],
-    }
-
-
 def _layer_real_rivers(default_visible: bool) -> dict:
     """Real meandering river polylines sourced from Azure Maps' own
     microsoft.base.labels vector tiles. Geometry aligns pixel-perfectly
@@ -597,11 +569,13 @@ def wire(workspace_id: str, map_id: str, kql_db_id: str,
     parts = {p["path"]: p for p in res["definition"]["parts"]}
     mp = json.loads(base64.b64decode(parts["map.json"]["payload"]))
 
-    # 2. Drop any previously-wired pegelonline layers (idempotent).
+    # 2. Drop any previously-wired pegelonline layers (idempotent). Includes
+    #    legacy/ad-hoc layer names from earlier deployments.
     removed_src_ids = set()
     kept_settings = []
+    drop_names = LAYER_NAMES | LEGACY_LAYER_NAMES
     for ls in mp.get("layerSettings", []):
-        if ls.get("name") in LAYER_NAMES:
+        if ls.get("name") in drop_names:
             removed_src_ids.add(ls.get("sourceId"))
         else:
             kept_settings.append(ls)
@@ -647,7 +621,6 @@ def wire(workspace_id: str, map_id: str, kql_db_id: str,
     #    rivers/canals not present in RiverGeometries.
     layers = [
         _layer_real_rivers(default_visible=True),
-        _layer_rivers(default_visible=False),
         _layer_state(default_visible=True),
         _layer_navigation(),
         _layer_trend(),
