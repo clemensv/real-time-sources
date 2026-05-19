@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [WeatherBulletin] (
+.create-merge table ['jp.go.jma.WeatherBulletin'] (
    [bulletin_id]: string,
    [title]: string,
    [author]: string,
@@ -40,9 +40,9 @@
    [___subject]: string
 );
 
-.alter table [WeatherBulletin] docstring "{\"description\": \"Weather bulletin entry from the JMA XML Atom feed. Covers forecasts, warnings, advisories, and risk notifications published by the Japan Meteorological Agency and its regional observatories.\"}";
+.alter table ['jp.go.jma.WeatherBulletin'] docstring "{\"description\": \"Weather bulletin entry from the JMA XML Atom feed. Covers forecasts, warnings, advisories, and risk notifications published by the Japan Meteorological Agency and its regional observatories.\"}";
 
-.alter table [WeatherBulletin] column-docstrings (
+.alter table ['jp.go.jma.WeatherBulletin'] column-docstrings (
    [bulletin_id]: "{\"description\": \"Unique identifier for the bulletin, derived from the Atom entry ID (typically a URL to the full XML document).\"}",
    [title]: "{\"description\": \"Title of the weather bulletin in Japanese, e.g. '\\u6c17\\u8c61\\u7279\\u5225\\u8b66\\u5831\\u30fb\\u8b66\\u5831\\u30fb\\u6ce8\\u610f\\u5831' (Special weather warnings/advisories).\"}",
    [author]: "{\"description\": \"Issuing authority name in Japanese, e.g. '\\u6c17\\u8c61\\u5e81' (JMA) or a regional observatory name like '\\u677e\\u6c5f\\u5730\\u65b9\\u6c17\\u8c61\\u53f0'.\"}",
@@ -57,7 +57,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WeatherBulletin] ingestion json mapping "WeatherBulletin_json_flat"
+.create-or-alter table ['jp.go.jma.WeatherBulletin'] ingestion json mapping "jp.go.jma.WeatherBulletin_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -75,7 +75,7 @@
 ]
 ```
 
-.create-or-alter table [WeatherBulletin] ingestion json mapping "WeatherBulletin_json_ce_structured"
+.create-or-alter table ['jp.go.jma.WeatherBulletin'] ingestion json mapping "jp.go.jma.WeatherBulletin_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -93,13 +93,13 @@
 ]
 ```
 
-.drop materialized-view WeatherBulletinLatest ifexists;
+.drop materialized-view ['jp.go.jma.WeatherBulletinLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WeatherBulletinLatest on table WeatherBulletin {
-    WeatherBulletin | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['jp.go.jma.WeatherBulletinLatest'] on table ['jp.go.jma.WeatherBulletin'] {
+    ['jp.go.jma.WeatherBulletin'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WeatherBulletin] policy update
+.alter table ['jp.go.jma.WeatherBulletin'] policy update
 ```
 [{
   "IsEnabled": true,

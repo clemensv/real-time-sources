@@ -252,7 +252,8 @@
     "cat": "Weather",
     "key": false,
     "desc": "Japan — weather bulletins, warnings, forecasts",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "kmi-belgium",
