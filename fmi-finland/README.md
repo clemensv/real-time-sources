@@ -45,6 +45,10 @@ segments as a fallback.
 
 See [EVENTS.md](EVENTS.md) for the CloudEvents contract.
 
+## Fabric notebook hosting
+
+This source can also run as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook lives at [`notebook/fmi-finland-feed.ipynb`](notebook/fmi-finland-feed.ipynb) and invokes `fmi-finland feed --once` per scheduled run.
+
 ## Usage
 
 List known stations:

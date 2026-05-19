@@ -341,7 +341,8 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Finland — hourly air quality observations via FMI WFS",
-    "kql": true
+    "kql": true,
+    "notebook": true
   },
   {
     "id": "gios-poland",
