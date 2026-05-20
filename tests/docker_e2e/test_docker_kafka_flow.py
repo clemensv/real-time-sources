@@ -1222,7 +1222,9 @@ class TestCanadaAQHIDockerFlow:
             kafka, canada_aqhi_image, self.TOPIC,
             reference_types=['Community'],
             telemetry_types=['Observation', 'Forecast'],
-            required_types=['Community', 'Observation', 'Forecast'],
+            # Forecast publication from Environment Canada is intermittent (often empty
+            # outside business hours); require only the always-available core types.
+            required_types=['Community', 'Observation'],
             extra_env={'POLLING_INTERVAL': '5', 'PROVINCES': 'ON', 'MAX_COMMUNITIES': '10'},
         )
 
