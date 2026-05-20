@@ -219,7 +219,7 @@ async function selectSource(s) {
     const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   };
-  $btnFabric.onclick      = () => openDeployForm(s, "fabric");
+  $btnFabric.onclick      = () => openDeployForm(s, "fabric-aci");
   if ($btnFabricNotebook) {
     // Notebook deploy is opt-in per source (requires <source>/notebook/<source>-feed.ipynb).
     $btnFabricNotebook.style.display = s.notebook ? "" : "none";
@@ -259,11 +259,23 @@ async function openDeployForm(source, mode) {
   $deployPane.style.display = "flex";
   $deployForm.innerHTML = "";
 
-  // Azure section — only the notebook variant needs an Azure subscription
-  // context (for the Fabric capacity ownership / token). The Fabric-only
-  // script variant runs purely against Fabric APIs and creates no Azure
-  // resources at all.
-  if (mode === "fabric-notebook") {
+  // Azure section
+  //   fabric-aci      → needs RG + Location + (optional) Subscription (creates ACI)
+  //   fabric-notebook → only Subscription (Fabric capacity token, no Azure deploy)
+  //   fabric          → only Subscription (optional)
+  if (mode === "fabric-aci") {
+    const azSection = el("div", { class: "form-section" });
+    azSection.innerHTML = '<div class="form-section-title">Azure (for the ACI feeder container)</div>';
+    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
+      "", "Azure subscription GUID (leave blank for default)", false));
+    azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
+      "", "Azure resource group (created on demand)", true));
+    azSection.appendChild(makeField("location", "Location", "text",
+      "westeurope", "Azure region (defaults to RG location, else westeurope)", false));
+    azSection.appendChild(makeField("containerGroupName", "Container Group Name", "text",
+      source.id, "Name for the Azure Container Group", false));
+    $deployForm.appendChild(azSection);
+  } else if (mode === "fabric-notebook") {
     const azSection = el("div", { class: "form-section" });
     azSection.innerHTML = '<div class="form-section-title">Azure Subscription</div>';
     azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
@@ -280,13 +292,35 @@ async function openDeployForm(source, mode) {
   // Fabric section
   const fabSection = el("div", { class: "form-section" });
   fabSection.innerHTML = '<div class="form-section-title">Microsoft Fabric</div>';
-  fabSection.appendChild(makeField("workspaceId", "Workspace ID", "text",
-    "", "Fabric workspace GUID", true));
-  fabSection.appendChild(makeField("eventhouseId", "Eventhouse ID", "text",
-    "", "Fabric Eventhouse GUID", true));
+  fabSection.appendChild(makeField("workspaceId", "Workspace (name or GUID)", "text",
+    "", "Fabric workspace name or GUID", true));
+  fabSection.appendChild(makeField("eventhouseId", "Eventhouse (name or GUID)", "text",
+    "", "Fabric Eventhouse name or GUID (created on demand)", false));
   fabSection.appendChild(makeField("databaseName", "KQL Database Name", "text",
     source.id.replace(/-/g, "_"), "Name for the KQL database", false));
   $deployForm.appendChild(fabSection);
+
+  // API key section (only for sources that require one, and only the
+  // fabric-aci mode actually deploys the feeder).
+  if (source.key && mode === "fabric-aci") {
+    const keyMap = {
+      "aisstream": { param: "aisstreamApiKey", label: "AISStream API Key" },
+      "entsoe":    { param: "entsoeSecurityToken", label: "ENTSO-E Security Token" },
+      "nve-hydro": { param: "nveApiKey", label: "NVE API Key" },
+      "wsdot":     { param: "wsdotAccessCode", label: "WSDOT Access Code" }
+    };
+    const meta = keyMap[source.id];
+    if (meta) {
+      const keySection = el("div", { class: "form-section" });
+      keySection.innerHTML = `<div class="form-section-title">${esc(meta.label)} <span style="font-weight:normal;color:var(--accent);font-size:11px">required</span></div>`;
+      keySection.appendChild(makeField("apiKey", meta.label, "password",
+        "", "Stored as a securestring template parameter", true, true));
+      // remember the param name on a hidden field
+      const hidden = el("input", { type: "hidden", id: "deploy-apiKeyParamName", value: meta.param });
+      keySection.appendChild(hidden);
+      $deployForm.appendChild(keySection);
+    }
+  }
 
   // Submit button
   const submitBtn = el("button", { class: "deploy-submit", type: "button" });
@@ -333,24 +367,46 @@ function launchCloudShell(source, mode) {
 
   const subId = getValue("subscriptionId");
 
-  if (mode === "fabric" || mode === "fabric-notebook") {
+  if (mode === "fabric-aci" || mode === "fabric" || mode === "fabric-notebook") {
     const wsId = getValue("workspaceId");
-    const ehId = getValue("eventhouseId");
-    if (!wsId || !ehId) {
-      alert("Workspace ID and Eventhouse ID are required for Fabric deployment.");
+    if (!wsId) {
+      alert("Workspace (name or GUID) is required for Fabric deployment.");
       return;
     }
+    const ehId = getValue("eventhouseId");
     const dbName = getValue("databaseName") || source.id.replace(/-/g, "_");
 
-    const scriptName = mode === "fabric-notebook" ? "deploy-feeder-notebook.ps1" : "deploy-fabric.ps1";
+    let scriptName;
+    if (mode === "fabric-aci")           scriptName = "deploy-fabric-aci.ps1";
+    else if (mode === "fabric-notebook") scriptName = "deploy-feeder-notebook.ps1";
+    else                                 scriptName = "deploy-fabric.ps1";
+
     let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/${scriptName}' -OutFile ${scriptName}; `
       + `./${scriptName}`
       + ` -Source '${source.id}'`;
+
+    if (mode === "fabric-aci") {
+      const rg = getValue("resourceGroup");
+      if (!rg) { alert("Resource Group is required for the ACI + Fabric deployment."); return; }
+      const loc = getValue("location");
+      const cgName = getValue("containerGroupName") || source.id;
+      cmd += ` -ResourceGroup '${rg}'`;
+      if (loc) cmd += ` -Location '${loc}'`;
+      cmd += ` -ContainerGroupName '${cgName}'`;
+      if (source.key) {
+        const apiKey = getValue("apiKey");
+        const apiKeyParamName = getValue("apiKeyParamName");
+        if (!apiKey) { alert(`This source requires an API key (${apiKeyParamName || "secret"}).`); return; }
+        if (apiKeyParamName) {
+          cmd += ` -ApiKeyParamName '${apiKeyParamName}' -ApiKey '${apiKey}'`;
+        }
+      }
+    }
     if (subId) cmd += ` -SubscriptionId '${subId}'`;
-    cmd += ` -Workspace '${wsId}'`
-      + ` -Eventhouse '${ehId}'`
-      + ` -DatabaseName '${dbName}'`;
-    if (mode === "fabric-notebook") {
+    cmd += ` -Workspace '${wsId}'`;
+    if (ehId) cmd += ` -Eventhouse '${ehId}'`;
+    cmd += ` -DatabaseName '${dbName}'`;
+    if (mode === "fabric-notebook" || mode === "fabric-aci") {
       cmd += ` -Branch '${BRANCH}'`;
     }
 

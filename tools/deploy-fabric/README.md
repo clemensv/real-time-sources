@@ -138,6 +138,43 @@ Data flows into the `_cloudevents_dispatch` landing table, and KQL update
 policies automatically fan events out into per-type tables with materialized
 views for latest-state queries.
 
+## Sister script: deploy-fabric-aci.ps1 (ACI + Fabric, one click)
+
+For users who want both the Fabric backend AND an ACI feeder in a single
+call, use `deploy-fabric-aci.ps1`. It is a thin wrapper:
+
+1. Calls `deploy-fabric.ps1` to provision Fabric (Eventhouse + KQL DB +
+   Event Stream + post-deploy hook) and captures the Event Stream Custom
+   Endpoint connection string.
+2. Creates the Azure Resource Group on demand, then deploys the source's
+   `azure-template.json` (ACI + storage + Log Analytics) with that
+   connection string wired into the container as `CONNECTION_STRING`.
+
+The container streams data directly into the Fabric Event Stream — **no
+Event Hubs namespace is created**.
+
+```powershell
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sources/main/tools/deploy-fabric/deploy-fabric-aci.ps1' -OutFile deploy-fabric-aci.ps1
+
+./deploy-fabric-aci.ps1 `
+    -Source pegelonline `
+    -ResourceGroup rg-streams `
+    -Location westeurope `
+    -Workspace ContosoRealTime `
+    -Eventhouse ContosoRealTime-eh
+```
+
+Sources requiring a secret (`aisstream`, `nve-hydro`, `wsdot`, `entsoe`)
+pass it through with `-ApiKeyParamName <template-param> -ApiKey <secret>`,
+e.g.:
+
+```powershell
+./deploy-fabric-aci.ps1 -Source aisstream `
+    -ResourceGroup rg-streams -Location westeurope `
+    -Workspace ContosoRealTime -Eventhouse ContosoRealTime-eh `
+    -ApiKeyParamName aisstreamApiKey -ApiKey 'sk_…'
+```
+
 ## Sources requiring API keys
 
 These sources require an additional secret when you run the feeder
