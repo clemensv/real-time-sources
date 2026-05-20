@@ -259,16 +259,23 @@ async function openDeployForm(source, mode) {
   $deployPane.style.display = "flex";
   $deployForm.innerHTML = "";
 
-  // Azure section
-  const azSection = el("div", { class: "form-section" });
-  azSection.innerHTML = '<div class="form-section-title">Azure Resources</div>';
-  azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
-    "", "Azure subscription GUID (leave blank for default)", false));
-  azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
-    `rg-${source.id}-feeder`, "Azure resource group name", true));
-  azSection.appendChild(makeField("location", "Location", "text",
-    "westcentralus", "Azure region for deployment", true));
-  $deployForm.appendChild(azSection);
+  // Azure section — only the notebook variant needs an Azure subscription
+  // context (for the Fabric capacity ownership / token). The Fabric-only
+  // script variant runs purely against Fabric APIs and creates no Azure
+  // resources at all.
+  if (mode === "fabric-notebook") {
+    const azSection = el("div", { class: "form-section" });
+    azSection.innerHTML = '<div class="form-section-title">Azure Subscription</div>';
+    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
+      "", "Azure subscription GUID (leave blank for default)", false));
+    $deployForm.appendChild(azSection);
+  } else if (mode === "fabric") {
+    const azSection = el("div", { class: "form-section" });
+    azSection.innerHTML = '<div class="form-section-title">Azure Subscription <span style="font-weight:normal;color:var(--muted);font-size:11px">(optional)</span></div>';
+    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
+      "", "Optional; leave blank to use your default", false));
+    $deployForm.appendChild(azSection);
+  }
 
   // Fabric section
   const fabSection = el("div", { class: "form-section" });
@@ -324,12 +331,7 @@ function launchCloudShell(source, mode) {
     return el ? el.value.trim() : "";
   };
 
-  const rg = getValue("resourceGroup");
-  const loc = getValue("location");
   const subId = getValue("subscriptionId");
-
-  if (!rg) { alert("Resource Group is required."); return; }
-  if (!loc) { alert("Location is required."); return; }
 
   if (mode === "fabric" || mode === "fabric-notebook") {
     const wsId = getValue("workspaceId");
@@ -343,9 +345,7 @@ function launchCloudShell(source, mode) {
     const scriptName = mode === "fabric-notebook" ? "deploy-feeder-notebook.ps1" : "deploy-fabric.ps1";
     let cmd = `Invoke-WebRequest -Uri '${RAW}/tools/deploy-fabric/${scriptName}' -OutFile ${scriptName}; `
       + `./${scriptName}`
-      + ` -Source '${source.id}'`
-      + ` -ResourceGroup '${rg}'`
-      + ` -Location '${loc}'`;
+      + ` -Source '${source.id}'`;
     if (subId) cmd += ` -SubscriptionId '${subId}'`;
     cmd += ` -Workspace '${wsId}'`
       + ` -Eventhouse '${ehId}'`

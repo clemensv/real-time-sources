@@ -1,46 +1,44 @@
 # Deploy to Fabric — Cloud Shell Script
 
-One-click deployment of a Real-Time Sources bridge with Microsoft Fabric
-integration. Runs in Azure Cloud Shell.
+One-click **Fabric-only** deployment of a Real-Time Sources bridge. Runs in
+Azure Cloud Shell. The script deploys **only** to Microsoft Fabric — it
+creates **no** Azure resources (no Resource Group, no Container Instance,
+no Event Hubs namespace). The feeder that pushes upstream data into the
+resulting Event Stream is your responsibility: run the source's Docker
+image anywhere (laptop, on-prem, ACI, Kubernetes, …) using the connection
+string this script writes out, or deploy the Fabric-notebook feeder via
+the sibling `deploy-feeder-notebook.ps1`.
 
 ## What it does
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  Step 1: ARM Template (az deployment group create)             │
-│   → Azure Container Instance (bridge container)                │
-│   → Event Hub namespace + event hub                            │
-│   → Storage account (bridge state)                             │
-│   → Log Analytics workspace                                    │
-└──────────────────────────┬─────────────────────────────────────┘
-                           │
-┌──────────────────────────▼─────────────────────────────────────┐
-│  Steps 2–3: Fabric REST API + KQL                              │
-│   → Eventhouse (auto-created if missing) + KQL database         │
-│   → _cloudevents_dispatch table + typed tables + update         │
+│  Steps 1–2: Fabric REST API + KQL                              │
+│   → Eventhouse (auto-created if missing) + KQL database        │
+│   → _cloudevents_dispatch table + typed tables + update        │
 │     policies + materialized views (from source kql/ script)    │
 └──────────────────────────┬─────────────────────────────────────┘
                            │
 ┌──────────────────────────▼─────────────────────────────────────┐
-│  Steps 4–5: Fabric Event Stream                                │
+│  Steps 3–4: Fabric Event Stream                                │
 │   → Custom Endpoint source                                     │
-│   → Default stream → Eventhouse → _cloudevents_dispatch         │
+│   → Default stream → Eventhouse → _cloudevents_dispatch        │
 └──────────────────────────┬─────────────────────────────────────┘
                            │
 ┌──────────────────────────▼─────────────────────────────────────┐
-│  Steps 6–7: Wire it up                                         │
-│   → Retrieve Custom Endpoint connection string                  │
-│   → Update ACI container to send directly to Fabric             │
+│  Step 5: Connection string                                     │
+│   → Retrieve Custom Endpoint connection string                 │
+│   → Optionally write to -OutCsFile                             │
 └──────────────────────────┬─────────────────────────────────────┘
                            │
 ┌──────────────────────────▼─────────────────────────────────────┐
-│  Optional post-deploy hook                                     │
-│   → Auto-discover {Source}/fabric/post-deploy.ps1               │
-│     (local working tree first, then $RawBase fallback)          │
-│   → Invoke with a -Context hashtable of all created IDs         │
-│   → Used by sources that need extra Fabric wiring (maps,        │
-│     dashboards, environments, …). Disable with                  │
-│     -SkipPostDeployHook.                                        │
+│  Step 6: Optional post-deploy hook                             │
+│   → Auto-discover {Source}/fabric/post-deploy.ps1              │
+│     (local working tree first, then $RawBase fallback)         │
+│   → Invoke with a -Context hashtable of all created IDs        │
+│   → Used by sources that need extra Fabric wiring (maps,       │
+│     dashboards, environments, …). Disable with                 │
+│     -SkipPostDeployHook.                                       │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -48,7 +46,7 @@ integration. Runs in Azure Cloud Shell.
 
 A source MAY ship a `{Source}/fabric/post-deploy.ps1` script. After a
 successful deployment, both `deploy-fabric.ps1` and
-`deploy-fabric-notebook.ps1` look for that file (first in the local working
+`deploy-feeder-notebook.ps1` look for that file (first in the local working
 tree, then via raw GitHub for cloud-shell scenarios) and invoke it with:
 
 ```powershell
@@ -61,16 +59,15 @@ re-discover them:
 | Key | Description |
 | --- | --- |
 | `Source` | Source name (e.g. `dwd`, `pegelonline`). |
-| `Mode` | Either implicit (deploy-fabric) or `notebook` (deploy-fabric-notebook). |
 | `RawBase`, `Repo`, `Branch` | Raw GitHub URL base for downloading siblings. |
 | `FabricApi`, `TempDir` | Constants. |
 | `WorkspaceId`, `WorkspaceName` | Fabric workspace. |
 | `EventhouseId`, `EventhouseName`, `EventhouseClusterUri` | Eventhouse + query URI. |
 | `DatabaseId`, `DatabaseName` | KQL database. |
-| `EventstreamId`, `EventstreamName` | Eventstream item (deploy-fabric only). |
-| `ContainerGroupName`, `ResourceGroup`, `Location`, `SubscriptionId` | Azure container (deploy-fabric only). |
-| `ConnectionString` | Eventstream custom-endpoint CS (deploy-fabric only, if retrievable). |
-| `NotebookId`, `NotebookName` | Notebook item (deploy-fabric-notebook only). |
+| `EventstreamId`, `EventstreamName` | Eventstream item. |
+| `ConnectionString` | Eventstream custom-endpoint CS (if retrievable). |
+| `SubscriptionId` | Azure subscription used to acquire the Fabric token (may be empty). |
+| `NotebookId`, `NotebookName` | Notebook item (deploy-feeder-notebook only). |
 
 Hooks should ignore keys they don't care about and may consume additional
 context from environment variables (e.g. `DWD_FABRIC_MAP_ID`). A hook that
@@ -79,15 +76,17 @@ chooses to no-op should `exit 0` so the bootstrap remains green.
 If the hook throws, the deployment is treated as failed (re-run with
 `-SkipPostDeployHook` to bypass and re-run the hook manually later).
 
-Example: see [`dwd/fabric/post-deploy.ps1`](../../dwd/fabric/post-deploy.ps1)
-(wires Fabric Map layers).
+Example: see [`pegelonline/fabric/post-deploy.ps1`](../../pegelonline/fabric/post-deploy.ps1)
+(wires a Fabric Map item and ingests static river-segment reference data).
 
 ## Prerequisites
 
 - Azure Cloud Shell (PowerShell) — already authenticated via `az`
-- A Microsoft Fabric **Workspace** (you need the workspace ID)
-- *(Optional)* An existing **Eventhouse** in that workspace. If you don't pass `-Eventhouse`, or pass a name that doesn't exist yet, the script will create one with the source name. Pass an existing Eventhouse name or GUID to reuse one.
-- Contributor access to an Azure subscription / resource group
+- A Microsoft Fabric **Workspace** (you need the workspace name or GUID)
+- *(Optional)* An existing **Eventhouse** in that workspace. If you don't
+  pass `-Eventhouse`, or pass a name that doesn't exist yet, the script
+  will create one with the source name. Pass an existing Eventhouse name
+  or GUID to reuse one.
 
 ## Usage
 
@@ -99,9 +98,9 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
 
 ./deploy-fabric.ps1 `
     -Source pegelonline `
-    -ResourceGroup rg-streams `
-    -WorkspaceId "c98acd97-4363-4296-8323-b6ab21e53903" `
-    -EventhouseId "dbfd2819-2879-4ae7-bff2-95619ad7b8e7"
+    -Workspace "ContosoRealTime" `
+    -Eventhouse "ContosoRealTime-eh" `
+    -OutCsFile pegelonline-eventstream-cs.txt
 ```
 
 ### Parameters
@@ -109,20 +108,31 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
 | Parameter | Required | Default | Description |
 |-----------|----------|---------|-------------|
 | `-Source` | Yes | — | Source directory name (e.g., `pegelonline`, `usgs-earthquakes`) |
-| `-ResourceGroup` | Yes | — | Azure resource group for ACI + Event Hubs |
-| `-Location` | No | RG location | Azure region |
-| `-WorkspaceId` | Yes | — | Fabric workspace ID (GUID) |
-| `-EventhouseId` | Yes | — | Fabric Eventhouse ID (GUID) |
+| `-Workspace` | Yes | — | Fabric workspace name OR GUID |
+| `-Eventhouse` | No | Source name | Fabric Eventhouse name OR GUID (created on demand) |
 | `-DatabaseName` | No | Source name | KQL database name |
-| `-SkipArm` | No | `$false` | Skip ARM deployment (if ACI + EH already exist) |
+| `-SubscriptionId` | No | active | Azure subscription for Fabric token acquisition |
+| `-OutCsFile` | No | — | Path to write the Event Stream connection string |
+| `-SkipPostDeployHook` | No | `$false` | Skip the source-specific post-deploy hook |
+
+> **Note:** `-ResourceGroup`, `-Location`, and `-SkipArm` are accepted but
+> ignored. They were used when this script also deployed an ACI feeder,
+> which it no longer does. Old portal commands continue to work; a warning
+> is printed when any of these are supplied.
 
 ## What happens end-to-end
 
-The script deploys the ACI container initially connected to Event Hubs (via
-the ARM template), then sets up the Fabric side. Once the Event Stream is
-configured, the script retrieves the Custom Endpoint connection string and
-updates the ACI container to send data directly to Fabric. If the connection
-string retrieval fails, the script provides manual instructions as a fallback.
+The script creates / reuses Eventhouse + KQL DB + Event Stream in Fabric,
+applies the source's KQL schema (landing table + typed tables + update
+policies + materialized views), and writes the Event Stream Custom
+Endpoint connection string to `-OutCsFile` (if provided). The Event Stream
+is ready to receive CloudEvents the moment the script finishes.
+
+Wire up a feeder of your choice using that connection string (the
+[CONTAINER.md](https://github.com/clemensv/real-time-sources) for each
+source shows the exact `docker run` invocation), or deploy the Fabric
+notebook variant via `deploy-feeder-notebook.ps1` which runs the feeder
+inside Fabric on a schedule (no Azure resources required).
 
 Data flows into the `_cloudevents_dispatch` landing table, and KQL update
 policies automatically fan events out into per-type tables with materialized
@@ -130,7 +140,8 @@ views for latest-state queries.
 
 ## Sources requiring API keys
 
-These sources require an additional secret during ARM deployment:
+These sources require an additional secret when you run the feeder
+(passed as an environment variable to the bridge container):
 
 | Source | Environment Variable | How to obtain |
 |--------|---------------------|---------------|

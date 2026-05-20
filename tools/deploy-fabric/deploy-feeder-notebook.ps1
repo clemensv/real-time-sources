@@ -363,21 +363,18 @@ Write-Host "  Polling interval: $PollingInterval s (once-mode=$OnceMode)" -Foreg
 # the Topology API using its workspace/user identity, so Stage A only needs
 # to ensure the Fabric infra exists. No connection string is required here.
 if (-not $SkipInfra) {
-    Write-Step "A" "Setting up Fabric infra via deploy-fabric.ps1 -SkipArm..."
+    Write-Step "A" "Setting up Fabric infra via deploy-fabric.ps1..."
     $deployFabric = Join-Path $PSScriptRoot "deploy-fabric.ps1"
     if (-not (Test-Path $deployFabric)) { throw "deploy-fabric.ps1 not found alongside this script." }
 
     $fwdArgs = @{
         Source        = $Source
-        ResourceGroup = $ResourceGroup
         Workspace     = $Workspace
         Eventhouse    = $Eventhouse
         DatabaseName  = $DatabaseName
         Repo          = $Repo
         Branch        = $Branch
-        SkipArm       = $true
     }
-    if ($Location)       { $fwdArgs['Location']       = $Location }
     if ($SubscriptionId) { $fwdArgs['SubscriptionId'] = $SubscriptionId }
 
     & $deployFabric @fwdArgs

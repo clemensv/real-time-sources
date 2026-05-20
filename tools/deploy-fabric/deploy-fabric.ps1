@@ -1,64 +1,73 @@
 <#
 .SYNOPSIS
-    Deploys a Real-Time Sources bridge into Azure with Fabric Event Stream
-    and KQL database integration.
+    Deploys the Fabric-side artifacts for a Real-Time Sources bridge
+    (Eventhouse / KQL database / Event Stream / source-specific post-deploy
+    hook). This script does NOT deploy any Azure infrastructure (no
+    Resource Group, no Container Instance, no Event Hubs namespace).
 
 .DESCRIPTION
-    This script is designed to run in Azure Cloud Shell (PowerShell).
-    It performs the following steps:
+    This script is designed to run in Azure Cloud Shell (PowerShell). It is
+    the Fabric-only variant invoked by the gh-pages portal's "Fabric only"
+    deployment mode. The feeder (the process that actually pushes upstream
+    data into the Event Stream) is the user's responsibility — they can run
+    the source's Docker image anywhere (laptop, on-prem, Azure Container
+    Instance, Kubernetes, …) using the connection string this script writes
+    out via -OutCsFile, or they can deploy the Fabric-notebook feeder
+    variant via the sibling deploy-feeder-notebook.ps1 script.
 
-    1. Deploys the ACI + Event Hubs ARM template for a chosen source
-    2. Creates (or reuses) a KQL database in an existing Fabric Eventhouse
-    3. Applies the source's KQL schema script (_cloudevents_dispatch, typed
-       tables, update policies, materialized views)
-    4. Creates a Fabric Event Stream with a Custom Endpoint source that
-       routes into the KQL database's _cloudevents_dispatch table
-    5. Retrieves the Custom Endpoint connection string from the Event Stream
-    6. Updates the ACI container to send data directly to the Event Stream
+    Steps performed:
+    1. Resolve the target Workspace / Eventhouse (create the Eventhouse
+       on demand if it doesn't exist).
+    2. Create (or reuse) a KQL database in the Eventhouse.
+    3. Apply the source's KQL schema script (_cloudevents_dispatch, typed
+       tables, update policies, materialized views, helper functions).
+    4. Create a Fabric Event Stream with a Custom Endpoint source that
+       routes into the KQL database's _cloudevents_dispatch table.
+    5. Retrieve the Custom Endpoint connection string from the Event Stream
+       (optionally written to -OutCsFile for downstream feeder wiring).
+    6. Run the source's optional post-deploy hook
+       (<source>/fabric/post-deploy.ps1) — typically used to wire Fabric
+       Map items, ingest static reference data, etc.
 
     Prerequisites:
-    - Azure Cloud Shell (PowerShell) with az CLI authenticated
-    - An existing Fabric Workspace and Eventhouse
-    - Contributor access to an Azure resource group
+    - Azure Cloud Shell (PowerShell) with az CLI authenticated against an
+      identity that has Contributor on the target Fabric workspace.
+    - A target Fabric Workspace (will be looked up by name or GUID).
 
 .PARAMETER Source
     The source directory name (e.g., pegelonline, usgs-earthquakes).
 
-.PARAMETER ResourceGroup
-    Azure resource group for ACI and Event Hub deployment.
-
-.PARAMETER Location
-    Azure region for deployment. Defaults to the resource group's location.
-
 .PARAMETER SubscriptionId
     Azure subscription ID. If provided, the script sets this as the active
-    subscription before deploying.
+    subscription for Fabric token acquisition.
 
-.PARAMETER WorkspaceId
-    Microsoft Fabric workspace ID (GUID).
+.PARAMETER Workspace
+    Microsoft Fabric workspace name OR GUID.
 
-.PARAMETER EventhouseId
-    Microsoft Fabric Eventhouse ID (GUID).
+.PARAMETER Eventhouse
+    Microsoft Fabric Eventhouse name OR GUID. Will be created on demand if
+    it does not already exist in the workspace.
 
 .PARAMETER DatabaseName
-    KQL database name. Defaults to the source name.
+    KQL database name. Defaults to the source name (with hyphens converted
+    to underscores).
 
-.PARAMETER SkipArm
-    Skip the ARM template deployment (useful if ACI + Event Hubs already exist).
+.PARAMETER SkipPostDeployHook
+    Skip the source-specific post-deploy hook even if one exists.
+
+.PARAMETER OutCsFile
+    Optional path; if provided, the Event Stream Custom Endpoint connection
+    string is written to this file (UTF-8, no trailing newline). Use this
+    string to configure the feeder of your choice.
 
 .EXAMPLE
-    ./deploy-fabric.ps1 -Source pegelonline -ResourceGroup rg-streams `
-        -WorkspaceId "c98acd97-..." -EventhouseId "dbfd2819-..."
+    ./deploy-fabric.ps1 -Source pegelonline `
+        -Workspace "ContosoRealTime" -Eventhouse "ContosoRealTime-eh"
 #>
 
 param(
     [Parameter(Mandatory = $true)]
     [string]$Source,
-
-    [Parameter(Mandatory = $true)]
-    [string]$ResourceGroup,
-
-    [string]$Location,
 
     [string]$SubscriptionId,
 
@@ -69,15 +78,20 @@ param(
 
     [string]$DatabaseName,
 
-    [switch]$SkipArm,
-
     [switch]$SkipPostDeployHook,
 
     [string]$Repo = "clemensv/real-time-sources",
 
     [string]$Branch = "main",
 
-    [string]$OutCsFile
+    [string]$OutCsFile,
+
+    # Deprecated / ignored. Retained so old gh-pages portal commands keep
+    # working; these parameters had meaning when this script also deployed
+    # an ACI feeder, which it no longer does.
+    [string]$ResourceGroup,
+    [string]$Location,
+    [switch]$SkipArm
 )
 
 $ErrorActionPreference = "Stop"
@@ -98,7 +112,11 @@ if (-not $DatabaseName) { $DatabaseName = $Source -replace '-', '_' }
 if ([string]::IsNullOrWhiteSpace($Eventhouse)) { $Eventhouse = $Source -replace '-', '_' }
 $EventStreamName = "$Source-ingest"
 $StreamName = "$EventStreamName-stream"
-$ContainerGroupName = $Source
+
+if ($ResourceGroup -or $Location -or $SkipArm) {
+    Write-Warning "  -ResourceGroup / -Location / -SkipArm are no longer used by deploy-fabric.ps1 (Fabric-only)."
+    Write-Warning "  Deploy the upstream feeder separately (Docker, ACI portal template, or deploy-feeder-notebook.ps1)."
+}
 
 # ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -287,7 +305,7 @@ function Invoke-SourcePostDeployHook {
         }
     }
 
-    Write-Step "7/7" "Running post-deploy hook ($Source/fabric/post-deploy.ps1)..."
+    Write-Step "6/6" "Running post-deploy hook ($Source/fabric/post-deploy.ps1)..."
     try {
         & $hookPath -Context $Context
         if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
@@ -307,17 +325,10 @@ function Invoke-SourcePostDeployHook {
 Write-Host "=== Real-Time Sources — Fabric Deployment ===" -ForegroundColor Cyan
 Write-Host "  Source: $Source" -ForegroundColor White
 
-# Check that required files exist in the repo
-$templateUrl = "$RawBase/$Source/azure-template-with-eventhub.json"
+# Check that the source's KQL schema script exists in the repo
 $kqlUrl = "$RawBase/$Source/kql/$($Source -replace '-', '_').kql"
 
-Write-Step "0/7" "Validating source assets in repository..."
-try {
-    $null = Invoke-WebRequest -Uri $templateUrl -Method Head -UseBasicParsing
-    Write-OK "ARM template found"
-} catch {
-    throw "ARM template not found at $templateUrl — is '$Source' a valid source?"
-}
+Write-Step "0/6" "Validating source assets in repository..."
 try {
     $null = Invoke-WebRequest -Uri $kqlUrl -Method Head -UseBasicParsing
     Write-OK "KQL script found"
@@ -552,100 +563,10 @@ if ($OutCsFile -and $esConnectionString) {
     Write-Host "  Connection string written to: $OutCsFile" -ForegroundColor Gray
 }
 
-# Wait for the Event Stream custom endpoint to actually accept Kafka metadata
-# requests. Fresh ES + EH namespaces can take several minutes after the topology
-# update before rdkafka can fetch metadata. Probe with confluent_kafka.AdminClient
-# in a retry loop so we don't deploy the bridge before the broker is ready.
-if ($esConnectionString -and -not $SkipArm) {
-    Write-Step "5b/6" "Probing Event Stream Kafka endpoint for readiness..."
-    $probeScript = Join-Path $TempDir "kafka_probe_$(Get-Random).py"
-    @"
-import os, sys, time
-from confluent_kafka.admin import AdminClient
-cs = os.environ['CS']
-# Parse Azure-style connection string: Endpoint=sb://<host>/;SharedAccessKeyName=...;...
-host = None
-for p in cs.split(';'):
-    if p.lower().startswith('endpoint='):
-        v = p.split('=', 1)[1].strip().replace('sb://', '').rstrip('/')
-        host = v
-        break
-if not host:
-    print('PROBE: cannot parse endpoint', flush=True); sys.exit(2)
-conf = {
-    'bootstrap.servers': f'{host}:9093',
-    'security.protocol': 'SASL_SSL',
-    'sasl.mechanism': 'PLAIN',
-    'sasl.username': '`$ConnectionString',
-    'sasl.password': cs,
-    'socket.timeout.ms': 15000,
-    'metadata.request.timeout.ms': 15000,
-}
-deadline = time.time() + 600  # up to 10 min
-attempt = 0
-while time.time() < deadline:
-    attempt += 1
-    try:
-        ac = AdminClient(conf)
-        md = ac.list_topics(timeout=20)
-        print(f'PROBE OK attempt={attempt} brokers={len(md.brokers)}', flush=True)
-        sys.exit(0)
-    except Exception as e:
-        print(f'PROBE attempt={attempt} failed: {e}', flush=True)
-        time.sleep(15)
-print('PROBE: gave up after 10 min', flush=True)
-sys.exit(1)
-"@ | Set-Content -Path $probeScript -Encoding UTF8
-    $env:CS = $esConnectionString
-    try {
-        python -c "import confluent_kafka" 2>$null
-        if ($LASTEXITCODE -ne 0) {
-            Write-Warning "  confluent_kafka not installed locally; skipping probe (deploy may race)"
-        } else {
-            python $probeScript
-            if ($LASTEXITCODE -ne 0) {
-                Write-Warning "  Probe could not confirm broker readiness; deploying anyway"
-            } else {
-                Write-OK "Event Stream Kafka endpoint is ready"
-            }
-        }
-    } finally { Remove-Item Env:CS -ErrorAction SilentlyContinue }
-}
-
-#  Step 6: Deploy ACI container ─
-
-if (-not $SkipArm) {
-    Write-Step "6/6" "Deploying ACI container..."
-    $rgExists = az group exists --name $ResourceGroup 2>&1
-    if ($rgExists -eq "false") {
-        if (-not $Location) { throw "Resource group '$ResourceGroup' does not exist. Provide -Location to create it." }
-        az group create --name $ResourceGroup --location $Location | Out-Null
-        Write-OK "Created resource group '$ResourceGroup' in $Location"
-    } else {
-        if (-not $Location) { $Location = (az group show --name $ResourceGroup --query location -o tsv 2>&1).Trim() }
-        Write-OK "Using resource group '$ResourceGroup' in $Location"
-    }
-    if ($esConnectionString) {
-        $containerTemplateUrl = "$RawBase/$Source/azure-template.json"
-        $armOut = az deployment group create --resource-group $ResourceGroup --template-uri $containerTemplateUrl --parameters connectionString="$esConnectionString" containerGroupName=$ContainerGroupName -o json 2>&1
-    } else {
-        $armOut = az deployment group create --resource-group $ResourceGroup --template-uri $templateUrl --parameters containerGroupName=$ContainerGroupName -o json 2>&1
-    }
-    if ($LASTEXITCODE -ne 0) {
-        $errText = ($armOut | Out-String).Trim()
-        throw "ARM deployment failed: $errText"
-    }
-    Write-OK "Container deployed: $ContainerGroupName"
-} else {
-    Write-Step "6/6" "Skipping ARM deployment (--SkipArm)"
-}
-
 # ── Optional post-deploy hook ───────────────────────────────────────────
 
 $hookContext = @{
     Source                 = $Source
-    ResourceGroup          = $ResourceGroup
-    Location               = $Location
     SubscriptionId         = $SubscriptionId
     Repo                   = $Repo
     Branch                 = $Branch
@@ -661,7 +582,6 @@ $hookContext = @{
     DatabaseName           = $DatabaseName
     EventstreamId          = $eventstreamId
     EventstreamName        = $EventStreamName
-    ContainerGroupName     = $ContainerGroupName
     ConnectionString       = $esConnectionString
 }
 Invoke-SourcePostDeployHook -Context $hookContext
@@ -670,11 +590,16 @@ Invoke-SourcePostDeployHook -Context $hookContext
 
 Write-Host "`n=== Deployment Complete ===" -ForegroundColor Cyan
 Write-Host ""
-if (-not $SkipArm) { Write-Host "  Container: $ContainerGroupName (in $ResourceGroup)" -ForegroundColor Gray }
 Write-Host "  Eventhouse: $($ehDetails.displayName)" -ForegroundColor Gray
 Write-Host "  KQL Database: $DatabaseName ($databaseId)" -ForegroundColor Gray
 Write-Host "  Event Stream: $EventStreamName ($eventstreamId)" -ForegroundColor Gray
 Write-Host ""
-if ($esConnectionString) { Write-Host "  Status: Bridge is sending data to Fabric Event Stream." -ForegroundColor Green }
-else { Write-Host "  Status: Fabric resources created. Retrieve connection string from portal." -ForegroundColor Yellow }
+if ($OutCsFile -and $esConnectionString) {
+    Write-Host "  Status: Fabric resources created. Connection string written to $OutCsFile." -ForegroundColor Green
+    Write-Host "  Use that connection string to run the feeder of your choice (Docker, ACI, k8s, …)." -ForegroundColor DarkGray
+} elseif ($esConnectionString) {
+    Write-Host "  Status: Fabric resources created. Use the Event Stream connection string to wire a feeder." -ForegroundColor Green
+} else {
+    Write-Host "  Status: Fabric resources created. Retrieve connection string from portal." -ForegroundColor Yellow
+}
 Write-Host ""
