@@ -28,9 +28,9 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         Create instance of ForecastModelCatalog for testing
         """
         instance = ForecastModelCatalog(
-            model='mmxanlqzzgjyzzghusjn',
-            file_url='qfgyyedbrfaackixlngp',
-            description='zprqnqpsncrbdeynneca'
+            model='gojaklqgmltoqkjwhrht',
+            file_url='xxaehrrzkdziboffsmvt',
+            description='wcuwamxeicqmhwzerggc'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test model property
         """
-        test_value = 'mmxanlqzzgjyzzghusjn'
+        test_value = 'gojaklqgmltoqkjwhrht'
         self.instance.model = test_value
         self.assertEqual(self.instance.model, test_value)
     
@@ -47,7 +47,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'qfgyyedbrfaackixlngp'
+        test_value = 'xxaehrrzkdziboffsmvt'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -55,7 +55,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'zprqnqpsncrbdeynneca'
+        test_value = 'wcuwamxeicqmhwzerggc'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     

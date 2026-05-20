@@ -28,9 +28,9 @@ class Test_RadarProductCatalog(unittest.TestCase):
         Create instance of RadarProductCatalog for testing
         """
         instance = RadarProductCatalog(
-            product='brlnzlcpjwimprgapmep',
-            file_url='cpsnxfwwrztiqkcbpcsi',
-            description='bgnkqonjymhabevvzdws'
+            product='qguxipdycvjcynmglvln',
+            file_url='tbwiztcevmzqudqeeemq',
+            description='nuzqsdkovzphvooczssy'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test product property
         """
-        test_value = 'brlnzlcpjwimprgapmep'
+        test_value = 'qguxipdycvjcynmglvln'
         self.instance.product = test_value
         self.assertEqual(self.instance.product, test_value)
     
@@ -47,7 +47,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'cpsnxfwwrztiqkcbpcsi'
+        test_value = 'tbwiztcevmzqudqeeemq'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -55,7 +55,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'bgnkqonjymhabevvzdws'
+        test_value = 'nuzqsdkovzphvooczssy'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     

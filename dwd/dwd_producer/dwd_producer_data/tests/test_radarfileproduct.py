@@ -28,11 +28,11 @@ class Test_RadarFileProduct(unittest.TestCase):
         Create instance of RadarFileProduct for testing
         """
         instance = RadarFileProduct(
-            file_url='rqbbwynpqmdwukswsstz',
-            product='ljxafiewnhaqeoqlzcot',
-            file_name='wuhejoubvjqiekvlcupd',
-            modified='xduwqadfyafrwnxafbnz',
-            size_bytes=int(31)
+            file_url='weooxoavwfemfmvraxlv',
+            product='yqgqglixcbmhlkgkiyeq',
+            file_name='kkjjfddkhanoxanvjxlq',
+            modified='xfqtxruduouwydiwabfd',
+            size_bytes=int(47)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'rqbbwynpqmdwukswsstz'
+        test_value = 'weooxoavwfemfmvraxlv'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -49,7 +49,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test product property
         """
-        test_value = 'ljxafiewnhaqeoqlzcot'
+        test_value = 'yqgqglixcbmhlkgkiyeq'
         self.instance.product = test_value
         self.assertEqual(self.instance.product, test_value)
     
@@ -57,7 +57,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test file_name property
         """
-        test_value = 'wuhejoubvjqiekvlcupd'
+        test_value = 'kkjjfddkhanoxanvjxlq'
         self.instance.file_name = test_value
         self.assertEqual(self.instance.file_name, test_value)
     
@@ -65,7 +65,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test modified property
         """
-        test_value = 'xduwqadfyafrwnxafbnz'
+        test_value = 'xfqtxruduouwydiwabfd'
         self.instance.modified = test_value
         self.assertEqual(self.instance.modified, test_value)
     
@@ -73,7 +73,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test size_bytes property
         """
-        test_value = int(31)
+        test_value = int(47)
         self.instance.size_bytes = test_value
         self.assertEqual(self.instance.size_bytes, test_value)
     
