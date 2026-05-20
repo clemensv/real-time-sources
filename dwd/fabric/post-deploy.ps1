@@ -73,11 +73,34 @@ if ($Context) {
 }
 
 if (-not $MapId) {
-    Write-Host "  [dwd post-deploy] DWD_FABRIC_MAP_ID not set; skipping map wiring." -ForegroundColor DarkYellow
-    Write-Host "  Create a blank Fabric Map item in the workspace and re-run with:" -ForegroundColor DarkYellow
-    Write-Host "    `$env:DWD_FABRIC_MAP_ID = '<map-item-guid>'" -ForegroundColor DarkYellow
-    Write-Host "    pwsh dwd/fabric/post-deploy.ps1 -Context <ctx>" -ForegroundColor DarkYellow
-    exit 0
+    if (-not $WorkspaceId) {
+        throw "Cannot auto-create Map item: WorkspaceId not supplied (set -WorkspaceId or pass -Context with WorkspaceId)."
+    }
+    $mapName = if ($env:DWD_FABRIC_MAP_NAME) { $env:DWD_FABRIC_MAP_NAME } else { "dwd-icond2-map" }
+    Write-Host "  [dwd post-deploy] DWD_FABRIC_MAP_ID not set; auto-creating Map item '$mapName' in workspace $WorkspaceId..." -ForegroundColor Yellow
+    $fabApi = "https://api.fabric.microsoft.com/v1"
+    $items = az rest --method GET `
+        --url "$fabApi/workspaces/$WorkspaceId/items?type=Map" `
+        --resource "https://api.fabric.microsoft.com" 2>&1 | ConvertFrom-Json
+    $existing = $items.value | Where-Object { $_.displayName -eq $mapName } | Select-Object -First 1
+    if ($existing) {
+        $MapId = $existing.id
+        Write-Host "  [dwd post-deploy] Reusing existing Map '$mapName' (id $MapId)" -ForegroundColor Green
+    } else {
+        $tmpDir = if ($env:TEMP) { $env:TEMP } else { [System.IO.Path]::GetTempPath() }
+        $bodyFile = Join-Path $tmpDir "map_create_$(Get-Random).json"
+        (@{ displayName = $mapName; type = "Map" } | ConvertTo-Json -Compress) `
+            | Out-File -Encoding utf8 -NoNewline $bodyFile
+        $created = az rest --method POST `
+            --url "$fabApi/workspaces/$WorkspaceId/items" `
+            --resource "https://api.fabric.microsoft.com" `
+            --body "@$bodyFile" `
+            --headers "Content-Type=application/json" 2>&1 | ConvertFrom-Json
+        if (-not $created.id) { throw "Failed to create Map item '$mapName'." }
+        $MapId = $created.id
+        Write-Host "  [dwd post-deploy] Created Map '$mapName' (id $MapId)" -ForegroundColor Green
+    }
+    $env:DWD_FABRIC_MAP_ID = $MapId
 }
 
 foreach ($pair in @(

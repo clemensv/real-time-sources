@@ -26,9 +26,11 @@
     is NOT created by the generic deployer (the Fabric REST surface doesn't
     yet expose Map-item creation), so this hook needs the map item id, which
     it reads from the PEGELONLINE_FABRIC_MAP_ID environment variable. If
-    that variable is missing the hook prints instructions and exits
-    successfully (so it doesn't fail the bootstrap when no map item has
-    been prepared yet).
+    that variable is missing the hook auto-creates a blank Map item named
+    `pegelonline-map` (overridable via PEGELONLINE_FABRIC_MAP_NAME) in the
+    target workspace using the generic Fabric Items API
+    (POST /v1/workspaces/{ws}/items with type=Map). If a Map item with the
+    chosen name already exists it is reused.
 
 .PARAMETER Context
     Hashtable provided by the generic deployer. Required keys consumed:
@@ -55,11 +57,35 @@ if ($Context) {
 }
 
 if (-not $MapId) {
-    Write-Host "  [pegelonline post-deploy] PEGELONLINE_FABRIC_MAP_ID not set; skipping map wiring." -ForegroundColor DarkYellow
-    Write-Host "  Create a blank Fabric Map item in the workspace and re-run with:" -ForegroundColor DarkYellow
-    Write-Host "    `$env:PEGELONLINE_FABRIC_MAP_ID = '<map-item-guid>'" -ForegroundColor DarkYellow
-    Write-Host "    pwsh pegelonline/fabric/post-deploy.ps1 -Context <ctx>" -ForegroundColor DarkYellow
-    exit 0
+    if (-not $WorkspaceId) {
+        throw "Cannot auto-create Map item: WorkspaceId not supplied (set -WorkspaceId or pass -Context with WorkspaceId)."
+    }
+    $mapName = if ($env:PEGELONLINE_FABRIC_MAP_NAME) { $env:PEGELONLINE_FABRIC_MAP_NAME } else { "pegelonline-map" }
+    Write-Host "  [pegelonline post-deploy] PEGELONLINE_FABRIC_MAP_ID not set; auto-creating Map item '$mapName' in workspace $WorkspaceId..." -ForegroundColor Yellow
+    $fabApi = "https://api.fabric.microsoft.com/v1"
+    # Reuse if a Map by this name already exists
+    $items = az rest --method GET `
+        --url "$fabApi/workspaces/$WorkspaceId/items?type=Map" `
+        --resource "https://api.fabric.microsoft.com" 2>&1 | ConvertFrom-Json
+    $existing = $items.value | Where-Object { $_.displayName -eq $mapName } | Select-Object -First 1
+    if ($existing) {
+        $MapId = $existing.id
+        Write-Host "  [pegelonline post-deploy] Reusing existing Map '$mapName' (id $MapId)" -ForegroundColor Green
+    } else {
+        $tmpDir = if ($env:TEMP) { $env:TEMP } else { [System.IO.Path]::GetTempPath() }
+        $bodyFile = Join-Path $tmpDir "map_create_$(Get-Random).json"
+        (@{ displayName = $mapName; type = "Map" } | ConvertTo-Json -Compress) `
+            | Out-File -Encoding utf8 -NoNewline $bodyFile
+        $created = az rest --method POST `
+            --url "$fabApi/workspaces/$WorkspaceId/items" `
+            --resource "https://api.fabric.microsoft.com" `
+            --body "@$bodyFile" `
+            --headers "Content-Type=application/json" 2>&1 | ConvertFrom-Json
+        if (-not $created.id) { throw "Failed to create Map item '$mapName'." }
+        $MapId = $created.id
+        Write-Host "  [pegelonline post-deploy] Created Map '$mapName' (id $MapId)" -ForegroundColor Green
+    }
+    $env:PEGELONLINE_FABRIC_MAP_ID = $MapId
 }
 
 foreach ($pair in @(
@@ -88,9 +114,15 @@ if (-not $env:KUSTO_TOKEN) {
 
 $py = if ($env:PYTHON) { $env:PYTHON } else { "python" }
 
-# ---- Optional: ingest RiverSegments (per-station river polylines) ----
-# The Kusto mgmt API throttles bursts (HTTP 429); we retry each failed
-# command with a small backoff so the post-deploy run is robust.
+# ---- Ingest RiverSegments (per-station river polylines) ----
+# river_geometries.kql contains exactly 3 commands separated by blank lines:
+#   1. .drop table RiverSegments ifexists
+#   2. .create table RiverSegments (...)
+#   3. .ingest inline into table RiverSegments with (format='multijson') <|
+#      <one JSON object per line for ~1900 segments>
+# The third command's payload is part of the same command body (everything
+# after the `<|`), so a simple split on blank lines is safe: the multijson
+# rows do not contain blank lines.
 $riverKql = Join-Path $PSScriptRoot "river_geometries.kql"
 if (Test-Path $riverKql) {
     Write-Host "  [pegelonline post-deploy] Ingesting RiverSegments from $riverKql ..."
@@ -98,28 +130,26 @@ if (Test-Path $riverKql) {
     $cmds = $src -split "`r?`n`r?`n" | Where-Object { $_.Trim().Length -gt 0 }
     $h = @{ 'Authorization' = "Bearer $($env:KUSTO_TOKEN)"; 'Content-Type' = 'application/json; charset=utf-8' }
     $mgmtUrl = "$KustoUri/v1/rest/mgmt"
-    $ok = 0; $fail = 0
     foreach ($c in $cmds) {
+        $head = $c.Substring(0, [Math]::Min(80, $c.Length)).Replace("`n", ' ')
+        Write-Host "    EXEC: $head ..." -ForegroundColor DarkGray
         $body = (@{ db = $KustoDatabase; csl = $c } | ConvertTo-Json -Compress -Depth 50)
         $tries = 0
         while ($true) {
             $tries++
             try {
                 Invoke-RestMethod -Uri $mgmtUrl -Method Post -Headers $h -Body $body -ErrorAction Stop | Out-Null
-                $ok++; break
+                break
             } catch {
                 if ($tries -lt 4 -and $_.Exception.Message -match '429|TooManyRequests') {
                     Start-Sleep -Milliseconds (500 * $tries)
                 } else {
-                    $fail++
-                    Write-Host "    FAIL: $($c.Substring(0, [Math]::Min(80, $c.Length)))" -ForegroundColor Red
-                    break
+                    throw "RiverSegments command failed: $head`n$($_.Exception.Message)"
                 }
             }
         }
     }
-    Write-Host "  [pegelonline post-deploy] RiverSegments: $ok ok / $fail failed (of $($cmds.Count) commands)."
-    if ($fail -gt 0) { throw "RiverSegments ingest had $fail failures." }
+    Write-Host "  [pegelonline post-deploy] RiverSegments: $($cmds.Count) commands executed (drop + create + single multijson ingest)."
 } else {
     Write-Host "  [pegelonline post-deploy] $riverKql not present; skipping RiverSegments ingest." -ForegroundColor DarkYellow
     Write-Host "  Regenerate via:  python pegelonline/fabric/build_river_geometries.py  (requires MAPS_KEY)" -ForegroundColor DarkYellow

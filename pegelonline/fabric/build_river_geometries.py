@@ -19,8 +19,10 @@ Coverage:
   * Lakes / coastal areas (OSTSEE, NORDSEE, BODENSEE, KLEINES HAFF, ...) are
     explicitly skipped — they aren't lineable.
 
-The output is ~1-2 MB and exceeds the Kusto mgmt-API per-command limit, so
-post-deploy splits it on blank lines and posts each command separately.
+The output is ~1.4 MB and fits in a single Kusto ``.ingest inline ... with
+(format='multijson') <|`` command. The on-disk file holds 3 logical commands
+separated by blank lines (drop + create + single ingest); post-deploy.ps1
+splits on the separator and posts each one individually.
 
 Auth: requires ``MAPS_KEY`` env var (any Azure Maps key in the sub) for the
 MVT crawl, and ``KUSTO_TOKEN`` (bearer token for the Fabric cluster) for the
@@ -462,33 +464,33 @@ def kusto_query(csl: str) -> List[List]:
 
 
 def emit_segments_kql(rows: List[Tuple[str, str, str, dict, str]]) -> str:
-    """Emit per-segment .append commands to stay under the mgmt payload limit.
+    """Emit a 3-command Kusto script: drop + create + single multijson ingest.
 
-    The first command drops + recreates RiverSegments; subsequent ones append
-    one row each. The driver script (post-deploy.ps1) splits on the blank-line
-    separator and posts each command individually.
+    The whole RiverSegments dataset (~1900 polylines, ~1.4 MB) fits comfortably
+    under the Kusto mgmt-API per-command size limit when sent as a single
+    ``.ingest inline ... with (format='multijson') <|`` payload. post-deploy.ps1
+    splits this file on blank-line boundaries and POSTs each of the 3 commands
+    individually.
     """
-    parts = [
-        ".drop table RiverSegments ifexists",
+    header = (
+        ".drop table RiverSegments ifexists\n\n"
         ".create table RiverSegments"
         " (water_shortname:string, water_longname:string, station_id:string,"
         " geometry:dynamic, source:string)"
-        " with (folder='Map')",
-    ]
+        " with (folder='Map')\n\n"
+        ".ingest inline into table RiverSegments"
+        " with (format='multijson') <|\n"
+    )
+    body_lines = []
     for ws, wl, sid, geom, source in rows:
-        geom_lit = "dynamic(" + json.dumps(geom, separators=(",", ":")) + ")"
-        ws_lit  = ws.replace("\\", "\\\\").replace('"', '\\"')
-        wl_lit  = wl.replace("\\", "\\\\").replace('"', '\\"')
-        sid_lit = sid.replace("\\", "\\\\").replace('"', '\\"')
-        parts.append(
-            ".append RiverSegments <|\n"
-            f'print water_shortname="{ws_lit}",'
-            f' water_longname="{wl_lit}",'
-            f' station_id="{sid_lit}",'
-            f' geometry={geom_lit},'
-            f' source="{source}"'
-        )
-    return "\n\n".join(parts) + "\n"
+        body_lines.append(json.dumps({
+            "water_shortname": ws,
+            "water_longname":  wl,
+            "station_id":      sid,
+            "geometry":        geom,
+            "source":          source,
+        }, separators=(",", ":"), ensure_ascii=False))
+    return header + "\n".join(body_lines) + "\n"
 
 
 def main() -> int:
