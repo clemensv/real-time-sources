@@ -132,7 +132,7 @@ if (-not $DatabaseName)            { $DatabaseName = $Source -replace '-', '_' }
 if ([string]::IsNullOrWhiteSpace($Eventhouse)) { $Eventhouse = $Source -replace '-', '_' }
 if (-not $NotebookName)            { $NotebookName = "$Source-feed" }
 if (-not $StatePath)               { $StatePath    = "/lakehouse/default/Files/feeder-state/$Source" }
-if (-not $EnvironmentName)         { $EnvironmentName = "$Source-feeder-env" }
+if (-not $EnvironmentName)         { $EnvironmentName = "feeder_env" }
 
 $repoRoot     = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $notebookPath = Join-Path $repoRoot "$Source/notebook/$Source-feed.ipynb"
@@ -470,7 +470,7 @@ if (-not $SkipEnvironment) {
     if (-not $envItem) {
         Write-Info "Creating environment '$EnvironmentName'..."
         $createEnv = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/environments" `
-            -Body @{ displayName = $EnvironmentName; description = "Pre-built libraries for $Source feeder notebook." }
+            -Body @{ displayName = $EnvironmentName; description = "Pre-built libraries for real-time-sources feeder notebooks (shared across sources)." }
         if ($createEnv -and $createEnv.id) {
             $envItem = $createEnv
         } else {

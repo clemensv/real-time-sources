@@ -64,7 +64,7 @@ flag:
 | A     | Delegates to `deploy-fabric.ps1 -SkipArm` for KQL DB + Event Stream + topology + CS retrieval | — |
 | B/1   | Resolve workspace                                                     | — |
 | B/2   | Resolve KQL DB                                                        | — |
-| B/2.5 | Build wheels (`pip wheel --no-deps`) → strip path-deps → create or reuse `<source>-feeder-env` → multipart-upload each wheel to `/staging/libraries` → PATCH `/staging/sparkcompute` (runtime 1.3) → POST `/staging/publish` → poll `publishDetails.state` until `Success` | `-SkipEnvironment` |
+| B/2.5 | Build wheels (`pip wheel --no-deps`) → strip path-deps → create or reuse shared `feeder_env` (override with `-EnvironmentName`) → multipart-upload each wheel to `/staging/libraries` → PATCH `/staging/sparkcompute` (runtime 1.3) → POST `/staging/publish` → poll `publishDetails.state` until `Success` | `-SkipEnvironment` |
 | B/3   | Auto-discover single Lakehouse → patch notebook `metadata.dependencies` with Lakehouse + KQL + Environment + parameters cell | `-DefaultLakehouse` overrides |
 | B/4   | Upload notebook                                                       | — |
 | B/5a  | POST `/jobs/instances?jobType=RunNotebook` for an immediate run       | `-NoTriggerNow` |
