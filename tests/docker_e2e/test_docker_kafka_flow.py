@@ -999,7 +999,8 @@ class TestNVEHydroDockerFlow:
 
     def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nve_image):
         api_key = os.environ.get('NVE_API_KEY', '')
-        assert api_key, 'NVE_API_KEY environment variable must be set'
+        if not api_key:
+            pytest.skip('NVE_API_KEY environment variable is not set')
         _run_kafka_flow_test(
             kafka, nve_image, self.TOPIC,
             reference_types=['Station'],

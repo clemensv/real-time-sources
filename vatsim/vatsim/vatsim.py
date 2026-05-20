@@ -54,6 +54,23 @@ def _parse_iso(value: str) -> datetime.datetime:
     return datetime.datetime.fromisoformat(value)
 
 
+def _normalize_rfc3339(value: str) -> str:
+    """Normalize a VATSIM ISO-8601 timestamp string to RFC3339 with 'Z' UTC suffix.
+
+    Tolerates trailing 'Z' and >6-digit fractional seconds by routing through
+    :func:`_parse_iso` and re-formatting. Returns a UTC RFC3339 string suitable
+    for the downstream JsonStructure ``string`` field.
+    """
+    dt = _parse_iso(value)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.timezone.utc)
+    else:
+        dt = dt.astimezone(datetime.timezone.utc)
+    # Format with microseconds + 'Z' suffix
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%f") + "Z"
+
+
+
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
     try:
@@ -109,7 +126,7 @@ class VatsimBridge:
             route=fp.get("route"),
             cruise_altitude=fp.get("altitude"),
             pilot_rating=pilot.get("pilot_rating", 0),
-            last_updated=_parse_iso(pilot["last_updated"]),
+            last_updated=_normalize_rfc3339(pilot["last_updated"]),
         )
 
     @staticmethod
@@ -128,7 +145,7 @@ class VatsimBridge:
             facility=ctrl["facility"],
             rating=ctrl["rating"],
             text_atis=text_atis,
-            last_updated=_parse_iso(ctrl["last_updated"]),
+            last_updated=_normalize_rfc3339(ctrl["last_updated"]),
         )
 
     @staticmethod
@@ -136,7 +153,7 @@ class VatsimBridge:
         """Build a NetworkStatus from the general section."""
         return NetworkStatus(
             callsign="status",
-            update_timestamp=_parse_iso(general["update_timestamp"]),
+            update_timestamp=_normalize_rfc3339(general["update_timestamp"]),
             connected_clients=general.get("connected_clients", 0),
             unique_users=general.get("unique_users", 0),
             pilot_count=pilot_count,

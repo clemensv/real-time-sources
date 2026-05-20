@@ -120,13 +120,22 @@ class ParisBicycleCounterPoller:
         counts: List[BicycleCount] = []
         offset = 0
         limit = 100
+        # The Paris OpenData explore API caps offset+limit at 10000.
+        MAX_OFFSET = 10000 - limit
         while True:
             params: Dict[str, object] = {"limit": limit, "offset": offset}
             if since:
                 where_clause = f"date >= '{since.strftime('%Y-%m-%dT%H:%M:%S')}'"
                 params["where"] = where_clause
-            response = requests.get(COUNTER_DATA_URL, params=params, timeout=30)
-            response.raise_for_status()
+            try:
+                response = requests.get(COUNTER_DATA_URL, params=params, timeout=30)
+                response.raise_for_status()
+            except requests.HTTPError as e:
+                # 400 typically means we have hit the API's 10000-row paging
+                # ceiling; return what we have so far rather than losing the
+                # entire batch.
+                print(f"Stopping pagination at offset {offset}: {e}", file=sys.stderr)
+                break
             data = response.json()
             results = data.get("results", [])
             if not results:
@@ -152,6 +161,8 @@ class ParisBicycleCounterPoller:
             if len(results) < limit:
                 break
             offset += limit
+            if offset > MAX_OFFSET:
+                break
         return counts
 
     @staticmethod
@@ -203,7 +214,10 @@ class ParisBicycleCounterPoller:
                 state = self.load_state()
                 seen_keys: Set[str] = set(state.get("seen_keys", []))
 
-                since = datetime.now(timezone.utc) - timedelta(hours=24)
+                # The Paris open-data feed is updated with a multi-day lag
+                # (typically 2-4 days). Use a wide enough window to always
+                # capture at least one fresh observation per counter.
+                since = datetime.now(timezone.utc) - timedelta(days=7)
                 counts = self.fetch_bicycle_counts(since=since)
                 new_counts, seen_keys = self.dedup_counts(counts, seen_keys)
 
@@ -213,7 +227,7 @@ class ParisBicycleCounterPoller:
                 self.producer.producer.flush()
 
                 # Trim seen_keys to last 48h worth of keys to avoid unbounded growth
-                cutoff = datetime.now(timezone.utc) - timedelta(hours=48)
+                cutoff = datetime.now(timezone.utc) - timedelta(days=14)
                 trimmed_keys: Set[str] = set()
                 for key in seen_keys:
                     try:

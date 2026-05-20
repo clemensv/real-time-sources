@@ -128,7 +128,7 @@ class TestParsePilot:
         assert pilot.route == "PMPKN NEATO DLLAN"
         assert pilot.cruise_altitude == "36000"
         assert pilot.pilot_rating == 15
-        assert isinstance(pilot.last_updated, datetime.datetime)
+        assert isinstance(pilot.last_updated, str)
 
     def test_parse_pilot_no_flight_plan(self):
         pilot = VatsimBridge.parse_pilot(SAMPLE_PILOT_NO_FP)
@@ -148,8 +148,8 @@ class TestParsePilot:
 
     def test_parse_pilot_last_updated_is_datetime(self):
         pilot = VatsimBridge.parse_pilot(SAMPLE_PILOT)
-        assert isinstance(pilot.last_updated, datetime.datetime)
-        assert pilot.last_updated.year == 2026
+        assert isinstance(pilot.last_updated, str)
+        assert pilot.last_updated.startswith("2026-")
 
     def test_parse_pilot_qnh_mb_default(self):
         raw = dict(SAMPLE_PILOT)
@@ -170,7 +170,7 @@ class TestParseController:
         assert ctrl.facility == 4
         assert ctrl.rating == 5
         assert ctrl.text_atis == "EGLL INFO A\nRWY 27L/27R IN USE\nQNH 1013"
-        assert isinstance(ctrl.last_updated, datetime.datetime)
+        assert isinstance(ctrl.last_updated, str)
 
     def test_parse_controller_no_atis(self):
         ctrl = VatsimBridge.parse_controller(SAMPLE_CONTROLLER_NO_ATIS)

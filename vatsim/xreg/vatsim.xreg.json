@@ -253,8 +253,8 @@
                             "description": "VATSIM pilot rating bitmask. 0 = New Member (P0), 1 = PPL, 3 = IR, 7 = CMEL, 15 = ATPL."
                           },
                           "last_updated": {
-                            "type": "datetime",
-                            "description": "UTC timestamp of the last position update received by the VATSIM data servers."
+                            "type": "string",
+                            "description": "UTC timestamp of the last position update received by the VATSIM data servers (RFC3339 string)."
                           }
                         },
                         "required": [
@@ -326,8 +326,8 @@
                             "description": "Controller information or ATIS text, with individual lines joined by newline characters. Null when the controller has not set any ATIS text."
                           },
                           "last_updated": {
-                            "type": "datetime",
-                            "description": "UTC timestamp of the last update received by the VATSIM data servers."
+                            "type": "string",
+                            "description": "UTC timestamp of the last update received by the VATSIM data servers (RFC3339 string)."
                           }
                         },
                         "required": [
@@ -371,8 +371,8 @@
                             "description": "Constant key value 'status' used to identify this network status record."
                           },
                           "update_timestamp": {
-                            "type": "datetime",
-                            "description": "UTC timestamp of the VATSIM data snapshot as reported by the data feed."
+                            "type": "string",
+                            "description": "UTC timestamp of the VATSIM data snapshot as reported by the data feed (RFC3339 string)."
                           },
                           "connected_clients": {
                             "type": "int32",
@@ -421,23 +421,115 @@
                 "namespace": "net.vatsim",
                 "doc": "Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.",
                 "fields": [
-                  {"name": "cid", "type": "int", "doc": "VATSIM Certificate Identifier (CID) — unique numeric member ID."},
-                  {"name": "callsign", "type": "string", "doc": "ATC-style callsign chosen by the pilot for this session."},
-                  {"name": "latitude", "type": "double", "doc": "Aircraft latitude in decimal degrees (WGS-84)."},
-                  {"name": "longitude", "type": "double", "doc": "Aircraft longitude in decimal degrees (WGS-84)."},
-                  {"name": "altitude", "type": "int", "doc": "Indicated altitude in feet above mean sea level."},
-                  {"name": "groundspeed", "type": "int", "doc": "Ground speed in knots."},
-                  {"name": "heading", "type": "int", "doc": "Magnetic heading in degrees (0-359)."},
-                  {"name": "transponder", "type": "string", "doc": "Four-digit transponder (squawk) code."},
-                  {"name": "qnh_mb", "type": "int", "doc": "Altimeter setting (QNH) in millibars."},
-                  {"name": "flight_rules", "type": ["null", "string"], "doc": "Flight rules: I or V. Null if no flight plan.", "default": null},
-                  {"name": "aircraft_short", "type": ["null", "string"], "doc": "ICAO aircraft type designator. Null if no flight plan.", "default": null},
-                  {"name": "departure", "type": ["null", "string"], "doc": "ICAO departure airport code. Null if no flight plan.", "default": null},
-                  {"name": "arrival", "type": ["null", "string"], "doc": "ICAO arrival airport code. Null if no flight plan.", "default": null},
-                  {"name": "route", "type": ["null", "string"], "doc": "Route string from flight plan. Null if no flight plan.", "default": null},
-                  {"name": "cruise_altitude", "type": ["null", "string"], "doc": "Planned cruise altitude. Null if no flight plan.", "default": null},
-                  {"name": "pilot_rating", "type": "int", "doc": "VATSIM pilot rating bitmask."},
-                  {"name": "last_updated", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "UTC timestamp of last position update."}
+                  {
+                    "name": "cid",
+                    "type": "int",
+                    "doc": "VATSIM Certificate Identifier (CID) — unique numeric member ID."
+                  },
+                  {
+                    "name": "callsign",
+                    "type": "string",
+                    "doc": "ATC-style callsign chosen by the pilot for this session."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Aircraft latitude in decimal degrees (WGS-84)."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Aircraft longitude in decimal degrees (WGS-84)."
+                  },
+                  {
+                    "name": "altitude",
+                    "type": "int",
+                    "doc": "Indicated altitude in feet above mean sea level."
+                  },
+                  {
+                    "name": "groundspeed",
+                    "type": "int",
+                    "doc": "Ground speed in knots."
+                  },
+                  {
+                    "name": "heading",
+                    "type": "int",
+                    "doc": "Magnetic heading in degrees (0-359)."
+                  },
+                  {
+                    "name": "transponder",
+                    "type": "string",
+                    "doc": "Four-digit transponder (squawk) code."
+                  },
+                  {
+                    "name": "qnh_mb",
+                    "type": "int",
+                    "doc": "Altimeter setting (QNH) in millibars."
+                  },
+                  {
+                    "name": "flight_rules",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Flight rules: I or V. Null if no flight plan.",
+                    "default": null
+                  },
+                  {
+                    "name": "aircraft_short",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ICAO aircraft type designator. Null if no flight plan.",
+                    "default": null
+                  },
+                  {
+                    "name": "departure",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ICAO departure airport code. Null if no flight plan.",
+                    "default": null
+                  },
+                  {
+                    "name": "arrival",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ICAO arrival airport code. Null if no flight plan.",
+                    "default": null
+                  },
+                  {
+                    "name": "route",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Route string from flight plan. Null if no flight plan.",
+                    "default": null
+                  },
+                  {
+                    "name": "cruise_altitude",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Planned cruise altitude. Null if no flight plan.",
+                    "default": null
+                  },
+                  {
+                    "name": "pilot_rating",
+                    "type": "int",
+                    "doc": "VATSIM pilot rating bitmask."
+                  },
+                  {
+                    "name": "last_updated",
+                    "type": "string",
+                    "doc": "UTC timestamp of last position update."
+                  }
                 ]
               }
             }
@@ -454,13 +546,45 @@
                 "namespace": "net.vatsim",
                 "doc": "Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.",
                 "fields": [
-                  {"name": "cid", "type": "int", "doc": "VATSIM Certificate Identifier (CID)."},
-                  {"name": "callsign", "type": "string", "doc": "Controller position callsign."},
-                  {"name": "frequency", "type": "string", "doc": "Radio frequency in MHz."},
-                  {"name": "facility", "type": "int", "doc": "VATSIM facility type code."},
-                  {"name": "rating", "type": "int", "doc": "VATSIM ATC rating."},
-                  {"name": "text_atis", "type": ["null", "string"], "doc": "Controller ATIS text, lines joined by newline. Null when not set.", "default": null},
-                  {"name": "last_updated", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "UTC timestamp of last update."}
+                  {
+                    "name": "cid",
+                    "type": "int",
+                    "doc": "VATSIM Certificate Identifier (CID)."
+                  },
+                  {
+                    "name": "callsign",
+                    "type": "string",
+                    "doc": "Controller position callsign."
+                  },
+                  {
+                    "name": "frequency",
+                    "type": "string",
+                    "doc": "Radio frequency in MHz."
+                  },
+                  {
+                    "name": "facility",
+                    "type": "int",
+                    "doc": "VATSIM facility type code."
+                  },
+                  {
+                    "name": "rating",
+                    "type": "int",
+                    "doc": "VATSIM ATC rating."
+                  },
+                  {
+                    "name": "text_atis",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Controller ATIS text, lines joined by newline. Null when not set.",
+                    "default": null
+                  },
+                  {
+                    "name": "last_updated",
+                    "type": "string",
+                    "doc": "UTC timestamp of last update."
+                  }
                 ]
               }
             }
@@ -477,12 +601,36 @@
                 "namespace": "net.vatsim",
                 "doc": "Aggregate VATSIM network status snapshot emitted once per poll cycle.",
                 "fields": [
-                  {"name": "callsign", "type": "string", "doc": "Constant key value 'status'."},
-                  {"name": "update_timestamp", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "UTC timestamp of the VATSIM data snapshot."},
-                  {"name": "connected_clients", "type": "int", "doc": "Total connected clients."},
-                  {"name": "unique_users", "type": "int", "doc": "Unique connected user IDs."},
-                  {"name": "pilot_count", "type": "int", "doc": "Number of pilots currently flying."},
-                  {"name": "controller_count", "type": "int", "doc": "Number of controllers connected."}
+                  {
+                    "name": "callsign",
+                    "type": "string",
+                    "doc": "Constant key value 'status'."
+                  },
+                  {
+                    "name": "update_timestamp",
+                    "type": "string",
+                    "doc": "UTC timestamp of the VATSIM data snapshot."
+                  },
+                  {
+                    "name": "connected_clients",
+                    "type": "int",
+                    "doc": "Total connected clients."
+                  },
+                  {
+                    "name": "unique_users",
+                    "type": "int",
+                    "doc": "Unique connected user IDs."
+                  },
+                  {
+                    "name": "pilot_count",
+                    "type": "int",
+                    "doc": "Number of pilots currently flying."
+                  },
+                  {
+                    "name": "controller_count",
+                    "type": "int",
+                    "doc": "Number of controllers connected."
+                  }
                 ]
               }
             }
