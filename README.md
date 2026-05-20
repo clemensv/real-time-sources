@@ -13,12 +13,38 @@ retrieve real-time streaming data and related reference data from various APIs,
 and then route the data to Apache Kafka compatible endpoints.
 
 For each tool, there is a corresponding, pre-built (Docker-) container image
-that you can pull and use instantly from this repo's container registry. There
-are also pre-built templates for easily deploying the containers as an Azure
-Container Instance (ACI), either feeding data into an Azure Event Hub or a
-Fabric Event Stream custom endpoint. The container images will work with any
-Apache Kafka compatible server or service that supports TLS with `SASL/PLAIN`
-authentication, as long as you provide the required connection information.
+that you can pull and use instantly from this repo's container registry. The
+container images will work with any Apache Kafka compatible server or service
+that supports TLS with `SASL/PLAIN` authentication, as long as you provide the
+required connection information.
+
+## Deployment models
+
+Every source can be deployed in three ways. The [interactive catalog](https://clemensv.github.io/real-time-sources)
+exposes a one-click deploy button for each supported model:
+
+1. **Azure Container Instance → Azure Event Hubs.** An [ARM template](https://learn.microsoft.com/azure/azure-resource-manager/templates/overview)
+   provisions an [Azure Container Instance](https://learn.microsoft.com/azure/container-instances/)
+   running the feeder, with the choice of either provisioning a fresh
+   [Azure Event Hubs](https://learn.microsoft.com/azure/event-hubs/event-hubs-about)
+   namespace alongside it (*Azure + Event Hub*) or feeding into an existing
+   Event Hubs connection string you already have (*Azure BYO Event Hub*).
+
+2. **Azure Container Instance → Microsoft Fabric Event Stream.** The same ACI
+   feeder, deployed from the gh-pages portal, writes into a
+   [Fabric Event Stream](https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/overview)
+   custom endpoint inside a [Fabric Eventhouse](https://learn.microsoft.com/fabric/real-time-intelligence/eventhouse).
+   This is the right choice when you want the data in Fabric but prefer to host
+   the feeder in Azure.
+
+3. **Fabric-only via notebooks.** For supported sources, the feeder runs as a
+   [Fabric notebook](https://learn.microsoft.com/fabric/data-engineering/how-to-use-notebook)
+   on a [scheduled trigger](https://learn.microsoft.com/fabric/data-engineering/schedule-notebook-runs),
+   with no Azure subscription required at all. The deploy script provisions an
+   Eventhouse, Event Stream, [KQL database](https://learn.microsoft.com/fabric/real-time-intelligence/create-database),
+   and update policies, then imports the notebook and schedules it. Everything
+   — ingestion, storage, query — stays inside your Fabric workspace. Look for
+   the **Fabric Notebook Feeder** button in the catalog below.
 
 The sources are organized by domain below. Each entry shows its build badge
 under the source name, with one-click deployment buttons on the right.
