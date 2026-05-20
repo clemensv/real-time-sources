@@ -482,12 +482,26 @@ function esc(s) {
 renderPills();
 renderList();
 
-/* ── Hash deep-linking (e.g. #pegelonline auto-selects) ───────────────── */
-function selectFromHash() {
-  const id = (location.hash || "").replace(/^#/, "").trim();
-  if (!id) return;
+/* ── Hash deep-linking ────────────────────────────────────────────────────
+   #<id>          → select source, show docs
+   #<id>/fabric   → select source AND open the Fabric deploy panel
+                    (prefers notebook mode when the source has a notebook,
+                    otherwise falls back to fabric-aci)
+   #<id>/azure    → select source AND launch the Azure portal ARM deploy
+                    (uses azure-template-with-eventhub.json when present)  */
+async function selectFromHash() {
+  const raw = (location.hash || "").replace(/^#/, "").trim();
+  if (!raw) return;
+  const [id, action] = raw.split("/");
   const s = SOURCES.find(x => x.id === id);
-  if (s) selectSource(s);
+  if (!s) return;
+  await selectSource(s);
+  if (action === "fabric") {
+    openDeployForm(s, s.notebook ? "fabric-notebook" : "fabric-aci");
+  } else if (action === "azure") {
+    const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
+    window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
+  }
 }
 window.addEventListener("hashchange", selectFromHash);
 selectFromHash();
