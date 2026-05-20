@@ -213,85 +213,89 @@ def feed(args):
         kafka_config.get("bootstrap.servers", "?"),
     )
 
+    def _emit_stations(features_list: List[Dict[str, Any]]) -> int:
+        stations = api.extract_stations(features_list)
+        for station in stations.values():
+            try:
+                event_producer.send_eu_jrc_eurdep_station(
+                    _feedurl=FEED_URL,
+                    _station_id=station.station_id,
+                    data=station,
+                    flush_producer=False,
+                )
+            except Exception as e:
+                logging.error("Error sending station %s: %s", station.station_id, e)
+        producer.flush()
+        return len(stations)
+
+    def _emit_readings(features_list: List[Dict[str, Any]]) -> int:
+        readings = api.extract_readings(features_list)
+        count = 0
+        for reading in readings:
+            dedup_key = f"{reading.station_id}|{reading.end_measure}"
+            if dedup_key in previous_readings:
+                continue
+            try:
+                event_producer.send_eu_jrc_eurdep_dose_rate_reading(
+                    _feedurl=FEED_URL,
+                    _station_id=reading.station_id,
+                    data=reading,
+                    flush_producer=False,
+                )
+                count += 1
+                previous_readings[dedup_key] = reading.end_measure
+            except Exception as e:
+                logging.error("Error sending reading for %s: %s", reading.station_id, e)
+        producer.flush()
+        return count
+
     # Fetch all features once for initial reference + telemetry emission
     features = api.fetch_all_features()
     logging.info("Fetched %d features from EURDEP WFS", len(features))
 
-    # Emit station reference data
-    stations = api.extract_stations(features)
-    for station in stations.values():
-        try:
-            event_producer.send_eu_jrc_eurdep_station(
-                _feedurl=FEED_URL,
-                _station_id=station.station_id,
-                data=station,
-                flush_producer=False,
-            )
-        except Exception as e:
-            logging.error("Error sending station %s: %s", station.station_id, e)
-    producer.flush()
-    logging.info("Sent %d station records", len(stations))
+    # Emit station reference data first, then telemetry derived from the
+    # SAME features payload so we don't have to round-trip the WFS again
+    # before producing any DoseRateReading events.
+    station_count = _emit_stations(features)
+    logging.info("Sent %d station records", station_count)
+
+    reading_count = _emit_readings(features)
+    logging.info("Sent %d dose rate readings from initial fetch", reading_count)
+    _save_state(state_file, previous_readings)
 
     last_reference_emit = datetime.now(timezone.utc)
+
+    if once:
+        logging.info("--once mode: exiting after initial emission")
+        return
 
     # Telemetry polling loop
     while True:
         try:
-            count = 0
             start_time = datetime.now(timezone.utc)
+            if polling_interval > 0:
+                time.sleep(polling_interval)
+
+            features = api.fetch_all_features()
 
             # Re-fetch reference data every 6 hours
-            if (start_time - last_reference_emit).total_seconds() >= 21600:
-                features = api.fetch_all_features()
-                stations = api.extract_stations(features)
-                for station in stations.values():
-                    try:
-                        event_producer.send_eu_jrc_eurdep_station(
-                            _feedurl=FEED_URL,
-                            _station_id=station.station_id,
-                            data=station,
-                            flush_producer=False,
-                        )
-                    except Exception as e:
-                        logging.error("Error sending station %s: %s", station.station_id, e)
-                producer.flush()
-                logging.info("Refreshed %d station records", len(stations))
-                last_reference_emit = start_time
-            else:
-                features = api.fetch_all_features()
+            if (datetime.now(timezone.utc) - last_reference_emit).total_seconds() >= 21600:
+                refreshed = _emit_stations(features)
+                logging.info("Refreshed %d station records", refreshed)
+                last_reference_emit = datetime.now(timezone.utc)
 
-            readings = api.extract_readings(features)
-            for reading in readings:
-                dedup_key = f"{reading.station_id}|{reading.end_measure}"
-                if dedup_key in previous_readings:
-                    continue
-                try:
-                    event_producer.send_eu_jrc_eurdep_dose_rate_reading(
-                        _feedurl=FEED_URL,
-                        _station_id=reading.station_id,
-                        data=reading,
-                        flush_producer=False,
-                    )
-                    count += 1
-                    previous_readings[dedup_key] = reading.end_measure
-                except Exception as e:
-                    logging.error("Error sending reading for %s: %s", reading.station_id, e)
-            producer.flush()
+            count = _emit_readings(features)
             end_time = datetime.now(timezone.utc)
             elapsed = (end_time - start_time).total_seconds()
-            effective_interval = max(0, polling_interval - elapsed)
             logging.info(
-                "Sent %d dose rate readings in %.1f s. Next poll at %s.",
+                "Sent %d dose rate readings in %.1f s.",
                 count,
                 elapsed,
-                (datetime.now(timezone.utc) + timedelta(seconds=effective_interval)).isoformat(),
             )
             _save_state(state_file, previous_readings)
             if once:
                 logging.info("--once mode: exiting after first polling cycle")
                 break
-            if effective_interval > 0:
-                time.sleep(effective_interval)
         except KeyboardInterrupt:
             logging.info("Exiting...")
             break
