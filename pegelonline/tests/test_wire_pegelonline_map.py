@@ -96,11 +96,15 @@ class WirePegelonlineMapTests(unittest.TestCase):
                 self.assertEqual(opts["type"], "vector")
                 self.assertNotIn("pointLayerType", opts,
                                  "segment layers must not declare a point type")
-                self.assertEqual(opts["color"], ["get", "stroke_color"])
+                # Fabric Map v2.0.0: top-level 'color' must be a CSS string,
+                # so per-row colour lives only in lineOptions.strokeColor.
+                self.assertNotIn("color", opts)
                 self.assertIn("lineOptions", opts)
                 lo = opts["lineOptions"]
                 self.assertEqual(lo["strokeColor"], ["get", "stroke_color"])
-                self.assertEqual(lo["strokeWidth"], ["get", "stroke_weight"])
+                # Fabric Map v2.0.0: lineOptions.strokeWidth is type:number;
+                # expressions are silently rejected -> fixed numeric value.
+                self.assertIsInstance(lo["strokeWidth"], (int, float))
                 self.assertEqual(layer["geometryColumnName"], "geometry")
                 self.assertEqual(layer["filters"], [])
         # Labels stays a point bubble layer with an active text label.
