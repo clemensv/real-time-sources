@@ -20,12 +20,12 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
 from tfl_road_traffic_producer_data import RoadCorridor
-from test_tfl_road_traffic_producer_data_roadcorridor import Test_RoadCorridor
+from test_roadcorridor import Test_RoadCorridor
 from tfl_road_traffic_producer_data import RoadStatus
-from test_tfl_road_traffic_producer_data_roadstatus import Test_RoadStatus
+from test_roadstatus import Test_RoadStatus
 from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadDisruptionsEventProducer
 from tfl_road_traffic_producer_data import RoadDisruption
-from test_tfl_road_traffic_producer_data_roaddisruption import Test_RoadDisruption
+from test_roaddisruption import Test_RoadDisruption
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
