@@ -311,15 +311,24 @@ async def run():
             tls_enabled = os.getenv('KAFKA_ENABLE_TLS', 'true').lower() not in ('false', '0', 'no')
             kafka_config = {
                 'bootstrap.servers': kafka_bootstrap_servers,
-                # Batching/throughput tuning for high-rate Mode-S feeds.
-                # Override any of these via the matching env var if needed.
-                'linger.ms': int(os.environ.get('KAFKA_LINGER_MS', '500')),
-                'batch.num.messages': int(os.environ.get('KAFKA_BATCH_NUM_MESSAGES', '10000')),
-                'queue.buffering.max.messages': int(os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_MESSAGES', '1000000')),
-                'queue.buffering.max.kbytes': int(os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_KBYTES', '1048576')),
-                'compression.type': os.environ.get('KAFKA_COMPRESSION_TYPE', 'lz4'),
-                'socket.send.buffer.bytes': int(os.environ.get('KAFKA_SOCKET_SEND_BUFFER_BYTES', '1048576')),
             }
+            # Optional librdkafka tuning. These are intentionally unset by
+            # default: Azure Event Hubs' Kafka surface rejects produce requests
+            # that batch records into a newer message-format version (broker
+            # returns UNSUPPORTED_FOR_MESSAGE_FORMAT, code 43). Operators who
+            # target a vanilla Kafka cluster can opt in via env vars.
+            _opt = {
+                'linger.ms': os.environ.get('KAFKA_LINGER_MS'),
+                'batch.num.messages': os.environ.get('KAFKA_BATCH_NUM_MESSAGES'),
+                'queue.buffering.max.messages': os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_MESSAGES'),
+                'queue.buffering.max.kbytes': os.environ.get('KAFKA_QUEUE_BUFFERING_MAX_KBYTES'),
+                'compression.type': os.environ.get('KAFKA_COMPRESSION_TYPE'),
+                'socket.send.buffer.bytes': os.environ.get('KAFKA_SOCKET_SEND_BUFFER_BYTES'),
+            }
+            for _k, _v in _opt.items():
+                if _v is None or _v == '':
+                    continue
+                kafka_config[_k] = int(_v) if _k != 'compression.type' else _v
             if sasl_username and sasl_password:
                 kafka_config.update({
                     'sasl.mechanisms': 'PLAIN',
