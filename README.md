@@ -17,9 +17,8 @@ that you can pull and use instantly from this repo's container registry. There
 are also pre-built templates for easily deploying the containers as an Azure
 Container Instance (ACI), either feeding data into an Azure Event Hub or a
 Fabric Event Stream custom endpoint. The container images will work with any
-Apache Kafka compatible server or service, as long as you provide required
-information. The supported authentication scheme for the Kafka endpoint is
-`SASL/PLAIN`.
+Apache Kafka compatible server or service that supports TLS with `SASL/PLAIN`
+authentication, as long as you provide the required connection information.
 
 The sources are organized by domain below. Each entry shows its build badge
 under the source name, with one-click deployment buttons on the right.
