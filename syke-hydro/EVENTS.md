@@ -1,6 +1,6 @@
-# SYKE Hydrology Bridge Events
+# SYKE Hydrology API Bridge Events
 
-This document describes the events emitted by the SYKE Hydrology Bridge.
+This document describes the events emitted by the SYKE Hydrology API Bridge.
 
 - [FI.SYKE.Hydrology](#message-group-fisykehydrology)
   - [FI.SYKE.Hydrology.Station](#message-fisykehydrologystation)
@@ -9,116 +9,45 @@ This document describes the events emitted by the SYKE Hydrology Bridge.
 ---
 
 ## Message Group: FI.SYKE.Hydrology
-
-Events from the Finnish Environment Institute's hydrological monitoring network,
-delivered via the SYKE Hydrology OData API.
-
-**Kafka topic**: `syke-hydro`
-**Kafka key**: `{station_id}`
-**Envelope**: CloudEvents/1.0, structured JSON (`application/cloudevents+json`)
-
 ---
-
 ### Message: FI.SYKE.Hydrology.Station
-
-Station reference data for a hydrological monitoring station.
-
 #### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `FI.SYKE.Hydrology.Station` |
+| `source` |  | `` | `False` | `https://rajapinnat.ymparisto.fi` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-| **Name** | **Description** | **Type** | **Required** | **Value** |
-|----------|-----------------|----------|--------------|-----------|
-| `type` | Event type | string | Yes | `FI.SYKE.Hydrology.Station` |
-| `source` | Data origin | URI | Yes | `https://rajapinnat.ymparisto.fi` |
-| `subject` | Station identifier | string | Yes | `{station_id}` |
-| `datacontenttype` | Content type | string | Yes | `application/json` |
-
-#### Data Schema:
-
-| **Field** | **Type** | **Required** | **Description** |
-|-----------|----------|--------------|-----------------|
-| `station_id` | string | Yes | SYKE station identifier (Paikka_Id) |
-| `name` | string | Yes | Human-readable station name |
-| `river_name` | string | No | Main water area name (PaaVesalNimi) |
-| `water_area_name` | string | No | Water area name (VesalNimi) |
-| `municipality` | string | No | Municipality name (KuntaNimi) |
-| `latitude` | double | Yes | WGS84 latitude of the station |
-| `longitude` | double | Yes | WGS84 longitude of the station |
-
-#### Example:
-
-```json
-{
-  "specversion": "1.0",
-  "type": "FI.SYKE.Hydrology.Station",
-  "source": "https://rajapinnat.ymparisto.fi",
-  "subject": "3100",
-  "id": "...",
-  "datacontenttype": "application/json",
-  "data": {
-    "station_id": "3100",
-    "name": "Iisalmi, Porovesi",
-    "river_name": "Vuoksen vesistö",
-    "water_area_name": "Porovesi",
-    "municipality": "Iisalmi",
-    "latitude": 63.5572,
-    "longitude": 27.1897
-  }
-}
-```
-
+#### Schema:
+##### Object: Station
+*Station*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `name` | *string* | - | `True` |  |
+| `river_name` | *string* | - | `False` |  |
+| `water_area_name` | *string* | - | `False` |  |
+| `municipality` | *string* | - | `False` |  |
+| `latitude` | *double* | - | `True` |  |
+| `longitude` | *double* | - | `True` |  |
 ---
-
 ### Message: FI.SYKE.Hydrology.WaterLevelObservation
-
-A hydrological observation containing water level and/or discharge readings
-from a monitoring station.
-
 #### CloudEvents Attributes:
+| **Name**    | **Description** | **Type**     | **Required** | **Value** |
+|-------------|-----------------|--------------|--------------|-----------|
+| `type` |  | `` | `False` | `FI.SYKE.Hydrology.WaterLevelObservation` |
+| `source` |  | `` | `False` | `https://rajapinnat.ymparisto.fi` |
+| `subject` |  | `uritemplate` | `False` | `{station_id}` |
 
-| **Name** | **Description** | **Type** | **Required** | **Value** |
-|----------|-----------------|----------|--------------|-----------|
-| `type` | Event type | string | Yes | `FI.SYKE.Hydrology.WaterLevelObservation` |
-| `source` | Data origin | URI | Yes | `https://rajapinnat.ymparisto.fi` |
-| `subject` | Station identifier | string | Yes | `{station_id}` |
-| `datacontenttype` | Content type | string | Yes | `application/json` |
-
-#### Data Schema:
-
-| **Field** | **Type** | **Required** | **Description** |
-|-----------|----------|--------------|-----------------|
-| `station_id` | string | Yes | SYKE station identifier (Paikka_Id) |
-| `water_level` | double | No | Water level reading |
-| `water_level_unit` | string | No | Unit of measurement (typically `cm`) |
-| `water_level_timestamp` | datetime | No | ISO 8601 timestamp of the water level reading |
-| `discharge` | double | No | Water discharge reading |
-| `discharge_unit` | string | No | Unit of measurement (typically `m3/s`) |
-| `discharge_timestamp` | datetime | No | ISO 8601 timestamp of the discharge reading |
-
-#### Example:
-
-```json
-{
-  "specversion": "1.0",
-  "type": "FI.SYKE.Hydrology.WaterLevelObservation",
-  "source": "https://rajapinnat.ymparisto.fi",
-  "subject": "3100",
-  "id": "...",
-  "datacontenttype": "application/json",
-  "data": {
-    "station_id": "3100",
-    "water_level": 8432.0,
-    "water_level_unit": "cm",
-    "water_level_timestamp": "2025-01-15T12:00:00+00:00",
-    "discharge": 42.5,
-    "discharge_unit": "m3/s",
-    "discharge_timestamp": "2025-01-15T12:00:00+00:00"
-  }
-}
-```
-
-## Schema Formats
-
-The event data schemas are defined in both JSON Structure and Apache Avro
-formats in the [xRegistry manifest](xreg/syke_hydro.xreg.json). The bridge
-defaults to JSON encoding, but the generated producer code supports both
-`application/json` and `avro/binary` content types.
+#### Schema:
+##### Object: WaterLevelObservation
+*WaterLevelObservation*
+| **Field Name** | **Type** | **Unit** | **Required** | **Description** |
+|----------------|----------|----------|--------------|-----------------|
+| `station_id` | *string* | - | `True` |  |
+| `water_level` | *double* (optional) | - | `False` | Water level reading value in centimetres. Null when the station does not report a water level in the current polling window. |
+| `water_level_unit` | *string* (optional) | - | `False` | Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null. |
+| `water_level_timestamp` | *datetime* (optional) | - | `False` | RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available. |
+| `discharge` | *double* (optional) | - | `False` | Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge. |
+| `discharge_unit` | *string* (optional) | - | `False` | Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null. |
+| `discharge_timestamp` | *datetime* (optional) | - | `False` | RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available. |
