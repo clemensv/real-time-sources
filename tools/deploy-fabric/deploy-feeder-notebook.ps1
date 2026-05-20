@@ -542,7 +542,7 @@ if ($DefaultLakehouse) {
     # No Lakehouse — auto-create one for feeder state. Use a stable
     # workspace-scoped name so subsequent deploys to the same workspace
     # reuse it (the bridge writes per-source under Files/feeder-state/<src>).
-    $newLakehouseName = 'feeder-state-lake'
+    $newLakehouseName = 'feeder_state_lake'
     Write-Info "Workspace has no Lakehouse; creating '$newLakehouseName' for feeder state..."
     $createBody = @{ displayName = $newLakehouseName } | ConvertTo-Json
     $lh = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/lakehouses" -Body $createBody
